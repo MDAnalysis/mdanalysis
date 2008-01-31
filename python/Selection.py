@@ -1,6 +1,6 @@
 """Atom selection Hierarchy
 
-These objects are constructed and applied to the system
+These objects are constructed and applied to the universe
 
 Currently all atom arrays are handled internally as sets, but returned as AtomGroups
 
@@ -10,7 +10,7 @@ from sets import Set as set
 
 class Selection:
     def __init__(self):
-        # This allows you to build a Selection without tying it to a particular system
+        # This allows you to build a Selection without tying it to a particular universe
         # yet
         # Updatable means every timestep
         self.update = False
@@ -24,21 +24,21 @@ class Selection:
         return NotSelection(self)
     def __hash__(self):
         return hash(repr(self))
-    def _apply(self,system):
+    def _apply(self,universe):
         # This is an error
         raise NotImplementedError("No _apply function defined for "+repr(self.__class__.__name__))
-    def apply(self,system):
+    def apply(self,universe):
         # Cache the result for future use
         # atoms is from Universe
         # returns AtomGroup
-        if system.__class__.__name__ != "Universe":
+        if universe.__class__.__name__ != "Universe":
             raise Exception("Must pass in a Universe to the Selection")
-        # make a set of all the atoms in the system
+        # make a set of all the atoms in the universe
         # XXX this should be static to all the class members
-        self._system_atoms = set(system._atoms)
+        self._universe_atoms = set(universe.atoms)
         from AtomGroup import AtomGroup
         if not hasattr(self, "_cache"):
-            cache = list(self._apply(system))
+            cache = list(self._apply(universe))
 
             # Decorate/Sort/Undecorate (Schwartzian Transform)
             cache[:] = [(x.number, x) for x in cache]
@@ -50,16 +50,16 @@ class Selection:
 class AllSelection(Selection):
     def __init__(self):
         Selection.__init__(self)
-    def _apply(self, system):
-        return set(system._atoms[:])
+    def _apply(self, universe):
+        return set(universe.atoms[:])
 
 class NotSelection(Selection):
     def __init__(self, sel):
         Selection.__init__(self)
         self.sel = sel
-    def _apply(self, system):
-        notsel = self.sel._apply(system)
-        return (set(system._atoms[:])-notsel) #(self._system_atoms-notsel)
+    def _apply(self, universe):
+        notsel = self.sel._apply(universe)
+        return (set(universe.atoms[:])-notsel)
     def __repr__(self):
         return "<'NotSelection' "+repr(self.sel)+">"
 
@@ -68,8 +68,8 @@ class AndSelection(Selection):
         Selection.__init__(self)
         self.rsel = rsel
         self.lsel = lsel
-    def _apply(self, system):
-        return self.lsel._apply(system) & self.rsel._apply(system)
+    def _apply(self, universe):
+        return self.lsel._apply(universe) & self.rsel._apply(universe)
     def __repr__(self):
         return "<'AndSelection' "+repr(self.lsel)+","+repr(self.rsel)+">"
 
@@ -78,8 +78,8 @@ class OrSelection(Selection):
         Selection.__init__(self)
         self.rsel = rsel
         self.lsel = lsel
-    def _apply(self, system):
-        return self.lsel._apply(system) | self.rsel._apply(system)
+    def _apply(self, universe):
+        return self.lsel._apply(universe) | self.rsel._apply(universe)
     def __repr__(self):
         return "<'OrSelection' "+repr(self.lsel)+","+repr(self.rsel)+">"
 
@@ -89,11 +89,11 @@ class AroundSelection(Selection):
         self.sel = sel
         self.sqdist = dist*dist
         self.periodic = periodic
-    def _apply(self, system):
+    def _apply(self, universe):
         # For efficiency, get a reference to the actual Numeric position arrays
-        x = system._coord._x ; y = system._coord._y ; z = system._coord._z
-        sel_atoms = self.sel._apply(system)
-        sys_atoms = self._system_atoms-sel_atoms
+        x = universe.coord.x ; y = universe.coord.y ; z = universe.coord.z
+        sel_atoms = self.sel._apply(universe)
+        sys_atoms = self._universe_atoms-sel_atoms
         res_atoms = []
         for atom1 in sys_atoms:
             a1 = atom1.number
@@ -115,19 +115,19 @@ class PointSelection(Selection):
         self.ref = (float(x), float(y), float(z))
         self.cutoffsq = float(cutoff)*float(cutoff)
         self.periodic = periodic
-    def _apply(self, system):
+    def _apply(self, universe):
         if self.periodic:
-            dim = system._coord.dimensions[0:3]
+            dim = universe.coord.dimensions[0:3]
         # For efficiency, get a reference to the actual Numeric position arrays
-        _x = system._coord._x ; _y = system._coord._y ; _z = system._coord._z
+        u_x = universe.coord.x ; u_y = universe.coord.y ; u_z = universe.coord.z
         res_atoms = []
         x, y, z = self.ref
-        for anum in range(len(system._atoms)):
+        for anum in range(len(universe.atoms)):
             if not self.periodic:
-                sqdist = (_x[anum]-x)*(_x[anum]-x) + (_y[anum]-y)*(_y[anum]-y) + (_z[anum]-z)*(_z[anum]-z)
-                if sqdist <= self.cutoffsq: res_atoms.append(system._atoms[anum])
+                sqdist = (u_x[anum]-x)*(u_x[anum]-x) + (u_y[anum]-y)*(u_y[anum]-y) + (u_z[anum]-z)*(u_z[anum]-z)
+                if sqdist <= self.cutoffsq: res_atoms.append(universe.atoms[anum])
             else: 
-                if self.__cmp_periodic(_x[anum], _y[anum], _z[anum], dim): res_atoms.append(system._atoms[anum])
+                if self.__cmp_periodic(u_x[anum], u_y[anum], u_z[anum], dim): res_atoms.append(universe.atoms[anum])
         return set(res_atoms)
     def __cmp_periodic(self, x, y, z, dim):
         # XXX This is a candidate for writing in c
@@ -156,9 +156,9 @@ class CompositeSelection(Selection):
         self.resname = resname
         self.resid = resid
         self.segid = segid
-    def _apply(self, system):
+    def _apply(self, universe):
         res = []
-        for a in system._atoms:
+        for a in universe.atoms:
             add = True
             if (self.name != None and a.name != self.name):
                 add = False
@@ -179,8 +179,8 @@ class AtomSelection(Selection):
         self.name = name
         self.resid = resid
         self.segid = segid
-    def _apply(self, system):
-        for a in system._atoms:
+    def _apply(self, universe):
+        for a in universe.atoms:
             if ((a.name == self.name) and (a.resid == self.resid) and (a.segid == self.segid)):
                 return set([a])
         return set([])
@@ -192,12 +192,12 @@ class StringSelection(Selection):
     def __init__(self, field):
         Selection.__init__(self)
         self._field = field
-    def _apply(self, system):
+    def _apply(self, universe):
         # Look for a wildcard
         value = getattr(self, self._field)
         wc_pos = value.find('*')  # This returns -1, so if it's not in value then use the whole of value
         if wc_pos == -1: wc_pos = None
-        return set([a for a in system._atoms if getattr(a, self._field)[:wc_pos] == value[:wc_pos]])
+        return set([a for a in universe.atoms if getattr(a, self._field)[:wc_pos] == value[:wc_pos]])
     def __repr__(self):
         return "<"+repr(self.__class__.__name__)+": "+repr(getattr(self, self._field))+">"
 
@@ -225,11 +225,11 @@ class ByResSelection(Selection):
     def __init__(self, sel):
         Selection.__init__(self)
         self.sel = sel
-    def _apply(self, system):
-        res = self.sel._apply(system)
+    def _apply(self, universe):
+        res = self.sel._apply(universe)
         unique_res = set([(a.resid, a.segid) for a in res])
         sel = []
-        for atom in system._atoms:
+        for atom in universe.atoms:
             if (atom.resid, atom.segid) in unique_res:
                 sel.append(atom)
         return set(sel)
@@ -241,10 +241,10 @@ class ResidueIDSelection(Selection):
         Selection.__init__(self)
         self.lower = lower
         self.upper = upper
-    def _apply(self, system):
+    def _apply(self, universe):
         if self.upper != None:
-            return set([a for a in system._atoms if (self.lower <= a.resid <= self.upper)])
-        else: return set([a for a in system._atoms if a.resid == self.lower])
+            return set([a for a in universe.atoms if (self.lower <= a.resid <= self.upper)])
+        else: return set([a for a in universe.atoms if a.resid == self.lower])
     def __repr__(self):
         return "<'ResidueIDSelection' "+repr(self.lower)+":"+repr(self.upper)+" >"
 
@@ -253,12 +253,12 @@ class ByNumSelection(Selection):
         Selection.__init__(self)
         self.lower = lower
         self.upper = upper
-    def _apply(self, system):
+    def _apply(self, universe):
         if self.upper != None:
             # In this case we'll use 1 indexing since that's what the user will be 
             # familiar with
-            return set(system._atoms[self.lower-1:self.upper])
-        else: return set(system._atoms[self.lower-1:self.lower])
+            return set(universe.atoms[self.lower-1:self.upper])
+        else: return set(universe.atoms[self.lower-1:self.lower])
     def __repr__(self):
         return "<'ByNumSelection' "+repr(self.lower)+":"+repr(self.upper)+" >"
 
@@ -266,21 +266,21 @@ class ProteinSelection(Selection):
     prot_res = dict([(x,None) for x in ['ALA', 'CYS', 'ASP', 'GLU', 'PHE', 'GLY', 'HIS', 'ILE', 'LYS', 'LEU',
                                         'MET', 'ASN', 'PRO', 'GLN', 'ARG', 'SER', 'THR', 'VAL', 'TRP', 'TYR',
                                         'CHO', 'EAM']])
-    def _apply(self, system):
-        return set([a for a in system._atoms if a.resname in self.prot_res])
+    def _apply(self, universe):
+        return set([a for a in universe.atoms if a.resname in self.prot_res])
     def __repr__(self):
         return "<'ProteinSelection' >"
 
 class BackboneSelection(ProteinSelection):
     bb_atoms = dict([(x,None) for x in ['N', 'CA', 'C', 'O']])
-    def _apply(self, system):
-       return set([a for a in system._atoms if (a.name in self.bb_atoms and a.resname in self.prot_res)])
+    def _apply(self, universe):
+       return set([a for a in universe.atoms if (a.name in self.bb_atoms and a.resname in self.prot_res)])
     def __repr__(self):
         return "<'BackboneSelection' >"
 
 class CASelection(BackboneSelection):
-    def _apply(self, system):
-        return set([a for a in system._atoms if (a.name == "CA" and a.resname in self.prot_res)])
+    def _apply(self, universe):
+        return set([a for a in universe.atoms if (a.name == "CA" and a.resname in self.prot_res)])
     def __repr__(self):
         return "<'CASelection' >"
 
@@ -288,16 +288,16 @@ class BondedSelection(Selection):
     def __init__(self, sel):
         Selection.__init__(self)
         self.sel = sel
-    def _apply(self, system):
-        res = self.sel._apply(system)
+    def _apply(self, universe):
+        res = self.sel._apply(universe)
         # Find all the atoms bonded to each
         sel = []
         for atom in res:
-            for b1, b2 in system._bonds:
+            for b1, b2 in universe._bonds:
                 if atom.number == b1:
-                    sel.append(system._atoms[b2])
+                    sel.append(universe.atoms[b2])
                 elif atom.number == b2:
-                    sel.append(system._atoms[b1])
+                    sel.append(universe.atoms[b1])
         return set(sel)
     def __repr__(self):
         return "<'BondedSelection' to "+ repr(self.sel)+" >"
@@ -312,16 +312,16 @@ class PropertySelection(Selection):
         self.operator = operator
         self.value = value
         self.abs = abs
-    def _apply(self, system):
+    def _apply(self, universe):
         # For efficiency, get a reference to the actual Numeric position arrays
         if self.prop in ("x", "y", "z"):
-            p = getattr(system._coord, '_'+self.prop)
+            p = getattr(universe.coord, '_'+self.prop)
             if not self.abs:
-                return set([a for a in system._atoms if self.operator(p[a.number], self.value)])
+                return set([a for a in universe.atoms if self.operator(p[a.number], self.value)])
             else:
-                return set([a for a in system._atoms if self.operator(abs(p[a.number]), self.value)])
+                return set([a for a in universe.atoms if self.operator(abs(p[a.number]), self.value)])
         elif self.prop == "mass":
-            return set([a for a in system._atoms if a.mass == self.value])
+            return set([a for a in universe.atoms if a.mass == self.value])
     def __repr__(self):
         if self.abs: abs_str = " abs "
         else: abs_str = ""

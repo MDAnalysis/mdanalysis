@@ -77,7 +77,7 @@ class TimeseriesCollection(object):
 class Timeseries(object):
     def __init__(self, code, atoms, dsize):
         if isinstance(atoms, AtomGroup.AtomGroup):
-            self.atoms = atoms._atoms
+            self.atoms = atoms.atoms
         elif isinstance(atoms, list):
             self.atoms = atoms
         elif isinstance(atoms, AtomGroup.Atom):
@@ -121,7 +121,7 @@ class Atom(Timeseries):
         if code == 'v': size = 3
         else: size = 1
         if isinstance(atoms, AtomGroup.AtomGroup):
-            numatoms = len(atoms._atoms)
+            numatoms = len(atoms.atoms)
         elif isinstance(atoms, list):
             numatoms = len(atoms)
         elif isinstance(atoms, AtomGroup.Atom):
