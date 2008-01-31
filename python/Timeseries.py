@@ -11,10 +11,7 @@ class TimeseriesCollection:
             self._atomlist += list(ts.getAtomList())
         return self._atomlist
     def getFormat(self):
-        fmt = []
-        for ts in self.timeseries:
-            fmt.append(ts.getFormatCode())
-        return ''.join(fmt)
+        return ''.join([ts.getFormatCode() for ts in self.timeseries])
     def getBounds(self):
         if not hasattr(self, '_atomlist'):
             self.getAtomList()
@@ -22,29 +19,29 @@ class TimeseriesCollection:
         upperb = max(self._atomlist)
         return lowerb, upperb
     def getDataSize(self):
-        size = 0
-        for ts in self.timeseries:
-            size += ts.getDataSize()
-        return size
+        return sum([ts.getDataSize() for ts in self.timeseries])
     def getAtomCounts(self):
         return [ts.getNumAtoms() for ts in self.timeseries]
     def getAuxData(self):
-        auxData = []
-        for ts in self.timeseries:
-            auxData += ts.getAuxData()
-        return auxData
+        return [ts.getAuxData() for ts in self.timeseries]
+    def clear(self):
+        self.timeseries = []
 
 class Timeseries:
-    def __init__(self, code, numatoms, size):
+    def __init__(self, code, atoms, dsize):
+        if type(atoms) == list:
+            self.atoms = atoms
+        else: # This is probably an AtomGroup
+            self.atoms = atoms._atoms
         self.code = code
-        self.numatoms = numatoms
-        self.size = size
+        self.numatoms = len(atoms)
+        self.dsize = dsize
     def getAtomList(self):
         return [a.number for a in self.atoms]
     def getFormatCode(self):
         return self.code
     def getDataSize(self):
-        return self.size
+        return self.dsize
     def getNumAtoms(self):
         return self.numatoms
     def getAuxData(self):
@@ -56,20 +53,20 @@ class Atom(Timeseries):
             raise Exception("Bad code")
         if code == 'v': size = 3
         else: size = 1
-        if type(atom) == list: self.atoms = atom
-        else: self.atoms = [atom]
-        numatoms = len(self.atoms)
-        Timeseries.__init__(self, code*numatoms, numatoms, size*numatoms)
+        numatoms = len(atoms)
+        Timeseries.__init__(self, code*numatoms, atoms, size*numatoms)
 
 class Angle(Timeseries):
     def __init__(self, atoms):
-        self.atoms = atoms
-        Timeseries.__init__(self, 'a', 3, 1)
+        if not len(atoms) == 3:
+            raise Exception("Angle timeseries requires a 3 atom selection")
+        Timeseries.__init__(self, 'a', atoms, 1)
 
 class Dihedral(Timeseries):
     def __init__(self, atoms):
-        self.atoms = atoms
-        Timeseries.__init__(self, 'h', 4, 1)
+        if not len(atoms) == 4:
+            raise Exception("Dihedral timeseries requires a 4 atom selection")
+        Timeseries.__init__(self, 'h', atoms, 1)
 
 class Distance(Timeseries):
     def __init__(self, code, atoms):
@@ -77,17 +74,16 @@ class Distance(Timeseries):
             raise Exception("Bad code")
         if code == 'd': size = 3
         else: size = 1
-        self.atoms = atoms
-        Timeseries.__init__(self, code, 2, size)
+        if not len(atoms) == 2:
+            raise Exception("Distance timeseries requires a 2 atom selection")
+        Timeseries.__init__(self, code, atoms, size)
 
 class CenterOfGeometry(Timeseries):
     def __init__(self, atoms):
-        self.atoms = atoms
-        Timeseries.__init__(self, 'g', len(atoms), 3)
+        Timeseries.__init__(self, 'g', atoms, 3)
 
 class CenterOfMass(Timeseries):
     def __init__(self, atoms):
-        self.atoms = atoms
-        Timeseries.__init__(self, 'm', len(atoms), 3)
+        Timeseries.__init__(self, 'm', atoms, 3)
     def getAuxData(self):
         return [a.mass for a in self.atoms]
