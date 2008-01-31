@@ -67,8 +67,8 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     if numdata==0:
         raise Exception("No data requested")
     fmtstr = PyString_AsString(format)
-    atomlist = Numeric.array(atoms)
-    atomcountslist = Numeric.array(atomcounts)
+    atomlist = Numeric.array(atoms, Numeric.Int32)
+    atomcountslist = Numeric.array(atomcounts, Numeric.Int32)
     cdef int range
     range = upperb - lowerb + 1
     # Create data list
