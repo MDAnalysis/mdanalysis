@@ -43,10 +43,14 @@ def parse(psffilename):
                 ("NPHI", 4, 2, __parsesection_, "_dihe"),
                 ("NIMPHI", 4, 2, __parsesection_, "_impr")]
 
-    for info in sections:
-        skip_line()
-        parse_sec(info)
-
+    try:
+        for info in sections:
+            skip_line()
+            parse_sec(info)
+    except StopIteration:
+        # Reached the end of the file before we expected
+        if not structure.has_key("_atoms"):
+            raise Exception("The PSF file didn't contain the minimum required section of NATOM")
     # Who cares about the rest
     psffile.close()
     return structure
