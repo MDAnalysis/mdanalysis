@@ -4,8 +4,6 @@ Class Hierarchy:
     AtomGroup ->
 """
 
-from Scientific.Geometry import Vector, Tensor
-
 import Numeric
 
 class Atom(object):
@@ -29,12 +27,12 @@ Methods:
         self.charge = charge
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
-               repr(self.type) + " of resid " + repr(self.resname) + ", " +repr(self.resid) + " and " +repr(self.segid)+'>'
+               repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'
     def __getattr__(self, key):
         if (key == "pos"):
             if hasattr(self, "_universe"):
                 return self._universe._coord[self.number] # PDB numbering starts at 0
-            else: raise Exception("Atom "+repr(self.number)+" is not assigned to a System")
+            else: raise Exception("Atom "+repr(self.number)+" is not assigned to a Universe")
         else: return super(Atom, self).__getattribute__(key)
     def __cmp__(self, other):
         return cmp(self.number, other.number)
@@ -51,7 +49,7 @@ class AtomGroup(object):
 
 Currently contains a list of atoms from the main system that correspond to this group.
 
-Data: _atoms - a list of references to the corresponding atoms in System._atoms
+Data: _atoms - a list of references to the corresponding atoms in Universe._atoms
       AtomGroups are immutable
 
 Methods:
@@ -71,7 +69,7 @@ Methods:
         if len(atoms) < 1: raise Exception("No atoms defined for AtomGroup")
         self._atoms = atoms
         # If the number of atoms is very large, create a dictionary cache for lookup
-        if len(atoms) > 1000:
+        if len(atoms) > 5000:
             self.__atom_cache = dict([(x,None) for x in atoms])
     def __len__(self):
         return len(self._atoms)
@@ -146,6 +144,8 @@ Methods:
         indices = Numeric.argsort(eigenval)
         return Numeric.take(eigenvec, indices) 
     def coordinates(self, ts=None):
+        # The way this is implemented is very slow
+        # When I upgrade to numpy I can use indexed arrays
         if ts == None:
             return Numeric.array([atom.pos for atom in self._atoms])
         else:
@@ -291,16 +291,21 @@ See also:
         return self._coord.dimensions
     def __getattr__(self, name):
         if name == "_coord":
-            raise AttributeError("System was not defined with a dcdfile: no coordinates available")
+            raise AttributeError("Universe was not defined with a dcdfile: no coordinates available")
         elif name == "timesteps":
             return len(self._dcd)
-        else: return super(System, self).__getattribute__(name)
+        else: return super(Universe, self).__getattribute__(name)
     def numberOfAtoms(self):
         return len(self._atoms)
+    def numberOfTimesteps(self):
+        return len(self._dcd)
     def getTrajectory(self):
         return self._dcd
     def getConfiguration(self):
         return self._coord
+    def recenterAround(self, group):
+        com = group.centerOfMass()
+        self._coord -= com
     def selectAtoms(self, sel, *othersel):
         # XXX This uses the outdated selection parser
         # You should be able to do everything else using classes in AtomGroup
@@ -313,6 +318,3 @@ See also:
         return atomgrp
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(len(self._atoms))+' atoms>'
-    def recenterAround(self, group):
-        com = group.centerOfMass()
-        self._coord -= com
