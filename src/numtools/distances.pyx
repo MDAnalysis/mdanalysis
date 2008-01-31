@@ -52,7 +52,7 @@ def distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf, c_numpy.ndarray bo
     refnum = ref.dimensions[0]
 
     if not result is None:
-        if (result.nd != 2 or result.dimensions[0] != refnum or results.dimensions[1] != confnum):
+        if (result.nd != 2 or result.dimensions[0] != refnum or result.dimensions[1] != confnum):
             raise Exception("result array has incorrect size or datatype - should be (%dx%d)"%(refnum,confnum))
         distances = numpy.asarray(result)
     else:
