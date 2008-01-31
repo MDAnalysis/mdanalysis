@@ -1,7 +1,7 @@
 import sys, os
 from distutils import sysconfig
 from numpy import get_numpy_include
-from numpy.distutils.core import setup, Extension
+from distutils.core import setup, Extension
 from Pyrex.Distutils import build_ext
 
 include_dirs = [get_numpy_include()]
