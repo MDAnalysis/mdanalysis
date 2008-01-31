@@ -1,6 +1,7 @@
 """PDB structure files in MDAnalysis
 
-(very thin...)
+Only coordinates are read; the topology must still be provided by a
+psf file.
 """
 
         
@@ -14,7 +15,7 @@ class PDBReader:
 
     The coordinates are also supplied as one numpy array and wrapped
     into a Timestep object; attributes are set so that the PDBReader
-    obejct superficially resembles the DCDReader object.
+    object superficially resembles the DCDReader object.
     """
     def __init__(self,pdbfilename):
         p=Bio.PDB.PDBParser(PERMISSIVE=1)
