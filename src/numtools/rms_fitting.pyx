@@ -34,6 +34,10 @@ c_numpy.import_array()
 
 import numpy
 def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarray weights):
+    ''' Computes the weighted RMS rotation matrix between a reference set of coordinates and a comparison set.
+        conf - Nx3 array of comparison coordinates (size float - 32 bits)
+        ref - Nx3 array of reference coordinates (size float - 32 bits)
+        weights - N array of masses (size double - 64 bits)'''
     cdef c_numpy.ndarray ref_cms, pos, cross, k, mat
     cdef c_numpy.ndarray e, v
     cdef int i, numatoms
@@ -45,6 +49,7 @@ def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarr
     ref_cms = numpy.zeros((3,), numpy.float64)
     for i from 0 <= i < numatoms:
         ref_cms = ref_cms + ref[i]
+    ref_cms /= numatoms
     pos = numpy.zeros((3,), numpy.float64)
     possq = 0.
     cross = numpy.zeros((3,3), numpy.float64)

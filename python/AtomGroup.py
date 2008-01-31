@@ -9,10 +9,11 @@ import numpy
 class Atom(object):
     """A single atom definition
 
-Data: number, segid, resid, resname, name, type
+Data: number, segid, resid, resname, name, type, mass, charge
 
 Methods:
     a = Atom()
+    a.pos     - The current position (as a numpy array) of this atom
 """
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", "mass", "charge", "residue", "segment", "bonds", "__universe")
 
@@ -69,6 +70,7 @@ Data: atoms - a list of references to the corresponding atoms in Universe.atoms
 
 Methods:
     ag = universe.selectAtoms("...")
+    ag.numberOfAtoms() - return the number of atoms in group
     ag.indices() - return indices into main atom array
     ag.masses() - array of masses
     ag.totalMass() - total mass
@@ -140,13 +142,13 @@ Methods:
             self._cached_masses = numpy.array([atom.mass for atom in self.atoms])
         return self._cached_masses
     def totalMass(self):
-        return numpy.sum(self.masses())
+        return numpy.sum(self.masses(), axis=0)
     def charges(self):
         return numpy.array([atom.charge for atom in self.atoms])
     def totalCharge(self):
-        return numpy.sum(self.charges())
+        return numpy.sum(self.charges(), axis=0)
     def centerOfGeometry(self):
-        return numpy.sum(self.coordinates(),axis=0)/self.numberOfAtoms()
+        return numpy.sum(self.coordinates(), axis=0)/self.numberOfAtoms()
     def centerOfMass(self):
         return numpy.sum(self.coordinates()*self.masses()[:,numpy.newaxis],axis=0)/self.totalMass()
     def radiusOfGyration(self):
@@ -191,7 +193,7 @@ Data: type, name
 
 Methods:
     r = Residue()
-    r['name'] or r[id]
+    r['name'] or r[id] - returns the atom corresponding to that name
     r.name
 """
     __cache = {}
@@ -286,11 +288,16 @@ class Universe(object):
        Built from a psf file
 
 Data: bonds, angles, dihedrals, impropers, donors, acceptors
+      coord - current coordinate array for all the atoms in the universe
+      dcd - currently loaded trajectory reader
+      dimensions - current system dimensions
 
 Methods:
    m = Universe(psffile, dcdfile)             - read system from file(s)
    m = Universe(psffile, pdbfilename=pdbfile) - read coordinates from PDB file
-   
+   m.load_new_dcd(dcdfilename)                - read from a new dcd file
+   m.selectAtoms(...)                         - select atoms using similar selection string as charmm
+
    Only a single frame pdb file is supported.
 See also:
 """
@@ -310,7 +317,7 @@ See also:
                 segments[newsegname] = segments[seg]
                 del segments[seg]
         self.__dict__.update(segments)
-        
+
         #PSFParser.build_bondlists(self.atoms, self._bonds)
         # Let atoms access the universe
         for a in self.atoms: a.universe = self
@@ -331,7 +338,6 @@ See also:
         if (self.pdb.numatoms != self.atoms.numberOfAtoms()):
             raise Exception("The psf and pdb files don't have the same number of atoms!")
 
-            
     def selectAtoms(self, sel, *othersel):
         # XXX This uses the outdated selection parser
         # You should be able to do everything else using classes in AtomGroup

@@ -117,7 +117,7 @@ class PointSelection(Selection):
         self.periodic = periodic
     def _apply(self, universe):
         if self.periodic:
-            dim = universe.coord.dimensions[0:3]
+            dim = universe.dimensions[0:3]
         # For efficiency, get a reference to the actual numpy position arrays
         u_x = universe.coord.x ; u_y = universe.coord.y ; u_z = universe.coord.z
         res_atoms = []
@@ -263,16 +263,8 @@ class ByNumSelection(Selection):
         return "<'ByNumSelection' "+repr(self.lower)+":"+repr(self.upper)+" >"
 
 class ProteinSelection(Selection):
-    """A protein selection consists of all residues with  recognized residue names.
-    Recognized residue names:
-    * from the Charmm force field
-         awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_lipid.rtf
-    * manually added:
-         HIS CHO EAM
-    """
-    prot_res = dict([(x,None) for x in ['ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'HSD',
-                                        'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
-                                        'TRP', 'TYR', 'VAL', 'ALAD',
+    prot_res = dict([(x,None) for x in ['ALA', 'CYS', 'ASP', 'GLU', 'PHE', 'GLY', 'HIS', 'ILE', 'LYS', 'LEU',
+                                        'MET', 'ASN', 'PRO', 'GLN', 'ARG', 'SER', 'THR', 'VAL', 'TRP', 'TYR',
                                         'CHO', 'EAM']])
     def _apply(self, universe):
         return set([a for a in universe.atoms if a.resname in self.prot_res])
@@ -280,8 +272,6 @@ class ProteinSelection(Selection):
         return "<'ProteinSelection' >"
 
 class BackboneSelection(ProteinSelection):
-    """A BackboneSelection contains all atoms with name 'N', 'CA', 'C', 'O'.
-    This excludes OT* on C-termini (which are included by, eg VMD's backbone selection)."""
     bb_atoms = dict([(x,None) for x in ['N', 'CA', 'C', 'O']])
     def _apply(self, universe):
        return set([a for a in universe.atoms if (a.name in self.bb_atoms and a.resname in self.prot_res)])

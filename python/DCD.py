@@ -6,10 +6,13 @@ import numpy
 class Timestep:
     """Timestep data for one frame
 
-Data: numatoms, frame, x, y, z, unitcell
+Data:     numatoms                   - number of atoms
+          frame                      - frame number
+          dimensions                 - system box dimensions (x, y, z, alpha, beta, gamma)
 
-Methods:
-
+Methods:  t = Timestep(numatoms) - create a timestep object with space for numatoms (done automatically)
+          t[i]                   - return coordinates for the i'th atom (0-based)
+          t[start:stop:skip]     - return an array of coordinates, where start, stop and skip correspond to atom indices (0-based)
 """
     def __init__(self, arg):
         if numpy.dtype(type(arg)) == numpy.dtype(int):
@@ -74,9 +77,17 @@ class DCDWriter:
 Data:
 
 Methods:
-    d = DCDWriter(dcdfile)
+    d = DCDWriter(dcdfilename, numatoms, start, step, delta, remarks)
 """
     def __init__(self, dcdfilename, numatoms, start=0, step=1, delta=1.0, remarks="Created by DCDWriter"):
+        ''' Create a new DCDWriter
+        dcdfilename - name of output file
+        numatoms - number of atoms in dcd file
+        start - starting timestep
+        step  - skip between subsequent timesteps
+        delta - timestep
+        remarks - comments to annotate dcd file
+        '''
         if numatoms == 0:
             raise Exception("DCDWriter: no atoms in output trajectory")
         self.dcdfilename = dcdfilename
@@ -94,6 +105,9 @@ Methods:
         desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']
         return dict(zip(desc, struct.unpack("iiiiiiidiPPiiii",self._dcd_C_str)))
     def write_next_timestep(self, ts=None):
+        ''' write a new timestep to the dcd file
+            ts - timestep object containing coordinates to be written to dcd file
+        '''
         if ts is None:
             if not hasattr(self, "ts"):
                 raise Exception("DCDWriter: no coordinate data to write to trajectory file")
@@ -118,9 +132,16 @@ Methods:
 class DCDReader:
     """Reads from a DCD file
 Data:
+    ts                     - Timestep object containing coordinates of current frame
+
 Methods:
-    d = DCD(dcdfile) - open dcdfile and read header
-    len(d) - return number of frames
+    dcd = DCD(dcdfilename)             - open dcd file and read header
+    len(dcd)                           - return number of frames in dcd
+    for ts in dcd:                     - iterate through trajectory
+    for ts in dcd[start:stop:skip]:    - iterate through a trajectory
+    dcd[i]                             - random access into the trajectory (i corresponds to frame number)
+    data = dcd.timeseries(...)         - retrieve a subset of coordinate information for a group of atoms
+    data = dcd.correl(...)             - populate a Timeseries.Collection object with computed timeseries
 """
     def __init__(self, dcdfilename):
         self.dcdfilename = dcdfilename
@@ -133,7 +154,7 @@ Methods:
         self._read_dcd_header()
         self.ts = Timestep(self.numatoms)
         # Read in the first timestep
-        self.read_next_timestep()
+        self._read_next_timestep()
     def dcd_header(self):
         import struct
         desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']
@@ -146,7 +167,7 @@ Methods:
         self._reset_dcd_read()
         def iterDCD():
             for i in xrange(0, self.numframes, self.skip):
-                try: yield self.read_next_timestep()
+                try: yield self._read_next_timestep()
                 except IOError: raise StopIteration
         return iterDCD()
     def __getitem__(self, frame):
@@ -160,7 +181,7 @@ Methods:
                 raise IndexError
             self._jump_to_frame(frame)
             ts = self.ts
-            ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
+            ts.frame = self.__read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
             return ts
         elif type(frame) == slice: # if frame is a slice object
             if not (((type(frame.start) == int) or (frame.start == None)) and
@@ -184,11 +205,18 @@ Methods:
            (stop < 0) or (stop > len(self))):
                raise IndexError
         return (start, stop, skip)
-    def read_next_timestep(self, ts=None):
+    def _read_next_timestep(self, ts=None):
         if ts is None: ts = self.ts
         ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
         return ts
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
+        ''' Return a subset of coordinate data for an AtomGroup
+            asel - AtomGroup object
+            start, stop, skip - range of trajectory to access, start and stop are inclusive
+            format - the order/shape of the return data array, corresponding to (a)tom, (f)rame, (c)oordinates
+                     all six combinations of 'a', 'f', 'c' are allowed
+                     ie "fac" - return array where the shape is (frame, number of atoms, coordinates)
+        '''
         start, stop, skip = self._check_slice_indices(start, stop, skip)
         if len(asel) == 0:
             raise Exception("Timeseries requires at least one atom to analyze")
@@ -200,13 +228,17 @@ Methods:
         # XXX needs to be implemented
         return self._read_timeseries(atom_numbers, start, stop, skip, format)
     def correl(self, timeseries, start=0, stop=-1, skip=1):
+        ''' Populate a TimeseriesCollection object with timeseries computed from the trajectory
+            timeseries - TimeseriesCollection
+            start, stop, skip - subset of trajectory to use, with start and stop being inclusive
+        '''
         start, stop, skip = self._check_slice_indices(start, stop, skip)
-        atomlist = timeseries.getAtomList()
-        format = timeseries.getFormat()
-        lowerb, upperb = timeseries.getBounds()
-        sizedata = timeseries.getDataSize()
-        atomcounts = timeseries.getAtomCounts()
-        auxdata = timeseries.getAuxData()
+        atomlist = timeseries._getAtomList()
+        format = timeseries._getFormat()
+        lowerb, upperb = timeseries._getBounds()
+        sizedata = timeseries._getDataSize()
+        atomcounts = timeseries._getAtomCounts()
+        auxdata = timeseries._getAuxData()
         return self._read_timecorrel(atomlist, atomcounts, format, auxdata, sizedata, lowerb, upperb, start, stop, skip)
     def close_trajectory(self):
         self._finish_dcd_read()
