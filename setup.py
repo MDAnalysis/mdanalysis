@@ -17,7 +17,7 @@ else:
     fast_numeric_link = []
 
 if __name__ == '__main__':
-    DOC_FILES = ('COPYRIGHT', 'README', 'LICENSE', 'CHANGELOG', 'KNOWN_BUGS', 'MAINTAINERS', 'TODO')
+    DOC_FILES = ('README', 'LICENSE', 'CHANGELOG', 'TODO')
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 """
@@ -73,14 +73,14 @@ if __name__ == '__main__':
           description       = 'Python tools to support analysis of trajectories',
           author            = 'Naveen Michaud-Agrawal',
           author_email      = 'nmichaud@jhu.edu',
-          url               = 'http://www.google.com',
-          license           = 'BSD',
+          url               = '',
+          license           = 'GPL',
           packages          = [ 'MDAnalysis' ],
           package_dir       = {'MDAnalysis': 'python'},
           ext_package       = 'MDAnalysis',
           ext_modules       = extensions,
-          #data_files        = [ (install_dir, DOC_FILES) ],
-          #classifiers       = CLASSIFIERS,
+          data_files        = [ (install_dir, DOC_FILES) ],
+          classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
           cmdclass = {'build_ext': build_ext}
           )
