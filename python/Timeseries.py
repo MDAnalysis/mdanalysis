@@ -15,7 +15,7 @@ class TimeseriesCollection(object):
         else: suffix = ''
         return '<'+self.__class__.__name__+' with %d timeseries object%s>'%(len(self), suffix)
     def addTimeseries(self, ts):
-        # if ts is not Timeseries do something
+        if not isinstance(ts, Timeseries): raise Exception("Can only add Timeseries objects to TimeseriesCollection")
         self.timeseries.append(ts)
     def getAtomList(self):
         self._atomlist = []
@@ -47,21 +47,9 @@ class TimeseriesCollection(object):
     def clear(self):
         self.timeseries = []
     def compute(self, trj, start=0, stop=-1, skip=1):
-        if (start < 0): start += len(trj)
-        if (stop < 0): stop += len(trj)
-        if (stop <= start): raise Exception("Stop frame is lower than start frame")
-        if ((start < 0) or (start >= len(trj)) or
-           (stop < 0) or (stop >= len(trj))):
-               raise IndexError
-        atomlist = self.getAtomList()
-        format = self.getFormat()
-        lowerb, upperb = self.getBounds()
-        sizedata = self.getDataSize()
-        atomcounts = self.getAtomCounts()
-        auxdata = self.getAuxData()
-        self.data = trj._read_timecorrel(atomlist, atomcounts, format, auxdata, sizedata, lowerb, upperb, start, stop, skip)
+        self.data = trj.correl(self,start,stop,skip)
         # Now remap the timeseries data to each timeseries
-        #typestr = "|f8"
+        typestr = "|f8"
         start = 0
         for t in self.timeseries:
             finish = t.getDataSize()
@@ -69,10 +57,8 @@ class TimeseriesCollection(object):
             subarray = self.data[start:start+finish]
             if datasize != 1: subarray.shape = (datasize, subarray.shape[0]/datasize, -1)
             t.__data__ = subarray
-            # XXX The __array_interface__ only works with numpy
-            #t.__array_interface__ = {"data": (, False), "shape": subarray.shape, "typestr": typestr,"version": 3, "stride": None}
+            t.__array_interface__ = subarray.__array_interface__
             start += finish
-
 
 class Timeseries(object):
     def __init__(self, code, atoms, dsize):
@@ -86,21 +72,20 @@ class Timeseries(object):
         self.code = code
         self.numatoms = len(self.atoms)
         self.dsize = dsize
-    def __array__(self):
-        if not hasattr(self, "__data__"): raise Exception("%s timeseries object not yet populated"%self.__class__.__name__)
-        return self.__data__
-    def __getitem__(self, item):
-        if (type(item) is int) or (type(item) is slice):
-            return self.__data__[item]
-        else: raise IndexError
-    def __getattr__(self, attr):
-        if attr == "shape":
+
+    # Properties
+    def shape():
+        def fget(self):
             return self.__data__.shape
-        else: return super(Timeseries, self).__getattribute__(attr)
+        return locals()
+    shape = property(**shape())
+
+    def __getitem__(self, item):
+        return self.__data__[item]
+    def __len__(self): return len(self.__data__)
     def __repr__(self):
-        if hasattr(self, "__data__"): datastring = "is"
-        else: datastring = "is not"
-        return '<'+self.__class__.__name__+' timeseries object %s populated with data>'%datastring
+        if hasattr(self, "__data__"): return '<'+self.__class__.__name__+' timeseries object is populated with data>\n%s'%(repr(self.__data__))
+        else: '<'+self.__class__.__name__+' timeseries object is not populated with data>'
     def getAtomList(self):
         return [a.number for a in self.atoms]
     def getFormatCode(self):

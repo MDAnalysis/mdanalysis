@@ -103,8 +103,8 @@ Methods:
         if len(atoms) > 10000:
             self._atom_cache = dict([(x,None) for x in atoms])
     def __len__(self):
-        import warnings
-        warnings.warn("To prevent confusion with AtomGroup subclasses you should use numberOfAtoms() instead", category=Warning, stacklevel=2)
+        #import warnings
+        #warnings.warn("To prevent confusion with AtomGroup subclasses you should use numberOfAtoms() instead", category=Warning, stacklevel=2)
         return self.numberOfAtoms()
     def __getitem__(self, item):
         if (numpy.dtype(type(item)) is numpy.dtype(int)) or (type(item) is slice):
@@ -326,11 +326,12 @@ See also:
         if len(othersel) == 0: return atomgrp
         else:
             # Generate a selection for each selection string
-            atomselections = [atomgrp]
+            #atomselections = [atomgrp]
             for sel in othersel:
-                #atomgrp = atomgrp + Selection.Parser.parse(sel).apply(self)
-                atomselections.append(Selection.Parser.parse(sel).apply(self))
-            return tuple(atomselections)
+                atomgrp = atomgrp + Selection.Parser.parse(sel).apply(self)
+                #atomselections.append(Selection.Parser.parse(sel).apply(self))
+            #return tuple(atomselections)
+            return atomgrp
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(len(self.atoms))+' atoms>'
 
