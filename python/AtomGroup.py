@@ -288,12 +288,15 @@ class Universe(object):
 Data: bonds, angles, dihedrals, impropers, donors, acceptors
 
 Methods:
-   m = Universe(psffile, dcdfile) - read system from file(s)
-
+   m = Universe(psffile, dcdfile)             - read system from file(s)
+   m = Universe(psffile, pdbfilename=pdbfile) - read coordinates from PDB file
+   
+   Only a single frame pdb file is supported.
 See also:
 """
-    def __init__(self, psffilename, dcdfilename=None):
+    def __init__(self, psffilename, dcdfilename=None, pdbfilename=None):
         self.__dcd = None
+        self.__pdb = None
         import PSFParser
         struc = PSFParser.parse(psffilename)
         #for data in struc.keys():
@@ -311,13 +314,24 @@ See also:
         #PSFParser.build_bondlists(self.atoms, self._bonds)
         # Let atoms access the universe
         for a in self.atoms: a.universe = self
-        if dcdfilename is not None: self.load_new_dcd(dcdfilename)
+        if dcdfilename is not None:
+            self.load_new_dcd(dcdfilename)
+        elif pdbfilename is not None:
+            self.load_new_pdb(pdbfilename)
     def load_new_dcd(self, dcdfilename):
         from DCD import DCDReader
         self.dcd = DCDReader(dcdfilename)
         # Make sure that they both have the same number of atoms
         if (self.dcd.numatoms != self.atoms.numberOfAtoms()):
             raise Exception("The psf and dcd files don't have the same number of atoms!")
+    def load_new_pdb(self,pdbfilename):
+        from PDB import PDBReader
+        self.pdb = PDBReader(pdbfilename)
+        # Make sure that they both have the same number of atoms
+        if (self.pdb.numatoms != self.atoms.numberOfAtoms()):
+            raise Exception("The psf and pdb files don't have the same number of atoms!")
+
+            
     def selectAtoms(self, sel, *othersel):
         # XXX This uses the outdated selection parser
         # You should be able to do everything else using classes in AtomGroup
@@ -343,7 +357,11 @@ See also:
     
     def coord():
         doc = "Reference to current coordinates of universe"
-        def fget(self): return self.dcd.ts
+        def fget(self):
+            try:
+                return self.dcd.ts
+            except AttributeError:
+                return self.pdb.ts
         return locals()
     coord = property(**coord())
 
@@ -367,3 +385,14 @@ See also:
             else: raise AttributeError("No trajectory loaded into Universe")
         return locals()
     _dcd = property(**_dcd())
+
+    def pdb():
+        doc = "Reference to PDBReader object containing structure data"
+        def fget(self):
+            if not self.__pdb == None: return self.__pdb
+            else: raise AttributeError("No coordinate data loaded into Universe")
+        def fset(self, value):
+            del self.__pdb
+            self.__pdb = value
+        return locals()
+    pdb = property(**pdb())
