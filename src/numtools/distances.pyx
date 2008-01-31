@@ -25,12 +25,11 @@ def distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf, c_numpy.ndarray bo
     box        orthorhombic unit cell dimensions (minimum image convention
                is applied) or None
     result     optional preallocated result array which must have the shape
-               (len(ref),len(conf)) (or segmentation faults occur). Avoids
-               creating the array which saves time when the function is
-               called repeatedly.
+               (len(ref),len(conf)). Avoids creating the array which saves time
+               when the function is called repeatedly.
 
     :Output:
-    d          len(ref),len(conf) numpy array with the ditsances d[i,j]
+    d          len(ref),len(conf) numpy array with the distances d[i,j]
                between ref coordinates i and conf coordinates j        
     """
     cdef c_numpy.ndarray distances
@@ -53,7 +52,7 @@ def distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf, c_numpy.ndarray bo
     refnum = ref.dimensions[0]
 
     if not result is None:
-        if (result.nd != 2 and result.dimensions[0] != refnum and results.dimensions[1] != confnum):
+        if (result.nd != 2 or result.dimensions[0] != refnum or results.dimensions[1] != confnum):
             raise Exception("result array has incorrect size or datatype - should be (%dx%d)"%(refnum,confnum))
         distances = numpy.asarray(result)
     else:
