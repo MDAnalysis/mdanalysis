@@ -169,7 +169,7 @@ Methods:
                 if (stop < 0): stop += len(self)
                 if (stop <= start): raise Exception("Stop frame is lower than start frame")
                 if ((start < 0) or (start >= len(self)) or
-                   (stop < 0) or (stop >= len(self))):
+                   (stop < 0) or (stop > len(self))):
                        raise IndexError
                 if (step == None): step = 1
                 for i in xrange(start, stop, step):
