@@ -146,13 +146,13 @@ Methods:
     def totalCharge(self):
         return numpy.sum(self.charges())
     def centerOfGeometry(self):
-        return numpy.sum(self.coordinates())/self.numberOfAtoms()
+        return numpy.sum(self.coordinates(),axis=0)/self.numberOfAtoms()
     def centerOfMass(self):
-        return numpy.sum(self.coordinates()*self.masses()[:,numpy.newaxis])/self.totalMass()
+        return numpy.sum(self.coordinates()*self.masses()[:,numpy.newaxis],axis=0)/self.totalMass()
     def radiusOfGyration(self):
         masses = self.masses()
         recenteredpos = self.coordinates() - self.centerOfMass()
-        rog_sq = numpy.sum(masses*numpy.add.reduce(numpy.power(recenteredpos, 2), axis=1))/self.totalMass()
+        rog_sq = numpy.sum(masses*numpy.sum(numpy.power(recenteredpos, 2), axis=1))/self.totalMass()
         return numpy.sqrt(rog_sq)
     def momentOfInertia(self):
         # Convert to local coordinates
