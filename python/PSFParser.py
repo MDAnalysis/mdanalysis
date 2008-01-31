@@ -22,7 +22,9 @@ def parse(psffilename):
     def parse_sec(section_info):
         desc, atoms_per, per_line, parsefunc, data_struc = section_info
         from math import ceil as c
-        header = next_line().split()
+        header = next_line()
+        while header.strip() == "": header = next_line()
+        header = header.split()
         # Get the number
         num = int(header[0])
         sect_type = header[1].strip('!:')
@@ -35,8 +37,7 @@ def parse(psffilename):
         #    for i in xrange(num):
         #        yield func()
         #lines = repeat(next_line, numlines)
-        if num != 0: parsefunc(next_line, atoms_per, data_struc, structure, numlines)
-        else: skip_line()
+        parsefunc(next_line, atoms_per, data_struc, structure, numlines)
 
     sections = [("NATOM", 1, 1, __parseatoms_, "_atoms"),
                 ("NBOND", 2, 4, __parsesection_, "_bonds"),
@@ -59,10 +60,11 @@ def parse(psffilename):
 def __parseatoms_(lines, atoms_per, attr, structure, numlines):
     atoms = [None,]*numlines
     from AtomGroup import Atom
+    #psf_atom_format = "   %5d %4s %4d %4s %-4s %-4s %10.6f      %7.4f%s\n"
     for i in xrange(numlines):
-    #for l in lines:
         l = lines()
-        fields = l.split()
+        #fields = l.split()
+        fields = [l[:8], l[9:13].strip(), l[14:19], l[19:23].strip(), l[24:28].strip(), l[29:33].strip(), l[35:44],l[50:58]]
         # Atom(atomno, atomname, type, resname, resid, segid, mass, charge)
         # We want zero-indexing for atom numbers to make it easy
         atom_desc = Atom(int(fields[0])-1, fields[4], fields[5], fields[3], int(fields[2]), fields[1], float(fields[7]), float(fields[6]))
