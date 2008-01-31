@@ -3,7 +3,7 @@ from distutils.core import setup, Extension
 from distutils import sysconfig
 from Pyrex.Distutils import build_ext
 
-srcs = [['dcd/dcd.c'],['dcd/_dcdtest.pyx'],['numtools/_rms_matrix.pyx'],['delaunay/_delaunay.pyx', 'delaunay/blas.c', 'delaunay/tess.c']]
+srcs = [['dcd/dcd.c'],['dcd/_dcdtest.pyx'],['delaunay/_delaunay.pyx', 'delaunay/blas.c', 'delaunay/tess.c']]
 srcs = [[os.path.join('src', x) for x in s] for s in srcs]
 include_dirs = ['src/dcd/include']
 
@@ -44,12 +44,13 @@ if __name__ == '__main__':
                             libraries = ['m'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  #Extension('_rms_matrix', srcs[2],
-                  #          include_dirs = include_dirs,
-                  #          libraries = ['m'],
+                  Extension('rms_fitting', ['src/numtools/rms_fitting.pyx'],
+                            include_dirs = ['/opt/intel/cmkl/8.0/include'],
+                            libraries = ['m'],
                   #          define_macros=define_macros,
                   #          extra_compile_args=extra_compile_args,
                   #          extra_link_args=["-framework","vecLib"]),
+                            extra_link_args=["-L/opt/intel/cmkl/8.0/lib/32", "-lmkl_lapack","-lmkl_lapack32","-lmkl_ia32","-lmkl","-lguide"]),
                   #Extension('_delaunay', srcs[3],
                   #          include_dirs = include_dirs,
                   #          libraries = ['m'],

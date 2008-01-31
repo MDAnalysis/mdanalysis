@@ -12,7 +12,7 @@ cdef extern from "Numeric/arrayobject.h":
         cdef PyArray_Descr *descr
         cdef int flags
 
-cdef extern from "vecLib/clapack.h":
+cdef extern from "mkl_lapack.h":
     int dsyev_(char *jobz, char *uplo, int *n, double *fa, int *lda, double *w, double *work, int *lwork, int *info)
 
 cdef extern from "string.h":
@@ -33,7 +33,7 @@ cdef eigen4x4sym(double* mat, double* eval, double* evec):
     return info
 
 import Numeric
-def _rms_rotation_matrix(ArrayType conf, ArrayType ref, ArrayType weights):
+def rms_rotation_matrix(ArrayType conf, ArrayType ref, ArrayType weights):
     cdef ArrayType ref_cms, pos, cross, k, mat
     cdef ArrayType e, v
     cdef int i, numatoms
