@@ -155,7 +155,7 @@ Methods:
             self._jump_to_frame(frame)
             ts = self.ts
             ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
-            return ts.copy()
+            return ts
         else: # if frame is a slice object
             if not (((type(frame.start) == int) or (frame.start == None)) and
                     ((type(frame.stop) == int) or (frame.stop == None)) and
