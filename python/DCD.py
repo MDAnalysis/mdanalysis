@@ -218,7 +218,8 @@ Methods:
         format = timeseries.getFormat()
         lowerb, upperb = timeseries.getBounds()
         sizedata = timeseries.getDataSize()
-        return self._read_timecorrel(atomlist, format, sizedata, skip, lowerb, upperb)
+        atomcounts = timeseries.getAtomCounts()
+        return self._read_timecorrel(atomlist, atomcounts, format, sizedata, skip, lowerb, upperb)
     def __len__(self):
         return self.numframes
     def close_trajectory(self):

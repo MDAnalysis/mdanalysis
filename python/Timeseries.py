@@ -26,6 +26,8 @@ class TimeseriesCollection:
         for ts in self.timeseries:
             size += ts.getDataSize()
         return size
+    def getAtomCounts(self):
+        return [ts.getNumAtoms() for ts in self.timeseries]
 
 class Timeseries:
     def __init__(self, code, numatoms, size):
@@ -38,6 +40,8 @@ class Timeseries:
         return self.code
     def getDataSize(self):
         return self.size
+    def getNumAtoms(self):
+        return self.numatoms
 
 class Atom(Timeseries):
     def __init__(self, code, atom):
@@ -66,3 +70,8 @@ class Distance(Timeseries):
         else: size = 1
         self.atoms = atoms
         Timeseries.__init__(self, code, 2, size)
+
+class CenterOfGeometry(Timeseries):
+    def __init__(self, atoms):
+        self.atoms = atoms
+        Timeseries.__init__(self, 'g', len(atoms), 3)

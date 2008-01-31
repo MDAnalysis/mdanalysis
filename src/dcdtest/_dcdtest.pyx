@@ -47,13 +47,13 @@ cdef extern from "Python.h":
     char* PyString_AsString(object o)
 
 cdef extern from "correl.h":
-    void copyseries(int frame, char *data, int *strides, float *tempX, float *tempY, float *tempZ, char* datacode, int numdata, int* atomlist, int lowerb)
+    void copyseries(int frame, char *data, int *strides, float *tempX, float *tempY, float *tempZ, char* datacode, int numdata, int* atomlist, int* atomcounts, int lowerb)
 
 import Numeric
 
-def __read_timecorrel(object self, object atoms, object format, int sizedata, int skip, int lowerb, int upperb):
+def __read_timecorrel(object self, object atoms, object atomcounts, object format, int sizedata, int skip, int lowerb, int upperb):
     cdef dcdhandle* dcd
-    cdef ArrayType atomlist
+    cdef ArrayType atomlist, atomcountslist
     cdef ArrayType data, temp
     cdef float *tempX, *tempY, *tempZ
     cdef int rc
@@ -68,6 +68,7 @@ def __read_timecorrel(object self, object atoms, object format, int sizedata, in
         raise Exception("No data requested")
     fmtstr = PyString_AsString(format)
     atomlist = Numeric.array(atoms)
+    atomcountslist = Numeric.array(atomcounts)
     cdef int range
     range = upperb - lowerb + 1
     # Create data list
@@ -99,7 +100,7 @@ def __read_timecorrel(object self, object atoms, object format, int sizedata, in
         if (rc < 0):
             raise IOError("Error reading frame from DCD file")
         # Copy into data array based on format
-        copyseries(i, data.data, data.strides, tempX, tempY, tempZ, fmtstr, numdata, <int*>atomlist.data, lowerb);
+        copyseries(i, data.data, data.strides, tempX, tempY, tempZ, fmtstr, numdata, <int*>atomlist.data, <int*>atomcountslist.data, lowerb);
     return data
 
 def __read_timeseries(object self, object atoms, int skip):
