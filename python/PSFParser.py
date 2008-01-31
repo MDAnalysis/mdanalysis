@@ -126,7 +126,7 @@ def __parsesection_(lines, atoms_per, attr, structure, numlines):
             section.append(tuple(fields[j:j+atoms_per]))
     structure[attr] = section
 
-def _buildstructure_(atoms):
+def build_segments(atoms):
     from AtomGroup import Residue, Segment
     struc = {}
     residues = []
@@ -171,7 +171,7 @@ class Bond(object):
         import math
         return math.sqrt((bond[0]**2)+(bond[1]**2)+(bond[2]**2))
 
-def _buildbondlists_(atoms, bonds):
+def build_bondlists(atoms, bonds):
     for a in atoms:
         a.bonds = []
     for a1, a2 in bonds:

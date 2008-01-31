@@ -14,7 +14,7 @@ Data: number, segid, resid, resname, name, type
 Methods:
     a = Atom()
 """
-    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", "mass", "charge", "residue", "segment", "bonds", "universe")
+    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", "mass", "charge", "residue", "segment", "bonds", "__universe")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge):
         self.number = number
@@ -39,13 +39,22 @@ Methods:
             raise TypeError('Can only concatenate Atoms (not "'+repr(other.__class__.__name__)+'") to AtomGroup')
         if isinstance(other, Atom): return AtomGroup([self, other])
         else: return AtomGroup([self]+other.atoms)
+
     def pos():
         def fget(self):
-            if hasattr(self, "universe"):
-                return self.universe.coord[self.number] # PDB numbering starts at 0
-            else: raise Exception("Atom "+repr(self.number)+" is not assigned to a Universe")
+            return self.universe.coord[self.number] # PDB numbering starts at 0
         return locals()
     pos = property(**pos())
+
+    def universe():
+        doc = "a pointer back to the Universe"
+        def fget(self):
+            if not self.__universe == None: return self.__universe
+            else: raise AttributeError("Atom "+repr(self.number)+" is not assigned to a Universe")
+        def fset(self, universe):
+            self.__universe = universe
+        return locals()
+    universe = property(**universe())
 
 class NameError(Exception):
     pass
@@ -91,9 +100,11 @@ Methods:
         # __atoms property is effectively readonly
         self.__atoms = atoms
         # If the number of atoms is very large, create a dictionary cache for lookup
-        if len(atoms) > 5000:
-            self.__atom_cache = dict([(x,None) for x in atoms])
+        if len(atoms) > 10000:
+            self._atom_cache = dict([(x,None) for x in atoms])
     def __len__(self):
+        import warnings
+        warnings.warn("To prevent confusion with AtomGroup subclasses you should use numberOfAtoms() instead", category=Warning, stacklevel=2)
         return self.numberOfAtoms()
     def __getitem__(self, item):
         if (type(item) is int) or (type(item) is slice):
@@ -108,8 +119,8 @@ Methods:
     def __iter__(self):
         return iter(self.atoms)
     def __contains__(self, other):
-        if hasattr(self, "__atom_cache"):
-            return other in self.__atom_cache
+        if hasattr(self, "_atom_cache"):
+            return other in self._atom_cache
         else: return other in self.atoms
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
@@ -118,21 +129,24 @@ Methods:
         else: return AtomGroup(self.atoms+[other])
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(self.numberOfAtoms())+' atoms>'
-    def indices(self):
-        return numpy.array([atom.number for atom in self.atoms])
     def numberOfAtoms(self):
         return len(self.atoms)
+    def indices(self):
+        if not hasattr(self,'_cached_indices'):
+            print "creating cached indices"
+            self._cached_indices = numpy.array([atom.number for atom in self.atoms])
+        return self._cached_indices
     def masses(self):
-        if not hasattr(self, "_masses"):
-            self._masses = numpy.array([atom.mass for atom in self.atoms])
-        return self._masses
+        if not hasattr(self, "_cached_masses"):
+            self._cached_masses = numpy.array([atom.mass for atom in self.atoms])
+        return self._cached_masses
     def totalMass(self):
         return numpy.sum(self.masses())
     def charges(self):
         return numpy.array([atom.charge for atom in self.atoms])
     def totalCharge(self):
         return numpy.sum(self.charges())
-    def centerOfGeom(self):
+    def centerOfGeometry(self):
         return numpy.sum(self.coordinates())/self.numberOfAtoms()
     def centerOfMass(self):
         return numpy.sum(self.coordinates()*self.masses()[:,numpy.newaxis])/self.totalMass()
@@ -167,15 +181,9 @@ Methods:
         indices = numpy.argsort(eigenval)
         return numpy.take(eigenvec, indices) 
     def coordinates(self, ts=None):
-        indices = self.indices()
         if ts == None:
-            # Let's cheat for the fast case
-            coord = self.atoms[0].universe.coord
-            return coord[indices]
-            #return numpy.array([coord[i] for i in self.indices()])
-        else:
-            return ts[indices]
-            #return numpy.array([ts[i] for i in self.indices()])
+            ts = self.atoms[0].universe.coord
+        return ts[self.indices()]
 
 class Residue(AtomGroup):
     """A group of atoms corresponding to a residue
@@ -274,7 +282,7 @@ Methods:
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self.name)+'>'
 
-class Universe(AtomGroup):
+class Universe(object):
     """Contains all the information decribing the system
        Built from a psf file
 
@@ -286,45 +294,48 @@ Methods:
 See also:
 """
     def __init__(self, psffilename, dcdfilename=None):
+        self.__dcd = None
         import PSFParser
         struc = PSFParser.parse(psffilename)
         #for data in struc.keys():
         #    setattr(self, data, struc[data])
-        super(Universe, self).__init__(struc["_atoms"])
-        self.__dict__.update(PSFParser._buildstructure_(self.atoms))
-        #PSFParser._buildbondlists_(self.atoms, self._bonds)
-        if dcdfilename is not None:
-            self.__init_dcd(dcdfilename)
-    def __init_dcd(self, dcdfilename):
-        # Read in trajectory file
-        from DCD import DCDReader
-        self.dcd = DCDReader(dcdfilename)
-        # Make sure that they both have the same number of atoms
-        if (self.dcd.numatoms != len(self.atoms)):
-            raise Exception("The psf and dcd files don't have the same number of atoms!")
-        # Let atoms access their current positions
-        for a in self.atoms:
-            a.universe = self
+        self.atoms = AtomGroup(struc["_atoms"])
+        segments = PSFParser.build_segments(self.atoms)
+        # Because of weird python rules, attribute names cannot start with a digit
+        for seg in segments.keys():
+            if seg[0].isdigit():
+                newsegname = 's'+seg
+                segments[newsegname] = segments[seg]
+                del segments[seg]
+        self.__dict__.update(segments)
+        
+        #PSFParser.build_bondlists(self.atoms, self._bonds)
+        # Let atoms access the universe
+        for a in self.atoms: a.universe = self
+        if dcdfilename is not None: self.load_new_dcd(dcdfilename)
     def load_new_dcd(self, dcdfilename):
-        del self.dcd
         from DCD import DCDReader
         self.dcd = DCDReader(dcdfilename)
         # Make sure that they both have the same number of atoms
-        if (self.dcd.numatoms != len(self.atoms)):
+        if (self.dcd.numatoms != self.atoms.numberOfAtoms()):
             raise Exception("The psf and dcd files don't have the same number of atoms!")
     def selectAtoms(self, sel, *othersel):
         # XXX This uses the outdated selection parser
         # You should be able to do everything else using classes in AtomGroup
         import Selection
         atomgrp = Selection.Parser.parse(sel).apply(self)
-        if len(othersel) > 0:
-            others = []
+        if len(othersel) == 0: return atomgrp
+        else:
+            # Generate a selection for each selection string
+            atomselections = [atomgrp]
             for sel in othersel:
-                atomgrp = atomgrp + Selection.Parser.parse(sel).apply(self)
-        return atomgrp
+                #atomgrp = atomgrp + Selection.Parser.parse(sel).apply(self)
+                atomselections.append(Selection.Parser.parse(sel).apply(self))
+            return tuple(atomselections)
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(len(self.atoms))+' atoms>'
 
+    # Properties
     def dimensions():
         def fget(self): return self.coord.dimensions
         return locals()
@@ -339,11 +350,11 @@ See also:
     def dcd():
         doc = "Reference to DCDReader object containing trajectory data"
         def fget(self):
-            return self.__dcd
+            if not self.__dcd == None: return self.__dcd
+            else: raise AttributeError("No trajectory loaded into Universe")
         def fset(self, value):
-            self.__dcd = value
-        def fdel(self):
             del self.__dcd
+            self.__dcd = value
         return locals()
     dcd = property(**dcd())
 
@@ -352,6 +363,7 @@ See also:
         def fget(self):
             import warnings
             warnings.warn("Usage of '_dcd' is deprecated. Use 'dcd' instead.", category=DeprecationWarning, stacklevel=2)
-            return self.__dcd
+            if not self.__dcd == None: return self.__dcd
+            else: raise AttributeError("No trajectory loaded into Universe")
         return locals()
     _dcd = property(**_dcd())

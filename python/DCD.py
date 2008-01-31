@@ -48,7 +48,7 @@ Methods:
         else: raise AttributeError("class "+repr(self.__class__.__name__)+" has no attribute "+ name)
     def __getitem__(self, atomno):
         # XXX need to implement slices
-        if type(atomno) == numpy.dtype(int):
+        if numpy.dtype(type(atomno)) == numpy.dtype(int):
             if (atomno < 0):
                 atomno = self.numatoms + atomno
             if (atomno < 0) or (atomno >= self.numatoms):
@@ -56,8 +56,7 @@ Methods:
             return self._pos[atomno]
         elif type(atomno) == numpy.ndarray: #Specifying a range of numbers
             return self._pos[atomno]
-        else:
-            raise TypeError
+        else: raise TypeError
     def __len__(self):
         return self.numatoms
     def __iter__(self):
