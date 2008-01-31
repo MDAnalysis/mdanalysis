@@ -46,6 +46,24 @@ static void calc_distance_array(coordinate* ref, int numref, coordinate* conf, i
 	}
 }
 
+static void calc_distance_array_noPBC(coordinate* ref, int numref, coordinate* conf, int numconf, double* distances)
+{
+	int i, j;
+	double dx[3];
+	double rsq;
+
+	for (i=0; i < numref; i++) {
+		for (j=0; j < numconf; j++) {
+			dx[0] = conf[j][0]-ref[i][0];
+			dx[1] = conf[j][1]-ref[i][1];
+			dx[2] = conf[j][2]-ref[i][2];
+			rsq = (dx[0]*dx[0])+(dx[1]*dx[1])+(dx[2]*dx[2]);
+			*(distances+i*numconf+j) = sqrt(rsq);
+		}
+	}
+}
+
+
 static void calc_self_distance_array(coordinate* ref, int numref, float* box, double* distances, int distnum)
 {
 	int i, j, distpos;
