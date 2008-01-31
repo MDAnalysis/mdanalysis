@@ -38,6 +38,9 @@ class Selection:
         # make a set of all the atoms in the group
         # XXX this should be static to all the class members
         Selection._group_atoms = set(group.atoms)
+        if not hasattr(group, "coord"): Selection.coord = group.atoms[0].universe.coord
+        else: Selection.coord = group.coord
+
         if not hasattr(self, "_cache"):
             cache = list(self._apply(group))
 
@@ -97,8 +100,8 @@ class AroundSelection(Selection):
         sys_atoms = self._group_atoms-sel_atoms
         sel_indices = numpy.array([a.number for a in sel_atoms])
         sys_indices = numpy.array([a.number for a in sys_atoms])
-        sel_coor = group.coord[sel_indices]
-        sys_coor = group.coord[sys_indices]
+        sel_coor = Selection.coord[sel_indices]
+        sys_coor = Selection.coord[sys_indices]
         import distances
         dist = distances.distance_array(sys_coor, sel_coor, group.dimensions[:3])
         res_atoms = [group.atoms[i] for i in sys_indices[numpy.any(dist <= self.cutoff, axis=1)]]
@@ -115,7 +118,7 @@ class PointSelection(Selection):
         self.cutoffsq = float(cutoff)*float(cutoff)
     def _apply(self, group):
         sys_indices = numpy.array([a.number for a in self._group_atoms])
-        sys_coor = group.coord[sys_indices]
+        sys_coor = Selection.coord[sys_indices]
         ref_coor = self.ref[numpy.newaxis,...]
         import distances
         dist = distances.distance_array(sys_coor, ref_coor, group.dimensions[:3])
@@ -302,11 +305,12 @@ class PropertySelection(Selection):
     def _apply(self, group):
         # For efficiency, get a reference to the actual numpy position arrays
         if self.prop in ("x", "y", "z"):
-            p = getattr(group.coord, '_'+self.prop)
+            p = getattr(Selection.coord, '_'+self.prop)
+            indices = numpy.array([a.number for a in group.atoms])
             if not self.abs:
-                result_set = [group.atoms[i] for i in numpy.nonzero(self.operator(p, self.value))[0]]
+                result_set = [group.atoms[i] for i in numpy.nonzero(self.operator(p[indices], self.value))]
             else:
-                result_set = [group.atoms[i] for i in numpy.nonzero(self.operator(numpy.abs(p), self.value))[0]]
+                result_set = [group.atoms[i] for i in numpy.nonzero(self.operator(numpy.abs(p[indices]), self.value))]
         elif self.prop == "mass":
             result_set = [a for a in group.atoms if self.operator(a.mass,self.value)]
         elif self.prop == "charge":
