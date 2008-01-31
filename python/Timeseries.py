@@ -56,8 +56,10 @@ class Atom(Timeseries):
             raise Exception("Bad code")
         if code == 'v': size = 3
         else: size = 1
-        self.atoms = [atom]
-        Timeseries.__init__(self, code, 1, size)
+        if type(atom) == list: self.atoms = atom
+        else: self.atoms = [atom]
+        numatoms = len(self.atoms)
+        Timeseries.__init__(self, code*numatoms, numatoms, size*numatoms)
 
 class Angle(Timeseries):
     def __init__(self, atoms):

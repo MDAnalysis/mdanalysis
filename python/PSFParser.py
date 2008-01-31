@@ -31,11 +31,11 @@ def parse(psffilename):
         # Now figure out how many lines to read
         numlines = int(c(float(num)/per_line))
         # Too bad I don't have generator expressions
-        def repeat(func, num):
-            for i in xrange(num):
-                yield func()
-        lines = repeat(next_line, numlines)
-        parsefunc(lines, atoms_per, data_struc, structure)
+        #def repeat(func, num):
+        #    for i in xrange(num):
+        #        yield func()
+        #lines = repeat(next_line, numlines)
+        parsefunc(next_line, atoms_per, data_struc, structure, numlines)
 
     sections = [("NATOM", 1, 1, __parseatoms_, "_atoms"),
                 ("NBOND", 2, 4, __parsesection_, "_bonds"),
@@ -51,30 +51,31 @@ def parse(psffilename):
     psffile.close()
     return structure
 
-def __parseatoms_(lines, atoms_per, attr, structure):
-    atoms = []
+def __parseatoms_(lines, atoms_per, attr, structure, numlines):
+    atoms = [None,]*numlines
     from AtomGroup import Atom
-    for l in lines:
+    for i in xrange(numlines):
+    #for l in lines:
+        l = lines()
         fields = l.split()
         # Atom(atomno, atomname, type, resname, resid, segid, mass, charge)
         # We want zero-indexing for atom numbers to make it easy
         atom_desc = Atom(int(fields[0])-1, fields[4], fields[5], fields[3], int(fields[2]), fields[1], float(fields[7]), float(fields[6]))
-        atoms.append(atom_desc)
+        atoms[i] = atom_desc
 
     structure[attr] = atoms
 
 import operator
-def decr(a):
-    return operator.sub(a,1)
-
-def __parsesection_(lines, atoms_per, attr, structure):
-    section = []
-    for l in lines:
+def __parsesection_(lines, atoms_per, attr, structure, numlines):
+    section = [None,]*numlines
+    #for l in lines:
+    for i in xrange(numlines):
+        l = lines()
         # Subtract 1 from each number to ensure zero-indexing for the atoms
         f = map(int, l.split())
-        fields = map(decr, f)
-        for i in range(0, len(fields), atoms_per):
-            section.append(tuple(fields[i:i+atoms_per]))
+        fields = [a-1 for a in f]
+        for j in range(0, len(fields), atoms_per):
+            section[i] = tuple(fields[j:j+atoms_per])
     structure[attr] = section
 
 def _buildstructure_(atoms):
