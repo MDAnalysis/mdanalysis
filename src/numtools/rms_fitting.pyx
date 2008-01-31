@@ -1,14 +1,6 @@
 
 cimport c_numpy
 
-#
-# with intel compiler
-#
-#cdef extern from "mkl_lapack.h":
-#cdef extern from "clapack.h":
-#
-# on Mac OS X
-#
 cdef extern from "clapack.h":
     int dsyev_(char *jobz, char *uplo, int *n, double *fa, int *lda, double *w, double *work, int *lwork, int *info)
 
