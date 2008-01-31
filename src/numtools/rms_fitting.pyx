@@ -4,8 +4,8 @@ cimport c_numpy
 #
 # with intel compiler
 #
-#cdef extern from "mkl_lapack.h":
-cdef extern from "clapack.h":
+cdef extern from "mkl_lapack.h":
+#cdef extern from "clapack.h":
 #
 # on Mac OS X
 #
@@ -37,7 +37,11 @@ def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarr
     ''' Computes the weighted RMS rotation matrix between a reference set of coordinates and a comparison set.
         conf - Nx3 array of comparison coordinates (size float - 32 bits)
         ref - Nx3 array of reference coordinates (size float - 32 bits)
-        weights - N array of masses (size double - 64 bits)'''
+        weights - N array of masses (size double - 64 bits)
+
+        Returns a numpy.matrix corresponding to the rotation matrix
+        Note: Due to numpy's broadcasting rules, you should  multiply the vector with the matrix
+        ie   coor * R, where coor is the coordinate array and R the rotation matrix'''
     cdef c_numpy.ndarray ref_cms, pos, cross, k, mat
     cdef c_numpy.ndarray e, v
     cdef int i, numatoms
@@ -49,7 +53,7 @@ def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarr
     ref_cms = numpy.zeros((3,), numpy.float64)
     for i from 0 <= i < numatoms:
         ref_cms = ref_cms + ref[i]
-    ref_cms /= numatoms
+    ref_cms = ref_cms / numatoms
     pos = numpy.zeros((3,), numpy.float64)
     possq = 0.
     cross = numpy.zeros((3,3), numpy.float64)
@@ -92,4 +96,4 @@ def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarr
     mat[2,0] = 2*v[1]*v[3] - 2*v[0]*v[2]
     mat[2,1] = 2*v[2]*v[3] + 2*v[0]*v[1]
     mat[2,2] = 1 - 2*v[1]*v[1] - 2*v[2]*v[2]
-    return mat
+    return numpy.matrix(mat, copy=False)
