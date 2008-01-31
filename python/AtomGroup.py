@@ -161,8 +161,8 @@ Methods:
         Iyz = Izy = -1*reduce(lambda t,a: t+a[0]*a[1][1]*a[1][2], values, 0.)
         return numpy.array([[Ixx, Ixy, Ixz],[Iyx, Iyy, Iyz],[Izx, Izy, Izz]])
     def principleAxes(self):
-        from LinearAlgebra import eigenvectors
-        eigenval, eigenvec = eigenvectors(self.momentOfInertia())
+        from numpy.linalg import eig
+        eigenval, eigenvec = eig(self.momentOfInertia())
         # Sort
         indices = numpy.argsort(eigenval)
         return numpy.take(eigenvec, indices) 
