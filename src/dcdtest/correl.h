@@ -9,7 +9,7 @@ copyseries(int frame, char *data, const int *strides, const float *tempX, const 
 {
 	char code;
 	int index1 = 0, index2 = 0, index3 = 0, index4 = 0;
-	double x1, x2, y1, y2, z1, z2, x3, y3, z3, d1, d2;
+	double x1, x2, y1, y2, z1, z2, x3, y3, z3, aux1, aux2;
 	int i = 0, j = 0, atomno = 0;
 	int dataset = 0;
 	for (i=0;i<numdata;i++) {
@@ -17,18 +17,18 @@ copyseries(int frame, char *data, const int *strides, const float *tempX, const 
 		switch (code) {
 			case 'm':
         x1 = y1 = z1 = 0.0;
-				d2 = 0;
+				aux2 = 0;
         for (j=0;j<atomcounts[i];j++) {
           index1 = atomlist[atomno]-lowerb;
-					d1 = aux[atomno++]-lowerb;
-					d2 += d1;
-          x1 += tempX[index1]*d1;
-          y1 += tempY[index1]*d1;
-          z1 += tempZ[index1]*d1;
+					aux1 = aux[atomno++];
+					aux2 += aux1;
+          x1 += tempX[index1]*aux1;
+          y1 += tempY[index1]*aux1;
+          z1 += tempZ[index1]*aux1;
         }
-        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = x1/d2;
-        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = y1/d2;
-        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = z1/d2;
+        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = x1/aux2;
+        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = y1/aux2;
+        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = z1/aux2;
         break;
 			case 'g':
         x1 = y1 = z1 = 0.0;
@@ -67,8 +67,8 @@ copyseries(int frame, char *data, const int *strides, const float *tempX, const 
 				index3 = atomlist[atomno++]-lowerb;
 				x1 = tempX[index1]-tempX[index2]; y1 = tempY[index1]-tempY[index2]; z1 = tempZ[index1]-tempZ[index2];
 				x2 = tempX[index3]-tempX[index2]; y2 = tempY[index3]-tempY[index2]; z2 = tempZ[index3]-tempZ[index2];
-				d1 = sqrt(x1*x1+y1*y1+z1*z1); d2 = sqrt(x2*x2+y2*y2+z2*z2);
-				*(double*)(data + dataset++*strides[0] + frame*strides[1]) = acos((x1*x2+y1*y2+z1*z2)/(d1*d2));
+				aux1 = sqrt(x1*x1+y1*y1+z1*z1); aux2 = sqrt(x2*x2+y2*y2+z2*z2);
+				*(double*)(data + dataset++*strides[0] + frame*strides[1]) = acos((x1*x2+y1*y2+z1*z2)/(aux1*aux2));
 				break;
 			case 'd':
 				index1 = atomlist[atomno++]-lowerb;
@@ -101,19 +101,19 @@ copyseries(int frame, char *data, const int *strides, const float *tempX, const 
 				// normalized the cross products
 				nx1 /= a; ny1 /= a; nz1 /= a; nx2 /= b; ny2 /= b; nz2 /= b;
 				// find the angle
-				d1 = acos(nx1*nx2+ny1*ny2+nz1*nz2);
+				aux1 = acos(nx1*nx2+ny1*ny2+nz1*nz2);
 				// and the sign of the angle
-				d2 = (nx2*x1+ny2*y1+nz2*z1);
-				if ((d2 < 0 && d1 > 0) || (d2 > 0 && d1 < 0)) {
-					d1 *= -1;
+				aux2 = (nx2*x1+ny2*y1+nz2*z1);
+				if ((aux2 < 0 && aux1 > 0) || (aux2 > 0 && aux1 < 0)) {
+					aux1 *= -1;
 				}
 				// Check if the dihedral has wrapped around 2 pi
-				d2 = *(double*)(data + dataset*strides[0] + (frame-1)*strides[1]);
-				if (fabs(d1-d2) > M_PI) {
-					if (d1 > 0) { d1 -= 2*M_PI; }
-					else { d1 += 2*M_PI; }
+				aux2 = *(double*)(data + dataset*strides[0] + (frame-1)*strides[1]);
+				if (fabs(aux1-aux2) > M_PI) {
+					if (aux1 > 0) { aux1 -= 2*M_PI; }
+					else { aux1 += 2*M_PI; }
 				}
-				*(double*)(data + dataset++*strides[0] + frame*strides[1]) = d1;
+				*(double*)(data + dataset++*strides[0] + frame*strides[1]) = aux1;
 				break;
 		}
 	}
