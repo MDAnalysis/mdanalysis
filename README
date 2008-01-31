@@ -10,5 +10,10 @@ Please give me credit if you use this software.
 
 The manual, including installation instructions, is in the docs/ directory.
 
+-- Quick installation --
+
+python setup.py build
+python setup.py install
+
 Naveen Michaud-Agrawal
 nmichaud@users.sourceforge.net
