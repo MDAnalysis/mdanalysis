@@ -1,13 +1,17 @@
-MDAnalysis CHANGELOG
--------------
+== MDAnalysis CHANGELOG ==
 
-the rules for this file:
+The rules for this file:
   * entries are sorted newest-first.
   * summarize sets of changes - dont reproduce every subversion log comment here.
   * don't ever delete anything.
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
+01/29/08 orbeckst
+	* prepared 0.5.0 release. Includes previously disabled
+	  distance code, PDB reader, incomplete XTC reader (code by
+	  Benjamin Hall), and marginally updated documentation &
+	  licenses
 
 11/12/07 naveen
         * prepared for release outside lab

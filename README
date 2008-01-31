@@ -1,20 +1,29 @@
-MDAnalysis
+== MDAnalysis ==
 
-This software is copyright © Naveen Michaud-Agrawal.
+This software is copyright © 2007,2008 Naveen Michaud-Agrawal.
 
-This software is released under the GPL software license, with the exception of the DCD reading/writing code, which is licensed under the UIUC Open Source License.
+This software is released under the GPL software license, version 2,
+with the exception of the DCD reading/writing code, which is licensed
+under the UIUC Open Source License.
 
-This license, including disclaimer, is available in the 'LICENSE' file.
+This license, including disclaimer, is available in the 'LICENSE'
+file.
 
 
-Please give me credit if you use this software.
+Please acknowledge the use of this software in published work. For
+academic work an Acknowledgement or a citation such as the following
+may be appropriate:
 
-The manual, including installation instructions, is in the docs/ directory.
+  "Analysis of data was performed with the MDAnalysis tools by Naveen
+  Michaud-Agrawal, available from http://mdanalysis.googlecode.com/."
 
--- Quick installation --
+The manual, including installation instructions, is in the docs/
+directory.
 
-python setup.py build
-python setup.py install
+== Contact ==
+
+Please report bugs and feature requests through the issue tracker at
+http://code.google.com/p/mdanalysis/issues/
 
 Naveen Michaud-Agrawal
 naveen.michaudagrawal@gmail.com

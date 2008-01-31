@@ -69,12 +69,12 @@ if __name__ == '__main__':
                   ]
 
     setup(name              = 'MDAnalysis',
-          version           = '0.5-rc1',
+          version           = '0.5.0',
           description       = 'Python tools to support analysis of trajectories',
           author            = 'Naveen Michaud-Agrawal',
           author_email      = 'naveen.michaudagrawal@gmail.com',
           url               = 'http://mdanalysis.googlecode.com/',
-          license           = 'GPL',
+          license           = 'GPL 2',
           packages          = [ 'MDAnalysis' ],
           package_dir       = {'MDAnalysis': 'python'},
           ext_package       = 'MDAnalysis',
