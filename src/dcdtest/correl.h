@@ -2,7 +2,6 @@
 #ifndef CORREL_H
 #define CORREL_H
 
-#include <stdio.h>
 #include <math.h>
 
 static void
@@ -13,7 +12,16 @@ copyseries(int frame, char *data, const int *strides, const float *tempX, const 
 	double x1, x2, y1, y2, z1, z2, x3, y3, z3, aux1, aux2;
 	int i = 0, j = 0, atomno = 0;
 	int dataset = 0;
-	printf("strides (%d, %d)\n", strides[0], strides[1]);
+	int stride0, stride1;
+	
+	stride0 = strides[0];
+	stride1 = strides[1];
+
+	/* If I eventually switch to using frame,property ordering for timeseries data
+	stride0 = strides[1];
+	stride1 = strides[0];
+	*/
+
 	for (i=0;i<numdata;i++) {
 		code = datacode[i];
 		switch (code) {
@@ -28,27 +36,27 @@ copyseries(int frame, char *data, const int *strides, const float *tempX, const 
           y1 += tempY[index1]*aux1;
           z1 += tempZ[index1]*aux1;
         }
-        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = x1/aux2;
-        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = y1/aux2;
-        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = z1/aux2;
+        *(double*)(data + dataset++*stride0 + frame*stride1) = x1/aux2;
+        *(double*)(data + dataset++*stride0 + frame*stride1) = y1/aux2;
+        *(double*)(data + dataset++*stride0 + frame*stride1) = z1/aux2;
         break;
 			case 'x':
 				index1 = atomlist[atomno++]-lowerb;
-				*(double*)(data+dataset++*strides[0]+frame*strides[1]) = tempX[index1];
+				*(double*)(data+dataset++*stride0+frame*stride1) = tempX[index1];
 				break;
 			case 'y':
 				index1 = atomlist[atomno++]-lowerb;
-				*(double*)(data+dataset++*strides[0]+frame*strides[1]) = tempY[index1];
+				*(double*)(data+dataset++*stride0+frame*stride1) = tempY[index1];
 				break;
 			case 'z':
 				index1 = atomlist[atomno++]-lowerb;
-				*(double*)(data+dataset++*strides[0]+frame*strides[1]) = tempZ[index1];
+				*(double*)(data+dataset++*stride0+frame*stride1) = tempZ[index1];
 				break;
 			case 'v':
 				index1 = atomlist[atomno++]-lowerb;
-				*(double*)(data + dataset++*strides[0] + frame*strides[1]) = tempX[index1];
-				*(double*)(data + dataset++*strides[0] + frame*strides[1]) = tempY[index1];
-				*(double*)(data + dataset++*strides[0] + frame*strides[1]) = tempZ[index1];
+				*(double*)(data + dataset++*stride0 + frame*stride1) = tempX[index1];
+				*(double*)(data + dataset++*stride0 + frame*stride1) = tempY[index1];
+				*(double*)(data + dataset++*stride0 + frame*stride1) = tempZ[index1];
 				break;
 			case 'a':
 				index1 = atomlist[atomno++]-lowerb;
@@ -57,20 +65,20 @@ copyseries(int frame, char *data, const int *strides, const float *tempX, const 
 				x1 = tempX[index1]-tempX[index2]; y1 = tempY[index1]-tempY[index2]; z1 = tempZ[index1]-tempZ[index2];
 				x2 = tempX[index3]-tempX[index2]; y2 = tempY[index3]-tempY[index2]; z2 = tempZ[index3]-tempZ[index2];
 				aux1 = sqrt(x1*x1+y1*y1+z1*z1); aux2 = sqrt(x2*x2+y2*y2+z2*z2);
-				*(double*)(data + dataset++*strides[0] + frame*strides[1]) = acos((x1*x2+y1*y2+z1*z2)/(aux1*aux2));
+				*(double*)(data + dataset++*stride0 + frame*stride1) = acos((x1*x2+y1*y2+z1*z2)/(aux1*aux2));
 				break;
 			case 'd':
 				index1 = atomlist[atomno++]-lowerb;
 				index2 = atomlist[atomno++]-lowerb;
-				*(double*)(data + dataset++*strides[0]+frame*strides[1]) = tempX[index2]-tempX[index1];
-				*(double*)(data + dataset++*strides[0]+frame*strides[1]) = tempY[index2]-tempY[index1];
-				*(double*)(data + dataset++*strides[0]+frame*strides[1]) = tempZ[index2]-tempZ[index1];
+				*(double*)(data + dataset++*stride0+frame*stride1) = tempX[index2]-tempX[index1];
+				*(double*)(data + dataset++*stride0+frame*stride1) = tempY[index2]-tempY[index1];
+				*(double*)(data + dataset++*stride0+frame*stride1) = tempZ[index2]-tempZ[index1];
 				break;
 			case 'r':
 				index1 = atomlist[atomno++]-lowerb;
 				index2 = atomlist[atomno++]-lowerb;
 				x1 = tempX[index2]-tempX[index1]; y1 = tempY[index2]-tempY[index1]; z1 = tempZ[index2]-tempZ[index1];
-				*(double*)(data + dataset++*strides[0]+frame*strides[1]) = sqrt(x1*x1+y1*y1+z1*z1);
+				*(double*)(data + dataset++*stride0+frame*stride1) = sqrt(x1*x1+y1*y1+z1*z1);
 				break;
 			case 'h':
 				index1 = atomlist[atomno++]-lowerb;
@@ -97,12 +105,12 @@ copyseries(int frame, char *data, const int *strides, const float *tempX, const 
 					aux1 *= -1;
 				}
 				// Check if the dihedral has wrapped around 2 pi
-				aux2 = *(double*)(data + dataset*strides[0] + (frame-1)*strides[1]);
+				aux2 = *(double*)(data + dataset*stride0 + (frame-1)*stride1);
 				if (fabs(aux1-aux2) > M_PI) {
 					if (aux1 > 0) { aux1 -= 2*M_PI; }
 					else { aux1 += 2*M_PI; }
 				}
-				*(double*)(data + dataset++*strides[0] + frame*strides[1]) = aux1;
+				*(double*)(data + dataset++*stride0 + frame*stride1) = aux1;
 				break;
 		}
 	}

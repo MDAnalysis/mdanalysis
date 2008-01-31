@@ -10,6 +10,10 @@ class TimeseriesCollection(object):
         if (type(item) is int) or (type(item) is slice):
             return self.timeseries[item]
         else: raise IndexError
+    def __repr__(self):
+        if len(self) != 1: suffix = 's'
+        else: suffix = ''
+        return '<'+self.__class__.__name__+' with %d timeseries object%s>'%(len(self), suffix)
     def addTimeseries(self, ts):
         # if ts is not Timeseries do something
         self.timeseries.append(ts)
@@ -83,6 +87,7 @@ class Timeseries(object):
         self.numatoms = len(self.atoms)
         self.dsize = dsize
     def __array__(self):
+        if not hasattr(self, "__data__"): raise Exception("%s timeseries object not yet populated"%self.__class__.__name__)
         return self.__data__
     def __getitem__(self, item):
         if (type(item) is int) or (type(item) is slice):
@@ -92,6 +97,10 @@ class Timeseries(object):
         if attr == "shape":
             return self.__data__.shape
         else: return super(Timeseries, self).__getattribute__(attr)
+    def __repr__(self):
+        if hasattr(self, "__data__"): datastring = "is"
+        else: datastring = "is not"
+        return '<'+self.__class__.__name__+' timeseries object %s populated with data>'%datastring
     def getAtomList(self):
         return [a.number for a in self.atoms]
     def getFormatCode(self):
