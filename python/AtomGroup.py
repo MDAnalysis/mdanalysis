@@ -185,6 +185,18 @@ Methods:
         if ts == None:
             ts = self.atoms[0].universe.coord
         return ts[self.indices()]
+    def selectAtoms(self, sel, *othersel):
+        import Selection
+        atomgrp = Selection.Parser.parse(sel).apply(self)
+        if len(othersel) == 0: return atomgrp
+        else:
+            # Generate a selection for each selection string
+            #atomselections = [atomgrp]
+            for sel in othersel:
+                atomgrp = atomgrp + Selection.Parser.parse(sel).apply(self)
+                #atomselections.append(Selection.Parser.parse(sel).apply(self))
+            #return tuple(atomselections)
+            return atomgrp
 
 class Residue(AtomGroup):
     """A group of atoms corresponding to a residue
