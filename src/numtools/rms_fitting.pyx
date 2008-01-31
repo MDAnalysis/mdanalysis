@@ -4,7 +4,8 @@ cimport c_numpy
 #
 # with intel compiler
 #
-cdef extern from "mkl_lapack.h":
+#cdef extern from "mkl_lapack.h":
+cdef extern from "clapack.h":
 #
 # on Mac OS X
 #

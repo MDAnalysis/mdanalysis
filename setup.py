@@ -1,65 +1,70 @@
-import os
-from distutils.core import setup, Extension
-#from distutils import sysconfig
+import sys, os
+from distutils import sysconfig
+from numpy import get_numpy_include
+from numpy.distutils.core import setup, Extension
 from Pyrex.Distutils import build_ext
-import numpy
 
-srcs = [['dcd/dcd.c'],['dcd/_dcdtest.pyx']]
-srcs = [[os.path.join('src', x) for x in s] for s in srcs]
-include_dirs = ['src/','src/dcd/include', numpy.get_numpy_include()]
+include_dirs = [get_numpy_include()]
+
+if sys.platform == "darwin": # Mac OS X
+    fast_numeric_include = ['/System/Library/Frameworks/vecLib.framework/Versions/A/Headers']
+    fast_numeric_link = ["-framework","vecLib"]
+elif sys.platform[:5] == "linux":
+    fast_numeric_include = ['/opt/intel/cmkl/8.0/include']
+    fast_numeric_link = ["-L/opt/intel/cmkl/8.0/lib/32", "-lmkl_lapack","-lmkl_lapack32","-lmkl_ia32","-lmkl","-lguide"]
+else:
+    fast_numeric_include = []
+    fast_numeric_link = []
 
 if __name__ == '__main__':
-    DOC_FILES = ('COPYRIGHT', 'README', 'VERSION', 'CHANGELOG', 'KNOWN_BUGS', 'MAINTAINERS', 'TODO')
+    DOC_FILES = ('COPYRIGHT', 'README', 'LICENSE', 'CHANGELOG', 'KNOWN_BUGS', 'MAINTAINERS', 'TODO')
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 """
     CLASSIFIERS = ['Development Status :: 1 - Alpha',
-                   'Environment :: Console',
+                   'Environment :: Workstation',
                    'Intended Audience :: Scientists',
-                   'License :: OSI Approved :: BSD License',
+                   'License :: OSI Approved :: GPL License',
                    'Operating System :: OS Independent',
                    'Programming Language :: Python',
                    'Topic :: Scientific Software :: Biology',
                    'Topic :: Scientific Software :: Chemistry',]
-    #install_dir = sysconfig.get_python_lib() + os.sep + 'MDAnalysis'
+    install_dir = sysconfig.get_python_lib() + os.sep + 'MDAnalysis'
 
     if 'DEBUG_CFLAGS' in os.environ:
         extra_compile_args = '\
             -std=c99 -pedantic -Wall -Wcast-align -Wcast-qual -Wpointer-arith \
             -Wchar-subscripts -Winline -Wnested-externs -Wbad-function-cast \
             -Wunreachable-code -Werror'
+        define_macros = [('DEBUG', '1')]
     else:
         extra_compile_args = ''
+        define_macros = []
 
-    define_macros = [('DEBUG', '1')]
-    extensions = [Extension('_dcdmodule', srcs[0],
-                            include_dirs = include_dirs,
+    extensions = [Extension('_dcdmodule', ['src/dcd/dcd.c'],
+                            include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('_dcdtest', srcs[1],
-                            include_dirs = include_dirs,
+                  Extension('_dcdtest', ['src/dcd/_dcdtest.pyx'],
+                            include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
                   Extension('distances', ['src/numtools/distances.pyx'],
-                            include_dirs = include_dirs,
+                            include_dirs = include_dirs+['src/numtools'],
                             libraries = ['m'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
                   Extension('rms_fitting', ['src/numtools/rms_fitting.pyx'],
                             libraries = ['m'],
                             define_macros=define_macros,
-                  #          include_dirs = include_dirs+['/System/Library/Frameworks/vecLib.framework/Versions/A/Headers'],
-                  #          extra_link_args=["-framework","vecLib"],
-                            include_dirs = include_dirs+['/opt/intel/cmkl/8.0/include',numpy.get_numpy_include()],
-                            extra_link_args=["-L/opt/intel/cmkl/8.0/lib/32", "-lmkl_lapack","-lmkl_lapack32","-lmkl_ia32","-lmkl","-lguide"],
+                            include_dirs = include_dirs+fast_numeric_include,
+                            extra_link_args=fast_numeric_link,
                             extra_compile_args=extra_compile_args),
                   Extension('delaunay', ['src/delaunay/delaunay.pyx', 'src/delaunay/blas.c', 'src/delaunay/tess.c'],
                             libraries = ['m'],
                             define_macros=define_macros,
-                  #          include_dirs = include_dirs+['/System/Library/Frameworks/vecLib.framework/Versions/A/Headers'],
-                  #          extra_link_args=["-framework","vecLib"],
-                            include_dirs = include_dirs+['/opt/intel/cmkl/8.0/include'],
-                            extra_link_args=["-L/opt/intel/cmkl/8.0/lib/32", "-lmkl_blacs","-lmkl_ia32","-lmkl","-lguide"],
+                            include_dirs = include_dirs+fast_numeric_include+['src/delaunay'],
+                            extra_link_args=fast_numeric_link,
                             extra_compile_args=extra_compile_args),
                   ]
 

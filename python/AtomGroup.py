@@ -68,13 +68,13 @@ Data: atoms - a list of references to the corresponding atoms in Universe.atoms
       AtomGroups are immutable
 
 Methods:
-    ag = AtomGroup()
+    ag = universe.selectAtoms("...")
     ag.indices() - return indices into main atom array
     ag.masses() - array of masses
     ag.totalMass() - total mass
     ag.charges() - array of charges
     ag.totalCharge() - total charge
-    ag.centerOfGeom() - center of geometry
+    ag.centerOfGeometry() - center of geometry
     ag.centerOfMass() - center of mass
     ag.radiusOfGyration() - radius of gyration
     ag.principleAxis() - returns the principle axis of rotation
@@ -107,7 +107,7 @@ Methods:
         warnings.warn("To prevent confusion with AtomGroup subclasses you should use numberOfAtoms() instead", category=Warning, stacklevel=2)
         return self.numberOfAtoms()
     def __getitem__(self, item):
-        if (type(item) is int) or (type(item) is slice):
+        if (numpy.dtype(type(item)) is numpy.dtype(int)) or (type(item) is slice):
             return self.atoms[item]
         else: return super(AtomGroup, self).__getitem__(item)
     def __getattr__(self, name):
@@ -133,7 +133,6 @@ Methods:
         return len(self.atoms)
     def indices(self):
         if not hasattr(self,'_cached_indices'):
-            print "creating cached indices"
             self._cached_indices = numpy.array([atom.number for atom in self.atoms])
         return self._cached_indices
     def masses(self):

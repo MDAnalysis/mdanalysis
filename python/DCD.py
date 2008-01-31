@@ -12,50 +12,38 @@ Methods:
 
 """
     def __init__(self, arg):
-        if type(arg) == int:
+        if numpy.dtype(type(arg)) == numpy.dtype(int):
             self.frame = 0
             self.numatoms = arg
             self._pos = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
             #self._pos = numpy.zeros((3, self.numatoms), numpy.float32)
             self._unitcell = numpy.zeros((6), numpy.float32)
         elif isinstance(arg, Timestep): # Copy constructor
-            # This makes a deepcopy of the timestep passed in, transposing it if necessary
+            # This makes a deepcopy of the timestep
             self.frame = arg.frame
             self.numatoms = arg.numatoms
             self._unitcell = numpy.array(arg._unitcell)
-            if arg._pos.shape[0] != 3:
-                self._pos = numpy.array(numpy.transpose(arg._pos))
-            else:
-                self._pos = numpy.array(arg._pos)
-        elif isinstance(arg, numpy.arraytype):
+            self._pos = numpy.array(arg._pos)
+        elif isinstance(arg, numpy.ndarray):
+            if len(arg.shape) != 2: raise Exception("numpy array can only have 2 dimensions")
             self._unitcell = numpy.zeros((6), numpy.float32)
             self.frame = 0
-            if arg.shape[0] != 3:
-                self.numatoms = arg.shape[0]
-                self._pos = numpy.asarray(numpy.transpose(arg))
-            else:
-                self.numatoms = arg.shape[-1]
-                self._pos = numpy.asarray(arg)
-        else: raise Exception("Can't have an empty Timestep")
+            if arg.shape[0] == 3: self.numatoms = arg.shape[0]
+            else: self.numatoms = arg.shape[-1]
+            self._pos = arg.copy('Fortran')
+        else: raise Exception("Cannot create an empty Timestep")
         self._x = self._pos[:,0]
         self._y = self._pos[:,1]
         self._z = self._pos[:,2]
-    def __getattr__(self, name):
-        if (name == "dimensions"):
-            # Layout of unitcell is [A, alpha, B, beta, gamma, C]
-            uc = self._unitcell
-            return numpy.take(uc, [0,2,5,1,3,4])
-        else: raise AttributeError("class "+repr(self.__class__.__name__)+" has no attribute "+ name)
-    def __getitem__(self, atomno):
-        # XXX need to implement slices
-        if numpy.dtype(type(atomno)) == numpy.dtype(int):
-            if (atomno < 0):
-                atomno = self.numatoms + atomno
-            if (atomno < 0) or (atomno >= self.numatoms):
+    def __getitem__(self, atoms):
+        if numpy.dtype(type(atoms)) == numpy.dtype(int):
+            if (atoms < 0):
+                atoms = self.numatoms + atoms
+            if (atoms < 0) or (atoms >= self.numatoms):
                 raise IndexError
-            return self._pos[atomno]
-        elif type(atomno) == numpy.ndarray: #Specifying a range of numbers
-            return self._pos[atomno]
+            return self._pos[atoms]
+        elif type(atoms) == slice or type(atoms) == numpy.ndarray:
+            return self._pos[atoms]
         else: raise TypeError
     def __len__(self):
         return self.numatoms
@@ -64,8 +52,6 @@ Methods:
             for i in xrange(self.numatoms):
                 yield self[i]
         return iterTS()
-    def __str__(self):
-        return repr(self)
     def __repr__(self):
         return "< Timestep "+ repr(self.frame) + " with unit cell dimensions " + repr(self.dimensions) + " >"
     def copy(self):
@@ -73,6 +59,14 @@ Methods:
     def __deepcopy__(self):
         # Is this the best way?
         return Timestep(self)
+
+    # Properties
+    def dimensions():
+        def fget(self):
+            # Layout of unitcell is [A, alpha, B, beta, gamma, C]
+            return numpy.take(self._unitcell, [0,2,5,1,3,4])
+        return locals()
+    dimensions = property(**dimensions())
 
 class DCDWriter:
     """Writes to a DCD file
@@ -84,18 +78,18 @@ Methods:
 """
     def __init__(self, dcdfilename, numatoms, start=0, step=1, delta=1.0, remarks="Created by DCDWriter"):
         if numatoms == 0:
-            raise Exception("DCDWriter: no atoms in trajectory file")
+            raise Exception("DCDWriter: no atoms in output trajectory")
         self.dcdfilename = dcdfilename
         self.numatoms = numatoms
 
-        self.numframes = 0
+        self.frames_written = 0
         self.start = start
         self.step = step
         self.delta = delta
         self.dcdfile = file(dcdfilename, 'wb')
         self.remarks = remarks
         self._write_dcd_header(numatoms, start, step, delta, remarks)
-    def _dcdhandle(self):
+    def dcd_header(self):
         import struct
         desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']
         return dict(zip(desc, struct.unpack("iiiiiiidiPPiiii",self._dcd_C_str)))
@@ -107,9 +101,9 @@ Methods:
                 ts=self.ts
         # Check to make sure Timestep has the correct number of atoms
         elif not ts.numatoms == self.numatoms:
-            raise Exception("Timestep does not have the correct number of atoms")
+            raise Exception("DCDWriter: Timestep does not have the correct number of atoms")
         self._write_next_frame(ts._x, ts._y, ts._z, ts._unitcell)
-        self.numframes += 1
+        self.frames_written += 1
     def close_trajectory(self):
         # Do i really need this?
         self._finish_dcd_write()
@@ -123,13 +117,10 @@ Methods:
 
 class DCDReader:
     """Reads from a DCD file
-
 Data:
-
 Methods:
     d = DCD(dcdfile) - open dcdfile and read header
     len(d) - return number of frames
-
 """
     def __init__(self, dcdfilename):
         self.dcdfilename = dcdfilename
@@ -143,14 +134,16 @@ Methods:
         self.ts = Timestep(self.numatoms)
         # Read in the first timestep
         self.read_next_timestep()
-    def __dcdhandle(self):
+    def dcd_header(self):
         import struct
         desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']
         return dict(zip(desc, struct.unpack("iiiiiiidiPPiiii",self._dcd_C_str)))
+    def __len__(self):
+        return self.numframes
     def __getitem__(self, frame):
-        if (type(frame) != int) and (type(frame) != slice):
+        if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
             raise TypeError
-        if (type(frame) == int):
+        if (numpy.dtype(type(frame)) == numpy.dtype(int)):
             if (frame < 0):
                 # Interpret similar to a sequence
                 frame = len(self) + frame
@@ -160,26 +153,26 @@ Methods:
             ts = self.ts
             ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
             return ts
-        else: # if frame is a slice object
+        elif type(frame) == slice: # if frame is a slice object
             if not (((type(frame.start) == int) or (frame.start == None)) and
                     ((type(frame.stop) == int) or (frame.stop == None)) and
                     ((type(frame.step) == int) or (frame.step == None))):
-                raise TypeError("Slicing indices are not integers or None")
-            # Does it make sense to support slice objects?
-            # XXX Maybe one day as a generator
-            def iterDCD(start=frame.start, stop=frame.stop, step = frame.step):
-                if (start < 0): start += len(self)
-                if (stop < 0): stop += len(self)
-                if (stop <= start): raise Exception("Stop frame is lower than start frame")
-                if ((start < 0) or (start >= len(self)) or
-                   (stop < 0) or (stop > len(self))):
-                       raise IndexError
-                if (step == None): step = 1
+                raise TypeError("Slice indices are not integers")
+            def iterDCD(start=frame.start, stop=frame.stop, step=frame.step):
+                start, stop, step = self._check_slice_indices(start, stop, step)
                 for i in xrange(start, stop, step):
                     yield self[i]
             return iterDCD()
-    #def reset_dcd_read(self):
-    #    self._reset_dcd_read()
+    def _check_slice_indices(self, start, stop, skip):
+        if (start < 0): start += len(self)
+        if (stop < 0): stop += len(self)
+        elif (stop > len(self)): stop = len(self)
+        if (stop <= start): raise Exception("Stop frame is lower than start frame")
+        if ((start < 0) or (start >= len(self)) or
+           (stop < 0) or (stop > len(self))):
+               raise IndexError
+        if skip == None: skip = 1
+        return (start, stop, skip)
     def __iter__(self):
         # Reset the trajectory file
         self._reset_dcd_read()
@@ -192,37 +185,22 @@ Methods:
                     raise StopIteration
         return iterDCD()
     def read_next_timestep(self, ts=None):
-        if (ts==None):
-            ts = self.ts
+        if ts is None: ts = self.ts
         ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
         return ts
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
-        if (start < 0): start += len(self)
-        if (stop < 0): stop += len(self)
-        if (stop <= start): raise Exception("Stop frame is lower than start frame")
-        if ((start < 0) or (start >= len(self)) or
-           (stop < 0) or (stop >= len(self))):
-               raise IndexError
+        start, stop, skip = self._check_slice_indices(start, stop, skip)
         if len(asel) == 0:
-            raise Exception("timeseries requires at least one atom to analyze")
-        if len(asel) == 0:
-            raise Exception("timeseries requires at least one atom to analyze")
+            raise Exception("Timeseries requires at least one atom to analyze")
+        if len(format) != 3 and format not in ['afc', 'acf', 'caf', 'cfa', 'fac', 'fca']:
+            raise Exception("Invalid timeseries format")
         atom_numbers = list(asel.indices())
-        # Check if the atom numbers can be grouped for efficiency
+        # Check if the atom numbers can be grouped for efficiency, then we can read partial buffers
+        # from trajectory file instead of an entire timestep
         # XXX needs to be implemented
-        #results = []
-        #for a in atom_numbers:
-        #    results.append(self._read_correl([a], skip))
-        #import numpy
-        #return numpy.concatenate(tuple(results), 0)
         return self._read_timeseries(atom_numbers, start, stop, skip, format)
     def correl(self, timeseries, start=0, stop=-1, skip=1):
-        if (start < 0): start += len(self)
-        if (stop < 0): stop += len(self)
-        if (stop <= start): raise Exception("Stop frame is lower than start frame")
-        if ((start < 0) or (start >= len(self)) or
-           (stop < 0) or (stop >= len(self))):
-               raise IndexError
+        start, stop, skip = self._check_slice_indices(start, stop, skip)
         atomlist = timeseries.getAtomList()
         format = timeseries.getFormat()
         lowerb, upperb = timeseries.getBounds()
@@ -230,8 +208,6 @@ Methods:
         atomcounts = timeseries.getAtomCounts()
         auxdata = timeseries.getAuxData()
         return self._read_timecorrel(atomlist, atomcounts, format, auxdata, sizedata, lowerb, upperb, start, stop, skip)
-    def __len__(self):
-        return self.numframes
     def close_trajectory(self):
         self._finish_dcd_read()
         self.dcdfile.close()
@@ -242,6 +218,7 @@ Methods:
     def __repr__(self):
             return "< DCDReader '"+ self.dcdfilename + "' with " + repr(self.numframes) + " frames of " + repr(self.numatoms) + " atoms (" + repr(self.fixed) + " fixed) >"
 
+# Add the c functions to their respective classes so they act as class methods
 import _dcdmodule
 import new
 DCDReader._read_dcd_header = new.instancemethod(_dcdmodule.__read_dcd_header, None, DCDReader)
@@ -256,6 +233,7 @@ DCDWriter._write_next_frame = new.instancemethod(_dcdmodule.__write_next_frame, 
 DCDWriter._finish_dcd_write = new.instancemethod(_dcdmodule.__finish_dcd_write, None, DCDWriter)
 del(_dcdmodule)
 
+# _dcdtest is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex
 import _dcdtest
 #DCDReader._read_timeseries = new.instancemethod(_dcdtest.__read_timeseries, None, DCDReader)
 DCDReader._read_timecorrel = new.instancemethod(_dcdtest.__read_timecorrel, None, DCDReader)
