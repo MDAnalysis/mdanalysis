@@ -127,7 +127,7 @@ Methods:
         if self.dcdfile is not None:
             self.close_trajectory()
     def __repr__(self):
-        return "< DCDWriter '"+ self.dcdfilename + "' with " + repr(self.numframes) + " frames of " + repr(self.numatoms) + " atoms >"
+        return "< DCDWriter '"+ self.dcdfilename + "' for " + repr(self.numatoms) + " atoms >"
 
 class DCDReader:
     """Reads from a DCD file
