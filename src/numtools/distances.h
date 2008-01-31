@@ -46,4 +46,30 @@ static void calc_distance_array(coordinate* ref, int numref, coordinate* conf, i
 	}
 }
 
+static void calc_self_distance_array(coordinate* ref, int numref, float* box, double* distances, int distnum)
+{
+	int i, j, distpos;
+	double dx[3];
+	float box_half[3];
+	double rsq;
+
+	box_half[0] = box[0]/2;
+	box_half[1] = box[1]/2;
+	box_half[2] = box[2]/2;
+	
+	distpos = 0;
+	for (i=0; i < numref; i++) {
+		for (j=i+1; j < numref; j++) {
+			dx[0] = ref[j][0]-ref[i][0];
+			dx[1] = ref[j][1]-ref[i][1];
+			dx[2] = ref[j][2]-ref[i][2];
+			// Periodic boundaries
+			minimum_image(dx, box, box_half);
+			rsq = (dx[0]*dx[0])+(dx[1]*dx[1])+(dx[2]*dx[2]);
+			*(distances+distpos) = sqrt(rsq);
+			distpos += 1;
+		}
+	}
+}
+
 #endif

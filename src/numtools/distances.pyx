@@ -29,6 +29,7 @@ cdef extern from "distances.h":
     ctypedef float coordinate[3]
 
     void calc_distance_array(coordinate* ref, int numref, coordinate* conf, int numconf, float* box, double* distances)
+    void calc_self_distance_array(coordinate* ref, int numref, float* box, double* distances, int distnum)
 
 
 import Numeric as N
@@ -53,4 +54,24 @@ def distance_array(ArrayType ref, ArrayType conf, ArrayType box):
 
     distances = N.zeros((refnum, confnum), N.Float)
     calc_distance_array(<coordinate*>ref.data, refnum, <coordinate*>conf.data, confnum, <float*>box.data, <double*>distances.data)
+    return distances
+
+def self_distance_array(ArrayType ref, ArrayType box):
+    cdef ArrayType distances
+    cdef int refnum, distnum
+
+    if (ref.nd != 2 and ref.dimensions[1] != 3):
+        raise Exception("ref must be a sequence of 3 dimensional coordinates")
+    if (ref.descr.type_num != PyArray_FLOAT):
+        raise Exception("coordinate data must be of type Float32")
+    if (box.nd != 1 and box.dimensions[0] != 3):
+        raise Exception("box must be a sequence of 3 dimensional coordinates")
+    if (box.descr.type_num != PyArray_FLOAT):
+        raise Exception("periodic boundaries must be of type Float32")
+
+    refnum = ref.dimensions[0]
+    distnum = (refnum*(refnum-1))/2
+
+    distances = N.zeros((distnum,), N.Float)
+    calc_self_distance_array(<coordinate*>ref.data, refnum, <float*>box.data, <double*>distances.data, distnum)
     return distances
