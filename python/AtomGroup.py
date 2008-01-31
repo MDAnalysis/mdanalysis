@@ -16,7 +16,7 @@ Data: number, segid, resid, resname, name, type
 Methods:
     a = Atom()
 """
-    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", "mass", "charge", "_coord", "residue", "segment", "bonds")
+    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", "mass", "charge", "_universe", "residue", "segment", "bonds")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge):
         self.number = number
@@ -32,8 +32,8 @@ Methods:
                repr(self.type) + " of resid " + repr(self.resname) + ", " +repr(self.resid) + " and " +repr(self.segid)+'>'
     def __getattr__(self, key):
         if (key == "pos"):
-            if hasattr(self, "_coord"):
-                return self._coord[self.number] # PDB numbering starts at 0
+            if hasattr(self, "_universe"):
+                return self._universe._coord[self.number] # PDB numbering starts at 0
             else: raise Exception("Atom "+repr(self.number)+" is not assigned to a System")
         else: return super(Atom, self).__getattribute__(key)
     def __cmp__(self, other):
@@ -278,7 +278,7 @@ See also:
         self._coord = self._dcd.ts
         # Let atoms access their current positions
         for a in self._atoms:
-            a._coord = self._coord
+            a._universe = self
     def load_new_dcd(self, dcdfilename):
         del self._dcd
         from DCD import DCDReader
