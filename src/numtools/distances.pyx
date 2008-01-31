@@ -34,7 +34,7 @@ cdef extern from "distances.h":
 
 import Numeric as N
 
-def distance_array(ArrayType ref, ArrayType conf, ArrayType box):
+def distance_array(ArrayType ref, ArrayType conf, ArrayType box, ArrayType result=None):
     cdef ArrayType distances
     cdef int confnum, refnum
 
@@ -52,11 +52,17 @@ def distance_array(ArrayType ref, ArrayType conf, ArrayType box):
     confnum = conf.dimensions[0]
     refnum = ref.dimensions[0]
 
-    distances = N.zeros((refnum, confnum), N.Float)
+    if not result is None:
+        if (result.nd != 2 and result.dimensions[0] != refnum and results.dimensions[1] != confnum):
+            raise Exception("result array has incorrect size or datatype - should be (%dx%d)"%(refnum,confnum))
+        distances = N.asarray(result)
+    else:
+        distances = N.zeros((refnum, confnum), N.Float64)
+
     calc_distance_array(<coordinate*>ref.data, refnum, <coordinate*>conf.data, confnum, <float*>box.data, <double*>distances.data)
     return distances
 
-def self_distance_array(ArrayType ref, ArrayType box):
+def self_distance_array(ArrayType ref, ArrayType box, ArrayType result = None):
     cdef ArrayType distances
     cdef int refnum, distnum
 
@@ -72,6 +78,11 @@ def self_distance_array(ArrayType ref, ArrayType box):
     refnum = ref.dimensions[0]
     distnum = (refnum*(refnum-1))/2
 
-    distances = N.zeros((distnum,), N.Float)
+    if not result is None:
+        if (result.nd != 1 and result.dimensions[0] != distnum):
+            raise Exception("result array has incorrect size or datatype - should be (%d)"%(distnum))
+        distances = N.asarray(result)
+    else:
+        distances = N.zeros((distnum,), N.Float64)
     calc_self_distance_array(<coordinate*>ref.data, refnum, <float*>box.data, <double*>distances.data, distnum)
     return distances
