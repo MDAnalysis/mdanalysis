@@ -786,14 +786,15 @@ int jump_to_frame(dcdhandle *dcd, int frame)
     // Use zero indexing
     if (frame == 0) {
       pos = dcd->header_size;
+			dcd->first = 1;
     }
     else {
       pos = dcd->header_size + firstframesize + framesize * (frame-1);
+  		dcd->first = 0;
     }
     rc = fio_fseek(dcd->fd, pos, FIO_SEEK_SET);
   }
   dcd->setsread = frame;
-  dcd->first = 0;
   return rc;
 }
 
