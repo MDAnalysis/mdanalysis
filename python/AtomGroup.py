@@ -184,7 +184,7 @@ Methods:
     def coordinates(self, ts=None):
         if ts == None:
             ts = self.atoms[0].universe.coord
-        return ts[self.indices()]
+        return numpy.array(ts[self.indices()])
     def selectAtoms(self, sel, *othersel):
         import Selection
         atomgrp = Selection.Parser.parse(sel).apply(self)
