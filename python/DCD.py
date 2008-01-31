@@ -1,6 +1,7 @@
 """DCD Hierarchy
 
 """
+import Numeric
 
 class Timestep:
     """Timestep data for one frame
@@ -11,7 +12,6 @@ Methods:
 
 """
     def __init__(self, arg):
-        import Numeric
         if type(arg) == int:
             self.frame = 0
             self.numatoms = arg
@@ -39,12 +39,11 @@ Methods:
         self._x = self._pos[0]
         self._y = self._pos[1]
         self._z = self._pos[2]
-        del (Numeric)
     def __getattr__(self, name):
         if (name == "dimensions"):
             # Layout of unitcell is [A, alpha, B, beta, gamma, C]
             uc = self._unitcell
-            return (uc[0], uc[2], uc[5], uc[1], uc[3], uc[4])
+            return Numeric.take(uc, [0,2,5,1,3,4])
         else: raise AttributeError("class "+repr(self.__class__.__name__)+" has no attribute "+ name)
     def __getitem__(self, atomno):
         if (type(atomno) != int):
