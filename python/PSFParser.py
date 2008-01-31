@@ -35,7 +35,8 @@ def parse(psffilename):
         #    for i in xrange(num):
         #        yield func()
         #lines = repeat(next_line, numlines)
-        parsefunc(next_line, atoms_per, data_struc, structure, numlines)
+        if num != 0: parsefunc(next_line, atoms_per, data_struc, structure, numlines)
+        else: skip_line()
 
     sections = [("NATOM", 1, 1, __parseatoms_, "_atoms"),
                 ("NBOND", 2, 4, __parsesection_, "_bonds"),
