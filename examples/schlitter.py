@@ -13,14 +13,14 @@ masses = Numeric.repeat(asel.masses(), 3)
 mass_matrix = Numeric.sqrt(Numeric.identity(len(masses))*masses)
 
 skip = 2
-num_ts = system._dcd.numframes/skip
+num_ts = system.dcd.numframes/skip
 num_coor = len(asel)*3
 
 #com = Numeric.zeros((num_ts, 3), Numeric.Float)
-#for ts in system._dcd:
+#for ts in system.dcd:
 #    com[ts.frame-1] = system.F.centerOfMass()
 
-ca_pos = system._dcd.timeseries(asel, skip=skip, format='fac')
+ca_pos = system.dcd.timeseries(asel, skip=skip, format='fac')
 #ca_pos = ca_pos-com[:, Numeric.NewAxis]
 ca = Numeric.reshape(ca_pos, (num_ts, -1))
 ca_avg = Numeric.average(ca)

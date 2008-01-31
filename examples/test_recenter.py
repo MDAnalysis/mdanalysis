@@ -5,7 +5,7 @@ import Numeric
 from MDAnalysis import _rms_matrix
 system = AtomGroup.Universe("data/water1728.psf", "data/water_dyn.dcd.large_pconst_drag")
 
-#ts_transpose = Numeric.transpose(system._dcd.ts._pos)
+#ts_transpose = Numeric.transpose(system.dcd.ts._pos)
 
 for a in system._atoms:
     a.mass = 0.72
@@ -36,7 +36,7 @@ from MDAnalysis import AtomGroup
 import Numeric
 from __main__ import recenter1
 system = AtomGroup.Universe("data/water1728.psf", "data/water_dyn.dcd.large_pconst_drag")
-ts = system._dcd.ts
+ts = system.dcd.ts
 cellsize = Numeric.array(ts.dimensions[:3])
 ts_transpose = Numeric.transpose(ts._pos)
 ref = ts[0]
@@ -49,7 +49,7 @@ from MDAnalysis import AtomGroup
 import Numeric
 from __main__ import recenter2
 system = AtomGroup.Universe("data/water1728.psf", "data/water_dyn.dcd.large_pconst_drag")
-ts = system._dcd.ts
+ts = system.dcd.ts
 cellsize = Numeric.array(ts.dimensions[:3])
 ref = ts[0]
         """
@@ -57,7 +57,7 @@ ref = ts[0]
     print "Recenter2: %.2f usec/pass" % (num*t2.timeit(number=num)/num)
 
 def temp():
-    radius = min(system._dcd.ts.dimensions[0:3])/2
+    radius = min(system.dcd.ts.dimensions[0:3])/2
 
     from Scientific.Statistics import Histogram
     a = Numeric.zeros(1, Numeric.Float32)
@@ -66,13 +66,13 @@ def temp():
     for i, a in enumerate(system._atoms[:20]):
         print i
         ref = a.pos
-        for ts in system._dcd:
+        for ts in system.dcd:
             cellsize = Numeric.array(ts.dimensions[0:3])
             new_coor = recenter2(ref, ts._pos, cellsize)
             dist_sq = Numeric.add.reduce(Numeric.power(new_coor,2),axis=0)
             rdf_sq._addData(dist_sq)
 
-    #for ts in system._dcd:
+    #for ts in system.dcd:
     #    print ts.frame
     #    cellsize = Numeric.array(ts.dimensions[0:3])
     #    for i, ref in enumerate(ts):
@@ -86,7 +86,7 @@ def temp():
     #del(dout)
 
 if __name__ == "__main__":
-    ts = system._dcd.ts
+    ts = system.dcd.ts
     cellsize = Numeric.array(ts.dimensions[:3])
     ts_transpose = Numeric.transpose(ts._pos)
     ref = ts[0]

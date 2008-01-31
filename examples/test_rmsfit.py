@@ -10,9 +10,9 @@ ref = asel.coordinates()
 ref -= asel.centerOfMass().astype(Numeric.Float32)
 
 dout = DCD.DCDWriter("temp.dcd", len(system._atoms))
-ts_transpose = Numeric.transpose(system._dcd.ts._pos)
+ts_transpose = Numeric.transpose(system.dcd.ts._pos)
 
-for ts in system._dcd:
+for ts in system.dcd:
     print ts.frame
     coor = asel.coordinates()
     com = asel.centerOfMass().astype(Numeric.Float32)

@@ -12,7 +12,7 @@ def bb_dihe(kalp, file):
         a.addTimeseries(Timeseries.Dihedral(phi_sel))
         a.addTimeseries(Timeseries.Dihedral(psi_sel))
 
-    data = system._dcd.correl(a, skip=10)*180./pi
+    data = system.dcd.correl(a, skip=10)*180./pi
     avg = mean(data, axis=1)
     stdev = std(data, axis=1)
     res = range(2, kalp+2)

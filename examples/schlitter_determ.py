@@ -17,9 +17,9 @@ masses = Numeric.repeat(kg, 3)
 mass_matrix = Numeric.identity(len(masses))*masses
 
 skip = 5
-num_ts = system._dcd.numframes/skip
+num_ts = system.dcd.numframes/skip
 num_coor = len(asel)*3
-ca_pos = system._dcd.timeseries(asel, skip=skip, format='fac')
+ca_pos = system.dcd.timeseries(asel, skip=skip, format='fac')
 
 #---------------------------------
 # angstroms to meters and merging the xyz of timeseries 
