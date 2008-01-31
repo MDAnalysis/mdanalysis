@@ -381,7 +381,8 @@ For reference, the grammar that we parse is :
                       (TYPE, AtomTypeSelection), (AROUND, AroundSelection), (BYRES, ByResSelection),
                       (BYNUM, ByNumSelection), (PROP, PropertySelection),
                       (PROTEIN, ProteinSelection), (BB, BackboneSelection),
-                      (BONDED, BondedSelection), (ATOM, AtomSelection)])
+                      #(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists
+                      (ATOM, AtomSelection)])
     associativity = dict([(AND, "left"), (OR, "left")])
     precedence = dict([(AROUND, 1), (BYRES, 1), (BONDED, 1), (AND, 3), (OR, 3), (NOT,5 )])
 

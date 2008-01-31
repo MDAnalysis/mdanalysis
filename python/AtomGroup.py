@@ -265,7 +265,7 @@ See also:
         for data in struc.keys():
             setattr(self, data, struc[data])
         self.__dict__.update(PSFParser._buildstructure_(self._atoms))
-        PSFParser._buildbondlists_(self._atoms, self._bonds)
+        #PSFParser._buildbondlists_(self._atoms, self._bonds)
         if dcdfilename is not None:
             self.__init_dcd(dcdfilename)
     def __init_dcd(self, dcdfilename):

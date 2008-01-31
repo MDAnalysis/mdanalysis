@@ -71,7 +71,7 @@ def __parseatoms_(lines, atoms_per, attr, structure, numlines):
 
 import operator
 def __parsesection_(lines, atoms_per, attr, structure, numlines):
-    section = [None,]*numlines
+    section = [] #[None,]*numlines
     #for l in lines:
     for i in xrange(numlines):
         l = lines()
@@ -79,7 +79,7 @@ def __parsesection_(lines, atoms_per, attr, structure, numlines):
         f = map(int, l.split())
         fields = [a-1 for a in f]
         for j in range(0, len(fields), atoms_per):
-            section[i] = tuple(fields[j:j+atoms_per])
+            section.append(tuple(fields[j:j+atoms_per]))
     structure[attr] = section
 
 def _buildstructure_(atoms):
