@@ -14,12 +14,21 @@ cdef extern from "Numeric/arrayobject.h":
         cdef PyArray_Descr *descr
         cdef int flags
 
+    enum ArrayTypes "PyArray_TYPES":
+        PyArray_CHAR, PyArray_UBYTE, PyArray_SBYTE,
+        PyArray_SHORT, PyArray_USHORT,
+        PyArray_INT, PyArray_UINT,
+        PyArray_LONG,
+        PyArray_FLOAT, PyArray_DOUBLE,
+        PyArray_CFLOAT, PyArray_CDOUBLE,
+        PyArray_OBJECT,
+        PyArray_NTYPES, PyArray_NOTYPE
+
 import Numeric
 
 cdef extern from "tess.h":
     ctypedef long int integer
     ctypedef double real
-    #ctypedef float real
     int tess_(integer *mrowp, integer *mp, integer *np, real *p, integer *mrows, integer *ncols, integer *ms, integer *ns, integer *nsim, integer *nadj, real *work, integer *llfact, integer *iwork, integer *ierr)
 
 cdef extern from "math.h":
@@ -78,9 +87,8 @@ def triangulate(ArrayType points):
     cdef integer ms, ns, ierr, liw, llfact
     cdef ArrayType iwork, work, nsim, nadj
 
-    # XXX I need to make sure that points is the right typecode
-    # Float32, not Float64
-    if points.nd != 2: raise Exception("_delaunay triangulation: incorrect number of dimensions")
+    if points.nd != 2: raise Exception("delaunay: incorrect number of dimensions")
+    if points.descr.type_num != PyArray_DOUBLE: raise Exception("delaunay: array must be of type double")
     np = points.dimensions[0]
     mrowp = mp = points.dimensions[1]
     ierr = 0
