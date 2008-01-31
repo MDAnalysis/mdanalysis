@@ -279,6 +279,14 @@ See also:
         # Let atoms access their current positions
         for a in self._atoms:
             a._coord = self._coord
+    def load_new_dcd(self, dcdfilename):
+        del self._dcd
+        from DCD import DCDReader
+        self._dcd = DCDReader(dcdfilename)
+        # Make sure that they both have the same number of atoms
+        if (self._dcd.numatoms != len(self._atoms)):
+            raise Exception("The psf and dcd files don't have the same number of atoms!")
+        self._coord = self._dcd.ts
     def dimensions(self):
         return self._coord.dimensions
     def __getattr__(self, name):
