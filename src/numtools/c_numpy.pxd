@@ -1,0 +1,1 @@
+../c_numpy.pxd

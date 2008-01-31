@@ -2,14 +2,9 @@
 /* I have to fix error handling in these functions */
 
 #include <Python.h>
-#include <Numeric/arrayobject.h>
+#include <numpy/arrayobject.h>
 
 #include "readdcd.h"
-
-/* File plugin symbolic constants for better code readability */
-//#define MOLFILE_EOF              -1   /**< end of file                  */
-//#define MOLFILE_ERROR            -1   /**< error reading/opening a file */
-//#define MOLFILE_SUCCESS           0   /**< succeeded in reading file    */
 
 typedef struct {
   fio_fd fd;

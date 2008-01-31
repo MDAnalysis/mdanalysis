@@ -1,16 +1,5 @@
 
-cdef extern from "Numeric/arrayobject.h":
-    struct PyArray_Descr:
-        int type_num, elsize
-        char type
-
-    ctypedef class Numeric.ArrayType [object PyArrayObject]:
-        cdef char *data
-        cdef int nd
-        cdef int *dimensions, *strides
-        cdef object base
-        cdef PyArray_Descr *descr
-        cdef int flags
+cimport c_numpy
 
 cdef extern from "mkl_lapack.h":
     int dsyev_(char *jobz, char *uplo, int *n, double *fa, int *lda, double *w, double *work, int *lwork, int *info)
@@ -32,30 +21,32 @@ cdef eigen4x4sym(double* mat, double* eval, double* evec):
     dsyev_("V", "U", &n, evec, &n, eval, work, &lwork, &info)
     return info
 
-import Numeric
-def rms_rotation_matrix(ArrayType conf, ArrayType ref, ArrayType weights):
-    cdef ArrayType ref_cms, pos, cross, k, mat
-    cdef ArrayType e, v
+c_numpy.import_array()
+
+import numpy
+def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarray weights):
+    cdef c_numpy.ndarray ref_cms, pos, cross, k, mat
+    cdef c_numpy.ndarray e, v
     cdef int i, numatoms
     cdef double possq
 
     if conf.dimensions[0] != ref.dimensions[0]:
         raise Exception("Error: RMS fit - conformation and reference don't have the same number of atoms")
     numatoms = conf.dimensions[0]
-    ref_cms = Numeric.zeros((3,), Numeric.Float64)
+    ref_cms = numpy.zeros((3,), numpy.float64)
     for i from 0 <= i < numatoms:
         ref_cms = ref_cms + ref[i]
-    pos = Numeric.zeros((3,), Numeric.Float64)
+    pos = numpy.zeros((3,), numpy.float64)
     possq = 0.
-    cross = Numeric.zeros((3,3), Numeric.Float64)
+    cross = numpy.zeros((3,3), numpy.float64)
     for i from 0 <= i < numatoms:
         r = conf[i]
         r_ref = ref[i]-ref_cms
         w = weights[i]
         pos = pos + w*r
-        possq = possq + w*Numeric.add.reduce(r*r) + w*Numeric.add.reduce(r_ref*r_ref)
-        cross = cross + w*r[:, Numeric.NewAxis]*r_ref[Numeric.NewAxis, :]
-    k = Numeric.zeros((4,4), Numeric.Float64)
+        possq = possq + w*numpy.add.reduce(r*r) + w*numpy.add.reduce(r_ref*r_ref)
+        cross = cross + w*r[:, numpy.newaxis]*r_ref[numpy.newaxis, :]
+    k = numpy.zeros((4,4), numpy.float64)
     k[0, 0] = -cross[0, 0]-cross[1, 1]-cross[2, 2]
     k[0, 1] = cross[1, 2]-cross[2, 1]
     k[0, 2] = cross[2, 0]-cross[0, 2]
@@ -71,13 +62,13 @@ def rms_rotation_matrix(ArrayType conf, ArrayType ref, ArrayType weights):
             k[i, j] = k[j, i]
     k = 2.*k
     for i from 0 <= i < 4:
-        k[i, i] = k[i, i] + possq - Numeric.add.reduce(pos*pos)
-    e = Numeric.zeros((4,), Numeric.Float64)
-    v = Numeric.zeros((4,4), Numeric.Float64)
+        k[i, i] = k[i, i] + possq - numpy.add.reduce(pos*pos)
+    e = numpy.zeros((4,), numpy.float64)
+    v = numpy.zeros((4,4), numpy.float64)
     i = eigen4x4sym(<double*>k.data, <double*>e.data, <double*>v.data)
     v = v[0]
     # Quaternion def: v = qw + iqx + jqy + kqz
-    mat = Numeric.zeros((3,3), Numeric.Float64)
+    mat = numpy.zeros((3,3), numpy.float64)
     mat[0,0] = 1 - 2*v[2]*v[2] - 2*v[3]*v[3]
     mat[0,1] = 2*v[1]*v[2] - 2*v[0]*v[3]
     mat[0,2] = 2*v[1]*v[3] + 2*v[0]*v[2]

@@ -1,7 +1,7 @@
 """DCD Hierarchy
 
 """
-import Numeric
+import numpy
 
 class Timestep:
     """Timestep data for one frame
@@ -15,44 +15,49 @@ Methods:
         if type(arg) == int:
             self.frame = 0
             self.numatoms = arg
-            self._pos = Numeric.zeros((3, self.numatoms), Numeric.Float32)
-            self._unitcell = Numeric.zeros((6), Numeric.Float32)
+            self._pos = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
+            #self._pos = numpy.zeros((3, self.numatoms), numpy.float32)
+            self._unitcell = numpy.zeros((6), numpy.float32)
         elif isinstance(arg, Timestep): # Copy constructor
             # This makes a deepcopy of the timestep passed in, transposing it if necessary
             self.frame = arg.frame
             self.numatoms = arg.numatoms
-            self._unitcell = Numeric.array(arg._unitcell)
+            self._unitcell = numpy.array(arg._unitcell)
             if arg._pos.shape[0] != 3:
-                self._pos = Numeric.array(Numeric.transpose(arg._pos))
+                self._pos = numpy.array(numpy.transpose(arg._pos))
             else:
-                self._pos = Numeric.array(arg._pos)
-        elif isinstance(arg, Numeric.arraytype):
-            self._unitcell = Numeric.zeros((6), Numeric.Float32)
+                self._pos = numpy.array(arg._pos)
+        elif isinstance(arg, numpy.arraytype):
+            self._unitcell = numpy.zeros((6), numpy.float32)
             self.frame = 0
             if arg.shape[0] != 3:
                 self.numatoms = arg.shape[0]
-                self._pos = Numeric.asarray(Numeric.transpose(arg))
+                self._pos = numpy.asarray(numpy.transpose(arg))
             else:
                 self.numatoms = arg.shape[-1]
-                self._pos = Numeric.asarray(arg)
+                self._pos = numpy.asarray(arg)
         else: raise Exception("Can't have an empty Timestep")
-        self._x = self._pos[0]
-        self._y = self._pos[1]
-        self._z = self._pos[2]
+        self._x = self._pos[:,0]
+        self._y = self._pos[:,1]
+        self._z = self._pos[:,2]
     def __getattr__(self, name):
         if (name == "dimensions"):
             # Layout of unitcell is [A, alpha, B, beta, gamma, C]
             uc = self._unitcell
-            return Numeric.take(uc, [0,2,5,1,3,4])
+            return numpy.take(uc, [0,2,5,1,3,4])
         else: raise AttributeError("class "+repr(self.__class__.__name__)+" has no attribute "+ name)
     def __getitem__(self, atomno):
-        if (type(atomno) != int):
+        # XXX need to implement slices
+        if type(atomno) == numpy.dtype(int):
+            if (atomno < 0):
+                atomno = self.numatoms + atomno
+            if (atomno < 0) or (atomno >= self.numatoms):
+                raise IndexError
+            return self._pos[atomno]
+        elif type(atomno) == numpy.ndarray: #Specifying a range of numbers
+            return self._pos[atomno]
+        else:
             raise TypeError
-        if (atomno < 0):
-            atomno = self.numatoms + atomno
-        if (atomno < 0) or (atomno >= self.numatoms):
-            raise IndexError
-        return self._pos[:,atomno]
     def __len__(self):
         return self.numatoms
     def __iter__(self):
@@ -209,8 +214,8 @@ Methods:
         #results = []
         #for a in atom_numbers:
         #    results.append(self._read_correl([a], skip))
-        #import Numeric
-        #return Numeric.concatenate(tuple(results), 0)
+        #import numpy
+        #return numpy.concatenate(tuple(results), 0)
         return self._read_timeseries(atom_numbers, start, stop, skip, format)
     def correl(self, timeseries, start=0, stop=-1, skip=1):
         if (start < 0): start += len(self)

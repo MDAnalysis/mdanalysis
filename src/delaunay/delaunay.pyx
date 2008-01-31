@@ -1,30 +1,10 @@
 
+cimport c_numpy
+c_numpy.import_array()
+
 ctypedef int size_t
 
-cdef extern from "Numeric/arrayobject.h":
-    struct PyArray_Descr:
-        int type_num, elsize
-        char type
-
-    ctypedef class Numeric.ArrayType [object PyArrayObject]:
-        cdef char *data
-        cdef int nd
-        cdef int *dimensions, *strides
-        cdef object base
-        cdef PyArray_Descr *descr
-        cdef int flags
-
-    enum ArrayTypes "PyArray_TYPES":
-        PyArray_CHAR, PyArray_UBYTE, PyArray_SBYTE,
-        PyArray_SHORT, PyArray_USHORT,
-        PyArray_INT, PyArray_UINT,
-        PyArray_LONG,
-        PyArray_FLOAT, PyArray_DOUBLE,
-        PyArray_CFLOAT, PyArray_CDOUBLE,
-        PyArray_OBJECT,
-        PyArray_NTYPES, PyArray_NOTYPE
-
-import Numeric
+import numpy
 
 cdef extern from "tess.h":
     ctypedef long int integer
@@ -38,22 +18,22 @@ cdef extern from "math.h":
 cdef extern from "stdio.h":
     int printf(char *format, ...)
 
-def circumcircles(ArrayType vertices, ArrayType triangles):
+def circumcircles(c_numpy.ndarray vertices, c_numpy.ndarray triangles):
     cdef integer* tri
     cdef real *v, *c, *r
     cdef real *v0, *v1, *v2
     cdef real xd0, yd0, xa0, ya0
     cdef double a2, b2, numerator, denominator
     cdef real centerx, centery, radius
-    cdef ArrayType centers, rad
+    cdef c_numpy.ndarray centers, rad
     cdef int i, numtri, dimtri
 
     numtri = triangles.dimensions[0]
     dimtri = triangles.dimensions[1]
     v = <real*> vertices.data
     tri = <integer*> triangles.data
-    centers = Numeric.zeros((numtri, 2), Numeric.Float64)
-    rad = Numeric.zeros((numtri), Numeric.Float64)
+    centers = numpy.zeros((numtri, 2), numpy.float64)
+    rad = numpy.zeros((numtri), numpy.float64)
     c = <real*> centers.data
     r = <real*> rad.data
 
@@ -81,14 +61,14 @@ def circumcircles(ArrayType vertices, ArrayType triangles):
 
     return centers, rad
 
-def triangulate(ArrayType points):
+def triangulate(c_numpy.ndarray points):
     cdef integer mrowp, mp, np
     cdef integer mrows, ncols
     cdef integer ms, ns, ierr, liw, llfact
-    cdef ArrayType iwork, work, nsim, nadj
+    cdef c_numpy.ndarray iwork, work, nsim, nadj
 
     if points.nd != 2: raise Exception("delaunay: incorrect number of dimensions")
-    if points.descr.type_num != PyArray_DOUBLE: raise Exception("delaunay: array must be of type double")
+    if points.dtype != numpy.dtype(numpy.float64): raise Exception("delaunay: array must be of type double")
     np = points.dimensions[0]
     mrowp = mp = points.dimensions[1]
     ierr = 0
@@ -97,10 +77,10 @@ def triangulate(ArrayType points):
     ncols = 12*np
     llfact = 20
     liw = 7*llfact*np
-    iwork = Numeric.zeros((liw), Numeric.Int)
-    work = Numeric.zeros((5*mrowp+mrowp*mrowp), Numeric.Float64)
-    nsim = Numeric.zeros((ncols,mrows), Numeric.Int)
-    nadj = Numeric.zeros((ncols,mrows), Numeric.Int)
+    iwork = numpy.zeros((liw), numpy.int)
+    work = numpy.zeros((5*mrowp+mrowp*mrowp), numpy.float64)
+    nsim = numpy.zeros((ncols,mrows), numpy.int)
+    nadj = numpy.zeros((ncols,mrows), numpy.int)
     tess_(&mrowp, &mp, &np, <real*>points.data, &mrows, &ncols, &ms, &ns, <integer*>nsim.data, <integer*>nadj.data, <real*>work.data, &llfact, <integer*>iwork.data, &ierr)
     if (ierr != 0): 
         #print nsim

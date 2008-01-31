@@ -4,7 +4,7 @@ Class Hierarchy:
     AtomGroup ->
 """
 
-import Numeric
+import numpy
 
 class Atom(object):
     """A single atom definition
@@ -119,28 +119,28 @@ Methods:
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(self.numberOfAtoms())+' atoms>'
     def indices(self):
-        return Numeric.array([atom.number for atom in self.atoms])
+        return numpy.array([atom.number for atom in self.atoms])
     def numberOfAtoms(self):
         return len(self.atoms)
     def masses(self):
         if not hasattr(self, "_masses"):
-            self._masses = Numeric.array([atom.mass for atom in self.atoms])
+            self._masses = numpy.array([atom.mass for atom in self.atoms])
         return self._masses
     def totalMass(self):
-        return Numeric.sum(self.masses())
+        return numpy.sum(self.masses())
     def charges(self):
-        return Numeric.array([atom.charge for atom in self.atoms])
+        return numpy.array([atom.charge for atom in self.atoms])
     def totalCharge(self):
-        return Numeric.sum(self.charges())
+        return numpy.sum(self.charges())
     def centerOfGeom(self):
-        return Numeric.sum(self.coordinates())/self.numberOfAtoms()
+        return numpy.sum(self.coordinates())/self.numberOfAtoms()
     def centerOfMass(self):
-        return Numeric.sum(self.coordinates()*self.masses()[:,Numeric.NewAxis])/self.totalMass()
+        return numpy.sum(self.coordinates()*self.masses()[:,numpy.newaxis])/self.totalMass()
     def radiusOfGyration(self):
         masses = self.masses()
         recenteredpos = self.coordinates() - self.centerOfMass()
-        rog_sq = Numeric.sum(masses*Numeric.add.reduce(Numeric.power(recenteredpos, 2), axis=1))/self.totalMass()
-        return Numeric.sqrt(rog_sq)
+        rog_sq = numpy.sum(masses*numpy.add.reduce(numpy.power(recenteredpos, 2), axis=1))/self.totalMass()
+        return numpy.sqrt(rog_sq)
     def momentOfInertia(self):
         # Convert to local coordinates
         recenteredpos = self.coordinates() - self.centerOfMass()
@@ -159,24 +159,23 @@ Methods:
         Ixy = Iyx = -1*reduce(lambda t,a: t+a[0]*a[1][0]*a[1][1], values, 0.)
         Ixz = Izx = -1*reduce(lambda t,a: t+a[0]*a[1][0]*a[1][2], values, 0.)
         Iyz = Izy = -1*reduce(lambda t,a: t+a[0]*a[1][1]*a[1][2], values, 0.)
-        return Numeric.array([[Ixx, Ixy, Ixz],[Iyx, Iyy, Iyz],[Izx, Izy, Izz]])
+        return numpy.array([[Ixx, Ixy, Ixz],[Iyx, Iyy, Iyz],[Izx, Izy, Izz]])
     def principleAxes(self):
         from LinearAlgebra import eigenvectors
         eigenval, eigenvec = eigenvectors(self.momentOfInertia())
         # Sort
-        indices = Numeric.argsort(eigenval)
-        return Numeric.take(eigenvec, indices) 
+        indices = numpy.argsort(eigenval)
+        return numpy.take(eigenvec, indices) 
     def coordinates(self, ts=None):
+        indices = self.indices()
         if ts == None:
-            # The way this is implemented is very slow
-            # When I upgrade to numpy I can use indexed arrays
-            #return Numeric.array([atom.pos for atom in self.atoms])
-
             # Let's cheat for the fast case
             coord = self.atoms[0].universe.coord
-            return Numeric.array([coord[i] for i in self.indices()])
+            return coord[indices]
+            #return numpy.array([coord[i] for i in self.indices()])
         else:
-            return Numeric.array([ts[i] for i in self.indices()])
+            return ts[indices]
+            #return numpy.array([ts[i] for i in self.indices()])
 
 class Residue(AtomGroup):
     """A group of atoms corresponding to a residue

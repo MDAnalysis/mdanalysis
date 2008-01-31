@@ -1,21 +1,13 @@
 
+cimport c_numpy
+c_numpy.import_array()
+
 ctypedef int size_t
 
 cdef extern from "Python.h":
     int PyErr_CheckSignals()
-
-cdef extern from "Numeric/arrayobject.h":
-    struct PyArray_Descr:
-        int type_num, elsize
-        char type
-
-    ctypedef class Numeric.ArrayType [object PyArrayObject]:
-        cdef char *data
-        cdef int nd
-        cdef int *dimensions, *strides
-        cdef object base
-        cdef PyArray_Descr *descr
-        cdef int flags
+    void* PyCObject_AsVoidPtr(object o)
+    char* PyString_AsString(object o)
 
 cdef extern from *:
     ctypedef int fio_fd
@@ -46,19 +38,15 @@ ctypedef struct dcdhandle:
     int first
     int with_unitcell
 
-cdef extern from "Python.h":
-    void* PyCObject_AsVoidPtr(object o)
-    char* PyString_AsString(object o)
-
 cdef extern from "correl.h":
     void copyseries(int frame, char *data, int *strides, float *tempX, float *tempY, float *tempZ, char* datacode, int numdata, int* atomlist, int* atomcounts, int lowerb, double *aux)
 
-import Numeric
+import numpy
 
 def __read_timecorrel(object self, object atoms, object atomcounts, object format, object auxdata, int sizedata, int lowerb, int upperb, int start, int stop, int skip):
     cdef dcdhandle* dcd
-    cdef ArrayType atomlist, atomcountslist, auxlist
-    cdef ArrayType data, temp
+    cdef c_numpy.ndarray atomlist, atomcountslist, auxlist
+    cdef c_numpy.ndarray data, temp
     cdef float *tempX, *tempY, *tempZ
     cdef int rc
     cdef char* fmtstr
@@ -72,18 +60,18 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     if numdata==0:
         raise Exception("No data requested, timeseries is empty")
     fmtstr = PyString_AsString(format)
-    atomlist = Numeric.array(atoms, Numeric.Int32)
-    atomcountslist = Numeric.array(atomcounts, Numeric.Int32)
-    auxlist = Numeric.array(auxdata, Numeric.Float64)
+    atomlist = numpy.array(atoms, numpy.int32)
+    atomcountslist = numpy.array(atomcounts, numpy.int32)
+    auxlist = numpy.array(auxdata, numpy.float64)
     #print "atomlist", atomlist
     #print "atomcountslist", atomcountslist
     #print "formatcode", fmtstr
     cdef int range
     range = upperb - lowerb + 1
     # Create data list
-    #data = Numeric.zeros((numframes, sizedata), Numeric.Float64)
-    data = Numeric.zeros((sizedata, numframes), Numeric.Float64)
-    temp = Numeric.zeros((3, range), Numeric.Float32)
+    #data = numpy.zeros((numframes, sizedata), numpy.float64)
+    data = numpy.zeros((sizedata, numframes), numpy.float64)
+    temp = numpy.zeros((3, range), numpy.float32)
     tempX = <float*>(temp.data+0*temp.strides[0])
     tempY = <float*>(temp.data+1*temp.strides[0])
     tempZ = <float*>(temp.data+2*temp.strides[0])
@@ -130,8 +118,8 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
 
 def __read_timeseries(object self, object atoms, int skip):
     cdef dcdhandle* dcd
-    cdef ArrayType atomlist
-    cdef ArrayType coord, temp
+    cdef c_numpy.ndarray atomlist
+    cdef c_numpy.ndarray coord, temp
     cdef float *tempX, *tempY, *tempZ
     cdef int rc
 
@@ -142,14 +130,14 @@ def __read_timeseries(object self, object atoms, int skip):
     numatoms = len(atoms)
     if numatoms==0:
         raise Exception("No atoms passed into __read_timeseries function")
-    atomlist = Numeric.array(atoms)
+    atomlist = numpy.array(atoms)
     cdef int lowerb, upperb, range
     lowerb = atoms[0]
     upperb = atoms[-1]
     range = upperb - lowerb + 1
     # Create atom list
-    coord = Numeric.zeros((numatoms, numframes, 3), Numeric.Float64)
-    temp = Numeric.zeros((3, range), Numeric.Float32)
+    coord = numpy.zeros((numatoms, numframes, 3), numpy.float64)
+    temp = numpy.zeros((3, range), numpy.float32)
     tempX = <float*>(temp.data+0*temp.strides[0])
     tempY = <float*>(temp.data+1*temp.strides[0])
     tempZ = <float*>(temp.data+2*temp.strides[0])

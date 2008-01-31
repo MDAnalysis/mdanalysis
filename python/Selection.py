@@ -90,7 +90,7 @@ class AroundSelection(Selection):
         self.sqdist = dist*dist
         self.periodic = periodic
     def _apply(self, universe):
-        # For efficiency, get a reference to the actual Numeric position arrays
+        # For efficiency, get a reference to the actual numpy position arrays
         x = universe.coord.x ; y = universe.coord.y ; z = universe.coord.z
         sel_atoms = self.sel._apply(universe)
         sys_atoms = self._universe_atoms-sel_atoms
@@ -118,7 +118,7 @@ class PointSelection(Selection):
     def _apply(self, universe):
         if self.periodic:
             dim = universe.coord.dimensions[0:3]
-        # For efficiency, get a reference to the actual Numeric position arrays
+        # For efficiency, get a reference to the actual numpy position arrays
         u_x = universe.coord.x ; u_y = universe.coord.y ; u_z = universe.coord.z
         res_atoms = []
         x, y, z = self.ref
@@ -313,7 +313,7 @@ class PropertySelection(Selection):
         self.value = value
         self.abs = abs
     def _apply(self, universe):
-        # For efficiency, get a reference to the actual Numeric position arrays
+        # For efficiency, get a reference to the actual numpy position arrays
         if self.prop in ("x", "y", "z"):
             p = getattr(universe.coord, '_'+self.prop)
             if not self.abs:
