@@ -16,7 +16,7 @@ class TimeseriesCollection(object):
     def __len__(self):
         return len(self.timeseries)
     def __getitem__(self, item):
-        if (type(item) is int) or (type(item) is slice):
+        if (type(item) == int) or (type(item) == slice):
             return self.timeseries[item]
         else: raise IndexError
     def __repr__(self):
