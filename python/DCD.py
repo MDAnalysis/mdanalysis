@@ -181,7 +181,7 @@ Methods:
                 raise IndexError
             self._jump_to_frame(frame)
             ts = self.ts
-            ts.frame = self.__read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
+            ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
             return ts
         elif type(frame) == slice: # if frame is a slice object
             if not (((type(frame.start) == int) or (frame.start == None)) and
