@@ -105,7 +105,7 @@ def __parseatoms_(lines, atoms_per, attr, structure, numlines):
     for i in xrange(numlines):
         l = lines()
         # 0     1      2      3        4         5       6       7      8
-        iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove =  l[:8], l[9:13].strip(), l[14:18], l[19:23].strip(), l[24:28].strip(), l[29:33].strip(), l[35:48], l[48:62], l[62:70]   #  l[70:84], l[84:98] ignore ECH and EHA
+        iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove =  l[:8], l[9:13].strip(), l[14:18], l[19:23].strip(), l[24:28].strip(), l[29:33].strip(), l[34:48], l[48:62], l[62:70]   #  l[70:84], l[84:98] ignore ECH and EHA
         # Atom(atomno, atomname, type, resname, resid, segid, mass, charge)
         # We want zero-indexing for atom numbers to make it easy
         atom_desc = Atom(int(iatom)-1,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge))
