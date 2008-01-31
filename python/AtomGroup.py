@@ -120,7 +120,7 @@ Methods:
         recenteredpos = self.coordinates() - self.centerOfMass()
         rog_sq = Numeric.sum(masses*Numeric.add.reduce(Numeric.power(recenteredpos, 2), axis=1))/self.totalMass()
         return Numeric.sqrt(rog_sq)
-    def principleAxis(self):
+    def momentOfInertia(self):
         # Convert to local coordinates
         recenteredpos = self.coordinates() - self.centerOfMass()
         masses = self.masses()
@@ -138,10 +138,13 @@ Methods:
         Ixy = Iyx = -1*reduce(lambda t,a: t+a[0]*a[1][0]*a[1][1], values, 0.)
         Ixz = Izx = -1*reduce(lambda t,a: t+a[0]*a[1][0]*a[1][2], values, 0.)
         Iyz = Izy = -1*reduce(lambda t,a: t+a[0]*a[1][1]*a[1][2], values, 0.)
+        return Numeric.array([[Ixx, Ixy, Ixz],[Iyx, Iyy, Iyz],[Izx, Izy, Izz]])
+    def principleAxes(self):
         from LinearAlgebra import eigenvectors
-        eigenval, eigenvec = eigenvectors(Numeric.array([[Ixx, Ixy, Ixz],[Iyx, Iyy, Iyz],[Izx, Izy, Izz]]))
-        # Find minimum
-        return min(zip(eigenval, eigenvec))[1]
+        eigenval, eigenvec = eigenvectors(self.momentOfInertia())
+        # Sort
+        indices = Numeric.argsort(eigenval)
+        return Numeric.take(eigenvec, indices) 
     def coordinates(self, ts=None):
         if ts == None:
             return Numeric.array([atom.pos for atom in self._atoms])
