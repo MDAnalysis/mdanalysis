@@ -205,8 +205,7 @@ Methods:
     def __len__(self):
         return len(self._residues)
     def __getitem__(self, item):
-        if (type(item) is int):
-            if item > len(self._residues): raise IndexError("Residue index is out of range") 
+        if (type(item) is int) or (type(item) is slice):
             return self._residues[item]
         else: raise NotImplementedError()
     def __getattr__(self, attr):
