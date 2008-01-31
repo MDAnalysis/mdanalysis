@@ -12,7 +12,7 @@ cdef extern from "calc_distances.h":
     void calc_self_distance_array(coordinate* ref, int numref, float* box, double* distances, int distnum)
 
 
-import numpy as N
+import numpy
 def distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf, c_numpy.ndarray box, c_numpy.ndarray result=None):
     cdef c_numpy.ndarray distances
     cdef int confnum, refnum
@@ -34,9 +34,9 @@ def distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf, c_numpy.ndarray bo
     if not result is None:
         if (result.nd != 2 and result.dimensions[0] != refnum and results.dimensions[1] != confnum):
             raise Exception("result array has incorrect size or datatype - should be (%dx%d)"%(refnum,confnum))
-        distances = N.asarray(result)
+        distances = numpy.asarray(result)
     else:
-        distances = N.zeros((refnum, confnum), N.float64)
+        distances = numpy.zeros((refnum, confnum), numpy.float64)
 
     calc_distance_array(<coordinate*>ref.data, refnum, <coordinate*>conf.data, confnum, <float*>box.data, <double*>distances.data)
     return distances
@@ -60,8 +60,8 @@ def self_distance_array(c_numpy.ndarray ref, c_numpy.ndarray box, c_numpy.ndarra
     if not result is None:
         if (result.nd != 1 and result.dimensions[0] != distnum):
             raise Exception("result array has incorrect size or datatype - should be (%d)"%(distnum))
-        distances = N.asarray(result)
+        distances = numpy.asarray(result)
     else:
-        distances = N.zeros((distnum,), N.float64)
+        distances = numpy.zeros((distnum,), numpy.float64)
     calc_self_distance_array(<coordinate*>ref.data, refnum, <float*>box.data, <double*>distances.data, distnum)
     return distances
