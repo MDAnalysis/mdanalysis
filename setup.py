@@ -50,7 +50,7 @@ if __name__ == '__main__':
                             define_macros=define_macros,
                   #          include_dirs = include_dirs+['/System/Library/Frameworks/vecLib.framework/Versions/A/Headers'],
                   #          extra_link_args=["-framework","vecLib"],
-                            include_dirs = include_dirs+['/opt/intel/cmkl/8.0/include'],
+                            include_dirs = include_dirs+['/opt/intel/cmkl/8.0/include',numpy.get_numpy_include()],
                             extra_link_args=["-L/opt/intel/cmkl/8.0/lib/32", "-lmkl_lapack","-lmkl_lapack32","-lmkl_ia32","-lmkl","-lguide"],
                             extra_compile_args=extra_compile_args),
                   Extension('delaunay', ['src/delaunay/delaunay.pyx', 'src/delaunay/blas.c', 'src/delaunay/tess.c'],
