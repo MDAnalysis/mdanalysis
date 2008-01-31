@@ -625,6 +625,30 @@ static int skip_dcdstep(fio_fd fd, int natoms, int nfixed, int charmm, int numst
   return DCD_SUCCESS;
 }
 
+static int jump_to_dcdstep(fio_fd fd, int natoms, int nsets, int nfixed, int charmm, int header_size, int step) {
+  int rc;
+  if (step > nsets) {
+    return DCD_BADEOF;
+  }
+  // Calculate file offset
+	off_t extrablocksize, ndims, firstframesize, framesize;
+	off_t pos;
+	extrablocksize = charmm & DCD_HAS_EXTRA_BLOCK ? 48 + 8 : 0;
+	ndims = charmm & DCD_HAS_4DIMS ? 4 : 3;
+	firstframesize = (natoms+2) * ndims * sizeof(float) + extrablocksize;
+	framesize = (natoms-nfixed+2) * ndims * sizeof(float) + extrablocksize;
+	// Use zero indexing
+	if (step == 0) {
+		pos = header_size;
+	}
+	else {
+		pos = header_size + firstframesize + framesize * (step-1);
+	}
+	rc = fio_fseek(fd, pos, FIO_SEEK_SET);
+	if (rc == -1) return DCD_BADEOF;	
+  return DCD_SUCCESS;
+}
+
 #define NFILE_POS 8L
 #define NSTEP_POS 20L
 

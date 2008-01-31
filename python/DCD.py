@@ -212,14 +212,20 @@ Methods:
         #import Numeric
         #return Numeric.concatenate(tuple(results), 0)
         return self._read_timeseries(atom_numbers, start, stop, skip, format)
-    def correl(self, timeseries, skip=1):
+    def correl(self, timeseries, start=0, stop=-1, skip=1):
+        if (start < 0): start += len(self)
+        if (stop < 0): stop += len(self)
+        if (stop <= start): raise Exception("Stop frame is lower than start frame")
+        if ((start < 0) or (start >= len(self)) or
+           (stop < 0) or (stop >= len(self))):
+               raise IndexError
         atomlist = timeseries.getAtomList()
         format = timeseries.getFormat()
         lowerb, upperb = timeseries.getBounds()
         sizedata = timeseries.getDataSize()
         atomcounts = timeseries.getAtomCounts()
         auxdata = timeseries.getAuxData()
-        return self._read_timecorrel(atomlist, atomcounts, format, auxdata, sizedata, skip, lowerb, upperb)
+        return self._read_timecorrel(atomlist, atomcounts, format, auxdata, sizedata, lowerb, upperb, start, stop, skip)
     def __len__(self):
         return self.numframes
     def close_trajectory(self):

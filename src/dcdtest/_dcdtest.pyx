@@ -1,6 +1,9 @@
 
 ctypedef int size_t
 
+cdef extern from "Python.h":
+    int PyErr_CheckSignals()
+
 cdef extern from "Numeric/arrayobject.h":
     struct PyArray_Descr:
         int type_num, elsize
@@ -24,6 +27,7 @@ cdef extern from "readdcd.h":
                        float *unitcell, int nfixed, int first, int *freeind,
                        float *fixedcoords, int reverse, int charmm)
     int skip_dcdstep(fio_fd fd, int natoms, int nfixed, int charmm, int numstep)
+    int jump_to_dcdstep(fio_fd fd, int natoms, int nsets, int nfixed, int charmm, int header_size, int step)
 
 ctypedef struct dcdhandle:
     fio_fd fd
@@ -51,7 +55,7 @@ cdef extern from "correl.h":
 
 import Numeric
 
-def __read_timecorrel(object self, object atoms, object atomcounts, object format, object auxdata, int sizedata, int skip, int lowerb, int upperb):
+def __read_timecorrel(object self, object atoms, object atomcounts, object format, object auxdata, int sizedata, int lowerb, int upperb, int start, int stop, int skip):
     cdef dcdhandle* dcd
     cdef ArrayType atomlist, atomcountslist, auxlist
     cdef ArrayType data, temp
@@ -61,7 +65,8 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
 
     dcd = <dcdhandle*>PyCObject_AsVoidPtr(self._dcd_C_ptr)
     cdef int numframes
-    numframes = dcd.nsets / skip
+    if (stop == -1): stop = dcd.nsets
+    numframes = (stop-start+1) / skip
     cdef int numdata
     numdata = len(format)
     if numdata==0:
@@ -78,10 +83,19 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     tempX = <float*>(temp.data+0*temp.strides[0])
     tempY = <float*>(temp.data+1*temp.strides[0])
     tempZ = <float*>(temp.data+2*temp.strides[0])
-    # Jump to the beginning of the trajectory file
+
+    # Reset trajectory
     rc = fio_fseek(dcd.fd, dcd.header_size, 0) #FIO_SEEK_SET
     dcd.setsread = 0
     dcd.first = 1
+
+    # Jump to frame
+    if (start > 0):
+        rc = jump_to_dcdstep(dcd.fd, dcd.natoms, dcd.nsets, dcd.nfixed, dcd.charmm, dcd.header_size, start)
+        if (rc < 0):
+            raise IOError("Error jumping to starting frame")
+        dcd.first = 0
+        dcd.setsread = start
 
     cdef int index, numskip
     cdef int i, j
@@ -102,6 +116,12 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
             raise IOError("Error reading frame from DCD file")
         # Copy into data array based on format
         copyseries(i, data.data, data.strides, tempX, tempY, tempZ, fmtstr, numdata, <int*>atomlist.data, <int*>atomcountslist.data, lowerb, <double*>auxlist.data);
+        PyErr_CheckSignals()
+
+    # Reset trajectory
+    rc = fio_fseek(dcd.fd, dcd.header_size, 0) #FIO_SEEK_SET
+    dcd.setsread = 0
+    dcd.first = 1
     return data
 
 def __read_timeseries(object self, object atoms, int skip):
@@ -158,3 +178,8 @@ def __read_timeseries(object self, object atoms, int skip):
             (<double*> (coord.data+j*coord.strides[0]+i*coord.strides[1]+1*coord.strides[2]))[0] = tempY[index]
             (<double*> (coord.data+j*coord.strides[0]+i*coord.strides[1]+2*coord.strides[2]))[0] = tempZ[index]
     return coord
+
+cdef int jump_to_frame(dcdhandle *dcd, int frame):
+  if (frame > dcd.nsets): return -1
+  # Calculate frame offset
+  
