@@ -25,6 +25,8 @@ typedef struct {
 } dcdhandle;
 
 
+int jump_to_frame(dcdhandle *dcd, int frame);
+
 static PyObject *
 __write_dcd_header(PyObject *self, PyObject *args)
 {
