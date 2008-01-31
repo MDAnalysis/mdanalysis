@@ -134,7 +134,7 @@ class LAMMPSData(object):
 	# Liz formatted -- works with MDAnalysis verison 59
 	#psf_atom_format = "%8d %4.4s %-4.4s %-4.4s %-4.4s %-4.4s %16.8e %1s %-7.4f %7.7s %s\n"
 	# Oli formatted -- works with MDAnalysis verison 81
-	psf_atom_format = "%8d%4s%-4s%4s%-4s%4s%-14.6f%-14.4f%8s\n"
+	psf_atom_format = "%8d %4s %-4s %4s %-4s% 4s %-14.6f%-14.6f%8s\n"
         file = open(filename, 'w')
         file.write("PSF\n\n")
         file.write(string.rjust('0', 8) + ' !NTITLE\n\n')
