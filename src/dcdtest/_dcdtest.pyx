@@ -70,14 +70,18 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     cdef int numdata
     numdata = len(format)
     if numdata==0:
-        raise Exception("No data requested")
+        raise Exception("No data requested, timeseries is empty")
     fmtstr = PyString_AsString(format)
     atomlist = Numeric.array(atoms, Numeric.Int32)
     atomcountslist = Numeric.array(atomcounts, Numeric.Int32)
     auxlist = Numeric.array(auxdata, Numeric.Float64)
+    #print "atomlist", atomlist
+    #print "atomcountslist", atomcountslist
+    #print "formatcode", fmtstr
     cdef int range
     range = upperb - lowerb + 1
     # Create data list
+    #data = Numeric.zeros((numframes, sizedata), Numeric.Float64)
     data = Numeric.zeros((sizedata, numframes), Numeric.Float64)
     temp = Numeric.zeros((3, range), Numeric.Float32)
     tempX = <float*>(temp.data+0*temp.strides[0])

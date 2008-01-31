@@ -40,6 +40,11 @@ Methods:
         return self.number == other.number
     def __hash__(self):
         return hash(self.number)
+    def __add__(self, other):
+        if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
+            raise TypeError('Can only concatenate Atoms (not "'+repr(other.__class__.__name__)+'") to AtomGroup')
+        if isinstance(other, Atom): return AtomGroup([self, other])
+        else: return AtomGroup([self]+other._atoms)
 
 class NameError(Exception):
     pass
@@ -90,9 +95,10 @@ Methods:
             return other in self.__atom_cache
         else: return other in self._atoms
     def __add__(self, other):
-        if other.__class__ is not self.__class__:
-            raise TypeError('Can only concatenate AtomGroup (not "'+repr(self.__class__.__name__)+'")to AtomGroup')
-        return AtomGroup(self._atoms+other._atoms)
+        if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
+            raise TypeError('Can only concatenate AtomGroup (not "'+repr(other.__class__.__name__)+'") to AtomGroup')
+        if isinstance(other, AtomGroup): return AtomGroup(self._atoms + other._atoms)
+        else: return AtomGroup(self._atoms+[other])
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(len(self._atoms))+' atoms>'
     def indices(self):

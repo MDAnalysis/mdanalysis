@@ -183,6 +183,7 @@ class AtomSelection(Selection):
         for a in system._atoms:
             if ((a.name == self.name) and (a.resid == self.resid) and (a.segid == self.segid)):
                 return set([a])
+        return set([])
     def __repr__(self):
         return "<'AtomSelection' "+repr(self.segid)+" "+repr(self.resid)+" "+repr(self.name)+" >"
 

@@ -2,6 +2,7 @@
 #ifndef CORREL_H
 #define CORREL_H
 
+#include <stdio.h>
 #include <math.h>
 
 static void
@@ -12,6 +13,7 @@ copyseries(int frame, char *data, const int *strides, const float *tempX, const 
 	double x1, x2, y1, y2, z1, z2, x3, y3, z3, aux1, aux2;
 	int i = 0, j = 0, atomno = 0;
 	int dataset = 0;
+	printf("strides (%d, %d)\n", strides[0], strides[1]);
 	for (i=0;i<numdata;i++) {
 		code = datacode[i];
 		switch (code) {
@@ -29,19 +31,6 @@ copyseries(int frame, char *data, const int *strides, const float *tempX, const 
         *(double*)(data + dataset++*strides[0] + frame*strides[1]) = x1/aux2;
         *(double*)(data + dataset++*strides[0] + frame*strides[1]) = y1/aux2;
         *(double*)(data + dataset++*strides[0] + frame*strides[1]) = z1/aux2;
-        break;
-			case 'g':
-        x1 = y1 = z1 = 0.0;
-        index2 = atomcounts[i];
-        for (j=0;j<index2;j++) {
-          index1 = atomlist[atomno++]-lowerb;
-          x1 += tempX[index1];
-          y1 += tempY[index1];
-          z1 += tempZ[index1];
-        }
-        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = x1/index2;
-        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = y1/index2;
-        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = z1/index2;
         break;
 			case 'x':
 				index1 = atomlist[atomno++]-lowerb;
