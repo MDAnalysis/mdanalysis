@@ -182,8 +182,3 @@ def __read_timeseries(object self, object atoms, int skip):
             (<double*> (coord.data+j*coord.strides[0]+i*coord.strides[1]+1*coord.strides[2]))[0] = tempY[index]
             (<double*> (coord.data+j*coord.strides[0]+i*coord.strides[1]+2*coord.strides[2]))[0] = tempZ[index]
     return coord
-
-cdef int jump_to_frame(dcdhandle *dcd, int frame):
-  if (frame > dcd.nsets): return -1
-  # Calculate frame offset
-  

@@ -916,9 +916,9 @@ static PyMethodDef DCDMethods[] = {
 };
 
 PyMODINIT_FUNC
-init_dcd(void)
+init_dcdmodule(void)
 {
-	(void) Py_InitModule("_dcd", DCDMethods);
+	(void) Py_InitModule("_dcdmodule", DCDMethods);
 	import_array();
 }
 

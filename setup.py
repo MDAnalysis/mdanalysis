@@ -3,9 +3,9 @@ from distutils.core import setup, Extension
 from distutils import sysconfig
 from Pyrex.Distutils import build_ext
 
-srcs = [['dcd/dcd.c'],['numtools/numtools.c'],['numtools/_rms_matrix.pyx'],['delaunay/_delaunay.pyx', 'delaunay/blas.c', 'delaunay/tess.c']]
+srcs = [['dcd/dcd.c'],['dcd/_dcdtest.pyx'],['numtools/_rms_matrix.pyx'],['delaunay/_delaunay.pyx', 'delaunay/blas.c', 'delaunay/tess.c']]
 srcs = [[os.path.join('src', x) for x in s] for s in srcs]
-include_dirs = ['src/include']
+include_dirs = ['src/dcd/include']
 
 if __name__ == '__main__':
     DOC_FILES = ('COPYRIGHT', 'README', 'VERSION', 'CHANGELOG', 'KNOWN_BUGS', 'MAINTAINERS', 'TODO')
@@ -31,24 +31,19 @@ if __name__ == '__main__':
         extra_compile_args = ''
 
     define_macros = [('DEBUG', '1')]
-    extensions = [Extension('_dcd', srcs[0],
+    extensions = [Extension('_dcdmodule', srcs[0],
                             include_dirs = include_dirs,
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('_dcdtest', ['src/dcdtest/_dcdtest.pyx'],
-                            include_dirs = include_dirs,
-                            define_macros=define_macros,
-                            extra_compile_args=extra_compile_args),
-                  Extension('_numtools', srcs[1],
+                  Extension('_dcdtest', srcs[1],
                             include_dirs = include_dirs,
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
                   Extension('distances', ['src/numtools/distances.pyx'],
-                            include_dirs = include_dirs,
+                            include_dirs = [],
                             libraries = ['m'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                            #extra_link_args=["-framework","vecLib"]),
                   #Extension('_rms_matrix', srcs[2],
                   #          include_dirs = include_dirs,
                   #          libraries = ['m'],

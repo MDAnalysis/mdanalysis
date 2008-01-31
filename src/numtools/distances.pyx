@@ -25,7 +25,7 @@ cdef extern from "Numeric/arrayobject.h":
 cdef extern from "string.h":
     void* memcpy(void *dst, void *src, int len)
 
-cdef extern from "distances.h":
+cdef extern from "calc_distances.h":
     ctypedef float coordinate[3]
 
     void calc_distance_array(coordinate* ref, int numref, coordinate* conf, int numconf, float* box, double* distances)

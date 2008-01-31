@@ -238,19 +238,19 @@ Methods:
     def __repr__(self):
             return "< DCDReader '"+ self.dcdfilename + "' with " + repr(self.numframes) + " frames of " + repr(self.numatoms) + " atoms (" + repr(self.fixed) + " fixed) >"
 
-import _dcd
+import _dcdmodule
 import new
-DCDReader._read_dcd_header = new.instancemethod(_dcd.__read_dcd_header, None, DCDReader)
-DCDReader._read_next_frame = new.instancemethod(_dcd.__read_next_frame, None, DCDReader)
-DCDReader._jump_to_frame = new.instancemethod(_dcd.__jump_to_frame, None, DCDReader)
-DCDReader._reset_dcd_read = new.instancemethod(_dcd.__reset_dcd_read, None, DCDReader)
-DCDReader._finish_dcd_read = new.instancemethod(_dcd.__finish_dcd_read, None, DCDReader)
-DCDReader._read_timeseries = new.instancemethod(_dcd.__read_timeseries, None, DCDReader)
+DCDReader._read_dcd_header = new.instancemethod(_dcdmodule.__read_dcd_header, None, DCDReader)
+DCDReader._read_next_frame = new.instancemethod(_dcdmodule.__read_next_frame, None, DCDReader)
+DCDReader._jump_to_frame = new.instancemethod(_dcdmodule.__jump_to_frame, None, DCDReader)
+DCDReader._reset_dcd_read = new.instancemethod(_dcdmodule.__reset_dcd_read, None, DCDReader)
+DCDReader._finish_dcd_read = new.instancemethod(_dcdmodule.__finish_dcd_read, None, DCDReader)
+DCDReader._read_timeseries = new.instancemethod(_dcdmodule.__read_timeseries, None, DCDReader)
 
-DCDWriter._write_dcd_header = new.instancemethod(_dcd.__write_dcd_header, None, DCDWriter)
-DCDWriter._write_next_frame = new.instancemethod(_dcd.__write_next_frame, None, DCDWriter)
-DCDWriter._finish_dcd_write = new.instancemethod(_dcd.__finish_dcd_write, None, DCDWriter)
-del(_dcd)
+DCDWriter._write_dcd_header = new.instancemethod(_dcdmodule.__write_dcd_header, None, DCDWriter)
+DCDWriter._write_next_frame = new.instancemethod(_dcdmodule.__write_next_frame, None, DCDWriter)
+DCDWriter._finish_dcd_write = new.instancemethod(_dcdmodule.__finish_dcd_write, None, DCDWriter)
+del(_dcdmodule)
 
 import _dcdtest
 #DCDReader._read_timeseries = new.instancemethod(_dcdtest.__read_timeseries, None, DCDReader)
