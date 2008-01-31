@@ -69,7 +69,7 @@ if __name__ == '__main__':
                   ]
 
     setup(name              = 'MDAnalysis',
-          version           = '0.3',
+          version           = '0.5-rc1',
           description       = 'Python tools to support analysis of trajectories',
           author            = 'Naveen Michaud-Agrawal',
           author_email      = 'naveen.michaudagrawal@gmail.com',
