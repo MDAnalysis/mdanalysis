@@ -140,6 +140,15 @@ Methods:
         return dict(zip(desc, struct.unpack("iiiiiiidiPPiiii",self._dcd_C_str)))
     def __len__(self):
         return self.numframes
+    def __iter__(self):
+        # Reset the trajectory file, read from the start
+        # usage is "from ts in dcd:" where dcd does not have indexes
+        self._reset_dcd_read()
+        def iterDCD():
+            for i in xrange(0, self.numframes, self.skip):
+                try: yield self.read_next_timestep()
+                except IOError: raise StopIteration
+        return iterDCD()
     def __getitem__(self, frame):
         if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
             raise TypeError
@@ -164,6 +173,9 @@ Methods:
                     yield self[i]
             return iterDCD()
     def _check_slice_indices(self, start, stop, skip):
+        if start == None: start = 0
+        if stop == None: stop = len(self)
+        if skip == None: skip = 1
         if (start < 0): start += len(self)
         if (stop < 0): stop += len(self)
         elif (stop > len(self)): stop = len(self)
@@ -171,19 +183,7 @@ Methods:
         if ((start < 0) or (start >= len(self)) or
            (stop < 0) or (stop > len(self))):
                raise IndexError
-        if skip == None: skip = 1
         return (start, stop, skip)
-    def __iter__(self):
-        # Reset the trajectory file
-        self._reset_dcd_read()
-        def iterDCD():
-            for i in xrange(0, self.numframes, self.skip):
-                try:
-                    #self._jump_to_frame(i)
-                    yield self.read_next_timestep()
-                except IOError:
-                    raise StopIteration
-        return iterDCD()
     def read_next_timestep(self, ts=None):
         if ts is None: ts = self.ts
         ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
