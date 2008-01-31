@@ -453,6 +453,8 @@ For reference, the grammar that we parse is :
             return self.classdict[op](data)
         elif op == self.PROTEIN:
             return self.classdict[op]()
+        elif op == self.ALL:
+            return self.classdict[op]()
         elif op == self.BB:
             return self.classdict[op]()
         elif op == self.RESID:
