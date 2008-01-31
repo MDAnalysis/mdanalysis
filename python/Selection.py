@@ -36,7 +36,7 @@ class Selection:
             raise Exception("Must pass in a Universe to the Selection")
         # make a set of all the atoms in the universe
         # XXX this should be static to all the class members
-        self._universe_atoms = set(universe.atoms)
+        Selection._universe_atoms = set(universe.atoms)
         from AtomGroup import AtomGroup
         if not hasattr(self, "_cache"):
             cache = list(self._apply(universe))
