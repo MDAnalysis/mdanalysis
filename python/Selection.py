@@ -308,9 +308,12 @@ class PropertySelection(Selection):
             p = getattr(Selection.coord, '_'+self.prop)
             indices = numpy.array([a.number for a in group.atoms])
             if not self.abs:
-                result_set = [group.atoms[i] for i in numpy.nonzero(self.operator(p[indices], self.value))]
+                # XXX Hack for difference in numpy.nonzero between version < 1. and version > 1
+                res = numpy.nonzero(self.operator(p[indices], self.value))
             else:
-                result_set = [group.atoms[i] for i in numpy.nonzero(self.operator(numpy.abs(p[indices]), self.value))]
+                res = numpy.nonzero(self.operator(numpy.abs(p[indices]), self.value))
+            if type(res) == tuple: res = res[0]
+            result_set = [group.atoms[i] for i in res]
         elif self.prop == "mass":
             result_set = [a for a in group.atoms if self.operator(a.mass,self.value)]
         elif self.prop == "charge":
