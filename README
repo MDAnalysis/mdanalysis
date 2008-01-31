@@ -2,7 +2,8 @@ MDAnalysis
 
 This software is copyright © Naveen Michaud-Agrawal.
 
-This software is released under the GPL software license.
+This software is released under the GPL software license, with the exception of the DCD reading/writing code, which is licensed under the UIUC Open Source License.
+
 This license, including disclaimer, is available in the 'LICENSE' file.
 
 

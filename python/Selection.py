@@ -7,6 +7,7 @@ Currently all atom arrays are handled internally as sets, but returned as AtomGr
 """
 
 from sets import Set as set
+import numpy
 
 class Selection:
     def __init__(self):
@@ -84,69 +85,45 @@ class OrSelection(Selection):
         return "<'OrSelection' "+repr(self.lsel)+","+repr(self.rsel)+">"
 
 class AroundSelection(Selection):
-    def __init__(self, sel, dist, periodic = False):
+    def __init__(self, sel, cutoff, periodic = False):
         Selection.__init__(self)
         self.sel = sel
-        self.sqdist = dist*dist
+        self.cutoff = cutoff
+        self.sqdist = cutoff*cutoff
         self.periodic = periodic
     def _apply(self, universe):
-        # For efficiency, get a reference to the actual numpy position arrays
-        x = universe.coord.x ; y = universe.coord.y ; z = universe.coord.z
+        # Calculate the atoms within a certain periodic distance from selection
         sel_atoms = self.sel._apply(universe)
         sys_atoms = self._universe_atoms-sel_atoms
-        res_atoms = []
-        for atom1 in sys_atoms:
-            a1 = atom1.number
-            x1 = x[a1]; y1 = y[a1]; z1 = z[a1]
-            for atom2 in sel_atoms:
-                a2 = atom2.number
-                x2 = x[a2]; y2 = y[a2]; z2 = z[a2]
-                sqdist = (x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)+(z2-z1)*(z2-z1)
-                if sqdist <= self.sqdist:
-                    res_atoms.append(atom1)
+        sel_indices = numpy.array([a.number for a in sel_atoms])
+        sys_indices = numpy.array([a.number for a in sys_atoms])
+        sel_coor = universe.coord[sel_indices]
+        sys_coor = universe.coord[sys_indices]
+        import distances
+        dist = distances.distance_array(sys_coor, sel_coor, universe.dimensions[:3])
+        res_atoms = [universe.atoms[i] for i in sys_indices[numpy.any(dist <= self.cutoff, axis=1)]]
         return set(res_atoms)
     def __repr__(self):
         import math
-        return "<'AroundSelection' "+repr(math.sqrt(self.sqdist))+" around "+repr(self.sel)+">"
+        return "<'AroundSelection' "+repr(self.cutoff)+" around "+repr(self.sel)+">"
 
 class PointSelection(Selection):
-    def __init__(self, x, y, z, cutoff, periodic = False):
+    def __init__(self, x, y, z, cutoff):
         Selection.__init__(self)
-        self.ref = (float(x), float(y), float(z))
+        self.ref = numpy.array((float(x), float(y), float(z)))
+        self.cutoff = float(cutoff)
         self.cutoffsq = float(cutoff)*float(cutoff)
-        self.periodic = periodic
     def _apply(self, universe):
-        if self.periodic:
-            dim = universe.dimensions[0:3]
-        # For efficiency, get a reference to the actual numpy position arrays
-        u_x = universe.coord.x ; u_y = universe.coord.y ; u_z = universe.coord.z
-        res_atoms = []
-        x, y, z = self.ref
-        for anum in range(len(universe.atoms)):
-            if not self.periodic:
-                sqdist = (u_x[anum]-x)*(u_x[anum]-x) + (u_y[anum]-y)*(u_y[anum]-y) + (u_z[anum]-z)*(u_z[anum]-z)
-                if sqdist <= self.cutoffsq: res_atoms.append(universe.atoms[anum])
-            else: 
-                if self.__cmp_periodic(u_x[anum], u_y[anum], u_z[anum], dim): res_atoms.append(universe.atoms[anum])
+        sys_indices = numpy.array([a.number for a in self._universe_atoms])
+        sys_coor = universe.coord[sys_indices]
+        ref_coor = self.ref[numpy.newaxis,...]
+        import distances
+        dist = distances.distance_array(sys_coor, ref_coor, universe.dimensions[:3])
+        res_atoms = [universe.atoms[i] for i in sys_indices[numpy.any(dist <= self.cutoff, axis=1)]]
         return set(res_atoms)
-    def __cmp_periodic(self, x, y, z, dim):
-        # XXX This is a candidate for writing in c
-        # or better yet, pass in the points and a cutoff and return the shortest
-        # distance
-        # Calculate closest possible position to ref, return True if
-        # it makes the cutoff
-        xref, yref, zref = self.ref
-        xneg = x - dim[0]; xpos = x + dim[0]
-        yneg = y - dim[1]; ypos = y + dim[1]
-        zneg = z - dim[2]; zpos = z + dim[2]
-        points = [(a, b, c) for a in [xneg, x, xpos] for b in [yneg, y, ypos] for c in [zneg, z, zpos]]
-        for i, j, k in points:
-            sqdist = (i-xref)*(i-xref) + (j-yref)*(j-yref) + (k-zref)*(k-zref)
-            if sqdist <= self.cutoffsq: return True
-        return False
     def __repr__(self):
         import math
-        return "<'PointSelection' "+repr(math.sqrt(self.cutoffsq))+" Ang around "+repr(self.pos)+">"
+        return "<'PointSelection' "+repr(self.cutoff)+" Ang around "+repr(self.ref)+">"
 
 class CompositeSelection(Selection):
     def __init__(self, name=None, type=None, resname=None, resid=None, segid=None):
@@ -317,11 +294,14 @@ class PropertySelection(Selection):
         if self.prop in ("x", "y", "z"):
             p = getattr(universe.coord, '_'+self.prop)
             if not self.abs:
-                return set([a for a in universe.atoms if self.operator(p[a.number], self.value)])
+                result_set = [universe.atoms[i] for i in numpy.nonzero(self.operator(p, self.value))[0]]
             else:
-                return set([a for a in universe.atoms if self.operator(abs(p[a.number]), self.value)])
+                result_set = [universe.atoms[i] for i in numpy.nonzero(self.operator(numpy.abs(p), self.value))[0]]
         elif self.prop == "mass":
-            return set([a for a in universe.atoms if a.mass == self.value])
+            result_set = [a for a in universe.atoms if self.operator(a.mass,self.value)]
+        elif self.prop == "charge":
+            result_set = [a for a in universe.atoms if self.operator(a.charge,self.value)]
+        return set(result_set)
     def __repr__(self):
         if self.abs: abs_str = " abs "
         else: abs_str = ""
@@ -354,6 +334,7 @@ For reference, the grammar that we parse is :
     AND = 'and'
     OR = 'or'
     AROUND = 'around'
+    POINT = 'point'
     BYRES = 'byres'
     BONDED = 'bonded'
     BYNUM = 'bynum'
@@ -379,13 +360,14 @@ For reference, the grammar that we parse is :
     classdict = dict([(NOT, NotSelection), (AND, AndSelection), (OR, OrSelection),
                       (SEGID, SegmentNameSelection), (RESID, ResidueIDSelection),
                       (RESNAME, ResidueNameSelection), (NAME, AtomNameSelection),
-                      (TYPE, AtomTypeSelection), (AROUND, AroundSelection), (BYRES, ByResSelection),
+                      (TYPE, AtomTypeSelection), (BYRES, ByResSelection),
                       (BYNUM, ByNumSelection), (PROP, PropertySelection),
+                      (AROUND, AroundSelection), (POINT, PointSelection),
                       (PROTEIN, ProteinSelection), (BB, BackboneSelection),
                       #(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists
                       (ATOM, AtomSelection)])
     associativity = dict([(AND, "left"), (OR, "left")])
-    precedence = dict([(AROUND, 1), (BYRES, 1), (BONDED, 1), (AND, 3), (OR, 3), (NOT,5 )])
+    precedence = dict([(AROUND, 1), (POINT, 1), (BYRES, 1), (BONDED, 1), (AND, 3), (OR, 3), (NOT,5 )])
 
     # Borg pattern: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66531
     _shared_state = {}
@@ -440,6 +422,12 @@ For reference, the grammar that we parse is :
             dist = self.__consume_token()
             exp = self.__parse_expression(self.precedence[op])
             return self.classdict[op](exp, float(dist))
+        elif op in (self.POINT):
+            dist = self.__consume_token()
+            x = self.__consume_token()
+            y = self.__consume_token()
+            z = self.__consume_token()
+            return self.classdict[op](float(dist), float(x), float(y), float(z))
         elif op == self.BONDED:
             exp = self.__parse_expression(self.precedence[op])
             return self.classdict[op](exp)
@@ -486,9 +474,9 @@ For reference, the grammar that we parse is :
             else: abs = False
             oper = self.__consume_token()
             value = float(self.__consume_token())
-            import operator
-            ops = dict([(self.GT, operator.gt), (self.LT, operator.lt), (self.GE, operator.ge), (self.LE, operator.le),
-                        (self.EQ, operator.eq), (self.NE, operator.ne)])
+            ops = dict([(self.GT, numpy.greater), (self.LT, numpy.less), 
+                        (self.GE, numpy.greater_equal), (self.LE, numpy.less_equal),
+                        (self.EQ, numpy.equal), (self.NE, numpy.not_equal)])
             if oper in ops.keys():
                 return self.classdict[op](prop, ops[oper], value, abs)
         elif op == self.ATOM:

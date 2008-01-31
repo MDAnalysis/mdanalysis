@@ -109,7 +109,7 @@ Methods:
         #warnings.warn("To prevent confusion with AtomGroup subclasses you should use numberOfAtoms() instead", category=Warning, stacklevel=2)
         return self.numberOfAtoms()
     def __getitem__(self, item):
-        if (numpy.dtype(type(item)) is numpy.dtype(int)) or (type(item) is slice):
+        if (numpy.dtype(type(item)) == numpy.dtype(int)) or (type(item) == slice):
             return self.atoms[item]
         else: return super(AtomGroup, self).__getitem__(item)
     def __getattr__(self, name):
@@ -209,7 +209,7 @@ Methods:
         if not Residue.__cache.has_key(name):
             Residue.__cache[name] = dict([(a.name, i) for i, a in enumerate(self.atoms)])
     def __getitem__(self, item):
-        if (type(item) is int) or (type(item) is slice):
+        if (type(item) == int) or (type(item) == slice):
             return self.atoms[item]
         else: return self.__getattr__(item)
     def __getattr__(self, name):
@@ -243,7 +243,7 @@ Methods:
     def __len__(self):
         return len(self._residues)
     def __getitem__(self, item):
-        if (type(item) is int) or (type(item) is slice):
+        if (type(item) == int) or (type(item) == slice):
             return self._residues[item]
         else: raise NotImplementedError()
     def __getattr__(self, attr):
@@ -339,8 +339,51 @@ See also:
             raise Exception("The psf and pdb files don't have the same number of atoms!")
 
     def selectAtoms(self, sel, *othersel):
-        # XXX This uses the outdated selection parser
-        # You should be able to do everything else using classes in AtomGroup
+        ''' Select atoms using a CHARMM selection string. Returns an AtomGroup with atoms sorted according to their index in the psf (this is to ensure that there aren't any duplicates, which can happen with complicated selections).
+
+Note: you can group subselections using parentheses, but you need to put spaces around the parentheses due to the way the parser is implemented.
+
+> universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
+<AtomGroup with 3420 atoms>
+
+Here's a list of all keywords:
+
+Simple selections
+----------------------------
+protein, backbone - selects all atoms that belong to a standard set of residues, may not work for esoteric residues
+segid, resid, resname, name, type - single argument describing selection, resid can take a range of numbers separated by a colon (inclusive)
+                                    ie "segid DMPC", "resname LYS", "name CA", "resid 1:5"
+atom - a selector for a single atom consisting of segid resid atomname
+       ie "DMPC 1 C2" selects the C2 carbon of the first residue of the DMPC segment
+
+Boolean
+----------------------------
+not - all atoms not in the selection; ie "not protein" selects all atoms that aren't part of a protein
+and, or - combine two selections according to the rules of boolean algebra
+          ie "protein and not ( resname ALA or resname LYS )" selects all atoms that belong to a protein, but are not in a lysine or alanine residue
+
+Geometric - accounts for periodicity
+----------------------------
+around - selects all atoms a certain cutoff away from another selection; 
+         ie "around 3.5 protein" selects all atoms not belonging to protein that are within 3.5 Angstroms from the protein
+point - selects all atoms within a cutoff of a point in space, make sure coordinate is separated by spaces
+        ie "point 3.5 5.0 5.0 5.0" selects all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0, 5.0) 
+prop - selects atoms based on position, using x, y, or z coordinate
+       supports the abs keyword (for absolute value) and the following operators: >, <, >=, <=, ==, !=
+       ie "prop z >= 5.0" selects all atoms with z coordinate greater than 5.0
+          "prop abs z <= 5.0" selects all atoms within -5.0 <= z <= 5.0
+
+Connectivity
+----------------------------
+byres - selects all atoms that are in the same segment and residue as selection
+        ie specify the subselection after the byres keyword
+
+Index
+----------------------------
+bynum - selects all atoms within a range of (1-based) inclusive indices
+        ie "bynum 1" selects the first atom in the universe
+           "bynum 5:10" selects atoms 5 through 10 inclusive
+        '''
         import Selection
         atomgrp = Selection.Parser.parse(sel).apply(self)
         if len(othersel) == 0: return atomgrp
