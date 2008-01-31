@@ -1,0 +1,50 @@
+== Installing MDAnalysis ==
+
+Currently MDAnalysis is only distributed in source form. You will need
+a C compiler and pyrex to compile the DCD reader and numerical
+extensions.
+
+In principle, installation should be as simple as
+
+   python setup.py build
+   python setup.py install
+
+In version 0.5.0 this only works when installing (with root
+priviledges) into the site-wide python dir. If you want to install in
+a local directory use
+
+  python setup.py build --build-lib=LOCAL_DIRECTORY
+
+This installs a working MDAnalysis under LOCAL_DIRECTORY.
+
+
+
+For testing we currently simply use
+
+   python setup.py build --build-lib=~/python-lib/
+
+This builds and installs a working version in
+~/python-lib/MDAnalysis. Then add ~/python-lib to the PYTHONPATH
+
+  export PYTHONPATH=${PYTHONPATH}:~/python-lib
+
+
+== OS specific notes ==
+
+=== Linux ===
+* Tested with GNU compilers or Intel compilers and Intel MKL.
+
+* To compile with the Intel compilers, set in setup.cfg
+
+  [build]
+  compiler=intel
+
+  and install the Math Kernel Libraries (MKL). You may have to change
+  the 'fast_numeric_*' paths in setup.py if you installed in a
+  non-standard location.
+
+=== Mac OS X ===
+* Tested with Mac OS X 10.4.11 and fink.
+
+  The RMS-fitting code uses the fast vecLib framework for linear
+  algebra.
