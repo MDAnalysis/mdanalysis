@@ -58,16 +58,57 @@ def parse(psffilename):
     return structure
 
 def __parseatoms_(lines, atoms_per, attr, structure, numlines):
+    """Parses atom section in a Charmm PSF file.
+
+        Currently the only supported PSF format is the standard format
+        (which does NOT include the EXT keyword in the header. CHEQ is
+        supported in the sense that CHEQ data is simply ignored.
+        
+        ------ notes ------
+
+        Format from source/psffres.src
+
+        CHEQ:
+        II,LSEGID,LRESID,LRES,TYPE(I),IAC(I),CG(I),AMASS(I),IMOVE(I),ECH(I),EHA(I)
+
+        standard format:
+          (I8,1X,A4,1X,A4,1X,A4,1X,A4,1X,I4,1X,2G14.6,I8,2G14.6)
+          (I8,1X,A4,1X,A4,1X,A4,1X,A4,1X,A4,1X,2G14.6,I8,2G14.6)  XPLOR
+        expanded format EXT:
+          (I10,1X,A8,1X,A8,1X,A8,1X,A8,1X,I4,1X,2G14.6,I8,2G14.6)
+          (I10,1X,A8,1X,A8,1X,A8,1X,A8,1X,A4,1X,2G14.6,I8,2G14.6) XPLOR
+        
+        no CHEQ:
+        II,LSEGID,LRESID,LRES,TYPE(I),IAC(I),CG(I),AMASS(I),IMOVE(I)
+
+        standard format:
+          (I8,1X,A4,1X,A4,1X,A4,1X,A4,1X,I4,1X,2G14.6,I8)
+          (I8,1X,A4,1X,A4,1X,A4,1X,A4,1X,A4,1X,2G14.6,I8)  XPLOR
+        expanded format EXT:
+          (I10,1X,A8,1X,A8,1X,A8,1X,A8,1X,I4,1X,2G14.6,I8)
+          (I10,1X,A8,1X,A8,1X,A8,1X,A8,1X,A4,1X,2G14.6,I8) XPLOR
+          """
     atoms = [None,]*numlines
     from AtomGroup import Atom
-    #psf_atom_format = "   %5d %4s %4d %4s %-4s %-4s %10.6f      %7.4f%s\n"
+
+    # Oli: I don't think that this is the correct OUTPUT format:
+    #   psf_atom_format = "   %5d %4s %4d %4s %-4s %-4s %10.6f      %7.4f%s\n"
+    # It should be rather something like:
+    #   psf_ATOM_format = '%(iatom)8d %(segid)4s %(resid)-4d %(resname)4s '+\
+    #                     '%(name)-4s %(type)4s %(charge)-14.6f%(mass)-14.4f%(imove)8d\n'
+
+    # source/psfres.src (CHEQ but not EXTended), see comments above
+    #   II,LSEGID,LRESID,LRES,TYPE(I),IAC(I),CG(I),AMASS(I),IMOVE(I),ECH(I),EHA(I)
+    #  (I8,1X,A4, 1X,A4,  1X,A4,  1X,A4,  1X,I4,  1X,2G14.6,     I8,   2G14.6)
+    #   0:8   9:13   14:18   19:23   24:28   29:33   34:48 48:62 62:70 70:84 84:98
+
     for i in xrange(numlines):
         l = lines()
-        #fields = l.split()
-        fields = [l[:8], l[9:13].strip(), l[14:19], l[19:23].strip(), l[24:28].strip(), l[29:33].strip(), l[35:44],l[50:58]]
+        # 0     1      2      3        4         5       6       7      8
+        iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove =  l[:8], l[9:13].strip(), l[14:18], l[19:23].strip(), l[24:28].strip(), l[29:33].strip(), l[35:48], l[48:62], l[62:70]   #  l[70:84], l[84:98] ignore ECH and EHA
         # Atom(atomno, atomname, type, resname, resid, segid, mass, charge)
         # We want zero-indexing for atom numbers to make it easy
-        atom_desc = Atom(int(fields[0])-1, fields[4], fields[5], fields[3], int(fields[2]), fields[1], float(fields[7]), float(fields[6]))
+        atom_desc = Atom(int(iatom)-1,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge))
         atoms[i] = atom_desc
 
     structure[attr] = atoms
