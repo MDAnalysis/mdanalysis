@@ -88,7 +88,7 @@ class OrSelection(Selection):
         return "<'OrSelection' "+repr(self.lsel)+","+repr(self.rsel)+">"
 
 class AroundSelection(Selection):
-    def __init__(self, sel, cutoff, periodic = False):
+    def __init__(self, sel, cutoff, periodic = True):
         Selection.__init__(self)
         self.sel = sel
         self.cutoff = cutoff
@@ -100,10 +100,14 @@ class AroundSelection(Selection):
         sys_atoms = self._group_atoms-sel_atoms
         sel_indices = numpy.array([a.number for a in sel_atoms])
         sys_indices = numpy.array([a.number for a in sys_atoms])
-        sel_coor = Selection.coord[sel_indices]
-        sys_coor = Selection.coord[sys_indices]
+        sel_coor = Selection.coord[sel_indices].copy()  # bug in distance_array(), so make a copy()
+        sys_coor = Selection.coord[sys_indices].copy()  # to get a contigious array for the C loop
+        if self.periodic:
+            box = group.dimensions[:3]
+        else:
+            box = None
         import distances
-        dist = distances.distance_array(sys_coor, sel_coor, group.dimensions[:3])
+        dist = distances.distance_array(sys_coor, sel_coor, box)
         res_atoms = [group.atoms[i] for i in sys_indices[numpy.any(dist <= self.cutoff, axis=1)]]
         return set(res_atoms)
     def __repr__(self):
@@ -118,8 +122,8 @@ class PointSelection(Selection):
         self.cutoffsq = float(cutoff)*float(cutoff)
     def _apply(self, group):
         sys_indices = numpy.array([a.number for a in self._group_atoms])
-        sys_coor = Selection.coord[sys_indices]
-        ref_coor = self.ref[numpy.newaxis,...]
+        sys_coor = Selection.coord[sys_indices].copy()  # bug in distance_array()
+        ref_coor = self.ref[numpy.newaxis,...].copy()   # bug in distance_array()
         import distances
         dist = distances.distance_array(sys_coor, ref_coor, group.dimensions[:3])
         res_atoms = [group.atoms[i] for i in sys_indices[numpy.any(dist <= self.cutoff, axis=1)]]

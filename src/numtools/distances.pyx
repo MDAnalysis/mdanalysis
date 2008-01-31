@@ -30,7 +30,13 @@ def distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf, c_numpy.ndarray bo
 
     :Output:
     d          len(ref),len(conf) numpy array with the distances d[i,j]
-               between ref coordinates i and conf coordinates j        
+               between ref coordinates i and conf coordinates j
+
+    BUG: make a copy of the ref and conf arrays when using selections;
+         otherwise distance_array() produces wrong results
+         c1 = group1.coordinates().copy()
+         c2 = group2.coordinates().copy()
+         d = distance_array(c1,c2,box=...)         
     """
     cdef c_numpy.ndarray distances
     cdef int confnum, refnum
