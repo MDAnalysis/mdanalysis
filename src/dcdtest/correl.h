@@ -5,7 +5,7 @@
 #include <math.h>
 
 static void
-copyseries(int frame, char *data, const int *strides, const float *tempX, const float *tempY, const float *tempZ, const char* datacode, int numdata, const int* atomlist, const int* atomcounts, int lowerb)
+copyseries(int frame, char *data, const int *strides, const float *tempX, const float *tempY, const float *tempZ, const char* datacode, int numdata, const int* atomlist, const int* atomcounts, int lowerb, double* aux)
 {
 	char code;
 	int index1 = 0, index2 = 0, index3 = 0, index4 = 0;
@@ -15,6 +15,21 @@ copyseries(int frame, char *data, const int *strides, const float *tempX, const 
 	for (i=0;i<numdata;i++) {
 		code = datacode[i];
 		switch (code) {
+			case 'm':
+        x1 = y1 = z1 = 0.0;
+				d2 = 0;
+        for (j=0;j<atomcounts[i];j++) {
+          index1 = atomlist[atomno]-lowerb;
+					d1 = aux[atomno++]-lowerb;
+					d2 += d1;
+          x1 += tempX[index1]*d1;
+          y1 += tempY[index1]*d1;
+          z1 += tempZ[index1]*d1;
+        }
+        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = x1/d2;
+        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = y1/d2;
+        *(double*)(data + dataset++*strides[0] + frame*strides[1]) = z1/d2;
+        break;
 			case 'g':
         x1 = y1 = z1 = 0.0;
         index2 = atomcounts[i];

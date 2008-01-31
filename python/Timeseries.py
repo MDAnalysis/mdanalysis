@@ -28,6 +28,11 @@ class TimeseriesCollection:
         return size
     def getAtomCounts(self):
         return [ts.getNumAtoms() for ts in self.timeseries]
+    def getAuxData(self):
+        auxData = []
+        for ts in self.timeseries:
+            auxData += ts.getAuxData()
+        return auxData
 
 class Timeseries:
     def __init__(self, code, numatoms, size):
@@ -42,6 +47,8 @@ class Timeseries:
         return self.size
     def getNumAtoms(self):
         return self.numatoms
+    def getAuxData(self):
+        return [0.]*self.numatoms
 
 class Atom(Timeseries):
     def __init__(self, code, atom):
@@ -75,3 +82,10 @@ class CenterOfGeometry(Timeseries):
     def __init__(self, atoms):
         self.atoms = atoms
         Timeseries.__init__(self, 'g', len(atoms), 3)
+
+class CenterOfMass(Timeseries):
+    def __init__(self, atoms):
+        self.atoms = atoms
+        Timeseries.__init__(self, 'm', len(atoms), 3)
+    def getAuxData(self):
+        return [a.mass for a in self.atoms]
