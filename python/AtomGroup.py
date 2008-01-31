@@ -277,36 +277,36 @@ See also:
     def __init_dcd(self, dcdfilename):
         # Read in trajectory file
         from DCD import DCDReader
-        self._dcd = DCDReader(dcdfilename)
+        self.dcd = DCDReader(dcdfilename)
         # Make sure that they both have the same number of atoms
-        if (self._dcd.numatoms != len(self._atoms)):
+        if (self.dcd.numatoms != len(self._atoms)):
             raise Exception("The psf and dcd files don't have the same number of atoms!")
-        self._coord = self._dcd.ts
+        self._coord = self.dcd.ts
         # Let atoms access their current positions
         for a in self._atoms:
             a._universe = self
     def load_new_dcd(self, dcdfilename):
-        del self._dcd
+        del self.dcd
         from DCD import DCDReader
-        self._dcd = DCDReader(dcdfilename)
+        self.dcd = DCDReader(dcdfilename)
         # Make sure that they both have the same number of atoms
-        if (self._dcd.numatoms != len(self._atoms)):
+        if (self.dcd.numatoms != len(self._atoms)):
             raise Exception("The psf and dcd files don't have the same number of atoms!")
-        self._coord = self._dcd.ts
+        self._coord = self.dcd.ts
     def dimensions(self):
         return self._coord.dimensions
     def __getattr__(self, name):
         if name == "_coord":
             raise AttributeError("Universe was not defined with a dcdfile: no coordinates available")
         elif name == "timesteps":
-            return len(self._dcd)
+            return len(self.dcd)
         else: return super(Universe, self).__getattribute__(name)
     def numberOfAtoms(self):
         return len(self._atoms)
     def numberOfTimesteps(self):
-        return len(self._dcd)
+        return len(self.dcd)
     def getTrajectory(self):
-        return self._dcd
+        return self.dcd
     def getConfiguration(self):
         return self._coord
     def recenterAround(self, group):
@@ -324,3 +324,23 @@ See also:
         return atomgrp
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(len(self._atoms))+' atoms>'
+
+    def dcd():
+        doc = "Reference to DCDReader object containing trajectory data"
+        def fget(self):
+            return self.__dcd
+        def fset(self, value):
+            self.__dcd = value
+        def fdel(self):
+            del self.__dcd
+        return locals()
+    dcd = property(**dcd())
+
+    def _dcd():
+        doc = "Old reference to DCDReader object containing trajectory data"
+        def fget(self):
+            import warnings
+            warnings.warn("Usage of '_dcd' is deprecated. Use 'dcd' instead.", category=DeprecationWarning, stacklevel=2)
+            return self.__dcd
+        return locals()
+    _dcd = property(**_dcd())
