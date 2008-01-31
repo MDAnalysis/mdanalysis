@@ -1,27 +1,31 @@
 
-# This requires a trajectory where the protein has already been C-alpha RMS fitted
-
 import LinearAlgebra
 from MDAnalysis import *
 import Numeric
 
-#sys = AtomGroup.System("psf file", "dcd file")
 system = AtomGroup.System("data/beta_op_adp-vmd.psf", "data/step1.dcd")
 asel = system.selectAtoms('segid F and backbone and not type O')
 
 masses = Numeric.repeat(asel.masses(), 3)
 mass_matrix = Numeric.sqrt(Numeric.identity(len(masses))*masses)
 
-skip = 2
+skip = 1
 num_ts = system.dcd.numframes/skip
 num_coor = len(asel)*3
 
-#com = Numeric.zeros((num_ts, 3), Numeric.Float)
-#for ts in system.dcd:
-#    com[ts.frame-1] = system.F.centerOfMass()
-
 ca_pos = system.dcd.timeseries(asel, skip=skip, format='fac')
-#ca_pos = ca_pos-com[:, Numeric.NewAxis]
+collection.addTimeseries(Timeseries.CenterOfMass(asel))
+ca_com = Numeric.transpose(system.dcd.correl(collection, skip=skip))
+
+# Recenter on center of mass of selection
+ca_pos -= ca_com[:,Numeric.NewAxis]
+
+# Remove rotational degrees of freedom
+ref = ca_pos[0]
+for coor in ca_pos[1:]:
+    rotmatrix = rms_fitting.rms_rotation_matrix(coor, ref, kg)
+    coor[:] = Numeric.matrixmultiply(coor, rotmatrix).astype(Numeric.Float32)
+
 ca = Numeric.reshape(ca_pos, (num_ts, -1))
 ca_avg = Numeric.average(ca)
 ca2 = ca - ca_avg[Numeric.NewAxis,:]
