@@ -60,12 +60,12 @@ if __name__ == '__main__':
                             include_dirs = include_dirs+fast_numeric_include,
                             extra_link_args=fast_numeric_link,
                             extra_compile_args=extra_compile_args),
-                  Extension('delaunay', ['src/delaunay/delaunay.pyx', 'src/delaunay/blas.c', 'src/delaunay/tess.c'],
-                            libraries = ['m'],
-                            define_macros=define_macros,
-                            include_dirs = include_dirs+fast_numeric_include+['src/delaunay'],
-                            extra_link_args=fast_numeric_link,
-                            extra_compile_args=extra_compile_args),
+                  #Extension('delaunay', ['src/delaunay/delaunay.pyx', 'src/delaunay/blas.c', 'src/delaunay/tess.c'],
+                  #          libraries = ['m'],
+                  #          define_macros=define_macros,
+                  #          include_dirs = include_dirs+fast_numeric_include+['src/delaunay'],
+                  #          extra_link_args=fast_numeric_link,
+                  #          extra_compile_args=extra_compile_args),
                   ]
 
     setup(name              = 'MDAnalysis',
