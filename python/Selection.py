@@ -115,17 +115,22 @@ class AroundSelection(Selection):
         return "<'AroundSelection' "+repr(self.cutoff)+" around "+repr(self.sel)+">"
 
 class PointSelection(Selection):
-    def __init__(self, x, y, z, cutoff):
+    def __init__(self, x, y, z, cutoff, periodic = True):
         Selection.__init__(self)
         self.ref = numpy.array((float(x), float(y), float(z)))
         self.cutoff = float(cutoff)
         self.cutoffsq = float(cutoff)*float(cutoff)
+        self.periodic = periodic
     def _apply(self, group):
         sys_indices = numpy.array([a.number for a in self._group_atoms])
         sys_coor = Selection.coord[sys_indices].copy()  # bug in distance_array()
         ref_coor = self.ref[numpy.newaxis,...].copy()   # bug in distance_array()
+        if self.periodic:
+            box = group.dimensions[:3]
+        else:
+            box = None
         import distances
-        dist = distances.distance_array(sys_coor, ref_coor, group.dimensions[:3])
+        dist = distances.distance_array(sys_coor, ref_coor, box)
         res_atoms = [group.atoms[i] for i in sys_indices[numpy.any(dist <= self.cutoff, axis=1)]]
         return set(res_atoms)
     def __repr__(self):
