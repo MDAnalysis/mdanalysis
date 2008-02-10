@@ -91,6 +91,7 @@ Methods:
         if numatoms == 0:
             raise Exception("DCDWriter: no atoms in output trajectory")
         self.dcdfilename = dcdfilename
+        self.filename = self.dcdfilename
         self.numatoms = numatoms
 
         self.frames_written = 0

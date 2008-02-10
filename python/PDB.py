@@ -25,6 +25,7 @@ class PDBReader:
         pos = numpy.array(coord_list)
         del coord_list
         self.pdbfilename = pdbfilename
+        self.filename = self.pdbfilename
         self.numatoms = pos.shape[0]
         self.numframes = 1
         self.fixed = 0          # parse B field for fixed atoms?
@@ -32,3 +33,53 @@ class PDBReader:
         self.periodic = False
         self.ts = Timestep(pos)
         del pos
+
+    def __len__(self):
+        return self.numframes
+    def __iter__(self):
+        def iterPDB():
+            yield self.ts   # just a single frame available
+            raise StopIteration
+        return iterPDB()
+    def __getitem__(self, frame):
+        if frame != 0:
+            raise IndexError('PDBReader only contains a single frame at index 0')
+        return self.ts
+    def __repr__(self):
+            return "<MDAnalysis.PDB.PDBReader '"+ self.filename + "' with " + repr(self.numframes) + " frames of " + repr(self.numatoms) + " atoms (" + repr(self.fixed) + " fixed)>"
+
+
+class PDBWriter:
+    """Write out the current time step as a pdb file.
+
+    Currently, this only works when the structure coordinates were
+    loaded from a pdb because we are only modifying all the
+    coordinates of this structure and writing it out again.
+    """
+    def __init__(self,PDBstructure,pdbfilename,multi=False,**kwargs):
+        """pdbwriter = PDBWriter(universe,<pdbfilename>,**kwargs)
+        :Arguments:
+        PDBstructure    Bio.PDB.Structure.Structure (universe.pdb.pdb)
+        pdbfilename     filename; if multi=True, embed a %%d formatstring
+                        so that write_next_timestep() can insert the frame number
+        multi           False: write a single structure to a single pdb
+                        True: write all frames to multiple pdb files
+        """
+        import Bio.PDB.Structure
+        self.PDBstructure = PDBstructure
+        self.filename = pdbfilename
+        self.multi = multi
+        if not isinstance(PDBstructure,Bio.PDB.Structure.Structure):
+            raise TypeError('PDBstructure must be a Bio.PDB.Structure.Structure, eg '
+                            'Universe.pdb.pdb.')
+    def write_next_timestep(self,ts):
+        self.write(ts)
+    def write(self,ts):
+        # Let's cheat and use universe.pdb.pdb: modify coordinates
+        # and save...
+        for a,pos in zip(self.PDBstructure.get_atoms(), ts._pos):
+            a.set_coord(pos)
+        io = Bio.PDB.PDBIO()
+        io.set_structure(self.PDBstructure)
+        io.save(self.filename)
+    
