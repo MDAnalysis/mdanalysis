@@ -42,10 +42,27 @@ Methods:
         else: return AtomGroup([self]+other.atoms)
 
     def pos():
+        doc = "Current cartesian coordinates of the atom."
         def fget(self):
             return self.universe.coord[self.number] # PDB numbering starts at 0
         return locals()
     pos = property(**pos())
+
+    def bfactor():
+        doc = "Crystallographic B-factor (if universe was built from a pdb) or None"
+        def fget(self):
+            try:
+                return self.universe.bfactors[self.number] # PDB numbering starts at 0
+            except AttributeError:
+                return None
+        def fset(self,value):
+            try:
+                self.universe.bfactors[self.number] = value
+            except AttributeError:
+                self.universe.bfactors = numpy.zeros(self.universe.atoms.numberOfAtoms())
+                self.universe.bfactors[self.number] = value
+        return locals()
+    bfactor = property(**bfactor())
 
     def universe():
         doc = "a pointer back to the Universe"
@@ -80,6 +97,7 @@ Methods:
     ag.centerOfMass() - center of mass
     ag.radiusOfGyration() - radius of gyration
     ag.principleAxis() - returns the principle axis of rotation
+    ag.bfactors() - returns B-factors (if they were loaded from a PDB)
     c = ag.coordinates() - return array of coordinates
 """
     def atoms():
@@ -185,6 +203,8 @@ Methods:
         if ts == None:
             ts = self.atoms[0].universe.coord
         return numpy.array(ts[self.indices()])
+    def bfactors(self):
+        return self.atoms[0].universe.bfactors[self.indices()]
     def selectAtoms(self, sel, *othersel):
         import Selection
         atomgrp = Selection.Parser.parse(sel).apply(self)
@@ -310,7 +330,7 @@ Methods:
    m.load_new_dcd(dcdfilename)                - read from a new dcd file
    m.selectAtoms(...)                         - select atoms using similar selection string as charmm
 
-   Only a single frame pdb file is supported.
+   Only a single frame PDB file is supported; use DCDs for trajectories.
 See also:
 """
     def __init__(self, psffilename, dcdfilename=None, pdbfilename=None):
@@ -349,11 +369,21 @@ See also:
         # Make sure that they both have the same number of atoms
         if (self.pdb.numatoms != self.atoms.numberOfAtoms()):
             raise Exception("The psf and pdb files don't have the same number of atoms!")
+        # add B-factor to atoms
+        for a, pdbatom in zip(self.atoms,self.pdb.pdb.get_atoms()):
+            a.bfactor = pdbatom.get_bfactor()
+
 
     def selectAtoms(self, sel, *othersel):
-        ''' Select atoms using a CHARMM selection string. Returns an AtomGroup with atoms sorted according to their index in the psf (this is to ensure that there aren't any duplicates, which can happen with complicated selections).
+        '''Select atoms using a CHARMM selection string. 
 
-Note: you can group subselections using parentheses, but you need to put spaces around the parentheses due to the way the parser is implemented.
+Returns an AtomGroup with atoms sorted according to their index in the
+psf (this is to ensure that there aren't any duplicates, which can
+happen with complicated selections).
+
+Note: you can group subselections using parentheses, but you need to
+put spaces around the parentheses due to the way the parser is
+implemented.
 
 > universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
 <AtomGroup with 3420 atoms>
