@@ -202,7 +202,7 @@ Methods:
     def coordinates(self, ts=None):
         if ts == None:
             ts = self.atoms[0].universe.coord
-        return numpy.array(ts[self.indices()])
+        return numpy.array(ts[self.indices()], copy=True)
     def bfactors(self):
         return self.atoms[0].universe.bfactors[self.indices()]
     def selectAtoms(self, sel, *othersel):
