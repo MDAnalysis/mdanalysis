@@ -146,6 +146,7 @@ Methods:
 """
     def __init__(self, dcdfilename):
         self.dcdfilename = dcdfilename
+        self.filename = self.dcdfilename
         self.dcdfile = file(dcdfilename, 'rb')
         self.numatoms = 0
         self.numframes = 0
