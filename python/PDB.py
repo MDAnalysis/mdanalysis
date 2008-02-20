@@ -2,6 +2,13 @@
 
 Only coordinates are read; the topology must still be provided by a
 psf file.
+
+The PRB module makes heavy use of Biopython's Bio.PDB:
+
+  Hamelryck, T., Manderick, B. (2003) PDB parser and structure class 
+  implemented in Python. Bioinformatics, 19, 2308-2310.
+
+  http://biopython.org
 """
 
         
