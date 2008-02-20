@@ -2,5 +2,5 @@ include src/dcd/include/*.h
 include src/numtools/*.h
 recursive-include src *.pyx *.pxd
 recursive-include doc INSTALL index.html
-include CHANGELOG LICENSE
+include CHANGELOG LICENSE TODO
 # recursive-include examples *.py

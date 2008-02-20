@@ -1,0 +1,12 @@
+== Feature requests and pertinent bugs ==
+(see also http://code.google.com/p/mdanalysis/issues/list )
+
+* full Gromacs support (read topology from tpr file and trajectory
+  from xtc/trr) #1, #2
+
+* generate a primitive topology (psf) from a pdb file so that one
+  can read in pdbs directly
+
+* fast distance selection (perhaps using KD trees as in Biopython?)
+  (and fix the distance_array bug #4)
+
