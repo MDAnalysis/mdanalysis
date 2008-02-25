@@ -2,6 +2,10 @@
 
 Only coordinates are read; the topology must still be provided by a
 psf file.
+
+The basic XTCReader class was written by Benjamin Hall
+<hall@biop.ox.ac.uk> and is a straight translation from the Gromacs C
+source (which is released under GPL).
 """
 
         
