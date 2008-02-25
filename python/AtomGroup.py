@@ -116,8 +116,7 @@ Methods:
     _atoms = property(**_atoms())
 
     def __init__(self, atoms):
-        ## orbeckst: commented out to allow empty atomgroups (for selections) 
-        ##if len(atoms) < 1: raise Exception("No atoms defined for AtomGroup")
+        if len(atoms) < 1: raise Exception("No atoms defined for AtomGroup")
         # __atoms property is effectively readonly
         self.__atoms = atoms
         # If the number of atoms is very large, create a dictionary cache for lookup
