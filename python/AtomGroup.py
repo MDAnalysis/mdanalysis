@@ -353,9 +353,18 @@ See also:
         #PSFParser.build_bondlists(self.atoms, self._bonds)
         # Let atoms access the universe
         for a in self.atoms: a.universe = self
+        # Load coordinates; distinguish file format by extension
         if dcdfilename is not None:
-            self.load_new_dcd(dcdfilename)
-        elif pdbfilename is not None:
+            import os.path
+            if os.path.splitext(dcdfilename) in ('dcd','trj'):
+                self.load_new_dcd(dcdfilename)
+                pdbfilename = None
+            else:
+                import warnings
+                warnings.warn("Trying to load dcdfilename=%s as a pdb..." % dcdfilename)
+                pdbfilename = dcdfilename  # pdb as fallback
+                dcdfilename = None
+        if pdbfilename is not None:
             self.load_new_pdb(pdbfilename)
     def load_new_dcd(self, dcdfilename):
         from DCD import DCDReader
