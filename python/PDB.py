@@ -28,9 +28,7 @@ class PDBReader:
         p=Bio.PDB.PDBParser(PERMISSIVE=1)
         pdb_id = "0UNK"
         self.pdb = p.get_structure(pdb_id, pdbfilename)
-        coord_list = [atom.coord for atom in self.pdb.get_atoms()]
-        pos = numpy.array(coord_list)
-        del coord_list
+        pos = numpy.array([atom.coord for atom in self.pdb.get_atoms()])
         self.pdbfilename = pdbfilename
         self.filename = self.pdbfilename
         self.numatoms = pos.shape[0]
