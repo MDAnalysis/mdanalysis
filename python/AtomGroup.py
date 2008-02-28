@@ -356,7 +356,8 @@ See also:
         # Load coordinates; distinguish file format by extension
         if dcdfilename is not None:
             import os.path
-            if os.path.splitext(dcdfilename) in ('dcd','trj'):
+            ext = os.path.splitext(dcdfilename)[-1]
+            if ext in ('.dcd','.trj'):
                 self.load_new_dcd(dcdfilename)
                 pdbfilename = None
             else:
