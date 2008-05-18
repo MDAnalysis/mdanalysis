@@ -1,3 +1,4 @@
+# $Id$
 """AtomGroup Hierarchy
 
 Class Hierarchy:

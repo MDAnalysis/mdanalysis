@@ -1,3 +1,4 @@
+# $Id$
 """ LAMMPSParser - reads a lammps data file to build system
 """
 

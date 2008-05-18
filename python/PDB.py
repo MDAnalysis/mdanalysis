@@ -1,3 +1,4 @@
+# $Id$
 """PDB structure files in MDAnalysis
 
 Only coordinates are read; the topology must still be provided by a

@@ -1,3 +1,4 @@
+# $Id$
 """Atom selection Hierarchy
 
 These objects are constructed and applied to the group

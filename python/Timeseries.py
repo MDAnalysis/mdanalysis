@@ -1,4 +1,4 @@
-
+# $Id$
 import AtomGroup
 
 class TimeseriesCollection(object):

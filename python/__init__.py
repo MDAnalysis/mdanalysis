@@ -1,4 +1,4 @@
-
+# $Id$
 import AtomGroup
 import DCD
 import Selection

@@ -1,3 +1,4 @@
+# $Id$
 """Gromacs XTC trajectories in MDAnalysis
 
 Only coordinates are read; the topology must still be provided by a
