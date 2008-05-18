@@ -339,6 +339,7 @@ See also:
         self.__pdb = None
         import PSFParser
         struc = PSFParser.parse(psffilename)
+        self.filename = psffilename
         #for data in struc.keys():
         #    setattr(self, data, struc[data])
         self.atoms = AtomGroup(struc["_atoms"])
