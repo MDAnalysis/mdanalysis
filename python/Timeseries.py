@@ -120,12 +120,12 @@ class Timeseries(object):
 class Atom(Timeseries):
     ''' Create a timeseries that returns coordinate data for an atom or group of atoms
         t = Atom(code, atoms)
-        code is one of 'x', 'y', 'z', or 'v' (which returns all three dimensions)
+        code is one of 'x', 'y', 'z', or 'v' ('vector', which returns all three dimensions)
         atoms can be a single Atom object, a list of Atom objects, or an AtomGroup
     '''
     def __init__(self, code, atoms):
-        if code not in ('x', 'y', 'z', 'v'):
-            raise Exception("Bad code")
+        if code not in ('x', 'y', 'z', 'v', 'w'):
+            raise ValueError("Bad code")
         if code == 'v': size = 3
         else: size = 1
         if isinstance(atoms, AtomGroup.AtomGroup):
@@ -134,7 +134,7 @@ class Atom(Timeseries):
             numatoms = len(atoms)
         elif isinstance(atoms, AtomGroup.Atom):
             numatoms = 1
-        else: raise Exception("Invalid atoms passed to %s timeseries"%self.__class__.__name__)
+        else: raise TypeError("Invalid atoms passed to %s timeseries"%self.__class__.__name__)
         Timeseries.__init__(self, code*numatoms, atoms, size*numatoms)
     def getAtomCounts(self):
         return [1,]*self.numatoms
@@ -146,7 +146,7 @@ class Bond(Timeseries):
     '''
     def __init__(self, atoms):
         if not len(atoms) == 2:
-            raise Exception("Bond timeseries requires a 2 atom selection")
+            raise ValueError("Bond timeseries requires a 2 atom selection")
         Timeseries.__init__(self, 'r', atoms, 1)
 
 class Angle(Timeseries):
@@ -156,7 +156,7 @@ class Angle(Timeseries):
     '''
     def __init__(self, atoms):
         if not len(atoms) == 3:
-            raise Exception("Angle timeseries requires a 3 atom selection")
+            raise ValueError("Angle timeseries requires a 3 atom selection")
         Timeseries.__init__(self, 'a', atoms, 1)
 
 class Dihedral(Timeseries):
@@ -166,7 +166,7 @@ class Dihedral(Timeseries):
     '''
     def __init__(self, atoms):
         if not len(atoms) == 4:
-            raise Exception("Dihedral timeseries requires a 4 atom selection")
+            raise ValueError("Dihedral timeseries requires a 4 atom selection")
         Timeseries.__init__(self, 'h', atoms, 1)
 
 class Distance(Timeseries):
@@ -177,11 +177,11 @@ class Distance(Timeseries):
     '''
     def __init__(self, code, atoms):
         if code not in ('d', 'r'):
-            raise Exception("Bad code")
+            raise ValueError("Bad code")
         if code == 'd': size = 3
         else: size = 1
         if not len(atoms) == 2:
-            raise Exception("Distance timeseries requires a 2 atom selection")
+            raise ValueError("Distance timeseries requires a 2 atom selection")
         Timeseries.__init__(self, code, atoms, size)
 
 class CenterOfGeometry(Timeseries):
@@ -203,3 +203,16 @@ class CenterOfMass(Timeseries):
         Timeseries.__init__(self, 'm', atoms, 3)
     def getAuxData(self):
         return [a.mass for a in self.atoms]
+
+class WaterDipole(Timeseries):
+    ''' Create a timeseries that returns a timeseries for the dipole vector of a 3-site water
+        t = WaterDipole(atoms)
+        atoms must contain 3 Atoms, either as a list or an AtomGroup; the first one MUST be
+        the oxygen, the other two are the hydrogens. The vector is calculated as 
+        
+           d = xO + (xH1 - xH2)/2
+    '''
+    def __init__(self, atoms):
+        if not len(atoms) == 3:
+            raise ValueError("WaterDipole timeseries requires a 3 atom selection")
+        Timeseries.__init__(self, 'w', atoms, 3)
