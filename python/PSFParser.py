@@ -11,11 +11,11 @@ def parse(psffilename):
     next_line = skip_line = psffile.next
     header = next_line()
     if header[:3] != "PSF":
-        raise PSFParseError("%s is not a valid PSF file")
+        raise PSFParseError("%s is not a valid PSF file" % psffile)
     skip_line()
     title = next_line().split()
     if not (title[1] == "!NTITLE"):
-        raise PSFParseError("%s is not a valid PSF file") 
+        raise PSFParseError("%s is not a valid PSF file" % psffile) 
     psfremarks = [next_line() for i in range(int(title[0]))]
 
     structure = {}
