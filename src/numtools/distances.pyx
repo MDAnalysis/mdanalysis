@@ -14,7 +14,7 @@ cdef extern from "calc_distances.h":
 
 
 import numpy
-def distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf, c_numpy.ndarray box, c_numpy.ndarray result=None):
+def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_numpy.ndarray box, c_numpy.ndarray result=None, copy=True):
     """Calculate all distances between a reference set and another configuration.
 
     d = distance_array(ref,conf,box[,result = d])
@@ -32,34 +32,46 @@ def distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf, c_numpy.ndarray bo
     d          len(ref),len(conf) numpy array with the distances d[i,j]
                between ref coordinates i and conf coordinates j
 
-    BUG: make a copy of the ref and conf arrays when using selections;
-         otherwise distance_array() produces wrong results
-         c1 = group1.coordinates().copy()
-         c2 = group2.coordinates().copy()
-         d = distance_array(c1,c2,box=...)         
+    Note: This method is slower than it could be because internally we need to
+          make copies of the ref and conf arrays. If you know what you are doing
+          you can disable this copy by setting copy=False; however, in most cases
+          this leads to WRONG results!
     """
+    cdef c_numpy.ndarray ref, conf
     cdef c_numpy.ndarray distances
     cdef int confnum, refnum
 
+    if copy:
+        # Work-around for a severe bug: function produces wrong numbers if
+        # input arrays are views (eg slices from other arrays): copy to force a
+        # new continious array in memory
+        ref = reference.copy()
+        conf = configuration.copy()
+    else:
+        # WARNING: this produces wrong results unless the arrays are continuous
+        # in memory
+        ref = reference
+        conf = configuration
+
     if (conf.nd != 2 and conf.dimensions[1] != 3):
-        raise Exception("conf must be a sequence of 3 dimensional coordinates")
+        raise ValueError("conf must be a sequence of 3 dimensional coordinates")
     if (ref.nd != 2 and ref.dimensions[1] != 3):
-        raise Exception("ref must be a sequence of 3 dimensional coordinates")
+        raise ValueError("ref must be a sequence of 3 dimensional coordinates")
     if (conf.dtype!=numpy.dtype(numpy.float32) and ref.dtype!=numpy.dtype(numpy.float32)):
-        raise Exception("coordinate data must be of type float32")
+        raise TypeError("coordinate data must be of type float32")
     with_PBC = (box is not None)
     if with_PBC is True:
         if (box.nd != 1 and box.dimensions[0] != 3):
-            raise Exception("box must be a sequence of 3 dimensional coordinates")
+            raise ValueError("box must be a sequence of 3 dimensional coordinates")
         if (box.dtype!=numpy.dtype(numpy.float32)):
-            raise Exception("periodic boundaries must be of type float32")
+            raise TypeError("periodic boundaries must be of type float32")
 
     confnum = conf.dimensions[0]
     refnum = ref.dimensions[0]
 
     if not result is None:
         if (result.nd != 2 or result.dimensions[0] != refnum or result.dimensions[1] != confnum):
-            raise Exception("result array has incorrect size or datatype - should be (%dx%d)"%(refnum,confnum))
+            raise ValueError("result array has incorrect size or datatype - should be (%dx%d)"%(refnum,confnum))
         distances = numpy.asarray(result)
     else:
         distances = numpy.zeros((refnum, confnum), numpy.float64)
