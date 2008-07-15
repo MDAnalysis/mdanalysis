@@ -4,6 +4,15 @@ Currently MDAnalysis is only distributed in source form. You will need
 a C compiler and pyrex to compile the DCD reader and numerical
 extensions.
 
+In the top directory, you can customize the setup by copying the setup
+configuration template to setup.cfg and editing it.
+
+   cp setup.cfg.template setup.cfg
+
+For instance, you can choose to use the Intel compiler for faster
+code if you have it installed. 
+
+
 In principle, installation should be as simple as
 
    python setup.py build
