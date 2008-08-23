@@ -18,7 +18,7 @@ antecedent (x,D) is switched between acceptors and donors.)
   
 """
 import numpy
-import AtomGroup
+from AtomGroup import AtomGroup
 #from sets import Set as set   # works for python 2.3, py2.4 has set builtin
 
 # organize topology as AtomGroup objects
@@ -67,13 +67,15 @@ class HBonds:
     def __init__(self,universe):
         init_hbonds(universe)
         self.universe = universe
-        HBonds = dict( [(x,u._HBonds[x]) for x in 'acceptors','donors','hydrogens'] )
+        HBonds = dict( [(x,universe._HBonds[x]) for x in 'acceptors','donors','hydrogens'] )
         self.__dict__.update(HBonds)
         # coordinate functions
         self.h_coords = self.hydrogens.coordinates
         self.d_coords = self.donors.coordinates
         self.a_coords = self.acceptors.coordinates
 
+
+# just for testing with __main__
 def dist(i,j):
     global d
     print "dist(%d,%d) = %f" % (i,j,d[i,j])
