@@ -16,7 +16,7 @@ Methods:
     a = Atom()
     a.pos     - The current position (as a numpy array) of this atom
 """
-    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", "mass", "charge", "residue", "segment", "bonds", "__universe")
+    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", "mass", "charge", "residue", "segment", "bonds", "__universe", "acceptor", "donor")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge):
         self.number = number
@@ -27,6 +27,8 @@ Methods:
         self.segid = segid
         self.mass = mass
         self.charge = charge
+        self.donor = None     # H-bond properties (filled in later)
+        self.acceptor = None
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
                repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'
@@ -340,9 +342,12 @@ See also:
         import PSFParser
         struc = PSFParser.parse(psffilename)
         self.filename = psffilename
+        self._psf = struc
         #for data in struc.keys():
         #    setattr(self, data, struc[data])
         self.atoms = AtomGroup(struc["_atoms"])
+        # XXX: add H-bond information here if available from psf (or other sources)
+        # 
         segments = PSFParser.build_segments(self.atoms)
         # Because of weird python rules, attribute names cannot start with a digit
         for seg in segments.keys():

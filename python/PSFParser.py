@@ -44,7 +44,9 @@ def parse(psffilename):
                 ("NBOND", 2, 4, __parsesection_, "_bonds"),
                 ("NTHETA", 3, 3, __parsesection_, "_angles"),
                 ("NPHI", 4, 2, __parsesection_, "_dihe"),
-                ("NIMPHI", 4, 2, __parsesection_, "_impr")]
+                ("NIMPHI", 4, 2, __parsesection_, "_impr"),
+                ("NDON", 2, 4, __parsesection_,"_donors"),
+                ("NACC", 2, 4, __parsesection_,"_acceptors")]
 
     try:
         for info in sections:
