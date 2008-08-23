@@ -7,6 +7,16 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
+08/23/08 naveen, orbeckst
+        * 0.5.1 release
+	* primitive PDB writer (only works if coordinates were read from a pdb)
+        * B-factor property (detailed implementation subject to change)
+        * periodic flag for PointSelection
+	* new correl series: orientation vector for 3-site molecules
+	  (to calculate the water dipole moment of SPC or TIP3P)
+	* distance.distance_array() bug fixed (see doc string)
+        * updated LICENSE file UIUC Open Source License
+
 01/29/08 orbeckst
 	* prepared 0.5.0 release. Includes previously disabled
 	  distance code, PDB reader, incomplete XTC reader (code by

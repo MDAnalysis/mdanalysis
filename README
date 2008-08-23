@@ -1,12 +1,16 @@
+$Id$
+
 == MDAnalysis ==
 
-This software is copyright © 2007,2008 Naveen Michaud-Agrawal.
+This software is copyright (c) 2007,2008 Naveen Michaud-Agrawal.
 
 This software is released under the GPL software license, version 2,
-with the exception of the DCD reading/writing code, which is licensed
-under the UIUC Open Source License.
+with the following exceptions:
 
-This license, including disclaimer, is available in the 'LICENSE'
+The DCD reading/writing code is licensed under the UIUC Open Source
+License.
+
+All licenses, including disclaimer, are available in the 'LICENSE'
 file.
 
 
@@ -25,5 +29,5 @@ directory.
 Please report bugs and feature requests through the issue tracker at
 http://code.google.com/p/mdanalysis/issues/
 
-Naveen Michaud-Agrawal
-naveen.michaudagrawal@gmail.com
+Naveen Michaud-Agrawal <naveen.michaudagrawal@gmail.com>
+Oliver Beckstein <orbeckst@gmail.com>
