@@ -1,3 +1,5 @@
+$Id$
+
 == MDAnalysis CHANGELOG ==
 
 The rules for this file:
@@ -7,6 +9,16 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
+??/??/08 orbeckst (Running list of enhancements, to be edited for final
+                  entry when stable changes are merged back into trunk)
+        * reads hydrogen bond donor/acceptor list from psf and sets up
+          structures for hydrogen bonding analysis
+          TODO: H-BOND ANALYSIS NOT WORKING YET
+        * added KDTree and Neighbour searching code from Biopython for
+          faster distance selections
+          TODO: CODE NOT USED YET
+        * updated LICENSE file with Biopython License
+
 08/23/08 naveen, orbeckst
         * 0.5.1 release
 	* primitive PDB writer (only works if coordinates were read from a pdb)

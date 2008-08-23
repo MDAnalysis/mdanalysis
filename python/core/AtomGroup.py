@@ -339,7 +339,7 @@ See also:
     def __init__(self, psffilename, dcdfilename=None, pdbfilename=None):
         self.__dcd = None
         self.__pdb = None
-        import PSFParser
+        from MDAnalysis.topology import PSFParser
         struc = PSFParser.parse(psffilename)
         self.filename = psffilename
         self._psf = struc
@@ -375,13 +375,13 @@ See also:
         if pdbfilename is not None:
             self.load_new_pdb(pdbfilename)
     def load_new_dcd(self, dcdfilename):
-        from DCD import DCDReader
+        from MDAnalysis.coordinates.DCD import DCDReader
         self.dcd = DCDReader(dcdfilename)
         # Make sure that they both have the same number of atoms
         if (self.dcd.numatoms != self.atoms.numberOfAtoms()):
             raise Exception("The psf and dcd files don't have the same number of atoms!")
     def load_new_pdb(self,pdbfilename):
-        from PDB import PDBReader
+        from MDAnalysis.coordinates.PDB import PDBReader
         self.pdb = PDBReader(pdbfilename)
         # Make sure that they both have the same number of atoms
         if (self.pdb.numatoms != self.atoms.numberOfAtoms()):

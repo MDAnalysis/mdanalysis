@@ -1,4 +1,4 @@
-# $Id$
+# $Id: XTC.py 101 2008-05-18 13:19:06Z orbeckst $
 """Gromacs XTC trajectories in MDAnalysis
 
 Only coordinates are read; the topology must still be provided by a

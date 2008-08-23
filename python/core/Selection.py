@@ -101,8 +101,8 @@ class AroundSelection(Selection):
         sys_atoms = self._group_atoms-sel_atoms
         sel_indices = numpy.array([a.number for a in sel_atoms])
         sys_indices = numpy.array([a.number for a in sys_atoms])
-        sel_coor = Selection.coord[sel_indices].copy()  # bug in distance_array(), so make a copy()
-        sys_coor = Selection.coord[sys_indices].copy()  # to get a contigious array for the C loop
+        sel_coor = Selection.coord[sel_indices]
+        sys_coor = Selection.coord[sys_indices]
         if self.periodic:
             box = group.dimensions[:3]
         else:
@@ -124,8 +124,8 @@ class PointSelection(Selection):
         self.periodic = periodic
     def _apply(self, group):
         sys_indices = numpy.array([a.number for a in self._group_atoms])
-        sys_coor = Selection.coord[sys_indices].copy()  # bug in distance_array()
-        ref_coor = self.ref[numpy.newaxis,...].copy()   # bug in distance_array()
+        sys_coor = Selection.coord[sys_indices]
+        ref_coor = self.ref[numpy.newaxis,...]
         if self.periodic:
             box = group.dimensions[:3]
         else:

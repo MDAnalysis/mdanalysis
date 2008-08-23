@@ -1,4 +1,39 @@
+# $Id$
+"""Distutils based setup script for MDAnalysis.
+
+This uses Distutils (http://python.org/sigs/distutils-sig/) the standard
+python mechanism for installing packages. For the easiest installation
+just type the command:
+
+  python setup.py install
+
+For more in-depth instructions, see the installation section at the
+MDAnalysis Wiki:
+
+  http://code.google.com/p/mdanalysis/wiki/Install
+
+Or for more details about the options available from distutils, look at
+the 'Installing Python Modules' distutils documentation, available from:
+
+  http://python.org/sigs/distutils-sig/doc/
+
+Or, if all else fails, feel free to ask on the MDAnalysis mailing list
+for help:
+
+  http://groups.google.com/group/mdnalysis-discussion
+
+(Note that the group really is called `mdnalysis-discussion' because
+Google groups forbids any name that contains the string `anal'.)
+"""
+
 import sys, os
+
+# Make sure I have the right Python version.
+if sys.version_info[:2] < (2, 3):
+    print "MDAnalysis requires Python 2.3 or better.  Python %d.%d detected" % \
+        sys.version_info[:2]
+    sys.exit(-1)
+
 from distutils import sysconfig
 from numpy import get_numpy_include
 from distutils.core import setup, Extension
@@ -41,41 +76,49 @@ if __name__ == '__main__':
         extra_compile_args = ''
         define_macros = []
 
-    extensions = [Extension('_dcdmodule', ['src/dcd/dcd.c'],
+    extensions = [Extension('coordinates._dcdmodule', ['src/dcd/dcd.c'],
                             include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('_dcdtest', ['src/dcd/_dcdtest.pyx'],
+                  Extension('coordinates._dcdtest', ['src/dcd/_dcdtest.pyx'],
                             include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('distances', ['src/numtools/distances.pyx'],
+                  Extension('core.distances', ['src/numtools/distances.pyx'],
                             include_dirs = include_dirs+['src/numtools'],
                             libraries = ['m'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('rms_fitting', ['src/numtools/rms_fitting.pyx'],
+                  Extension('core.rms_fitting', ['src/numtools/rms_fitting.pyx'],
                             libraries = ['m'],
                             define_macros=define_macros,
                             include_dirs = include_dirs+fast_numeric_include,
                             extra_link_args=fast_numeric_link,
                             extra_compile_args=extra_compile_args),
-                  #Extension('delaunay', ['src/delaunay/delaunay.pyx', 'src/delaunay/blas.c', 'src/delaunay/tess.c'],
+                  #Extension('util.delaunay', ['src/delaunay/delaunay.pyx', 'src/delaunay/blas.c', 'src/delaunay/tess.c'],
                   #          libraries = ['m'],
                   #          define_macros=define_macros,
                   #          include_dirs = include_dirs+fast_numeric_include+['src/delaunay'],
                   #          extra_link_args=fast_numeric_link,
                   #          extra_compile_args=extra_compile_args),
+                  Extension('KDTree._CKDTree', 
+                            ["src/KDTree/KDTree.cpp",
+                             "src/KDTree/KDTree.swig.cpp"],
+                            libraries=["stdc++"],
+                            language="c++"),
                   ]
 
     setup(name              = 'MDAnalysis',
-          version           = '0.5.1',
+          version           = '0.5.1-UNSTABLE',
           description       = 'Python tools to support analysis of trajectories',
           author            = 'Naveen Michaud-Agrawal',
           author_email      = 'naveen.michaudagrawal@gmail.com',
           url               = 'http://mdanalysis.googlecode.com/',
           license           = 'GPL 2',
-          packages          = [ 'MDAnalysis' ],
+          packages          = [ 'MDAnalysis',
+                                'MDAnalysis.core', 'MDAnalysis.topology',
+                                'MDAnalysis.coordinates', 'MDAnalysis.util',
+                                'MDAnalysis.KDTree'],
           package_dir       = {'MDAnalysis': 'python'},
           ext_package       = 'MDAnalysis',
           ext_modules       = extensions,

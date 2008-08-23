@@ -1,5 +1,7 @@
 include src/dcd/include/*.h
 include src/numtools/*.h
+include src/KDTree/*
+include src/KDTree/Makefile
 recursive-include src *.pyx *.pxd
 recursive-include doc INSTALL index.html
 include CHANGELOG LICENSE TODO
