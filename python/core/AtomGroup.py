@@ -2,7 +2,10 @@
 """AtomGroup Hierarchy
 
 Class Hierarchy:
-    AtomGroup ->
+    AtomGroup -> ResidueGroup  -> Segment
+              -> Residue
+    Atom
+    Universe
 """
 
 import numpy
@@ -10,12 +13,12 @@ import numpy
 class Atom(object):
     """A single atom definition
 
-Data: number, segid, resid, resname, name, type, mass, charge
+    Data: number, segid, resid, resname, name, type, mass, charge
 
-Methods:
-    a = Atom()
-    a.pos     - The current position (as a numpy array) of this atom
-"""
+    Methods:
+        a = Atom()
+        a.pos     - The current position (as a numpy array) of this atom
+    """
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", "mass", "charge", "residue", "segment", "bonds", "__universe", "acceptor", "donor")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge):
@@ -83,26 +86,26 @@ class NameError(Exception):
 class AtomGroup(object):
     """A group of atoms
 
-Currently contains a list of atoms from the main system that correspond to this group.
+    Currently contains a list of atoms from the main system that correspond to this group.
 
-Data: atoms - a list of references to the corresponding atoms in Universe.atoms
-      AtomGroups are immutable
+    Data: atoms - a list of references to the corresponding atoms in Universe.atoms
+          AtomGroups are immutable
 
-Methods:
-    ag = universe.selectAtoms("...")
-    ag.numberOfAtoms() - return the number of atoms in group
-    ag.indices() - return indices into main atom array
-    ag.masses() - array of masses
-    ag.totalMass() - total mass
-    ag.charges() - array of charges
-    ag.totalCharge() - total charge
-    ag.centerOfGeometry() - center of geometry
-    ag.centerOfMass() - center of mass
-    ag.radiusOfGyration() - radius of gyration
-    ag.principleAxis() - returns the principle axis of rotation
-    ag.bfactors() - returns B-factors (if they were loaded from a PDB)
-    c = ag.coordinates() - return array of coordinates
-"""
+    Methods:
+        ag = universe.selectAtoms("...")
+        ag.numberOfAtoms() - return the number of atoms in group
+        ag.indices() - return indices into main atom array
+        ag.masses() - array of masses
+        ag.totalMass() - total mass
+        ag.charges() - array of charges
+        ag.totalCharge() - total charge
+        ag.centerOfGeometry() - center of geometry
+        ag.centerOfMass() - center of mass
+        ag.radiusOfGyration() - radius of gyration
+        ag.principleAxis() - returns the principle axis of rotation
+        ag.bfactors() - returns B-factors (if they were loaded from a PDB)
+        c = ag.coordinates() - return array of coordinates
+    """
     def atoms():
         doc = "a list of references to atoms in Universe corresponding to a specifies subset"
         def fget(self):
@@ -117,6 +120,16 @@ Methods:
             return self.__atoms
         return locals()
     _atoms = property(**_atoms())
+
+    def universe():
+        doc = "The universe to which the atoms belong (read-only)."
+        def fget(self):
+            try:
+                return self.__atoms[0].universe
+            except AttributeError:
+                return None
+        return locals()
+    universe = property(**universe())
 
     def __init__(self, atoms):
         if len(atoms) < 1: raise Exception("No atoms defined for AtomGroup")
@@ -204,10 +217,9 @@ Methods:
         return numpy.take(eigenvec, indices) 
     def coordinates(self, ts=None):
         if ts == None:
-            ts = self.atoms[0].universe.coord
+            ts = self.universe.coord
         return numpy.array(ts[self.indices()], copy=True)
-    def bfactors(self):
-        return self.atoms[0].universe.bfactors[self.indices()]
+
     def selectAtoms(self, sel, *othersel):
         import Selection
         atomgrp = Selection.Parser.parse(sel).apply(self)
@@ -221,16 +233,39 @@ Methods:
             #return tuple(atomselections)
             return atomgrp
 
+    # properties
+    def dimensions():
+        doc = """Dimensions of the Universe to which the group belongs, at the current time step."""
+        def fget(self):
+            if self.universe is not None:
+                return self.universe.dimensions
+            else:
+                raise AttributeError("This AtomGroup does not belong to a Universe with a dimension.")
+        return locals()
+    dimensions = property(**dimensions())
+
+    def bfactors():
+        doc = """B-factors of the AtomGroup"""
+        def fget(self):
+            if self.universe is not None:
+                return self.universe.bfactors[self.indices()]
+            else:
+                raise AttributeError("This AtomGroup does not belong to a Universe.")
+        return locals()
+    bfactors = property(**bfactors())
+        
+
+
 class Residue(AtomGroup):
     """A group of atoms corresponding to a residue
 
-Data: type, name
+    Data: type, name
 
-Methods:
-    r = Residue()
-    r['name'] or r[id] - returns the atom corresponding to that name
-    r.name
-"""
+    Methods:
+        r = Residue()
+        r['name'] or r[id] - returns the atom corresponding to that name
+        r.name
+    """
     __cache = {}
     def __init__(self, name, id, atoms):
         super(Residue, self).__init__(atoms)
@@ -260,13 +295,13 @@ Methods:
         return '<'+self.__class__.__name__+' '+repr(self.name)+', '+repr(self.id)+'>'
 
 class ResidueGroup(AtomGroup):
-    """ A group of residues
+    """A group of residues
 
-Data: residues
+    Data: residues
 
-Methods:
-    rg = ResidueGroup()
-"""
+    Methods:
+       rg = ResidueGroup()
+    """
     def __init__(self, residues):
         self._residues = residues
         atoms = []
@@ -288,14 +323,13 @@ Methods:
         return '<'+self.__class__.__name__+' '+repr(self._residues)+'>'
 
 class Segment(ResidueGroup):
-    """ A group of residues corresponding to one segment of the PSF
+    """A group of residues corresponding to one segment of the PSF
 
-Data: name
+    Data: name
 
-Methods:
-    s = Segment()
-
-"""
+    Methods:
+       s = Segment()
+    """
     def __init__(self, name, residues):
         super(Segment, self).__init__(residues)
         self.name = name
@@ -322,19 +356,19 @@ class Universe(object):
     """Contains all the information decribing the system
        Built from a psf file
 
-Data: bonds, angles, dihedrals, impropers, donors, acceptors
-      coord - current coordinate array for all the atoms in the universe
-      dcd - currently loaded trajectory reader
-      dimensions - current system dimensions
+       Data: bonds, angles, dihedrals, impropers, donors, acceptors
+             coord - current coordinate array for all the atoms in the universe
+             dcd - currently loaded trajectory reader
+             dimensions - current system dimensions
 
-Methods:
-   m = Universe(psffile, dcdfile)             - read system from file(s)
-   m = Universe(psffile, pdbfilename=pdbfile) - read coordinates from PDB file
-   m.load_new_dcd(dcdfilename)                - read from a new dcd file
-   m.selectAtoms(...)                         - select atoms using similar selection string as charmm
+       Methods:
+          m = Universe(psffile, dcdfile)             - read system from file(s)
+          m = Universe(psffile, pdbfilename=pdbfile) - read coordinates from PDB file
+          m.load_new_dcd(dcdfilename)                - read from a new dcd file
+          m.selectAtoms(...)                         - select atoms using similar selection string as charmm
 
-   Only a single frame PDB file is supported; use DCDs for trajectories.
-See also:
+          Only a single frame PDB file is supported; use DCDs for trajectories.
+       See also:
 """
     def __init__(self, psffilename, dcdfilename=None, pdbfilename=None):
         self.__dcd = None
@@ -390,59 +424,88 @@ See also:
         for a, pdbatom in zip(self.atoms,self.pdb.pdb.get_atoms()):
             a.bfactor = pdbatom.get_bfactor()
 
-
     def selectAtoms(self, sel, *othersel):
-        '''Select atoms using a CHARMM selection string. 
+        """Select atoms using a CHARMM selection string. 
 
-Returns an AtomGroup with atoms sorted according to their index in the
-psf (this is to ensure that there aren't any duplicates, which can
-happen with complicated selections).
+        Returns an AtomGroup with atoms sorted according to their index in the
+        psf (this is to ensure that there aren't any duplicates, which can
+        happen with complicated selections).
 
-Note: you can group subselections using parentheses, but you need to
-put spaces around the parentheses due to the way the parser is
-implemented.
+        Note: you can group subselections using parentheses, but you need to
+        put spaces around the parentheses due to the way the parser is
+        implemented.
 
-> universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
-<AtomGroup with 3420 atoms>
+        >>> universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
+        <AtomGroup with 3420 atoms>
 
-Here's a list of all keywords:
+        Here's a list of all keywords:
 
-Simple selections
-----------------------------
-protein, backbone - selects all atoms that belong to a standard set of residues, may not work for esoteric residues
-segid, resid, resname, name, type - single argument describing selection, resid can take a range of numbers separated by a colon (inclusive)
-                                    ie "segid DMPC", "resname LYS", "name CA", "resid 1:5"
-atom - a selector for a single atom consisting of segid resid atomname
-       ie "DMPC 1 C2" selects the C2 carbon of the first residue of the DMPC segment
+        Simple selections
+        ----------------------------
+        protein, backbone
+           selects all atoms that belong to a standard set of residues, may
+           not work for esoteric residues
 
-Boolean
-----------------------------
-not - all atoms not in the selection; ie "not protein" selects all atoms that aren't part of a protein
-and, or - combine two selections according to the rules of boolean algebra
-          ie "protein and not ( resname ALA or resname LYS )" selects all atoms that belong to a protein, but are not in a lysine or alanine residue
+        segid, resid, resname, name, type
+           single argument describing selection, resid can take a range of
+           numbers separated by a colon (inclusive) ie "segid DMPC", "resname
+           LYS", "name CA", "resid 1:5"
 
-Geometric - accounts for periodicity
-----------------------------
-around - selects all atoms a certain cutoff away from another selection; 
-         ie "around 3.5 protein" selects all atoms not belonging to protein that are within 3.5 Angstroms from the protein
-point - selects all atoms within a cutoff of a point in space, make sure coordinate is separated by spaces
-        ie "point 3.5 5.0 5.0 5.0" selects all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0, 5.0) 
-prop - selects atoms based on position, using x, y, or z coordinate
-       supports the abs keyword (for absolute value) and the following operators: >, <, >=, <=, ==, !=
-       ie "prop z >= 5.0" selects all atoms with z coordinate greater than 5.0
-          "prop abs z <= 5.0" selects all atoms within -5.0 <= z <= 5.0
+        atom 
+           a selector for a single atom consisting of segid resid atomname ie
+           "DMPC 1 C2" selects the C2 carbon of the first residue of the DMPC
+           segment
 
-Connectivity
-----------------------------
-byres - selects all atoms that are in the same segment and residue as selection
-        ie specify the subselection after the byres keyword
+        Boolean
+        ----------------------------
+        not
+           all atoms not in the selection; ie "not protein" selects all atoms
+           that aren't part of a protein
 
-Index
-----------------------------
-bynum - selects all atoms within a range of (1-based) inclusive indices
-        ie "bynum 1" selects the first atom in the universe
-           "bynum 5:10" selects atoms 5 through 10 inclusive
-        '''
+        and, or
+           combine two selections according to the rules of boolean algebra ie
+           "protein and not ( resname ALA or resname LYS )" selects all atoms
+           that belong to a protein, but are not in a lysine or alanine
+           residue
+
+        Geometric - accounts for periodicity*
+        ---------------------------------------
+        around
+           selects all atoms a certain cutoff away from another selection; ie
+           "around 3.5 protein" selects all atoms not belonging to protein
+           that are within 3.5 Angstroms from the protein point - selects all
+           atoms within a cutoff of a point in space, make sure coordinate is
+           separated by spaces ie "point 3.5 5.0 5.0 5.0" selects all atoms
+           within 3.5 Angstroms of the coordinate (5.0, 5.0, 5.0)
+
+        point
+           selects all atoms within a sphere of given radius around point
+
+        prop
+           selects atoms based on position, using x, y, or z coordinate
+           supports the abs keyword (for absolute value) and the following
+           operators: >, <, >=, <=, ==, != ie "prop z >= 5.0" selects all
+           atoms with z coordinate greater than 5.0 "prop abs z <= 5.0"
+           selects all atoms within -5.0 <= z <= 5.0
+
+        [*] Periodicity is only taken into account with the 'slow' distance
+        functions via a minimum image convention (and this also only works for
+        rectangular simulation cells).
+
+        Connectivity
+        ----------------------------
+        byres
+           selects all atoms that are in the same segment and residue as
+           selection ie specify the subselection after the byres keyword
+
+
+        Index
+        ----------------------------
+        bynum
+           selects all atoms within a range of (1-based) inclusive indices ie
+           "bynum 1" selects the first atom in the universe "bynum 5:10"
+           selects atoms 5 through 10 inclusive
+        """
         import Selection
         atomgrp = Selection.Parser.parse(sel).apply(self)
         if len(othersel) == 0: return atomgrp
@@ -454,6 +517,7 @@ bynum - selects all atoms within a range of (1-based) inclusive indices
                 #atomselections.append(Selection.Parser.parse(sel).apply(self))
             #return tuple(atomselections)
             return atomgrp
+
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(len(self.atoms))+' atoms>'
 
