@@ -10,13 +10,13 @@ Currently all atom arrays are handled internally as sets, but returned as AtomGr
 from sets import Set as set
 from AtomGroup import AtomGroup, Universe
 import numpy
+import MDAnalysis.core    # to access 'use_KDTree_routines'
 
 class Selection:
     def __init__(self):
-        # This allows you to build a Selection without tying it to a particular group
-        # yet
+        # This allows you to build a Selection without tying it to a particular group yet
         # Updatable means every timestep
-        self.update = False
+        self.update = False   # not used at the moment
     def __repr__(self):
         return "<"+self.__class__.__name__+">"
     def __and__(self, other):
@@ -39,12 +39,12 @@ class Selection:
         # make a set of all the atoms in the group
         # XXX this should be static to all the class members
         Selection._group_atoms = set(group.atoms)
-        if not hasattr(group, "coord"): Selection.coord = group.atoms[0].universe.coord
+        Selection._group_atoms_list = [a for a in Selection._group_atoms] # need ordered, unique list for back-indexing in Around and Point!
+        if not hasattr(group, "coord"): Selection.coord = group.universe.coord
         else: Selection.coord = group.coord
 
         if not hasattr(self, "_cache"):
             cache = list(self._apply(group))
-
             # Decorate/Sort/Undecorate (Schwartzian Transform)
             cache[:] = [(x.number, x) for x in cache]
             cache.sort()
@@ -89,41 +89,79 @@ class OrSelection(Selection):
         return "<'OrSelection' "+repr(self.lsel)+","+repr(self.rsel)+">"
 
 class AroundSelection(Selection):
-    def __init__(self, sel, cutoff, periodic = True):
+    def __init__(self, sel, cutoff, periodic=False): #True):
         Selection.__init__(self)
         self.sel = sel
         self.cutoff = cutoff
         self.sqdist = cutoff*cutoff
         self.periodic = periodic
-    def _apply(self, group):
-        # Calculate the atoms within a certain periodic distance from selection
-        sel_atoms = self.sel._apply(group)
-        sys_atoms = self._group_atoms-sel_atoms
-        sel_indices = numpy.array([a.number for a in sel_atoms])
-        sys_indices = numpy.array([a.number for a in sys_atoms])
+    def _apply(self,group):
+        # make choosing _fast/_slow configurable (while testing)
+        if MDAnalysis.core.use_KDTree_routines in (True,'fast','always'):
+            return self._apply_KDTree(group)
+        else:
+            return self._apply_distmat(group)
+    def _apply_KDTree(self,group):
+        """KDTree based selection is about 7x faster than distmat for typical problems."""
+        sel_atoms = self.sel._apply(group) ## group is wrong, should be universe (?!)
+        sys_atoms_list = [a for a in (self._group_atoms-sel_atoms)]  # list needed for back-indexing
+        sel_indices = numpy.array([a.number for a in sel_atoms],dtype=int)
+        sys_indices = numpy.array([a.number for a in sys_atoms_list],dtype=int)
+        sel_coor = Selection.coord[sel_indices]
+        sys_coor = Selection.coord[sys_indices]
+        from MDAnalysis.KDTree.NeighborSearch import CoordinateNeighborSearch
+        # Can we optimize search by using the larger set for the tree?
+        CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
+        found_indices = CNS.search_list(sel_coor,self.cutoff)
+        res_atoms = [sys_atoms_list[i] for i in found_indices]
+        return set(res_atoms)
+    def _apply_distmat(self,group):
+        sel_atoms = self.sel._apply(group) ## group is wrong, should be universe (?!)
+        sys_atoms_list = [a for a in (self._group_atoms-sel_atoms)]  # list needed for back-indexing
+        sel_indices = numpy.array([a.number for a in sel_atoms],dtype=int)
+        sys_indices = numpy.array([a.number for a in sys_atoms_list],dtype=int)
         sel_coor = Selection.coord[sel_indices]
         sys_coor = Selection.coord[sys_indices]
         if self.periodic:
-            box = group.dimensions[:3]
+            box = group.dimensions[:3]  # ignored with KDTree
         else:
             box = None
         import distances
         dist = distances.distance_array(sys_coor, sel_coor, box)
-        res_atoms = [group.atoms[i] for i in sys_indices[numpy.any(dist <= self.cutoff, axis=1)]]
+        res_atoms = [sys_atoms_list[i] for i in numpy.any(dist <= self.cutoff, axis=1).nonzero()[0]]
         return set(res_atoms)
     def __repr__(self):
-        import math
         return "<'AroundSelection' "+repr(self.cutoff)+" around "+repr(self.sel)+">"
 
 class PointSelection(Selection):
-    def __init__(self, x, y, z, cutoff, periodic = True):
+    def __init__(self, x, y, z, cutoff, periodic=True):
         Selection.__init__(self)
         self.ref = numpy.array((float(x), float(y), float(z)))
         self.cutoff = float(cutoff)
         self.cutoffsq = float(cutoff)*float(cutoff)
         self.periodic = periodic
-    def _apply(self, group):
-        sys_indices = numpy.array([a.number for a in self._group_atoms])
+    def _apply(self,group):
+        # make choosing _fast/_slow configurable (while testing)
+        if MDAnalysis.core.use_KDTree_routines in ('always',):
+            return self._apply_KDTree(group)
+        else:
+            return self._apply_distmat(group)
+    def _apply_KDTree(self, group):
+        """Selection using KDTree but periodic = True not supported.
+        (KDTree routine is ca 15% slower than the distance matrix one)
+        """
+        sys_indices = numpy.array([a.number for a in self._group_atoms_list])
+        sys_coor = Selection.coord[sys_indices]
+        if self.periodic:
+            pass # or warn? -- no periodic functionality with KDTree search
+        from MDAnalysis.KDTree.NeighborSearch import CoordinateNeighborSearch
+        CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
+        found_indices = CNS.search(self.ref,self.cutoff)
+        res_atoms = [self._group_atoms_list[i] for i in found_indices]
+        return set(res_atoms)
+    def _apply_distmat(self, group):
+        """Selection that computes all distances."""
+        sys_indices = numpy.array([a.number for a in self._group_atoms_list])
         sys_coor = Selection.coord[sys_indices]
         ref_coor = self.ref[numpy.newaxis,...]
         if self.periodic:
@@ -132,10 +170,9 @@ class PointSelection(Selection):
             box = None
         import distances
         dist = distances.distance_array(sys_coor, ref_coor, box)
-        res_atoms = [group.atoms[i] for i in sys_indices[numpy.any(dist <= self.cutoff, axis=1)]]
+        res_atoms = [self._group_atoms_list[i] for i in numpy.any(dist <= self.cutoff, axis=1).nonzero()[0]]
         return set(res_atoms)
     def __repr__(self):
-        import math
         return "<'PointSelection' "+repr(self.cutoff)+" Ang around "+repr(self.ref)+">"
 
 class CompositeSelection(Selection):
@@ -339,10 +376,11 @@ class ParseError(Exception):
 
 class SelectionParser:
     """A small parser for selection expressions.  Demonstration of
-recursive descent parsing using Precedence climbing (see http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm).
-Transforms expressions into nested Selection tree.
+    recursive descent parsing using Precedence climbing (see
+    http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm).  Transforms
+    expressions into nested Selection tree.
 
-For reference, the grammar that we parse is :
+    For reference, the grammar that we parse is :
 
     E(xpression)--> Exp(0)
     Exp(p) -->      P {B Exp(q)}
@@ -354,7 +392,7 @@ For reference, the grammar that we parse is :
                     | resid [value]
                     | name [value]
                     | type [value]
-"""
+   """
 
     #Here are the symbolic tokens that we'll process:
     ALL = 'all'

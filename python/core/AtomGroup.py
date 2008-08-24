@@ -121,6 +121,7 @@ class AtomGroup(object):
         return locals()
     _atoms = property(**_atoms())
 
+    # Universe pointer is important for Selections to work on groups
     def universe():
         doc = "The universe to which the atoms belong (read-only)."
         def fget(self):
