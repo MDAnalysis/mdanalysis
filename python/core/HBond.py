@@ -69,10 +69,38 @@ class HBonds(object):
         self.universe = universe
         HBonds = dict( [(x,universe._HBonds[x]) for x in 'acceptors','donors','hydrogens'] )
         self.__dict__.update(HBonds)
+
+        self.p_hydrogens = self.hydrogens.selectAtoms('protein')
+        self.p_donors = self.donors.selectAtoms('protein')
+        self.p_acceptors = self.acceptors.selectAtoms('protein')
+
+        self.w_hydrogens = self.hydrogens.selectAtoms('not protein')
+        self.w_donors = self.donors.selectAtoms('not protein')
+        self.w_acceptors = self.acceptors.selectAtoms('not protein')
+
         # coordinate functions
-        self.h_coords = self.hydrogens.coordinates
-        self.d_coords = self.donors.coordinates
-        self.a_coords = self.acceptors.coordinates
+        #self.h_coords = self.hydrogens.coordinates
+        #self.d_coords = self.donors.coordinates
+        #self.a_coords = self.acceptors.coordinates
+
+        self._init_neighbors()
+
+    def _init_neighbors(self):
+        #import MDAnalysis.KDTree
+        from MDAnalysis.KDTree.NeighborSearch import NeighborSearch
+        # big sets should be used for KDtrees, then scan few atoms
+        # against the trees
+        self.nn_w_hydrogens = NeighborSearch(self.w_hydrogens)
+        self.nn_w_donors = NeighborSearch(self.w_donors)
+        self.nn_w_acceptors = NeighborSearch(self.w_acceptors)
+
+    def HA(self,distance=4.0):
+        """List all pairs (Hydrogen,Acceptor) with H-A =< distance (wH-pA, wA-pH)"""
+        return ([(self.nn_w_hydrogens.search(acc.pos,distance),acc) for acc in self.p_acceptors],
+                [(hyd,self.nn_w_acceptors.search(hyd.pos,distance)) for hyd in self.p_hydrogens])
+
+
+
 
 
 # just for testing with __main__
