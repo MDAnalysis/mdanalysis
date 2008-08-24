@@ -63,7 +63,7 @@ def init_hbonds(u):
         except TypeError:
             atoms[idonor].donor = AtomGroup([atoms[ihydrogen]])
 
-class HBonds:
+class HBonds(object):
     def __init__(self,universe):
         init_hbonds(universe)
         self.universe = universe

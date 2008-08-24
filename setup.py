@@ -104,6 +104,7 @@ if __name__ == '__main__':
                   Extension('KDTree._CKDTree', 
                             ["src/KDTree/KDTree.cpp",
                              "src/KDTree/KDTree.swig.cpp"],
+                            include_dirs = include_dirs,
                             libraries=["stdc++"],
                             language="c++"),
                   ]

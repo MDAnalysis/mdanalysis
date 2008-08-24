@@ -11,5 +11,8 @@ that are within a certain radius of each other. See "Computational Geometry:
 Algorithms and Applications" (Mark de Berg, Marc van Kreveld, Mark Overmars, 
 Otfried Schwarzkopf).
 """
+__all__ = ['KDTree','NeighborSearch']
 
 from KDTree import KDTree
+# commented out for debugging:
+#from NeighborSearch import NeighborSearch

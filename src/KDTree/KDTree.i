@@ -1,8 +1,21 @@
-/* Copyright (C) 2002, Thomas Hamelryck (thamelry@binf.ku.dk)
+/* $Id$
+
+   Copyright (C) 2002, Thomas Hamelryck (thamelry@binf.ku.dk)
    This code is part of the Biopython distribution and governed by its
    license.  Please see the LICENSE file that should have been included
    as part of this package.
+
+   Changes to the original KDTree.i:
+
+   2008-08-23 Oliver Beckstein <orbeckst@gmail.com>
+       * Converted to using numpy instead of Numeric.
+       * swig 1.3 complained about a few constructs: fixed
 */
+
+#ifndef SWIGPYTHON
+#error "This swig 1.3 interface definition only supports python"
+#endif
+
 
 %module CKDTree
 %include constraints.i
@@ -10,7 +23,7 @@
 
 %{
 	#include "KDTree.h"
-	#include <Numeric/arrayobject.h> 
+	#include <numpy/oldnumeric.h> 
 %}
 
 // import_array() call initialises Numpy
@@ -20,28 +33,28 @@
 %}
 
 // Return PyArrayObjects unchanged 
-%typemap(python,out) PyArrayObject * 
+%typemap(out) PyArrayObject * 
 {
-  $target = (PyObject *) $source;
+  $result = (PyObject *) $1;
 }      
 
 // Return PyObject's unchanged 
-%typemap(python,out) PyObject * 
+%typemap(out) PyObject * 
 {
-  $target = $source;
+  $result = $1;
 }      
 
 // Handle input of 0xD coordinates as a Numpy array
-%typemap(python, in) float *onedim
+%typemap(in) float *onedim
 {
 	float *coord_data;
 	PyArrayObject *array;
 	long int n, i;
 
-	array=(PyArrayObject *) $source;
+	array=(PyArrayObject *) $input;
 
 	/* Check if it is an array */
-	if (PyArray_Check($source))
+	if (PyArray_Check($input))
 	{
 		if(array->nd!=1)
 		{
@@ -58,7 +71,7 @@
 		{
 			coord_data[i]=*(float *) (array->data+i*array->strides[0]);
 		}	
-		$target=coord_data;
+		$1=coord_data;
 	}
 	else
 	{
@@ -67,16 +80,16 @@
 }
 
 // Handle input of NxD coordinates as a Numpy array
-%typemap(python, in) float *twodim
+%typemap(in) float *twodim
 {
 	float *coord_data;
 	PyArrayObject *array;
 	long int n, m, i;
 
-	array=(PyArrayObject *) $source;
+	array=(PyArrayObject *) $input;
 
 	/* Check if it is an array */
-	if (PyArray_Check($source))
+	if (PyArray_Check($input))
 	{
 		if(array->nd!=2)
 		{
@@ -99,7 +112,7 @@
 				coord_data[i*m+j]=*(float *) (array->data+i*array->strides[0]+j*array->strides[1]);
 			}
 		}	
-		$target=coord_data;
+		$1=coord_data;
 	}
 	else
 	{
@@ -220,7 +233,7 @@ class KDTree
 %}
 
 // Add above two methods to KDTree class
-%addmethods KDTree 
+%extend KDTree 
 {
 	PyObject *get_indices();
 	PyObject *get_radii();

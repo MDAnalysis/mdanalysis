@@ -2595,7 +2595,7 @@ namespace swig {
 
 
 	#include "KDTree.h"
-	#include <Numeric/arrayobject.h> 
+	#include <numpy/oldnumeric.h> 
 
 
 #include <limits.h>
