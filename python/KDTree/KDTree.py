@@ -12,6 +12,8 @@
 #   * use numpy instead of Numeric (also changed the C++ code)
 #     and generally cast arrays to numpy.float32 (instead of raising)
 #   * moved testing routines around
+#   * implemented a 'search atom_list_A against atom_list_A' routine in
+#     python (list_search(), list_get_index())
 
 """
 The KD tree data structure can be used for all kinds of searches that
@@ -69,7 +71,9 @@ class KDTree:
         """
         self.dim=dim
         self.kdt=CKDTree.KDTree(dim, bucket_size)
-        self.built=0
+        self.built=False
+        self.__list_indices = None  # data from list_search()
+        self.__list_radii = None    # 
 
     # Set data
 
@@ -82,13 +86,13 @@ class KDTree:
         
         The coords array is always cast to a numpy.float32 array.
         """
-        coords = numpy.asarray(coords, dtype=numpy.float32)  # required for C++ code
+        coords = numpy.asarray(coords, dtype=numpy.float32, order='C')  # required for C++ code
         if numpy.any(coords.min()<=-1e6) or numpy.any(coords.max()>=1e6):
             raise ValuError("Points should lie between -1e6 and 1e6")
         if len(coords.shape)!=2 or coords.shape[1]!=self.dim:
             raise ValueError("Expected a Nx%i Numeric array" % self.dim)
         self.kdt.set_data(coords, coords.shape[0])
-        self.built=1
+        self.built=True
 
     # Fixed radius search for a point
 
@@ -101,7 +105,7 @@ class KDTree:
 
         center is always cast to numpy.float32
         """
-        center = numpy.asarray(center, dtype=numpy.float32)  # required for C++ code
+        center = numpy.asarray(center, dtype=numpy.float32, order='C')  # required for C++ code
         radius = float(radius)
         assert radius > 0
         if not self.built:
@@ -109,12 +113,11 @@ class KDTree:
         if center.shape!=(self.dim,):
             raise ValueError("Expected a %i-dimensional Numeric array" % self.dim)
         self.kdt.search_center_radius(center, radius)
-
+        
     def get_radii(self):
         """Return radii.
 
-        Return the list of distances from center after
-        a neighbor search.
+        Return the list of distances from center after a neighbor search.
         """
         a=self.kdt.get_radii()
         if a is None:
@@ -124,9 +127,9 @@ class KDTree:
     def get_indices(self):
         """Return the list of indices.
 
-        Return the list of indices after a neighbor search.
-        The indices refer to the original coords Numeric array. The
-        coordinates with these indices were within radius of center.
+        Return the list of indices after a neighbor search.  The indices
+        refer to the original coords numpy array. The coordinates with
+        these indices were within radius of center.
 
         For an index pair, the first index<second index. 
         """
@@ -153,9 +156,8 @@ class KDTree:
     def all_get_indices(self):
         """Return All Fixed Neighbor Search results.
 
-        Return a Nx2 dim Numeric array containing
-        the indices of the point pairs, where N
-        is the number of neighbor pairs.
+        Return a Nx2 dim Numeric array containing the indices of the point
+        pairs, where N is the number of neighbor pairs.
         """
         a=self.kdt.neighbor_get_indices()
         if a is None:
@@ -167,14 +169,37 @@ class KDTree:
     def all_get_radii(self):
         """Return All Fixed Neighbor Search results.
 
-        Return an N-dim array containing the distances
-        of all the point pairs, where N is the number 
-        of neighbor pairs.
+        Return an N-dim array containing the distances of all the point
+        pairs, where N is the number of neighbor pairs.
         """
         a=self.kdt.neighbor_get_radii()
         if a is None:
             return [] 
         return a
+
+    # Search another list of centers against the tree
+    # (currently only implemented in python)
+
+    def list_search(self,centers,radius):
+        """Search all points within radius of any center (radii NOT available)."""
+        # test implementation; may add this to the C++ implementation
+        centers = numpy.asarray(centers, dtype=numpy.float32, order='C')  # required for C++ code
+        assert len(centers.shape) == 2  # want a Mx3 array
+        assert centers.shape[1] == self.dim
+        # Does not really matter how the indices are processed (eg set.update(), list/sort, ...).
+        # Not implemented: radii (would need to sort radii array in parallel.)
+        def search_and_get_index(center):
+            self.search(center,radius)
+            return self.get_indices()
+        indices = numpy.concatenate([search_and_get_index(center) for center in centers])
+        self.__list_indices = numpy.unique(indices).astype(int)  # fudged
+
+    def list_get_indices(self):
+        return self.__list_indices
+    
+    def list_get_radii(self):
+        raise NotImplementedError
+
 
 def _dist(p, q):
     diff=p-q
