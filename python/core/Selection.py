@@ -89,7 +89,7 @@ class OrSelection(Selection):
         return "<'OrSelection' "+repr(self.lsel)+","+repr(self.rsel)+">"
 
 class AroundSelection(Selection):
-    def __init__(self, sel, cutoff, periodic=False): #True):
+    def __init__(self, sel, cutoff, periodic=True):
         Selection.__init__(self)
         self.sel = sel
         self.cutoff = cutoff
