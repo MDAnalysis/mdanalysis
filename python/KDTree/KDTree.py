@@ -191,7 +191,10 @@ class KDTree:
         def search_and_get_index(center):
             self.search(center,radius)
             return self.get_indices()
-        indices = numpy.concatenate([search_and_get_index(center) for center in centers])
+        try:
+            indices = numpy.concatenate([search_and_get_index(center) for center in centers])
+        except ValueError:
+            indices = []
         self.__list_indices = numpy.unique(indices).astype(int)  # fudged
 
     def list_get_indices(self):
