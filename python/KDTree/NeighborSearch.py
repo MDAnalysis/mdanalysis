@@ -184,7 +184,7 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
             return list(residues)
         elif level=="S":
             segments = sets.Set([a.segment for a in n_atom_list])
-            return list(residues)
+            return list(segments)
         else:
             raise NotImplementedError("level=%s not implemented" % level)
             
