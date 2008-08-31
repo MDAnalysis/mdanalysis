@@ -22,7 +22,8 @@ http://code.google.com/p/mdanalysis/issues/
 # These imports make everything appear to the user as if we still had
 # the 0.5.1 module layout.
 __all__ = ['AtomGroup','Selection','Timeseries','distances','rms_fitting',
-           'DCD','PDB']
+           'DCD','PDB',
+           'Universe', 'collection']
 from core import AtomGroup,Selection,Timeseries,distances,rms_fitting
 from coordinates import DCD,PDB
 
