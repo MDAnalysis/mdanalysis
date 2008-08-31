@@ -1,3 +1,4 @@
+# $Id$
 
 cimport c_numpy
 c_numpy.import_array()
@@ -44,9 +45,9 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
     if copy:
         # Work-around for a severe bug: function produces wrong numbers if
         # input arrays are views (eg slices from other arrays): copy to force a
-        # new contiguous array in memory
-        ref = reference.copy(order='C')
-        conf = configuration.copy(order='C')
+        # new contiguous array in memory (and just make sure its in C order)
+        ref = reference.copy('C')
+        conf = configuration.copy('C')
     else:
         # WARNING: this produces wrong results unless the arrays are contiguous
         # in memory
