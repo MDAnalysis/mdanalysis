@@ -10,7 +10,8 @@ Currently all atom arrays are handled internally as sets, but returned as AtomGr
 from sets import Set as set
 from AtomGroup import AtomGroup, Universe
 import numpy
-import MDAnalysis.core    # to access 'use_KDTree_routines'
+from MDAnalysis.core import flags
+
 
 class Selection:
     def __init__(self):
@@ -89,20 +90,23 @@ class OrSelection(Selection):
         return "<'OrSelection' "+repr(self.lsel)+","+repr(self.rsel)+">"
 
 class AroundSelection(Selection):
-    def __init__(self, sel, cutoff, periodic=True):
+    def __init__(self, sel, cutoff, periodic=None):
         Selection.__init__(self)
         self.sel = sel
         self.cutoff = cutoff
         self.sqdist = cutoff*cutoff
-        self.periodic = periodic
+        if periodic is None:
+            self.periodic = flags['use_periodic_selections']
     def _apply(self,group):
         # make choosing _fast/_slow configurable (while testing)
-        if MDAnalysis.core.use_KDTree_routines in (True,'fast','always'):
+        if flags['use_KDTree_routines'] in (True,'fast','always'):
             return self._apply_KDTree(group)
         else:
             return self._apply_distmat(group)
     def _apply_KDTree(self,group):
-        """KDTree based selection is about 7x faster than distmat for typical problems."""
+        """KDTree based selection is about 7x faster than distmat for typical problems.
+        Limitations: always ignores periodicity
+        """
         sel_atoms = self.sel._apply(group) ## group is wrong, should be universe (?!)
         sys_atoms_list = [a for a in (self._group_atoms-sel_atoms)]  # list needed for back-indexing
         sel_indices = numpy.array([a.number for a in sel_atoms],dtype=int)
@@ -113,7 +117,7 @@ class AroundSelection(Selection):
         # Can we optimize search by using the larger set for the tree?
         CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
         found_indices = CNS.search_list(sel_coor,self.cutoff)
-        res_atoms = [sys_atoms_list[i] for i in found_indices]
+        res_atoms = [sys_atoms_list[i] for i in found_indices] # make list numpy array and use fancy indexing?
         return set(res_atoms)
     def _apply_distmat(self,group):
         sel_atoms = self.sel._apply(group) ## group is wrong, should be universe (?!)
@@ -128,21 +132,22 @@ class AroundSelection(Selection):
             box = None
         import distances
         dist = distances.distance_array(sys_coor, sel_coor, box)
-        res_atoms = [sys_atoms_list[i] for i in numpy.any(dist <= self.cutoff, axis=1).nonzero()[0]]
+        res_atoms = [sys_atoms_list[i] for i in numpy.any(dist <= self.cutoff, axis=1).nonzero()[0]]  # make list numpy array and use fancy indexing?
         return set(res_atoms)
     def __repr__(self):
         return "<'AroundSelection' "+repr(self.cutoff)+" around "+repr(self.sel)+">"
 
 class PointSelection(Selection):
-    def __init__(self, x, y, z, cutoff, periodic=True):
+    def __init__(self, x, y, z, cutoff, periodic=None):
         Selection.__init__(self)
         self.ref = numpy.array((float(x), float(y), float(z)))
         self.cutoff = float(cutoff)
         self.cutoffsq = float(cutoff)*float(cutoff)
-        self.periodic = periodic
+        if periodic is None:
+            self.periodic = flags['use_periodic_selections']
     def _apply(self,group):
         # make choosing _fast/_slow configurable (while testing)
-        if MDAnalysis.core.use_KDTree_routines in ('always',):
+        if flags['use_KDTree_routines'] in ('always',):
             return self._apply_KDTree(group)
         else:
             return self._apply_distmat(group)
@@ -157,7 +162,7 @@ class PointSelection(Selection):
         from MDAnalysis.KDTree.NeighborSearch import CoordinateNeighborSearch
         CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
         found_indices = CNS.search(self.ref,self.cutoff)
-        res_atoms = [self._group_atoms_list[i] for i in found_indices]
+        res_atoms = [self._group_atoms_list[i] for i in found_indices]  # make list numpy array and use fancy indexing?
         return set(res_atoms)
     def _apply_distmat(self, group):
         """Selection that computes all distances."""
@@ -170,7 +175,7 @@ class PointSelection(Selection):
             box = None
         import distances
         dist = distances.distance_array(sys_coor, ref_coor, box)
-        res_atoms = [self._group_atoms_list[i] for i in numpy.any(dist <= self.cutoff, axis=1).nonzero()[0]]
+        res_atoms = [self._group_atoms_list[i] for i in numpy.any(dist <= self.cutoff, axis=1).nonzero()[0]]   # make list numpy array and use fancy indexing?
         return set(res_atoms)
     def __repr__(self):
         return "<'PointSelection' "+repr(self.cutoff)+" Ang around "+repr(self.ref)+">"
