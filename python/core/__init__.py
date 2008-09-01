@@ -38,9 +38,9 @@ class Flags(dict):
 
     """
     def __init__(self,*args):
-        """Initialize list with a *list* of Flag instances."""
+        """Initialize Flags registry with a *list* of Flag instances."""
         super(Flags,self).__init__([(flag.name,flag) for flag in args])
-    def __doc__():        
+    def __doc__():
         def fget(self): return self.doc()
         return locals()
     __doc__ = property(**__doc__())  # generate dynamic docs on all flags
@@ -49,9 +49,11 @@ class Flags(dict):
     def doc(self):
         """Shows doc strings for all flags."""
         return "\n\n".join([flag.__doc__ for flag in self._itervalues()])
-    def append(self,flag):
+    def register(self,flag):
+        """Register a new Flag instance with the Flags registry."""
         super(Flags,self).__setitem__(flag.name,flag)
     def update(self,*flags):
+        """Update Flags registry with a list of Flag instances."""
         super(Flags,self).update([(flag.name,flag) for flag in flags])
     def setdefault(self,k,d=None):
         raise NotImplementedError
