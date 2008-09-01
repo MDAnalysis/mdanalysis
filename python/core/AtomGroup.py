@@ -216,7 +216,7 @@ class AtomGroup(object):
         # Sort
         indices = numpy.argsort(eigenval)
         return numpy.take(eigenvec, indices) 
-    def coordinates(self, ts=None, copy=True):
+    def coordinates(self, ts=None, copy=False):
         if ts == None:
             ts = self.universe.coord
         return numpy.array(ts[self.indices()], copy=copy)
