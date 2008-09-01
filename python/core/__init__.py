@@ -174,6 +174,8 @@ _flags = [
             Values for flag:
 
             True, 'fast'   - only use KDTree routines that are typically faster than others
+                             POINT      uses distance matrix routines (with periodicity)
+                             AROUND     uses KDTree routines (always ignores periodicity)
             'always'       - always use KDTree routines where available (eg for benchmarking)
             False, 'never' - always use alternatives
 
