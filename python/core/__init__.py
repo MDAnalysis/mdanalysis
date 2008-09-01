@@ -16,10 +16,16 @@ A simple selection of all water oxygens within 4 A of the protein:
   water_shell.numberOfAtoms()   # how many waters were selected
   water_shell.totalMass()       # their total mass
 
+AtomGroups have various methods that allow calculation of simple
+properties. For more complicated analysis, obtain the coordinates as a
+numpy array:
+
+  coords = water_shell.coordinates()
+
 
 == Flags ==
 
-(This is an advanced topic and can probably skipped by most people.)
+(This is an advanced topic and can probably be skipped by most people.)
 
 There are a number flags that influence how MDAnalysis behaves. They are accessible
 through the pseudo-dictionary

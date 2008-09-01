@@ -216,10 +216,10 @@ class AtomGroup(object):
         # Sort
         indices = numpy.argsort(eigenval)
         return numpy.take(eigenvec, indices) 
-    def coordinates(self, ts=None):
+    def coordinates(self, ts=None, copy=True):
         if ts == None:
             ts = self.universe.coord
-        return numpy.array(ts[self.indices()], copy=True)
+        return numpy.array(ts[self.indices()], copy=copy)
 
     def selectAtoms(self, sel, *othersel):
         import Selection
@@ -489,9 +489,14 @@ class Universe(object):
            atoms with z coordinate greater than 5.0 "prop abs z <= 5.0"
            selects all atoms within -5.0 <= z <= 5.0
 
-        [*] Periodicity is only taken into account with the 'slow' distance
-        functions via a minimum image convention (and this also only works for
-        rectangular simulation cells).
+        [*] Periodicity is only taken into account with the 'distance matrix'
+        distance functions via a minimum image convention (and this only works for
+        rectangular simulation cells). If this behavior is required, set these
+        flags:
+
+           MDAnalysis.core.flags['use_periodic_selections'] = True   # default
+           MDAnalysis.core.flags['use_KDTree_routines'] = False
+
 
         Connectivity
         ----------------------------
