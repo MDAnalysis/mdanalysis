@@ -10,7 +10,8 @@ configuration template to setup.cfg and editing it.
    cp setup.cfg.template setup.cfg
 
 For instance, you can choose to use the Intel compiler for faster
-code if you have it installed. 
+code if you have it installed. However, this is not required and
+everything should work without touching setup.cfg or setup.cfg.template.
 
 
 In principle, installation should be as simple as
@@ -18,13 +19,18 @@ In principle, installation should be as simple as
    python setup.py build
    python setup.py install
 
-In version 0.5.0 this only works when installing (with root
-priviledges) into the site-wide python dir. If you want to install in
-a local directory use
+This installs MDAnalysis in the system wide python directory; this may
+require administrative privileges.
+
+It is also possible to use --prefix and --home options for setup.py
+to install in a different (probably your private) python directory
+hierarchy.
+
+If you want to install in a specific local directory use
 
   python setup.py build --build-lib=LOCAL_DIRECTORY
 
-This installs a working MDAnalysis under LOCAL_DIRECTORY.
+This installs a working MDAnalysis in LOCAL_DIRECTORY/MDAnalysis.
 
 
 

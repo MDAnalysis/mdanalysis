@@ -27,6 +27,7 @@ Google groups forbids any name that contains the string `anal'.)
 """
 
 import sys, os
+import glob
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 3):
@@ -52,7 +53,17 @@ else:
     fast_numeric_link = []
 
 if __name__ == '__main__':
-    DOC_FILES = ('README', 'LICENSE', 'CHANGELOG', 'TODO')
+    # for main trunk:
+    ## RELEASE = "0.5.1"
+    # for UNSTABLE:
+    RELEASE = "svn136_UNSTABLE"   # submitted svn revision:  echo $(($(svnversion | tr --delete '[a-zA-Z]') + 1))
+
+    ## currently not installing doc files because data_files appears to be broken
+    ## (does not create the full directory; in any case this implemetation is not very
+    ## customizable and it's also not clear to me where python docs should go)
+    # DOC_FILES = ['README', 'LICENSE', 'CHANGELOG', 'TODO'] + glob.glob('doc/*')
+    # doc_install_dir = os.path.join('share','doc','MDAnalysis') # assumes that docs are in <install_data>/share/doc/MDAnalysis
+    
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 """
@@ -64,7 +75,6 @@ if __name__ == '__main__':
                    'Programming Language :: Python',
                    'Topic :: Scientific Software :: Biology',
                    'Topic :: Scientific Software :: Chemistry',]
-    install_dir = sysconfig.get_python_lib() + os.sep + 'MDAnalysis'
 
     if 'DEBUG_CFLAGS' in os.environ:
         extra_compile_args = '\
@@ -110,7 +120,7 @@ if __name__ == '__main__':
                   ]
 
     setup(name              = 'MDAnalysis',
-          version           = '0.5.1-UNSTABLE',
+          version           = RELEASE,
           description       = 'Python tools to support analysis of trajectories',
           author            = 'Naveen Michaud-Agrawal',
           author_email      = 'naveen.michaudagrawal@gmail.com',
@@ -123,7 +133,7 @@ if __name__ == '__main__':
           package_dir       = {'MDAnalysis': 'python'},
           ext_package       = 'MDAnalysis',
           ext_modules       = extensions,
-          data_files        = [ (install_dir, DOC_FILES) ],
+        # data_files        = [ (doc_install_dir, DOC_FILES) ],  ## see comments for DOC_FILES
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
           cmdclass = {'build_ext': build_ext}
