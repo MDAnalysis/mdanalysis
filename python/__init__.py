@@ -21,11 +21,13 @@ http://code.google.com/p/mdanalysis/issues/
 
 # These imports make everything appear to the user as if we still had
 # the 0.5.1 module layout.
+# (at some point add deprecation warning)
 __all__ = ['AtomGroup','Selection','Timeseries','distances','rms_fitting',
-           'DCD','PDB',
+           'PSFParser','DCD','PDB',
            'Universe', 'collection']
 from core import AtomGroup,Selection,Timeseries,distances,rms_fitting
 from coordinates import DCD,PDB
+from topology import PSFParser
 
 # Bring some often used objects into the current namespace
 Universe = core.AtomGroup.Universe
