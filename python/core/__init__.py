@@ -60,7 +60,7 @@ class Flags(dict):
     instance as an argument.
     """
     def __init__(self,*args):
-        """Initialize Flags registry with a *list* of Flag instances."""
+        """For DEVELOPERS: Initialize Flags registry with a *list* of core.Flag instances."""
         super(Flags,self).__init__([(flag.name,flag) for flag in args])
     def __doc__():
         def fget(self): return self.doc()
@@ -191,7 +191,7 @@ _flags = [
             selections. However, they cannot deal with periodic boxes and thus ignore
             periodicity; if periodicity is crucial, disable KDTree routines with
 
-            >>> MDAnalysis.core.use_KDTree_routines(False)
+            >>> MDAnalysis.core.flags['use_KDTree_routines'] = False
             """
          ),
     ]
