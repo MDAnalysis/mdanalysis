@@ -134,11 +134,16 @@ class AtomGroup(object):
 
     def __init__(self, atoms):
         if len(atoms) < 1: raise Exception("No atoms defined for AtomGroup")
-        # __atoms property is effectively readonly
-        self.__atoms = atoms
+        # __atoms property is effectively readonly        
+        # check that atoms is indexable:
+        try:
+            atoms[0]
+            self.__atoms = atoms      
+        except TypeError:
+            self.__atoms = list(atoms)
         # If the number of atoms is very large, create a dictionary cache for lookup
         if len(atoms) > 10000:
-            self._atom_cache = dict([(x,None) for x in atoms])
+            self._atom_cache = dict([(x,None) for x in self.__atoms])
     def __len__(self):
         #import warnings
         #warnings.warn("To prevent confusion with AtomGroup subclasses you should use numberOfAtoms() instead", category=Warning, stacklevel=2)
@@ -439,7 +444,7 @@ class Universe(object):
         >>> universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
         <AtomGroup with 3420 atoms>
 
-        Here's a list of all keywords:
+        Here's a list of all keywords; keywords are CASE SENSITIVE:
 
         Simple selections
         ----------------------------
