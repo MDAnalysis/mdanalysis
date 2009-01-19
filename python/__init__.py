@@ -25,6 +25,7 @@ http://code.google.com/p/mdanalysis/issues/
 __all__ = ['AtomGroup','Selection','Timeseries','distances','rms_fitting',
            'PSFParser','DCD','PDB',
            'Universe', 'collection']
+
 from core import AtomGroup,Selection,Timeseries,distances,rms_fitting
 from coordinates import DCD,PDB
 from topology import PSFParser

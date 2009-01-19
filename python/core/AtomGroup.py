@@ -239,6 +239,38 @@ class AtomGroup(object):
             #return tuple(atomselections)
             return atomgrp
 
+    def write(self,filename=None,format="pdb",filenamefmt="%(trjname)s_%(frame)d"):
+        """Write AtomGroup to a file.
+
+        AG.write(filename,format='pdb')
+
+        EXPERIMENTAL.
+        Only working format is a primitive implementation of PDB.
+
+        filename      None: create TRJNAME_FRAME.FORMAT from filenamefmt
+        format        pdb; can also be supplied as part of filename
+        filenamefmt   format string for default filename; use 'trjname' and 'frame'
+        """
+        import util
+        import os.path
+
+        trj = self.universe.trajectory    # unified trajectory API
+        frame = trj.ts.frame
+
+        if filename is None:
+            trjname = os.path.basename(trj.filename)
+            filename = filenamefmt % vars()
+        filename = util.filename(filename,ext=format,keep=True)
+        format = os.path.splitext(filename)[1][1:]  # strip initial dot!
+        try:
+            import MDAnalysis.coordinates
+            FrameWriter = MDAnalysis.coordinates._frame_writers[format]
+        except KeyError:
+            raise NotImplementedError("Writing as %r is not implemented; only %r will work." \
+                                      % (format, MDAnalysis.coordinates._frame_writers.keys()))
+        writer = FrameWriter(filename)
+        writer.write(self)         # wants a atomgroup
+
     # properties
     def dimensions():
         doc = """Dimensions of the Universe to which the group belongs, at the current time step."""
@@ -420,6 +452,8 @@ class Universe(object):
         # Make sure that they both have the same number of atoms
         if (self.dcd.numatoms != self.atoms.numberOfAtoms()):
             raise Exception("The psf and dcd files don't have the same number of atoms!")
+        # unified trajectory API
+        self.trajectory = self.dcd
     def load_new_pdb(self,pdbfilename):
         from MDAnalysis.coordinates.PDB import PDBReader
         self.pdb = PDBReader(pdbfilename)
@@ -429,7 +463,9 @@ class Universe(object):
         # add B-factor to atoms
         for a, pdbatom in zip(self.atoms,self.pdb.pdb.get_atoms()):
             a.bfactor = pdbatom.get_bfactor()
-
+        # unified trajectory API
+        self.trajectory = self.pdb
+            
     def selectAtoms(self, sel, *othersel):
         """Select atoms using a CHARMM selection string. 
 
