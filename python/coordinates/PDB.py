@@ -12,9 +12,23 @@ The PRB module makes heavy use of Biopython's Bio.PDB:
   http://biopython.org
 """
 
-        
-# BioPython is overkill but potentially extensible (altLoc etc)
-import Bio.PDB
+
+try:
+    # BioPython is overkill but potentially extensible (altLoc etc)
+    import Bio.PDB
+except ImportError:
+    import warnings
+    warnings.warn("Bio.PDB from biopython not found. Disabling PDB reader.")
+    class MissingBiopython:
+        """Dummy class. Install biopython if you want the real MDAnalysis.coordinates.PDB classes."""
+        def __init__(self,*args,**kwargs):
+            raise NotImplementedError("No PDB I/O functionality. Install biopython.")
+    class PDBReader(MissingBiopython):
+        pass
+    class PDBWriter(MissingBiopython):
+        pass
+    # here should be something like 'return' but that doesn't work so...
+    raise
 import numpy
 from DCD import Timestep
 import MDAnalysis.core.util as util
