@@ -166,7 +166,7 @@ class PrimitivePDBWriter(object):
         
         self.TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
         for i, atom in enumerate(selection):
-            self.ATOM(serial=i+1, name=atom.name, resName=atom.resname, resSeq=atom.resid,
+            self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
                       x=coor[i,0], y=coor[i,1], z=coor[i,2])
         # get bfactor, too?
         self.close()
