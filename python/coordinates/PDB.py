@@ -134,8 +134,7 @@ class PrimitivePDBWriter(object):
     # ATOM  %5d %-4s%1s%-3s %1s%4d%1s   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s%2d
     # ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d
 
-    # note: convert all ints (serial, resSeq) to str for left justification...
-    fmt = {'ATOM':   "ATOM  %(serial)-5s %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)-4s%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
+    fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
            'REMARK': "REMARK     %s\n",
            'TITLE':  "TITLE    %s\n",
            }
@@ -206,14 +205,16 @@ class PrimitivePDBWriter(object):
                     'occupancy','tempFactor','charge'):
             if locals()[arg] is None:
                 raise ValueError('parameter '+arg+' must be defined.')
-        serial = str(serial)[-5:]  # check for overflow here?
+        serial = int(str(serial)[-5:])  # check for overflow here?
         name = name[:4]
+        if len(name) < 4:
+            name = " "+name   # customary to start in column 14
         altLoc = altLoc or " "
         altLoc= altLoc[:1]
         resName = resName[:3]
         chainID = chainID or ""   # or should we provide a chainID such as 'A'?
         chainId = chainID[:1]
-        resSeq = str(resSeq)[-4:] # check for overflow here?
+        resSeq = int(str(resSeq)[-4:]) # check for overflow here?
         iCode = iCode or ""
         iCode = iCode[:1]
         element = element or name.strip()[0]  # could have a proper dict here...
