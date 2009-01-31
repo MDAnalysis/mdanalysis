@@ -1,7 +1,7 @@
 # $Id$
-"""The formats sub module contains code to read coordinates, either
+"""The formats submodule contains code to read coordinates, either
 single frames (e.g. the PDB module) or trajectories (such as the DCD
-reader). All readers are supposed to deliver a Reader object that
+reader). All readers are supposed to expose a Reader object that
 represents a common API to the other code.
 
 The Universe contains the API entry point attribute
@@ -18,7 +18,19 @@ concerned.')
 __all__ = ['DCD', 'PDB', 'XTC']
 
 import PDB,DCD
+
+# frame writers: export to single frame formats such as PDB, gro, crd
+# Signature:
+#   W = FrameWriter(filename)
+#   W.write(AtomGroup)
 _frame_writers = {'pdb': PDB.PrimitivePDBWriter,
                  }
+
+# trajectory writers: export frames, typically only saving coordinates
+# (although PDB movies are the exception); maybe look at OpenBabel as
+# not to reinvent the wheel.
+# Signature:
+#   W = TrajectoryWriter(filename,numatoms,**kwargs)
+#   W.write_next_timestep(TimeStep)
 _trajectory_writers = {'dcd': DCD.DCDWriter,
                        }

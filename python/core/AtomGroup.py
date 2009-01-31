@@ -258,7 +258,7 @@ class AtomGroup(object):
         frame = trj.ts.frame
 
         if filename is None:
-            trjname = os.path.basename(trj.filename)
+            trjname,ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt % vars()
         filename = util.filename(filename,ext=format,keep=True)
         format = os.path.splitext(filename)[1][1:]  # strip initial dot!

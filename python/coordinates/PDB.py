@@ -27,7 +27,10 @@ except ImportError:
         pass
     class PDBWriter(MissingBiopython):
         pass
-    # here should be something like 'return' but that doesn't work so...
+    # Here should be something like 'return' but that doesn't work for
+    # importing modules so we just raise and exception and let the
+    # calling code deal with it. (An alternative would be a else:
+    # clause but that looks ugly.)
     raise
 import numpy
 from DCD import Timestep
@@ -73,16 +76,27 @@ class PDBReader:
 class PDBWriter:
     """Write out the current time step as a pdb file.
 
-    Currently, this only works when the structure coordinates were
-    loaded from a pdb because we are only modifying all the
-    coordinates of this structure and writing it out again.
+    This is not cleanly implemented at the moment. One must supply a
+    universe, even though this is nominally an optional argument. The
+    class behaves slightly differently depending on if the structure
+    was loaded from a PDB (then the full-fledged Bio.PDB writer is
+    used) or if this is really only an atom selection (then a less
+    sophistiocated writer is employed).
     """
+
+    # PDBWriter is a bit more complicated than the DCDWriter in the
+    # sense that a DCD frame only contains coordinate information. The
+    # PDB contains atom data as well and hence it MUST access the
+    # universe. In order to present a unified (and backwards
+    # compatible) interface we must keep the universe argument an
+    # optional keyword argument even though it really is required.
+    
     def __init__(self,pdbfilename,universe=None,multi=False,**kwargs):
         """pdbwriter = PDBWriter(<pdbfilename>,PDBstructure==universe.pdb.pdb,**kwargs)
         :Arguments:
         pdbfilename     filename; if multi=True, embed a %%d formatstring
                         so that write_next_timestep() can insert the frame number
-        universe        supply a universe
+        universe        supply a universe [really REQUIRED; optional only for compatibility]
         multi           False: write a single structure to a single pdb
                         True: write all frames to multiple pdb files
         """
@@ -99,14 +113,18 @@ class PDBWriter:
         if self.PDBstructure is not None and not isinstance(PDBstructure,Bio.PDB.Structure.Structure):
             raise TypeError('If defined, PDBstructure must be a Bio.PDB.Structure.Structure, eg '
                             'Universe.pdb.pdb.')
-    def write_next_timestep(self,ts):
+    def write_next_timestep(self,ts=None):
         self.write(ts)
-    def write(self,ts):
-        if self.universe is None:
-            warnings.warn("PDBWriter: Not writing frame as no universe supplied.")
-            return        
+    def write(self,ts=None):
+        """Write timestep as a pdb file.
+
+        If ts=None then we try to get the current one from the universe.
+        """        
         if self.PDBstructure is None:
-            # primitive PDB writing
+            if self.universe is None:
+                warnings.warn("PDBWriter: Not writing frame as no universe supplied.")
+                return            
+            # primitive PDB writing (ignores timestep argument)
             ppw = PrimitivePDBWriter(self.filename)
             ppw.write(self.universe.selectAtoms('all'))
             ppw.close()
@@ -114,6 +132,12 @@ class PDBWriter:
             # full fledged PDB writer
             # Let's cheat and use universe.pdb.pdb: modify coordinates
             # and save...
+            if ts is None:
+                try:
+                    ts = self.universe.trajectory.ts
+                except AttributeError:
+                    warnings.warn("PDBWriter: Not writing frame as neither universe nor timestep supplied.")
+                    return            
             for a,pos in zip(self.PDBstructure.get_atoms(), ts._pos):
                 a.set_coord(pos)
             io = Bio.PDB.PDBIO()
