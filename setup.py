@@ -46,8 +46,8 @@ if sys.platform == "darwin": # Mac OS X
     fast_numeric_include = ['/System/Library/Frameworks/vecLib.framework/Versions/A/Headers']
     fast_numeric_link = ["-framework","vecLib"]
 elif sys.platform[:5] == "linux":
-    fast_numeric_include = ['/opt/intel/cmkl/8.0/include']
-    fast_numeric_link = ["-L/opt/intel/cmkl/8.0/lib/32", "-lmkl_lapack","-lmkl_lapack32","-lmkl_ia32","-lmkl","-lguide"]
+    fast_numeric_include = ['/opt/intel/cmkl/10.0.5.025/include']
+    fast_numeric_link = ["-L/opt/intel/cmkl/10.0.5.025/lib/em64t", "-lmkl_lapack","-lmkl","-lguide"]
 else:
     fast_numeric_include = []
     fast_numeric_link = []
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     # for main trunk:
     ## RELEASE = "0.5.1"
     # for UNSTABLE:
-    RELEASE = "svn136_UNSTABLE"   # submitted svn revision:  echo $(($(svnversion | tr --delete '[a-zA-Z]') + 1))
+    RELEASE = "svn148_UNSTABLE"   # submitted svn revision:  echo $(($(svnversion | tr --delete '[a-zA-Z]') + 1))
 
     ## currently not installing doc files because data_files appears to be broken
     ## (does not create the full directory; in any case this implemetation is not very
