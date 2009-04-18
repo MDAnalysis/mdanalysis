@@ -54,9 +54,10 @@ else:
 
 if __name__ == '__main__':
     # for main trunk:
-    ## RELEASE = "0.5.1"
+    ## RELEASE = "0.6.0"
     # for UNSTABLE:
-    RELEASE = "svn148_UNSTABLE"   # submitted svn revision:  echo $(($(svnversion | tr --delete '[a-zA-Z]') + 1))
+    RELEASE = "0.6.0-rc1"
+    ##RELEASE = "svn149_UNSTABLE"   # submitted svn revision:  echo $(($(svnversion | tr --delete '[a-zA-Z]') + 1))
 
     ## currently not installing doc files because data_files appears to be broken
     ## (does not create the full directory; in any case this implemetation is not very

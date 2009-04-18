@@ -1,4 +1,5 @@
-== Installing MDAnalysis ==
+Installing MDAnalysis
+=====================
 
 Currently MDAnalysis is only distributed in source form. You will need
 a C compiler and pyrex to compile the DCD reader and numerical
@@ -11,7 +12,9 @@ configuration template to setup.cfg and editing it.
 
 For instance, you can choose to use the Intel compiler for faster
 code if you have it installed. However, this is not required and
-everything should work without touching setup.cfg or setup.cfg.template.
+everything should work without touching setup.cfg or
+setup.cfg.template; if you have problem first try installing with
+defaults (i.e. without using setup.cfg at all).
 
 
 In principle, installation should be as simple as
@@ -24,9 +27,16 @@ require administrative privileges.
 
 It is also possible to use --prefix and --home options for setup.py
 to install in a different (probably your private) python directory
-hierarchy.
+hierarchy. See the documentation for distutils at
+http://docs.python.org/install/index.html for all the gory details.
 
-If you want to install in a specific local directory use
+
+
+Temporary installation
+----------------------
+
+If you want to install in a specific local directory, say just for
+testing, use
 
   python setup.py build --build-lib=LOCAL_DIRECTORY
 
@@ -44,9 +54,12 @@ This builds and installs a working version in
   export PYTHONPATH=${PYTHONPATH}:~/python-lib
 
 
-== OS specific notes ==
+OS specific notes
+=================
 
-=== Linux ===
+Linux
+-----
+
 * Tested with GNU compilers or Intel compilers and Intel MKL.
 
 * To compile with the Intel compilers, set in setup.cfg
@@ -58,7 +71,11 @@ This builds and installs a working version in
   the 'fast_numeric_*' paths in setup.py if you installed in a
   non-standard location.
 
-=== Mac OS X ===
+
+
+Mac OS X
+--------
+
 * Tested with Mac OS X 10.4.11 and fink.
 
   The RMS-fitting code uses the fast vecLib framework for linear
