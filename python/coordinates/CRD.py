@@ -53,7 +53,7 @@ class CRDWriter(object):
                 frame = 1   # should catch cases when we are analyzing a single PDB (?)
         coor = selection.coordinates()
        
-        self.TITLE("  FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
+        self.TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
         self.TITLE("")
 	self.NUMATOMS(len(u.atoms))
 	inst_resid = 0
@@ -76,6 +76,9 @@ class CRDWriter(object):
         """Write TITLE record.
         """        
         line = " ".join(title)    # should do continuation automatically
+        line = line.strip()
+        if len(line) > 0:
+            line = " "+line
         self.crd.write(self.fmt['TITLE'] % line)
 
     def NUMATOMS(self,numatoms):
