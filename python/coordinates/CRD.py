@@ -15,9 +15,16 @@ import MDAnalysis.core.util as util
 class CRDWriter(object):
     """CRD writer that implements the standard CRD coordinate format.
     """
-
+    #          1         2         3         4         5         6         7         8
+    # 123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
+    # ATOM__seria nameAres CressI   xxxxxxxxyyyyyyyyzzzzzzzzOCCUPAtempft          elCH
+    # %5d   %-4s %-3s %4d %1s %8.3f   %8.3f   %8.3f   %6.2f %6.2f           %2s
+    #                 %1s  %1s                                                      %2d
+    #            =        =      ===                                    ==========
+    # %5d %4d %-4s %-4s %9.5f %9.5f %9.5f %-4s %-4d  %9.5f\n
+    # %(serial)5d %(TotRes)4d %(resName)-4s %(name)-4s %(x)9.5f %(y)9.5f %(z)9.5f %(chainID)-4s %(resSeq)-4d %(tempFactor)9.5f
     fmt = {'ATOM':"%(serial)5d %(TotRes)4d %(resName)-4s %(name)-4s %(x)9.5f %(y)9.5f %(z)9.5f %(chainID)-4s %(resSeq)-4d %(tempFactor)9.5f\n",
-           'TITLE':  "* %s\n",
+           'TITLE':  "*%s\n",
 	   'NUMATOMS':"%5d\n",
            }
 
