@@ -105,6 +105,8 @@ class AtomGroup(object):
         ag.principleAxis() - returns the principle axis of rotation
         ag.bfactors() - returns B-factors (if they were loaded from a PDB)
         c = ag.coordinates() - return array of coordinates
+
+        ag.write() - write all atoms in the group to a file
     """
     def atoms():
         doc = "a list of references to atoms in Universe corresponding to a specifies subset"
