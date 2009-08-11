@@ -9,4 +9,7 @@ $Id$
 * generate a primitive topology (psf) from a pdb file so that one
   can read in pdbs directly
 
+* hydrogen bond analysis
+
+* read xyz files (maybe we can use the VMD molfile plugin for all the file reading??)
   

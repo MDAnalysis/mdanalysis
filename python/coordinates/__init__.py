@@ -15,15 +15,16 @@ concerned.')
 """
 # TODO: define the API here (for the moment, look at DCD.DCDReader)
 
-__all__ = ['DCD', 'PDB', 'XTC']
+__all__ = ['DCD', 'PDB', 'CRD', 'XTC']
 
-import PDB,DCD
+import PDB, DCD, CRD
 
 # frame writers: export to single frame formats such as PDB, gro, crd
 # Signature:
 #   W = FrameWriter(filename)
 #   W.write(AtomGroup)
 _frame_writers = {'pdb': PDB.PrimitivePDBWriter,
+                  'crd': CRD.CRDWriter,
                  }
 
 # trajectory writers: export frames, typically only saving coordinates

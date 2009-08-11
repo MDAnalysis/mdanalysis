@@ -245,10 +245,10 @@ class AtomGroup(object):
         AG.write(filename,format='pdb')
 
         EXPERIMENTAL.
-        Only working format is a primitive implementation of PDB.
+        Only a primitive PDB format and standard CRD is working.
 
         filename      None: create TRJNAME_FRAME.FORMAT from filenamefmt
-        format        pdb; can also be supplied as part of filename
+        format        pdb, crd; can also be supplied as part of filename
         filenamefmt   format string for default filename; use 'trjname' and 'frame'
         """
         import util

@@ -189,7 +189,7 @@ class PrimitivePDBWriter(object):
         coor = selection.coordinates()
         
         self.TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
-        for i, atom in enumerate(selection):
+        for i, atom in enumerate(selection.atoms):
             self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
                       x=coor[i,0], y=coor[i,1], z=coor[i,2])
         # get bfactor, too?

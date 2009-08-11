@@ -9,8 +9,10 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/09 orbeckst (Running list of enhancements, to be edited for final
-                  entry when stable changes are merged back into trunk)
+??/??/09 orbeckst, denniej0 
+        (Running list of enhancements, to be edited for final
+        entry when stable changes are merged back into trunk)
+
         * reads hydrogen bond donor/acceptor list from psf and sets up
           structures for hydrogen bonding analysis
           TODO: H-BOND ANALYSIS NOT WORKING YET
@@ -18,9 +20,12 @@ The rules for this file:
           faster distance selections: used for AROUND selections;
 	  POINT is using distance matrix by default as this is
 	  faster. This can be configured with core.flags
+	* core.flags infrastructure to tweak behaviour at run time
         * updated LICENSE file with Biopython License
         * completely reorganized directory structure to make
           enhancements easier to incorporate
+        * can write single frames as pdb or crd (AtomGroup gained the
+          write() method)
 
 08/23/08 naveen, orbeckst
         * 0.5.1 release
