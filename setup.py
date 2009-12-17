@@ -25,6 +25,9 @@ for help:
 (Note that the group really is called `mdnalysis-discussion' because
 Google groups forbids any name that contains the string `anal'.)
 """
+from ez_setup import use_setuptools
+use_setuptools()
+from setuptools import setup, find_packages
 
 import sys, os
 import glob
@@ -56,7 +59,7 @@ if __name__ == '__main__':
     # for main trunk:
     ## RELEASE = "0.6.0"
     # for UNSTABLE:
-    RELEASE = "0.6.0-rc1"
+    RELEASE = "0.6.0-rc2"
     ##RELEASE = "svn149_UNSTABLE"   # submitted svn revision:  echo $(($(svnversion | tr --delete '[a-zA-Z]') + 1))
 
     ## currently not installing doc files because data_files appears to be broken
@@ -131,7 +134,7 @@ if __name__ == '__main__':
                                 'MDAnalysis.core', 'MDAnalysis.topology',
                                 'MDAnalysis.coordinates', 'MDAnalysis.util',
                                 'MDAnalysis.KDTree'],
-          package_dir       = {'MDAnalysis': 'python'},
+          package_dir       = {'MDAnalysis': 'MDAnalysis'},
           ext_package       = 'MDAnalysis',
           ext_modules       = extensions,
         # data_files        = [ (doc_install_dir, DOC_FILES) ],  ## see comments for DOC_FILES

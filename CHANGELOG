@@ -26,6 +26,7 @@ The rules for this file:
           enhancements easier to incorporate
         * can write single frames as pdb or crd (AtomGroup gained the
           write() method)
+        * experimental EasyInstall support
 
 08/23/08 naveen, orbeckst
         * 0.5.1 release

@@ -1,12 +1,16 @@
+=====================
 Installing MDAnalysis
 =====================
+
+Installation from source
+========================
 
 Currently MDAnalysis is only distributed in source form. You will need
 a C compiler and pyrex to compile the DCD reader and numerical
 extensions.
 
 In the top directory, you can customize the setup by copying the setup
-configuration template to setup.cfg and editing it.
+configuration template to setup.cfg and editing it.::
 
    cp setup.cfg.template setup.cfg
 
@@ -17,7 +21,7 @@ setup.cfg.template; if you have problem first try installing with
 defaults (i.e. without using setup.cfg at all).
 
 
-In principle, installation should be as simple as
+In principle, installation should be as simple as ::
 
    python setup.py build
    python setup.py install
@@ -27,16 +31,13 @@ require administrative privileges.
 
 It is also possible to use --prefix and --home options for setup.py
 to install in a different (probably your private) python directory
-hierarchy. See the documentation for distutils at
-http://docs.python.org/install/index.html for all the gory details.
-
-
+hierarchy.
 
 Temporary installation
 ----------------------
 
 If you want to install in a specific local directory, say just for
-testing, use
+testing, use ::
 
   python setup.py build --build-lib=LOCAL_DIRECTORY
 
@@ -44,7 +45,7 @@ This installs a working MDAnalysis in LOCAL_DIRECTORY/MDAnalysis.
 
 
 
-For testing we currently simply use
+For testing we currently simply use ::
 
    python setup.py build --build-lib=~/python-lib/
 
@@ -52,6 +53,22 @@ This builds and installs a working version in
 ~/python-lib/MDAnalysis. Then add ~/python-lib to the PYTHONPATH
 
   export PYTHONPATH=${PYTHONPATH}:~/python-lib
+
+Easy Install
+------------
+
+We are also exploring the use of easy_install. This is experimental
+but you might be able to do ::
+
+  ez_install [options] ./mdanalysis
+
+for a standard installation (see ez_install docs for details) or a
+developer installation (that immediately reflects changes to the
+sources) with ::
+
+  cd ./mdanalysis
+  python setup develop [options]
+
 
 
 OS specific notes
@@ -62,10 +79,10 @@ Linux
 
 * Tested with GNU compilers or Intel compilers and Intel MKL.
 
-* To compile with the Intel compilers, set in setup.cfg
+* To compile with the Intel compilers, set in setup.cfg ::
 
-  [build]
-  compiler=intel
+    [build]
+    compiler=intel
 
   and install the Math Kernel Libraries (MKL). You may have to change
   the 'fast_numeric_*' paths in setup.py if you installed in a
