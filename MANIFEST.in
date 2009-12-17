@@ -4,5 +4,6 @@ include src/KDTree/*
 include src/KDTree/Makefile
 recursive-include src *.pyx *.pxd
 recursive-include doc INSTALL index.html
-include CHANGELOG LICENSE TODO setup.cfg.template
+include README CHANGELOG LICENSE TODO setup.cfg.template
+include ez_setup.py setup.py
 recursive-include examples *.py *.txt
