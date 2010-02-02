@@ -12,4 +12,14 @@ $Id$
 * hydrogen bond analysis
 
 * read xyz files (maybe we can use the VMD molfile plugin for all the file reading??)
+
+== Installation ==
+
+* make it work with easy_install; current problems
+  - at least on Ubuntu/Linux the *.so files are not found when installed
+    as a egg and import fails with _dcd***.so not found
+
+* make the fast math libs more user friendly
+
+* intel compiler does not work (at least Ubuntu 8.04 Linux) 
   

@@ -25,9 +25,10 @@ for help:
 (Note that the group really is called `mdnalysis-discussion' because
 Google groups forbids any name that contains the string `anal'.)
 """
-from ez_setup import use_setuptools
-use_setuptools()
-from setuptools import setup, find_packages
+#from ez_setup import use_setuptools
+#use_setuptools()
+#from setuptools import setup, find_packages
+from distutils.core import setup
 
 import sys, os
 import glob
@@ -42,6 +43,7 @@ from distutils import sysconfig
 from numpy import get_numpy_include
 from distutils.core import setup, Extension
 from Pyrex.Distutils import build_ext
+import ConfigParser
 
 include_dirs = [get_numpy_include()]
 
@@ -49,8 +51,16 @@ if sys.platform == "darwin": # Mac OS X
     fast_numeric_include = ['/System/Library/Frameworks/vecLib.framework/Versions/A/Headers']
     fast_numeric_link = ["-framework","vecLib"]
 elif sys.platform[:5] == "linux":
-    fast_numeric_include = ['/opt/intel/cmkl/10.0.5.025/include']
-    fast_numeric_link = ["-L/opt/intel/cmkl/10.0.5.025/lib/em64t", "-lmkl_lapack","-lmkl","-lguide"]
+    parser = ConfigParser.ConfigParser()
+    parser.read("setup.cfg")
+    try:
+        fast_numeric_include = parser.get("linux","fast_numeric_include").split(" ")
+        linkpath = ["-L"+path for path in parser.get("linux","fast_numeric_linkpath").split(" ")]
+        linklibs = ["-l"+lib for lib in parser.get("linux","fast_numeric_libs").split(" ")]
+        fast_numeric_link = linkpath + linklibs
+    except ConfigParser.NoSectionError:
+        fast_numeric_include = []
+        fast_numeric_link = []
 else:
     fast_numeric_include = []
     fast_numeric_link = []

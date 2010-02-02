@@ -15,7 +15,8 @@ configuration template to setup.cfg and editing it.::
    cp setup.cfg.template setup.cfg
 
 For instance, you can choose to use the Intel compiler for faster
-code if you have it installed. However, this is not required and
+code if you have it installed or you can add paths to the Intel
+Math Kernel (MKL) libraries. However, this is not required and
 everything should work without touching setup.cfg or
 setup.cfg.template; if you have problem first try installing with
 defaults (i.e. without using setup.cfg at all).
@@ -57,6 +58,9 @@ This builds and installs a working version in
 Easy Install
 ------------
 
+** NOT WORKING **
+- fails to handle the compiled libraries properly -- OB 2010-02-02
+
 We are also exploring the use of easy_install. This is experimental
 but you might be able to do ::
 
@@ -84,9 +88,9 @@ Linux
     [build]
     compiler=intel
 
-  and install the Math Kernel Libraries (MKL). You may have to change
-  the 'fast_numeric_*' paths in setup.py if you installed in a
-  non-standard location.
+  and install the Math Kernel Libraries (MKL). You will have to add
+  the 'fast_numeric_*' paths in setup.cfg  under the [linux] section;
+  see the template for examples.
 
 
 
@@ -96,4 +100,5 @@ Mac OS X
 * Tested with Mac OS X 10.4.11 and fink.
 
   The RMS-fitting code uses the fast vecLib framework for linear
-  algebra.
+  algebra. This is used automatically and no special settings are
+  needed.

@@ -2,7 +2,7 @@ include src/dcd/include/*.h
 include src/numtools/*.h
 include src/KDTree/*
 include src/KDTree/Makefile
-recursive-include src *.pyx *.pxd
+recursive-include src *.pyx *.pxd 
 recursive-include doc INSTALL index.html
 include README CHANGELOG LICENSE TODO setup.cfg.template
 include ez_setup.py setup.py
