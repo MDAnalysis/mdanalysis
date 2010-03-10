@@ -75,7 +75,7 @@ if __name__ == '__main__':
     ## currently not installing doc files because data_files appears to be broken
     ## (does not create the full directory; in any case this implemetation is not very
     ## customizable and it's also not clear to me where python docs should go)
-    # DOC_FILES = ['README', 'LICENSE', 'CHANGELOG', 'TODO'] + glob.glob('doc/*')
+    # DOC_FILES = ['README', 'LICENSE', 'CHANGELOG', 'INSTALL', 'TODO'] + glob.glob('doc/*')
     # doc_install_dir = os.path.join('share','doc','MDAnalysis') # assumes that docs are in <install_data>/share/doc/MDAnalysis
     
     LONG_DESCRIPTION = \

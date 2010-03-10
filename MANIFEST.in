@@ -3,7 +3,7 @@ include src/numtools/*.h
 include src/KDTree/*
 include src/KDTree/Makefile
 recursive-include src *.pyx *.pxd 
-recursive-include doc INSTALL index.html
-include README CHANGELOG LICENSE TODO setup.cfg.template
+recursive-include doc index.html DevelopmentBranch.txt
+include README INSTALL CHANGELOG LICENSE TODO setup.cfg.template
 include ez_setup.py setup.py
 recursive-include examples *.py *.txt

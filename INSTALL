@@ -14,7 +14,7 @@ build the library some C code needs to be compiled. Thus you will need
     * numpy and pyrex to compile the DCD reader and numerical extensions,
     * a LAPACK library (standard LAPACK/BLAS, ATLAS, or the Intel Math
       Kernel Library (MKL); on Mac OS X we simply use the native fast
-      VecLib framework so you don't have to install anything else).
+      vecLib framework so you don't have to install anything else).
 
 See *Additional non-standard packages* below for what else you need at
 run time.
@@ -90,7 +90,7 @@ nothing needs to be configured. On Linux you will probably want to use
 something such as ATLAS or the Intel Math Kernel Libraries for better
 performance for the rms fitting.
 
-The fast math librar paths are set in ``setup.cfg``. See the example
+The fast math library paths are set in ``setup.cfg``. See the example
 in the template.
 
 Example MKL
@@ -104,10 +104,10 @@ ones in this example)::
   fast_numeric_linkpath = /opt/intel/cmkl/10.0.5.025/lib/em64t
   fast_numeric_libs = mkl_lapack mkl guide
 
-Example ATLAS lapack
+Example ATLAS LAPACK
 ~~~~~~~~~~~~~~~~~~~~
 
-If you want to use the ATLAS lapack libraries use something such as ::
+If you want to use the ATLAS LAPACK libraries use something such as ::
 
   [linux]
   fast_numeric_include = /usr/include
@@ -122,7 +122,7 @@ Selecting an installation directory
 In order to install in a non-default directory one can use various
 options to setup (see --help) such as ::
 
- python setup.py install --prefix LOCAL_DIRECTOY
+ python setup.py install --prefix LOCAL_DIRECTORY
 
 or any of the other options of distutil's setup.py to install in
 alternative directories.
@@ -222,27 +222,29 @@ Linux
  
     ImportError: MDAnalysis/core/rms_fitting.so: undefined symbol: dsyev_
 
-  then install any lapack library and install again. 
+  then install any LAPACK library and install again. 
  
-     1. Install any lapack, eg ATLAS/lapack. On Ubuntu I can do
+     1. Install any LAPACK, eg ATLAS/LAPACK. On Ubuntu I can do
 
             sudo aptitude install liblapack-dev
 
         This installs liblapack.a; if your library is named
-        differently then you will need to use your name instead of
-        lapack.
+        differently then you will need to use the library name
+        (without initial 'lib') instead of lapack.
 
-     2. Make sure that "-llapack" is added to a linker line in setup.py
+     2. Make sure that the library name is added to a linker line
+        during setup. If it is "lapack" (the default) then you don't
+        have to do anything. If it is different (e.g. "lapack-3") then
+        you have to use ``setup.cfg`` as described above. For
+        "liblapack-3.a" in "/usr/lib" you would have the lines ::
 
-  	  fast_numeric_include = []
-	  fast_numeric_link = ["-llapack"]
+  	  fast_numeric_include =
+	  fast_numeric_linkpath = /usr/lib
+	  fast_numeric_libs = lapack-3
 
-       (Note that the include list can stay empty when the header files are
-       in a standard location; this is the case with the aptitude package
-       installation.)
-
-       Or, if you are using setup.cfg, add "lapack" (or whatever is
-       the name of the library you installed) to "fast_numeric_libs".
+       (Note that the include list can stay empty when the header
+       files are in a standard location such as /usr/include; this is
+       the case with the aptitude package installation.)
 
 * Install prerequisite packages on Ubuntu or Debian with
 
