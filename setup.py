@@ -54,16 +54,16 @@ elif sys.platform[:5] == "linux":
     parser = ConfigParser.ConfigParser()
     parser.read("setup.cfg")
     try:
-        fast_numeric_include = parser.get("linux","fast_numeric_include").split(" ")
-        linkpath = ["-L"+path for path in parser.get("linux","fast_numeric_linkpath").split(" ")]
-        linklibs = ["-l"+lib for lib in parser.get("linux","fast_numeric_libs").split(" ")]
+        fast_numeric_include = parser.get("linux","fast_numeric_include").split()
+        linkpath = ["-L"+path for path in parser.get("linux","fast_numeric_linkpath").split()]
+        linklibs = ["-l"+lib for lib in parser.get("linux","fast_numeric_libs").split()]
         fast_numeric_link = linkpath + linklibs
     except ConfigParser.NoSectionError:
         fast_numeric_include = []
-        fast_numeric_link = []
+        fast_numeric_link = ["-llapack"]
 else:
     fast_numeric_include = []
-    fast_numeric_link = []
+    fast_numeric_link = ["-llapack"]
 
 if __name__ == '__main__':
     # for main trunk:

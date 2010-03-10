@@ -2,6 +2,48 @@
 Installing MDAnalysis
 =====================
 
+Requirements
+============
+
+Currently MDAnalysis is only distributed in source form. In order to
+build the library some C code needs to be compiled. Thus you will need
+
+    * python (>=2.3)
+    * a C compiler (e.g. gcc or Intel icc),
+    * the python header files (typically in a package python-dev),
+    * numpy and pyrex to compile the DCD reader and numerical extensions,
+    * a LAPACK library (standard LAPACK/BLAS, ATLAS, or the Intel Math
+      Kernel Library (MKL); on Mac OS X we simply use the native fast
+      VecLib framework so you don't have to install anything else).
+
+See *Additional non-standard packages* below for what else you need at
+run time.
+
+The source code can be obtained from the SVN repository. The primary
+dependency is numpy, although pylab is a useful addition to plot
+analyses generated with MDAnalysis. 
+
+
+Getting the source 
+==================
+
+Download a tar ball from
+http://code.google.com/p/mdanalysis/downloads/list ; these
+instructions apply to versions 0.6.0-rc2 or higher.
+
+Alternatively, check out the MDAnalysis directory from the SVN
+repository at http://mdanalysis.googlecode.com. See the source
+checkout instructions for details
+(http://code.google.com/p/mdanalysis/source/checkout). In most cases
+simply do ::
+
+  svn checkout http://mdanalysis.googlecode.com/svn/trunk/ MDAnalysis
+  cd MDAnalysis
+
+(See :doc:`doc/DevelopmentBranch.txt` for instructions for how to use
+development versions that typically contain many more features.)
+
+
 Installation from source
 ========================
 
@@ -30,35 +72,81 @@ In principle, installation should be as simple as ::
 This installs MDAnalysis in the system wide python directory; this may
 require administrative privileges.
 
-It is also possible to use --prefix and --home options for setup.py
-to install in a different (probably your private) python directory
-hierarchy.
+It is also possible to use --prefix, --home, or --user options for
+setup.py to install in a different (probably your private) python
+directory hierarchy.
 
-Temporary installation
-----------------------
-
-If you want to install in a specific local directory, say just for
-testing, use ::
-
-  python setup.py build --build-lib=LOCAL_DIRECTORY
-
-This installs a working MDAnalysis in LOCAL_DIRECTORY/MDAnalysis.
+If you have problem at this stage then have a look at the operating
+system specific notes at the end of this file or look in the issue
+tracker --- maybe the problem is recognized and a work around can be
+found in the comments
 
 
+Fast math libraries
+-------------------
 
-For testing we currently simply use ::
+On Mac OS X we use the systems vecLib for fast linear algebra and
+nothing needs to be configured. On Linux you will probably want to use
+something such as ATLAS or the Intel Math Kernel Libraries for better
+performance for the rms fitting.
 
-   python setup.py build --build-lib=~/python-lib/
+The fast math librar paths are set in ``setup.cfg``. See the example
+in the template.
+
+Example MKL
+~~~~~~~~~~~
+
+Linux section of setup.cfg (your paths are probably different from the
+ones in this example)::
+
+  [linux]
+  fast_numeric_include = /opt/intel/cmkl/10.0.5.025/include
+  fast_numeric_linkpath = /opt/intel/cmkl/10.0.5.025/lib/em64t
+  fast_numeric_libs = mkl_lapack mkl guide
+
+Example ATLAS lapack
+~~~~~~~~~~~~~~~~~~~~
+
+If you want to use the ATLAS lapack libraries use something such as ::
+
+  [linux]
+  fast_numeric_include = /usr/include
+  fast_numeric_linkpath = /usr/lib/atlas
+  fast_numeric_libs = lapack
+
+
+
+Selecting an installation directory
+-----------------------------------
+
+In order to install in a non-default directory one can use various
+options to setup (see --help) such as ::
+
+ python setup.py install --prefix LOCAL_DIRECTOY
+
+or any of the other options of distutil's setup.py to install in
+alternative directories.
+
+If you only want to install library files in a local directory use
+
+   python setup.py build --build-lib=LOCAL_DIRECTORY
+
+This installs a working MDAnalysis under LOCAL_DIRECTORY.
+
+For testing we currently simply use
+
+  python setup.py build --build-lib=$HOME/python-lib/
 
 This builds and installs a working version in
-~/python-lib/MDAnalysis. Then add ~/python-lib to the PYTHONPATH
+~/python-lib/MDAnalysis. Then add $HOME/python-lib to the PYTHONPATH
 
-  export PYTHONPATH=${PYTHONPATH}:~/python-lib
+  export PYTHONPATH=${PYTHONPATH}:$HOME/python-lib
+
 
 Easy Install
 ------------
 
-** NOT WORKING **
+** NOT WORKING AT THE MOMENT **
 - fails to handle the compiled libraries properly -- OB 2010-02-02
 
 We are also exploring the use of easy_install. This is experimental
@@ -74,6 +162,36 @@ sources) with ::
   python setup develop [options]
 
 
+Additional non-standard python packages
+=======================================
+
+See the operating system specific notes above for hints how to get the
+necessary packages through the native package management
+system. Please add your own (eg for RPM based systems which the
+developers are not using heavily).
+
+python-dev includes Python.h, which is required for compiling. numpy
+is used at the compilation stage to find maths libraries. scipy and
+biopython are only needed when one wants to use all MDAnalysis
+functions but are not required for compiling.
+
+Required python packages
+------------------------
+
+In order to use the library in your own python code you will need at least
+
+    * numpy of version 1.0.3 or greater 
+
+Optional python packages
+
+If you want to read pdb files instead of dcds you will also need
+
+    * BioPython's Bio.PDB 
+
+The LAMMPS parser uses
+
+    * ScientificPython's Scientific.IO.FortranFormat 
+
 
 OS specific notes
 =================
@@ -81,7 +199,12 @@ OS specific notes
 Linux
 -----
 
-* Tested with GNU compilers or Intel compilers and Intel MKL.
+* The GNU gcc compiler is the default and should be used
+  automatically; in particular you will not have to do anything with
+  setup.cfg. This should work if you have no file named setup.cfg in
+  your MDAnalysis directory. (If you want to use setup.cfg and use GNU
+  gcc simply comment out the compiler=intel line in the template:
+   # compiler=intel
 
 * To compile with the Intel compilers, set in setup.cfg ::
 
@@ -92,13 +215,67 @@ Linux
   the 'fast_numeric_*' paths in setup.cfg  under the [linux] section;
   see the template for examples.
 
+  (Although, in some instances the KDTree does not compile with
+  Intel. In this case please file a bug and use gcc in the mean time.)
+
+* RMS fitting requires a linear algebra library. If you get ::
+ 
+    ImportError: MDAnalysis/core/rms_fitting.so: undefined symbol: dsyev_
+
+  then install any lapack library and install again. 
+ 
+     1. Install any lapack, eg ATLAS/lapack. On Ubuntu I can do
+
+            sudo aptitude install liblapack-dev
+
+        This installs liblapack.a; if your library is named
+        differently then you will need to use your name instead of
+        lapack.
+
+     2. Make sure that "-llapack" is added to a linker line in setup.py
+
+  	  fast_numeric_include = []
+	  fast_numeric_link = ["-llapack"]
+
+       (Note that the include list can stay empty when the header files are
+       in a standard location; this is the case with the aptitude package
+       installation.)
+
+       Or, if you are using setup.cfg, add "lapack" (or whatever is
+       the name of the library you installed) to "fast_numeric_libs".
+
+* Install prerequisite packages on Ubuntu or Debian with
+
+    sudo apt-get install python-dev python-pyrex python-numpy
+    sudo apt-get install liblapack-dev   # also see notes on fast_numeric_*
+
+  Install packages needed for full functionality
+
+    sudo apt-get install python-scipy python-matplotlib python-biopython
+
+
 
 
 Mac OS X
 --------
+OS specific notes
 
-* Tested with Mac OS X 10.4.11 and fink.
+
+Mac OS X
+========
+
+* Tested with Mac OS X 10.4.11+fink and 10.6.2+MacPorts. 
 
   The RMS-fitting code uses the fast vecLib framework for linear
-  algebra. This is used automatically and no special settings are
-  needed.
+  algebra (this is part of Mac OS X).
+
+* fink hints:
+  Install prerequisite packages using fink::
+
+     fink install pyrex-py25 scipy-core-py25 scipy-py25
+
+  Install packages needed for full functionality::
+
+     fink install  matplotlib-py25 biopython-py25
+
+
