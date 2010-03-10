@@ -7,9 +7,14 @@ Currently all atom arrays are handled internally as sets, but returned as AtomGr
 
 """
 
-from sets import Set as set
-from AtomGroup import AtomGroup, Universe
+try:
+    set([])
+except NameError:
+    from sets import Set as set
+
 import numpy
+
+from AtomGroup import AtomGroup, Universe
 from MDAnalysis.core import flags
 
 
