@@ -2,7 +2,15 @@
 import AtomGroup
 
 class TimeseriesCollection(object):
-    ''' A collection of timeseries objects (Atom, Bond, Dihedral...) which can computed from a trajectory in one go, foregoing the need to iterate through the trajectory frame by frame in python. Inspired by CHARMM's correl command.
+    ''' A collection of timeseries objects.
+
+    The collection of timeseries (such as Atom, Bond, Dihedral...)  can be
+    computed from a trajectory in one go, foregoing the need to iterate through
+    the trajectory frame by frame in python. Inspired by CHARMM's correl
+    command.
+
+    The disadvantage is that the timeseries 'plugins' must be implemented in
+    C-code.
 
     collection = TimeseriesCollection()
     collection.addTimeseries(Timeseries.Atom(...)) - add a new Timeseries object

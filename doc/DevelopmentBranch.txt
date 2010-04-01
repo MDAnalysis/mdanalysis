@@ -1,0 +1,69 @@
+=====================
+  DevelopmentBranch
+=====================
+
+Guidelines and tips on working with the UNSTABLE development
+branches. See also http://code.google.com/p/mdanalysis/wiki/DevelopmentBranch
+
+
+Introduction
+============
+
+The main development branch (i.e. the tar balls one can download and
+the corresponding svn "trunk") is supposed to be reasonably stable and
+usable. However, in order to test and introduce new features and
+improves old ones (while possibly breaking immediate backwards
+compatibility) we also have additional development branches. Everyone
+is more than welcome to use those branches but you should be aware
+that you are then first and foremost a alpha-tester: Things may break
+in horrible ways (but your feedback is much appreciated) 
+
+Getting the UNSTABLE branch
+===========================
+
+All unstable branches can be found under Source in Directories > svn > branches.
+
+In order to check out e.g. the development-UNSTABLE-orbeckst branch::
+
+   svn checkout http://mdanalysis.googlecode.com/svn/branches/development-UNSTABLE-orbeckst MDAnalysis_UNSTABLE
+
+Building & Installing
+=====================
+
+Production installation
+-----------------------
+
+The latest versions are using setuptools and EasyInstall (Note
+EasyInstall currently broken OB 2010-03-10)::
+
+   cd MDAnalysis_UNSTABLE
+   python setup.py install --install-dir PATH_TO_PYTHONLIBDIR
+
+or try
+
+   easy_install.py --install-dir PATH_TO_PYTHONLIBDIR ./MDAnalysis_UNSTABLE
+
+Development
+-----------
+
+At the moment, simply use the following build procedure ::
+
+   cd MDAnalysis_UNSTABLE
+   python setup.py develop --install-dir PATH_TO_PYTHONLIBDIR
+
+where PATH_TO_PYTHONLIBDIR is the path to a directory that's in your
+PYTHONPATH (see also Install). This uses setuptools' development
+installation: The library in site-packages (or PATH_TO_PYTHONLIBDIR)
+is linked to the source code.
+
+Note that this procedure will overwrite an existing installation of
+MDAnalysis! You may want to rename the original installation.
+
+Issues
+======
+
+    * The KDTree module does not compile with the Intel Compiler v9.0
+      and python 2.3. Using gcc seems to work, though. (r125)
+
+    * EasyInstall installation is broken.
+

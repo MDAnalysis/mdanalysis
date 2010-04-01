@@ -9,7 +9,11 @@ $Id$
 * generate a primitive topology (psf) from a pdb file so that one
   can read in pdbs directly
 
-* fast distance selection (perhaps using KD trees as in Biopython or
-  simple cubed neighbourlist?)
-  
+* hydrogen bond analysis
 
+* read xyz files (maybe we can use the VMD molfile plugin for all the file reading??)
+
+== Installation ==
+
+* intel compiler does not work (at least Ubuntu 8.04 Linux) 
+  

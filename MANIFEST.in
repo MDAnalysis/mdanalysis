@@ -1,6 +1,8 @@
 include src/dcd/include/*.h
 include src/numtools/*.h
-recursive-include src *.pyx *.pxd
-recursive-include doc INSTALL index.html
-include CHANGELOG LICENSE TODO
-# recursive-include examples *.py
+include src/KDTree/*
+recursive-include src *.pyx *.pxd 
+recursive-include doc index.html DevelopmentBranch.txt
+include README INSTALL CHANGELOG LICENSE TODO setup.cfg.template
+include ez_setup.py setup.py
+recursive-include examples *.py *.txt

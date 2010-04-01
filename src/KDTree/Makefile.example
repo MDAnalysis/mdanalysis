@@ -1,0 +1,48 @@
+# $Id$
+# Example Makefile that shows how to compile the module manually on Mac OX X, 10.4.9
+# with fink.
+# Paths have to be adjusted accordingly for other operating systems.
+#
+# (The 'dist' target is also being used to create the files that become
+# part of the MDAnalysis distribution.)
+
+CFLAGS := -fno-strict-aliasing -Wno-long-double -no-cpp-precomp -mno-fused-madd \
+	    -DNDEBUG -g -O3 -Wall -Wstrict-prototypes -I/sw/include/python2.4
+
+.phony: all swig dist clean clean-all
+
+all: _CKDTree.so
+
+KDTree.o: KDTree.cpp
+	gcc $(CFLAGS) -c $< -o $@
+
+KDTree.swig.o: KDTree.swig.cpp
+	gcc $(CFLAGS) -c $< -o $@
+
+_CKDTree.so: KDTree.o KDTree.swig.o
+	c++ -L/sw/lib -bundle -undefined dynamic_lookup $^ -lstdc++ -o $@
+
+# This is how the cpp and corresponding py file are built with swig
+# (execute this manually if there are problems with the swig.cpp file
+# or if you deleted these files.)
+swig: KDTree.swig.cpp CKDTree.py
+
+KDTree.swig.cpp CKDTree.py: KDTree.i KDTree.h KDTree.cpp 
+	swig -c++ -python -shadow -o KDTree.swig.cpp KDTree.i
+
+# Use this target to recreate the files needed in for the MDAnalysis
+# distribution
+KDTREE_PYTHON_DIR := ../../python/KDTree
+dist: KDTree.swig.cpp CKDTree.py
+	cp -v CKDTree.py $(KDTREE_PYTHON_DIR)
+
+clean:
+	rm -f _CKDTree.so KDTree.o KDTree.swig.o
+
+clean-all: clean
+	rm -f KDTree.swig.cpp CKDTree.py
+
+
+
+
+

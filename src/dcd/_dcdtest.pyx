@@ -92,7 +92,7 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     cdef int index, numskip
     cdef int i, j
     cdef float unitcell[6]
-    for i from 0 <= i < numframes:
+    for 0 <= i < numframes:
         if (skip > 1):
             # Check if we have fixed atoms
             # XXX not done
@@ -107,7 +107,7 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
         if (rc < 0):
             raise IOError("Error reading frame from DCD file")
         # Copy into data array based on format
-        copyseries(i, data.data, data.strides, tempX, tempY, tempZ, fmtstr, numdata, <int*>atomlist.data, <int*>atomcountslist.data, lowerb, <double*>auxlist.data);
+        copyseries(i, <char*>data.data, data.strides, tempX, tempY, tempZ, fmtstr, numdata, <int*>atomlist.data, <int*>atomcountslist.data, lowerb, <double*>auxlist.data);
         PyErr_CheckSignals()
 
     # Reset trajectory
@@ -149,7 +149,7 @@ def __read_timeseries(object self, object atoms, int skip):
     cdef int index, numskip
     cdef int i, j
     cdef float unitcell[6]
-    for i from 0 <= i < numframes:
+    for 0 <= i < numframes:
         if (skip > 1):
             # Check if we have fixed atoms
             # XXX not done
@@ -164,7 +164,7 @@ def __read_timeseries(object self, object atoms, int skip):
         if (rc < 0):
             raise IOError("Error reading frame from DCD file")
         # Copy into numeric array
-        for j from 0 <= j < numatoms:
+        for 0 <= j < numatoms:
             index = (<int*>atomlist.data)[j]-lowerb
             (<double*> (coord.data+j*coord.strides[0]+i*coord.strides[1]+0*coord.strides[2]))[0] = tempX[index]
             (<double*> (coord.data+j*coord.strides[0]+i*coord.strides[1]+1*coord.strides[2]))[0] = tempY[index]

@@ -1,11 +1,18 @@
-# Calculating backbone dihedrals of a protein, using timeseries functionality
+# MDAnalysis example: backbone dihedrals
+"""Calculating backbone dihedrals of a protein, using timeseries functionality
+
+Note that you have to modify this script. For instance, change the
+selections; it is unlikely that your protein contains a molecule named
+'KALP'...
+"""
+
 
 from MDAnalysis import *
 from pylab import *
 
 dcdfile = ''
 psffile = ''
-num_residues = 20
+numresidues = 20
 
 universe = Universe(psffile, dcdfile)
 protein = universe.selectAtoms("protein")

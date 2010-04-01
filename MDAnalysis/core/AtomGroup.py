@@ -2,7 +2,10 @@
 """AtomGroup Hierarchy
 
 Class Hierarchy:
-    AtomGroup ->
+    AtomGroup -> ResidueGroup  -> Segment
+              -> Residue
+    Atom
+    Universe
 """
 
 import numpy
@@ -10,13 +13,13 @@ import numpy
 class Atom(object):
     """A single atom definition
 
-Data: number, segid, resid, resname, name, type, mass, charge
+    Data: number, segid, resid, resname, name, type, mass, charge
 
-Methods:
-    a = Atom()
-    a.pos     - The current position (as a numpy array) of this atom
-"""
-    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", "mass", "charge", "residue", "segment", "bonds", "__universe")
+    Methods:
+        a = Atom()
+        a.pos     - The current position (as a numpy array) of this atom
+    """
+    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", "mass", "charge", "residue", "segment", "bonds", "__universe", "acceptor", "donor")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge):
         self.number = number
@@ -27,6 +30,8 @@ Methods:
         self.segid = segid
         self.mass = mass
         self.charge = charge
+        self.donor = None     # H-bond properties (filled in later)
+        self.acceptor = None
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
                repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'
@@ -81,26 +86,28 @@ class NameError(Exception):
 class AtomGroup(object):
     """A group of atoms
 
-Currently contains a list of atoms from the main system that correspond to this group.
+    Currently contains a list of atoms from the main system that correspond to this group.
 
-Data: atoms - a list of references to the corresponding atoms in Universe.atoms
-      AtomGroups are immutable
+    Data: atoms - a list of references to the corresponding atoms in Universe.atoms
+          AtomGroups are immutable
 
-Methods:
-    ag = universe.selectAtoms("...")
-    ag.numberOfAtoms() - return the number of atoms in group
-    ag.indices() - return indices into main atom array
-    ag.masses() - array of masses
-    ag.totalMass() - total mass
-    ag.charges() - array of charges
-    ag.totalCharge() - total charge
-    ag.centerOfGeometry() - center of geometry
-    ag.centerOfMass() - center of mass
-    ag.radiusOfGyration() - radius of gyration
-    ag.principleAxis() - returns the principle axis of rotation
-    ag.bfactors() - returns B-factors (if they were loaded from a PDB)
-    c = ag.coordinates() - return array of coordinates
-"""
+    Methods:
+        ag = universe.selectAtoms("...")
+        ag.numberOfAtoms() - return the number of atoms in group
+        ag.indices() - return indices into main atom array
+        ag.masses() - array of masses
+        ag.totalMass() - total mass
+        ag.charges() - array of charges
+        ag.totalCharge() - total charge
+        ag.centerOfGeometry() - center of geometry
+        ag.centerOfMass() - center of mass
+        ag.radiusOfGyration() - radius of gyration
+        ag.principleAxis() - returns the principle axis of rotation
+        ag.bfactors() - returns B-factors (if they were loaded from a PDB)
+        c = ag.coordinates() - return array of coordinates
+
+        ag.write() - write all atoms in the group to a file
+    """
     def atoms():
         doc = "a list of references to atoms in Universe corresponding to a specifies subset"
         def fget(self):
@@ -116,13 +123,29 @@ Methods:
         return locals()
     _atoms = property(**_atoms())
 
+    # Universe pointer is important for Selections to work on groups
+    def universe():
+        doc = "The universe to which the atoms belong (read-only)."
+        def fget(self):
+            try:
+                return self.__atoms[0].universe
+            except AttributeError:
+                return None
+        return locals()
+    universe = property(**universe())
+
     def __init__(self, atoms):
         if len(atoms) < 1: raise Exception("No atoms defined for AtomGroup")
-        # __atoms property is effectively readonly
-        self.__atoms = atoms
+        # __atoms property is effectively readonly        
+        # check that atoms is indexable:
+        try:
+            atoms[0]
+            self.__atoms = atoms      
+        except TypeError:
+            self.__atoms = list(atoms)
         # If the number of atoms is very large, create a dictionary cache for lookup
         if len(atoms) > 10000:
-            self._atom_cache = dict([(x,None) for x in atoms])
+            self._atom_cache = dict([(x,None) for x in self.__atoms])
     def __len__(self):
         #import warnings
         #warnings.warn("To prevent confusion with AtomGroup subclasses you should use numberOfAtoms() instead", category=Warning, stacklevel=2)
@@ -200,12 +223,11 @@ Methods:
         # Sort
         indices = numpy.argsort(eigenval)
         return numpy.take(eigenvec, indices) 
-    def coordinates(self, ts=None):
+    def coordinates(self, ts=None, copy=False):
         if ts == None:
-            ts = self.atoms[0].universe.coord
-        return numpy.array(ts[self.indices()], copy=True)
-    def bfactors(self):
-        return self.atoms[0].universe.bfactors[self.indices()]
+            ts = self.universe.coord
+        return numpy.array(ts[self.indices()], copy=copy)
+
     def selectAtoms(self, sel, *othersel):
         import Selection
         atomgrp = Selection.Parser.parse(sel).apply(self)
@@ -219,16 +241,71 @@ Methods:
             #return tuple(atomselections)
             return atomgrp
 
+    def write(self,filename=None,format="pdb",filenamefmt="%(trjname)s_%(frame)d"):
+        """Write AtomGroup to a file.
+
+        AG.write(filename,format='pdb')
+
+        EXPERIMENTAL.
+        Only a primitive PDB format and standard CRD is working.
+
+        filename      None: create TRJNAME_FRAME.FORMAT from filenamefmt
+        format        pdb, crd; can also be supplied as part of filename
+        filenamefmt   format string for default filename; use 'trjname' and 'frame'
+        """
+        import util
+        import os.path
+
+        trj = self.universe.trajectory    # unified trajectory API
+        frame = trj.ts.frame
+
+        if filename is None:
+            trjname,ext = os.path.splitext(os.path.basename(trj.filename))
+            filename = filenamefmt % vars()
+        filename = util.filename(filename,ext=format,keep=True)
+        format = os.path.splitext(filename)[1][1:]  # strip initial dot!
+        try:
+            import MDAnalysis.coordinates
+            FrameWriter = MDAnalysis.coordinates._frame_writers[format]
+        except KeyError:
+            raise NotImplementedError("Writing as %r is not implemented; only %r will work." \
+                                      % (format, MDAnalysis.coordinates._frame_writers.keys()))
+        writer = FrameWriter(filename)
+        writer.write(self)         # wants a atomgroup
+
+    # properties
+    def dimensions():
+        doc = """Dimensions of the Universe to which the group belongs, at the current time step."""
+        def fget(self):
+            if self.universe is not None:
+                return self.universe.dimensions
+            else:
+                raise AttributeError("This AtomGroup does not belong to a Universe with a dimension.")
+        return locals()
+    dimensions = property(**dimensions())
+
+    def bfactors():
+        doc = """B-factors of the AtomGroup"""
+        def fget(self):
+            if self.universe is not None:
+                return self.universe.bfactors[self.indices()]
+            else:
+                raise AttributeError("This AtomGroup does not belong to a Universe.")
+        return locals()
+    bfactors = property(**bfactors())
+        
+
+
 class Residue(AtomGroup):
     """A group of atoms corresponding to a residue
 
-Data: type, name
+    Data: type, name
 
-Methods:
-    r = Residue()
-    r['name'] or r[id] - returns the atom corresponding to that name
-    r.name
-"""
+    Methods:
+        r = Residue()
+        r['name'] or r[id] - returns the atom corresponding to that name
+        r.name
+    """
     __cache = {}
     def __init__(self, name, id, atoms):
         super(Residue, self).__init__(atoms)
@@ -258,13 +335,13 @@ Methods:
         return '<'+self.__class__.__name__+' '+repr(self.name)+', '+repr(self.id)+'>'
 
 class ResidueGroup(AtomGroup):
-    """ A group of residues
+    """A group of residues
 
-Data: residues
+    Data: residues
 
-Methods:
-    rg = ResidueGroup()
-"""
+    Methods:
+       rg = ResidueGroup()
+    """
     def __init__(self, residues):
         self._residues = residues
         atoms = []
@@ -286,14 +363,13 @@ Methods:
         return '<'+self.__class__.__name__+' '+repr(self._residues)+'>'
 
 class Segment(ResidueGroup):
-    """ A group of residues corresponding to one segment of the PSF
+    """A group of residues corresponding to one segment of the PSF
 
-Data: name
+    Data: name
 
-Methods:
-    s = Segment()
-
-"""
+    Methods:
+       s = Segment()
+    """
     def __init__(self, name, residues):
         super(Segment, self).__init__(residues)
         self.name = name
@@ -320,29 +396,32 @@ class Universe(object):
     """Contains all the information decribing the system
        Built from a psf file
 
-Data: bonds, angles, dihedrals, impropers, donors, acceptors
-      coord - current coordinate array for all the atoms in the universe
-      dcd - currently loaded trajectory reader
-      dimensions - current system dimensions
+       Data: bonds, angles, dihedrals, impropers, donors, acceptors
+             coord - current coordinate array for all the atoms in the universe
+             dcd - currently loaded trajectory reader
+             dimensions - current system dimensions
 
-Methods:
-   m = Universe(psffile, dcdfile)             - read system from file(s)
-   m = Universe(psffile, pdbfilename=pdbfile) - read coordinates from PDB file
-   m.load_new_dcd(dcdfilename)                - read from a new dcd file
-   m.selectAtoms(...)                         - select atoms using similar selection string as charmm
+       Methods:
+          m = Universe(psffile, dcdfile)             - read system from file(s)
+          m = Universe(psffile, pdbfilename=pdbfile) - read coordinates from PDB file
+          m.load_new_dcd(dcdfilename)                - read from a new dcd file
+          m.selectAtoms(...)                         - select atoms using similar selection string as charmm
 
-   Only a single frame PDB file is supported; use DCDs for trajectories.
-See also:
+          Only a single frame PDB file is supported; use DCDs for trajectories.
+       See also:
 """
     def __init__(self, psffilename, dcdfilename=None, pdbfilename=None):
         self.__dcd = None
         self.__pdb = None
-        import PSFParser
+        from MDAnalysis.topology import PSFParser
         struc = PSFParser.parse(psffilename)
         self.filename = psffilename
+        self._psf = struc
         #for data in struc.keys():
         #    setattr(self, data, struc[data])
         self.atoms = AtomGroup(struc["_atoms"])
+        # XXX: add H-bond information here if available from psf (or other sources)
+        # 
         segments = PSFParser.build_segments(self.atoms)
         # Because of weird python rules, attribute names cannot start with a digit
         for seg in segments.keys():
@@ -370,13 +449,15 @@ See also:
         if pdbfilename is not None:
             self.load_new_pdb(pdbfilename)
     def load_new_dcd(self, dcdfilename):
-        from DCD import DCDReader
+        from MDAnalysis.coordinates.DCD import DCDReader
         self.dcd = DCDReader(dcdfilename)
         # Make sure that they both have the same number of atoms
         if (self.dcd.numatoms != self.atoms.numberOfAtoms()):
             raise Exception("The psf and dcd files don't have the same number of atoms!")
+        # unified trajectory API
+        self.trajectory = self.dcd
     def load_new_pdb(self,pdbfilename):
-        from PDB import PDBReader
+        from MDAnalysis.coordinates.PDB import PDBReader
         self.pdb = PDBReader(pdbfilename)
         # Make sure that they both have the same number of atoms
         if (self.pdb.numatoms != self.atoms.numberOfAtoms()):
@@ -384,60 +465,108 @@ See also:
         # add B-factor to atoms
         for a, pdbatom in zip(self.atoms,self.pdb.pdb.get_atoms()):
             a.bfactor = pdbatom.get_bfactor()
-
-
+        # unified trajectory API
+        self.trajectory = self.pdb
+            
     def selectAtoms(self, sel, *othersel):
-        '''Select atoms using a CHARMM selection string. 
+        """Select atoms using a CHARMM selection string. 
 
-Returns an AtomGroup with atoms sorted according to their index in the
-psf (this is to ensure that there aren't any duplicates, which can
-happen with complicated selections).
+        Returns an AtomGroup with atoms sorted according to their index in the
+        psf (this is to ensure that there aren't any duplicates, which can
+        happen with complicated selections).
 
-Note: you can group subselections using parentheses, but you need to
-put spaces around the parentheses due to the way the parser is
-implemented.
+        .. Note:: you can group subselections using parentheses, but
+                  you need to put spaces around the parentheses due to
+                  the way the parser is implemented.
 
-> universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
-<AtomGroup with 3420 atoms>
+        Example:
+           >>> universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
+           <AtomGroup with 3420 atoms>
 
-Here's a list of all keywords:
+        Here's a list of all keywords; keywords are CASE SENSITIVE:
 
-Simple selections
-----------------------------
-protein, backbone - selects all atoms that belong to a standard set of residues, may not work for esoteric residues
-segid, resid, resname, name, type - single argument describing selection, resid can take a range of numbers separated by a colon (inclusive)
-                                    ie "segid DMPC", "resname LYS", "name CA", "resid 1:5"
-atom - a selector for a single atom consisting of segid resid atomname
-       ie "DMPC 1 C2" selects the C2 carbon of the first residue of the DMPC segment
+        **Simple selections**
+        .. ------------------
 
-Boolean
-----------------------------
-not - all atoms not in the selection; ie "not protein" selects all atoms that aren't part of a protein
-and, or - combine two selections according to the rules of boolean algebra
-          ie "protein and not ( resname ALA or resname LYS )" selects all atoms that belong to a protein, but are not in a lysine or alanine residue
+           protein, backbone, nucleic, nucleicbackbone
+              selects all atoms that belong to a standard set of residues, may
+              not work for esoteric residues
 
-Geometric - accounts for periodicity
-----------------------------
-around - selects all atoms a certain cutoff away from another selection; 
-         ie "around 3.5 protein" selects all atoms not belonging to protein that are within 3.5 Angstroms from the protein
-point - selects all atoms within a cutoff of a point in space, make sure coordinate is separated by spaces
-        ie "point 3.5 5.0 5.0 5.0" selects all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0, 5.0) 
-prop - selects atoms based on position, using x, y, or z coordinate
-       supports the abs keyword (for absolute value) and the following operators: >, <, >=, <=, ==, !=
-       ie "prop z >= 5.0" selects all atoms with z coordinate greater than 5.0
-          "prop abs z <= 5.0" selects all atoms within -5.0 <= z <= 5.0
+           segid, resid, resname, name, type
+              single argument describing selection, resid can take a range of
+              numbers separated by a colon (inclusive) ie "segid DMPC", "resname
+              LYS", "name CA", "resid 1:5"
 
-Connectivity
-----------------------------
-byres - selects all atoms that are in the same segment and residue as selection
-        ie specify the subselection after the byres keyword
+           atom 
+              a selector for a single atom consisting of segid resid atomname ie
+              "DMPC 1 C2" selects the C2 carbon of the first residue of the DMPC
+              segment
 
-Index
-----------------------------
-bynum - selects all atoms within a range of (1-based) inclusive indices
-        ie "bynum 1" selects the first atom in the universe
-           "bynum 5:10" selects atoms 5 through 10 inclusive
-        '''
+        **Boolean**
+        .. --------
+
+           not
+              all atoms not in the selection; ie "not protein" selects all atoms
+              that aren't part of a protein
+
+           and, or
+              combine two selections according to the rules of boolean algebra ie
+              "protein and not ( resname ALA or resname LYS )" selects all atoms
+              that belong to a protein, but are not in a lysine or alanine
+              residue
+
+
+        **Geometric**
+        .. ----------
+
+           around
+              selects all atoms a certain cutoff away from another selection; ie
+              "around 3.5 protein" selects all atoms not belonging to protein
+              that are within 3.5 Angstroms from the protein point::
+
+                around distance selection
+
+           point
+              selects all atoms within a sphere of given radius around point::
+
+                point distance x y z
+
+              Make sure coordinate is separated by spaces, i.e. "point 3.5
+              5.0 5.0 5.0" selects all atoms within 3.5 Angstroms of the
+              coordinate (5.0, 5.0, 5.0)
+
+           prop
+              selects atoms based on position, using x, y, or z coordinate
+              supports the abs keyword (for absolute value) and the following
+              operators: >, <, >=, <=, ==, != ie "prop z >= 5.0" selects all
+              atoms with z coordinate greater than 5.0 "prop abs z <= 5.0"
+              selects all atoms within -5.0 <= z <= 5.0
+
+           Periodicity is only taken into account with the 'distance matrix'
+           distance functions via a minimum image convention (and this only works
+           for rectangular simulation cells). If this behavior is required, set
+           these flags::
+
+              MDAnalysis.core.flags['use_periodic_selections'] = True   # default
+              MDAnalysis.core.flags['use_KDTree_routines'] = False
+
+
+        **Connectivity**
+        .. -------------
+
+           byres
+              selects all atoms that are in the same segment and residue as
+              selection ie specify the subselection after the byres keyword
+
+
+        **Index**
+        .. ------
+
+           bynum
+              selects all atoms within a range of (1-based) inclusive indices ie
+              "bynum 1" selects the first atom in the universe "bynum 5:10"
+              selects atoms 5 through 10 inclusive
+        """
         import Selection
         atomgrp = Selection.Parser.parse(sel).apply(self)
         if len(othersel) == 0: return atomgrp
@@ -449,6 +578,7 @@ bynum - selects all atoms within a range of (1-based) inclusive indices
                 #atomselections.append(Selection.Parser.parse(sel).apply(self))
             #return tuple(atomselections)
             return atomgrp
+
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(len(self.atoms))+' atoms>'
 

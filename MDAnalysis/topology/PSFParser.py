@@ -44,7 +44,9 @@ def parse(psffilename):
                 ("NBOND", 2, 4, __parsesection_, "_bonds"),
                 ("NTHETA", 3, 3, __parsesection_, "_angles"),
                 ("NPHI", 4, 2, __parsesection_, "_dihe"),
-                ("NIMPHI", 4, 2, __parsesection_, "_impr")]
+                ("NIMPHI", 4, 2, __parsesection_, "_impr"),
+                ("NDON", 2, 4, __parsesection_,"_donors"),
+                ("NACC", 2, 4, __parsesection_,"_acceptors")]
 
     try:
         for info in sections:
@@ -90,7 +92,7 @@ def __parseatoms_(lines, atoms_per, attr, structure, numlines):
           (I10,1X,A8,1X,A8,1X,A8,1X,A8,1X,A4,1X,2G14.6,I8) XPLOR
           """
     atoms = [None,]*numlines
-    from AtomGroup import Atom
+    from MDAnalysis.core.AtomGroup import Atom
 
     # Oli: I don't think that this is the correct OUTPUT format:
     #   psf_atom_format = "   %5d %4s %4d %4s %-4s %-4s %10.6f      %7.4f%s\n"
@@ -128,7 +130,7 @@ def __parsesection_(lines, atoms_per, attr, structure, numlines):
     structure[attr] = section
 
 def build_segments(atoms):
-    from AtomGroup import Residue, Segment
+    from MDAnalysis.core.AtomGroup import Residue, Segment
     struc = {}
     residues = []
     resatomlist = []

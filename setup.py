@@ -1,23 +1,80 @@
-import sys, os
-from distutils import sysconfig
-from numpy import get_numpy_include
-from distutils.core import setup, Extension
-from Pyrex.Distutils import build_ext
+# $Id$
+"""Setuptools based setup script for MDAnalysis.
 
-include_dirs = [get_numpy_include()]
+This uses setuptools <http://pypi.python.org/pypi/setuptools>.
+
+For the easiest installation just type the command:
+
+  python setup.py install
+
+The details of such an "EasyInstall" installation procedure are shown on
+
+  http://peak.telecommunity.com/DevCenter/EasyInstall
+
+For more in-depth instructions, see the installation section at the
+MDAnalysis Wiki:
+
+  http://code.google.com/p/mdanalysis/wiki/Install
+
+Or, if all else fails, feel free to ask on the MDAnalysis mailing list
+for help:
+
+  http://groups.google.com/group/mdnalysis-discussion
+
+(Note that the group really is called `mdnalysis-discussion' because
+Google groups forbids any name that contains the string `anal'.)
+"""
+# EasyInstall installation:
+from ez_setup import use_setuptools
+use_setuptools()
+from setuptools import setup, Extension
+
+# If you don't require EasyInstall features you can also comment out
+# the previous three lines and use the following standard distutils-based
+# installation:
+###from distutils.core import setup, Extension
+
+import sys, os
+import glob
+
+# Make sure I have the right Python version.
+if sys.version_info[:2] < (2, 3):
+    print "MDAnalysis requires Python 2.3 or better.  Python %d.%d detected" % \
+        sys.version_info[:2]
+    sys.exit(-1)
+
+# Obtain the numpy include directory.  This logic works across numpy versions.
+import numpy
+try:
+    numpy_include = numpy.get_include()
+except AttributeError:
+    numpy_include = numpy.get_numpy_include()
+
+from Pyrex.Distutils import build_ext
+import ConfigParser
+
+include_dirs = [numpy_include]
 
 if sys.platform == "darwin": # Mac OS X
     fast_numeric_include = ['/System/Library/Frameworks/vecLib.framework/Versions/A/Headers']
     fast_numeric_link = ["-framework","vecLib"]
 elif sys.platform[:5] == "linux":
-    fast_numeric_include = ['/opt/intel/cmkl/8.0/include']
-    fast_numeric_link = ["-L/opt/intel/cmkl/8.0/lib/32", "-lmkl_lapack","-lmkl_lapack32","-lmkl_ia32","-lmkl","-lguide"]
+    parser = ConfigParser.ConfigParser()
+    parser.read("setup.cfg")
+    try:
+        fast_numeric_include = parser.get("linux","fast_numeric_include").split()
+        linkpath = ["-L"+path for path in parser.get("linux","fast_numeric_linkpath").split()]
+        linklibs = ["-l"+lib for lib in parser.get("linux","fast_numeric_libs").split()]
+        fast_numeric_link = linkpath + linklibs
+    except ConfigParser.NoSectionError:
+        fast_numeric_include = []
+        fast_numeric_link = ["-llapack"]
 else:
     fast_numeric_include = []
-    fast_numeric_link = []
+    fast_numeric_link = ["-llapack"]
 
 if __name__ == '__main__':
-    DOC_FILES = ('README', 'LICENSE', 'CHANGELOG', 'TODO')
+    RELEASE = "0.6.0"
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 """
@@ -29,7 +86,6 @@ if __name__ == '__main__':
                    'Programming Language :: Python',
                    'Topic :: Scientific Software :: Biology',
                    'Topic :: Scientific Software :: Chemistry',]
-    install_dir = sysconfig.get_python_lib() + os.sep + 'MDAnalysis'
 
     if 'DEBUG_CFLAGS' in os.environ:
         extra_compile_args = '\
@@ -41,46 +97,55 @@ if __name__ == '__main__':
         extra_compile_args = ''
         define_macros = []
 
-    extensions = [Extension('_dcdmodule', ['src/dcd/dcd.c'],
+    extensions = [Extension('coordinates._dcdmodule', ['src/dcd/dcd.c'],
                             include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('_dcdtest', ['src/dcd/_dcdtest.pyx'],
+                  Extension('coordinates._dcdtest', ['src/dcd/_dcdtest.pyx'],
                             include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('distances', ['src/numtools/distances.pyx'],
+                  Extension('core.distances', ['src/numtools/distances.pyx'],
                             include_dirs = include_dirs+['src/numtools'],
                             libraries = ['m'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('rms_fitting', ['src/numtools/rms_fitting.pyx'],
+                  Extension('core.rms_fitting', ['src/numtools/rms_fitting.pyx'],
                             libraries = ['m'],
                             define_macros=define_macros,
                             include_dirs = include_dirs+fast_numeric_include,
                             extra_link_args=fast_numeric_link,
                             extra_compile_args=extra_compile_args),
-                  #Extension('delaunay', ['src/delaunay/delaunay.pyx', 'src/delaunay/blas.c', 'src/delaunay/tess.c'],
+                  #Extension('util.delaunay', ['src/delaunay/delaunay.pyx', 'src/delaunay/blas.c', 'src/delaunay/tess.c'],
                   #          libraries = ['m'],
                   #          define_macros=define_macros,
                   #          include_dirs = include_dirs+fast_numeric_include+['src/delaunay'],
                   #          extra_link_args=fast_numeric_link,
                   #          extra_compile_args=extra_compile_args),
+                  Extension('KDTree._CKDTree', 
+                            ["src/KDTree/KDTree.cpp",
+                             "src/KDTree/KDTree.swig.cpp"],
+                            include_dirs = include_dirs,
+                            libraries=["stdc++"],
+                            language="c++"),
                   ]
 
     setup(name              = 'MDAnalysis',
-          version           = '0.5.1',
+          version           = RELEASE,
           description       = 'Python tools to support analysis of trajectories',
           author            = 'Naveen Michaud-Agrawal',
           author_email      = 'naveen.michaudagrawal@gmail.com',
           url               = 'http://mdanalysis.googlecode.com/',
           license           = 'GPL 2',
-          packages          = [ 'MDAnalysis' ],
-          package_dir       = {'MDAnalysis': 'python'},
+          packages          = [ 'MDAnalysis',
+                                'MDAnalysis.core', 'MDAnalysis.topology',
+                                'MDAnalysis.coordinates', 'MDAnalysis.util',
+                                'MDAnalysis.KDTree'],
+          package_dir       = {'MDAnalysis': 'MDAnalysis'},
           ext_package       = 'MDAnalysis',
           ext_modules       = extensions,
-          data_files        = [ (install_dir, DOC_FILES) ],
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
-          cmdclass = {'build_ext': build_ext}
+          cmdclass = {'build_ext': build_ext},
+          zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
           )

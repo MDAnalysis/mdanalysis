@@ -150,21 +150,21 @@ static void swap8_aligned(void *v, long ndata) {
 
 /* swaps the endianism of an eight byte word. */
 void mdio_swap8(double *i) {
-        char c;
-        char *n;
-        n = (char *) i;
-        c = n[0];
-        n[0] = n[7];
-        n[7] = c;
-        c = n[1];
-        n[1] = n[6];
-        n[6] = c;
-        c = n[2];
-        n[2] = n[5];
-        n[5] = c;
-        c = n[3];
-        n[3] = n[4];
-        n[4] = c;
+  char c;
+  char *n;
+  n = (char *) i;
+  c = n[0];
+  n[0] = n[7];
+  n[7] = c;
+  c = n[1];
+  n[1] = n[6];
+  n[6] = c;
+  c = n[2];
+  n[2] = n[5];
+  n[5] = c;
+  c = n[3];
+  n[3] = n[4];
+  n[4] = c;
 }
 
 #endif

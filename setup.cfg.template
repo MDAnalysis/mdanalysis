@@ -1,5 +1,25 @@
 [build]
-compiler=intel
+## Intel compiler fails (at least on Ubuntu 8.04)
+#compiler=intel
+
+[linux]
+# Fast math libraries
+# -------------------
+# example for using Intel MKL on my machine; your paths 
+# will differ!
+#
+# where to find the include files (for -I)
+fast_numeric_include = /opt/intel/cmkl/10.0.5.025/include
+# where to find the libraries (-L); separate paths by space
+fast_numeric_linkpath = /opt/intel/cmkl/10.0.5.025/lib/em64t
+# which libraries to link (-l); separate them by space
+fast_numeric_libs = mkl_lapack mkl guide
+
+[darwin]
+# Fast math libraries
+# -------------------
+# No need to configure; we always use the native vecLib 
+# framework for good performance.
 
 [sdist]
 formats=gztar
