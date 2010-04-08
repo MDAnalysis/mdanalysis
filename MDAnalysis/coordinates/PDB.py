@@ -110,7 +110,7 @@ class PDBWriter:
         self.multi = multi
         if self.multi:
             raise NotImplementedError('Sorry, multi=True does not work yet.')
-        if self.PDBstructure is not None and not isinstance(PDBstructure,Bio.PDB.Structure.Structure):
+        if self.PDBstructure is not None and not isinstance(self.PDBstructure,Bio.PDB.Structure.Structure):
             raise TypeError('If defined, PDBstructure must be a Bio.PDB.Structure.Structure, eg '
                             'Universe.pdb.pdb.')
     def write_next_timestep(self,ts=None):

@@ -10,6 +10,11 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
+04/08/10 orbeckst
+
+        * 0.6.1 release
+        * FIXED bug in PDB.PDBWriter
+
 03/31/10 orbeckst, denniej0 
 
         * 0.6.0 release
