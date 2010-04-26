@@ -64,13 +64,11 @@ Methods:  t = Timestep(numatoms) - create a timestep object with space for numat
         # Is this the best way?
         return Timestep(self)
 
-    # Properties
-    def dimensions():
-        def fget(self):
-            # Layout of unitcell is [A, alpha, B, beta, gamma, C]
-            return numpy.take(self._unitcell, [0,2,5,1,3,4])
-        return locals()
-    dimensions = property(**dimensions())
+    @property
+    def dimensions(self):
+        """unitcell dimensions (A, B, C, alpha, beta, gamma)"""
+        # Layout of unitcell is [A, alpha, B, beta, gamma, C]
+        return numpy.take(self._unitcell, [0,2,5,1,3,4])
 
 class DCDWriter:
     """Writes to a DCD file
