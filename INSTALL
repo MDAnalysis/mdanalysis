@@ -146,15 +146,12 @@ This builds and installs a working version in
 Easy Install
 ------------
 
-** NOT WORKING AT THE MOMENT **
-- fails to handle the compiled libraries properly -- OB 2010-02-02
-
 We are also exploring the use of easy_install. This is experimental
 but you might be able to do ::
 
-  ez_install [options] ./mdanalysis
+  easy_install [options] ./mdanalysis
 
-for a standard installation (see ez_install docs for details) or a
+for a standard installation (see easy_install docs for details) or a
 developer installation (that immediately reflects changes to the
 sources) with ::
 
