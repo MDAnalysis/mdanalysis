@@ -1,7 +1,15 @@
 # $Id$
-"""This submodule contains topology readers; at the moment, only
-Charmm/XPLOR psf is supported but in principle other readers could be
-built on the template of PSFParser."""
+"""
+:mod:`MDAnalysis.topology` -- topology readers
+==============================================
 
-__all__ = ['PSFParser',]
+This submodule contains topology readers; at the moment, only
+Charmm/XPLOR psf is supported well.
 
+A rudimentary PDB parser obtains the list of atoms from a PDB file but
+it lacks bond information, charges, and masses at the moment.
+"""
+
+__all__ = ['core', 'PSFParser']
+
+import core, PSFParser

@@ -59,12 +59,12 @@ class CRDWriter(object):
 	inst_resid = 0
 	for i, atom in enumerate(selection.atoms):
 	    #print selection[i].resname, selection[i-1].resname
-	    if atom.resid < inst_resid:
-		if selection[i].resname != selection[i-1].resname:
-			totres = inst_resid + atom.resid
-			inst_resid = totres 
+	    #print selection[i].resid, selection[i-1].resid
+	    if selection[i].resid != selection[i-1].resid:
+		inst_resid += 1
+		totres = inst_resid
 	    else:
-		inst_resid = atom.resid
+		inst_resid = inst_resid 
 		totres = inst_resid
             self.ATOM(serial=i+1, resSeq=atom.resid, resName=atom.resname, name=atom.name,
                       x=coor[i,0], y=coor[i,1], z=coor[i,2], chainID=atom.segid,tempFactor=0.0,TotRes=totres)
@@ -103,7 +103,7 @@ class CRDWriter(object):
         name = name[:4]
         if len(name) < 4:
             name = name   # customary to start in column 14
-        resName = resName[:3]
+        resName = resName[:4]
         chainID = chainID or ""   # or should we provide a chainID such as 'A'?
         chainID = chainID[:4]
         resSeq = int(str(resSeq)[-4:]) # check for overflow here?

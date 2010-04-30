@@ -90,4 +90,24 @@ static void calc_self_distance_array(coordinate* ref, int numref, float* box, do
 	}
 }
 
+
+static void calc_self_distance_array_noPBC(coordinate* ref, int numref, double* distances, int distnum)
+{
+	int i, j, distpos;
+	double dx[3];
+	double rsq;
+
+	distpos = 0;
+	for (i=0; i < numref; i++) {
+		for (j=i+1; j < numref; j++) {
+			dx[0] = ref[j][0]-ref[i][0];
+			dx[1] = ref[j][1]-ref[i][1];
+			dx[2] = ref[j][2]-ref[i][2];
+			rsq = (dx[0]*dx[0])+(dx[1]*dx[1])+(dx[2]*dx[2]);
+			*(distances+distpos) = sqrt(rsq);
+			distpos += 1;
+		}
+	}
+}
+
 #endif

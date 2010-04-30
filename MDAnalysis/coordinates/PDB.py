@@ -1,40 +1,36 @@
 # $Id: PDB.py 101 2008-05-18 13:19:06Z orbeckst $
-"""PDB structure files in MDAnalysis
+"""
+PDB structure files in MDAnalysis
+=================================
 
-Only coordinates are read; the topology must still be provided by a
-psf file.
+MDAnalysis reads coordinates from PDB files and additional optional
+data such as B-factors. It is also possible to substitute a PDB file
+instead of PSF file in order to define the list of atoms (but no
+connectivity information will be  available in this case).
 
-The PRB module makes heavy use of Biopython's Bio.PDB:
+The :mod:`PDB` module makes heavy use of Biopython's :mod:`Bio.PDB`:
 
   Hamelryck, T., Manderick, B. (2003) PDB parser and structure class 
   implemented in Python. Bioinformatics, 19, 2308-2310.
 
   http://biopython.org
-"""
 
+but replaces the standard PDB file parser with one that uses the
+:class:`MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder`
+to cope with very large pdb files as commonly encountered in MD
+simulations.
+"""
 
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
     import Bio.PDB
 except ImportError:
-    import warnings
-    warnings.warn("Bio.PDB from biopython not found. Disabling PDB reader.")
-    class MissingBiopython:
-        """Dummy class. Install biopython if you want the real MDAnalysis.coordinates.PDB classes."""
-        def __init__(self,*args,**kwargs):
-            raise NotImplementedError("No PDB I/O functionality. Install biopython.")
-    class PDBReader(MissingBiopython):
-        pass
-    class PDBWriter(MissingBiopython):
-        pass
-    # Here should be something like 'return' but that doesn't work for
-    # importing modules so we just raise and exception and let the
-    # calling code deal with it. (An alternative would be a else:
-    # clause but that looks ugly.)
-    raise
+    raise ImportError("No PDB I/O functionality. Install biopython.")
+
 import numpy
 from DCD import Timestep
 import MDAnalysis.core.util as util
+import pdb.extensions
 
 class PDBReader:
     """Read a pdb file into a BioPython pdb structure.
@@ -44,9 +40,8 @@ class PDBReader:
     object superficially resembles the DCDReader object.
     """
     def __init__(self,pdbfilename):
-        p=Bio.PDB.PDBParser(PERMISSIVE=1)
         pdb_id = "0UNK"
-        self.pdb = p.get_structure(pdb_id, pdbfilename)
+        self.pdb = pdb.extensions.get_structure(pdbfilename, pdb_id)
         pos = numpy.array([atom.coord for atom in self.pdb.get_atoms()])
         self.pdbfilename = pdbfilename
         self.filename = self.pdbfilename
@@ -140,7 +135,7 @@ class PDBWriter:
                     return            
             for a,pos in zip(self.PDBstructure.get_atoms(), ts._pos):
                 a.set_coord(pos)
-            io = Bio.PDB.PDBIO()
+            io = pdb.extensions.SloppyPDBIO()
             io.set_structure(self.PDBstructure)
             io.save(self.filename)
     
@@ -243,9 +238,7 @@ class PrimitivePDBWriter(object):
         iCode = iCode[:1]
         element = element or name.strip()[0]  # could have a proper dict here...
         element = element[:2]
-        self.pdb.write(self.fmt['ATOM'] % vars())
-        
+        self.pdb.write(self.fmt['ATOM'] % vars())        
         
     def __del__(self):
         self.close()
-

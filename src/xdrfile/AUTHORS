@@ -1,0 +1,46 @@
+libxdrfile
+==========
+
+Current developers:
+
+David van der Spoel <spoel@gromacs.org>
+Erik Lindahl <lindahl@gromacs.org>
+
+ * xdrfile.c
+ * xdrfile.h
+ * xdrfile_trr.c
+ * xdrfile_trr.h
+ * xdrfile_xtc.c
+ * xdrfile_xtc.h
+
+
+numpy SWIG interface
+====================
+
+Bill Spotz wrote
+ 
+ * numpy.i
+
+which was obtained from the trunk of the numpy distribution,
+2010-03-25. As it appears in numpy it is presumably licensed under the
+`BSD Licence <http://opensource.org/licenses/bsd-license.php>`_.
+
+
+Oliver Beckstein wrote
+
+ * libxdrfile.i
+
+``libxdrfile_wrap.c`` and ``coordinates/xdrfile/libxdrfile.py`` are
+generated from ``libxdrfile.i`` with::
+
+     swig -python -outdir MDAnalysis/coordinates/xdrfile src/xdrfile/libxdrfile.i
+
+The files 
+
+ * libxdrfile.i
+ * libxdrfile_wrap.c
+ * libxdrfile.py
+
+are published under the GNU LESSER GENERAL PUBLIC LICENSE Version 3
+(or higher).
+   

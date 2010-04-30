@@ -1,4 +1,42 @@
 # $Id$
+"""
+:mod:`MDAnalysis.Timeseries` --- compute observable timeseries from trajectories
+================================================================================
+
+The collection of timeseries (such as :class:`Atom`, :class:`Bond`,
+:class:`Dihedral`...)  can be computed from a trajectory in one go, foregoing
+the need to iterate through the trajectory frame by frame in python. Inspired
+by CHARMM's correl command.
+
+The disadvantage is that the timeseries 'plugins' must be implemented
+in C-code. Hence not all trajectory readers (see :mod:`MDAnalysis.coordinates`)
+support them.
+
+
+Basic classes
+-------------
+
+.. autoclass:: Timeseries
+   :members:
+
+.. autoclass:: TimeseriesCollection
+   :members:
+
+
+Timeseries of observables
+-------------------------
+
+.. autoclass:: Atom
+.. autoclass:: Bond
+.. autoclass:: Angle
+.. autoclass:: Dihedral
+.. autoclass:: Distance
+.. autoclass:: CenterOfGeometry
+.. autoclass:: CenterOfMass
+.. autoclass:: WaterDipole
+
+"""
+
 import AtomGroup
 
 class TimeseriesCollection(object):
@@ -10,14 +48,14 @@ class TimeseriesCollection(object):
     command.
 
     The disadvantage is that the timeseries 'plugins' must be implemented in
-    C-code.
+    C-code. ::
 
-    collection = TimeseriesCollection()
-    collection.addTimeseries(Timeseries.Atom(...)) - add a new Timeseries object
-    collection.compute(...)                        - compute the collection of timeseries from the trajectory
-    collection.clear()                             - clear the collection
-    collection[i]                                  - access the i'th timeseries
-    len(collection)                                - return the number of Timeseries added to the collection
+       collection = TimeseriesCollection()
+       collection.addTimeseries(Timeseries.Atom(...)) - add a new Timeseries object
+       collection.compute(...)                        - compute the collection of timeseries from the trajectory
+       collection.clear()                             - clear the collection
+       collection[i]                                  - access the i'th timeseries
+       len(collection)                                - return the number of Timeseries added to the collection
     '''
     def __init__(self):
         self.timeseries = []
@@ -100,18 +138,17 @@ class Timeseries(object):
         self.dsize = dsize
 
     # Properties
-    def shape():
-        def fget(self):
-            return self.__data__.shape
-        return locals()
-    shape = property(**shape())
+    @property
+    def shape(self):
+        """shape tuple of the underlying numpy array"""
+        return self.__data__.shape
 
     def __getitem__(self, item):
         return self.__data__[item]
     def __len__(self): return len(self.__data__)
     def __repr__(self):
         if hasattr(self, "__data__"): return '<'+self.__class__.__name__+' timeseries object is populated with data>\n%s'%(repr(self.__data__))
-        else: '<'+self.__class__.__name__+' timeseries object is not populated with data>'
+        else: return '<'+self.__class__.__name__+' timeseries object is not populated with data>'
     def getAtomList(self):
         return [a.number for a in self.atoms]
     def getFormatCode(self):
@@ -127,7 +164,9 @@ class Timeseries(object):
 
 class Atom(Timeseries):
     ''' Create a timeseries that returns coordinate data for an atom or group of atoms
-        t = Atom(code, atoms)
+
+           t = Atom(code, atoms)
+
         code is one of 'x', 'y', 'z', or 'v' ('vector', which returns all three dimensions)
         atoms can be a single Atom object, a list of Atom objects, or an AtomGroup
     '''
@@ -149,7 +188,9 @@ class Atom(Timeseries):
 
 class Bond(Timeseries):
     ''' Create a timeseries that returns a timeseries for a bond
-        t = Bond(atoms)
+
+           t = Bond(atoms)
+
         atoms must contain 2 Atoms, either as a list or an AtomGroup
     '''
     def __init__(self, atoms):
@@ -159,7 +200,9 @@ class Bond(Timeseries):
 
 class Angle(Timeseries):
     ''' Create a timeseries that returns a timeseries for an angle
-        t = Angle(atoms)
+
+           t = Angle(atoms)
+
         atoms must contain 3 Atoms, either as a list or an AtomGroup
     '''
     def __init__(self, atoms):
@@ -169,7 +212,9 @@ class Angle(Timeseries):
 
 class Dihedral(Timeseries):
     ''' Create a timeseries that returns a timeseries for a dihedral angle
-        t = Dihedral(atoms)
+
+           t = Dihedral(atoms)
+
         atoms must contain 4 Atoms, either as a list or an AtomGroup
     '''
     def __init__(self, atoms):
@@ -179,7 +224,9 @@ class Dihedral(Timeseries):
 
 class Distance(Timeseries):
     ''' Create a timeseries that returns distances between 2 atoms
-        t = Distance(code, atoms)
+
+           t = Distance(code, atoms)
+
         code is one of 'd' (distance vector), or 'r' (scalar distance)
         atoms must contain 2 Atoms, either as a list or an AtomGroup
     '''
@@ -194,7 +241,9 @@ class Distance(Timeseries):
 
 class CenterOfGeometry(Timeseries):
     ''' Create a timeseries that returns the center of geometry of a group of atoms
-        t = CenterOfGeometry(atoms)
+
+           t = CenterOfGeometry(atoms)
+
         atoms can be a list of Atom objects, or an AtomGroup
     '''
     def __init__(self, atoms):
@@ -204,7 +253,9 @@ class CenterOfGeometry(Timeseries):
 
 class CenterOfMass(Timeseries):
     ''' Create a timeseries that returns the center of mass of a group of atoms
-        t = CenterOfMass(atoms)
+
+           t = CenterOfMass(atoms)
+
         atoms can be a list of Atom objects, or an AtomGroup
     '''
     def __init__(self, atoms):
@@ -213,8 +264,10 @@ class CenterOfMass(Timeseries):
         return [a.mass for a in self.atoms]
 
 class WaterDipole(Timeseries):
-    ''' Create a timeseries that returns a timeseries for the dipole vector of a 3-site water
-        t = WaterDipole(atoms)
+    ''' Create a Timeseries that returns a timeseries for the dipole vector of a 3-site water
+
+           t = WaterDipole(atoms)
+
         atoms must contain 3 Atoms, either as a list or an AtomGroup; the first one MUST be
         the oxygen, the other two are the hydrogens. The vector is calculated as 
         

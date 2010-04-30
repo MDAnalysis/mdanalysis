@@ -2808,7 +2808,7 @@ SWIG_AsVal_float (PyObject * obj, float *val)
 
 	PyObject *KDTree_get_indices(KDTree *kdtree)
 	{
-		int length[1];
+		npy_intp length[1];
 		PyArrayObject *_array;
 	 
 		length[0]=kdtree->get_count();
@@ -2819,7 +2819,7 @@ SWIG_AsVal_float (PyObject * obj, float *val)
 			return Py_None;
 		}
 
-		_array=(PyArrayObject *) PyArray_FromDims(1, length, PyArray_LONG);
+		_array=(PyArrayObject *) PyArray_SimpleNew(1, length, PyArray_LONG);
 
 		// copy the data into the Numpy data pointer
 		kdtree->copy_indices((long int *) _array->data);
@@ -2829,7 +2829,7 @@ SWIG_AsVal_float (PyObject * obj, float *val)
 
 	PyObject *KDTree_neighbor_get_indices(KDTree *kdtree)
 	{
-		int length[1];
+		npy_intp length[1];
 		PyArrayObject *_array;
 	 
 		length[0]=2*kdtree->neighbor_get_count();
@@ -2840,7 +2840,7 @@ SWIG_AsVal_float (PyObject * obj, float *val)
 			return Py_None;
 		}
 
-		_array=(PyArrayObject *) PyArray_FromDims(1, length, PyArray_LONG);
+		_array=(PyArrayObject *) PyArray_SimpleNew(1, length, PyArray_LONG);
 
 		// copy the data into the Numpy data pointer
 		kdtree->neighbor_copy_indices((long int *) _array->data);
@@ -2850,7 +2850,7 @@ SWIG_AsVal_float (PyObject * obj, float *val)
 
 	PyObject *KDTree_get_radii(KDTree *kdtree)
 	{
-		int length[1];
+		npy_intp length[1];
 		PyArrayObject *_array;
 	 
 		length[0]=kdtree->get_count();
@@ -2861,7 +2861,7 @@ SWIG_AsVal_float (PyObject * obj, float *val)
 			return Py_None;
 		}
 		
-		_array=(PyArrayObject *) PyArray_FromDims(1, length, PyArray_FLOAT);
+		_array=(PyArrayObject *) PyArray_SimpleNew(1, length, PyArray_FLOAT);
 
 		// copy the data into the Numpy data pointer
 		kdtree->copy_radii((float *) _array->data);
@@ -2871,7 +2871,7 @@ SWIG_AsVal_float (PyObject * obj, float *val)
 
 	PyObject *KDTree_neighbor_get_radii(KDTree *kdtree)
 	{
-		int length[1];
+		npy_intp length[1];
 		PyArrayObject *_array;
 	 
 		length[0]=kdtree->neighbor_get_count();
@@ -2882,7 +2882,7 @@ SWIG_AsVal_float (PyObject * obj, float *val)
 			return Py_None;
 		}
 		
-		_array=(PyArrayObject *) PyArray_FromDims(1, length, PyArray_FLOAT);
+		_array=(PyArrayObject *) PyArray_SimpleNew(1, length, PyArray_FLOAT);
 
 		// copy the data into the Numpy data pointer
 		kdtree->neighbor_copy_radii((float *) _array->data);

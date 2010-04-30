@@ -1,4 +1,31 @@
 # $Id$
+"""
+:mod:`MDAnalysis.core.distances` --- fast distance array computation
+====================================================================
+
+Fast C-routines to calculate distance arrays from coordinate arrays.
+
+.. function:: distance_array(ref,conf,[box,[,result[,copy]]])
+
+   Calculate all distances d_ij between the coordinates ref[i] and
+   conf[j] in the numpy arrays *ref* and *conf*. If an orthorhombic
+   *box* is supplied then a minimum image convention is used before
+   calculating distances.
+
+.. function:: self_distance_array(ref,[box[,result[,copy]]])
+
+   Calculate all distances d_ij between atoms i and j in the reference
+   coordinates *ref*. Other options as in :func:`distance_array`.
+
+
+.. Note:: The *copy* flag should be ``True`` in most cases as it
+          guarantees that input arrays are correctly interpreted by
+          the underlying C-code (a slightly expensive copy of the
+          array is made). If you know what you are doing you can speed
+          up the routines by setting it to ``False`` but this will
+          *produce wrong results* when the arrays are numpy"views" on arrays.
+
+"""
 
 cimport c_numpy
 c_numpy.import_array()
@@ -12,22 +39,24 @@ cdef extern from "calc_distances.h":
     void calc_distance_array(coordinate* ref, int numref, coordinate* conf, int numconf, float* box, double* distances)
     void calc_distance_array_noPBC(coordinate* ref, int numref, coordinate* conf, int numconf, double* distances)
     void calc_self_distance_array(coordinate* ref, int numref, float* box, double* distances, int distnum)
+    void calc_self_distance_array_noPBC(coordinate* ref, int numref, double* distances, int distnum)
 
 
 import numpy
-def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_numpy.ndarray box, c_numpy.ndarray result=None, copy=True):
+def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_numpy.ndarray box=None, c_numpy.ndarray result=None, copy=True):
     """Calculate all distances between a reference set and another configuration.
 
-    d = distance_array(ref,conf,box[,result = d])
+    d = distance_array(ref,conf,box[,result=d[,copy=True]])
 
     :Input:
     ref        reference coordinate array
     conf       configuration coordinate array
     box        orthorhombic unit cell dimensions (minimum image convention
-               is applied) or None
+               is applied) or None [None]
     result     optional preallocated result array which must have the shape
                (len(ref),len(conf)). Avoids creating the array which saves time
-               when the function is called repeatedly.
+               when the function is called repeatedly. [None]
+    copy       makes internal copies of the input arrays; see note below [True]
 
     :Output:
     d          len(ref),len(conf) numpy array with the distances d[i,j]
@@ -84,18 +113,54 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
 
     return distances
 
-def self_distance_array(c_numpy.ndarray ref, c_numpy.ndarray box, c_numpy.ndarray result = None):
+def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_numpy.ndarray result=None, copy=True):
+    """Calculate all distances d_ij between atoms i and j within a configuration *ref*.
+
+    d = self_distance_array(ref,box[,result=d[,copy=True]])
+
+    :Input:
+    ref        reference coordinate array
+    box        orthorhombic unit cell dimensions (minimum image convention
+               is applied) or None [None]
+    result     optional preallocated result array which must have the shape
+               (len(ref),len(conf)). Avoids creating the array which saves time
+               when the function is called repeatedly. [None]
+    copy       makes internal copies of the input arrays; see note below [True]               
+
+    :Output:
+    d          len(ref),len(conf) numpy array with the distances d[i,j]
+               between ref coordinates i and conf coordinates j
+
+    Note: This method is slower than it could be because internally we need to
+          make copies of the ref and conf arrays. If you know what you are doing
+          you can disable this copy by setting copy=False; however, in most cases
+          this leads to WRONG results!
+    """
+
+    cdef c_numpy.ndarray ref
     cdef c_numpy.ndarray distances
     cdef int refnum, distnum
+
+    if copy:
+        # Work-around for a severe bug: function produces wrong numbers if
+        # input arrays are views (eg slices from other arrays): copy to force a
+        # new contiguous array in memory (and just make sure its in C order)
+        ref = reference.copy('C')
+    else:
+        # WARNING: this produces wrong results unless the arrays are contiguous
+        # in memory
+        ref = reference
 
     if (ref.nd != 2 and ref.dimensions[1] != 3):
         raise Exception("ref must be a sequence of 3 dimensional coordinates")
     if (ref.dtype!=numpy.dtype(numpy.float32)):
         raise Exception("coordinate data must be of type float32")
-    if (box.nd != 1 and box.dimensions[0] != 3):
-        raise Exception("box must be a sequence of 3 dimensional coordinates")
-    if (box.dtype!=numpy.dtype(numpy.float32)):
-        raise Exception("periodic boundaries must be of type float32")
+    with_PBC = (box is not None)
+    if with_PBC:
+        if (box.nd != 1 and box.dimensions[0] != 3):
+            raise Exception("box must be a sequence of 3 dimensional coordinates")
+        if (box.dtype!=numpy.dtype(numpy.float32)):
+            raise Exception("periodic boundaries must be of type float32")
 
     refnum = ref.dimensions[0]
     distnum = (refnum*(refnum-1))/2
@@ -106,5 +171,10 @@ def self_distance_array(c_numpy.ndarray ref, c_numpy.ndarray box, c_numpy.ndarra
         distances = numpy.asarray(result)
     else:
         distances = numpy.zeros((distnum,), numpy.float64)
-    calc_self_distance_array(<coordinate*>ref.data, refnum, <float*>box.data, <double*>distances.data, distnum)
+
+    if with_PBC:
+        calc_self_distance_array(<coordinate*>ref.data,refnum,<float*>box.data,<double*>distances.data, distnum)
+    else:
+        calc_self_distance_array_noPBC(<coordinate*>ref.data,refnum,<double*>distances.data,distnum)        
+        
     return distances

@@ -10,13 +10,32 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-04/08/10 orbeckst
+??/??/10 orbeckst 
+        (Running list of enhancements, to be edited for final
+        entry when stable changes are merged back into trunk)
+
+        * reads hydrogen bond donor/acceptor list from psf and sets up
+          structures for hydrogen bonding analysis
+          TODO: H-BOND ANALYSIS NOT WORKING YET
+
+04/31/10 orbeckst
 
         * 0.6.1 release
-        * FIXED bug in PDB.PDBWriter
+	* can build a simple Universe from a PDB file (FIXES Issue 11)
+        * can read Gromacs XTC and TRR files (FIXES Issue 1) but no
+	  Timeseries or Collections yet for those formats
+	* removed Universe.load_new_dcd() and Universe.load_new_pdb()
+	  --- use the generic Universe.load_new() (MIGHT BREAK OLD CODE)
+        * removed deprecated Universe._dcd attribute (MIGHT BREAK OLD CODE)
+        * FIXED bug in PDB.PDBWriter and CRD.CRDWriter
+        * use SloppyPDB in order to cope with large PDB files
+	* core.distances.self_distance_array() is now behaving the
+	  same way as distance_array()
+        * defined Trajectory API (see MDAnalysis/coordinates/__init__.py)
+	* renamed _dcdtest to dcdtimeseries (will not affect old code)
+	* unit tests added (still need more test cases)
 
 03/31/10 orbeckst, denniej0 
-
         * 0.6.0 release
         * added KDTree and Neighbour searching code from Biopython for
           faster distance selections: used for AROUND selections;
@@ -24,20 +43,25 @@ The rules for this file:
 	  faster. This can be configured with core.flags
 	* core.flags infrastructure to tweak behaviour at run time
         * updated LICENSE file with Biopython License
-        * can write single frames as pdb or crd (AtomGroup gained the
-          write() method)
-	* some selections for nucleic acids
+ 	* some selections for nucleic acids
         * completely reorganized directory structure to make
           enhancements easier to incorporate
 	* FIXED (partial): Issue 18 (Timeseries from a universe.segID
           selection, reported by lordnapi)
         * FIXED: Issue 19 (Timeseries collections were broken,
           reported by Jiyong)
+        * can write single frames as pdb or crd (AtomGroup gained the
+          write() method)
+	* some selections for nucleic acids
+        * completely reorganized directory structure to make
+          enhancements easier to incorporate
+        * FIXED: Issue 19 (Timeseries collections were broken)
         * improved installation
           - EasyInstall (setuptools) support (FIXED Issue 16)
 	  - better instructions in INSTALL
           - slightly better handling of the configuration of the fast
             linear algebra libs via the setup.cfg file
+
 
 
 08/23/08 naveen, orbeckst

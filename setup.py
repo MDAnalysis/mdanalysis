@@ -74,7 +74,7 @@ else:
     fast_numeric_link = ["-llapack"]
 
 if __name__ == '__main__':
-    RELEASE = "0.6.1-alpha"
+    RELEASE = "0.6.1-rc1"
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 """
@@ -101,7 +101,7 @@ if __name__ == '__main__':
                             include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('coordinates._dcdtest', ['src/dcd/_dcdtest.pyx'],
+                  Extension('coordinates.dcdtimeseries', ['src/dcd/dcdtimeseries.pyx'],
                             include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
@@ -128,6 +128,12 @@ if __name__ == '__main__':
                             include_dirs = include_dirs,
                             libraries=["stdc++"],
                             language="c++"),
+                  Extension('coordinates.xdrfile._libxdrfile',
+                            sources=['src/xdrfile/libxdrfile_wrap.c',
+                                     'src/xdrfile/xdrfile.c', 
+                                     'src/xdrfile/xdrfile_trr.c',
+                                     'src/xdrfile/xdrfile_xtc.c'],
+                            include_dirs = include_dirs),
                   ]
 
     setup(name              = 'MDAnalysis',
@@ -139,9 +145,15 @@ if __name__ == '__main__':
           license           = 'GPL 2',
           packages          = [ 'MDAnalysis',
                                 'MDAnalysis.core', 'MDAnalysis.topology',
-                                'MDAnalysis.coordinates', 'MDAnalysis.util',
-                                'MDAnalysis.KDTree'],
+                                'MDAnalysis.coordinates', 
+                                'MDAnalysis.coordinates.xdrfile', 
+                                'MDAnalysis.coordinates.pdb', 
+                                'MDAnalysis.util',
+                                'MDAnalysis.KDTree',
+                                'MDAnalysis.tests'],
           package_dir       = {'MDAnalysis': 'MDAnalysis'},
+          package_data      = {'MDAnalysis': ['tests/data/*.psf','tests/data/*.dcd','tests/data/*.pdb'],
+                               },
           ext_package       = 'MDAnalysis',
           ext_modules       = extensions,
           classifiers       = CLASSIFIERS,

@@ -26,6 +26,17 @@ __all__ = ['AtomGroup','Selection','Timeseries','distances','rms_fitting',
            'PSFParser','DCD','PDB',
            'Universe', 'collection']
 
+import logging
+# see the advice on logging and libraries in
+# http://docs.python.org/library/logging.html?#configuring-logging-for-a-library
+class NullHandler(logging.Handler):
+    def emit(self, record):
+        pass
+h = NullHandler()
+logging.getLogger("MDAnalysis").addHandler(h)
+del h
+
+
 from core import AtomGroup,Selection,Timeseries,distances,rms_fitting
 from coordinates import DCD,PDB
 from topology import PSFParser

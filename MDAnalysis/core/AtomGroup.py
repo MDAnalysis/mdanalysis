@@ -274,27 +274,22 @@ class AtomGroup(object):
         writer.write(self)         # wants a atomgroup
 
     # properties
-    def dimensions():
-        doc = """Dimensions of the Universe to which the group belongs, at the current time step."""
-        def fget(self):
-            if self.universe is not None:
-                return self.universe.dimensions
-            else:
-                raise AttributeError("This AtomGroup does not belong to a Universe with a dimension.")
-        return locals()
-    dimensions = property(**dimensions())
+    @property
+    def dimensions(self):
+        """Dimensions of the Universe to which the group belongs, at the current time step."""
+        if self.universe is not None:
+            return self.universe.dimensions
+        else:
+            raise AttributeError("This AtomGroup does not belong to a Universe with a dimension.")
 
-    def bfactors():
-        doc = """B-factors of the AtomGroup"""
-        def fget(self):
-            if self.universe is not None:
-                return self.universe.bfactors[self.indices()]
-            else:
-                raise AttributeError("This AtomGroup does not belong to a Universe.")
-        return locals()
-    bfactors = property(**bfactors())
+    @property
+    def bfactors(self):
+        """B-factors of the AtomGroup"""
+        if self.universe is not None:
+            return self.universe.bfactors[self.indices()]
+        else:
+            raise AttributeError("This AtomGroup does not belong to a Universe.")
         
-
 
 class Residue(AtomGroup):
     """A group of atoms corresponding to a residue
@@ -393,28 +388,81 @@ class Segment(ResidueGroup):
         return '<'+self.__class__.__name__+' '+repr(self.name)+'>'
 
 class Universe(object):
-    """Contains all the information decribing the system
-       Built from a psf file
+    """The MDAnalysis Universe contains all the information describing the system.
 
-       Data: bonds, angles, dihedrals, impropers, donors, acceptors
-             coord - current coordinate array for all the atoms in the universe
-             dcd - currently loaded trajectory reader
-             dimensions - current system dimensions
+    Built from a psf or pdb file.
 
-       Methods:
-          m = Universe(psffile, dcdfile)             - read system from file(s)
-          m = Universe(psffile, pdbfilename=pdbfile) - read coordinates from PDB file
-          m.load_new_dcd(dcdfilename)                - read from a new dcd file
-          m.selectAtoms(...)                         - select atoms using similar selection string as charmm
+    Attributes: 
+       - bonds, angles, dihedrals, impropers, donors, acceptors [TODO]
+       - :attr:`Universe.coord`: current coordinate array for all the atoms in the universe
+       - :attr:`Universe.trajectory`: currently loaded trajectory reader; 
+          :attr:`Universe.trajectory.ts` is the current time step
+       - :attr:`Universe.dimensions`: current system dimensions (simulation unit cell, if 
+         set in the trajectory)
 
-          Only a single frame PDB file is supported; use DCDs for trajectories.
-       See also:
-"""
+    Methods::
+       m = Universe(psffile, dcdfile)             # read system from file(s)          
+       m = Universe(psffile, pdbfilename=pdbfile) # read coordinates from PDB file
+       m = Universe(pdbfile)                      # read atoms and coordinates from PDB
+       m.load_new_dcd(dcdfilename)                # read from a new dcd file
+       m.selectAtoms(...)                         # select atoms using similar selection string as charmm
+
+    .. Note:: Only a single-frame PDB file is supported; use DCDs for
+              trajectories. If a PDB is used instead of a PSF then
+              neither mass nor charge are correct, and bonds are not available.
+    """
     def __init__(self, psffilename, dcdfilename=None, pdbfilename=None):
-        self.__dcd = None
-        self.__pdb = None
+        """Initialize the central MDAnalysis Universe object.
+
+        :Arguments:
+          *psffilename*
+             A Charmm/XPLOR PSF topology file or a PDB file; used to define the
+             list of atoms. If the file includes bond information, partial
+             charges, atom masses, ... then these data will be available to
+             MDAnalysis. A "structure" file (SPF or PDB, in the sense of a
+             topology) is always required.
+          *dcdfilename*
+             A Charmm DCD trajectory; will provide coordinates.
+          *pdbfilename*
+             A PDB structure; provides a single set of coordinates (and acts as
+             a one-frame trajectory).
+        
+        This routine tries to do the right thing: 
+          1. If a pdb file is provided instead of a psf and neither a dcd nor a
+             pdb structure then the coordinates are taken from the first pdb
+             file. Thus you can load a functional universe with ::
+
+                u = Universe('1ake.pdb')
+   
+          2. If a pdb coordinate file is provided in the *dcdfilename* argument
+             then it is silently opened as a pdb file.
+
+          3. If only a psf file is provided one will have to load coordinates
+             manually using :meth:`Universe.load_new_dcd` or
+             :meth:`Universe.load_new_pdb`.
+        """
+        import MDAnalysis.topology.core
+
+        # managed attribute holding TRJReader (the Universe.trajectory
+        # attribute is also aliase as Universe.<EXT> where <EXT> is the
+        # trajectory format type (i.e. the extension))
+        self.__trajectory = None
+
         from MDAnalysis.topology import PSFParser
-        struc = PSFParser.parse(psffilename)
+        try:
+            struc = PSFParser.parse(psffilename)
+        except PSFParser.PSFParseError, err:
+            # try as a PDB
+            try:
+                from MDAnalysis.topology import PDBParser
+                struc = PDBParser.parse(psffilename)
+            except:
+                print "Tried building a topology from pdb instead of psf (%s)" % err
+                raise
+            else:
+                if pdbfilename is None and dcdfilename is None:
+                    pdbfilename = psffilename
+
         self.filename = psffilename
         self._psf = struc
         #for data in struc.keys():
@@ -422,7 +470,7 @@ class Universe(object):
         self.atoms = AtomGroup(struc["_atoms"])
         # XXX: add H-bond information here if available from psf (or other sources)
         # 
-        segments = PSFParser.build_segments(self.atoms)
+        segments = MDAnalysis.topology.core.build_segments(self.atoms)
         # Because of weird python rules, attribute names cannot start with a digit
         for seg in segments.keys():
             if seg[0].isdigit():
@@ -431,42 +479,42 @@ class Universe(object):
                 del segments[seg]
         self.__dict__.update(segments)
 
-        #PSFParser.build_bondlists(self.atoms, self._bonds)
+        #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
         # Let atoms access the universe
         for a in self.atoms: a.universe = self
         # Load coordinates; distinguish file format by extension
-        if dcdfilename is not None:
-            import os.path
-            ext = os.path.splitext(dcdfilename)[-1]
-            if ext in ('.dcd','.trj'):
-                self.load_new_dcd(dcdfilename)
-                pdbfilename = None
-            else:
-                import warnings
-                warnings.warn("Trying to load dcdfilename=%s as a pdb..." % dcdfilename)
-                pdbfilename = dcdfilename  # pdb as fallback
-                dcdfilename = None
-        if pdbfilename is not None:
-            self.load_new_pdb(pdbfilename)
-    def load_new_dcd(self, dcdfilename):
-        from MDAnalysis.coordinates.DCD import DCDReader
-        self.dcd = DCDReader(dcdfilename)
+        coordinatefile = dcdfilename or pdbfilename
+        self.load_new(coordinatefile)
+
+    def load_new(self, filename):
+        """Load coordinates from *filename*, using the suffix to detect file format."""
+        if filename is None:
+            return
+        import os.path
+        ext = os.path.splitext(filename)[-1]
+        if ext.startswith('.'):
+            ext = ext[1:]
+        return self._load_new(ext, filename)
+
+    def _load_new(self, trjtype, filename):
+        """Load coordinates from *filename* of file type *trjtype*."""
+        import MDAnalysis.coordinates
+        try:
+            TRJReader = MDAnalysis.coordinates._trajectory_readers[trjtype]
+        except KeyError:
+            raise NotImplementedError("Trajectories of type %r can not be read; only\n%r"
+                                      % (trjtype, MDAnalysis.coordinates._trajectory_readers.keys()))
+        self.trajectory = TRJReader(filename)    # unified trajectory API
+        self.__dict__[trjtype] = self.trajectory # legacy (deprecated)
         # Make sure that they both have the same number of atoms
-        if (self.dcd.numatoms != self.atoms.numberOfAtoms()):
-            raise Exception("The psf and dcd files don't have the same number of atoms!")
-        # unified trajectory API
-        self.trajectory = self.dcd
-    def load_new_pdb(self,pdbfilename):
-        from MDAnalysis.coordinates.PDB import PDBReader
-        self.pdb = PDBReader(pdbfilename)
-        # Make sure that they both have the same number of atoms
-        if (self.pdb.numatoms != self.atoms.numberOfAtoms()):
-            raise Exception("The psf and pdb files don't have the same number of atoms!")
-        # add B-factor to atoms
-        for a, pdbatom in zip(self.atoms,self.pdb.pdb.get_atoms()):
-            a.bfactor = pdbatom.get_bfactor()
-        # unified trajectory API
-        self.trajectory = self.pdb
+        if (self.trajectory.numatoms != self.atoms.numberOfAtoms()):
+            raise ValueError("The psf and %s files don't have the same number of atoms!" % trjtype)
+        # hack for PDB
+        if trjtype == "pdb":
+            # add B-factor to atoms
+            for a, pdbatom in zip(self.atoms,self.trajectory.pdb.get_atoms()):
+                a.bfactor = pdbatom.get_bfactor()
+        return filename, trjtype
             
     def selectAtoms(self, sel, *othersel):
         """Select atoms using a CHARMM selection string. 
@@ -583,49 +631,37 @@ class Universe(object):
         return '<'+self.__class__.__name__+' with '+repr(len(self.atoms))+' atoms>'
 
     # Properties
-    def dimensions():
-        def fget(self): return self.coord.dimensions
-        return locals()
-    dimensions = property(**dimensions())
+    @property
+    def dimensions(self):
+        """Current dimensions of the unitcell"""
+        return self.coord.dimensions
     
-    def coord():
-        doc = "Reference to current coordinates of universe"
-        def fget(self):
-            try:
-                return self.dcd.ts
-            except AttributeError:
-                return self.pdb.ts
-        return locals()
-    coord = property(**coord())
+    @property
+    def coord(self):
+        """Reference to current timestep and coordinates of universe.
 
-    def dcd():
-        doc = "Reference to DCDReader object containing trajectory data"
+        The raw trajectory coordinates are :attr:`Universe.coord._pos`,
+        represented as a :attr:`numpy.float32` array.
+
+        Because :attr:`coord` is a reference, it changes its contents while one
+        is stepping through the trajectory.
+
+        .. Note:: In order to access the coordinates it is probably better to
+                  use the :meth:`AtomGroup.coordinates` method; for instance,
+                  all coordinates of the Universe as a numpy array:
+                  :meth:`Universe.atoms.coordinates`.
+
+        .. SeeAlso:: :class:`MDAnalysis.coordinates.DCD.Timestep`
+        """
+        return self.trajectory.ts
+
+    def trajectory():
+        doc = "Reference to trajectory reader object containing trajectory data"
         def fget(self):
-            if not self.__dcd == None: return self.__dcd
+            if not self.__trajectory == None: return self.__trajectory
             else: raise AttributeError("No trajectory loaded into Universe")
         def fset(self, value):
-            del self.__dcd
-            self.__dcd = value
+            del self.__trajectory  # guarantees that files are closed (?)
+            self.__trajectory = value
         return locals()
-    dcd = property(**dcd())
-
-    def _dcd():
-        doc = "Old reference to DCDReader object containing trajectory data"
-        def fget(self):
-            import warnings
-            warnings.warn("Usage of '_dcd' is deprecated. Use 'dcd' instead.", category=DeprecationWarning, stacklevel=2)
-            if not self.__dcd == None: return self.__dcd
-            else: raise AttributeError("No trajectory loaded into Universe")
-        return locals()
-    _dcd = property(**_dcd())
-
-    def pdb():
-        doc = "Reference to PDBReader object containing structure data"
-        def fget(self):
-            if not self.__pdb == None: return self.__pdb
-            else: raise AttributeError("No coordinate data loaded into Universe")
-        def fset(self, value):
-            del self.__pdb
-            self.__pdb = value
-        return locals()
-    pdb = property(**pdb())
+    trajectory = property(**trajectory())

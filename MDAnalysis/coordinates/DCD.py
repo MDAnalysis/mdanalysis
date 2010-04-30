@@ -4,17 +4,17 @@
 """
 import numpy
 
-class Timestep:
+class Timestep(object):
     """Timestep data for one frame
 
-Data:     numatoms                   - number of atoms
-          frame                      - frame number
-          dimensions                 - system box dimensions (x, y, z, alpha, beta, gamma)
+    Data:     numatoms                   - number of atoms
+              frame                      - frame number
+              dimensions                 - system box dimensions (x, y, z, alpha, beta, gamma)
 
-Methods:  t = Timestep(numatoms) - create a timestep object with space for numatoms (done automatically)
-          t[i]                   - return coordinates for the i'th atom (0-based)
-          t[start:stop:skip]     - return an array of coordinates, where start, stop and skip correspond to atom indices (0-based)
-"""
+    Methods:  t = Timestep(numatoms) - create a timestep object with space for numatoms (done automatically)
+              t[i]                   - return coordinates for the i'th atom (0-based)
+              t[start:stop:skip]     - return an array of coordinates, where start, stop and skip correspond to atom indices (0-based)
+    """
     def __init__(self, arg):
         if numpy.dtype(type(arg)) == numpy.dtype(int):
             self.frame = 0
@@ -32,8 +32,8 @@ Methods:  t = Timestep(numatoms) - create a timestep object with space for numat
             if len(arg.shape) != 2: raise Exception("numpy array can only have 2 dimensions")
             self._unitcell = numpy.zeros((6), numpy.float32)
             self.frame = 0
-            if arg.shape[0] == 3: self.numatoms = arg.shape[0]
-            else: self.numatoms = arg.shape[-1]
+            if arg.shape[0] == 3: self.numatoms = arg.shape[0]  # ??? is this correct ??? [OB]
+            else: self.numatoms = arg.shape[-1]                 # ??? reverse ??? [OB]
             self._pos = arg.copy('Fortran')
         else: raise Exception("Cannot create an empty Timestep")
         self._x = self._pos[:,0]
@@ -73,20 +73,21 @@ Methods:  t = Timestep(numatoms) - create a timestep object with space for numat
 class DCDWriter:
     """Writes to a DCD file
 
-Data:
+    Data:
 
-Methods:
-    d = DCDWriter(dcdfilename, numatoms, start, step, delta, remarks)
-"""
+    Methods:
+       d = DCDWriter(dcdfilename, numatoms, start, step, delta, remarks)
+    """
     def __init__(self, dcdfilename, numatoms, start=0, step=1, delta=1.0, remarks="Created by DCDWriter"):
-        ''' Create a new DCDWriter
+        """Create a new DCDWriter
+
         dcdfilename - name of output file
         numatoms - number of atoms in dcd file
         start - starting timestep
         step  - skip between subsequent timesteps
         delta - timestep
         remarks - comments to annotate dcd file
-        '''
+        """
         if numatoms == 0:
             raise Exception("DCDWriter: no atoms in output trajectory")
         self.dcdfilename = dcdfilename
@@ -131,18 +132,18 @@ Methods:
 
 class DCDReader:
     """Reads from a DCD file
-Data:
-    ts                     - Timestep object containing coordinates of current frame
+    Data:
+        ts                     - Timestep object containing coordinates of current frame
 
-Methods:
-    dcd = DCD(dcdfilename)             - open dcd file and read header
-    len(dcd)                           - return number of frames in dcd
-    for ts in dcd:                     - iterate through trajectory
-    for ts in dcd[start:stop:skip]:    - iterate through a trajectory
-    dcd[i]                             - random access into the trajectory (i corresponds to frame number)
-    data = dcd.timeseries(...)         - retrieve a subset of coordinate information for a group of atoms
-    data = dcd.correl(...)             - populate a Timeseries.Collection object with computed timeseries
-"""
+    Methods:
+        dcd = DCD(dcdfilename)             - open dcd file and read header
+        len(dcd)                           - return number of frames in dcd
+        for ts in dcd:                     - iterate through trajectory
+        for ts in dcd[start:stop:skip]:    - iterate through a trajectory
+        dcd[i]                             - random access into the trajectory (i corresponds to frame number)
+        data = dcd.timeseries(...)         - retrieve a subset of coordinate information for a group of atoms
+        data = dcd.correl(...)             - populate a Timeseries.Collection object with computed timeseries
+    """
     def __init__(self, dcdfilename):
         self.dcdfilename = dcdfilename
         self.filename = self.dcdfilename
@@ -210,14 +211,21 @@ Methods:
         if ts is None: ts = self.ts
         ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
         return ts
+    def next(self):
+        """Forward one step to next frame."""
+        return self._read_next_timestep()
+    def rewind(self):
+        """Position at beginning of trajectory"""
+        self[0]
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
-        ''' Return a subset of coordinate data for an AtomGroup
+        """Return a subset of coordinate data for an AtomGroup
+
             asel - AtomGroup object
             start, stop, skip - range of trajectory to access, start and stop are inclusive
             format - the order/shape of the return data array, corresponding to (a)tom, (f)rame, (c)oordinates
                      all six combinations of 'a', 'f', 'c' are allowed
                      ie "fac" - return array where the shape is (frame, number of atoms, coordinates)
-        '''
+        """
         start, stop, skip = self._check_slice_indices(start, stop, skip)
         if len(asel) == 0:
             raise Exception("Timeseries requires at least one atom to analyze")
@@ -229,10 +237,11 @@ Methods:
         # XXX needs to be implemented
         return self._read_timeseries(atom_numbers, start, stop, skip, format)
     def correl(self, timeseries, start=0, stop=-1, skip=1):
-        ''' Populate a TimeseriesCollection object with timeseries computed from the trajectory
+        """Populate a TimeseriesCollection object with timeseries computed from the trajectory
+
             timeseries - TimeseriesCollection
             start, stop, skip - subset of trajectory to use, with start and stop being inclusive
-        '''
+        """
         start, stop, skip = self._check_slice_indices(start, stop, skip)
         atomlist = timeseries._getAtomList()
         format = timeseries._getFormat()
@@ -266,9 +275,9 @@ DCDWriter._write_next_frame = new.instancemethod(_dcdmodule.__write_next_frame, 
 DCDWriter._finish_dcd_write = new.instancemethod(_dcdmodule.__finish_dcd_write, None, DCDWriter)
 del(_dcdmodule)
 
-# _dcdtest is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex
-import _dcdtest
-#DCDReader._read_timeseries = new.instancemethod(_dcdtest.__read_timeseries, None, DCDReader)
-DCDReader._read_timecorrel = new.instancemethod(_dcdtest.__read_timecorrel, None, DCDReader)
-del(_dcdtest)
+# dcdtimeseries is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex
+import dcdtimeseries
+#DCDReader._read_timeseries = new.instancemethod(dcdtimeseries.__read_timeseries, None, DCDReader)
+DCDReader._read_timecorrel = new.instancemethod(dcdtimeseries.__read_timecorrel, None, DCDReader)
+del(dcdtimeseries)
 del(new)

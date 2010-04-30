@@ -1,6 +1,8 @@
 include src/dcd/include/*.h
 include src/numtools/*.h
 include src/KDTree/*
+include src/xdrfile/*
+graft   MDAnalysis/tests/data/
 recursive-include src *.pyx *.pxd 
 recursive-include doc index.html DevelopmentBranch.txt
 include README INSTALL CHANGELOG LICENSE TODO setup.cfg.template

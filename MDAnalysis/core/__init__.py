@@ -62,10 +62,10 @@ class Flags(dict):
     def __init__(self,*args):
         """For DEVELOPERS: Initialize Flags registry with a *list* of core.Flag instances."""
         super(Flags,self).__init__([(flag.name,flag) for flag in args])
-    def __doc__():
-        def fget(self): return self.doc()
-        return locals()
-    __doc__ = property(**__doc__())  # generate dynamic docs on all flags
+    @property
+    def __doc__(self):
+        # generate dynamic docs on all flags
+        return self.doc()
     def get_flag(self,name):
         return super(Flags,self).__getitem__(name)
     def doc(self):
@@ -143,11 +143,10 @@ class Flag(object):
         return {'fget':self.get, 'fset':self.set, 'doc':self.__doc__}
     def __repr__(self):
         return """Flag('%(name)s',%(value)r)""" % self.__dict__
-    def __doc__():
-        def fget(self): 
-            return  self._doctemplate % self.__dict__
-        return locals()
-    __doc__ = property(**__doc__())  # generate dynamic docs with current values
+    @property
+    def __doc__(self):
+        # generate dynamic docs with current values
+        return  self._doctemplate % self.__dict__
 
 _flags = [
     Flag('use_periodic_selections',

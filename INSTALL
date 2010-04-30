@@ -129,7 +129,7 @@ alternative directories.
 
 If you only want to install library files in a local directory use
 
-   python setup.py build --build-lib=LOCAL_DIRECTORY
+   python setup.py build --build-lib LOCAL_DIRECTORY
 
 This installs a working MDAnalysis under LOCAL_DIRECTORY.
 
@@ -150,8 +150,7 @@ We are also exploring the use of easy_install. This is experimental
 but you might be able to do ::
 
   easy_install [options] ./mdanalysis
-
-for a standard installation (see easy_install docs for details) or a
+ 
 developer installation (that immediately reflects changes to the
 sources) with ::
 
@@ -259,9 +258,6 @@ Mac OS X
 --------
 OS specific notes
 
-
-Mac OS X
-========
 
 * Tested with Mac OS X 10.4.11+fink and 10.6.2+MacPorts. 
 

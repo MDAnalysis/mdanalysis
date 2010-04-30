@@ -7,6 +7,8 @@
 
    Changes to the original KDTree.i:
 
+   2010-04-28 Oliver Beckstein <orbeckst@gmail.com>
+       * changed PyArray_FromDims -> PyArray_SimpleNew (deprecated in numpy 1.3)
    2008-08-23 Oliver Beckstein <orbeckst@gmail.com>
        * Converted to using numpy instead of Numeric.
        * swig 1.3 complained about a few constructs: fixed
@@ -141,7 +143,7 @@ class KDTree
 %{
 	PyObject *KDTree_get_indices(KDTree *kdtree)
 	{
-		int length[1];
+		npy_intp length[1];
 		PyArrayObject *_array;
 	 
 		length[0]=kdtree->get_count();
@@ -152,7 +154,7 @@ class KDTree
 			return Py_None;
 		}
 
-		_array=(PyArrayObject *) PyArray_FromDims(1, length, PyArray_LONG);
+		_array=(PyArrayObject *) PyArray_SimpleNew(1, length, PyArray_LONG);
 
 		// copy the data into the Numpy data pointer
 		kdtree->copy_indices((long int *) _array->data);
@@ -165,7 +167,7 @@ class KDTree
 %{
 	PyObject *KDTree_neighbor_get_indices(KDTree *kdtree)
 	{
-		int length[1];
+		npy_intp length[1];
 		PyArrayObject *_array;
 	 
 		length[0]=2*kdtree->neighbor_get_count();
@@ -176,7 +178,7 @@ class KDTree
 			return Py_None;
 		}
 
-		_array=(PyArrayObject *) PyArray_FromDims(1, length, PyArray_LONG);
+		_array=(PyArrayObject *) PyArray_SimpleNew(1, length, PyArray_LONG);
 
 		// copy the data into the Numpy data pointer
 		kdtree->neighbor_copy_indices((long int *) _array->data);
@@ -189,7 +191,7 @@ class KDTree
 %{
 	PyObject *KDTree_get_radii(KDTree *kdtree)
 	{
-		int length[1];
+		npy_intp length[1];
 		PyArrayObject *_array;
 	 
 		length[0]=kdtree->get_count();
@@ -200,7 +202,7 @@ class KDTree
 			return Py_None;
 		}
 		
-		_array=(PyArrayObject *) PyArray_FromDims(1, length, PyArray_FLOAT);
+		_array=(PyArrayObject *) PyArray_SimpleNew(1, length, PyArray_FLOAT);
 
 		// copy the data into the Numpy data pointer
 		kdtree->copy_radii((float *) _array->data);
@@ -213,7 +215,7 @@ class KDTree
 %{
 	PyObject *KDTree_neighbor_get_radii(KDTree *kdtree)
 	{
-		int length[1];
+		npy_intp length[1];
 		PyArrayObject *_array;
 	 
 		length[0]=kdtree->neighbor_get_count();
@@ -224,7 +226,7 @@ class KDTree
 			return Py_None;
 		}
 		
-		_array=(PyArrayObject *) PyArray_FromDims(1, length, PyArray_FLOAT);
+		_array=(PyArrayObject *) PyArray_SimpleNew(1, length, PyArray_FLOAT);
 
 		// copy the data into the Numpy data pointer
 		kdtree->neighbor_copy_radii((float *) _array->data);
