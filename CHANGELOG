@@ -18,7 +18,7 @@ The rules for this file:
           structures for hydrogen bonding analysis
           TODO: H-BOND ANALYSIS NOT WORKING YET
 
-04/31/10 orbeckst
+04/30/10 orbeckst
 
         * 0.6.1 release
 	* can build a simple Universe from a PDB file (FIXES Issue 11)
