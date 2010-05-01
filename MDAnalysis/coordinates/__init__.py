@@ -90,7 +90,8 @@ The following methods must be implemented in a Reader class.
  __del__()
      ensure that the trajectory is closed
  next()
-     advance to next time step or raise :exc:`StopIteration` when at last frame
+     advance to next time step or raise :exc:`IOError` when moving
+     past the last frame
  rewind()
      reposition to first frame
 

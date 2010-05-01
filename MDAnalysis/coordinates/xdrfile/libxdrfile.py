@@ -7,6 +7,11 @@
 
 """
 
+:Author:  Oliver Beckstein <orbeckst@gmail.com>
+:Year:    2010
+:Licence: GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher)
+
+
 :mod:`libxdrfile` --- the Gromacs xtc/trr library
 =================================================
 
@@ -165,7 +170,7 @@ The advantage of XTC over TRR is its significantly reduced size.
                    pre-allocated numpy ``array((DIM,DIM),dtype=numpy.float32)`` which
                    is filled with the unit cell box vectors
                 *x*
-                   pre-allocated numpy ``array((natoms, DIM),dtype=nump.float32)``
+                   pre-allocated numpy ``array((natoms, DIM),dtype=numpy.float32)``
                    which is updated with the coordinates from the frame
 
               :Returns: The function returns a tuple containing
@@ -251,7 +256,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
                 *lambda*
                    current lambda value (only interesting for free energy perturbation)
 
-.. function:: write_xtc(XDRFILE, step, time, lambda, box, x, v, f) -> status
+.. function:: write_trr(XDRFILE, step, time, lambda, box, x, v, f) -> status
 
               Write the next frame to the opened trr trajectory.
 
