@@ -12,19 +12,26 @@ Fast C-routines to calculate distance arrays from coordinate arrays.
    *box* is supplied then a minimum image convention is used before
    calculating distances.
 
+   If a 2D numpy array of dtype ``numpy.float64`` with the shape ``(len(ref),
+   len(conf))`` is provided in *result* then this preallocated array is
+   filled. This can speed up calculations.
+
 .. function:: self_distance_array(ref,[box[,result[,copy]]])
 
    Calculate all distances d_ij between atoms i and j in the reference
-   coordinates *ref*. Other options as in :func:`distance_array`.
+   coordinates *ref* for all N coordinates. Other options as in
+   :func:`distance_array`.
 
+   If a 1D numpy array of dtype ``numpy.float64`` with ``N*(N-1)/2`` elements is
+   provided in *result* then this preallocated array is filled. This can speed
+   up calculations.
 
-.. Note:: The *copy* flag should be ``True`` in most cases as it
-          guarantees that input arrays are correctly interpreted by
-          the underlying C-code (a slightly expensive copy of the
-          array is made). If you know what you are doing you can speed
-          up the routines by setting it to ``False`` but this will
-          *produce wrong results* when the arrays are numpy"views" on arrays.
-
+.. Warning:: The *copy* flag should be ``True`` in most cases as it guarantees
+             that input arrays are correctly interpreted by the underlying
+             C-code (a slightly expensive copy of the array is made). If you
+             know what you are doing you can speed up the routines by setting
+             it to ``False`` but this will *produce wrong results* in most
+             cases, e.g. if the arrays are numpy "views" on arrays.
 """
 
 cimport c_numpy
@@ -54,12 +61,12 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
     box        orthorhombic unit cell dimensions (minimum image convention
                is applied) or None [None]
     result     optional preallocated result array which must have the shape
-               (len(ref),len(conf)). Avoids creating the array which saves time
-               when the function is called repeatedly. [None]
+               (len(ref),len(conf)) and dtype=numpy.float64. Avoids creating the 
+               array which saves time when the function is called repeatedly. [None]
     copy       makes internal copies of the input arrays; see note below [True]
 
     :Output:
-    d          len(ref),len(conf) numpy array with the distances d[i,j]
+    d          (len(ref),len(conf)) numpy array with the distances d[i,j]
                between ref coordinates i and conf coordinates j
 
     Note: This method is slower than it could be because internally we need to
@@ -101,7 +108,9 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
 
     if not result is None:
         if (result.nd != 2 or result.dimensions[0] != refnum or result.dimensions[1] != confnum):
-            raise ValueError("result array has incorrect size or datatype - should be (%dx%d)"%(refnum,confnum))
+            raise ValueError("result array has incorrect size - should be (%dx%d)"%(refnum,confnum))
+        if (result.dtype != numpy.dtype(numpy.float64)):
+            raise TypeError("result array must be of type numpy.float64")
         distances = numpy.asarray(result)
     else:
         distances = numpy.zeros((refnum, confnum), numpy.float64)
@@ -119,17 +128,21 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
     d = self_distance_array(ref,box[,result=d[,copy=True]])
 
     :Input:
-    ref        reference coordinate array
+    ref        reference coordinate array with N=len(ref) coordinates
     box        orthorhombic unit cell dimensions (minimum image convention
                is applied) or None [None]
     result     optional preallocated result array which must have the shape
-               (len(ref),len(conf)). Avoids creating the array which saves time
-               when the function is called repeatedly. [None]
+               (N*(N-1),) and dtype numpy.float64. Avoids creating 
+               the array which saves time when the function is called repeatedly. [None]
     copy       makes internal copies of the input arrays; see note below [True]               
 
     :Output:
-    d          len(ref),len(conf) numpy array with the distances d[i,j]
-               between ref coordinates i and conf coordinates j
+    d          N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
+               coordinates i and j at position d[k]. Loop through d::
+                 for i in xrange(N):
+                    for j in xrange(i+1, N):
+                        k += 1
+                        dist[i,j] = d[k]
 
     Note: This method is slower than it could be because internally we need to
           make copies of the ref and conf arrays. If you know what you are doing
@@ -152,22 +165,24 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
         ref = reference
 
     if (ref.nd != 2 and ref.dimensions[1] != 3):
-        raise Exception("ref must be a sequence of 3 dimensional coordinates")
+        raise ValueError("ref must be a sequence of 3 dimensional coordinates")
     if (ref.dtype!=numpy.dtype(numpy.float32)):
-        raise Exception("coordinate data must be of type float32")
+        raise TypeError("coordinate data must be of type float32")
     with_PBC = (box is not None)
     if with_PBC:
         if (box.nd != 1 and box.dimensions[0] != 3):
-            raise Exception("box must be a sequence of 3 dimensional coordinates")
+            raise ValueError("box must be a sequence of 3 dimensional coordinates")
         if (box.dtype!=numpy.dtype(numpy.float32)):
-            raise Exception("periodic boundaries must be of type float32")
+            raise TypeError("periodic boundaries must be of type float32")
 
     refnum = ref.dimensions[0]
     distnum = (refnum*(refnum-1))/2
 
     if not result is None:
         if (result.nd != 1 and result.dimensions[0] != distnum):
-            raise Exception("result array has incorrect size or datatype - should be (%d)"%(distnum))
+            raise ValueError("result array has incorrect size or datatype - should be (%d)"%(distnum))
+        if (result.dtype != numpy.dtype(numpy.float64)):
+            raise TypeError("result array must be of type numpy.float64")
         distances = numpy.asarray(result)
     else:
         distances = numpy.zeros((distnum,), numpy.float64)
