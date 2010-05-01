@@ -40,3 +40,6 @@ release = 1
 group = Development/Languages/Python
 packager = Naveen Michaud-Agrawal <naveen.michaudagrawal@gmail.com>
 #doc_files = *.txt doc/
+
+[nosetests]
+exe=1

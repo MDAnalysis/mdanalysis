@@ -2,16 +2,8 @@ import MDAnalysis as mda
 
 import numpy as np
 from numpy.testing import *
-from pkg_resources import resource_filename
 
-PSF = resource_filename(__name__, 'data/adk.psf')
-DCD = resource_filename(__name__, 'data/adk_dims.dcd')
-
-PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
-
-PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
-XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
-TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
+from MDAnalysis.tests.datafiles import PSF,DCD,PDB_small,PDB,XTC,TRR
 
 class TestPDBReader(TestCase):
     def test_load_pdb_small(self):
@@ -20,6 +12,7 @@ class TestPDBReader(TestCase):
         assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0], 
                      U.atoms[2314], "Atom selections")
 
+    @dec.slow
     def test_load_pdb_big(self):
         U = mda.Universe(PDB)
         assert_equal(len(U.atoms), 47681, "load Universe from big PDB")
@@ -142,10 +135,12 @@ def compute_correl_references():
 
 
 class _TestGromacsReader(TestCase):
+    @dec.slow
     def test_rewind_xdrtrj(self):
         self.trajectory.rewind()
         assert_equal(self.ts.frame, 1, "rewinding to frame 1")
 
+    @dec.slow
     def test_next_xdrtrj(self):
         self.trajectory.rewind()
         self.trajectory.next()
