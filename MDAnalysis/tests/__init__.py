@@ -33,6 +33,6 @@ try:
     from numpy.testing import Tester
     test = Tester().test
 except ImportError:
-    raise ImportError("numpy>=1.3  is required to run the test suite. Please install it first. " 
-                      "(For example, try \"easy_install 'numpy>=1.3'\")".)
+    raise ImportError("""numpy>=1.3  is required to run the test suite. Please install it first. """
+                      """(For example, try "easy_install 'numpy>=1.3'").""")
 
