@@ -1,9 +1,10 @@
 """Reading of Gromacs trajectories."""
 
+import os.path
 import errno
 import numpy
 
-import libxdrfile
+import libxdrfile, statno
 from MDAnalysis.coordinates import DCD
 
 try:
@@ -142,10 +143,14 @@ class TrjReader(object):
         """Open xdr trajectory file.
 
         :Returns: pointer to XDRFILE (and sets self.xdrfile)
-        :Raises:  :exc:`IOError` (EALREADY) if file was already opened.
+        :Raises:  :exc:`IOError` with code EALREADY if file was already opened or 
+                  ENOENT if the file cannot be found
         """
         if not self.xdrfile is None:
             raise IOError(errno.EALREADY, 'XDR file already opened', self.filename)
+        if not os.path.exists(self.filename):
+            # must check; otherwise might segmentation fault
+            raise IOError(errno.ENOENT, 'XDR file not found', self.filename)
         self.xdrfile = libxdrfile.xdrfile_open(self.filename, 'r')
         # reset ts
         ts = self.ts
@@ -169,18 +174,21 @@ class TrjReader(object):
 
     def __iter__(self):
         self.ts.frame = 0  # start at 0 so that the first frame becomes 1
-        self.rewind()
+        self._reopen()
         while True:
-            ts = self._read_next_timestep()
-            #print "[%(status)02d] Reading step %(step)r, %(time)r ps." % vars()
-            if ts.status == libxdrfile.exdrOK:
-                yield ts
-            elif ts.status == libxdrfile.exdrENDOFFILE:
+            try:
+                ts = self._read_next_timestep()
+            except IOError, err:
+                if err.errno == errno.ENODATA:
+                    break
+                else:
+                    self.close_trajectory()
+                    raise
+            except:
                 self.close_trajectory()
-                break
+                raise
             else:
-                self.close_trajectory()
-                raise IOError(ts.status, "%s error in frame %d" % (self.format, ts.frame), self.filename)
+                yield ts
 
     def _read_next_timestep(self, ts=None):
         """Generic ts reader with minimum intelligence. Override if necessary."""
@@ -192,10 +200,18 @@ class TrjReader(object):
         if self.format == 'XTC':
             ts.status, ts.step, ts.time, ts.prec = libxdrfile.read_xtc(self.xdrfile, ts._unitcell, ts._pos)
         elif self.format == 'TRR':
-            ts.status, ts.step, ts.time, ts.lmbda = libxdrfile.read_trr(self.xdrfile, ts._unitcell, 
-                                                                         ts._pos, ts._velocities, ts._forces)
+            ts.status, ts.step, ts.time, ts.lmbda = libxdrfile.read_trr(self.xdrfile, ts._unitcell, ts._pos,
+                                                                        ts._velocities, ts._forces)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
+        if (ts.status == libxdrfile.exdrENDOFFILE) or \
+                (ts.status == libxdrfile.exdrINT and self.format == 'TRR'):
+            # seems that trr files can get a exdrINT when reaching EOF (??)
+            raise IOError(errno.ENODATA, "End of file reached for %s file" % self.format, 
+                          self.filename)
+        elif not ts.status == libxdrfile.exdrOK:
+            raise IOError(errno.EFAULT, "Problem with %s file, status %s" % 
+                          (self.format, statno.errorcode[ts.status]), self.filename)
         ts.frame += 1
         return ts
 
@@ -205,9 +221,12 @@ class TrjReader(object):
 
     def rewind(self):
         """Position at beginning of trajectory"""
-        self.close_trajectory()
-        self.open_trajectory()
+        self._reopen()
         self.next()   # read first frame
+
+    def _reopen(self):
+        self.close_trajectory()
+        self.open_trajectory()        
 
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
         raise NotImplementedError("timeseries not available for Gromacs trajectories")

@@ -2695,9 +2695,9 @@ static swig_module_info swig_module = {swig_types, 4, 0, 0, 0, 0};
 #define SWIG_as_voidptrptr(a) ((void)SWIG_as_voidptr(*a),(void**)(a)) 
 
 
-/* SWIG interface to some functions in Gromacs libxdr v 1.1
+/* Python SWIG interface to some functions in Gromacs libxdr v 1.1
    Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
-   Published under the GNU Public Licence v2 (or higher).
+   Published under the GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher)
    See http://mdanalysis.googlecode.com for details.
  */
 #define SWIG_FILE_WITH_INIT
