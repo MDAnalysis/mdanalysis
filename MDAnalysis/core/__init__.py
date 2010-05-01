@@ -1,16 +1,18 @@
 # $Id$
-"""== Core functions of MDAnalysis ==
+"""
+Core functions of MDAnalysis
+============================
 
 The basic class is an AtomGroup; the whole simulation is called the
 Universe. Selections are computed on an AtomGroup and return another AtomGroup.
 
 Timeseries are a convenient way to analyse trajectories.
 
-To get started, load the Universe:
+To get started, load the Universe::
 
   u = Universe(psffilename,dcdfilename)
 
-A simple selection of all water oxygens within 4 A of the protein:
+A simple selection of all water oxygens within 4 A of the protein::
 
   water_shell = u.selectAtoms('name OH2 and around 4.0 protein')
   water_shell.numberOfAtoms()   # how many waters were selected
@@ -18,22 +20,23 @@ A simple selection of all water oxygens within 4 A of the protein:
 
 AtomGroups have various methods that allow calculation of simple
 properties. For more complicated analysis, obtain the coordinates as a
-numpy array:
+numpy array::
 
   coords = water_shell.coordinates()
 
 
-== Flags ==
+Flags
+-----
 
 (This is an advanced topic and can probably be skipped by most people.)
 
 There are a number flags that influence how MDAnalysis behaves. They are accessible
-through the pseudo-dictionary
+through the pseudo-dictionary 
 
-  MDAnalysis.core.flags
+  :attr:`MDAnalysis.core.flags`
 
 The entries appear as 'name'-'value' pairs. Flags check values and illegal ones
-raise a ValueError. Documentation on all flags can be obtained with
+raise a ValueError. Documentation on all flags can be obtained with ::
 
  print MDAnalysis.core.flags.__doc__
 """
@@ -154,6 +157,7 @@ _flags = [
          {True:True,False:False},
          """
             Determines if distance selections (AROUND, POINT) respect periodicity.
+
             >>> flags['%(name)s'] = value
 
             Values of flag:
@@ -192,6 +196,23 @@ _flags = [
 
             >>> MDAnalysis.core.flags['use_KDTree_routines'] = False
             """
+         ),
+    Flag('convert_gromacs_lengths',
+         False,
+         #{True:True, False:False},
+         {False:False},
+         """
+            Determine if the XTC and TRR trajectory reader and writer convert units.
+
+            >>> flags['%(name)s'] = value
+
+            Gromacs trajectories are in nm, MDAnalysis in Angstroem. If
+            ``True`` then coordinates are automatically converted, with
+            ``False`` the coordinate values are presented as read from the
+            trajectories.
+
+            **Not implemented yet** --- always False
+         """
          ),
     ]
 
