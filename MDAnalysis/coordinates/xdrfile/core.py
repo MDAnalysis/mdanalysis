@@ -106,6 +106,9 @@ class TrjReader(object):
         self.xdrfile = None
         self.__numatoms = None
         self.__numframes = None  # takes a long time, avoid accessing self.numframes
+        self.skip_timestep = 1   # always 1 for xdr files
+        self.__delta = None      # compute from time in first two frames!
+        self.units = {'time': 'ps', 'length': 'nm'}
         self.fixed = 0           # not relevant for Gromacs xtc/trr
         self.skip = 1
         self.periodic = False
@@ -148,6 +151,26 @@ class TrjReader(object):
         else:
             return self.__numframes
 
+    @property
+    def delta(self):
+        """Time step length in ps.
+
+        The result is computed from the trajectory and cached. If for
+        any reason the trajectory cannot be read then 0 is returned.
+        """
+        if not self.__delta is None:   # return cached value
+            return self.__delta
+        try:
+            t0 = self.ts.time
+            self.next()
+            t1 = self.ts.time
+            self.__delta = t1 - t0
+        except IOError:
+            return 0
+        finally:
+            self.rewind()
+        return self.__delta
+
     def _read_trj_natoms(self, filename):
         """Generic number-of-atoms extractor with minimum intelligence. Override if necessary."""
         if self.format == 'XTC':
@@ -167,7 +190,7 @@ class TrjReader(object):
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return numframes
-        
+
     def open_trajectory(self):
         """Open xdr trajectory file.
 
@@ -191,7 +214,6 @@ class TrjReader(object):
         ts.prec = 0
         # additional data for TRR
         ts.lmbda = 0
-        
         return self.xdrfile
 
     def close_trajectory(self):

@@ -93,6 +93,7 @@ class DCDWriter:
         self.dcdfilename = dcdfilename
         self.filename = self.dcdfilename
         self.numatoms = numatoms
+        self.units = {'time': 'AKMA', 'length': 'Angstroem'}
 
         self.frames_written = 0
         self.start = start
@@ -154,10 +155,16 @@ class DCDReader:
         self.skip = 1
         self.periodic = False
         self._read_dcd_header()
+        self.units = {'time': 'AKMA', 'length': 'Angstroem'}
         self.ts = Timestep(self.numatoms)
         # Read in the first timestep
         self._read_next_timestep()
     def dcd_header(self):
+        import warnings
+        warnings.warn('dcd_header is not part of the trajectory API and will be renamed to _dcd_header',
+                      DeprecationWarning)
+        self._dcd_header()
+    def _dcd_header(self):
         import struct
         desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']
         return dict(zip(desc, struct.unpack("iiiiiiidiPPiiii",self._dcd_C_str)))

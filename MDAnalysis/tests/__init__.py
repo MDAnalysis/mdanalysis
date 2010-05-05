@@ -18,9 +18,9 @@ Some tests can take a few seconds; in order to skip the slow tests run
    >>> MDAnalysis.tests.test(label='fast')
 
 Additional information is displayed at a higher verbosity level (the default is
-0):
+1):
 
-   >>> MDAnalysis.tests.test(label='fast', verbose=1)
+   >>> MDAnalysis.tests.test(label='fast', verbose=3)
 
 Note that if no tests are being run then one might have to run the
 tests with the ``--exe`` flag

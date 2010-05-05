@@ -125,14 +125,23 @@ Attributes
  fixed
      bool, saying if there are fixed atoms (e.g. dcds)
  skip
-     step size when iterating through frames; 1 by default
+     step size for iterating through the trajectory [1]
+ skip_timestep
+     number of integrator steps between frames + 1 (i.e.
+     the stride at which the MD simulation was sampled)
+ delta
+     integrator time step (in native units); hence the "length" 
+     of a trajctory frame is  skip_timestep*delta time units
  periodic
      contains box information for periodic boundary conditions (?)
  ts
      the :class:`~DCD.Timestep` object (typically customized for each
      trajectory format although at the moment all are derived from
      :class:`DCD.Timestep`.
-
+ units
+     dictionary with keys *time* and *length* and the appropriate 
+     unit (e.g. 'AKMA' and 'Angstroem' for Charmm dcds, 'ps' and 'nm' 
+     for Gromacs trajectories, ``None`` and 'Angstroem' for PDB).
 
 Trajectory Writer
 ~~~~~~~~~~~~~~~~~
@@ -155,6 +164,11 @@ Attributes
      name of the trajectory file
  start, stop, step
      first and last frame and step 
+ units
+     dictionary with keys *time* and *length* and the appropriate 
+     unit (e.g. 'AKMA' and 'Angstroem' for Charmm dcds, 'ps' and 'nm' 
+     for Gromacs trajectories, ``None`` and 'Angstroem' for PDB)
+
 
 **Optional**
  

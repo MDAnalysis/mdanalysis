@@ -50,6 +50,9 @@ class PDBReader:
         self.fixed = 0          # parse B field for fixed atoms?
         self.skip = 1
         self.periodic = False
+        self.delta = 0
+        self.skip_timestep = 1
+        self.units = {'time': None, 'length': 'Angstroem'}
         self.ts = Timestep(pos)
         del pos
 
@@ -108,6 +111,7 @@ class PDBWriter:
         if self.PDBstructure is not None and not isinstance(self.PDBstructure,Bio.PDB.Structure.Structure):
             raise TypeError('If defined, PDBstructure must be a Bio.PDB.Structure.Structure, eg '
                             'Universe.pdb.pdb.')
+        self.units = {'time': None, 'length': 'Angstroem'}
     def write_next_timestep(self,ts=None):
         self.write(ts)
     def write(self,ts=None):
@@ -161,6 +165,7 @@ class PrimitivePDBWriter(object):
     def __init__(self,filename):
         self.filename = util.filename(filename,ext='pdb')
         self.pdb = open(self.filename,'w')
+        self.units = {'time': None, 'length': 'Angstroem'}
 
     def close(self):
         self.pdb.close()

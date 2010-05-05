@@ -18,6 +18,14 @@ The rules for this file:
           structures for hydrogen bonding analysis
           TODO: H-BOND ANALYSIS NOT WORKING YET
 
+05/xx/10 orbeckst
+        * 0.6.2 release
+        * defined trajectory API
+        * deprecated DCD.dcd_header --> DCD._dcd_header
+	* XTC and TRR compute numframes by iterating through trajectory (slow!)
+	* more test cases
+	
+
 04/30/10 orbeckst
 
         * 0.6.1 release

@@ -31,6 +31,7 @@ class CRDWriter(object):
     def __init__(self,filename):
         self.filename = util.filename(filename,ext='crd')
         self.crd = open(self.filename,'w')
+        self.units = {'time': 'AKMA', 'length': 'Angstroem'}
 
     def close(self):
         self.crd.close()
