@@ -23,6 +23,9 @@ The rules for this file:
         * defined trajectory API
         * deprecated DCD.dcd_header --> DCD._dcd_header
 	* XTC and TRR compute numframes by iterating through trajectory (slow!)
+	* introduced units: base units are ps (time) and Angstrom (length); see core.flags
+	* XTC and TRR automatically convert between native Gromacs units (ps, nm) and 
+          base units (uses core.flags['convert_gromacs_lengths'] = True)
 	* more test cases
 	
 
