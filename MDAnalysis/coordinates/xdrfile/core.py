@@ -5,7 +5,7 @@ import errno
 import numpy
 
 import libxdrfile, statno
-from MDAnalysis.coordinates import DCD
+from MDAnalysis.coordinates import base
 
 try:
     from numpy import rad2deg   # numpy 1.3+
@@ -13,7 +13,7 @@ except ImportError:
     def rad2deg(x):             # no need for the numpy out=[] argument 
         return 180.0*x/numpy.pi
 
-class Timestep(DCD.Timestep):
+class Timestep(base.Timestep):
     """Timestep for a Gromacs trajectory."""
     def __init__(self, arg):
         DIM = libxdrfile.DIM    # compiled-in dimension (most likely 3)
@@ -84,7 +84,7 @@ def _angle(a,b):
     return rad2deg(angle)
 
 
-class TrjReader(object):
+class TrjReader(base.Reader):
     """Generic base class for reading Gromacs trajectories inside MDAnalysis.
 
     Derive classes and set :attr:`TrjReader.format`,
@@ -266,10 +266,6 @@ class TrjReader(object):
         ts.frame += 1
         return ts
 
-    def next(self):
-        """Forward one step to next frame."""
-        return self._read_next_timestep()
-
     def rewind(self):
         """Position at beginning of trajectory"""
         self._reopen()
@@ -288,7 +284,7 @@ class TrjReader(object):
         self.close_trajectory()
         
 
-class TrjWriter(DCD.DCDWriter):
+class TrjWriter(base.Writer):
     """Writes to a Gromacs trajectory file
     
     (Base class)
@@ -359,7 +355,3 @@ class TrjWriter(DCD.DCDWriter):
             status = libxdrfile.xdrfile_close(self.xdrfile)
             self.xdrfile = None
         return status
-    def __del__(self):
-        self.close_trajectory()
-    def __repr__(self):
-        return "< TrjWriter '"+ self.filename + "' for " + repr(self.numatoms) + " atoms >"

@@ -11,10 +11,14 @@ VERY Primative CRD generator (may still have to be debugged!)
 """
 
 import MDAnalysis.core.util as util
+import base
 
-class CRDWriter(object):
+class CRDWriter(base.Writer):
     """CRD writer that implements the standard CRD coordinate format.
     """
+    format = 'CRD'
+    units = {'time': None, 'length': 'Angstrom'}
+
     #          1         2         3         4         5         6         7         8
     # 123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
     # ATOM__seria nameAres CressI   xxxxxxxxyyyyyyyyzzzzzzzzOCCUPAtempft          elCH
@@ -30,11 +34,10 @@ class CRDWriter(object):
 
     def __init__(self,filename):
         self.filename = util.filename(filename,ext='crd')
-        self.crd = open(self.filename,'w')
-        self.units = {'time': 'AKMA', 'length': 'Angstroem'}
+        self.crd = None
 
-    def close(self):
-        self.crd.close()
+    def close_trajectory(self):
+        pass
 
     def write(self,selection,frame=None):
         """Write selection at current trajectory frame to file.
@@ -54,26 +57,28 @@ class CRDWriter(object):
                 frame = 1   # should catch cases when we are analyzing a single PDB (?)
         coor = selection.coordinates()
        
-        self.TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
-        self.TITLE("")
-	self.NUMATOMS(len(u.atoms))
-	inst_resid = 0
-	for i, atom in enumerate(selection.atoms):
-	    #print selection[i].resname, selection[i-1].resname
-	    #print selection[i].resid, selection[i-1].resid
-	    if selection[i].resid != selection[i-1].resid:
-		inst_resid += 1
-		totres = inst_resid
-	    else:
-		inst_resid = inst_resid 
-		totres = inst_resid
-            self.ATOM(serial=i+1, resSeq=atom.resid, resName=atom.resname, name=atom.name,
-                      x=coor[i,0], y=coor[i,1], z=coor[i,2], chainID=atom.segid,tempFactor=0.0,TotRes=totres)
-        # get bfactor, too?
-        self.close()
+        self.crd = open(self.filename,'w')
+        try:
+            self._TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
+            self._TITLE("")
+            self._NUMATOMS(len(u.atoms))
+            inst_resid = 0
+            for i, atom in enumerate(selection.atoms):
+          	#print selection[i].resname, selection[i-1].resname
+	        #print selection[i].resid, selection[i-1].resid
+                if selection[i].resid != selection[i-1].resid:
+                    inst_resid += 1
+                    totres = inst_resid
+                else:
+                    inst_resid = inst_resid 
+                    totres = inst_resid
+                self._ATOM(serial=i+1, resSeq=atom.resid, resName=atom.resname, name=atom.name,
+                          x=coor[i,0], y=coor[i,1], z=coor[i,2], chainID=atom.segid,tempFactor=0.0,TotRes=totres)
+                # get bfactor, too?
+        finally:
+            self.crd.close()
 
-
-    def TITLE(self,*title):
+    def _TITLE(self,*title):
         """Write TITLE record.
         """        
         line = " ".join(title)    # should do continuation automatically
@@ -82,12 +87,12 @@ class CRDWriter(object):
             line = " "+line
         self.crd.write(self.fmt['TITLE'] % line)
 
-    def NUMATOMS(self,numatoms):
-	"""Write genertic total number of atoms in system)
+    def _NUMATOMS(self,numatoms):
+	"""Write generic total number of atoms in system)
 	"""
 	self.crd.write(self.fmt['NUMATOMS'] % numatoms)
     
-    def ATOM(self,serial=None,resSeq=None,resName=None,name=None,x=None,y=None,z=None,chainID=None,tempFactor=0.0,TotRes=None):
+    def _ATOM(self,serial=None,resSeq=None,resName=None,name=None,x=None,y=None,z=None,chainID=None,tempFactor=0.0,TotRes=None):
         """Write ATOM record. 
 
         All inputs are cut to the maximum allowed length. For integer
@@ -111,7 +116,4 @@ class CRDWriter(object):
 	totres = int(str(TotRes)[-4:])
 	self.crd.write(self.fmt['ATOM'] % vars())
         
-        
-    def __del__(self):
-        self.close()
 

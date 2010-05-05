@@ -28,17 +28,22 @@ except ImportError:
     raise ImportError("No PDB I/O functionality. Install biopython.")
 
 import numpy
-from DCD import Timestep
+
 import MDAnalysis.core.util as util
+import base
+from base import Timestep
 import pdb.extensions
 
-class PDBReader:
+class PDBReader(base.Reader):
     """Read a pdb file into a BioPython pdb structure.
 
     The coordinates are also supplied as one numpy array and wrapped
     into a Timestep object; attributes are set so that the PDBReader
     object superficially resembles the DCDReader object.
     """
+    format = 'PDB'
+    units = {'time': None, 'length': 'Angstrom'}
+
     def __init__(self,pdbfilename):
         pdb_id = "0UNK"
         self.pdb = pdb.extensions.get_structure(pdbfilename, pdb_id)
@@ -52,7 +57,7 @@ class PDBReader:
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1
-        self.units = {'time': None, 'length': 'Angstroem'}
+        self.units = {'time': None, 'length': 'Angstrom'}
         self.ts = Timestep(pos)
         del pos
 
@@ -67,11 +72,9 @@ class PDBReader:
         if frame != 0:
             raise IndexError('PDBReader only contains a single frame at index 0')
         return self.ts
-    def __repr__(self):
-            return "<MDAnalysis.PDB.PDBReader '"+ self.filename + "' with " + repr(self.numframes) + " frames of " + repr(self.numatoms) + " atoms (" + repr(self.fixed) + " fixed)>"
 
 
-class PDBWriter:
+class PDBWriter(base.Writer):
     """Write out the current time step as a pdb file.
 
     This is not cleanly implemented at the moment. One must supply a
@@ -81,6 +84,8 @@ class PDBWriter:
     used) or if this is really only an atom selection (then a less
     sophistiocated writer is employed).
     """
+    format = 'PDB'
+    units = {'time': None, 'length': 'Angstrom'}
 
     # PDBWriter is a bit more complicated than the DCDWriter in the
     # sense that a DCD frame only contains coordinate information. The
@@ -111,7 +116,6 @@ class PDBWriter:
         if self.PDBstructure is not None and not isinstance(self.PDBstructure,Bio.PDB.Structure.Structure):
             raise TypeError('If defined, PDBstructure must be a Bio.PDB.Structure.Structure, eg '
                             'Universe.pdb.pdb.')
-        self.units = {'time': None, 'length': 'Angstroem'}
     def write_next_timestep(self,ts=None):
         self.write(ts)
     def write(self,ts=None):
@@ -142,7 +146,9 @@ class PDBWriter:
             io = pdb.extensions.SloppyPDBIO()
             io.set_structure(self.PDBstructure)
             io.save(self.filename)
-    
+
+    def close_trajectory(self):
+        pass    # do nothing, keeps super classe's __del__ happy
 
 class PrimitivePDBWriter(object):
     """PDB writer that implements a subset of the PDB 3.2 standard.
@@ -165,7 +171,7 @@ class PrimitivePDBWriter(object):
     def __init__(self,filename):
         self.filename = util.filename(filename,ext='pdb')
         self.pdb = open(self.filename,'w')
-        self.units = {'time': None, 'length': 'Angstroem'}
+        self.units = {'time': None, 'length': 'Angstrom'}
 
     def close(self):
         self.pdb.close()

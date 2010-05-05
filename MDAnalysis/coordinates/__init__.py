@@ -23,13 +23,17 @@ Trajectory API
 
 (Draft, orbeckst 2010-04-30)
 
+Base classes are define in :mod:`MDAnalysis.coordinates.base`.
 
 Timestep
 ~~~~~~~~
 
 A Timestep instance holds data for the current frame. It is updated whenever a
-new frame of the trajectory is read.  The :class:`DCD.Timestep` class is the
-primary implementation example.
+new frame of the trajectory is read. 
+
+Timestep classes are derived from
+:class:`MDAnalysis.coordinates.base.Timestep`, which is the primary
+implementation example (and used directly for the DCDReader).
 
 Methods
 .......
@@ -69,6 +73,9 @@ Attributes
 
 Trajectory Reader
 ~~~~~~~~~~~~~~~~~
+
+Trajectory readers are derived from :class:`MDAnalysis.coordinates.base.Reader`.
+Typically, many methods and attributes are overriden.
 
 Methods
 .......
@@ -135,16 +142,22 @@ Attributes
  periodic
      contains box information for periodic boundary conditions (?)
  ts
-     the :class:`~DCD.Timestep` object (typically customized for each
-     trajectory format although at the moment all are derived from
-     :class:`DCD.Timestep`.
+     the :class:`~base.Timestep` object; typically customized for each
+     trajectory format and derived from :class:`base.Timestep`.
  units
      dictionary with keys *time* and *length* and the appropriate 
-     unit (e.g. 'AKMA' and 'Angstroem' for Charmm dcds, 'ps' and 'nm' 
-     for Gromacs trajectories, ``None`` and 'Angstroem' for PDB).
+     unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and 'nm' 
+     for Gromacs trajectories, ``None`` and 'Angstrom' for PDB).
+ format
+     string that identifies the file format, e.g. "DCD", "PDB", "CRD", "XTC",
+     "TRR"
 
 Trajectory Writer
 ~~~~~~~~~~~~~~~~~
+
+Trajectory readers are derived from :class:`MDAnalysis.coordinates.base.Writer`.
+Typically, many methods and attributes are overriden.
+
 
 Methods
 .......
@@ -166,8 +179,11 @@ Attributes
      first and last frame and step 
  units
      dictionary with keys *time* and *length* and the appropriate 
-     unit (e.g. 'AKMA' and 'Angstroem' for Charmm dcds, 'ps' and 'nm' 
-     for Gromacs trajectories, ``None`` and 'Angstroem' for PDB)
+     unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and 'nm' 
+     for Gromacs trajectories, ``None`` and 'Angstrom' for PDB)
+ format
+     string that identifies the file format, e.g. "DCD", "PDB", "CRD", "XTC",
+     "TRR"
 
 
 **Optional**

@@ -4,73 +4,10 @@
 """
 import numpy
 
-class Timestep(object):
-    """Timestep data for one frame
+import base
+from base import Timestep
 
-    Data:     numatoms                   - number of atoms
-              frame                      - frame number
-              dimensions                 - system box dimensions (x, y, z, alpha, beta, gamma)
-
-    Methods:  t = Timestep(numatoms) - create a timestep object with space for numatoms (done automatically)
-              t[i]                   - return coordinates for the i'th atom (0-based)
-              t[start:stop:skip]     - return an array of coordinates, where start, stop and skip correspond to atom indices (0-based)
-    """
-    def __init__(self, arg):
-        if numpy.dtype(type(arg)) == numpy.dtype(int):
-            self.frame = 0
-            self.numatoms = arg
-            self._pos = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
-            #self._pos = numpy.zeros((3, self.numatoms), numpy.float32)
-            self._unitcell = numpy.zeros((6), numpy.float32)
-        elif isinstance(arg, Timestep): # Copy constructor
-            # This makes a deepcopy of the timestep
-            self.frame = arg.frame
-            self.numatoms = arg.numatoms
-            self._unitcell = numpy.array(arg._unitcell)
-            self._pos = numpy.array(arg._pos)
-        elif isinstance(arg, numpy.ndarray):
-            if len(arg.shape) != 2: raise Exception("numpy array can only have 2 dimensions")
-            self._unitcell = numpy.zeros((6), numpy.float32)
-            self.frame = 0
-            if arg.shape[0] == 3: self.numatoms = arg.shape[0]  # ??? is this correct ??? [OB]
-            else: self.numatoms = arg.shape[-1]                 # ??? reverse ??? [OB]
-            self._pos = arg.copy('Fortran')
-        else: raise Exception("Cannot create an empty Timestep")
-        self._x = self._pos[:,0]
-        self._y = self._pos[:,1]
-        self._z = self._pos[:,2]
-    def __getitem__(self, atoms):
-        if numpy.dtype(type(atoms)) == numpy.dtype(int):
-            if (atoms < 0):
-                atoms = self.numatoms + atoms
-            if (atoms < 0) or (atoms >= self.numatoms):
-                raise IndexError
-            return self._pos[atoms]
-        elif type(atoms) == slice or type(atoms) == numpy.ndarray:
-            return self._pos[atoms]
-        else: raise TypeError
-    def __len__(self):
-        return self.numatoms
-    def __iter__(self):
-        def iterTS():
-            for i in xrange(self.numatoms):
-                yield self[i]
-        return iterTS()
-    def __repr__(self):
-        return "< Timestep "+ repr(self.frame) + " with unit cell dimensions " + repr(self.dimensions) + " >"
-    def copy(self):
-        return self.__deepcopy__()
-    def __deepcopy__(self):
-        # Is this the best way?
-        return Timestep(self)
-
-    @property
-    def dimensions(self):
-        """unitcell dimensions (A, B, C, alpha, beta, gamma)"""
-        # Layout of unitcell is [A, alpha, B, beta, gamma, C]
-        return numpy.take(self._unitcell, [0,2,5,1,3,4])
-
-class DCDWriter:
+class DCDWriter(base.Writer):
     """Writes to a DCD file
 
     Data:
@@ -78,6 +15,9 @@ class DCDWriter:
     Methods:
        d = DCDWriter(dcdfilename, numatoms, start, step, delta, remarks)
     """
+    format = 'DCD'
+    units = {'time': 'AKMA', 'length': 'Angstrom'}
+
     def __init__(self, dcdfilename, numatoms, start=0, step=1, delta=1.0, remarks="Created by DCDWriter"):
         """Create a new DCDWriter
 
@@ -89,11 +29,10 @@ class DCDWriter:
         remarks - comments to annotate dcd file
         """
         if numatoms == 0:
-            raise Exception("DCDWriter: no atoms in output trajectory")
+            raise ValueError("DCDWriter: no atoms in output trajectory")
         self.dcdfilename = dcdfilename
         self.filename = self.dcdfilename
         self.numatoms = numatoms
-        self.units = {'time': 'AKMA', 'length': 'Angstroem'}
 
         self.frames_written = 0
         self.start = start
@@ -103,6 +42,11 @@ class DCDWriter:
         self.remarks = remarks
         self._write_dcd_header(numatoms, start, step, delta, remarks)
     def dcd_header(self):
+        import warnings
+        warnings.warn('dcd_header is not part of the trajectory API and will be renamed to _dcd_header',
+                      DeprecationWarning)
+        self._dcd_header()
+    def _dcd_header(self):
         import struct
         desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']
         return dict(zip(desc, struct.unpack("iiiiiiidiPPiiii",self._dcd_C_str)))
@@ -128,10 +72,8 @@ class DCDWriter:
     def __del__(self):
         if self.dcdfile is not None:
             self.close_trajectory()
-    def __repr__(self):
-        return "< DCDWriter '"+ self.dcdfilename + "' for " + repr(self.numatoms) + " atoms >"
 
-class DCDReader:
+class DCDReader(base.Reader):
     """Reads from a DCD file
     Data:
         ts                     - Timestep object containing coordinates of current frame
@@ -145,6 +87,9 @@ class DCDReader:
         data = dcd.timeseries(...)         - retrieve a subset of coordinate information for a group of atoms
         data = dcd.correl(...)             - populate a Timeseries.Collection object with computed timeseries
     """
+    format = 'DCD'
+    units = {'time': 'AKMA', 'length': 'Angstrom'}
+
     def __init__(self, dcdfilename):
         self.dcdfilename = dcdfilename
         self.filename = self.dcdfilename
@@ -155,7 +100,6 @@ class DCDReader:
         self.skip = 1
         self.periodic = False
         self._read_dcd_header()
-        self.units = {'time': 'AKMA', 'length': 'Angstroem'}
         self.ts = Timestep(self.numatoms)
         # Read in the first timestep
         self._read_next_timestep()
@@ -168,14 +112,12 @@ class DCDReader:
         import struct
         desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']
         return dict(zip(desc, struct.unpack("iiiiiiidiPPiiii",self._dcd_C_str)))
-    def __len__(self):
-        return self.numframes
     def __iter__(self):
         # Reset the trajectory file, read from the start
         # usage is "from ts in dcd:" where dcd does not have indexes
         self._reset_dcd_read()
         def iterDCD():
-            for i in xrange(0, self.numframes, self.skip):
+            for i in xrange(0, self.numframes, self.skip):  # FIXME: skip is not working!!! 
                 try: yield self._read_next_timestep()
                 except IOError: raise StopIteration
         return iterDCD()
@@ -218,12 +160,6 @@ class DCDReader:
         if ts is None: ts = self.ts
         ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
         return ts
-    def next(self):
-        """Forward one step to next frame."""
-        return self._read_next_timestep()
-    def rewind(self):
-        """Position at beginning of trajectory"""
-        self[0]
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
         """Return a subset of coordinate data for an AtomGroup
 
@@ -264,8 +200,6 @@ class DCDReader:
     def __del__(self):
         if self.dcdfile is not None:
             self.close_trajectory()
-    def __repr__(self):
-            return "< DCDReader '"+ self.dcdfilename + "' with " + repr(self.numframes) + " frames of " + repr(self.numatoms) + " atoms (" + repr(self.fixed) + " fixed) >"
 
 # Add the c functions to their respective classes so they act as class methods
 import _dcdmodule
