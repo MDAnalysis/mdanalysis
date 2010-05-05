@@ -2827,6 +2827,18 @@ SWIG_AsCharPtrAndSize(PyObject *obj, char** cptr, size_t* psize, int *alloc)
   }
 
 
+  int my_read_xtc_numframes(char *fn) {
+    int numframes;
+    int status;
+    status = read_xtc_numframes(fn, &numframes);
+    if (status != exdrOK) {
+      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by iterating through xtc '%s'", status, fn);
+      return 0;
+    }
+    return numframes;
+  }
+
+
   int my_read_trr_natoms(char *fn) {
     int natoms;
     int status;
@@ -2836,6 +2848,18 @@ SWIG_AsCharPtrAndSize(PyObject *obj, char** cptr, size_t* psize, int *alloc)
       return 0;
     }
     return natoms;
+  }
+
+
+  int my_read_trr_numframes(char *fn) {
+    int numframes;
+    int status;
+    status = read_trr_numframes(fn, &numframes);
+    if (status != exdrOK) {
+      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes from trr '%s'", status, fn);
+      return 0;
+    }
+    return numframes;
   }
 
 
@@ -3562,6 +3586,34 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_read_xtc_numframes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char *arg1 = (char *) 0 ;
+  int res1 ;
+  char *buf1 = 0 ;
+  int alloc1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:read_xtc_numframes",&obj0)) SWIG_fail;
+  res1 = SWIG_AsCharPtrAndSize(obj0, &buf1, NULL, &alloc1);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "read_xtc_numframes" "', argument " "1"" of type '" "char *""'");
+  }
+  arg1 = (char *)(buf1);
+  {
+    result = (int)my_read_xtc_numframes(arg1);
+    if (PyErr_Occurred()) SWIG_fail;
+  }
+  resultobj = SWIG_From_int((int)(result));
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return resultobj;
+fail:
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_read_trr_natoms(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   char *arg1 = (char *) 0 ;
@@ -3579,6 +3631,34 @@ SWIGINTERN PyObject *_wrap_read_trr_natoms(PyObject *SWIGUNUSEDPARM(self), PyObj
   arg1 = (char *)(buf1);
   {
     result = (int)my_read_trr_natoms(arg1);
+    if (PyErr_Occurred()) SWIG_fail;
+  }
+  resultobj = SWIG_From_int((int)(result));
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return resultobj;
+fail:
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_read_trr_numframes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char *arg1 = (char *) 0 ;
+  int res1 ;
+  char *buf1 = 0 ;
+  int alloc1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:read_trr_numframes",&obj0)) SWIG_fail;
+  res1 = SWIG_AsCharPtrAndSize(obj0, &buf1, NULL, &alloc1);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "read_trr_numframes" "', argument " "1"" of type '" "char *""'");
+  }
+  arg1 = (char *)(buf1);
+  {
+    result = (int)my_read_trr_numframes(arg1);
     if (PyErr_Occurred()) SWIG_fail;
   }
   resultobj = SWIG_From_int((int)(result));
@@ -3985,7 +4065,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"xdrfile_open", _wrap_xdrfile_open, METH_VARARGS, (char *)"xdrfile_open(path, mode) -> XDRFILE"},
 	 { (char *)"xdrfile_close", _wrap_xdrfile_close, METH_VARARGS, (char *)"xdrfile_close(fp) -> int"},
 	 { (char *)"read_xtc_natoms", _wrap_read_xtc_natoms, METH_VARARGS, (char *)"read_xtc_natoms(fn) -> int"},
+	 { (char *)"read_xtc_numframes", _wrap_read_xtc_numframes, METH_VARARGS, (char *)"read_xtc_numframes(fn) -> int"},
 	 { (char *)"read_trr_natoms", _wrap_read_trr_natoms, METH_VARARGS, (char *)"read_trr_natoms(fn) -> int"},
+	 { (char *)"read_trr_numframes", _wrap_read_trr_numframes, METH_VARARGS, (char *)"read_trr_numframes(fn) -> int"},
 	 { (char *)"read_xtc", _wrap_read_xtc, METH_VARARGS, (char *)"read_xtc(XDRFILE, box, x) -> (status, step, time, precision)"},
 	 { (char *)"read_trr", _wrap_read_trr, METH_VARARGS, (char *)"read_trr(XDRFILE, box, x, v, f) -> (status, step, time, lambda)"},
 	 { (char *)"write_xtc", _wrap_write_xtc, METH_VARARGS, (char *)"write_xtc(XDRFILE, step, time, box, x, prec) -> status"},

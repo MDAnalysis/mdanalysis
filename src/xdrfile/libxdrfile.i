@@ -159,6 +159,21 @@ The advantage of XTC over TRR is its significantly reduced size.
               :Raises: :exc:`IOError` if the supplied filed is not a XTC 
                        or if it is not readable.
 
+.. function:: read_xtc_numframes(fn) -> numframes
+
+              Read through the whole trajectory (!) to obtaine the total number of frames. 
+              This can take a long time but it might still be advantageous to obtain 
+              *numframes* in this way before setting up a complicated analysis. Unlike the DCD
+              format, there is no way to obtain the total number of frames in the trajectory 
+              except iterating through the whole trajectory.
+
+              :Arguments:
+                *fn*
+                   file name of an xtc file
+
+              :Raises: :exc:`IOError` if the supplied filed is not a XTC 
+                       or if it is not readable.
+
 .. function:: read_xtc(XDRFILE, box, x) -> (status, step, time, precision)
 
               Read the next frame from the opened xtc trajectory into *x*.
@@ -224,6 +239,20 @@ calculations. Velocities and forces are optional in the sense that they can be a
 
               :Raises: :exc:`IOError` if the supplied filed is not a TRR
                        or if it is not readable.
+
+.. function:: read_trr_numframes(fn) -> numframes
+
+              Read through the whole trajectory (!) to obtaine the total number of frames. 
+              This can take a long time but it might still be advantageous to obtain 
+              *numframes* in this way before setting up a complicated analysis. (This is a 
+              poor implementation that loops through the *whole* trajectory and counts the 
+              frames---please supply a better one.)
+
+              :Arguments:
+                *fn*
+                   file name of an xtc file
+
+              :Raises: :exc:`IOError` if the supplied filed is not a TRR or if it is not readable.
 
 .. function:: read_trr(XDRFILE, box, x, v, f) -> (status, step, time, lambda)
 
@@ -355,6 +384,26 @@ extern int xdrfile_close(XDRFILE *fp);
   }
 %}
 
+%feature("autodoc", "0") my_read_xtc_numframes;
+%rename (read_xtc_numframes) my_read_xtc_numframes;
+%exception my_read_xtc_numframes {
+  $action
+  if (PyErr_Occurred()) SWIG_fail;
+}
+%inline %{
+  int my_read_xtc_numframes(char *fn) {
+    int numframes;
+    int status;
+    status = read_xtc_numframes(fn, &numframes);
+    if (status != exdrOK) {
+      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by iterating through xtc '%s'", status, fn);
+      return 0;
+    }
+    return numframes;
+  }
+%}
+
+
 /* This function returns the number of atoms in the trr file in *natoms 
      extern int read_trr_natoms(char *fn,int *natoms);
  ... but the wrapped function returns natoms as the python return value 
@@ -375,6 +424,25 @@ extern int xdrfile_close(XDRFILE *fp);
       return 0;
     }
     return natoms;
+  }
+%}
+
+%feature("autodoc", "0") my_read_trr_numframes;
+%rename (read_trr_numframes) my_read_trr_numframes;
+%exception my_read_trr_numframes {
+  $action
+  if (PyErr_Occurred()) SWIG_fail;
+}
+%inline %{
+  int my_read_trr_numframes(char *fn) {
+    int numframes;
+    int status;
+    status = read_trr_numframes(fn, &numframes);
+    if (status != exdrOK) {
+      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes from trr '%s'", status, fn);
+      return 0;
+    }
+    return numframes;
   }
 %}
 

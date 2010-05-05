@@ -11,6 +11,7 @@
  * of the License, or (at your option) any later version.
  */
  
+#include <stdio.h>
 #include <stdlib.h>
 #include "xdrfile.h"
 #include "xdrfile_xtc.h"
@@ -84,6 +85,38 @@ int read_xtc_natoms(char *fn,int *natoms)
 	xdrfile_close(xd);
 	
 	return result;
+}
+
+int read_xtc_numframes(char *fn, int *numframes)
+{
+	XDRFILE *xd;
+	int step, natoms;
+	float time, prec;
+	matrix box;
+	rvec *x;
+	int result; // ???
+	
+	if ((result = read_xtc_natoms(fn,&natoms)) != exdrOK)
+		return result;
+
+	xd = xdrfile_open(fn,"r");
+	if (NULL == xd)
+		return exdrFILENOTFOUND;
+
+	if ((x=(rvec *)malloc(sizeof(rvec)*natoms))==NULL) {
+		fprintf(stderr,"Cannot allocate memory for coordinates.\n");
+		return exdrNOMEM;
+	}
+
+	// loop through all frames :-p
+	*numframes = 0;
+	while (exdrOK == read_xtc(xd, natoms, &step, &time, box, x, &prec)) {
+		(*numframes)++;
+	}
+	free(x);
+	xdrfile_close(xd);
+	
+	return exdrOK;
 }
 
 int read_xtc(XDRFILE *xd,

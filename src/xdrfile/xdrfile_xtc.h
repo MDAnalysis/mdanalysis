@@ -26,6 +26,9 @@ extern "C" {
    
   /* This function returns the number of atoms in the xtc file in *natoms */
   extern int read_xtc_natoms(char *fn,int *natoms);
+
+  /* Read the WHOLE trajectory in order to learn the total number of frames */ 
+  extern int read_xtc_numframes(char *fn, int *numframes);
   
   /* Read one frame of an open xtc file */
   extern int read_xtc(XDRFILE *xd,int natoms,int *step,float *time,

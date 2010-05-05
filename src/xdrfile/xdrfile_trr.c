@@ -11,6 +11,7 @@
  * of the License, or (at your option) any later version.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -463,6 +464,35 @@ int read_trr_natoms(char *fn,int *natoms)
 	
 	return exdrOK;
 }
+
+/* brain damaged iteration through trr to coun frames... can probably calculate it from size */
+int read_trr_numframes(char *fn, int *numframes)
+{
+	XDRFILE *xd;
+	int step, natoms;
+	float time, lambda;
+	matrix box;
+	rvec *x, *v, *f;
+	int result;
+	
+	if ((result = read_trr_natoms(fn,&natoms)) != exdrOK)
+		return result;
+
+	xd = xdrfile_open(fn,"r");
+	if (NULL == xd)
+		return exdrFILENOTFOUND;
+	/* no need to allocate the arrays */
+	x = v = f = NULL;
+
+	// loop through all frames :-p
+	*numframes = 0;
+	while (exdrOK == read_trr(xd, natoms, &step, &time, &lambda, box, x, v, f)) {
+		(*numframes)++;
+	}
+	xdrfile_close(xd);
+	return exdrOK;
+}
+
 
 int write_trr(XDRFILE *xd,int natoms,int step,float t,float lambda,
 			  matrix box,rvec *x,rvec *v,rvec *f)

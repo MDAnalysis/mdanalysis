@@ -159,6 +159,21 @@ The advantage of XTC over TRR is its significantly reduced size.
               :Raises: :exc:`IOError` if the supplied filed is not a XTC 
                        or if it is not readable.
 
+.. function:: read_xtc_numframes(fn) -> numframes
+
+              Read through the whole trajectory (!) to obtaine the total number of frames. 
+              This can take a long time but it might still be advantageous to obtain 
+              *numframes* in this way before setting up a complicated analysis. Unlike the DCD
+              format, there is no way to obtain the total number of frames in the trajectory 
+              except iterating through the whole trajectory.
+
+              :Arguments:
+                *fn*
+                   file name of an xtc file
+
+              :Raises: :exc:`IOError` if the supplied filed is not a XTC 
+                       or if it is not readable.
+
 .. function:: read_xtc(XDRFILE, box, x) -> (status, step, time, precision)
 
               Read the next frame from the opened xtc trajectory into *x*.
@@ -224,6 +239,20 @@ calculations. Velocities and forces are optional in the sense that they can be a
 
               :Raises: :exc:`IOError` if the supplied filed is not a TRR
                        or if it is not readable.
+
+.. function:: read_trr_numframes(fn) -> numframes
+
+              Read through the whole trajectory (!) to obtaine the total number of frames. 
+              This can take a long time but it might still be advantageous to obtain 
+              *numframes* in this way before setting up a complicated analysis. (This is a 
+              poor implementation that loops through the *whole* trajectory and counts the 
+              frames---please supply a better one.)
+
+              :Arguments:
+                *fn*
+                   file name of an xtc file
+
+              :Raises: :exc:`IOError` if the supplied filed is not a TRR or if it is not readable.
 
 .. function:: read_trr(XDRFILE, box, x, v, f) -> (status, step, time, lambda)
 
@@ -376,9 +405,17 @@ def read_xtc_natoms(*args):
   """read_xtc_natoms(fn) -> int"""
   return _libxdrfile.read_xtc_natoms(*args)
 
+def read_xtc_numframes(*args):
+  """read_xtc_numframes(fn) -> int"""
+  return _libxdrfile.read_xtc_numframes(*args)
+
 def read_trr_natoms(*args):
   """read_trr_natoms(fn) -> int"""
   return _libxdrfile.read_trr_natoms(*args)
+
+def read_trr_numframes(*args):
+  """read_trr_numframes(fn) -> int"""
+  return _libxdrfile.read_trr_numframes(*args)
 DIM = _libxdrfile.DIM
 
 def read_xtc(*args):
