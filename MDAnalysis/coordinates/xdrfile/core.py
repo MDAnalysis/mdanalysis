@@ -105,8 +105,8 @@ class TrjReader(object):
         self.filename = filename
         self.xdrfile = None
         self.__numatoms = None
-        self.numframes = 0
-        self.fixed = 0          # not relevant for Gromacs xtc/trr
+        self.__numframes = None  # takes a long time, avoid accessing self.numframes
+        self.fixed = 0           # not relevant for Gromacs xtc/trr
         self.skip = 1
         self.periodic = False
         self.ts = self._Timestep(self.numatoms)
@@ -129,6 +129,25 @@ class TrjReader(object):
         else:
             return self.__numatoms
 
+    @property
+    def numframes(self):
+        """Read the number of frames from the trajectory.
+
+        The result is cached. If for any reason the trajectory cannot
+        be read then 0 is returned.
+
+        This  takes a  long time  because  the frames  are counted  by
+        iterating through the whole trajectory.
+        """
+        if not self.__numframes is None:   # return cached value
+            return self.__numframes
+        try:
+            self.__numframes = self._read_trj_numframes(self.filename)
+        except IOError:
+            return 0
+        else:
+            return self.__numframes
+
     def _read_trj_natoms(self, filename):
         """Generic number-of-atoms extractor with minimum intelligence. Override if necessary."""
         if self.format == 'XTC':
@@ -138,6 +157,16 @@ class TrjReader(object):
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return numatoms
+
+    def _read_trj_numframes(self, filename):
+        """Generic numer-of-frames extractor with minimum intelligence. Override if necessary."""
+        if self.format == 'XTC':
+            numframes = libxdrfile.read_xtc_numframes(self.filename)
+        elif self.format == 'TRR':
+            numframes = libxdrfile.read_trr_numframes(self.filename)
+        else:
+            raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
+        return numframes
         
     def open_trajectory(self):
         """Open xdr trajectory file.
