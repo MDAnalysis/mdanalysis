@@ -7,6 +7,9 @@ Derive other Reader and Writer classes from the classes in this module.
 .. autoclass:: Timestep
    :members:
 
+.. autoclass:: IObase
+   :members:
+
 .. autoclass:: Reader
    :members:
 
@@ -15,6 +18,8 @@ Derive other Reader and Writer classes from the classes in this module.
 """
 
 import numpy
+import MDAnalysis.core
+from MDAnalysis.core import units, flags
 
 class Timestep(object):
     """Timestep data for one frame
@@ -82,23 +87,52 @@ class Timestep(object):
         # Layout of unitcell is [A, alpha, B, beta, gamma, C]
         return numpy.take(self._unitcell, [0,2,5,1,3,4])
 
+class IObase(object):
+    """Base class bundling common functionality for trajectory I/O.    
+    """
+    #: override to define trajectory format of the reader/writer (DCD, XTC, ...)
+    format = None
 
-class Reader(object):
+    #: dict with units of of *time* and *length* (and *velocity*, *force*, 
+    #: ... for formats that support it)
+    units = {'time': None, 'length': None}
+
+    # could cache f or compute at __init_ ...
+    def convert_pos_from_native(self, x):
+        """In-place conversion of coordinate array x from native units to base units."""
+        f = units.get_conversion_factor('length', self.units['length'], MDAnalysis.core.flags['length_unit'])
+        x *= f
+        return x
+
+    def convert_time_from_native(self, t):
+        """Convert time *t* from native units to base units."""
+        f = units.get_conversion_factor('time', self.units['time'], MDAnalysis.core.flags['time_unit'])
+        t *= f
+        return t
+
+    def convert_pos_to_native(self, x):
+        """In-place conversion of coordinate array x from base units to native units."""
+        f = units.get_conversion_factor('length', MDAnalysis.core.flags['length_unit'], self.units['length'])
+        x *= f
+        return x
+
+    def convert_time_from_native(self, t):
+        """Convert time *t* from base units to native units."""
+        f = units.get_conversion_factor('time', MDAnalysis.core.flags['time_unit'], self.units['time'])
+        t *= f
+        return t
+
+
+class Reader(IObase):
     """Base class for trajectory readers.
 
     See Trajectory API definition in :mod:`MDAnalysis.coordinates` for
     the required attributes and methods.
     """
-    #: override to define trajectory format of the reader (DCD, XTC, ...)
-    format = None
 
     #: supply the appropriate Timestep class, e.g. 
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC
     _Timestep = Timestep
-
-    #: dict with units of of *time* and *length* (and *velocity*, *force*, 
-    #: ... for formats that support it)
-    units = {'time': None, 'length': None}
 
     def __len__(self):
         return self.numframes
@@ -120,19 +154,12 @@ class Reader(object):
     # def __del__(self)
     # def __iter__(self):
 
-class Writer(object):
+class Writer(IObase):
     """Base class for trajectory writers.
 
     See Trajectory API definition in :mod:`MDAnalysis.coordinates` for
     the required attributes and methods.
     """
-
-    #: override to define trajectory format of the reader (DCD, XTC, ...)
-    format = None
-
-    #: dict with units of of *time* and *length* (and *velocity*, *force*, 
-    #: ... for formats that support it)
-    units = {'time': None, 'length': None}
 
     def __del__(self):
         self.close_trajectory()

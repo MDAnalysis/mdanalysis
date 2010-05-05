@@ -138,7 +138,7 @@ class TestDCDCorrel(_TestDCD):
         C.clear()
         assert_equal(len(C), 0, "Correl: clear()")
    
-
+# notes:
 def compute_correl_references():
     universe = MDAnalysis.Universe(PSF,DCD)
 
@@ -174,7 +174,13 @@ def compute_correl_references():
     return results
 
 
-class _TestGromacsReader(TestCase):
+class _GromacsReader(TestCase):
+    filename = None
+    def setUp(self):
+        self.universe = mda.Universe(PDB, self.filename)
+        self.trajectory = self.universe.trajectory
+        self.ts = self.universe.coord
+    
     @dec.slow
     def test_rewind_xdrtrj(self):
         self.trajectory.rewind()
@@ -186,15 +192,61 @@ class _TestGromacsReader(TestCase):
         self.trajectory.next()
         assert_equal(self.ts.frame, 2, "loading frame 2")
 
-class TestXTCReader(_TestGromacsReader):
-    def setUp(self):
-        self.universe = mda.Universe(PDB, XTC)
-        self.trajectory = self.universe.trajectory
-        self.ts = self.universe.coord
+    @dec.slow
+    def test_coordinates(self):
+        # note: these are the native coordinates in nm; for the test to succeed:
+        assert_equal(mda.core.flags['convert_gromacs_lengths'], True, 
+                     "oops, mda.core.flags['convert_gromacs_lengths'] should be True")
+        ca_nm = np.array([[ 6.043369675,  7.385184479,  1.381425762]], dtype=np.float32)
+        # coordinates in the base unit (needed for True)
+        ca_Angstrom = ca_nm * 10.0
+        U = self.universe
+        T = U.trajectory
+        T.rewind()
+        T.next()
+        T.next()
+        assert_equal(self.ts.frame, 3, "failed to step to frame 3")
+        ca = U.selectAtoms('name CA and resid 122')
+        # low precision match (2 decimals in A, 3 in nm) because the above are the trr coords
+        assert_array_almost_equal(ca.coordinates(), ca_Angstrom, 2,
+                                  err_msg="coords of Ca of resid 122 do not match for frame 3")
 
-class TestTRRReader(_TestGromacsReader):
-    def setUp(self):
-        self.universe = mda.Universe(PDB, TRR)
-        self.trajectory = self.universe.trajectory
-        self.ts = self.universe.coord
+class TestXTCReader(_GromacsReader):
+    filename = XTC
 
+class TestTRRReader(_GromacsReader):
+    filename = TRR
+
+
+class _XDRNoConversion(TestCase):
+    filename = None
+    def setUp(self):
+        mda.core.flags['convert_gromacs_lengths'] = False
+        self.universe = mda.Universe(PDB, self.filename)
+        self.ts = self.universe.trajectory.ts
+    def tearDown(self):
+        mda.core.flags['convert_gromacs_lengths'] = True  # default
+
+    @dec.slow
+    def test_coordinates(self):
+        # note: these are the native coordinates in nm; for the test to succeed:
+        assert_equal(mda.core.flags['convert_gromacs_lengths'], False, 
+                     "oops, mda.core.flags['convert_gromacs_lengths'] should be False for this test")
+        ca_nm = np.array([[ 6.043369675,  7.385184479,  1.381425762]], dtype=np.float32)
+        U = self.universe
+        T = U.trajectory
+        T.rewind()
+        T.next()
+        T.next()
+        assert_equal(self.ts.frame, 3, "failed to step to frame 3")        
+        ca = U.selectAtoms('name CA and resid 122')
+        # low precision match because we also look at the trr: only 3 decimals in nm in xtc!
+        assert_array_almost_equal(ca.coordinates(), ca_nm, 3,
+                                  err_msg="native coords of Ca of resid 122 do not match for frame 3 "\
+                                      "with core.flags['convert_gromacs_lengths'] = False")
+
+class TestXTCNoConversion(_XDRNoConversion):
+    filename = XTC
+
+class TestTRRNoConversion(_XDRNoConversion):
+    filename = TRR

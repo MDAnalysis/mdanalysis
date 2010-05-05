@@ -6,6 +6,7 @@ import numpy
 
 import libxdrfile, statno
 from MDAnalysis.coordinates import base
+import MDAnalysis.core
 
 try:
     from numpy import rad2deg   # numpy 1.3+
@@ -95,20 +96,24 @@ class TrjReader(base.Reader):
        for ts in reader:
           print ts
     """
+    #: units of time (ps) and length (nm) in Gromacs
+    units = {'time': 'ps', 'length': 'nm'}
     #: override to define trajectory format of the reader (XTC or TRR)
     format = None
     #: supply the appropriate Timestep class, e.g. 
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC
     _Timestep = Timestep
 
-    def __init__(self, filename):
+    def __init__(self, filename, convert_units=None):
         self.filename = filename
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+        self.convert_units = convert_units  # convert length and time to base units on the fly?
         self.xdrfile = None
         self.__numatoms = None
         self.__numframes = None  # takes a long time, avoid accessing self.numframes
         self.skip_timestep = 1   # always 1 for xdr files
         self.__delta = None      # compute from time in first two frames!
-        self.units = {'time': 'ps', 'length': 'nm'}
         self.fixed = 0           # not relevant for Gromacs xtc/trr
         self.skip = 1
         self.periodic = False
@@ -158,6 +163,7 @@ class TrjReader(base.Reader):
         The result is computed from the trajectory and cached. If for
         any reason the trajectory cannot be read then 0 is returned.
         """
+        # no need for conversion: it's alread in our base unit ps
         if not self.__delta is None:   # return cached value
             return self.__delta
         try:
@@ -263,6 +269,10 @@ class TrjReader(base.Reader):
         elif not ts.status == libxdrfile.exdrOK:
             raise IOError(errno.EFAULT, "Problem with %s file, status %s" % 
                           (self.format, statno.errorcode[ts.status]), self.filename)
+        if self.convert_units:
+            self.convert_pos_from_native(ts._pos)             # in-place !
+            self.convert_pos_from_native(ts._unitcell)        # in-place !
+            ts.time = self.convert_time_from_native(ts.time)  # in-place does not work with scalars (?)
         ts.frame += 1
         return ts
 
@@ -291,7 +301,8 @@ class TrjWriter(base.Writer):
     """
     format = None
 
-    def __init__(self, filename, numatoms, start=0, step=1, delta=1.0, precision=1000.0, remarks=None):
+    def __init__(self, filename, numatoms, start=0, step=1, delta=1.0, precision=1000.0, remarks=None,
+                  convert_units=None):
         ''' Create a new TrjWriter
         filename - name of output file
         numatoms - number of atoms in trajectory file
@@ -299,12 +310,17 @@ class TrjWriter(base.Writer):
         step  - skip between subsequent timesteps
         delta - timestep
         precision - accuracy for lossy XTC format [1000]
+        convert_units - units are converted to the MDAnalysis base format; ``None`` selects
+                        the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
         '''
         assert self.format in ('XTC', 'TRR')
 
         if numatoms == 0:
             raise ValueError("TrjWriter: no atoms in output trajectory")
         self.filename = filename
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+        self.convert_units = convert_units    # convert length and time to base units on the fly?
         self.numatoms = numatoms
 
         self.frames_written = 0
@@ -313,8 +329,8 @@ class TrjWriter(base.Writer):
         self.delta = delta
         self.remarks = remarks
         self.precision = precision  # only for XTC
-
         self.xdrfile = libxdrfile.xdr_open(filename, 'w')
+
         self.ts = None
 
     def write_next_timestep(self, ts=None):
@@ -340,6 +356,11 @@ class TrjWriter(base.Writer):
 
     def _write_next_timestep(self, ts):
         """Generic writer with minimum intelligence; override if necessary."""
+        if self.convert_units:
+            self.convert_pos_to_native(ts._pos)             # in-place !
+            self.convert_pos_to_native(ts._unitcell)        # in-place !
+            ts.time = self.convert_time_to_native(ts.time)  # in-place does not work with scalars (?)        
+
         if self.format == 'XTC':
             status = libxdrfile.write_xtc(self.xdrfile, ts.step, ts.time, ts._unitcell, ts._pos, self.precision)
         elif self.format == 'TRR':

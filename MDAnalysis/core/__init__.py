@@ -198,9 +198,8 @@ _flags = [
             """
          ),
     Flag('convert_gromacs_lengths',
-         False,
-         #{True:True, False:False},
-         {False:False},
+         True,
+         {True:True, False:False},
          """
             Determine if the XTC and TRR trajectory reader and writer convert units.
 
@@ -210,10 +209,35 @@ _flags = [
             ``True`` then coordinates are automatically converted, with
             ``False`` the coordinate values are presented as read from the
             trajectories.
-
-            **Not implemented yet** --- always False
          """
          ),
+    Flag('length_unit',
+         'Angstrom',
+         {'Angstrom': 'Angstrom', 'A':'Angstrom',
+          'nm': 'nm', 'nano meter': 'nm', 'nanometer': 'nm'
+          },
+         """
+            Base unit for lengths (in particular coordinates in trajectories)
+
+            >>> flags['%(name)s'] = value
+
+            .. Warning:: Do not change, only Angstrom fully supported.
+         """
+         ),
+    Flag('time_unit',
+         'ps',
+         {'ps': 'ps', 'pico second': 'ps', 'picosecond': 'ps',
+          'ns': 'ns', 'nano second': 'ns', 'nanosecond': 'ns',
+          'AKMA': 'AKMA', 'Charmm': 'AKMA',
+          },
+         """
+            Base unit for times (in particular time steps in trajectories)
+
+            >>> flags['%(name)s'] = value
+
+         """
+         ),
+
     ]
 
 # Global flag registry for core
