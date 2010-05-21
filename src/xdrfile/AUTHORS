@@ -13,6 +13,9 @@ Erik Lindahl <lindahl@gromacs.org>
  * xdrfile_xtc.c
  * xdrfile_xtc.h
 
+Oliver Beckstein added a few functions that were
+more usefully implemented in C than in python.
+
 
 numpy SWIG interface
 ====================
