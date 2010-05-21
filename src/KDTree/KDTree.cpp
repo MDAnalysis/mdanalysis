@@ -937,7 +937,7 @@ void KDTree::neighbor_simple_search(float radius)
 	DataPoint::current_dim=0;
 	sort(_data_point_list.begin(), _data_point_list.end());
 
-	for (i=0; i<_data_point_list.size(); i++)
+	for (i=0; i<(long int)_data_point_list.size(); i++)
 	{
 		float x1;
 		long int j;
@@ -946,7 +946,7 @@ void KDTree::neighbor_simple_search(float radius)
 		p1=_data_point_list[i];
 		x1=p1.get_coord()[0];
 
-		for (j=i+1; j<_data_point_list.size(); j++)
+		for (j=i+1; j<(long int)_data_point_list.size(); j++)
 		{
 			DataPoint p2;
 			float x2;
