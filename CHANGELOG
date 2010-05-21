@@ -27,7 +27,7 @@ The rules for this file:
 	* XTC and TRR automatically convert between native Gromacs units (ps, nm) and 
           base units (uses core.flags['convert_gromacs_lengths'] = True)
 	* more test cases
-	
+        * *really* FIXED Issue 16 (can easy_install from tar file)	
 
 04/30/10 orbeckst
 
