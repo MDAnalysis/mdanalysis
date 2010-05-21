@@ -20,6 +20,9 @@ The rules for this file:
 
 05/xx/10 orbeckst
         * 0.6.2 release
+	* removed a number of imports from the top level (such as rms_fitting);
+  	  this might break some scripts that still rely on the layout that was
+  	  used for 0.5.x (which is now officially declared deprecated)
         * defined trajectory API
         * deprecated DCD.dcd_header --> DCD._dcd_header
 	* XTC and TRR compute numframes by iterating through trajectory (slow!)
@@ -28,6 +31,7 @@ The rules for this file:
           base units (uses core.flags['convert_gromacs_lengths'] = True)
 	* more test cases
         * *really* FIXED Issue 16 (can easy_install from tar file)	
+	* added dependency information to setup.py (numpy by default; nose for tests)
 
 04/30/10 orbeckst
 

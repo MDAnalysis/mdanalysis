@@ -41,8 +41,7 @@ raise a ValueError. Documentation on all flags can be obtained with ::
  print MDAnalysis.core.flags.__doc__
 """
 
-__all__ = ['AtomGroup', 'Selection', 'Timeseries',
-           'distances', 'rms_fitting']
+__all__ = ['AtomGroup', 'Selection', 'Timeseries']
 
 # set up flags for core routines (more convoluted than strictly necessary but should
 # be clean to add more flags if needed)
@@ -244,3 +243,5 @@ _flags = [
 # Can be accessed like a dictionary and appears to the casual user as such.
 flags = Flags(*_flags)
 del _flags
+
+import AtomGroup, Selection, Timeseries
