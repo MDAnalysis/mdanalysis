@@ -41,10 +41,19 @@ import glob
 if sys.version_info[:2] < (2, 3):
     print "MDAnalysis requires Python 2.3 or better.  Python %d.%d detected" % \
         sys.version_info[:2]
+    print "Please upgrade your version of python."
     sys.exit(-1)
 
-# Obtain the numpy include directory.  This logic works across numpy versions.
-import numpy
+try:
+    # Obtain the numpy include directory.  This logic works across numpy versions.
+    import numpy
+except ImportError:
+    # TODO: somehow fix this so that easy_install could get numpy if needed
+    print "*** package 'numpy' not found ***"
+    print "MDAnalysis requires a version of NumPy, even for setup."
+    print "Please get it from http://numpy.scipy.org/ or install it through your package manager."
+    sys.exit(-1)
+
 try:
     numpy_include = numpy.get_include()
 except AttributeError:
@@ -159,5 +168,9 @@ if __name__ == '__main__':
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
           cmdclass = {'build_ext': build_ext},
+          install_requires = ['numpy>=1.0'],  # currently not useful because without numpy we don't get here
+          extras_require = {
+                'tests': ['nose>=0.10'],
+                },          
           zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
           )
