@@ -348,6 +348,29 @@ class NucleicBackboneSelection(NucleicSelection):
     def __repr__(self):
         return "<'NucleicBackboneSelection' >"
 
+class BaseSelection(NucleicSelection):
+    """A protein selection consists of all residues with  recognized residue names.
+        Recognized residue names:
+       * from the Charmm force field
+       awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_lipid.rtf
+    """
+    base_atoms = dict([(x,None) for x in ['N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
+                                          'O6','N2','N6',
+                                          'O2','N4','O4','C5M']])
+    def _apply(self, group):
+        return set([a for a in group.atoms if (a.name in self.base_atoms and a.resname in self.nucl_res)])
+    def __repr__(self):
+        return "<'BaseSelection' >"
+
+class NucleicSugarSelection(NucleicSelection):
+    """A NucleicSugarSelection contains all atoms with name 'C1\'', 'C2\'','C3\'', 'C4\'', 'O2\'','O4\'','O3\''.
+    """
+    sug_atoms = dict([(x,None) for x in ['C1\'', 'C2\'','C3\'', 'C4\'', 'O2\'','O4\'','O3\'']])
+    def _apply(self, group):
+        return set([a for a in group.atoms if (a.name in self.sug_atoms and a.resname in self.nucl_res)])
+    def __repr__(self):
+        return "<'NucleicSugarSelection' >"
+
 class CASelection(BackboneSelection):
     def _apply(self, group):
         return set([a for a in group.atoms if (a.name == "CA" and a.resname in self.prot_res)])
@@ -450,6 +473,8 @@ class SelectionParser:
     NUCLEIC = 'nucleic'
     BB = 'backbone'
     NBB = 'nucleicbackbone'
+    BASE = 'nucleicbase'
+    SUGAR = 'nucleicsugar'
     EOF = 'EOF'
     GT = '>'
     LT = '<'
@@ -466,6 +491,7 @@ class SelectionParser:
                       (AROUND, AroundSelection), (POINT, PointSelection),
                       (NUCLEIC, NucleicSelection), (PROTEIN, ProteinSelection), 
                       (BB, BackboneSelection), (NBB, NucleicBackboneSelection),
+		      (BASE, BaseSelection), (SUGAR, NucleicSugarSelection),
                       #(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists
                       (ATOM, AtomSelection)])
     associativity = dict([(AND, "left"), (OR, "left")])
@@ -552,6 +578,10 @@ class SelectionParser:
             return self.classdict[op]()
         elif op == self.NBB:
             return self.classdict[op]()
+	elif op == self.BASE:
+	    return self.classdict[op]()
+	elif op == self.SUGAR:
+	    return self.classdict[op]()
         elif op == self.RESID:
             data = self.__consume_token()
             try:

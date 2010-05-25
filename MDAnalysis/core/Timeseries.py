@@ -33,6 +33,7 @@ Timeseries of observables
 .. autoclass:: Distance
 .. autoclass:: CenterOfGeometry
 .. autoclass:: CenterOfMass
+.. autoclass:: PrincipleAxis
 .. autoclass:: WaterDipole
 
 """
@@ -262,6 +263,18 @@ class CenterOfMass(Timeseries):
         Timeseries.__init__(self, 'm', atoms, 3)
     def getAuxData(self):
         return [a.mass for a in self.atoms]
+
+class PrincipleAxis(Timeseries):
+    ''' Create a timeseries that returns the principle axis for a group of atoms
+
+           t = principleAxis(atoms)
+
+	atoms can be a list of Atom objects, or an AtomGroup
+    '''
+    def __init__(self, atoms):
+        Timeseries.__init__(self, 'm', atoms, 3)
+    def getAuxData(self):
+        return [a.principleAxes for a in self.atoms]
 
 class WaterDipole(Timeseries):
     ''' Create a Timeseries that returns a timeseries for the dipole vector of a 3-site water
