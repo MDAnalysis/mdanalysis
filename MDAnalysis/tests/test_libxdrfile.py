@@ -4,6 +4,27 @@ from MDAnalysis.tests.datafiles import XTC,TRR
 
 import MDAnalysis.coordinates.xdrfile.libxdrfile as xdr
 
+# FIXES: test_xdropen: error because assert_ not found in numpy < 1.3
+# maybe move this into separate module together with 
+# from numpy.testing import * ?
+try:
+    from numpy.testing import assert_
+except ImportError:
+    def assert_(val, msg='') :
+        """
+        Assert that works in release mode.
+        
+        The Python built-in ``assert`` does not work when executing code in
+        optimized mode (the ``-O`` flag) - no byte-code is generated for it.
+
+        For documentation on usage, refer to the Python documentation.
+        
+        (Code taken from numpy.testing 1.4)
+        """
+        if not val :
+            raise AssertionError(msg)
+
+
 class TestLib(TestCase):
     def test_constants(self):
         assert_equal(xdr.DIM, 3, "xdr library not compiled for DIM=3 ?!?")
