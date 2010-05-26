@@ -162,9 +162,10 @@ if __name__ == '__main__':
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
           cmdclass = {'build_ext': build_ext},
-          install_requires = ['numpy>=1.0'],  # currently not useful because without numpy we don't get here
-          extras_require = {
-                'tests': ['nose>=0.10'],
-                },          
+          install_requires = ['numpy>=1.0',   # currently not useful because without numpy we don't get here
+                              'biopython',    # needed for the PDB reader
+                              ],
+          extras_require = {'tests': ['nose>=0.10'],
+                            },
           zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
           )
