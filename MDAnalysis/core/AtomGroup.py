@@ -222,7 +222,7 @@ class AtomGroup(object):
         eigenval, eigenvec = eig(self.momentOfInertia())
         # Sort
         indices = numpy.argsort(eigenval)
-        return numpy.take(eigenvec, indices) 
+        return eigenvec[:,indices]
     def coordinates(self, ts=None, copy=False):
         if ts == None:
             ts = self.universe.coord
