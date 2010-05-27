@@ -25,4 +25,4 @@ Available analysis modules
     Analyse the number of native contacts (relative to a reference state).
 """
 
-
+__all__ = ['leaflet', 'contacts']
