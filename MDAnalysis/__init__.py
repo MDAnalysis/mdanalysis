@@ -32,7 +32,7 @@ http://code.google.com/p/mdanalysis/issues/
 # a error (TODO: catch that ImportError when no liblapack.so found so that we 
 # can issue sensible advice)
 __all__ = ['AtomGroup','Selection','Timeseries','distances',
-           'Universe', 'collection']
+           'Universe', 'asUniverse', 'collection']
 
 import logging
 # see the advice on logging and libraries in
@@ -48,6 +48,6 @@ from core import AtomGroup,Selection,Timeseries
 from core import distances
 
 # Bring some often used objects into the current namespace
-Universe = AtomGroup.Universe
+from core.AtomGroup import Universe, asUniverse
 collection = Timeseries.TimeseriesCollection()
 

@@ -1,14 +1,40 @@
 # $Id$
-"""AtomGroup Hierarchy
+"""
+:mod:`MDAnalysis.core.AtomGroup` --- AtomGroup Hierarchy
+========================================================
 
-Class Hierarchy:
+The most important data structure in MDAnalysis is the
+:class:`AtomGroup`, which contains :class:`Atom` instances.
+
+A :class:`Universe` is the user-visible entry point and collects all
+information needed to analyze a structure or a whole trajectory.
+
+**Class Hierarchy**::
     AtomGroup -> ResidueGroup  -> Segment
               -> Residue
     Atom
     Universe
+
+The important classes and functions:
+
+.. autoclass:: Universe
+   :members:
+.. autoclass:: AtomGroup
+   :members:
+.. autoclass:: Atom
+   :members:
+.. autoclass:: Residue
+.. autoclass:: ResidueGroup
+.. autoclass:: Segment
+
+.. autofunction:: asUniverse
+.. autoexception:: SelectionError
 """
 
 import numpy
+
+class SelectionError(Exception):
+    """Raised when a atom selection failed."""
 
 class Atom(object):
     """A single atom definition
@@ -79,9 +105,6 @@ class Atom(object):
             self.__universe = universe
         return locals()
     universe = property(**universe())
-
-class NameError(Exception):
-    pass
 
 class AtomGroup(object):
     """A group of atoms
@@ -157,7 +180,7 @@ class AtomGroup(object):
     def __getattr__(self, name):
         # There can be more than one atom with the same name
         atomlist = [atom for atom in self.atoms if name == atom.name]
-        if len(atomlist) == 0: raise NameError("No atoms with name "+name)
+        if len(atomlist) == 0: raise SelectionError("No atoms with name "+name)
         elif len(atomlist) == 1: return atomlist[0]
         else: return AtomGroup(atomlist)
     def __iter__(self):
@@ -364,7 +387,7 @@ class Residue(AtomGroup):
         try:
             index = Residue.__cache[self.name][name]
             return self.atoms[index]
-        except KeyError: raise NameError("No atom in residue "+self.name+" with name "+name)
+        except KeyError: raise SelectionError("No atom in residue "+self.name+" with name "+name)
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self.name)+', '+repr(self.id)+'>'
 
@@ -443,10 +466,11 @@ class Universe(object):
        m = Universe(psffile, dcdfile)             # read system from file(s)          
        m = Universe(psffile, pdbfilename=pdbfile) # read coordinates from PDB file
        m = Universe(pdbfile)                      # read atoms and coordinates from PDB
+       m = Universe(pdbfile, xtcfile)             # read system from file(s)          
        m.load_new_dcd(dcdfilename)                # read from a new dcd file
        m.selectAtoms(...)                         # select atoms using similar selection string as charmm
 
-    .. Note:: Only a single-frame PDB file is supported; use DCDs for
+    .. Note:: Only a single-frame PDB file is supported; use DCDs or XTC/TRR for
               trajectories. If a PDB is used instead of a PSF then
               neither mass nor charge are correct, and bonds are not available.
     """
@@ -461,7 +485,7 @@ class Universe(object):
              MDAnalysis. A "structure" file (SPF or PDB, in the sense of a
              topology) is always required.
           *dcdfilename*
-             A Charmm DCD trajectory; will provide coordinates.
+             A CHARMM DCD trajectory or Gromacs XTC/TRR ; will provide coordinates.
           *pdbfilename*
              A PDB structure; provides a single set of coordinates (and acts as
              a one-frame trajectory).
@@ -704,3 +728,26 @@ class Universe(object):
             self.__trajectory = value
         return locals()
     trajectory = property(**trajectory())
+
+def asUniverse(*args, **kwargs):
+    """Return a universe from the input arguments.
+
+    1. If the first argument is a universe, just return it::
+ 
+       as_universe(universe) --> universe
+
+    2. Otherwise try to build a universe from the first or the first
+       and second argument::
+ 
+       asUniverse(PDB, **kwargs) --> Universe(PDB, **kwargs)
+       asUniverse(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
+       asUniverse(*args, **kwargs) --> Universe(*args, **kwargs)
+
+    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
+    """
+    if len(args) == 0:
+        raise TypeError("asUniverse() takes at least one argument (%d given)" % len(args))
+    elif len(args) == 1 and type(args[0]) is Universe:
+        return args[0]
+    return Universe(*args, **kwargs)
+        
