@@ -17,7 +17,9 @@ The rules for this file:
         * reads hydrogen bond donor/acceptor list from psf and sets up
           structures for hydrogen bonding analysis
           TODO: H-BOND ANALYSIS NOT WORKING YET
-        * analysis modules
+        * analysis modules:
+          - leaflets
+          - native contacts
         * write selections for other codes from AtomGroups (VMD,
           pymol, CHARMM, Gromacs ndx)
 
