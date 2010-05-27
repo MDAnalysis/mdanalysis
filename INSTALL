@@ -6,10 +6,10 @@ Requirements
 ============
 
 Currently MDAnalysis is only distributed in source form. In order to
-build the library some C code needs to be compiled. Thus you will need
+build the library some C and C++ code needs to be compiled. Thus you will need
 
     * python (>=2.3)
-    * a C compiler (e.g. gcc or Intel icc),
+    * a C and a C++ compiler (e.g. gcc or Intel icc),
     * the python header files (typically in a package python-dev),
     * numpy and pyrex to compile the DCD reader and numerical extensions,
     * a LAPACK library (standard LAPACK/BLAS, ATLAS, or the Intel Math
@@ -40,8 +40,6 @@ simply do ::
   svn checkout http://mdanalysis.googlecode.com/svn/trunk/ MDAnalysis
   cd MDAnalysis
 
-(See :doc:`doc/DevelopmentBranch.txt` for instructions for how to use
-development versions that typically contain many more features.)
 
 
 Installation from source
@@ -91,7 +89,15 @@ something such as ATLAS or the Intel Math Kernel Libraries for better
 performance for the rms fitting.
 
 The fast math library paths are set in ``setup.cfg``. See the example
-in the template.
+in the template and below.
+
+To get an idea if you have lapack libraries installed, run
+
+  locate lapack
+
+and look for 'liblapack.a' or 'liblapack.so'. Also ask your package
+management system.
+
 
 Example MKL
 ~~~~~~~~~~~
@@ -114,6 +120,12 @@ If you want to use the ATLAS LAPACK libraries use something such as ::
   fast_numeric_linkpath = /usr/lib/atlas
   fast_numeric_libs = lapack
 
+or 
+
+  [linux]
+  fast_numeric_include = /usr/include
+  fast_numeric_linkpath = /usr/lib/sse2/atlas
+  fast_numeric_libs = lapack
 
 
 Selecting an installation directory
@@ -125,22 +137,10 @@ options to setup (see --help) such as ::
  python setup.py install --prefix LOCAL_DIRECTORY
 
 or any of the other options of distutil's setup.py to install in
-alternative directories.
+alternative directories, for instance
 
-If you only want to install library files in a local directory use
+ python setup.py install --user
 
-   python setup.py build --build-lib LOCAL_DIRECTORY
-
-This installs a working MDAnalysis under LOCAL_DIRECTORY.
-
-For testing we currently simply use
-
-  python setup.py build --build-lib=$HOME/python-lib/
-
-This builds and installs a working version in
-~/python-lib/MDAnalysis. Then add $HOME/python-lib to the PYTHONPATH
-
-  export PYTHONPATH=${PYTHONPATH}:$HOME/python-lib
 
 
 Easy Install
@@ -151,7 +151,7 @@ but you might be able to do ::
 
   easy_install [options] ./mdanalysis
  
-developer installation (that immediately reflects changes to the
+A developer installation (that immediately reflects changes to the
 sources) with ::
 
   cd ./mdanalysis
@@ -177,12 +177,9 @@ Required python packages
 In order to use the library in your own python code you will need at least
 
     * numpy of version 1.0.3 or greater 
-
-Optional python packages
-
-If you want to read pdb files instead of dcds you will also need
-
     * BioPython's Bio.PDB 
+
+Optional python packages:
 
 The LAMMPS parser uses
 
@@ -244,12 +241,12 @@ Linux
 
 * Install prerequisite packages on Ubuntu or Debian with
 
-    sudo apt-get install python-dev python-pyrex python-numpy
-    sudo apt-get install liblapack-dev   # also see notes on fast_numeric_*
+    sudo aptitude install python-dev python-pyrex python-numpy g++
+    sudo aptitude install liblapack-dev   # also see notes on fast_numeric_*
 
   Install packages needed for full functionality
 
-    sudo apt-get install python-scipy python-matplotlib python-biopython
+    sudo aptitude install python-scipy python-matplotlib python-biopython
 
 
 

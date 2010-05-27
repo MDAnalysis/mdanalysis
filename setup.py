@@ -158,6 +158,7 @@ if __name__ == '__main__':
                                 'MDAnalysis.coordinates.xdrfile', 
                                 'MDAnalysis.coordinates.pdb', 
                                 'MDAnalysis.util', 'MDAnalysis.KDTree',
+                                'MDAnalysis.analysis',
                                 'MDAnalysis.tests'],
           package_dir       = {'MDAnalysis': 'MDAnalysis'},
           package_data      = {'MDAnalysis':
@@ -169,9 +170,12 @@ if __name__ == '__main__':
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
           cmdclass = {'build_ext': build_ext},
-          install_requires = ['numpy>=1.0'],  # currently not useful because without numpy we don't get here
+          install_requires = ['numpy>=1.0',  # currently not useful because without numpy we don't get here
+                              'biopython',   # pretty much required at the moment
+                              ],
           extras_require = {
                 'tests': ['nose>=0.10'],
+                'analysis': ['networkx>=1.0'],
                 },          
           zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
           )
