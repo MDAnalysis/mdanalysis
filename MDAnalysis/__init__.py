@@ -32,15 +32,56 @@ Getting started
 
 Import the package::
  
-  import MDAnalysis
+  >>> import MDAnalysis
 
 (note that not everything in MDAnalysis is imported right away; for
 additional functionality you might have to import sub-modules
 separately, e.g. for RMS fitting ``import MDAnalysis.core.rms_fitting``.)
 
-Build a "universe" from a topology (PSF, PDB) and a trajectory (DCD, XTC/TRR)::
+Build a "universe" from a topology (PSF, PDB) and a trajectory (DCD, XTC/TRR);
+here we are assuming that PSF, DCD, etc contain file names. If you don't have
+trajectories at hand you can play with the ones that come with MDAnalysis for
+testing (see below under `Examples`_)::
 
-  u = MDAnalysis(PSF, DCD)
+  >>> u = MDAnalysis.Universe(PSF, DCD)
+
+Select the C-alpha atoms and store them as a group of atoms::
+
+  >>> ca = u.selectAtoms('name CA')
+  >>> len(ca)
+  214  
+
+Calculate the centre of mass of the CA and of all atoms::
+
+  >>> ca.centerOfMass()
+  array([ 0.06873595, -0.04605918, -0.24643682])
+  >>> u.atoms.centerOfMass()
+  array([-0.01094035,  0.05727601, -0.12885778])
+
+Calculate the CA end-to-end distance (in angstroem)::
+  >>> from numpy import sqrt, dot
+  >>> coord = ca.coordinates()
+  >>> v = coord[-1] - coord[0]   # last Ca minus first one
+  >>> sqrt(dot(v, v,))
+  10.938133
+
+Define a function eedist():
+  >>> def eedist(atoms):
+  ...     coord = atoms.coordinates()
+  ...     v = coord[-1] - coord[0] 
+  ...     return sqrt(dot(v, v,))
+  ... 
+  >>> eedist(ca)
+  10.938133
+
+and analyze all timesteps *ts* of the trajectory::
+  >>> for ts in u.trajectory:
+  ...      print eedist(ca)
+  10.9381
+  10.8459
+  10.4141
+   9.72062 
+  ....
 
 .. SeeAlso:: :class:`MDAnalysis.core.AtomGroup.Universe` for details
 
