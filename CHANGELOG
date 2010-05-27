@@ -10,15 +10,19 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/10 orbeckst 
+??/??/10 orbeckst, denniej0
         (Running list of enhancements, to be edited for final
         entry when stable changes are merged back into trunk)
 
         * reads hydrogen bond donor/acceptor list from psf and sets up
           structures for hydrogen bonding analysis
           TODO: H-BOND ANALYSIS NOT WORKING YET
+        * analysis modules
+        * write selections for other codes from AtomGroups (VMD,
+          pymol, CHARMM, Gromacs ndx)
 
-05/xx/10 orbeckst
+
+05/xx/10 orbeckst, denniej0
         * 0.6.2 release
 	* removed a number of imports from the top level (such as rms_fitting);
   	  this might break some scripts that still rely on the layout that was
@@ -30,8 +34,10 @@ The rules for this file:
 	* XTC and TRR automatically convert between native Gromacs units (ps, nm) and 
           base units (uses core.flags['convert_gromacs_lengths'] = True)
 	* more test cases
-        * *really* FIXED Issue 16 (can easy_install from tar file)	
-	* added dependency information to setup.py (numpy by default; nose for tests)
+        * *really* FIXED Issue 16 (can easy_install from tar file)
+	* FIXED a bug in AtomGroup.principalAxes()
+	* added dependency information to setup.py (numpy and
+  	  biopython by default; nose for tests)
 
 04/30/10 orbeckst
 

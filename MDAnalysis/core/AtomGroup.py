@@ -273,6 +273,39 @@ class AtomGroup(object):
         writer = FrameWriter(filename)
         writer.write(self)         # wants a atomgroup
 
+    # TODO: This is _almost_ the same code as write() --- should unify!
+    def write_selection(self,filename=None,format="vmd",filenamefmt="%(trjname)s_%(frame)d"):
+        """Write AtomGroup selection to a file to be used in another programme.
+
+        AG.write_selection(filename,format='pdb')
+
+        EXPERIMENTAL.
+
+        filename      None: create TRJNAME_FRAME.FORMAT from filenamefmt
+        format        vmd, pymol (pml), gromacs (ndx), charmm (str); can also be
+                      supplied as part of filename
+        filenamefmt   format string for default filename; use 'trjname' and 'frame'
+        """
+        import util
+        import os.path
+
+        trj = self.universe.trajectory    # unified trajectory API
+        frame = trj.ts.frame
+
+        if filename is None:
+            trjname,ext = os.path.splitext(os.path.basename(trj.filename))
+            filename = filenamefmt % vars()
+        filename = util.filename(filename,ext=format,keep=True)
+        format = os.path.splitext(filename)[1][1:]  # strip initial dot!
+        try:
+            import MDAnalysis.selections
+            FrameWriter = MDAnalysis.selections._selection_writers[format]
+        except KeyError:
+            raise NotImplementedError("Writing as %r is not implemented; only %r will work." \
+                                      % (format, MDAnalysis.coordinates._frame_writers.keys()))
+        writer = FrameWriter(filename)
+        writer.write(self)         # wants a atomgroup
+
     # properties
     @property
     def dimensions(self):
