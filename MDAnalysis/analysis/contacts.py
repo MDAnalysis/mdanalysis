@@ -10,8 +10,23 @@
 Contact analysis ("q1-q2")
 ==========================
 
-See http://lorentz.dynstr.pasteur.fr/joel/adenylate.php for an example
-of contact analysis applied to MinActionPath trajectories of AdK.
+See http://lorentz.dynstr.pasteur.fr/joel/adenylate.php for an example of
+contact analysis applied to MinActionPath trajectories of AdK (although this
+was *not* performed with MDAnalysis --- it is just to give an idea what it is
+about).
+
+Example
+-------
+
+Analyze a single DIMS transition of AdK between its closed and open
+conformation and plot the trajectory projected on q1-q2::
+
+  import MDAnalysis.analysis.contacts
+  from MDAnalysis.tests.datafiles import *
+  C = MDAnalysis.analysis.contacts.ContactAnalysis(PSF, DCD)
+  C.run()
+  C.plot()
+
 """
 
 import os
@@ -19,7 +34,7 @@ import warnings
 import bz2
 import numpy
 import MDAnalysis
-from MDAnalysis.core.distances import distance_array
+from MDAnalysis.core.distances import self_distance_array
 
 
 class ContactAnalysis(object):
@@ -36,48 +51,48 @@ class ContactAnalysis(object):
     The total number of contacts in the reference states 1 and 2 are
     stored in :attr:`ContactAnalysis.nref` (index 0 and 1).
     """
-    def __init__(self, psfname, dcdname, ref1=None, ref2=None, radius=8.0, 
+    def __init__(self, topology, trajectory, ref1=None, ref2=None, radius=8.0, 
                  targetdir=os.path.curdir, infix="", force=False):
-        """Calculate native contacts from open and closed reference structures,
+        """Calculate native contacts from two reference structures.
 
         :Arguments:
-          psfname
-            psf of the protein
-          dcdname
-            trajectory
-          ref1
+          *topology*
+            psf or pdb file
+          *trajectory*
+            dcd or xtc/trr file
+          *ref1*
             structure of the reference conformation 1 (pdb); if ``None`` the *first*
             frame of the trajectory is chosen
-          ref2
+          *ref2*
             structure of the reference conformation 2 (pdb); if ``None`` the *last*
             frame of the trajectory is chosen
-          radius
+          *radius*
             contacts are deemed any Ca within radius [8 A]
-          targetdir
+          *targetdir*
             output files are saved there [.]
-          infix
+          *infix*
             additional tag string that is inserted into the output filename of the
             data file [""]
 
-        The function calculates the percentage of native contacts q1
-        and q2 along a trajectory. "Contacts" are defined as the
-        number of Ca atoms within *radius* of a primary Ca. *q1* is
-        the fraction of contacts relative to the reference state 1
-        (typically the starting conformation of the trajectory) and
-        *q2* is the fraction of contacts relative to the conformation
-        2.
+        The function calculates the percentage of native contacts q1 and q2
+        along a trajectory. "Contacts" are defined as the number of Ca atoms
+        within *radius* of a primary Ca. *q1* is the fraction of contacts
+        relative to the reference state 1 (typically the starting conformation
+        of the trajectory) and *q2* is the fraction of contacts relative to the
+        conformation 2.
 
-        The timeseries is written to a bzip2-compressed file in *targetdir* named
-        "basename(*dcdname*)*infix*_q1q2.dat.bz2"
+        The timeseries is written to a bzip2-compressed file in *targetdir*
+        named "basename(*trajectory*)*infix*_q1q2.dat.bz2" and is also
+        accessible as the attribute :attr:`ContactAnalysis.timeseries`.
         """
 
-        self.psfname = psfname
-        self.dcdname = dcdname
+        self.topology = topology
+        self.trajectory = trajectory
         self.radius = radius
         self.targetdir = targetdir
         self.force = force
 
-        dcdbase = os.path.splitext(os.path.basename(dcdname))[0]
+        dcdbase = os.path.splitext(os.path.basename(trajectory))[0]
 	output = dcdbase + infix + '_q1q2.dat'
 	self.output = os.path.join(self.targetdir, output)
 	self.output_bz2 = self.output + '.bz2'    
@@ -89,16 +104,16 @@ class ContactAnalysis(object):
             self._skip = True
             return   # do not bother reading any data or initializing arrays... !!
         # don't bother if trajectory is empty (can lead to segfaults so better catch it)
-        stats = os.stat(dcdname)
+        stats = os.stat(trajectory)
         if stats.st_size == 0:
-            warnings.warn('dcd = %(dcdname)s is empty, skipping...' % vars())
+            warnings.warn('dcd = %(trajectory)s is empty, skipping...' % vars())
             self._skip = True
             return
         # under normal circumstances we do not skip
         self._skip = False
 
         # expensive initialization starts with building Universes :-)
-        self.u = MDAnalysis.Universe(psfname, dcdname)
+        self.u = MDAnalysis.Universe(topology, trajectory)
 
         if ref1 is None:
             ref1 = os.path.join(self.targetdir, dcdbase + '_first.pdb')
@@ -112,8 +127,8 @@ class ContactAnalysis(object):
             self.u.dcd[0]      # rewind, just in case...
         self.ref2 = ref2
 
-        r1 = MDAnalysis.Universe(psfname, pdbfilename=self.ref1)
-        r2 = MDAnalysis.Universe(psfname, pdbfilename=self.ref2)
+        r1 = MDAnalysis.Universe(topology, pdbfilename=self.ref1)
+        r2 = MDAnalysis.Universe(topology, pdbfilename=self.ref2)
     
         self.ca = self.u.selectAtoms('name CA')
         ca1 = r1.selectAtoms('name CA')
@@ -145,7 +160,7 @@ class ContactAnalysis(object):
         store=True) and write it to a bzip2-compressed data file.
         """
         if self._skip or self.output_exists(force=force):
-            print "File %(output)r or %(output_bz2)r already exists, skipping %(dcdname)r." % vars(self)
+            print "File %(output)r or %(output_bz2)r already exists, skipping %(trajectory)r." % vars(self)
             return None
         
         try:
