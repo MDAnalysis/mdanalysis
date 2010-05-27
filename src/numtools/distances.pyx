@@ -132,7 +132,7 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
     box        orthorhombic unit cell dimensions (minimum image convention
                is applied) or None [None]
     result     optional preallocated result array which must have the shape
-               (N*(N-1),) and dtype numpy.float64. Avoids creating 
+               (N*(N-1)/2,) and dtype ``numpy.float64``. Avoids creating 
                the array which saves time when the function is called repeatedly. [None]
     copy       makes internal copies of the input arrays; see note below [True]               
 
