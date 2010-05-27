@@ -111,18 +111,27 @@ class LeafletFinder(object):
         return MDAnalysis.AtomGroup.AtomGroup(
             [self.selection[i] for i in self.components[component_index]])
 
-    def write_vmd(self, filename, numcols=8):
-        """Write VMD atomselect macros to *filename*."""
-        # should be in MDAnalysis as part of AtomGroup.write()
-        with open(filename, 'w') as vmd:
-            vmd.write("# leaflets based on selection=%(selectionstring)r cutoff=%(cutoff)f\n" % vars(self))
-            for i in xrange(len(self.components)):                
-                name = "leaflet_%d" % (i+1)
-                vmd.write("atomselect macro %(name)s {index " % vars())
-                for iatom, atom in enumerate(self.atoms(i)):
-                    index = atom.number  # VMD index is 0-based (as is MDAnalysis?)
-                    vmd.write(" %(index)d" % vars())
-                    if (iatom+1) % numcols == 0:
-                        vmd.write("\\\n\t")
-                vmd.write(" }\n")
+    def atoms_iter(self):
+        for component_index in xrange(len(self.components)):
+            yield self.atoms(component_index)
+
+    def write_selection(self, filename, **kwargs):
+        """Write selections for the leaflets to *filename*.
+
+        The format is typically determined by the extension of *filename*
+        (e.g. "vmd", "pml", or "ndx" for VMD, PyMol, or Gromacs).
+
+        See :class:`MDAnalysis.selections.base.SelectionWriter` for all
+        options.
+        """
+        import MDAnalysis.selections        
+        SelectionWriter = MDAnalysis.selections.get_writer(filename, kwargs.pop('format',None))
+        writer = SelectionWriter(
+            filename, mode=kwargs.pop('mode', 'wa'), 
+            preamble="leaflets based on selection=%(selectionstring)r cutoff=%(cutoff)f\n" % vars(self), 
+            **kwargs)
+        for i, ag in enumerate(self.atoms_iter()):
+            name = "leaflet_%d" % (i+1)
+            writer.write(ag, name=name)
+
 

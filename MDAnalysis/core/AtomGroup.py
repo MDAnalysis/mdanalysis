@@ -274,36 +274,42 @@ class AtomGroup(object):
         writer.write(self)         # wants a atomgroup
 
     # TODO: This is _almost_ the same code as write() --- should unify!
-    def write_selection(self,filename=None,format="vmd",filenamefmt="%(trjname)s_%(frame)d"):
+    def write_selection(self,filename=None,format="vmd",filenamefmt="%(trjname)s_%(frame)d",
+                        **kwargs):
         """Write AtomGroup selection to a file to be used in another programme.
 
-        AG.write_selection(filename,format='pdb')
-
-        EXPERIMENTAL.
-
-        filename      None: create TRJNAME_FRAME.FORMAT from filenamefmt
-        format        vmd, pymol (pml), gromacs (ndx), charmm (str); can also be
-                      supplied as part of filename
-        filenamefmt   format string for default filename; use 'trjname' and 'frame'
+        :Keywords:
+          *filename*
+                ``None``: create TRJNAME_FRAME.FORMAT from *filenamefmt*
+          *format*
+                output file format: VMD (tcl), PyMol (pml), Gromacs (ndx), CHARMM (str);
+                can also be supplied as the filename extension. Case insensitive. [vmd]
+          *filenamefmt*
+                format string for default filename; use '%(trjname)s' and '%(frame)s'
+                placeholders; the extension is set according to the *format*
+                ["%(trjname)s_%(frame)d"]
+          *kwargs*
+                additional keywords are passed on to the appropriate
+                :class:`~MDAnalysis.selections.base.SelectionWriter`
         """
         import util
         import os.path
+        import MDAnalysis.selections
+
+        SelectionWriter = MDAnalysis.selections.get_writer(filename, format)
 
         trj = self.universe.trajectory    # unified trajectory API
         frame = trj.ts.frame
 
+        # get actual extension from the static class attribute
+        extension = SelectionWriter.ext
+
         if filename is None:
             trjname,ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt % vars()
-        filename = util.filename(filename,ext=format,keep=True)
-        format = os.path.splitext(filename)[1][1:]  # strip initial dot!
-        try:
-            import MDAnalysis.selections
-            FrameWriter = MDAnalysis.selections._selection_writers[format]
-        except KeyError:
-            raise NotImplementedError("Writing as %r is not implemented; only %r will work." \
-                                      % (format, MDAnalysis.coordinates._frame_writers.keys()))
-        writer = FrameWriter(filename)
+        filename = util.filename(filename,ext=extension,keep=True)
+
+        writer = SelectionWriter(filename, **kwargs)
         writer.write(self)         # wants a atomgroup
 
     # properties

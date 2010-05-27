@@ -6,18 +6,29 @@ Selections
 ==========
 
 Functions to write a :class:`MDAnalysis.AtomGroup.AtomGroup` selection
-to a file so that it can be used in another programme such as VMD,
-pymol, gromacs, or CHARMM.
+to a file so that it can be used in another programme.
+
+:mod:`MDAnalysis.selections.vmd`
+    VMD_ selections
+:mod:`MDAnalysis.selections.pymol`
+    PyMol_ selections
+:mod:`MDAnalysis.selections.gromacs`
+    Gromacs_ selections
+:mod:`MDAnalysis.selections.charmm`
+    CHARMM_ selections
+
+The :class:`MDAnalysis.selections.base.SelectionWriter` base class and
+helper functions are in :mod:`MDAnalysis.selections.base`.
 """
 
-import vmd
+import vmd, pymol, gromacs, charmm
+from base import get_writer
 
-# frame writers: export to single frame formats such as PDB, gro, crd
 # Signature:
-#   W = SelectionWriter(filename)
+#   W = SelectionWriter(filename, **kwargs)
 #   W.write(AtomGroup)
 _selection_writers = {'vmd': vmd.SelectionWriter,
-                      #'str': charmm.SelectionWriter,
-                      #'pml': pymol.SelectionWriter,
-                      #'ndx': gromacs.SelectionWriter,
+                      'charmm': charmm.SelectionWriter, 'str': charmm.SelectionWriter,
+                      'pymol': pymol.SelectionWriter, 'pml': pymol.SelectionWriter,
+                      'gromacs': gromacs.SelectionWriter, 'ndx': gromacs.SelectionWriter, 
                       }
