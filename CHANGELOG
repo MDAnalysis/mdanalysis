@@ -14,6 +14,8 @@ The rules for this file:
         (Running list of enhancements, to be edited for final
         entry when stable changes are merged back into trunk)
 
+        * minimum requirement is python 2.4 (using with_statement in
+          the analysis module and we have not tested on 2.3 in a while)
         * reads hydrogen bond donor/acceptor list from psf and sets up
           structures for hydrogen bonding analysis
           TODO: H-BOND ANALYSIS NOT WORKING YET
@@ -24,7 +26,7 @@ The rules for this file:
           pymol, CHARMM, Gromacs ndx)
 
 
-05/xx/10 orbeckst, denniej0
+05/28/10 orbeckst, denniej0
         * 0.6.2 release
 	* removed a number of imports from the top level (such as rms_fitting);
   	  this might break some scripts that still rely on the layout that was

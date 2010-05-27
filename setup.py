@@ -38,8 +38,8 @@ import sys, os
 import glob
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (2, 3):
-    print "MDAnalysis requires Python 2.3 or better.  Python %d.%d detected" % \
+if sys.version_info[:2] < (2, 4):
+    print "MDAnalysis requires Python 2.4 or better.  Python %d.%d detected" % \
         sys.version_info[:2]
     print "Please upgrade your version of python."
     sys.exit(-1)
@@ -83,7 +83,7 @@ else:
     fast_numeric_link = ["-llapack"]
 
 if __name__ == '__main__':
-    RELEASE = "0.6.2-devel"
+    RELEASE = "0.6.3-devel"
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 """
