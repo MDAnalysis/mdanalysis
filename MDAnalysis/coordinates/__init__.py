@@ -192,9 +192,9 @@ Attributes
      Timestep instance      
 """
 
-__all__ = ['DCD', 'PDB', 'CRD', 'XTC', 'TRR']
+__all__ = ['DCD', 'PDB', 'CRD', 'XTC', 'TRR', 'GRO']
 
-import PDB, DCD, CRD, XTC, TRR
+import PDB, DCD, CRD, XTC, TRR, GRO
 
 # trajectory readers: present unified interface (based on DCD.Timestep)
 _trajectory_readers = {'dcd': DCD.DCDReader,
@@ -202,6 +202,7 @@ _trajectory_readers = {'dcd': DCD.DCDReader,
                        'xtc': XTC.XTCReader,
                        'trr': TRR.TRRReader,
                        'pdb': PDB.PDBReader,
+                       'gro': GRO.GROReader,
                        }
 
 # frame writers: export to single frame formats such as PDB, gro, crd

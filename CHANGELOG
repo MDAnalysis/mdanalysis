@@ -10,7 +10,7 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/10 orbeckst, denniej0
+??/??/10 orbeckst, denniej0, danny.parton
         (Running list of enhancements, to be edited for final
         entry when stable changes are merged back into trunk)
 
@@ -24,6 +24,7 @@ The rules for this file:
           - native contacts
         * write selections for other codes from AtomGroups (VMD,
           pymol, CHARMM, Gromacs ndx)
+        * gro reader
 
 
 05/28/10 orbeckst, denniej0

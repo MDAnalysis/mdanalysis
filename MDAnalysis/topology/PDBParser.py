@@ -24,6 +24,8 @@ def parse(pdbfile):
     .. SeeAlso:: The *structure* dict is defined in
                  :func:`MDAnalysis.topology.PSFParser.parse`.
     """
+    if pdbfile[-4:] == ".gro":
+        raise PDBParseError
     structure = {}
     # use Sloppy PDB parser to cope with big PDBs!
     pdb =  MDAnalysis.coordinates.pdb.extensions.get_structure(pdbfile,"0UNK")

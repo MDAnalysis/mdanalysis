@@ -452,7 +452,7 @@ class Segment(ResidueGroup):
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
 
-    Built from a psf or pdb file.
+    Built from a psf, pdb or gro file.
 
     Attributes: 
        - bonds, angles, dihedrals, impropers, donors, acceptors [TODO]
@@ -511,20 +511,36 @@ class Universe(object):
         # trajectory format type (i.e. the extension))
         self.__trajectory = None
 
-        from MDAnalysis.topology import PSFParser
+        from MDAnalysis.topology import PSFParser, GROParser
+	# first try as a PSF
         try:
             struc = PSFParser.parse(psffilename)
+	    print "Building topology from psf"
+
         except PSFParser.PSFParseError, err:
             # try as a PDB
             try:
                 from MDAnalysis.topology import PDBParser
                 struc = PDBParser.parse(psffilename)
-            except:
-                print "Tried building a topology from pdb instead of psf (%s)" % err
-                raise
-            else:
+		print "Building topology from pdb"
+		# Use same pdb for coords if no traj file is specified
                 if pdbfilename is None and dcdfilename is None:
                     pdbfilename = psffilename
+
+            except PDBParser.PDBParseError, err:
+		# try as a GRO
+                try:
+                    from MDAnalysis.topology import GROParser
+                    struc = GROParser.parse(psffilename)
+		    print "Building topology from gro"
+		    # Use same gro for coords if no traj file is specified
+               	    if pdbfilename is None and dcdfilename is None:
+                        pdbfilename = psffilename
+			# Haven't finished writing GROReader yet, but this works with .xtc files
+			raise Exception, "Can't yet read coords from .gro files - use an .xtc"
+
+                except GROParser.GROParseError, err:
+                    raise Exception, "Failed to build a topology from either a psf, pdb or gro (%s)" % err
 
         self.filename = psffilename
         self._psf = struc
