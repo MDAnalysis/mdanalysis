@@ -129,10 +129,16 @@ h = NullHandler()
 logging.getLogger("MDAnalysis").addHandler(h)
 del h
 
+# custom exceptions and warnings
+class SelectionError(Exception):
+    """Raised when a atom selection failed."""
+
+
 from core import AtomGroup,Selection,Timeseries
 from core import distances
 
 # Bring some often used objects into the current namespace
 from core.AtomGroup import Universe, asUniverse
 collection = Timeseries.TimeseriesCollection()
+
 

@@ -32,9 +32,7 @@ The important classes and functions:
 """
 
 import numpy
-
-class SelectionError(Exception):
-    """Raised when a atom selection failed."""
+from MDAnalysis import SelectionError
 
 class Atom(object):
     """A single atom definition
