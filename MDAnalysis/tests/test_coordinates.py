@@ -3,7 +3,7 @@ import MDAnalysis as mda
 import numpy as np
 from numpy.testing import *
 
-from MDAnalysis.tests.datafiles import PSF,DCD,PDB_small,PDB,XTC,TRR
+from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,XTC,TRR
 
 class TestPDBReader(TestCase):
     def setUp(self):
@@ -32,6 +32,10 @@ class TestPDBReaderBig(TestCase):
         na = U.selectAtoms('resname NA+')
         assert_equal(len(na), 4, "Atom selection of last atoms in file")
 
+
+def TestDCD_Issue32():
+    """Issue 32: 0-size dcds lead to a sgefault: now caught with IOError"""
+    assert_raises(IOError, mda.Universe, PSF, DCD_empty)
 
 class _TestDCD(TestCase):
     def setUp(self):
