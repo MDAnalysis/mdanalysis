@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Example script, part of MDAnalysis
 """
 :Author: Oliver Beckstein
 :Year: 2010

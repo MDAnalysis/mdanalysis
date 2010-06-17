@@ -1,4 +1,5 @@
-# Calculating G(r) (radial distribution function) of a water box, taking into account periodic boundaries
+# Calculating G(r) (radial distribution function) of a water box, 
+# taking into account periodic boundaries
 
 from MDAnalysis import *
 import numpy
