@@ -122,6 +122,8 @@ class IObase(object):
         t *= f
         return t
 
+    def close_trajectory(self):
+        pass
 
 class Reader(IObase):
     """Base class for trajectory readers.

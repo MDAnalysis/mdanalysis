@@ -2,6 +2,7 @@
 """DCD Hierarchy
 
 """
+import os, errno
 import numpy
 
 import base
@@ -93,12 +94,21 @@ class DCDReader(base.Reader):
     def __init__(self, dcdfilename):
         self.dcdfilename = dcdfilename
         self.filename = self.dcdfilename
+        self.dcdfile = None  # set right away because __del__ checks
+
+        # Issue #32: segfault if dcd is 0-size
+        # Hack : test here... (but should be fixed in dcd.c)        
+        stats = os.stat(self.dcdfilename)
+        if stats.st_size == 0:
+            raise IOError(errno.ENODATA,"DCD file is zero size",dcdfilename) 
+
         self.dcdfile = file(dcdfilename, 'rb')
         self.numatoms = 0
         self.numframes = 0
         self.fixed = 0
         self.skip = 1
         self.periodic = False
+        
         self._read_dcd_header()
         self.ts = Timestep(self.numatoms)
         # Read in the first timestep
@@ -198,7 +208,7 @@ class DCDReader(base.Reader):
         self.dcdfile.close()
         self.dcdfile = None
     def __del__(self):
-        if self.dcdfile is not None:
+        if not self.dcdfile is None:
             self.close_trajectory()
 
 # Add the c functions to their respective classes so they act as class methods
