@@ -513,32 +513,29 @@ class Universe(object):
 	# first try as a PSF
         try:
             struc = PSFParser.parse(psffilename)
-	    print "Building topology from psf"
-
+	    #print "Building topology from psf"
         except PSFParser.PSFParseError, err:
             # try as a PDB
             try:
                 from MDAnalysis.topology import PDBParser
                 struc = PDBParser.parse(psffilename)
-		print "Building topology from pdb"
+		#print "Building topology from pdb"
 		# Use same pdb for coords if no traj file is specified
                 if pdbfilename is None and dcdfilename is None:
                     pdbfilename = psffilename
-
             except PDBParser.PDBParseError, err:
 		# try as a GRO
                 try:
                     from MDAnalysis.topology import GROParser
                     struc = GROParser.parse(psffilename)
-		    print "Building topology from gro"
+		    #print "Building topology from gro"
 		    # Use same gro for coords if no traj file is specified
                	    if pdbfilename is None and dcdfilename is None:
                         pdbfilename = psffilename
 			# Haven't finished writing GROReader yet, but this works with .xtc files
-			raise Exception, "Can't yet read coords from .gro files - use an .xtc"
-
+			raise NotImplementedError("Can't yet read coords from .gro files - use an .xtc")
                 except GROParser.GROParseError, err:
-                    raise Exception, "Failed to build a topology from either a psf, pdb or gro (%s)" % err
+                    raise ValueError("Failed to build a topology from either a psf, pdb or gro (%s)" % err)
 
         self.filename = psffilename
         self._psf = struc
