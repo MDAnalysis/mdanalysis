@@ -116,7 +116,7 @@ the OPLS/AA force field.
 # people don't need it we rather wait for them to import it and then throw
 # a error (TODO: catch that ImportError when no liblapack.so found so that we 
 # can issue sensible advice)
-__all__ = ['AtomGroup','Selection','Timeseries','distances',
+__all__ = ['AtomGroup','Selection','Timeseries','distances','rms_fitting',
            'Universe', 'asUniverse', 'collection']
 
 import logging
@@ -135,7 +135,7 @@ class SelectionError(Exception):
 
 
 from core import AtomGroup,Selection,Timeseries
-from core import distances
+from core import distances, rms_fitting
 
 # Bring some often used objects into the current namespace
 from core.AtomGroup import Universe, asUniverse
