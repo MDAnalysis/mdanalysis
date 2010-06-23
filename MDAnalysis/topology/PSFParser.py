@@ -100,21 +100,32 @@ def __parseatoms_(lines, atoms_per, attr, structure, numlines):
     #   psf_ATOM_format = '%(iatom)8d %(segid)4s %(resid)-4d %(resname)4s '+\
     #                     '%(name)-4s %(type)4s %(charge)-14.6f%(mass)-14.4f%(imove)8d\n'
 
-    # source/psfres.src (CHEQ but not EXTended), see comments above
+    # source/psfres.src (CHEQ and now can be used for CHEQ EXTended), see comments above
     #   II,LSEGID,LRESID,LRES,TYPE(I),IAC(I),CG(I),AMASS(I),IMOVE(I),ECH(I),EHA(I)
     #  (I8,1X,A4, 1X,A4,  1X,A4,  1X,A4,  1X,I4,  1X,2G14.6,     I8,   2G14.6)
     #   0:8   9:13   14:18   19:23   24:28   29:33   34:48 48:62 62:70 70:84 84:98
 
     for i in xrange(numlines):
         l = lines()
-        # 0     1      2      3        4         5       6       7      8
-        iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove =  l[:8], l[9:13].strip(), l[14:18], l[19:23].strip(), l[24:28].strip(), l[29:33].strip(), l[34:48], l[48:62], l[62:70]   #  l[70:84], l[84:98] ignore ECH and EHA
-        # Atom(atomno, atomname, type, resname, resid, segid, mass, charge)
-        # We want zero-indexing for atom numbers to make it easy
-        atom_desc = Atom(int(iatom)-1,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge))
-        atoms[i] = atom_desc
+	try:
+		# CHEQ Format
+		# 0     1      2      3        4         5       6       7      8
+        	iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove =  l[:8], l[9:13].strip(), l[14:18], l[19:23].strip(), l[24:28].strip(), l[29:33].strip(), l[34:48], l[48:62], l[62:70]   #  l[70:84], l[84:98] ignore ECH and EHA
+        	# Atom(atomno, atomname, type, resname, resid, segid, mass, charge)
+        	# We want zero-indexing for atom numbers to make it easy
+        	atom_desc = Atom(int(iatom)-1,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge))
+        	atoms[i] = atom_desc
+	except:
+		#  EXT CHEQ Format
+		# 0     1      2      3        4         5       6       7      8
+		iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove =  l[:10], l[11:19].strip(), l[20:28], l[29:37].strip(), l[38:46].strip(), l[47:51].strip(), l[52:66], l[66:70], l[70:78]   #  l[78:84], l[84:98] ignore ECH and EHA
+		# Atom(atomno, atomname, type, resname, resid, segid, mass, charge)
+		# We want zero-indexing for atom numbers to make it easy
+		atom_desc = Atom(int(iatom)-1,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge))
+		atoms[i] = atom_desc
 
     structure[attr] = atoms
+
 
 import operator
 def __parsesection_(lines, atoms_per, attr, structure, numlines):
