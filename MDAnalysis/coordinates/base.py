@@ -97,7 +97,6 @@ class IObase(object):
     #: ... for formats that support it)
     units = {'time': None, 'length': None}
 
-    # could cache f or compute at __init_ ...
     def convert_pos_from_native(self, x):
         """In-place conversion of coordinate array x from native units to base units."""
         f = units.get_conversion_factor('length', self.units['length'], MDAnalysis.core.flags['length_unit'])
@@ -116,7 +115,7 @@ class IObase(object):
         x *= f
         return x
 
-    def convert_time_from_native(self, t):
+    def convert_time_to_native(self, t):
         """Convert time *t* from base units to native units."""
         f = units.get_conversion_factor('time', MDAnalysis.core.flags['time_unit'], self.units['time'])
         t *= f
@@ -153,8 +152,10 @@ class Reader(IObase):
         #     ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
         #     return ts
         raise NotImplementedError("BUG: Override _read_next_timestep() in the trajectory reader!")
+
     def __del__(self):
         pass
+
     def __iter__(self):
         raise NotImplementedError("BUG: Override __iter__() in the trajectory reader!")
 
