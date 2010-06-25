@@ -147,14 +147,35 @@ class Reader(IObase):
         """Position at beginning of trajectory"""
         self[0]
 
+    def _read_next_timestep(self, ts=None):
+        # Example from DCDReader:
+        #     if ts is None: ts = self.ts
+        #     ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
+        #     return ts
+        raise NotImplementedError("BUG: Override _read_next_timestep() in the trajectory reader!")
+    def __del__(self):
+        pass
+    def __iter__(self):
+        raise NotImplementedError("BUG: Override __iter__() in the trajectory reader!")
+
+    def _check_slice_indices(self, start, stop, skip):
+        if start == None: start = 0
+        if stop == None: stop = len(self)
+        if skip == None: skip = 1
+        if (start < 0): start += len(self)
+        if (stop < 0): stop += len(self)
+        elif (stop > len(self)): stop = len(self)
+        if skip > 0 and stop <= start: 
+            raise IndexError("Stop frame is lower than start frame")
+        if ((start < 0) or (start >= len(self)) or (stop < 0) or (stop > len(self))):
+            raise IndexError("Frame start/stop outside of the range of the trajectory.")
+        return (start, stop, skip)
+
     def __repr__(self):
         return "< %s %r with %d frames of %d atoms (%d fixed) >" % \
             (self.__class__.__name__, self.filename, self.numframes, self.numatoms, self.fixed)
 
 
-    # def _read_next_timestep(self, ts=None)
-    # def __del__(self)
-    # def __iter__(self):
 
 class Writer(IObase):
     """Base class for trajectory writers.

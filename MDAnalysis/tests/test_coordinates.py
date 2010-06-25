@@ -57,6 +57,18 @@ class TestDCDReader(_TestDCD):
         self.dcd[15]  # index is 0-based but frames are 1-based
         assert_equal(self.ts.frame, 16, "jumping to frame 16")
 
+    def test_jump_lastframe_dcd(self):
+        self.dcd[-1]
+        assert_equal(self.ts.frame, 98, "indexing last frame with dcd[-1]") 
+
+    def test_slice_dcd(self):
+        frames = [ts.frame for ts in self.dcd[5:17:3]]
+        assert_equal(frames, [6, 9, 12, 15], "slicing dcd [5:17:3]")
+
+    def test_reverse_dcd(self):
+        frames = [ts.frame for ts in self.dcd[20:5:-1]]
+        assert_equal(frames, range(21,6,-1), "reversing dcd [20:5:-1]")        
+
     def test_numatoms(self):
         assert_equal(self.universe.trajectory.numatoms, 3341, "wrong number of atoms")
 
@@ -195,6 +207,27 @@ class _GromacsReader(TestCase):
         self.trajectory.rewind()
         self.trajectory.next()
         assert_equal(self.ts.frame, 2, "loading frame 2")
+
+    @dec.slow
+    def test_jump_xdrtrj(self):
+        self.trajectory[4]  # index is 0-based but frames are 1-based
+        assert_equal(self.ts.frame, 5, "jumping to frame 5")
+
+    @dec.slow
+    def test_jump_lastframe_xdrtrj(self):
+        self.trajectory[-1]
+        assert_equal(self.ts.frame, 10, "indexing last frame with trajectory[-1]") 
+
+    @dec.slow
+    def test_slice_xdrtrj(self):
+        frames = [ts.frame for ts in self.trajectory[2:9:3]]
+        assert_equal(frames,  [3, 6, 9], "slicing xdrtrj [2:9:3]")
+
+    @dec.slow
+    @dec.knownfailureif(True, "XTC/TRR reverse slicing not implemented for performance reasons")
+    def test_reverse_xdrtrj(self):
+        frames = [ts.frame for ts in self.trajectory[::-1]]
+        assert_equal(frames, range(10,0,-1), "slicing xdrtrj [::-1]")        
 
     @dec.slow
     def test_coordinates(self):

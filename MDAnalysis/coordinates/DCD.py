@@ -131,6 +131,10 @@ class DCDReader(base.Reader):
                 try: yield self._read_next_timestep()
                 except IOError: raise StopIteration
         return iterDCD()
+    def _read_next_timestep(self, ts=None):
+        if ts is None: ts = self.ts
+        ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
+        return ts
     def __getitem__(self, frame):
         if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
             raise TypeError
@@ -140,9 +144,9 @@ class DCDReader(base.Reader):
                 frame = len(self) + frame
             if (frame < 0) or (frame >= len(self)):
                 raise IndexError
-            self._jump_to_frame(frame)
+            self._jump_to_frame(frame)  # XXX required!!
             ts = self.ts
-            ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
+            ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1) # XXX required!!
             return ts
         elif type(frame) == slice: # if frame is a slice object
             if not (((type(frame.start) == int) or (frame.start == None)) and
@@ -154,22 +158,6 @@ class DCDReader(base.Reader):
                 for i in xrange(start, stop, step):
                     yield self[i]
             return iterDCD()
-    def _check_slice_indices(self, start, stop, skip):
-        if start == None: start = 0
-        if stop == None: stop = len(self)
-        if skip == None: skip = 1
-        if (start < 0): start += len(self)
-        if (stop < 0): stop += len(self)
-        elif (stop > len(self)): stop = len(self)
-        if (stop <= start): raise Exception("Stop frame is lower than start frame")
-        if ((start < 0) or (start >= len(self)) or
-           (stop < 0) or (stop > len(self))):
-               raise IndexError
-        return (start, stop, skip)
-    def _read_next_timestep(self, ts=None):
-        if ts is None: ts = self.ts
-        ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
-        return ts
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
         """Return a subset of coordinate data for an AtomGroup
 

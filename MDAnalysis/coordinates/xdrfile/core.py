@@ -285,6 +285,52 @@ class TrjReader(base.Reader):
         self.close_trajectory()
         self.open_trajectory()        
 
+    def _forward_to_frame(self, frameindex):
+        """Slow implementation: must read sequentially.
+
+        .. Note:: *frameindex* starts from 0; i.e. *frameindex* =
+                  frame - 1.
+
+        :TODO: Should we treat frame as 0-based or 1-based??  Right
+               now: 0-based (which is inconsistent) but analogous to
+               DCDReader
+        """
+        self.rewind()
+        if frameindex == 0:
+            return
+        for ts in self:
+            if ts.frame-1 >= frameindex:
+                break
+
+    def __getitem__(self, frame):
+        if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
+            raise TypeError
+        if (numpy.dtype(type(frame)) == numpy.dtype(int)):
+            if (frame < 0):
+                # Interpret similar to a sequence
+                frame = len(self) + frame
+            if (frame < 0) or (frame >= len(self)):
+                raise IndexError("0 <= frame < len(traj) is outside of trajectory boundaries")
+            self._forward_to_frame(frame)
+            return self.ts
+        elif type(frame) == slice: # if frame is a slice object
+            if not (((type(frame.start) == int) or (frame.start == None)) and
+                    ((type(frame.stop) == int) or (frame.stop == None)) and
+                    ((type(frame.step) == int) or (frame.step == None))):
+                raise TypeError("Slice indices are not integers")
+            def iterDCD(start=frame.start, stop=frame.stop, step=frame.step):
+                start, stop, step = self._check_slice_indices(start, stop, step)
+                if step < 0:
+                    raise NotImplementedError("XTC/TRR do not support reverse iterating for performance reasons")
+                for ts in self:
+                    # simple sequential plodding through trajectory --- SLOW!
+                    frameindex = ts.frame - 1
+                    if frameindex < start:  continue
+                    if frameindex >= stop:  break
+                    if (frameindex - start) % step != 0: continue
+                    yield self.ts
+            return iterDCD()
+
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
         raise NotImplementedError("timeseries not available for Gromacs trajectories")
     def correl(self, timeseries, start=0, stop=-1, skip=1):
