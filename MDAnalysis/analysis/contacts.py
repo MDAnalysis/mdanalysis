@@ -92,8 +92,8 @@ class ContactAnalysis(object):
         self.targetdir = targetdir
         self.force = force
 
-        dcdbase = os.path.splitext(os.path.basename(trajectory))[0]
-	output = dcdbase + infix + '_q1q2.dat'
+        trajectorybase = os.path.splitext(os.path.basename(trajectory))[0]
+	output = trajectorybase + infix + '_q1q2.dat'
 	self.output = os.path.join(self.targetdir, output)
 	self.output_bz2 = self.output + '.bz2'    
 
@@ -106,7 +106,7 @@ class ContactAnalysis(object):
         # don't bother if trajectory is empty (can lead to segfaults so better catch it)
         stats = os.stat(trajectory)
         if stats.st_size == 0:
-            warnings.warn('dcd = %(trajectory)s is empty, skipping...' % vars())
+            warnings.warn('trajectory = %(trajectory)s is empty, skipping...' % vars())
             self._skip = True
             return
         # under normal circumstances we do not skip
@@ -116,15 +116,15 @@ class ContactAnalysis(object):
         self.u = MDAnalysis.Universe(topology, trajectory)
 
         if ref1 is None:
-            ref1 = os.path.join(self.targetdir, dcdbase + '_first.pdb')
-            self.u.dcd[0]      # extract first frame
+            ref1 = os.path.join(self.targetdir, trajectorybase + '_first.pdb')
+            self.u.trajectory[0]      # extract first frame
             self.u.atoms.write(ref1)
         self.ref1 = ref1
         if ref2 is None:
-            ref2 = os.path.join(self.targetdir, dcdbase + '_last.pdb')
-            self.u.dcd[-1]     # extract last frame
+            ref2 = os.path.join(self.targetdir, trajectorybase + '_last.pdb')
+            self.u.trajectory[-1]     # extract last frame
             self.u.atoms.write(ref2)
-            self.u.dcd[0]      # rewind, just in case...
+            self.u.trajectory[0]      # rewind, just in case...
         self.ref2 = ref2
 
         r1 = MDAnalysis.Universe(topology, pdbfilename=self.ref1)
@@ -169,7 +169,7 @@ class ContactAnalysis(object):
                          % (self.nref[0], self.nref[1]))
             outbz2.write("# frame  q1  q2   n1  n2\n")
             records = []
-            for ts in self.u.dcd:
+            for ts in self.u.trajectory:
                 frame = ts.frame
                 # use pre-allocated distance array to save a little bit of time
                 self_distance_array(self.ca.coordinates(), result=self.d)
