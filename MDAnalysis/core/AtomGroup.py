@@ -480,13 +480,10 @@ class Universe(object):
              A Charmm/XPLOR PSF topology file or a PDB file; used to define the
              list of atoms. If the file includes bond information, partial
              charges, atom masses, ... then these data will be available to
-             MDAnalysis. A "structure" file (SPF or PDB, in the sense of a
+             MDAnalysis. A "structure" file (PSF or PDB, in the sense of a
              topology) is always required.
           *dcdfilename*
-             A CHARMM DCD trajectory or Gromacs XTC/TRR ; will provide coordinates.
-          *pdbfilename*
-             A PDB structure; provides a single set of coordinates (and acts as
-             a one-frame trajectory).
+             A CHARMM DCD trajectory or Gromacs XTC/TRR or a PDB; will provide coordinates.
         
         This routine tries to do the right thing: 
           1. If a pdb file is provided instead of a psf and neither a dcd nor a
@@ -509,35 +506,22 @@ class Universe(object):
         # trajectory format type (i.e. the extension))
         self.__trajectory = None
 
-        from MDAnalysis.topology import PSFParser, GROParser
-	# first try as a PSF
-        try:
-            struc = PSFParser.parse(psffilename)
-	    #print "Building topology from psf"
-        except PSFParser.PSFParseError, err:
-            # try as a PDB
-            try:
-                from MDAnalysis.topology import PDBParser
-                struc = PDBParser.parse(psffilename)
-		#print "Building topology from pdb"
-		# Use same pdb for coords if no traj file is specified
-                if pdbfilename is None and dcdfilename is None:
-                    pdbfilename = psffilename
-            except PDBParser.PDBParseError, err:
-		# try as a GRO
-                try:
-                    from MDAnalysis.topology import GROParser
-                    struc = GROParser.parse(psffilename)
-		    #print "Building topology from gro"
-		    # Use same gro for coords if no traj file is specified
-               	    if pdbfilename is None and dcdfilename is None:
-                        pdbfilename = psffilename
-			# Haven't finished writing GROReader yet, but this works with .xtc files
-			raise NotImplementedError("Can't yet read coords from .gro files - use an .xtc")
-                except GROParser.GROParseError, err:
-                    raise ValueError("Failed to build a topology from either a psf, pdb or gro (%s)" % err)
+        # for 0.7 we will rename psffile -> topologyfile, and dcdfile -> coordinatefile
+        if not pdbfilename is None:
+            import warnings
+            warnings.warn("Usage of 'pdbfilename=PDB' is deprecated and will be removed. Just use the PDB "
+                          "as the second argument of Universe().", category=DeprecationWarning)
+        topologyfile = psffilename
+        coordinatefile = dcdfilename or pdbfilename
 
-        self.filename = psffilename
+        # build the topology (or at least a list of atoms)
+        try:
+            parser = MDAnalysis.topology.core.get_parser_for(topologyfile)
+            struc = parser(topologyfile)
+        except TypeError, err:
+            raise ValueError("Failed to build a topology from either a psf, pdb or gro (%s)" % err)
+
+        self.filename = topologyfile
         self._psf = struc
         #for data in struc.keys():
         #    setattr(self, data, struc[data])
@@ -556,38 +540,32 @@ class Universe(object):
         #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
         # Let atoms access the universe
         for a in self.atoms: a.universe = self
+
         # Load coordinates; distinguish file format by extension
-        coordinatefile = dcdfilename or pdbfilename
+        if coordinatefile is None:
+            # hack for pdb/gro - only
+            coordinatefile = topologyfile
         self.load_new(coordinatefile)
 
     def load_new(self, filename):
         """Load coordinates from *filename*, using the suffix to detect file format."""
         if filename is None:
             return
-        import os.path
-        ext = os.path.splitext(filename)[-1]
-        if ext.startswith('.'):
-            ext = ext[1:]
-        return self._load_new(ext, filename)
 
-    def _load_new(self, trjtype, filename):
-        """Load coordinates from *filename* of file type *trjtype*."""
-        import MDAnalysis.coordinates
-        try:
-            TRJReader = MDAnalysis.coordinates._trajectory_readers[trjtype]
-        except KeyError:
-            raise NotImplementedError("Trajectories of type %r can not be read; only\n%r"
-                                      % (trjtype, MDAnalysis.coordinates._trajectory_readers.keys()))
+        import MDAnalysis.coordinates.core
+
+        TRJReader = MDAnalysis.coordinates.core.get_reader_for(filename)
         self.trajectory = TRJReader(filename)    # unified trajectory API
+        trjtype = self.trajectory.format.lower()
         self.__dict__[trjtype] = self.trajectory # legacy (deprecated)
         # Make sure that they both have the same number of atoms
         if (self.trajectory.numatoms != self.atoms.numberOfAtoms()):
-            raise ValueError("The psf and %s files don't have the same number of atoms!" % trjtype)
+            raise ValueError("The topology and %s trajectory files  don't have the same number of atoms!" % trjtype)
         # hack for PDB
         if trjtype == "pdb":
             # add B-factor to atoms
             for a, pdbatom in zip(self.atoms,self.trajectory.pdb.get_atoms()):
-                a.bfactor = pdbatom.get_bfactor()
+                a.bfactor = pdbatom.get_bfactor()  ## does this work with mmLib??
         return filename, trjtype
             
     def selectAtoms(self, sel, *othersel):

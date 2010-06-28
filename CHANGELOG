@@ -25,9 +25,11 @@ The rules for this file:
         * write selections for other codes from AtomGroups (VMD,
           pymol, CHARMM, Gromacs ndx)
         * gro reader
+	* better API for loading a topology and a coordinate file
+	  in Universe()
         * trajectory reader: DCDReader can reverse trajectory with
           negative step increment; XTC/TRRReader can do simple
-          (forward) slices by doing (slow!) sequential iteration
+          (forward) slices by doing (slow!) sequential iteration	  
 
 05/28/10 orbeckst, denniej0
         * 0.6.2 release

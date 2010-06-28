@@ -5,6 +5,7 @@
              masses are correct.
 """
 
+import os.path
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
     import Bio.PDB
@@ -24,8 +25,9 @@ def parse(pdbfile):
     .. SeeAlso:: The *structure* dict is defined in
                  :func:`MDAnalysis.topology.PSFParser.parse`.
     """
-    if pdbfile[-4:] == ".gro":
-        raise PDBParseError
+    root,ext = os.path.splitext(pdbfile)
+    if ext.lower() not in ('.pdb', '.ent'):
+        raise PDBParseError("%(pdbfile)r is probably not in PDB format (wrong extension).")
     structure = {}
     # use Sloppy PDB parser to cope with big PDBs!
     pdb =  MDAnalysis.coordinates.pdb.extensions.get_structure(pdbfile,"0UNK")

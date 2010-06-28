@@ -1,4 +1,17 @@
-"""Common functions for topology building."""
+"""
+:mod:`MDAnalysis.topology.core` --- Common functions for topology building
+==========================================================================
+
+.. function:: build_segments
+.. function:: build_bondlist
+.. class:: Bond
+
+.. function:: get_parser_for
+.. function:: guess_format
+
+"""
+import os.path
+import MDAnalysis.topology
 
 def build_segments(atoms):
     from MDAnalysis.core.AtomGroup import Residue, Segment
@@ -54,3 +67,30 @@ def build_bondlists(atoms, bonds):
         b = Bond(atom1, atom2)
         atom1.bonds.append(b)
         atom2.bonds.append(b)
+
+def get_parser_for(filename):
+    """Return the appropriate topology parser for *filename*."""
+    return MDAnalysis.topology._topology_parsers[guess_format(filename)]
+
+def guess_format(filename):
+    """Returns the type of topology file *filename*.
+
+    The current heuristic simply looks at the filename extension but
+    more complicated probes could be implemented here or in the
+    individual packages (e.g. as static methods).
+    """
+
+    # simple extension checking... something more complicated is left
+    # for the ambitious
+    root, ext = os.path.splitext(filename)
+    try:
+        if ext.startswith('.'):
+            ext = ext[1:]
+        ext = ext.lower()
+    except:
+        raise TypeError("Cannot determine topology type for %r" % filename)
+    
+    if not ext in MDAnalysis.topology._topology_parsers:
+        raise TypeError("Unknown topology extension %r from %r; only %r are implemented in MDAnalysis." % 
+                        (ext, filename, MDAnalysis.topology._topology_parsers.keys()))
+    return ext
