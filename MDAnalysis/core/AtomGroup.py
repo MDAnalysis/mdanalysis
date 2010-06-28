@@ -30,6 +30,7 @@ The important classes and functions:
 .. autofunction:: asUniverse
 .. autoexception:: SelectionError
 """
+import warnings
 
 import numpy
 from MDAnalysis import SelectionError
@@ -138,7 +139,6 @@ class AtomGroup(object):
     
     def _atoms():
         def fget(self):
-            import warnings
             warnings.warn("Usage of '_atoms' is deprecated. Use 'atoms' instead.", category=DeprecationWarning, stacklevel=2)
             return self.__atoms
         return locals()
@@ -508,7 +508,6 @@ class Universe(object):
 
         # for 0.7 we will rename psffile -> topologyfile, and dcdfile -> coordinatefile
         if not pdbfilename is None:
-            import warnings
             warnings.warn("Usage of 'pdbfilename=PDB' is deprecated and will be removed. Just use the PDB "
                           "as the second argument of Universe().", category=DeprecationWarning)
         topologyfile = psffilename
@@ -554,9 +553,18 @@ class Universe(object):
 
         import MDAnalysis.coordinates.core
 
-        TRJReader = MDAnalysis.coordinates.core.get_reader_for(filename)
+        try:
+            TRJReader = MDAnalysis.coordinates.core.get_reader_for(filename)
+        except TypeError, err:
+            # only warn because in the past it was possible to build a topology-only
+            # Universe and populate it later with coordinates.
+            warnings.warn("Universe.load_new() cannot find an appropriate coordinate reader "
+                          "for file %r. Universe will be built without coordinates: "
+                          "use load_new() later with an appropriate trajectory." % filename,
+                          category=UserWarning)
+            return None, None
         self.trajectory = TRJReader(filename)    # unified trajectory API
-        trjtype = self.trajectory.format.lower()
+        trjtype = self.trajectory.format.lower() # trjtype is always lower case (see coordinates._frame_readers)
         self.__dict__[trjtype] = self.trajectory # legacy (deprecated)
         # Make sure that they both have the same number of atoms
         if (self.trajectory.numatoms != self.atoms.numberOfAtoms()):
