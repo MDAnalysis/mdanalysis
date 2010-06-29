@@ -8,9 +8,9 @@ directory. File names are in all caps. Use as ::
   from MDAnalysis.tests.datafiles import *
 
 """
-__all__ = ["PSF", "DCD",                 # Charmm
-           "PDB_small",                  # pdb
-           "PDB", "XTC", "TRR", "TPR"]   # Gromacs
+__all__ = ["PSF", "DCD",                        # CHARMM
+           "PDB_small",                         # PDB
+           "PDB", "GRO", "XTC", "TRR", "TPR"]   # Gromacs
 
 from pkg_resources import resource_filename
 

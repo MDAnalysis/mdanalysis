@@ -5,52 +5,199 @@ from numpy.testing import *
 
 from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,XTC,TRR,GRO
 
-class TestPDBReader(TestCase):
+def atom_distance(a, b):
+    """Calculate the distance between two atoms a and b."""
+    r = a.pos - b.pos
+    return np.sqrt(np.sum(r**2))
+
+class RefAdKSmall(object):
+    """Mixin class to provide comparison numbers.
+
+    Based on small PDB with AdK (:data:`PDB_small`).
+
+    .. Note:: All distances must be in ANGSTROEM as this is the
+       MDAnalysis default unit. All readers must return Angstroem by
+       default.
+    """
+    ref_coordinates = {
+        'A10CA': np.array([ -1.19799995,   7.9369998 ,  22.65399933]),
+        }
+    ref_distances = {'endtoend': 11.016959}
+    ref_E151HA2_index = 2314
+    ref_numatoms = 3341
+
+class RefAdK(object):
+    """Mixin class to provide comparison numbers.
+
+    Based on PDB/GRO with AdK in water + Na+ (:data:`PDB`).
+
+    .. Note:: All distances must be in ANGSTROEM as this is the
+       MDAnalysis default unit. All readers must return Angstroem by
+       default.
+    """
+    ref_coordinates = {
+        'A10CA': np.array([ 62.97600174,  62.08800125,  20.2329998 ]),  # Angstroem as MDAnalysis unit!!
+        }
+    ref_distances = {'endtoend': 9.3513174}
+    ref_E151HA2_index = 2314
+    ref_numatoms = 47681
+    ref_Na_sel_size = 4
+
+
+class TestPDBReader(TestCase, RefAdKSmall):
     def setUp(self):
-        self.universe = mda.Universe(PDB_small)        
+        self.universe = mda.Universe(PDB_small) 
+        self.prec = 6  # 6 decimals in A in PDB
 
     def test_load_pdb(self):
         U = self.universe
-        assert_equal(len(U.atoms), 3341, "load Universe from small PDB")
+        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from small PDB")
         assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0], 
-                     U.atoms[2314], "Atom selections")
+                     U.atoms[self.ref_E151HA2_index], "Atom selections")
 
     def test_numatoms(self):
-        assert_equal(self.universe.trajectory.numatoms, 3341, "wrong number of atoms")
+        assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
 
     def test_numframes(self):
         assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames in pdb")
 
-class TestGROReader(TestCase):
+    def test_coordinates(self):
+        A10CA = self.universe.s4AKE.CA[10]
+        assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], 
+                            err_msg="wrong coordinates for A10:CA")
+        
+    def test_distances(self):
+        NTERM = self.universe.s4AKE.N[0]
+        CTERM = self.universe.s4AKE.C[-1]
+        d = atom_distance(NTERM, CTERM)
+        assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
+                            err_msg="distance between M1:N and G214:C")
+    
+class TestPSF_PDBReader(TestPDBReader):
+    def setUp(self):
+        self.universe = mda.Universe(PSF, PDB_small)
+        self.prec = 6
+
+class TestGROReader(TestCase, RefAdK):
     def setUp(self):
 	self.universe = mda.Universe(GRO)
+        self.prec = 2  # lower prec in gro!! (3 decimals nm -> 2 decimals in Angstroem)
 
     def test_load_gro(self):
         U = self.universe
-        assert_equal(len(U.atoms), 47681, "load Universe from small GRO")
+        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from small GRO")
         assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0], 
-                     U.atoms[2314], "Atom selections")
+                     U.atoms[self.ref_E151HA2_index], "Atom selections")
 
     def test_numatoms(self):
-        assert_equal(self.universe.trajectory.numatoms, 47681, "wrong number of atoms")
+        assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
 
     def test_numframes(self):
         assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames")
 
+    def test_coordinates(self):
+        A10CA = self.universe.SYSTEM.CA[10]
+        assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], self.prec,
+                            err_msg="wrong coordinates for A10:CA")
+        
+    def test_distances(self):
+        NTERM = self.universe.SYSTEM.N[0]
+        CTERM = self.universe.SYSTEM.C[-1]
+        d = atom_distance(NTERM, CTERM)
+        assert_almost_equal(d, self.ref_distances['endtoend'], self.prec, 
+                            err_msg="distance between M1:N and G214:C")
 
-class TestPDBReaderBig(TestCase):
+    def test_selection(self):
+        na = self.universe.selectAtoms('resname NA+')
+        assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
+
+class TestGROReaderNoConversion(TestCase):
+    def setUp(self):
+        mda.core.flags['convert_gromacs_lengths'] = False
+        self.universe = mda.Universe(GRO)
+        self.ts = self.universe.trajectory.ts
+        # 3 decimals on nm in gro but we compare to the distance
+        # computed from the pdb file, so the effective precision is 2 again.
+        # (Otherwise the distance test fails: 
+        #  Arrays are not almost equal distance between M1:N and G214:C
+        #    ACTUAL: 0.93455122920041123
+        #    DESIRED: 0.93513173999999988
+        self.prec = 2
+
+    def tearDown(self):
+        mda.core.flags['convert_gromacs_lengths'] = True  # default
+
+    def test_coordinates(self):
+        # note: these are the native coordinates in nm; for the test to succeed:
+        assert_equal(mda.core.flags['convert_gromacs_lengths'], False, 
+                     "oops, mda.core.flags['convert_gromacs_lengths'] should be False for this test")
+        A10CA = self.universe.SYSTEM.CA[10]
+        assert_almost_equal(A10CA.pos, RefAdK.ref_coordinates['A10CA']/10.0,  # coordinates in nm 
+                            self.prec,
+                            err_msg="wrong native coordinates (in nm) for A10:CA")
+        
+    def test_distances(self):
+        # note: these are the native coordinates in nm; for the test to succeed:
+        assert_equal(mda.core.flags['convert_gromacs_lengths'], False, 
+                     "oops, mda.core.flags['convert_gromacs_lengths'] should be False for this test")
+        NTERM = self.universe.SYSTEM.N[0]
+        CTERM = self.universe.SYSTEM.C[-1]
+        d = atom_distance(NTERM, CTERM)
+        assert_almost_equal(d, RefAdK.ref_distances['endtoend']/10.0,  # coordinates in nm 
+                            self.prec,
+                            err_msg="distance between M1:N and G214:C")
+        
+
+class TestPDBReaderBig(TestCase, RefAdK):
+    # do 'slow' decorators work on setUp?? ... apparently
+    @dec.slow
+    def setUp(self):
+        self.universe = mda.Universe(PDB)
+        self.prec = 6
+
     @dec.slow
     def test_load_pdb(self):
-        U = mda.Universe(PDB)
-        assert_equal(len(U.atoms), 47681, "load Universe from big PDB")
+        U = self.universe
+        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from big PDB")
         assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0], 
-                     U.atoms[2314], "Atom selections")
-        na = U.selectAtoms('resname NA+')
-        assert_equal(len(na), 4, "Atom selection of last atoms in file")
+                     U.atoms[self.ref_E151HA2_index], "Atom selections")
+
+    @dec.slow
+    def test_selection(self):
+        na = self.universe.selectAtoms('resname NA+')
+        assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
+
+    @dec.slow
+    def test_numatoms(self):
+        assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
+
+    @dec.slow
+    def test_numframes(self):
+        assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames")
+
+    @dec.slow
+    def test_coordinates(self):
+        A10CA = self.universe.SYSTEM.CA[10]
+        assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], self.prec,
+                            err_msg="wrong coordinates for A10:CA")
+
+    @dec.slow        
+    def test_distances(self):
+        NTERM = self.universe.SYSTEM.N[0]
+        CTERM = self.universe.SYSTEM.C[-1]
+        d = atom_distance(NTERM, CTERM)
+        assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
+                            err_msg="wrong distance between M1:N and G214:C")
+
+    @dec.slow
+    def test_selection(self):
+        na = self.universe.selectAtoms('resname NA+')
+        assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
+
 
 
 def TestDCD_Issue32():
-    """Issue 32: 0-size dcds lead to a sgefault: now caught with IOError"""
+    """Issue 32: 0-size dcds lead to a segfault: now caught with IOError"""
     assert_raises(IOError, mda.Universe, PSF, DCD_empty)
 
 class _TestDCD(TestCase):
@@ -209,7 +356,7 @@ def compute_correl_references():
 class _GromacsReader(TestCase):
     filename = None
     def setUp(self):
-        self.universe = mda.Universe(PDB, self.filename)
+        self.universe = mda.Universe(GRO, self.filename) # loading from GRO is 4x faster than the PDB reader
         self.trajectory = self.universe.trajectory
         self.ts = self.universe.coord
     
