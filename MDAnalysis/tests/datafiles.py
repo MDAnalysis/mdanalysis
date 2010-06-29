@@ -20,6 +20,7 @@ DCD_empty = resource_filename(__name__, 'data/empty.dcd')
 
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 
+GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')

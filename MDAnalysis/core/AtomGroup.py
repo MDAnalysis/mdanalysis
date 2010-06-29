@@ -507,13 +507,13 @@ class Universe(object):
 
         :Arguments:
           *psffilename*
-             A Charmm/XPLOR PSF topology file or a PDB file; used to define the
+             A Charmm/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to define the
              list of atoms. If the file includes bond information, partial
              charges, atom masses, ... then these data will be available to
-             MDAnalysis. A "structure" file (PSF or PDB, in the sense of a
+             MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
              topology) is always required.
           *dcdfilename*
-             A CHARMM DCD trajectory or Gromacs XTC/TRR or a PDB; will provide coordinates.
+             A CHARMM DCD trajectory or Gromacs XTC/TRR/GRO or PDB; will provide coordinates.
         
         This routine tries to do the right thing: 
           1. If a pdb file is provided instead of a psf and neither a dcd nor a

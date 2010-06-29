@@ -16,53 +16,56 @@ from base import Timestep
 
 class GROReader(base.Reader):
 	format = 'GRO'
-	units = {'time': 'ps', 'length': 'nm'}
+	units = {'time': None, 'length': 'nm'}
 
 	def __init__(self,grofilename):
-		atoms = []
+		self.grofilename = grofilename
+		self.filename = self.grofilename
+		coords_list = []
 
-		atom_iter = 0
 		grofile = open(grofilename , 'r')
+
+		# Read first two lines to get number of atoms
+		grofile.readline()
+		total_atnums = int(grofile.readline())
+		grofile.seek(0)
 		for linenum,line in enumerate(grofile):
-			try:
-				# Store the various parameters
-				# resid, resname, name, number = int(line[0:5]) , (line[5:15].split())[0] , (line[5:15].split())[1] , int(line[15:20])  Generate number automatically from an iter
-				resid, resname, name, number = int(line[0:5]) , (line[5:15].split())[0] , (line[5:15].split())[1] , int(line[15:20])
-				# Not attempting to read type, segid, mass or charge
-				type , segid , mass , charge = ("?" , 0 , 0 , 0)
-				# Do these work with >= 4 decimal points??
-				coords = numpy.array( [ float(line[20:28]) , float(line[28:36]) , float(line[36:44]) ] )
-
-				QueryAtomLine = True
-				atom_iter += 1
-
-			except ValueError:
-				QueryAtomLine = False
-			except IndexError:
-				QueryAtomLine = False
-			except SyntaxError:
-				QueryAtomLine = False
-			# If the line can't otherwise be read properly then an error will be raised
-
-			if QueryAtomLine == True:
-				# Create an Atom instance
-				atom_desc = Atom( atom_iter-1 , name , type , resname , resid , segid , mass , charge)
-				# And add it to the list of atoms
-				atoms.append(atom_desc)
-
-			elif QueryAtomLine == False:
-				# Not currently attempting to pick up comment, number of particles, or box info
-				pass
+			# Should work with any precision
+			if linenum not in (0,1,total_atnums+2):
+				coords_list.append( numpy.array( map( float , line[20:].split()[0:3] ) ) )
+			# Unit cell footer
+			elif linenum == total_atnums+2:
+				unitcell = numpy.array( map( float , line.split() ) )
 
 		grofile.close()
 
-		structure = {}
-		structure["_atoms"] = atoms
-		# Other attributes are not read since they are not included in .gro files
-		other_attrs = ["_bonds" , "_angles" , "_dihe" , "_impr" , "_donors" , "_acceptors"]
-		for attr in other_attrs:
-			structure[attr] = []
+		self.numatoms = len(coords_list)
+		coords_list = numpy.array(coords_list)
+		self.ts = Timestep(coords_list)
+		# ts._unitcell layout is [A, alpha, B, beta, gamma, C]
+		# Should be setting the ts.dimensions property, rather than ts._unitcell??
+		self.ts._unitcell[0] = unitcell[0]
+		self.ts._unitcell[2] = unitcell[1]
+		self.ts._unitcell[5] = unitcell[2]
+		self.numframes = 1
+		self.fixed = 0
+		self.skip = 1
+		self.periodic = False
+		self.delta = 0
+		self.skip_timestep = 1
+		self.units = {'time': None, 'length': 'nm'}
 
-		return structure
+	def __len__(self):
+		return self.numframes
+	def __iter__(self):
+		yield self.ts  # Just a single frame
+		raise StopIteration
+	def __getitem__(self, frame):
+		if frame != 0:
+			raise IndexError('GROReader can only read a single frame at index 0')
+		return self.ts
+	def _read_next_timestep(self):
+		raise Exception, "GROReader can only read a single frame"
+
 
 

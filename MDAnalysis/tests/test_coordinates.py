@@ -3,7 +3,7 @@ import MDAnalysis as mda
 import numpy as np
 from numpy.testing import *
 
-from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,XTC,TRR
+from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,XTC,TRR,GRO
 
 class TestPDBReader(TestCase):
     def setUp(self):
@@ -20,6 +20,22 @@ class TestPDBReader(TestCase):
 
     def test_numframes(self):
         assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames in pdb")
+
+class TestGROReader(TestCase):
+    def setUp(self):
+	self.universe = mda.Universe(GRO)
+
+    def test_load_gro(self):
+        U = self.universe
+        assert_equal(len(U.atoms), 47681, "load Universe from small GRO")
+        assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0], 
+                     U.atoms[2314], "Atom selections")
+
+    def test_numatoms(self):
+        assert_equal(self.universe.trajectory.numatoms, 47681, "wrong number of atoms")
+
+    def test_numframes(self):
+        assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames")
 
 
 class TestPDBReaderBig(TestCase):
