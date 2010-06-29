@@ -238,12 +238,42 @@ class AtomGroup(object):
         Ixz = Izx = -1*reduce(lambda t,a: t+a[0]*a[1][0]*a[1][2], values, 0.)
         Iyz = Izy = -1*reduce(lambda t,a: t+a[0]*a[1][1]*a[1][2], values, 0.)
         return numpy.array([[Ixx, Ixy, Ixz],[Iyx, Iyy, Iyz],[Izx, Izy, Izz]])
-    def principleAxes(self):
+
+    def principalAxes(self):
+        """Calculate the principal axes from the moment of inertia.
+
+           e1,e2,e3 = selection.principalAxes()
+
+        The eigenvectors are sorted by eigenvalue, i.e. the first one
+        corresponds to the highest eigenvalue and is thus the first principal axes.
+
+        :Returns: numpy.array ``v`` with ``v[0]`` as first, ``v[1]`` as second,
+                  and ``v[2]`` as third eigenvector.
+        """
         from numpy.linalg import eig
         eigenval, eigenvec = eig(self.momentOfInertia())
         # Sort
         indices = numpy.argsort(eigenval)
-        return eigenvec[:,indices] 
+        # Return transposed in more logical form. See Issue 33.
+        return eigenvec[:,indices].T
+
+    # old behaviour, wrong spelling, confusing behaviour (Issue 33)
+    def principleAxes(self):
+        """Calculate the principal axes from the moment of inertia.
+
+        :Returns: 3x3 numpy array *v*; the first eigenvector is
+                  ``v[:,0]``, the second one ``v[:,1]``; ``v[0]`` is
+                  the vector of the three x-components. Transpose to have the first index 
+
+        .. warning:: This method is *deprecated* and will be removed. 
+                     Use :meth:`principalAxes` instead.
+        """
+        warnings.warn("You are using the old principleAxes() method which might go away soon. "
+                      "Please use principalAxes() (spelling!) which CHANGED the way eigenvectors "
+                      "are returned. CHECK THE DOCS!",
+                      category=DeprecationWarning)
+        return self.principalAxes().T
+
     def coordinates(self, ts=None, copy=False):
         if ts == None:
             ts = self.universe.coord
