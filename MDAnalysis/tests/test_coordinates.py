@@ -2,6 +2,7 @@ import MDAnalysis as mda
 
 import numpy as np
 from numpy.testing import *
+from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,XTC,TRR,GRO
 
@@ -195,6 +196,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
         assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
 
 
+@attr('issue')
 def TestDCD_Issue32():
     """Issue 32: 0-size dcds lead to a segfault: now caught with IOError"""
     assert_raises(IOError, mda.Universe, PSF, DCD_empty)
@@ -412,6 +414,7 @@ class _GromacsReader(TestCase):
                                   err_msg="coords of Ca of resid 122 do not match for frame 3")
 
     @dec.slow
+    @attr('issue')
     def test_unitcell(self):
         """Check for fixed Issue 34"""
         self.universe.trajectory.rewind()

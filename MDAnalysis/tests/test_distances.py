@@ -2,6 +2,7 @@ import MDAnalysis
 
 import numpy as np
 from numpy.testing import *
+from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF,DCD,PDB_small,PDB,XTC,TRR
 
@@ -10,7 +11,8 @@ class TestDistanceArrayDCD(TestCase):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.dcd = self.universe.trajectory
         self.ca = self.universe.selectAtoms('name CA')
-    
+
+    @attr('issue')    
     def test_simple(self):
         U = self.universe
         self.dcd.rewind()
@@ -22,6 +24,7 @@ class TestDistanceArrayDCD(TestCase):
         assert_almost_equal(d.min(), 0.11981228170520701, err_msg="wrong minimum distance value")
         assert_almost_equal(d.max(), 53.572192429459619,  err_msg="wrong maximum distance value")
 
+    @attr('issue')
     def test_copyTrue(self):
         U = self.universe
         self.dcd.rewind()
@@ -34,6 +37,7 @@ class TestDistanceArrayDCD(TestCase):
         assert_almost_equal(d.max(), 53.572192429459619,  err_msg="wrong maximum distance value")
 
     @dec.knownfailureif(True, "Using copy=False in a distance array is a known failure.")
+    @attr('issue')
     def test_copyFalse(self):
         # This will fail at the moment until the underlying C-code is improved.
         # Should give the same answer as copy=True but does not, see Issue 4
@@ -51,6 +55,7 @@ class TestDistanceArrayDCD(TestCase):
                             err_msg="wrong maximum distance value with copy=False, see Issue 4")
 
     @dec.knownfailureif(True, "Using copy=False in a distance array is a known failure.")
+    @attr('issue')
     def test_Issue4(self):
         U = self.universe
         self.dcd.rewind()
@@ -120,6 +125,7 @@ class TestSelfDistanceArrayDCD(TestCase):
         assert_almost_equal(d.max(), 52.4702570624190590, err_msg="wrong maximum distance value")
 
     @dec.knownfailureif(True, "Using copy=False in a distance array is a known failure.")
+    @attr('issue')
     def test_copyFalse(self):
         # This will fail at the moment until the underlying C-code is improved.
         # Should give the same answer as copy=True but does not, see Issue 4
@@ -136,6 +142,7 @@ class TestSelfDistanceArrayDCD(TestCase):
                             err_msg="wrong maximum distance value with copy=False, see Issue 4")
 
     @dec.knownfailureif(True, "Using copy=False in a distance array is a known failure.")
+    @attr('issue')
     def test_Issue4(self):
         U = self.universe
         self.dcd.rewind()
