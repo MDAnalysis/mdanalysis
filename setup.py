@@ -163,7 +163,7 @@ if __name__ == '__main__':
           package_dir       = {'MDAnalysis': 'MDAnalysis'},
           package_data      = {'MDAnalysis':
                                    ['tests/data/*.psf','tests/data/*.dcd','tests/data/*.pdb',
-                                    'tests/data/*.xtc','tests/data/*.trr'],
+                                    'tests/data/*.gro', 'tests/data/*.xtc','tests/data/*.trr'],
                                },
           ext_package       = 'MDAnalysis',
           ext_modules       = extensions,
