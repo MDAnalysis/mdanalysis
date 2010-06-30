@@ -83,7 +83,7 @@ class GROReader(base.Reader):
 		if len(unitcell) == 3:
 			# special case: a b c --> (a 0 0) (b 0 0) (c 0 0)
 			# see Timestep.dimensions() above for format (!)
-			self.ts._unitcell[[:3]] = unitcell
+			self.ts._unitcell[:3] = unitcell
 		elif len(unitcell) == 9:
 			self.ts._unitcell[:] = unitcell   # fill all
 		else:   # or maybe raise an error for wrong format??			
