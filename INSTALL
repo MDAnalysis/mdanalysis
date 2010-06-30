@@ -19,9 +19,20 @@ build the library some C and C++ code needs to be compiled. Thus you will need
 See *Additional non-standard packages* below for what else you need at
 run time.
 
-The source code can be obtained from the SVN repository. The primary
-dependency is numpy, although pylab is a useful addition to plot
-analyses generated with MDAnalysis. 
+The source code can be obtained from the SVN repository or tar files
+from http://code.google.com/p/mdanalysis. The primary dependency is
+numpy, although pylab is a useful addition to plot analyses generated
+with MDAnalysis.
+
+See also 
+
+  http://code.google.com/p/mdanalysis/wiki/Install 
+
+for current instructions (similar to this INSTALL file) and
+ 
+  http://code.google.com/p/mdanalysis/wiki/InstallRecipes 
+
+for working installation examples.
 
 
 Getting the source 

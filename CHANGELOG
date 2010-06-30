@@ -10,15 +10,11 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/10 orbeckst, denniej0, danny.parton
-        (Running list of enhancements, to be edited for final
-        entry when stable changes are merged back into trunk)
+07/??/10 orbeckst, denniej0, danny.parton
 
+	* 0.6.3 release
         * minimum requirement is python 2.4 (using with_statement in
           the analysis module and we have not tested on 2.3 in a while)
-        * reads hydrogen bond donor/acceptor list from psf and sets up
-          structures for hydrogen bonding analysis
-          TODO: H-BOND ANALYSIS NOT WORKING YET
         * analysis modules:
           - leaflets
           - native contacts
@@ -47,7 +43,7 @@ The rules for this file:
           base units (uses core.flags['convert_gromacs_lengths'] = True)
 	* more test cases
         * *really* FIXED Issue 16 (can easy_install from tar file)
-	* FIXED a bug in AtomGroup.principalAxes()
+	* FIXED a bug in AtomGroup.principleAxes()
 	* added dependency information to setup.py (numpy and
   	  biopython by default; nose for tests)
 
