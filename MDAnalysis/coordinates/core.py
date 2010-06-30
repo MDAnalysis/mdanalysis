@@ -10,6 +10,13 @@ Important base classes are collected in :mod:`MDAnalysis.coordinates.base`.
 """
 import os.path
 import MDAnalysis.coordinates
+import numpy
+
+try:
+    from numpy import rad2deg   # numpy 1.3+
+except ImportError:
+    def rad2deg(x):             # no need for the numpy out=[] argument 
+        return 180.0*x/numpy.pi
 
 def get_reader_for(filename):
     """Return the appropriate topology parser for *filename*."""
@@ -36,6 +43,15 @@ def guess_format(filename):
         raise TypeError("Unknown coordinate trajectory extension %r from %r; only %r are implemented in MDAnalysis." % 
                         (ext, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
     return ext
+
+def _veclength(v):
+    """Length of vector *v*."""
+    return numpy.sqrt(numpy.dot(v,v))
+
+def _angle(a,b):
+    """Angle between two vectors *a* and *b* in degrees."""
+    angle = numpy.arccos(numpy.dot(a,b) / (_veclength(a)*_veclength(b)))
+    return rad2deg(angle)
 
 
 

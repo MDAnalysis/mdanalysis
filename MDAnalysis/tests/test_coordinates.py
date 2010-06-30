@@ -195,7 +195,6 @@ class TestPDBReaderBig(TestCase, RefAdK):
         assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
 
 
-
 def TestDCD_Issue32():
     """Issue 32: 0-size dcds lead to a segfault: now caught with IOError"""
     assert_raises(IOError, mda.Universe, PSF, DCD_empty)
@@ -358,6 +357,7 @@ class _GromacsReader(TestCase):
     def setUp(self):
         self.universe = mda.Universe(GRO, self.filename) # loading from GRO is 4x faster than the PDB reader
         self.trajectory = self.universe.trajectory
+        self.prec = 3
         self.ts = self.universe.coord
     
     @dec.slow
@@ -410,6 +410,15 @@ class _GromacsReader(TestCase):
         # low precision match (2 decimals in A, 3 in nm) because the above are the trr coords
         assert_array_almost_equal(ca.coordinates(), ca_Angstrom, 2,
                                   err_msg="coords of Ca of resid 122 do not match for frame 3")
+
+    @dec.slow
+    def test_unitcell(self):
+        """Check for fixed Issue 34"""
+        self.universe.trajectory.rewind()
+        uc = self.ts.dimensions
+        ref_uc = np.array([ 80.017,  80.017,  80.017,  90., 60., 60.], dtype=np.float32)
+        assert_array_almost_equal(uc, ref_uc, self.prec, err_msg="unit cell dimensions (rhombic dodecahedron)")
+
 
 class TestXTCReader(_GromacsReader):
     filename = XTC

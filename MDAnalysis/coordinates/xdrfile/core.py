@@ -8,12 +8,6 @@ import libxdrfile, statno
 from MDAnalysis.coordinates import base
 import MDAnalysis.core
 
-try:
-    from numpy import rad2deg   # numpy 1.3+
-except ImportError:
-    def rad2deg(x):             # no need for the numpy out=[] argument 
-        return 180.0*x/numpy.pi
-
 class Timestep(base.Timestep):
     """Timestep for a Gromacs trajectory."""
     def __init__(self, arg):
@@ -67,23 +61,16 @@ class Timestep(base.Timestep):
         - beta = angle(e1, e3)
         - gamma = angle(e2, e3)
         """
+        from MDAnalysis.coordinates.core import _veclength, _angle
         # Layout of unitcell is [X, Y, Z] with the primitive cell vectors
-        x = self._unitcell[:,0]
-        y = self._unitcell[:,1]
-        z = self._unitcell[:,2]
+        x = self._unitcell[0]
+        y = self._unitcell[1]
+        z = self._unitcell[2]
         A, B, C = [_veclength(v) for v in x,y,z]
         alpha =  _angle(x,y)
         beta  =  _angle(x,z)
         gamma =  _angle(y,z)
         return numpy.array([A,B,C,alpha,beta,gamma])
-
-def _veclength(v):
-    return numpy.sqrt(numpy.dot(v,v))
-
-def _angle(a,b):
-    angle = numpy.arccos(numpy.dot(a,b) / (_veclength(a)*_veclength(b)))
-    return rad2deg(angle)
-
 
 class TrjReader(base.Reader):
     """Generic base class for reading Gromacs trajectories inside MDAnalysis.
@@ -271,8 +258,8 @@ class TrjReader(base.Reader):
                           (self.format, statno.errorcode[ts.status]), self.filename)
         if self.convert_units:
             self.convert_pos_from_native(ts._pos)             # in-place !
-            self.convert_pos_from_native(ts._unitcell)        # in-place !
-            ts.time = self.convert_time_from_native(ts.time)  # in-place does not work with scalars (?)
+            self.convert_pos_from_native(ts._unitcell)        # in-place ! (note: xtc/trr contain unit vecs!)
+            ts.time = self.convert_time_from_native(ts.time)  # in-place does not work with scalars
         ts.frame += 1
         return ts
 

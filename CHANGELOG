@@ -32,6 +32,7 @@ The rules for this file:
           (forward) slices by doing (slow!) sequential iteration
         * deprecated principleAxes() and introduced principalAxes()
           with less confusing return values (Issue 33).
+	* fixed wrong unitcell dimensions for XTC/TRR (Issue 34)
 
 05/28/10 orbeckst, denniej0
         * 0.6.2 release
