@@ -82,11 +82,11 @@ class GROReader(base.Reader):
 		self.ts._unitcell = numpy.zeros(9, dtype=numpy.float32)   # GRO has 9 entries 
 		if len(unitcell) == 3:
 			# special case: a b c --> (a 0 0) (b 0 0) (c 0 0)
-			# see dimensions() below for format (!)
-			self.ts._unitcell[[0,1,7]] = unitcell
+			# see Timestep.dimensions() above for format (!)
+			self.ts._unitcell[[:3]] = unitcell
 		elif len(unitcell) == 9:
 			self.ts._unitcell[:] = unitcell   # fill all
-		else:
+		else:   # or maybe raise an error for wrong format??			
 			import warnings
 			warnings.warn("GRO unitcell has neither 3 nor 9 entries --- might be wrong.")
 			self.ts._unitcell[:len(unitcell)] = unitcell   # fill linearly ... not sure about this
