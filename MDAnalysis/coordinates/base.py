@@ -151,6 +151,11 @@ class Reader(IObase):
         """Position at beginning of trajectory"""
         self[0]
 
+    @property
+    def dt(self):
+        """Time between two trajectory frames in picoseconds, rounded to 4 decimals."""
+        return round(self.skip_timestep * self.convert_time_from_native(self.delta), 4)
+
     def _read_next_timestep(self, ts=None):
         # Example from DCDReader:
         #     if ts is None: ts = self.ts

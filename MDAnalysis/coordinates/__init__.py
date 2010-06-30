@@ -158,7 +158,7 @@ Attributes
      integrator time step (in native units); hence the "length" 
      of a trajctory frame is  skip_timestep*delta time units
  periodic
-     contains box information for periodic boundary conditions (?)
+     contains box information for periodic boundary conditions (???)
  ts
      the :class:`~base.Timestep` object; typically customized for each
      trajectory format and derived from :class:`base.Timestep`.
@@ -169,6 +169,11 @@ Attributes
  format
      string that identifies the file format, e.g. "DCD", "PDB", "CRD", "XTC",
      "TRR"
+ dt
+     time between frames in ps; a managed attribute (read only) that computes
+     on the fly skip_timestep * delta and converts to the MDAnalysis base
+     unit for time (pico seconds by default)
+
 
 Trajectory Writer
 ~~~~~~~~~~~~~~~~~
