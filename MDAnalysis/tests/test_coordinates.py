@@ -43,7 +43,7 @@ class RefAdK(object):
     ref_E151HA2_index = 2314
     ref_numatoms = 47681
     ref_Na_sel_size = 4
-
+    ref_unitcell = np.array([ 80.017,  80.017,  80.017,  90., 60., 60.], dtype=np.float32)
 
 class TestPDBReader(TestCase, RefAdKSmall):
     def setUp(self):
@@ -82,6 +82,7 @@ class TestPSF_PDBReader(TestPDBReader):
 class TestGROReader(TestCase, RefAdK):
     def setUp(self):
 	self.universe = mda.Universe(GRO)
+        self.ts = self.universe.trajectory.ts
         self.prec = 2  # lower prec in gro!! (3 decimals nm -> 2 decimals in Angstroem)
 
     def test_load_gro(self):
@@ -102,28 +103,28 @@ class TestGROReader(TestCase, RefAdK):
                             err_msg="wrong coordinates for A10:CA")
         
     def test_distances(self):
+        # NOTE that the prec is only 1 decimal: subtracting two low precision coordinates
+        #      low prec: 9.3455122920041109; high prec (from pdb): 9.3513174
         NTERM = self.universe.SYSTEM.N[0]
         CTERM = self.universe.SYSTEM.C[-1]
         d = atom_distance(NTERM, CTERM)
-        assert_almost_equal(d, self.ref_distances['endtoend'], self.prec, 
+        assert_almost_equal(d, self.ref_distances['endtoend'], self.prec - 1,  # note low prec!! 
                             err_msg="distance between M1:N and G214:C")
 
     def test_selection(self):
         na = self.universe.selectAtoms('resname NA+')
         assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
 
-class TestGROReaderNoConversion(TestCase):
+    def test_unitcell(self):
+        assert_array_almost_equal(self.ts.dimensions, self.ref_unitcell, self.prec, 
+                                  err_msg="unit cell dimensions (rhombic dodecahedron)")
+
+class TestGROReaderNoConversion(TestCase, RefAdK):
     def setUp(self):
         mda.core.flags['convert_gromacs_lengths'] = False
         self.universe = mda.Universe(GRO)
         self.ts = self.universe.trajectory.ts
-        # 3 decimals on nm in gro but we compare to the distance
-        # computed from the pdb file, so the effective precision is 2 again.
-        # (Otherwise the distance test fails: 
-        #  Arrays are not almost equal distance between M1:N and G214:C
-        #    ACTUAL: 0.93455122920041123
-        #    DESIRED: 0.93513173999999988
-        self.prec = 2
+        self.prec = 3
 
     def tearDown(self):
         mda.core.flags['convert_gromacs_lengths'] = True  # default
@@ -141,12 +142,27 @@ class TestGROReaderNoConversion(TestCase):
         # note: these are the native coordinates in nm; for the test to succeed:
         assert_equal(mda.core.flags['convert_gromacs_lengths'], False, 
                      "oops, mda.core.flags['convert_gromacs_lengths'] should be False for this test")
+
+        # 3 decimals on nm in gro but we compare to the distance
+        # computed from the pdb file, so the effective precision is 2 again.
+        # (Otherwise the distance test fails: 
+        #  Arrays are not almost equal distance between M1:N and G214:C
+        #    ACTUAL: 0.93455122920041123
+        #    DESIRED: 0.93513173999999988
         NTERM = self.universe.SYSTEM.N[0]
         CTERM = self.universe.SYSTEM.C[-1]
         d = atom_distance(NTERM, CTERM)
         assert_almost_equal(d, RefAdK.ref_distances['endtoend']/10.0,  # coordinates in nm 
-                            self.prec,
+                            self.prec - 1,
                             err_msg="distance between M1:N and G214:C")
+
+    def test_unitcell(self):
+        # lengths in A : convert to nm
+        assert_array_almost_equal(self.ts.dimensions[:3], self.ref_unitcell[:3]/10.0, self.prec, 
+                                  err_msg="unit cell A,B,C (rhombic dodecahedron)")
+        # angles should not have changed
+        assert_array_almost_equal(self.ts.dimensions[3:], self.ref_unitcell[3:], self.prec, 
+                                  err_msg="unit cell alpha,bet,gamma (rhombic dodecahedron)")
         
 
 class TestPDBReaderBig(TestCase, RefAdK):

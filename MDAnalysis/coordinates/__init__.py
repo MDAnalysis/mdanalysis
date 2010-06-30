@@ -69,6 +69,24 @@ Attributes
       current frame number
   dimensions
       system box dimensions (x, y, z, alpha, beta, gamma)
+      (typically implemented as a property because it needs to translate whatever is in the
+      underlying :attr:`Timestep._unitcell` attribute)
+
+Private attributes
+..................
+
+These attributes are set directly by the underlying trajectory
+readers. Normally the user should not have to directly access tose (although in
+some cases it is convenient to directly use :attr:`Timestep._pos`).
+
+  _pos
+      raw coordinates, a numpy.float32 array; X = _pos[:,0], Y =
+      _pos[:,1], Z = _pos[:,2]
+
+  _unitcell
+      unit cell dimensions and angles; the format depends on the underlying
+      trajectory format. A user should use :attr:`Timestep.dimensions` to
+      access the data in a standard format.
 
 
 Trajectory Reader

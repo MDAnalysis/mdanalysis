@@ -57,7 +57,6 @@ class PDBReader(base.Reader):
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1
-        self.units = {'time': None, 'length': 'Angstrom'}
         self.ts = Timestep(pos)
         del pos
 
@@ -167,11 +166,11 @@ class PrimitivePDBWriter(object):
            'REMARK': "REMARK     %s\n",
            'TITLE':  "TITLE    %s\n",
            }
+    units = {'time': None, 'length': 'Angstrom'}
 
     def __init__(self,filename):
         self.filename = util.filename(filename,ext='pdb')
         self.pdb = open(self.filename,'w')
-        self.units = {'time': None, 'length': 'Angstrom'}
 
     def close(self):
         self.pdb.close()
