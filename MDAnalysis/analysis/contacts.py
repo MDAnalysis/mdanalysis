@@ -134,9 +134,9 @@ class ContactAnalysis(object):
         ca1 = r1.selectAtoms('name CA')
         ca2 = r2.selectAtoms('name CA')
 
-        # NOTE: self_distance_array() in MDAnalysis <=0.6.1 produces a
-        #       1D array; this works here but is not the same as the
-        #       2D output from distance_array()!        
+        # NOTE: self_distance_array() produces a 1D array; this works here 
+        #       but is not the same as the 2D output from distance_array()!        
+        #       See the docs for self_distance_array().
         dref =  [self_distance_array(ca1.coordinates()), self_distance_array(ca2.coordinates())]
         self.qref = [self.qarray(dref[0]), self.qarray(dref[1])]
         self.nref = [self.qref[0].sum(), self.qref[1].sum()]

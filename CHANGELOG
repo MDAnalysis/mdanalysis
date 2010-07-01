@@ -20,7 +20,7 @@ The rules for this file:
           - native contacts
         * write selections for other codes from AtomGroups (VMD,
           pymol, CHARMM, Gromacs ndx)
-        * gro reader
+        * gro reader (Issue 31)
 	* better API for loading a topology and a coordinate file
 	  in Universe()
         * trajectory reader: DCDReader can reverse trajectory with
