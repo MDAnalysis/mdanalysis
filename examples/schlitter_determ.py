@@ -4,8 +4,8 @@ import numpy
 from numpy import *
 from numpy import linalg
 
-system = AtomGroup.Universe("/home/denniej0/0_neut/double_system.psf", "/home/denniej0/0_neut/double_10.dcd")
-asel = system.selectAtoms(' ( backbone and prop z > 0 ) ')
+system = AtomGroup.Universe(".psf", ".dcd")
+asel = system.selectAtoms(' ( name CA ) ')
 #print asel
 
 #---------------------------------
@@ -15,10 +15,13 @@ kg = asel.masses()*(1.6605388e-27)
 masses = Numeric.repeat(kg, 3)
 mass_matrix = Numeric.identity(len(masses))*masses
 
+#--------------------------------
+#  Preparing to read the CA position at every 5 steps in the traj
+#--------------------------------
 skip = 5
-num_ts = system._dcd.numframes/skip
+num_ts = system.dcd.numframes/skip
 num_coor = len(asel)*3
-ca_pos = system._dcd.timeseries(asel, skip=skip, format='fac')
+ca_pos = system.dcd.timeseries(asel, skip=skip, format='fac')
 
 #---------------------------------
 # converting angstroms to meters and merging the xyz of timeseries 
