@@ -33,7 +33,8 @@ The rules for this file:
         * deprecated principleAxes() and introduced principalAxes()
           with less confusing return values (Issue 33).
 	* fixed wrong unitcell dimensions for XTC/TRR (Issue 34)
-
+ 	* added basic XYZ reader with compression support (Issue 35)
+ 
 05/28/10 orbeckst, denniej0
         * 0.6.2 release
 	* removed a number of imports from the top level (such as rms_fitting);
