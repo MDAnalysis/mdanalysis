@@ -168,11 +168,16 @@ Attributes
      for Gromacs trajectories, ``None`` and 'Angstrom' for PDB).
  format
      string that identifies the file format, e.g. "DCD", "PDB", "CRD", "XTC",
-     "TRR"
+     "TRR"; this is typically the file extension in upper case.
  dt
      time between frames in ps; a managed attribute (read only) that computes
      on the fly skip_timestep * delta and converts to the MDAnalysis base
      unit for time (pico seconds by default)
+
+**Optional attributes**
+
+compressed
+     string that identifies the compression (e.g. "gz" or "bz2") or ``None``.
 
 
 Trajectory Writer
