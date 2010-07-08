@@ -43,7 +43,7 @@ class XYZReader(base.Reader):
     """
 
     # this will be overidden when an instance is created and the file extension checked
-    format = None
+    format = "XYZ"
     
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
@@ -55,15 +55,15 @@ class XYZReader(base.Reader):
         # so the last file extension will tell us if it is bzipped or not 
         root, ext = os.path.splitext(self.filename)
         if ext[1:] == "bz2":
-            self.format = "BZ2"
+            self.compression = "bz2"
             self.xyzfile = bz2.BZ2File(self.filename, 'rb')
         elif ext[1:] == "gz":
-            self.format = "GZ"
+            self.compression = "gz"
             self.xyzfile = gzip.open(self.filename, 'rb')            
         elif ext[1:] == "xyz":
-            self.format = "XYZ"
+            self.compression = None
             self.xyzfile = file(self.filename, 'r')
-        
+               
         # note that, like for xtc and trr files, __numatoms and __numframes are used quasi-private variables 
         # to prevent the properties being recalculated
         # this is because there is no indexing so the way it measures the number of frames is to read the whole file!
@@ -73,9 +73,9 @@ class XYZReader(base.Reader):
         self.fixed = 0
         self.skip = 1
         self.periodic = False
-               
+
         self.ts = Timestep(self.numatoms)
-        
+
         # Read in the first timestep
         self._read_next_timestep()
 
@@ -198,13 +198,13 @@ class XYZReader(base.Reader):
             # must check; otherwise might segmentation fault
             raise IOError(errno.ENOENT, 'XYZ file not found', self.filename)
 
-        if self.format == "BZ2":
+        if self.compression == "bz2":
             self.xyzfile = bz2.BZ2File(self.filename, 'rb')
-        elif self.format == "GZ":
+        elif self.compression == "gz":
             self.xyzfile = gzip.open(self.filename, 'rb')
-        elif self.format == "XYZ":
+        elif self.compression == None:
             self.xyzfile = file(self.filename, 'r')
-
+            
         # reset ts
         ts = self.ts
         ts.status = 1

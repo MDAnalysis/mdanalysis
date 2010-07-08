@@ -10,7 +10,8 @@ directory. File names are in all caps. Use as ::
 """
 __all__ = ["PSF", "DCD",                        # CHARMM
            "PDB_small",                         # PDB
-           "PDB", "GRO", "XTC", "TRR", "TPR"]   # Gromacs
+           "PDB", "GRO", "XTC", "TRR", "TPR",   # Gromacs
+           "XYZ", "XYZ_bz2" ]                   # XYZ
 
 from pkg_resources import resource_filename
 
@@ -25,3 +26,7 @@ PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
 TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
+
+XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
+XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
+XYZ = resource_filename(__name__, 'data/2r9r-1b.xyz')
