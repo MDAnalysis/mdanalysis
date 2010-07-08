@@ -1,7 +1,6 @@
-$Id$
-
-MDAnalysis CHANGELOG
-====================
+======================
+ MDAnalysis CHANGELOG
+======================
 
 The rules for this file:
   * entries are sorted newest-first.
@@ -10,30 +9,36 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/10 orbeckst, denniej0, danny.parton, philipwfowler
+??/??/10 
         (Running list of enhancements, to be edited for final
         entry when stable changes are merged back into trunk)
 
-        * minimum requirement is python 2.4 (using with_statement in
-          the analysis module and we have not tested on 2.3 in a while)
+	* 0.6.4-devel
         * reads hydrogen bond donor/acceptor list from psf and sets up
-          structures for hydrogen bonding analysis
-          TODO: H-BOND ANALYSIS NOT WORKING YET
-        * analysis modules:
-          - leaflets
-          - native contacts
-        * write selections for other codes from AtomGroups (VMD,
-          pymol, CHARMM, Gromacs ndx)
+          structures for hydrogen bonding analysis TODO: H-BOND
+          ANALYSIS NOT WORKING YET
+
+07/08/10 orbeckst, denniej0, danny.parton, philipwfowler
+	* 0.6.3 release
+        * minimum requirement is python 2.4 (using with_statement in the
+          analysis module and we have not tested on 2.3 in a while)
+        * analysis modules (MDAnalysis.analysis):
+          - lipid bilayer leaflet detection
+          - native contact analysis ("q1-q2")
+	  - rms-fitting based on sequence alignment
+        * write selections for other codes from AtomGroups (VMD, pymol, CHARMM,
+          Gromacs ndx)
         * gro reader (Issue 31)
-	* better API for loading a topology and a coordinate file
-	  in Universe()
-        * trajectory reader: DCDReader can reverse trajectory with
-          negative step increment; XTC/TRRReader can do simple
-          (forward) slices by doing (slow!) sequential iteration
-        * deprecated principleAxes() and introduced principalAxes()
-          with less confusing return values (Issue 33).
+	* better API for loading a topology and a coordinate file in Universe()
+        * trajectory reader: DCDReader can reverse trajectory with negative
+          step increment; XTC/TRRReader can do simple (forward) slices by doing
+          (slow!) sequential iteration
+        * deprecated principleAxes() and introduced principalAxes() with less
+          confusing return values (Issue 33).
 	* fixed wrong unitcell dimensions for XTC/TRR (Issue 34)
  	* added basic XYZ reader with compression support (Issue 35)
+	* PDB reader guesses masses (unknown elements are set to 0)
+	* installation requires Biopython (www.biopython.org)
  
 05/28/10 orbeckst, denniej0
         * 0.6.2 release
