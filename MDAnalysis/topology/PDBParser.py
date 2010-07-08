@@ -65,7 +65,31 @@ def guess_atom_type(atomname):
 
 def guess_atom_mass(atomname):
     # TODO: do something slightly smarter, at least use name/element & dict
-    return 12.000
+    if atomname[0] == 'N':
+    	if atomname[:1] != 'NA':
+    		return 14.007
+    elif atomname[0] == 'C':
+    	if atomname[:2] not in ['CAL','CL ','CLA']:
+    		return 12.010
+    elif atomname[0] == 'O':
+    	return 15.999
+    elif atomname[0] == 'S':
+    	if atomname[:2] != 'SOD':
+		return 32.065
+    elif atomname[0] == 'P':
+    	return 30.974
+    elif atomname[0] == 'H':
+    	return 1.008 
+    elif atomname[:1] == 'MG':
+    	return 24.305
+    elif atomname[:2] in ['K  ','POT']:
+    	return 39.102
+    elif atomname[:1] == 'CL':
+    	return 35.450
+    elif atomname[:2] in ['NA ','SOD']:
+    	return 22.989 
+    else:
+    	return 0.000
 
 def guess_atom_charge(atomname):
     # TODO: do something slightly smarter, at least use name/element

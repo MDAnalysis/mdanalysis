@@ -47,7 +47,7 @@ class Timestep(object):
             self._pos = numpy.array(arg._pos)
         elif isinstance(arg, numpy.ndarray):
             if len(arg.shape) != 2: raise ValueError("numpy array can only have 2 dimensions")
-            self._unitcell = numpy.zeros((6), numpy.float32)
+            self._unitcell = numpy.zeros((6), numpy.float32) 
             self.frame = 0
             #if arg.shape[0] == 3: self.numatoms = arg.shape[0]  # ??? is this correct ??? [OB]  # Nope, not sure what the aim was so i've left the lines in as comments [DP]
             #else: self.numatoms = arg.shape[-1]                 # ??? reverse ??? [OB]

@@ -57,8 +57,9 @@ class PDBReader(base.Reader):
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1
-        self.ts = Timestep(pos)
-        del pos
+	#self._unitcell[:] = self._unitcell + numpy.array([90.,90.,90.,90.,90.,90.])
+	self.ts = Timestep(pos)
+	del pos
 
     def __len__(self):
         return self.numframes
