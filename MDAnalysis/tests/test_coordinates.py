@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
-from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,XTC,TRR,GRO
+from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,XTC,TRR,GRO,XYZ,XYZ_bz2,XYZ_psf
 
 def atom_distance(a, b):
     """Calculate the distance between two atoms a and b."""
@@ -44,6 +44,72 @@ class RefAdK(object):
     ref_numatoms = 47681
     ref_Na_sel_size = 4
     ref_unitcell = np.array([ 80.017,  80.017,  80.017,  90., 60., 60.], dtype=np.float32)
+
+class Ref2r9r(object):
+    """Mixin class to provide comparison numbers.
+
+    Based on S6 helices of chimeric Kv channel 
+
+    .. Note:: All distances must be in ANGSTROEM as this is the
+       MDAnalysis default unit. All readers must return Angstroem by
+       default.
+    """
+    ref_numatoms = 1284
+    ref_sum_centre_of_geometry = -98.24146
+    ref_numframes = 10
+
+class TestXYZReader(TestCase, Ref2r9r):
+    def setUp(self):
+        self.universe = mda.Universe(XYZ_psf, XYZ)
+        self.prec = 3 # 4 decimals in xyz file
+
+    def test_load_xyz(self):
+        U = self.universe
+        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from PSF and XYZ")
+   
+    def test_numatoms(self):
+        assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
+
+    def test_numframes(self):
+        assert_equal(self.universe.trajectory.numframes, self.ref_numframes, "wrong number of frames in xyz")
+
+    def test_sum_centres_of_geometry(self):
+        centreOfGeometry=0
+        
+        for i in self.universe.trajectory:
+            sel = self.universe.selectAtoms("all")      
+            centreOfGeometry+=sum(sel.centerOfGeometry())  
+        
+        assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
+                            err_msg="sum of centers of geometry over the trajectory do not match")
+
+
+class TestCompressedXYZReader(TestCase, Ref2r9r):
+    def setUp(self):
+        self.universe = mda.Universe(XYZ_psf, XYZ_bz2)
+        self.prec = 3 # 4 decimals in xyz file
+
+    def test_load_xyz(self):
+        U = self.universe
+        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from PSF and XYZ")
+   
+    def test_numatoms(self):
+        assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
+
+    def test_numframes(self):
+        assert_equal(self.universe.trajectory.numframes, self.ref_numframes, "wrong number of frames in xyz")
+
+    def test_sum_centres_of_geometry(self):
+        centreOfGeometry=0
+        
+        for i in self.universe.trajectory:
+            sel = self.universe.selectAtoms("all")      
+            centreOfGeometry+=sum(sel.centerOfGeometry())  
+        
+        assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
+                            err_msg="sum of centers of geometry over the trajectory do not match")
+
+
 
 class TestPDBReader(TestCase, RefAdKSmall):
     def setUp(self):
