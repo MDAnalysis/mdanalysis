@@ -215,14 +215,15 @@ Attributes
      Timestep instance      
 """
 
-__all__ = ['DCD', 'PDB', 'CRD', 'XTC', 'TRR', 'GRO']
+__all__ = ['DCD', 'PDB', 'CRD', 'XTC', 'TRR', 'GRO', 'XYZ']
 
-import PDB, DCD, CRD, XTC, TRR, GRO
+import PDB, DCD, CRD, XTC, TRR, GRO, XYZ
 
 # trajectory readers: present unified interface (based on DCD.Timestep)
 _trajectory_readers = {'dcd': DCD.DCDReader,
                        'trj': DCD.DCDReader,
                        'xtc': XTC.XTCReader,
+                       'xyz': XYZ.XYZReader,
                        'trr': TRR.TRRReader,
                        'pdb': PDB.PDBReader,
                        'gro': GRO.GROReader,
