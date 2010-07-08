@@ -570,14 +570,21 @@ class Universe(object):
         # Let atoms access the universe
         for a in self.atoms: a.universe = self
 
-        # Load coordinates; distinguish file format by extension
-        if coordinatefile is None:
+        # Load coordinates
+        if coordinatefile is None and \
+                MDAnalysis.topology.core.guess_format(topologyfile) in ('pdb', 'gro'):
             # hack for pdb/gro - only
             coordinatefile = topologyfile
         self.load_new(coordinatefile)
 
     def load_new(self, filename):
-        """Load coordinates from *filename*, using the suffix to detect file format."""
+        """Load coordinates from *filename*, using the suffix to detect file format.
+
+        :Arguments: *filename* of the coordinate file (single frame or trajectory)
+        :Returns: (filename, trajectory_format) or ``None`` if *filename* == ``None``
+        :Raises: :exc:`TypeError` if trajectory format can not be
+                  determined or no appropriate trajectory reader found
+        """
         if filename is None:
             return
 
@@ -586,13 +593,8 @@ class Universe(object):
         try:
             TRJReader = MDAnalysis.coordinates.core.get_reader_for(filename)
         except TypeError, err:
-            # only warn because in the past it was possible to build a topology-only
-            # Universe and populate it later with coordinates.
-            warnings.warn("Universe.load_new() cannot find an appropriate coordinate reader "
-                          "for file %r. Universe will be built without coordinates: "
-                          "use load_new() later with an appropriate trajectory." % filename,
-                          category=UserWarning)
-            return None, None
+            raise TypeError("Universe.load_new() cannot find an appropriate coordinate reader "
+                            "for file %r.\n%r" % (filename, err))
         self.trajectory = TRJReader(filename)    # unified trajectory API
         trjtype = self.trajectory.format.lower() # trjtype is always lower case (see coordinates._frame_readers)
         self.__dict__[trjtype] = self.trajectory # legacy (deprecated)
