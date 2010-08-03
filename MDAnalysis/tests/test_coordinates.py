@@ -1,10 +1,15 @@
+import MDAnalysis
 import MDAnalysis as mda
+import MDAnalysis.coordinates
 
 import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,XTC,TRR,GRO,XYZ,XYZ_bz2,XYZ_psf
+
+import os.path, tempfile
+import itertools
 
 def atom_distance(a, b):
     """Calculate the distance between two atoms a and b."""
@@ -544,3 +549,44 @@ class TestXTCNoConversion(_XDRNoConversion):
 
 class TestTRRNoConversion(_XDRNoConversion):
     filename = TRR
+
+class _GromacsWriter(TestCase):
+    infilename = None  # XTC or TRR
+    Writers = {'.trr': MDAnalysis.coordinates.TRR.TRRWriter,
+               '.xtc': MDAnalysis.coordinates.XTC.XTCWriter,
+               }
+
+    def setUp(self):
+        self.universe = mda.Universe(GRO, self.infilename)
+        ext = os.path.splitext(self.infilename)[1]
+        fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        self.Writer = self.Writers[ext]
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+
+    @dec.slow
+    @attr('issue')    
+    def test_write_trajectory(self):
+        """Test writing Gromacs trajectories (Issue 38)"""
+        t = self.universe.trajectory
+        W = self.Writer(self.outfile, t.numatoms, delta=t.delta, step=t.skip_timestep)
+        for ts in self.universe.trajectory:
+            W.write_next_timestep(ts)
+        W.close_trajectory()
+
+        uw = mda.Universe(GRO, self.outfile)
+
+        # check that the coordinates are identical for each time step
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
+                                      err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+        
+class TestXTCWriter(_GromacsWriter):
+    infilename = XTC
+
+class TestTRRWriter(_GromacsWriter):
+    infilename = TRR

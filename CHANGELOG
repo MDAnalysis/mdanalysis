@@ -14,6 +14,7 @@ The rules for this file:
         entry when stable changes are merged back into trunk)
 
 	* 0.6.4-devel
+	* fixed XTC writer (Issue 38)
         * reads hydrogen bond donor/acceptor list from psf and sets up
           structures for hydrogen bonding analysis TODO: H-BOND
           ANALYSIS NOT WORKING YET

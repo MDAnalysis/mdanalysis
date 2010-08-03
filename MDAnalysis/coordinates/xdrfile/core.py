@@ -332,6 +332,9 @@ class TrjWriter(base.Writer):
     
     (Base class)
     """
+    #: units of time (ps) and length (nm) in Gromacs
+    units = {'time': 'ps', 'length': 'nm'}
+    #: override to define trajectory format of the reader (XTC or TRR)
     format = None
 
     def __init__(self, filename, numatoms, start=0, step=1, delta=1.0, precision=1000.0, remarks=None,
@@ -362,7 +365,7 @@ class TrjWriter(base.Writer):
         self.delta = delta
         self.remarks = remarks
         self.precision = precision  # only for XTC
-        self.xdrfile = libxdrfile.xdr_open(filename, 'w')
+        self.xdrfile = libxdrfile.xdrfile_open(filename, 'w')
 
         self.ts = None
 
