@@ -231,6 +231,9 @@ Methods
      opens *filename* and writes header if required by format
  write_next_timestep([timestep])
      write data in *timestep* to trajectory file
+ convert_dimensions_to_unitcell(timestep)
+     take the dimensions from the timestep and convert to the native
+     unitcell representation of the format
  close_trajectory()
      close file and finish I/O 
  __del__()
@@ -302,6 +305,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
 #   W.write(AtomGroup)
 _frame_writers = {'PDB': PDB.PrimitivePDBWriter,
                   'CRD': CRD.CRDWriter,
+                  'GRO': GRO.GROWriterStandard,  # TODO: change once this replaced GORWriter
                  }
 
 # trajectory writers: export frames, typically only saving coordinates

@@ -150,7 +150,7 @@ class PDBWriter(base.Writer):
     def close_trajectory(self):
         pass    # do nothing, keeps super classe's __del__ happy
 
-class PrimitivePDBWriter(object):
+class PrimitivePDBWriter(base.Writer):
     """PDB writer that implements a subset of the PDB 3.2 standard.
     http://www.wwpdb.org/documentation/format32/v3.2.html
     """
@@ -166,6 +166,7 @@ class PrimitivePDBWriter(object):
     fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
            'REMARK': "REMARK     %s\n",
            'TITLE':  "TITLE    %s\n",
+           'CRYST1': "CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %-11s%4d\n",
            }
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
@@ -196,6 +197,7 @@ class PrimitivePDBWriter(object):
         coor = selection.coordinates()
         
         self.TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
+        self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
         for i, atom in enumerate(selection.atoms):
             self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
                       x=coor[i,0], y=coor[i,1], z=coor[i,2])
@@ -217,7 +219,13 @@ class PrimitivePDBWriter(object):
         """
         line = " ".join(remark)
         self.pdb.write(self.fmt['REMARK'] % line)
-        
+
+    def CRYST1(self,dimensions, spacegroup='P 1', zvalue=1):
+        """Write CRYST1 record.
+        http://www.wwpdb.org/documentation/format32/sect8.html
+        """
+        self.pdb.write(self.fmt['CRYST1'] % (tuple(dimensions)+(spacegroup, zvalue)))
+
     def ATOM(self,serial=None,name=None,altLoc=None,resName=None,chainID=None,
              resSeq=None,iCode=None,x=None,y=None,z=None,occupancy=1.0,tempFactor=0.0,
              element=None,charge=0):

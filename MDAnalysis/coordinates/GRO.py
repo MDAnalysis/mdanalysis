@@ -3,16 +3,20 @@
 GRO file format
 ===============
 
-Classes to read and write Gromacs_ GRO_ coordinate files.
+Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
+`GRO format`_ which includes a conversion routine for the box.
 
 .. _Gromacs: http://www.gromacs.org
 .. _GRO: http://manual.gromacs.org/current/online/gro.html
+.. _GRO format: http://chembytes.wikidot.com/g-grofile
 """
 
 import numpy
 
 import MDAnalysis
 import base
+import MDAnalysis.core.util as util
+from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
 
 from copy import deepcopy
 
@@ -35,15 +39,10 @@ class Timestep(base.Timestep):
 		# unit cell line (from http://manual.gromacs.org/current/online/gro.html)
 		# v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)
 		# 0     1     2      3     4     5     6    7     8
-		from MDAnalysis.coordinates.core import _veclength, _angle
 		x = self._unitcell[[0,3,4]]
 		y = self._unitcell[[5,1,6]]
 		z = self._unitcell[[7,8,2]]  # this ordering is correct! (checked it, OB)
-		A, B, C = [_veclength(v) for v in x,y,z]
-		alpha =  _angle(x,y)
-		beta  =  _angle(x,z)
-		gamma =  _angle(y,z)
-		return numpy.array([A,B,C,alpha,beta,gamma])
+		return triclinic_box(x,y,z)
 
 class GROReader(base.Reader):
 	format = 'GRO'
@@ -113,14 +112,113 @@ class GROReader(base.Reader):
 	def _read_next_timestep(self):
 		raise Exception, "GROReader can only read a single frame"
 
+class GROWriterStandard(base.Writer):
+	"""GRO Writer that conforms to the Trajectory API.
+
+	.. Note:: The precision is hard coded to three decimal places.
+
+	.. Warning:: This class will replace GROWriter.
+	"""
+	
+        format = 'GRO'
+        units = {'time': None, 'length': 'nm'}
+
+	#: Output format, see http://chembytes.wikidot.com/g-grofile
+	fmt_velocities = "%5s%-5s%5s%5s%8.3f%8.3f%8.3f%8.4f%8.4f%8.4f"
+	fmt_no_velocities = "%5s%-5s%5s%5s%8.3f%8.3f%8.3f"
+
+        def __init__(self,filename):
+		"""Set up a GROWriter with a precision of 3 decimal places.
+
+		:Arguments:
+		   *filename* 
+                      output filename
+		"""
+                self.filename = util.filename(filename,ext='gro')
+
+	def convert_dimensions_to_unitcell(self, ts):
+		"""Read dimensions from timestep *ts* and return appropriate unitcell"""
+		return self.convert_pos_to_native(triclinic_vectors(ts.dimensions))
+
+	def write(self, selection, frame=None):
+		"""Write selection at current trajectory frame to file.
+		
+		:Arguments:
+		  selection
+                      MDAnalysis AtomGroup (selection or Universe.atoms)
+                :Keywords:
+		  frame             
+                      optionally move to frame number *frame*
+
+		The GRO format only allows 5 digits for resid and atom
+		number. If these number become larger than 99,999 then this
+		routine will chop off the leading digits.
+		"""
+		# write() method that complies with the Trajectory API
+		u = selection.universe
+		if frame is not None:            
+			u.trajectory[frame]  # advance to frame
+		else:
+			try:
+				frame = u.trajectory.ts.frame
+			except AttributeError:
+				frame = 1   # should catch cases when we are analyzing a single GRO (?)
+
+                output_gro = open(self.filename , 'w')
+                # Header
+                output_gro.write('Written by MDAnalysis\n')
+                output_gro.write("%5d\n" % len(selection))
+
+                # Atom descriptions and coords
+		coordinates = selection.coordinates()
+		self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, in-place !
+		
+		for atom_index,atom in enumerate(selection):
+			c = coordinates[atom_index]
+                        output_line = self.fmt_no_velocities % \
+			    (str(atom.resid)[-5:],     # truncate highest digits on overflow
+			     atom.resname.strip(), 
+			     atom.name.strip(),
+			     str(atom.number+1)[-5:],  # number (1-based), truncate highest digits on overflow
+			     c[0], c[1], c[2],         # coords - outputted with 3 d.p.
+			     )
+                        output_gro.write( output_line + '\n' )
+
+                # Footer: box dimensions
+		box = self.convert_dimensions_to_unitcell(u.trajectory.ts)
+		if numpy.all(u.trajectory.ts.dimensions[3:] == [90.,90.,90.]):
+			# orthorhombic cell, only lengths along axes needed in gro
+			output_gro.write("%10.5f%10.5f%10.5f\n" % (box[0,0],box[1,1],box[2,2]))
+		else:
+			# full output
+			output_gro.write("%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n" % 
+					 (box[0,0],box[1,1],box[2,2],
+					  box[0,1],box[0,2],
+					  box[1,0],box[1,2],
+					  box[2,0],box[2,1]))	
+                output_gro.close()
+
+
 class GROWriter(base.Writer):
         """
 The universe option can be either a Universe or an AtomGroup (e.g. a selectAtoms() selection).
 The coordinates to be output are taken from the current Timestep (unless a different Timestep is supplied when calling write() )."""
         format = 'GRO'
         units = {'time': None, 'length': 'nm'}
-        def __init__(self,grofilename,universe=None):
-                self.filename = grofilename
+        def __init__(self,filename,universe=None,ndec=3):
+		"""Set up a GROWriter.
+
+		:Arguments:
+		   *ndec* 
+                     the number of decimal places for the
+                     coordinates. Currently only works with 3 (default).
+		"""
+		import warnings
+		warnings.warn("Deprecated GROWriter; will be changed in next release to behave in the same "
+			      "way as CRDWriter and PrimitivePDBWriter (as detailed in the Trajectory API).",
+			      category=DeprecationWarning)
+
+                self.filename = util.filename(filename,ext='gro')
 		if isinstance(universe , MDAnalysis.Universe):
                 	self.universe = universe
 			self.atom_indices = self.universe.atoms.indices()

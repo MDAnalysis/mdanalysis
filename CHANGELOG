@@ -14,9 +14,9 @@ The rules for this file:
         entry when stable changes are merged back into trunk)
 
 	* 0.6.4-devel
-	* GRO writer added (only handles orthorhombic boxes at the
-	  moment, see Issue 37)
+	* GRO writer added
 	* fixed XTC writer (Issue 38)
+	* convert box representations (Issue 37)
         * reads hydrogen bond donor/acceptor list from psf and sets up
           structures for hydrogen bonding analysis TODO: H-BOND
           ANALYSIS NOT WORKING YET

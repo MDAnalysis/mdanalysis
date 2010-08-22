@@ -195,6 +195,13 @@ class Writer(IObase):
     the required attributes and methods.
     """
 
+    def convert_dimensions_to_unitcell(self, ts):
+        """Read dimensions from timestep *ts* and return appropriate unitcell"""
+        # override if the native trajectory format does NOT use [A,B,C,alpha,beta,gamma]
+        lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
+        self.convert_pos_to_native(lengths)
+        return numpy.concatenate([lengths, angles])
+
     def __del__(self):
         self.close_trajectory()
 

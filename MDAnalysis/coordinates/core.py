@@ -12,11 +12,15 @@ import os.path
 import MDAnalysis.coordinates
 import numpy
 
+from numpy import sin, cos, sqrt
 try:
-    from numpy import rad2deg   # numpy 1.3+
+    from numpy import rad2deg, deg2rad   # numpy 1.3+
 except ImportError:
     def rad2deg(x):             # no need for the numpy out=[] argument 
         return 180.0*x/numpy.pi
+    def deg2rad(x):             # no need for the numpy out=[] argument 
+        return x*numpy.pi/180.0
+
 
 def get_reader_for(filename):
     """Return the appropriate trajectory reader for *filename*."""
@@ -95,6 +99,51 @@ def _angle(a,b):
     """Angle between two vectors *a* and *b* in degrees."""
     angle = numpy.arccos(numpy.dot(a,b) / (_veclength(a)*_veclength(b)))
     return rad2deg(angle)
+
+def triclinic_box(x,y,z):
+    """Convert the three triclinic box vectors to [A,B,C,alpha,beta,gamma].
+
+    Angles are in degrees.
+    """
+    A, B, C = [_veclength(v) for v in x,y,z]
+    alpha =  _angle(x,y)
+    beta  =  _angle(x,z)
+    gamma =  _angle(y,z)
+    return numpy.array([A,B,C,alpha,beta,gamma], dtype=numpy.float32)
+
+def triclinic_vectors(dimensions):
+	"""Convert [A,B,C,alpha,beta,gamma] to a triclinic box representation.
+
+	Original code by Tsjerk Wassenaar; see http://www.mail-archive.com/gmx-users@gromacs.org/msg28032.html
+
+        :Arguments:
+          *dimensions*
+             list of box lengths and angles (in degrees) such as
+             [A,B,C,alpha,beta,gamma]
+
+        :Returns: numpy 3x3 array B, with B[0] = first box vector,
+                  B[1] = second vector, B[2] third box vector.
+
+        .. note:: The first vector is always pointing along the
+                  X-axis i.e. parallel to (1,0,0).
+	"""
+	B = numpy.zeros((3,3), dtype=numpy.float32)
+	x, y, z, a, b, c = dimensions[:6]
+
+	B[0][0] = x
+	if a == 90. and b == 90. and c == 90.:
+		B[1][1] = y
+		B[2][2] = z
+	else:
+		a = deg2rad(a)
+		b = deg2rad(b)
+		c = deg2rad(c)
+		B[1][0] = y*cos(c)
+		B[1][1] = y*sin(c)
+		B[2][0] = z*cos(b)
+		B[2][1] = z*(cos(a)-cos(b)*cos(c))/sin(c)
+		B[2][2] = sqrt(z*z-B[2][0]**2-B[2][1]**2)
+        return B
 
 
 

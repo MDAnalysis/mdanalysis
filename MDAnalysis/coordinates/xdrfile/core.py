@@ -6,6 +6,8 @@ import numpy
 
 import libxdrfile, statno
 from MDAnalysis.coordinates import base
+from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
+
 import MDAnalysis.core
 
 class Timestep(base.Timestep):
@@ -61,16 +63,11 @@ class Timestep(base.Timestep):
         - beta = angle(e1, e3)
         - gamma = angle(e2, e3)
         """
-        from MDAnalysis.coordinates.core import _veclength, _angle
         # Layout of unitcell is [X, Y, Z] with the primitive cell vectors
         x = self._unitcell[0]
         y = self._unitcell[1]
         z = self._unitcell[2]
-        A, B, C = [_veclength(v) for v in x,y,z]
-        alpha =  _angle(x,y)
-        beta  =  _angle(x,z)
-        gamma =  _angle(y,z)
-        return numpy.array([A,B,C,alpha,beta,gamma])
+        return triclinic_box(x,y,z)
 
 class TrjReader(base.Reader):
     """Generic base class for reading Gromacs trajectories inside MDAnalysis.
@@ -394,13 +391,12 @@ class TrjWriter(base.Writer):
         """Generic writer with minimum intelligence; override if necessary."""
         if self.convert_units:
             self.convert_pos_to_native(ts._pos)             # in-place !
-            self.convert_pos_to_native(ts._unitcell)        # in-place !
-            ts.time = self.convert_time_to_native(ts.time)  # in-place does not work with scalars (?)        
-
+            ts.time = self.convert_time_to_native(ts.time)
+        unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
         if self.format == 'XTC':
-            status = libxdrfile.write_xtc(self.xdrfile, ts.step, ts.time, ts._unitcell, ts._pos, self.precision)
+            status = libxdrfile.write_xtc(self.xdrfile, ts.step, ts.time, unitcell, ts._pos, self.precision)
         elif self.format == 'TRR':
-            status = libxdrfile.write_trr(self.xdrfile, ts.step, ts.time, ts.lmbda, ts._unitcell, 
+            status = libxdrfile.write_trr(self.xdrfile, ts.step, ts.time, ts.lmbda, unitcell, 
                                            ts._pos, ts._velocities, ts._forces)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
@@ -412,3 +408,7 @@ class TrjWriter(base.Writer):
             status = libxdrfile.xdrfile_close(self.xdrfile)
             self.xdrfile = None
         return status
+
+    def convert_dimensions_to_unitcell(self, ts):
+        """Read dimensions from timestep *ts* and return Gromacs box vectors"""
+        return self.convert_pos_to_native(triclinic_vectors(ts.dimensions))

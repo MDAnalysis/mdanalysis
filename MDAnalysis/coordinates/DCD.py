@@ -63,7 +63,8 @@ class DCDWriter(base.Writer):
         # Check to make sure Timestep has the correct number of atoms
         elif not ts.numatoms == self.numatoms:
             raise Exception("DCDWriter: Timestep does not have the correct number of atoms")
-        self._write_next_frame(ts._x, ts._y, ts._z, ts._unitcell)
+        unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
+        self._write_next_frame(ts._x, ts._y, ts._z, unitcell)
         self.frames_written += 1
     def close_trajectory(self):
         # Do i really need this?
