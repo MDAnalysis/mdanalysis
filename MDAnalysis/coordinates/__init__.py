@@ -21,12 +21,45 @@ be accessible through this entry point in the same manner (`duck typing`_)
 Trajectory API
 --------------
 
-(Draft, orbeckst 2010-04-30)
+The **Trajectory API** defines how classes have to be structured that allow
+reading and writing of coordinate files. By following the API it is possible to
+seamlessly enhance the I/O capabilities of MDAnalysis. The actual underlying
+I/O code can be written in C or python or a mixture thereof.
 
-Base classes are define in :mod:`MDAnalysis.coordinates.base`.
+Typically, each format resides in its own module, named by the format specifier
+(and using upper case by convention).
 
-Timestep
+Reader and Writer classes are derived from base classes in
+:mod:`MDAnalysis.coordinates.base`.
+
+
+History
+~~~~~~~
+
+- 2010-04-30 Draft [orbeckst]
+- 2010-08-20 added single frame writers to API [orbeckst]
+
+
+Registry
 ~~~~~~~~
+
+In various places, MDAnalysis tries to automatically select appropriate formats
+(e.g. by looking at file extensions). In order to allow it to choose the
+correct format, all I/O classes must be registered in one of three dictionaries
+with the format (typically the file extension in upper case):
+
+- Trajectory reader classes must be added to
+  :data:`MDAnalysis.coordinates._trajectory_readers`.
+
+- Trajectory writer classes must be added to
+  :data:`MDAnalysis.coordinates._trajectory_writers`.
+
+- Single-frame writer classes must be added to to
+  :data:`MDAnalysis.coordinates._frame_writers`.
+
+
+Timestep class
+~~~~~~~~~~~~~~
 
 A Timestep instance holds data for the current frame. It is updated whenever a
 new frame of the trajectory is read. 
@@ -89,8 +122,8 @@ some cases it is convenient to directly use :attr:`Timestep._pos`).
       access the data in a standard format.
 
 
-Trajectory Reader
-~~~~~~~~~~~~~~~~~
+Trajectory Reader class
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Trajectory readers are derived from :class:`MDAnalysis.coordinates.base.Reader`.
 Typically, many methods and attributes are overriden.
@@ -180,11 +213,15 @@ compressed
      string that identifies the compression (e.g. "gz" or "bz2") or ``None``.
 
 
-Trajectory Writer
-~~~~~~~~~~~~~~~~~
+Trajectory Writer class
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Trajectory readers are derived from :class:`MDAnalysis.coordinates.base.Writer`.
 Typically, many methods and attributes are overriden.
+
+Signature::
+   W = TrajectoryWriter(filename,numatoms,**kwargs)
+   W.write_next_timestep(TimeStep)
 
 
 Methods
@@ -201,6 +238,7 @@ Methods
 
 Attributes
 ..........
+
  filename
      name of the trajectory file
  start, stop, step
@@ -217,7 +255,31 @@ Attributes
 **Optional**
  
  ts
-     Timestep instance      
+     Timestep instance
+
+
+Single Frame Writer class
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A single frame writer is a special case of a trajectory writer in that it
+writes only a single coordinate frame to a file, for instance, a pdb or gro
+file. Unlike trajectory formats, which only contains coordinates, "single
+frame" formats contains much more information (e.g. atom and residue names and
+numbers) and hence it is possible to write selections of atoms in a meaningful
+way.
+
+Signature::
+   W = FrameWriter(filename)
+   W.write(AtomGroup)
+
+Methods
+.......
+ __init__(filename)
+   opens *filename* for writing
+ write(AtomGroup)
+   writes the group of atoms (typically obtained from a selection) to the file
+   and closes the file
+
 """
 
 __all__ = ['DCD', 'PDB', 'CRD', 'XTC', 'TRR', 'GRO', 'XYZ']
@@ -225,21 +287,21 @@ __all__ = ['DCD', 'PDB', 'CRD', 'XTC', 'TRR', 'GRO', 'XYZ']
 import PDB, DCD, CRD, XTC, TRR, GRO, XYZ
 
 # trajectory readers: present unified interface (based on DCD.Timestep)
-_trajectory_readers = {'dcd': DCD.DCDReader,
-                       'trj': DCD.DCDReader,
-                       'xtc': XTC.XTCReader,
-                       'xyz': XYZ.XYZReader,
-                       'trr': TRR.TRRReader,
-                       'pdb': PDB.PDBReader,
-                       'gro': GRO.GROReader,
+_trajectory_readers = {'DCD': DCD.DCDReader,
+                       'TRJ': DCD.DCDReader,
+                       'XTC': XTC.XTCReader,
+                       'XYZ': XYZ.XYZReader,
+                       'TRR': TRR.TRRReader,
+                       'PDB': PDB.PDBReader,
+                       'GRO': GRO.GROReader,
                        }
 
 # frame writers: export to single frame formats such as PDB, gro, crd
 # Signature:
 #   W = FrameWriter(filename)
 #   W.write(AtomGroup)
-_frame_writers = {'pdb': PDB.PrimitivePDBWriter,
-                  'crd': CRD.CRDWriter,
+_frame_writers = {'PDB': PDB.PrimitivePDBWriter,
+                  'CRD': CRD.CRDWriter,
                  }
 
 # trajectory writers: export frames, typically only saving coordinates
@@ -248,8 +310,8 @@ _frame_writers = {'pdb': PDB.PrimitivePDBWriter,
 # Signature:
 #   W = TrajectoryWriter(filename,numatoms,**kwargs)
 #   W.write_next_timestep(TimeStep)
-_trajectory_writers = {'dcd': DCD.DCDWriter,
-                       'xtc': XTC.XTCWriter,
-                       'trr': TRR.TRRWriter,
+_trajectory_writers = {'DCD': DCD.DCDWriter,
+                       'XTC': XTC.XTCWriter,
+                       'TRR': TRR.TRRWriter,
                        }
 

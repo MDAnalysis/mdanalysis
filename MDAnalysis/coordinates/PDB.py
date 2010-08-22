@@ -167,6 +167,7 @@ class PrimitivePDBWriter(object):
            'REMARK': "REMARK     %s\n",
            'TITLE':  "TITLE    %s\n",
            }
+    format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
 
     def __init__(self,filename):

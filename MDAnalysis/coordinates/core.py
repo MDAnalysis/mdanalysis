@@ -19,11 +19,28 @@ except ImportError:
         return 180.0*x/numpy.pi
 
 def get_reader_for(filename):
-    """Return the appropriate topology parser for *filename*."""
+    """Return the appropriate trajectory reader for *filename*."""
     return MDAnalysis.coordinates._trajectory_readers[guess_format(filename)]
 
+def get_writer_for(filename=None, format='DCD'):
+    """Return an appropriate trajectory or frame writer for *filename*.
+    
+    The format is determined by the *format* argument or the extension
+    of *filename*. The default is to return a dcd writer (*format* = 'dcd').
+    """
+    if filename:
+        root, ext = get_ext(filename)
+        format = check_compressed_format(root, ext)
+    try:
+        return MDAnalysis.coordinates._trajectory_writers[format]
+    except KeyError:
+        try:
+            return MDAnalysis.coordinates._frame_writers[format]
+        except KeyError:
+            raise TypeError("No trajectory or frame writer for format %r" % format)
+
 def get_ext(filename):
-    """Return the lower-cased extension of *fn* without a leading dot.
+    """Return the lower-cased extension of *filename* without a leading dot.
 
     :Returns: root, ext
     """
@@ -42,27 +59,34 @@ def guess_format(filename):
     # simple extension checking... something more complicated is left
     # for the ambitious
 
+    # Note: at the moment the upper-case extension *is* the format specifier
+
     try:
         root, ext = get_ext(filename)
     except:
         raise TypeError("Cannot determine coordinate format for %r" % filename)
+    format = ext.upper()
+    format = check_compressed_format(root, ext)    
+    if not format in MDAnalysis.coordinates._trajectory_readers:
+        raise TypeError("Unknown coordinate trajectory extension %r from %r; only %r are implemented in MDAnalysis." % 
+                        (ext, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
+    return format
     
+def check_compressed_format(root, ext):
+    """Check if this is a supported gzipped/bzip2ed file format and return format."""
+    filename = root + '.' + ext  # only needed for diagnostics
     # XYZReader is setup to handle both plain and compressed (bzip2, gz) files
     # ..so if the first file extension is bzip2 or gz, look at the one to the left of it 
-    if ext in ("bz2","gz"):
+    if ext.lower() in ("bz2","gz"):
         try:
             root, ext = get_ext(root) 
         except:
-            raise TypeError("Cannot determine coordinate format for %r" % filename)	
-        if ext != "xyz": # only bzipped xyz files can be parsed right now (might be useful to parse foo.pdb.bz2 ?) 
-            raise TypeError("Cannot handle %r in bzipped format" % filename)    		      		    	
-   
-    if not ext in MDAnalysis.coordinates._trajectory_readers:
-        raise TypeError("Unknown coordinate trajectory extension %r from %r; only %r are implemented in MDAnalysis." % 
-                        (ext, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
-    # Note: at the moment the lower-case extension *is* the format specifier
-    return ext
-    
+            raise TypeError("Cannot determine coordinate format for %r" % filename)
+        if ext.upper() != "XYZ": 
+            # only bzipped xyz files can be parsed right now (might be useful to parse foo.pdb.bz2 ?) 
+            raise TypeError("Cannot handle %r in compressed format" % filename)
+    return ext.upper()
+
 def _veclength(v):
     """Length of vector *v*."""
     return numpy.sqrt(numpy.dot(v,v))
