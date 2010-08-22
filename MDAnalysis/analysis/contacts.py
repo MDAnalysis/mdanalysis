@@ -1,4 +1,4 @@
-# native contact analyysis
+# native contact analysis
 # Part of MDAnalysis http://mdanalysis.googlecode.com
 # Copyright (c) 2006-2010 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
 # Released under the GNU Public Licence, v2
