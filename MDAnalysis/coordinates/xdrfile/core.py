@@ -391,11 +391,23 @@ class TrjWriter(base.Writer):
         """Generic writer with minimum intelligence; override if necessary."""
         if self.convert_units:
             self.convert_pos_to_native(ts._pos)             # in-place !
-            ts.time = self.convert_time_to_native(ts.time)
+            try:
+                ts.time = self.convert_time_to_native(ts.time)
+            except AttributeError:
+                ts.time = ts.frame * self.convert_time_to_native(self.delta)
+        if not hasattr(ts, 'step'):
+            # bogus, should be actual MD step number, i.e. frame * delta/dt
+            ts.step = ts.frame
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
         if self.format == 'XTC':
             status = libxdrfile.write_xtc(self.xdrfile, ts.step, ts.time, unitcell, ts._pos, self.precision)
         elif self.format == 'TRR':
+            if not hasattr(ts, 'lmbda'):
+                ts.lmbda = 1.0
+            if not hasattr(ts, '_velocities'):
+                ts._velocities = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
+            if not hasattr(ts, '_forces'):
+                ts._forces = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
             status = libxdrfile.write_trr(self.xdrfile, ts.step, ts.time, ts.lmbda, unitcell, 
                                            ts._pos, ts._velocities, ts._forces)
         else:

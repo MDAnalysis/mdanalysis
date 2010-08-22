@@ -92,6 +92,7 @@ class Timestep(object):
         # (the user should not need concern themselves with this)
         return numpy.take(self._unitcell, [0,2,5,1,3,4])
 
+
 class IObase(object):
     """Base class bundling common functionality for trajectory I/O.    
     """
