@@ -19,9 +19,9 @@ import PSFParser, PDBParser, PrimitivePDBParser, GROParser
 # (all parser should essentially do the same thing; the PSFParser is
 # the reference implementation). The keys in :data:`_topology_parsers`
 # are the known topology formats.
-_topology_parsers = {'psf': PSFParser.parse,
-                     'pdb': PDBParser.parse,
-                     'gro': GROParser.parse,
+_topology_parsers = {'PSF': PSFParser.parse,
+                     'PDB': PDBParser.parse,
+                     'GRO': GROParser.parse,
                      }
 _topology_parsers_permissive = _topology_parsers.copy()
-_topology_parsers_permissive['pdb'] = PrimitivePDBParser.parse
+_topology_parsers_permissive['PDB'] = PrimitivePDBParser.parse

@@ -93,14 +93,14 @@ def guess_format(filename):
     try:
         if ext.startswith('.'):
             ext = ext[1:]
-        ext = ext.lower()
+        format = ext.upper()
     except:
         raise TypeError("Cannot determine topology type for %r" % filename)
     
-    if not ext in MDAnalysis.topology._topology_parsers:
+    if not format in MDAnalysis.topology._topology_parsers:
         raise TypeError("Unknown topology extension %r from %r; only %r are implemented in MDAnalysis." % 
-                        (ext, filename, MDAnalysis.topology._topology_parsers.keys()))
-    return ext
+                        (format, filename, MDAnalysis.topology._topology_parsers.keys()))
+    return format
 
 # following guess_* used by PDB parser
 

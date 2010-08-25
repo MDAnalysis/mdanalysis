@@ -535,7 +535,7 @@ class Universe(object):
         import MDAnalysis.topology.core
 
         # managed attribute holding TRJReader (the Universe.trajectory
-        # attribute is also aliase as Universe.<EXT> where <EXT> is the
+        # attribute is also aliased as Universe.<EXT> where <EXT> is the
         # trajectory format type (i.e. the extension))
         self.__trajectory = None
 
@@ -576,7 +576,7 @@ class Universe(object):
 
         # Load coordinates
         if coordinatefile is None and \
-                MDAnalysis.topology.core.guess_format(topologyfile) in ('pdb', 'gro'):
+                MDAnalysis.topology.core.guess_format(topologyfile) in ('PDB', 'GRO'):
             # hack for pdb/gro - only
             coordinatefile = topologyfile
         self.load_new(coordinatefile, **kwargs)
@@ -617,7 +617,7 @@ class Universe(object):
         if (self.trajectory.numatoms != self.atoms.numberOfAtoms()):
             raise ValueError("The topology and %s trajectory files  don't have the same number of atoms!" % trjtype)
         # hack for PDB
-        if trjtype == "pdb":
+        if trjtype == "PDB":
             # add B-factor to atoms
             for a, bfactor in izip(self.atoms, self.trajectory.get_bfactors()):
                 a.bfactor = bfactor  ## does this work with mmLib??
