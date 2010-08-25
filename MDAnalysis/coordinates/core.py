@@ -22,9 +22,12 @@ except ImportError:
         return x*numpy.pi/180.0
 
 
-def get_reader_for(filename):
+def get_reader_for(filename, permissive=False):
     """Return the appropriate trajectory reader for *filename*."""
-    return MDAnalysis.coordinates._trajectory_readers[guess_format(filename)]
+    format = guess_format(filename)
+    if permissive:
+        return MDAnalysis.coordinates._trajectory_readers_permissive[format]
+    return MDAnalysis.coordinates._trajectory_readers[format]
 
 def get_writer_for(filename=None, format='DCD'):
     """Return an appropriate trajectory or frame writer for *filename*.

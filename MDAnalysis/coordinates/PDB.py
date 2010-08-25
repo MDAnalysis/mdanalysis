@@ -29,6 +29,7 @@ except ImportError:
 
 import numpy
 
+import MDAnalysis.core
 import MDAnalysis.core.util as util
 import base
 from base import Timestep
@@ -43,13 +44,18 @@ class PDBReader(base.Reader):
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
+    _Timestep = Timestep
 
-    def __init__(self,pdbfilename):
+    def __init__(self, pdbfilename, convert_units=None):
+        self.pdbfilename = pdbfilename
+        self.filename = self.pdbfilename
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+        self.convert_units = convert_units  # convert length and time to base units
+
         pdb_id = "0UNK"
         self.pdb = pdb.extensions.get_structure(pdbfilename, pdb_id)
         pos = numpy.array([atom.coord for atom in self.pdb.get_atoms()])
-        self.pdbfilename = pdbfilename
-        self.filename = self.pdbfilename
         self.numatoms = pos.shape[0]
         self.numframes = 1
         self.fixed = 0          # parse B field for fixed atoms?
@@ -57,9 +63,15 @@ class PDBReader(base.Reader):
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1
-	#self._unitcell[:] = self._unitcell + numpy.array([90.,90.,90.,90.,90.,90.])
-	self.ts = Timestep(pos)
+	#self.ts._unitcell[:] = ??? , from CRYST1?
+	self.ts = self._Timestep(pos)
 	del pos
+        if self.convert_units:
+            self.convert_pos_from_native(self.ts._pos)             # in-place !
+            
+    def get_bfactors(self):
+        """Return an array of bfactors (tempFactor) in atom order."""
+        return numpy.array([a.get_bfactor() for a in self.pdb.get_atoms()])
 
     def __len__(self):
         return self.numframes
@@ -149,6 +161,138 @@ class PDBWriter(base.Writer):
 
     def close_trajectory(self):
         pass    # do nothing, keeps super classe's __del__ happy
+
+
+class PrimitivePDBReader(base.Reader):
+    """PDBReader that reads a PDB-formatted file, no frills.
+
+    Records read:
+     - CRYST1 for unitcell A,B,C, alpha,beta,gamm
+     - ATOM. HETATM for x,y,z
+
+    http://www.wwpdb.org/documentation/format32/sect9.html
+
+    =============  ============  ===========  =============================================
+    COLUMNS        DATA  TYPE    FIELD        DEFINITION
+    =============  ============  ===========  =============================================
+    1 -  6         Record name   "CRYST1"
+    7 - 15         Real(9.3)     a              a (Angstroms).
+    16 - 24        Real(9.3)     b              b (Angstroms).
+    25 - 33        Real(9.3)     c              c (Angstroms).
+    34 - 40        Real(7.2)     alpha          alpha (degrees).
+    41 - 47        Real(7.2)     beta           beta (degrees).
+    48 - 54        Real(7.2)     gamma          gamma (degrees).
+
+    1 -  6         Record name   "ATOM  "
+    7 - 11         Integer       serial       Atom  serial number.
+    13 - 16        Atom          name         Atom name.
+    17             Character     altLoc       Alternate location indicator. IGNORED
+    18 - 20        Residue name  resName      Residue name.
+    22             Character     chainID      Chain identifier.
+    23 - 26        Integer       resSeq       Residue sequence number.
+    27             AChar         iCode        Code for insertion of residues. IGNORED
+    31 - 38        Real(8.3)     x            Orthogonal coordinates for X in Angstroms.
+    39 - 46        Real(8.3)     y            Orthogonal coordinates for Y in Angstroms.
+    47 - 54        Real(8.3)     z            Orthogonal coordinates for Z in Angstroms.
+    55 - 60        Real(6.2)     occupancy    Occupancy.
+    61 - 66        Real(6.2)     tempFactor   Temperature  factor.
+    67 - 76        String        segID        (unofficial CHARMM extension ?)
+    77 - 78        LString(2)    element      Element symbol, right-justified. IGNORED
+    79 - 80        LString(2)    charge       Charge  on the atom. IGNORED
+    =============  ============  ===========  =============================================
+    """
+    format = 'PDB'
+    units = {'time': None, 'length': 'Angstrom'}
+    _Timestep = Timestep
+
+    def __init__(self, filename, convert_units=None):
+        """Read coordinates from *filename*.
+
+        *filename* can be a gzipped or bzip2ed compressed PDB file.
+        """
+        self.filename = filename
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+        self.convert_units = convert_units  # convert length and time to base units
+
+        coords = []
+        atoms = []
+        unitcell = numpy.zeros(6, dtype=numpy.float32)
+        with util.openany(filename, 'r') as pdbfile:
+            for line in pdbfile:
+                def _c(start,stop,typeclass=float):
+                    return self._col(line, start, stop, typeclass=typeclass)
+                if line[:3] == 'END':
+                    break
+                if line[:6] == 'CRYST1':
+                    A,B,C = _c(7,15), _c(16,24), _c(25,33)
+                    alpha,beta,gamma = _c(34,40), _c(41,47), _c(48,54)
+                    unitcell[:] = A,B,C, alpha,beta,gamma
+                if line[:6] in ('ATOM  ', 'HETATM'):
+                    # directly use COLUMNS from PDB spec
+                    serial = _c(7,11,int)
+                    name = _c(13,16,str).strip()
+                    resName = _c(18,20,str).strip()
+                    chainID = _c(22,22,str)  # empty chainID is a single space ' '!
+                    resSeq = _c(23,26,int)
+                    x,y,z = _c(31,38), _c(39,46), _c(47,54)
+                    occupancy = _c(55,60)
+                    tempFactor = _c(61,66)
+                    segID = _c(67,76, str).strip()
+                    coords.append((x,y,z))
+                    atoms.append((serial, name, resName, chainID, resSeq, occupancy, tempFactor, segID))
+        self.numatoms = len(coords)
+        self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
+        self.ts._unitcell[:] = unitcell
+        if self.convert_units:
+            self.convert_pos_from_native(self.ts._pos)             # in-place !
+            self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)
+        self.numframes = 1
+        self.fixed = 0
+        self.skip = 1
+        self.periodic = False
+        self.delta = 0
+        self.skip_timestep = 1
+        # hack for PrimitivePDBParser:
+        self._atoms = numpy.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,segID")
+
+    def _col(self, line, start, stop, typeclass=float):
+        """Pick out and convert the columns start-stop.
+
+        Numbering starts at column 1 with *start* and includes *stop*;
+        this is the convention used in FORTRAN (and also in the PDB format).
+
+        :Returns: ``typeclass(line[start-1:stop])`` or
+                  ``typeclass(0)`` if conversion fails
+        """
+        x = line[start-1:stop]
+        try:
+            return typeclass(x)
+        except ValueError:
+            return typeclass(0)
+
+    def get_bfactors(self):
+        """Return an array of bfactors (tempFactor) in atom order."""
+        return self._atoms.tempFactor
+
+    def get_occupancy(self):
+        """Return an array of occupancies atom order."""
+        return self._atoms.occupancy
+
+    def __len__(self):
+        return self.numframes
+    def __iter__(self):
+        yield self.ts  # Just a single frame
+        raise StopIteration
+    def __getitem__(self, frame):
+        if frame != 0:
+            raise IndexError('PrimitivePDBReader can only read a single frame at index 0')
+        return self.ts
+    def _read_next_timestep(self):
+        raise IndexError("PrimitivePDBReader can only read a single frame")
+
+
+        
 
 class PrimitivePDBWriter(base.Writer):
     """PDB writer that implements a subset of the PDB 3.2 standard.

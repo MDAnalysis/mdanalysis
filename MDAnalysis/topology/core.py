@@ -9,6 +9,10 @@
 .. function:: get_parser_for
 .. function:: guess_format
 
+.. function:: guess_atom_type
+.. function:: guess_atom_mass
+.. function:: guess_atom_charge
+
 """
 import os.path
 import MDAnalysis.topology
@@ -68,9 +72,12 @@ def build_bondlists(atoms, bonds):
         atom1.bonds.append(b)
         atom2.bonds.append(b)
 
-def get_parser_for(filename):
+def get_parser_for(filename, permissive=False):
     """Return the appropriate topology parser for *filename*."""
-    return MDAnalysis.topology._topology_parsers[guess_format(filename)]
+    format = guess_format(filename)
+    if permissive:
+        return MDAnalysis.topology._topology_parsers_permissive[format]
+    return MDAnalysis.topology._topology_parsers[format]
 
 def guess_format(filename):
     """Returns the type of topology file *filename*.
@@ -94,3 +101,58 @@ def guess_format(filename):
         raise TypeError("Unknown topology extension %r from %r; only %r are implemented in MDAnalysis." % 
                         (ext, filename, MDAnalysis.topology._topology_parsers.keys()))
     return ext
+
+# following guess_* used by PDB parser
+
+def guess_atom_type(atomname):
+    """Guess atom type from the name.
+
+    Not implemented; simply returns 0.
+    """
+    # TODO: do something slightly smarter, at least use name/element
+    return 0
+
+def guess_atom_mass(atomname):
+    """Guess a mass based on the atom name.
+
+    Masses are hard-coded here and some simple heuristics are used to
+    distinguish e.g. CL from C or NA from N. Generally, the first
+    letter of the atom name is used to decide.
+
+    .. warning:: Anything not recognized is simply set to 0; if you rely on the
+                 masses you might want to double check.
+    """
+    # TODO: do something slightly smarter, at least use name/element & dict
+    if atomname[0] == 'N':
+    	if atomname[:1] != 'NA':
+    		return 14.007
+    elif atomname[0] == 'C':
+    	if atomname[:2] not in ['CAL','CL ','CLA']:
+    		return 12.010
+    elif atomname[0] == 'O':
+    	return 15.999
+    elif atomname[0] == 'S':
+    	if atomname[:2] != 'SOD':
+		return 32.065
+    elif atomname[0] == 'P':
+    	return 30.974
+    elif atomname[0] == 'H' or (atomname[0] in ('1','2','3','4') and atomname[1] == 'H'):
+    	return 1.008 
+    elif atomname[:1] == 'MG':
+    	return 24.305
+    elif atomname[:2] in ['K  ','POT']:
+    	return 39.102
+    elif atomname[:1] == 'CL':
+    	return 35.450
+    elif atomname[:2] in ['NA ','SOD']:
+    	return 22.989 
+    else:
+    	return 0.000
+
+def guess_atom_charge(atomname):
+    """Guess atom charge from the name.
+
+    Not implemented; simply returns 0.
+    """
+    # TODO: do something slightly smarter, at least use name/element
+    return 0.0

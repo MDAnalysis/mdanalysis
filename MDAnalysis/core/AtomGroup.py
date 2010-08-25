@@ -502,7 +502,7 @@ class Universe(object):
               trajectories. If a PDB is used instead of a PSF then
               neither mass nor charge are correct, and bonds are not available.
     """
-    def __init__(self, psffilename, dcdfilename=None, pdbfilename=None):
+    def __init__(self, psffilename, dcdfilename=None, pdbfilename=None, **kwargs):
         """Initialize the central MDAnalysis Universe object.
 
         :Arguments:
@@ -514,7 +514,10 @@ class Universe(object):
              topology) is always required.
           *dcdfilename*
              A CHARMM DCD trajectory or Gromacs XTC/TRR/GRO or PDB; will provide coordinates.
-        
+          *permissive*
+             Set to ``True`` in order to ignore most errors (currently only relevant
+             for PDB files) [``False``]
+
         This routine tries to do the right thing: 
           1. If a pdb file is provided instead of a psf and neither a dcd nor a
              pdb structure then the coordinates are taken from the first pdb
@@ -545,7 +548,7 @@ class Universe(object):
 
         # build the topology (or at least a list of atoms)
         try:
-            parser = MDAnalysis.topology.core.get_parser_for(topologyfile)
+            parser = MDAnalysis.topology.core.get_parser_for(topologyfile, permissive=kwargs.get('permissive',False))
             struc = parser(topologyfile)
         except TypeError, err:
             raise ValueError("Failed to build a topology from either a psf, pdb or gro (%s)" % err)
@@ -568,19 +571,28 @@ class Universe(object):
 
         #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
         # Let atoms access the universe
-        for a in self.atoms: a.universe = self
+        for a in self.atoms:
+            a.universe = self
 
         # Load coordinates
         if coordinatefile is None and \
                 MDAnalysis.topology.core.guess_format(topologyfile) in ('pdb', 'gro'):
             # hack for pdb/gro - only
             coordinatefile = topologyfile
-        self.load_new(coordinatefile)
+        self.load_new(coordinatefile, **kwargs)
 
-    def load_new(self, filename):
+    def load_new(self, filename, **kwargs):
         """Load coordinates from *filename*, using the suffix to detect file format.
 
-        :Arguments: *filename* of the coordinate file (single frame or trajectory)
+        :Arguments: 
+             *filename* 
+                 the coordinate file (single frame or trajectory)
+             *permissive*
+                 If set to ``True``, ignore most errors (at the moment, this is only
+                 relevant for PDB) [``False``]
+             *kwargs*
+                 other kwargs are passed to the trajectory reader (only for advanced use)
+
         :Returns: (filename, trajectory_format) or ``None`` if *filename* == ``None``
         :Raises: :exc:`TypeError` if trajectory format can not be
                   determined or no appropriate trajectory reader found
@@ -589,23 +601,26 @@ class Universe(object):
             return
 
         import MDAnalysis.coordinates.core
+        from itertools import izip
+
+        permissive = kwargs.pop('permissive', False)
 
         try:
-            TRJReader = MDAnalysis.coordinates.core.get_reader_for(filename)
+            TRJReader = MDAnalysis.coordinates.core.get_reader_for(filename, permissive=permissive)
         except TypeError, err:
             raise TypeError("Universe.load_new() cannot find an appropriate coordinate reader "
                             "for file %r.\n%r" % (filename, err))
-        self.trajectory = TRJReader(filename)    # unified trajectory API
-        trjtype = self.trajectory.format.lower() # trjtype is always lower case (see coordinates._frame_readers)
-        self.__dict__[trjtype] = self.trajectory # legacy (deprecated)
+        self.trajectory = TRJReader(filename, **kwargs)    # unified trajectory API
+        trjtype = self.trajectory.format.lower() # lower case for the legacy attribute
+        self.__dict__[trjtype] = self.trajectory # legacy (deprecated) -- remove in 0.7
         # Make sure that they both have the same number of atoms
         if (self.trajectory.numatoms != self.atoms.numberOfAtoms()):
             raise ValueError("The topology and %s trajectory files  don't have the same number of atoms!" % trjtype)
         # hack for PDB
         if trjtype == "pdb":
             # add B-factor to atoms
-            for a, pdbatom in zip(self.atoms,self.trajectory.pdb.get_atoms()):
-                a.bfactor = pdbatom.get_bfactor()  ## does this work with mmLib??
+            for a, bfactor in izip(self.atoms, self.trajectory.get_bfactors()):
+                a.bfactor = bfactor  ## does this work with mmLib??
         return filename, trjtype
             
     def selectAtoms(self, sel, *othersel):

@@ -17,6 +17,11 @@ The rules for this file:
 	* GRO writer added
 	* fixed XTC writer (Issue 38)
 	* convert box representations (Issue 37)
+	* primitive PDB parser added (slightly faster and ignores
+	  correctness of resids, atomnames etc but reads CRYST1 into unitcell)
+	* Universe gained the 'permissive' flag to switch on the
+	  primitive PDB parser/reader
+
         * reads hydrogen bond donor/acceptor list from psf and sets up
           structures for hydrogen bonding analysis TODO: H-BOND
           ANALYSIS NOT WORKING YET

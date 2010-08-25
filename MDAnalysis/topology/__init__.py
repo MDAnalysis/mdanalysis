@@ -13,7 +13,7 @@ it lacks bond information, charges, and masses at the moment.
 __all__ = ['core', 'PSFParser', 'PDBParser', 'GROParser']
 
 import core
-import PSFParser, PDBParser, GROParser
+import PSFParser, PDBParser, PrimitivePDBParser, GROParser
 
 # dictionary of known file formats and the corresponding file parser
 # (all parser should essentially do the same thing; the PSFParser is
@@ -23,3 +23,5 @@ _topology_parsers = {'psf': PSFParser.parse,
                      'pdb': PDBParser.parse,
                      'gro': GROParser.parse,
                      }
+_topology_parsers_permissive = _topology_parsers.copy()
+_topology_parsers_permissive['pdb'] = PrimitivePDBParser.parse

@@ -299,6 +299,10 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'GRO': GRO.GROReader,
                        }
 
+# hack: readers that ignore most errors (permissive=True)
+_trajectory_readers_permissive = _trajectory_readers.copy()
+_trajectory_readers_permissive['PDB'] =  PDB.PrimitivePDBReader
+
 # frame writers: export to single frame formats such as PDB, gro, crd
 # Signature:
 #   W = FrameWriter(filename)

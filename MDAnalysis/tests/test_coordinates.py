@@ -144,11 +144,21 @@ class TestPDBReader(TestCase, RefAdKSmall):
         d = atom_distance(NTERM, CTERM)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="distance between M1:N and G214:C")
-    
+
 class TestPSF_PDBReader(TestPDBReader):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small)
         self.prec = 6
+
+class TestPrimitivePDBReader(TestPDBReader):
+    def setUp(self):
+        self.universe = mda.Universe(PDB_small, permissive=True) 
+        self.prec = 6  # 6 decimals in A in PDB
+
+class TestPSF_PrimitivePDBReader(TestPDBReader):
+    def setUp(self):
+        self.universe = mda.Universe(PSF, PDB_small, permissive=True) 
+        self.prec = 6  # 6 decimals in A in PDB
 
 class TestGROReader(TestCase, RefAdK):
     def setUp(self):
