@@ -285,9 +285,10 @@ Methods
 
 """
 
-__all__ = ['DCD', 'PDB', 'CRD', 'XTC', 'TRR', 'GRO', 'XYZ']
+__all__ = ['DCD', 'PDB', 'CRD', 'XTC', 'TRR', 'GRO', 'XYZ', 'ChainReader']
 
 import PDB, DCD, CRD, XTC, TRR, GRO, XYZ
+from base import ChainReader
 
 # trajectory readers: present unified interface (based on DCD.Timestep)
 _trajectory_readers = {'DCD': DCD.DCDReader,
@@ -297,6 +298,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'TRR': TRR.TRRReader,
                        'PDB': PDB.PDBReader,
                        'GRO': GRO.GROReader,
+                       'CHAIN': ChainReader,
                        }
 
 # hack: readers that ignore most errors (permissive=True)

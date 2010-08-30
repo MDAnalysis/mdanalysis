@@ -10,6 +10,8 @@ Important base classes are collected in :mod:`MDAnalysis.coordinates.base`.
 """
 import os.path
 import MDAnalysis.coordinates
+import MDAnalysis.core.util
+
 import numpy
 
 from numpy import sin, cos, sqrt
@@ -28,6 +30,15 @@ def get_reader_for(filename, permissive=False):
     if permissive:
         return MDAnalysis.coordinates._trajectory_readers_permissive[format]
     return MDAnalysis.coordinates._trajectory_readers[format]
+
+def init_reader_for(filename, **kwargs):
+    """Initialize a trajectory reader instance for *filename*.
+    
+    Appropriate kwargs are passed through, with the exception of
+    *permissive*, which determines the subtype type of reader.
+    """
+    Reader = get_reader_for(filename, permissive=kwargs.pop('permissive', False))
+    return Reader(filename, **kwargs)
 
 def get_writer_for(filename=None, format='DCD'):
     """Return an appropriate trajectory or frame writer for *filename*.
@@ -68,15 +79,19 @@ def guess_format(filename):
 
     # Note: at the moment the upper-case extension *is* the format specifier
 
-    try:
-        root, ext = get_ext(filename)
-    except:
-        raise TypeError("Cannot determine coordinate format for %r" % filename)
-    format = ext.upper()
-    format = check_compressed_format(root, ext)    
-    if not format in MDAnalysis.coordinates._trajectory_readers:
-        raise TypeError("Unknown coordinate trajectory extension %r from %r; only %r are implemented in MDAnalysis." % 
-                        (ext, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
+    if MDAnalysis.core.util.iterable(filename):
+        # list of filenames, handled by ChainReader
+        format = 'CHAIN'
+    else:
+        try:
+            root, ext = get_ext(filename)
+        except:
+            raise TypeError("Cannot determine coordinate format for %r" % filename)
+        format = ext.upper()
+        format = check_compressed_format(root, ext)    
+        if not format in MDAnalysis.coordinates._trajectory_readers:
+            raise TypeError("Unknown coordinate trajectory extension %r from %r; only %r are implemented in MDAnalysis." % 
+                            (ext, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
     return format
     
 def check_compressed_format(root, ext):

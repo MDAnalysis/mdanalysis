@@ -490,17 +490,16 @@ class Universe(object):
        - :attr:`Universe.dimensions`: current system dimensions (simulation unit cell, if 
          set in the trajectory)
 
-    Methods::
-       m = Universe(psffile, dcdfile)             # read system from file(s)          
-       m = Universe(psffile, pdbfilename=pdbfile) # read coordinates from PDB file
-       m = Universe(pdbfile)                      # read atoms and coordinates from PDB
-       m = Universe(pdbfile, xtcfile)             # read system from file(s)          
-       m.load_new_dcd(dcdfilename)                # read from a new dcd file
-       m.selectAtoms(...)                         # select atoms using similar selection string as charmm
+    Methods:
+       - m = Universe(psffile, trajectory)          # read system from file(s)
+       - m = Universe(pdbfile)                      # read atoms and coordinates from PDB or GRO
+       - m = Universe(psffile, [traj1, traj2, ...]) # read from a list of trajectories
+       - m.load_new(trajectory)                     # read from a new trajectory file
+       - m.selectAtoms(...)                         # select atoms using similar selection string as charmm
 
     .. Note:: Only a single-frame PDB file is supported; use DCDs or XTC/TRR for
               trajectories. If a PDB is used instead of a PSF then
-              neither mass nor charge are correct, and bonds are not available.
+              charges are not correct, masses are guessed, and bonds are not available.
     """
     def __init__(self, psffilename, dcdfilename=None, pdbfilename=None, **kwargs):
         """Initialize the central MDAnalysis Universe object.
@@ -514,6 +513,8 @@ class Universe(object):
              topology) is always required.
           *dcdfilename*
              A CHARMM DCD trajectory or Gromacs XTC/TRR/GRO or PDB; will provide coordinates.
+             If a list of filenames is provided then they are sequentially read and appear
+             as one single trajectory to the Universe.
           *permissive*
              Set to ``True`` in order to ignore most errors (currently only relevant
              for PDB files) [``False``]
@@ -586,7 +587,8 @@ class Universe(object):
 
         :Arguments: 
              *filename* 
-                 the coordinate file (single frame or trajectory)
+                 the coordinate file (single frame or trajectory) OR a list of
+                 filenames, which are read one after another
              *permissive*
                  If set to ``True``, ignore most errors (at the moment, this is only
                  relevant for PDB) [``False``]
