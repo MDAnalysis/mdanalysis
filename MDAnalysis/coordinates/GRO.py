@@ -123,9 +123,16 @@ class GROWriterStandard(base.Writer):
         format = 'GRO'
         units = {'time': None, 'length': 'nm'}
 
-	#: Output format, see http://chembytes.wikidot.com/g-grofile
-	fmt_velocities = "%5s%-5s%5s%5s%8.3f%8.3f%8.3f%8.4f%8.4f%8.4f"
-	fmt_no_velocities = "%5s%-5s%5s%5s%8.3f%8.3f%8.3f"
+	#: format strings for the GRO file (all include newline); precision
+	#: of 3 decimal places is hard-coded here.
+	fmt = {'numatoms': "%5d\n",   # number of atoms
+	       # coordinates output format, see http://chembytes.wikidot.com/g-grofile
+	       'xyz_v': "%5s%-5s%5s%5s%8.3f%8.3f%8.3f%8.4f%8.4f%8.4f\n", # coordinates and velocities
+	       'xyz': "%5s%-5s%5s%5s%8.3f%8.3f%8.3f\n",                  # coordinates only
+	       # unitcell
+	       'box_orthorhombic': "%10.5f%10.5f%10.5f\n",
+	       'box_triclinic': "%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n",
+	       }
 
         def __init__(self,filename):
 		"""Set up a GROWriter with a precision of 3 decimal places.
@@ -165,38 +172,40 @@ class GROWriterStandard(base.Writer):
 				frame = 1   # should catch cases when we are analyzing a single GRO (?)
 
                 output_gro = open(self.filename , 'w')
-                # Header
-                output_gro.write('Written by MDAnalysis\n')
-                output_gro.write("%5d\n" % len(selection))
+		try:
+			# Header
+			output_gro.write('Written by MDAnalysis\n')
+			output_gro.write(self.fmt['numatoms'] % len(selection))
 
-                # Atom descriptions and coords
-		coordinates = selection.coordinates()
-		self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, in-place !
+			# Atom descriptions and coords
+			coordinates = selection.coordinates()
+			self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, in-place !
 		
-		for atom_index,atom in enumerate(selection):
-			c = coordinates[atom_index]
-                        output_line = self.fmt_no_velocities % \
-			    (str(atom.resid)[-5:],     # truncate highest digits on overflow
-			     atom.resname.strip(), 
-			     atom.name.strip(),
-			     str(atom.number+1)[-5:],  # number (1-based), truncate highest digits on overflow
-			     c[0], c[1], c[2],         # coords - outputted with 3 d.p.
-			     )
-                        output_gro.write( output_line + '\n' )
+			for atom_index,atom in enumerate(selection):
+				c = coordinates[atom_index]
+				output_line = self.fmt['xyz'] % \
+				    (str(atom.resid)[-5:],     # truncate highest digits on overflow
+				     atom.resname.strip(),     # XXX: truncate resname and atomname to be sure??
+				     atom.name.strip(),
+				     str(atom.number+1)[-5:],  # number (1-based), truncate highest digits on overflow
+				     c[0], c[1], c[2],         # coords - outputted with 3 d.p.
+				     )
+				output_gro.write(output_line)
 
-                # Footer: box dimensions
-		box = self.convert_dimensions_to_unitcell(u.trajectory.ts)
-		if numpy.all(u.trajectory.ts.dimensions[3:] == [90.,90.,90.]):
-			# orthorhombic cell, only lengths along axes needed in gro
-			output_gro.write("%10.5f%10.5f%10.5f\n" % (box[0,0],box[1,1],box[2,2]))
-		else:
-			# full output
-			output_gro.write("%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n" % 
-					 (box[0,0],box[1,1],box[2,2],
-					  box[0,1],box[0,2],
-					  box[1,0],box[1,2],
-					  box[2,0],box[2,1]))	
-                output_gro.close()
+			# Footer: box dimensions
+			box = self.convert_dimensions_to_unitcell(u.trajectory.ts)
+			if numpy.all(u.trajectory.ts.dimensions[3:] == [90.,90.,90.]):
+				# orthorhombic cell, only lengths along axes needed in gro
+				output_gro.write(self.fmt['box_orthorhombic'] % (box[0,0],box[1,1],box[2,2]))
+			else:
+				# full output
+				output_gro.write(self.fmt['box_triclinic'] % 
+						 (box[0,0],box[1,1],box[2,2],
+						  box[0,1],box[0,2],
+						  box[1,0],box[1,2],
+						  box[2,0],box[2,1]))
+		finally:
+			output_gro.close()
 
 
 class GROWriter(base.Writer):
