@@ -292,17 +292,20 @@ class AtomGroup(object):
             #return tuple(atomselections)
             return atomgrp
 
-    def write(self,filename=None,format="pdb",filenamefmt="%(trjname)s_%(frame)d"):
+    def write(self,filename=None,format="PDB",filenamefmt="%(trjname)s_%(frame)d"):
         """Write AtomGroup to a file.
 
         AG.write(filename,format='pdb')
-
-        EXPERIMENTAL.
-        Only a primitive PDB format and standard CRD is working.
-
-        filename      None: create TRJNAME_FRAME.FORMAT from filenamefmt
-        format        pdb, crd; can also be supplied as part of filename
-        filenamefmt   format string for default filename; use 'trjname' and 'frame'
+        
+        :Keywords:
+          *filename*
+               ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
+          *format*
+                PDB, CRD, GRO; case-insensitive and can also be supplied as 
+                the filename extension [PDB]
+          *filenamefmt*   
+                format string for default filename; use substitution tokens
+                'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
         """
         import util
         import os.path
@@ -313,8 +316,9 @@ class AtomGroup(object):
         if filename is None:
             trjname,ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt % vars()
-        filename = util.filename(filename,ext=format,keep=True)
+        filename = util.filename(filename,ext=format.lower(),keep=True)
         format = os.path.splitext(filename)[1][1:]  # strip initial dot!
+        format = format.upper()    # format keys are upper case
         try:
             import MDAnalysis.coordinates
             FrameWriter = MDAnalysis.coordinates._frame_writers[format]
