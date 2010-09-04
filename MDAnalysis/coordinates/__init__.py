@@ -285,10 +285,12 @@ Methods
 
 """
 
-__all__ = ['DCD', 'PDB', 'CRD', 'XTC', 'TRR', 'GRO', 'XYZ', 'ChainReader']
+__all__ = ['DCD', 'PDB', 'CRD', 'XTC', 'TRR', 'GRO', 'XYZ', 'ChainReader',
+           'get_reader_for', 'get_writer_for']
 
 import PDB, DCD, CRD, XTC, TRR, GRO, XYZ
 from base import ChainReader
+from core import get_reader_for, get_writer_for
 
 # trajectory readers: present unified interface (based on DCD.Timestep)
 _trajectory_readers = {'DCD': DCD.DCDReader,

@@ -309,6 +309,7 @@ class AtomGroup(object):
         """
         import util
         import os.path
+        import MDAnalysis.coordinates
 
         trj = self.universe.trajectory    # unified trajectory API
         frame = trj.ts.frame
@@ -317,14 +318,7 @@ class AtomGroup(object):
             trjname,ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt % vars()
         filename = util.filename(filename,ext=format.lower(),keep=True)
-        format = os.path.splitext(filename)[1][1:]  # strip initial dot!
-        format = format.upper()    # format keys are upper case
-        try:
-            import MDAnalysis.coordinates
-            FrameWriter = MDAnalysis.coordinates._frame_writers[format]
-        except KeyError:
-            raise NotImplementedError("Writing as %r is not implemented; only %r will work." \
-                                      % (format, MDAnalysis.coordinates._frame_writers.keys()))
+        FrameWriter = MDAnalysis.coordinates.get_writer_for(filename)
         writer = FrameWriter(filename)
         writer.write(self)         # wants a atomgroup
 
