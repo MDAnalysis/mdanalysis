@@ -130,6 +130,9 @@ class TestPDBReader(TestCase, RefAdKSmall):
     def test_numatoms(self):
         assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
 
+    def test_numres(self):
+        assert_equal(self.universe.atoms.numberOfResidues(), 214, "wrong number of residues")
+
     def test_numframes(self):
         assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames in pdb")
 

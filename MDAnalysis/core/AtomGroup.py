@@ -118,7 +118,8 @@ class AtomGroup(object):
         ag.numberOfAtoms() - return the number of atoms in group
         ag.numberOfResidues() - return the number of residues in group
         ag.indices() - return indices into main atom array
-        ag.resnames() - return list of all resnames
+        ag.resids() - return list of resids
+        ag.resnames() - return list of resnames
         ag.masses() - array of masses
         ag.totalMass() - total mass
         ag.charges() - array of charges
@@ -210,6 +211,14 @@ class AtomGroup(object):
         if not hasattr(self,'_cached_indices'):
             self._cached_indices = numpy.array([atom.number for atom in self.atoms])
         return self._cached_indices
+    def resids(self):
+        list_resids = []
+        current_resid = -1
+        for atom in self.atoms:
+            if atom.resid != current_resid:
+                list_resids.append(atom.resid)
+            current_resid = atom.resid
+        return list_resids
     def resnames(self):
         list_resnames = []
         current_resid = -1
