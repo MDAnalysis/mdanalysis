@@ -9,9 +9,7 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/10 orbeckst
-        (Running list of enhancements, to be edited for final
-        entry when stable changes are merged back into trunk)
+??/09/10 orbeckst, danny.parton
 
 	* 0.6.4-devel
 	* GRO writer added
@@ -22,13 +20,12 @@ The rules for this file:
 	* Universe gained the 'permissive' flag to switch on the
 	  primitive PDB parser/reader
 	* Simple 'chained reader' which enables a Universe to
-	  transparently read a list of trajectory files (Issue 39).
+	  transparently read a list of trajectory files (Issue 39).        
+        * Additional methods for AtomGroup: numberOfResidues(),
+	  resids(), resnames()
         * new bilayer analysis script for membrane composition on a
 	  per-leaflet basis (examples/membrane-composition.py); also
 	  renamed examples/leaflet.py to membrane-leaflets.py
-        * reads hydrogen bond donor/acceptor list from psf and sets up
-          structures for hydrogen bonding analysis TODO: H-BOND
-          ANALYSIS NOT WORKING YET
 
 07/08/10 orbeckst, denniej0, danny.parton, philipwfowler
 	* 0.6.3 release
