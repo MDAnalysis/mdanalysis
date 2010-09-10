@@ -116,7 +116,9 @@ class AtomGroup(object):
     Methods:
         ag = universe.selectAtoms("...")
         ag.numberOfAtoms() - return the number of atoms in group
+        ag.numberOfResidues() - return the number of residues in group
         ag.indices() - return indices into main atom array
+        ag.resnames() - return list of all resnames
         ag.masses() - array of masses
         ag.totalMass() - total mass
         ag.charges() - array of charges
@@ -196,10 +198,26 @@ class AtomGroup(object):
         return '<'+self.__class__.__name__+' with '+repr(self.numberOfAtoms())+' atoms>'
     def numberOfAtoms(self):
         return len(self.atoms)
+    def numberOfResidues(self):
+        current_resid = -1
+        num_res = 0
+        for atom in self.atoms:
+            if atom.resid != current_resid:
+                num_res += 1
+            current_resid = atom.resid
+        return num_res
     def indices(self):
         if not hasattr(self,'_cached_indices'):
             self._cached_indices = numpy.array([atom.number for atom in self.atoms])
         return self._cached_indices
+    def resnames(self):
+        list_resnames = []
+        current_resid = -1
+        for atom in self.atoms:
+            if atom.resid != current_resid:
+                list_resnames.append(atom.resname)
+            current_resid = atom.resid
+        return list_resnames
     def masses(self):
         if not hasattr(self, "_cached_masses"):
             self._cached_masses = numpy.array([atom.mass for atom in self.atoms])
