@@ -301,10 +301,10 @@ class AtomGroup(object):
                       category=DeprecationWarning)
         return self.principalAxes().T
 
-    def coordinates(self, ts=None, copy=False):
+    def coordinates(self, ts=None, copy=False, dtype=numpy.float32):
         if ts == None:
             ts = self.universe.coord
-        return numpy.array(ts[self.indices()], copy=copy)
+        return numpy.array(ts[self.indices()], copy=copy, dtype=dtype)
 
     def selectAtoms(self, sel, *othersel):
         import Selection
