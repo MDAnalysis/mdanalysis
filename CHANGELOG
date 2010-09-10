@@ -23,6 +23,9 @@ The rules for this file:
 	  primitive PDB parser/reader
 	* Simple 'chained reader' which enables a Universe to
 	  transparently read a list of trajectory files (Issue 39).
+        * new bilayer analysis script for membrane composition on a
+	  per-leaflet basis (examples/membrane-composition.py); also
+	  renamed examples/leaflet.py to membrane-leaflets.py
         * reads hydrogen bond donor/acceptor list from psf and sets up
           structures for hydrogen bonding analysis TODO: H-BOND
           ANALYSIS NOT WORKING YET
