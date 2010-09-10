@@ -135,3 +135,51 @@ class LeafletFinder(object):
             writer.write(ag, name=name)
 
 
+def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5, 
+                    max_imbalance=0.2, **kwargs):
+    """Find cutoff that minimizes number of disconnected groups.
+
+    Applies heuristics to find best groups:
+    1. at least two groups (assumes that there are at least 2 leaflets)
+    2. reject any solutions for which
+              |N0 - N1|/|N0 + N1| > *max_imbalance*
+       Ni = number of lipids in group i. This heuristic picks groups with 
+       balanced numbers of lipids.
+
+    :Arguments:
+      *universe*
+          :class:`MDAnalysis.Universe` instance
+      *selection*
+          selection string as used for :class:`LeafletFinder`
+      *dmin*, *dmax*, *step*
+          scan cutoffs from *dmin* to *dmax* at stepsize *step (in angstroem)
+      *max_imbalance*
+          tuning parameter for the balancing heuristic (2) [0.2]
+      *kwargs*
+          other arguments for  :class:`LeafletFinder`
+
+    :Returns: ``(cutoff,N)`` optimum cutoff and number of groups found
+    :Raises: can die in various ways if really no appropriate number of groups 
+             can be found; needs to be made more robust
+    """
+    kwargs.pop('cutoff', None)  # not used, so we filter it
+    _sizes = []
+    for cutoff in numpy.arange(dmin, dmax, step):
+        LF = LeafletFinder(universe, selection, cutoff=cutoff, **kwargs)
+        # heuristic:
+        #  1) N > 1
+        #  2) no imbalance between large groups:
+        sizes = LF.sizes()
+        if len(sizes) < 2:
+            continue
+        n0 = float(sizes[0])  # sizes of two biggest groups ...
+        n1 = float(sizes[1])  # ... assumed to be the leaflets
+        imbalance = numpy.abs(n0 - n1)/(n0 + n1)
+        # print "sizes: %(sizes)r; imbalance=%(imbalance)f" % vars()
+        if imbalance > max_imbalance:
+            continue
+        _sizes.append((cutoff, len(LF.sizes())))
+    results = numpy.rec.fromrecords(_sizes, names="cutoff,N")
+    del _sizes
+    results.sort(order=["N","cutoff"])  # sort ascending by N, then cutoff
+    return results[0]     # (cutoff,N) with N>1 and shortest cutoff
