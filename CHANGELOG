@@ -11,7 +11,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/09/10 orbeckst, danny.parton
 
-	* 0.6.4-devel
+	* release 0.6.4
 	* GRO writer added
 	* fixed XTC writer (Issue 38)
 	* convert box representations (Issue 37)
