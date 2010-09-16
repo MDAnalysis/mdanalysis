@@ -13,7 +13,12 @@ The rules for this file:
         (Running list of enhancements, to be edited for final
         entry when stable changes are merged back into trunk)
 
-	* 0.6.4-devel
+        * reads hydrogen bond donor/acceptor list from psf and sets up
+          structures for hydrogen bonding analysis TODO: H-BOND
+          ANALYSIS NOT WORKING YET
+
+09/15/10 orbeckst, danny.parton
+	* release 0.6.4
 	* GRO writer added
 	* fixed XTC writer (Issue 38)
 	* convert box representations (Issue 37)
@@ -28,9 +33,6 @@ The rules for this file:
         * new bilayer analysis script for membrane composition on a
 	  per-leaflet basis (examples/membrane-composition.py); also
 	  renamed examples/leaflet.py to membrane-leaflets.py
-        * reads hydrogen bond donor/acceptor list from psf and sets up
-          structures for hydrogen bonding analysis TODO: H-BOND
-          ANALYSIS NOT WORKING YET
 
 07/08/10 orbeckst, denniej0, danny.parton, philipwfowler
 	* 0.6.3 release

@@ -285,11 +285,10 @@ Methods
 
 """
 
-__all__ = ['DCD', 'PDB', 'CRD', 'XTC', 'TRR', 'GRO', 'XYZ', 'ChainReader',
-           'get_reader_for', 'get_writer_for']
+__all__ = ['get_reader_for', 'get_writer_for']
 
 import PDB, DCD, CRD, XTC, TRR, GRO, XYZ
-from base import ChainReader
+import base
 from core import get_reader_for, get_writer_for
 
 # trajectory readers: present unified interface (based on DCD.Timestep)
@@ -300,7 +299,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'TRR': TRR.TRRReader,
                        'PDB': PDB.PDBReader,
                        'GRO': GRO.GROReader,
-                       'CHAIN': ChainReader,
+                       'CHAIN': base.ChainReader,
                        }
 
 # hack: readers that ignore most errors (permissive=True)
@@ -313,7 +312,7 @@ _trajectory_readers_permissive['PDB'] =  PDB.PrimitivePDBReader
 #   W.write(AtomGroup)
 _frame_writers = {'PDB': PDB.PrimitivePDBWriter,
                   'CRD': CRD.CRDWriter,
-                  'GRO': GRO.GROWriterStandard,  # TODO: change once this replaced GORWriter
+                  'GRO': GRO.GROWriter,
                  }
 
 # trajectory writers: export frames, typically only saving coordinates

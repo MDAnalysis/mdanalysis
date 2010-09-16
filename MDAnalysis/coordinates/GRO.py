@@ -112,12 +112,10 @@ class GROReader(base.Reader):
 	def _read_next_timestep(self):
 		raise Exception, "GROReader can only read a single frame"
 
-class GROWriterStandard(base.Writer):
+class GROWriter(base.Writer):
 	"""GRO Writer that conforms to the Trajectory API.
 
 	.. Note:: The precision is hard coded to three decimal places.
-
-	.. Warning:: This class will replace GROWriter.
 	"""
 	
         format = 'GRO'
@@ -206,80 +204,4 @@ class GROWriterStandard(base.Writer):
 						  box[2,0],box[2,1]))
 		finally:
 			output_gro.close()
-
-
-class GROWriter(base.Writer):
-        """
-The universe option can be either a Universe or an AtomGroup (e.g. a selectAtoms() selection).
-The coordinates to be output are taken from the current Timestep (unless a different Timestep is supplied when calling write() )."""
-        format = 'GRO'
-        units = {'time': None, 'length': 'nm'}
-        def __init__(self,filename,universe=None,ndec=3):
-		"""Set up a GROWriter.
-
-		:Arguments:
-		   *ndec* 
-                     the number of decimal places for the
-                     coordinates. Currently only works with 3 (default).
-		"""
-		import warnings
-		warnings.warn("Deprecated GROWriter; will be changed in next release to behave in the same "
-			      "way as CRDWriter and PrimitivePDBWriter (as detailed in the Trajectory API).",
-			      category=DeprecationWarning)
-
-                self.filename = util.filename(filename,ext='gro')
-		if isinstance(universe , MDAnalysis.Universe):
-                	self.universe = universe
-			self.atom_indices = self.universe.atoms.indices()
-		# If it's an AtomGroup, then take the atom indices, and then store the Universe which that AtomGroup belongs to
-		elif isinstance(universe , MDAnalysis.AtomGroup.AtomGroup):
-			self.atom_indices = universe.indices()
-			self.universe = universe.universe
-		elif universe == None:
-			raise Exception, 'Must supply a Universe or AtomGroup'
-		else:
-			raise Exception, 'Must supply a Universe or AtomGroup'
-
-        def write(self,ts=None,ndec=3):
-                """ndec is the number of decimal places for the coordinates. Currently only works with 3 (default).
-		If ts=None then we try to get one from the Universe
-		"""
-                if ts is None:
-                        try:
-                                ts = self.universe.trajectory.ts
-                        except:
-                                raise Exception, "Can't find ts in universe.trajectory"
-                output_gro = open(self.filename , 'w')
-                # Header
-                output_gro.write('Written by MDAnalysis\n')
-                output_gro.write((' ' * (5 - len(str(len(self.atom_indices))))) + str(len(self.atom_indices)) + '\n')
-                # Atom descriptions and coords
-		for atom_index in self.atom_indices:
-			atom = self.universe.atoms[atom_index]
-                        # resid
-                        output_line = (' ' * (5 - len(str(atom.resid)))) + str(atom.resid)
-                        # resname + atomname
-                        output_line += atom.resname + (' ' * (10 - len(atom.resname) - len(atom.name))) + atom.name
-                        # number (1-based)
-                        output_line += (' ' * (5 - len(str(atom.number+1)))) + str(atom.number+1)
-                        # coords - outputted with 3 d.p.
-			# These come from a supplied Timestep, if it is supplied, otherwise from the Universe.trajectory.ts
-			coords = deepcopy(ts[atom.number])
-                	# Convert back to nm from Angstroms
-			self.convert_pos_to_native(coords)   # in-place !
-                        coords = [ '%.3f' % coords[0] , '%.3f' % coords[1] , '%.3f' % coords[2] ]
-                        output_line += (' ' * (4 - len(coords[0].split('.')[0]))) + coords[0]
-                        output_line += (' ' * (4 - len(coords[1].split('.')[0]))) + coords[1]
-                        output_line += (' ' * (4 - len(coords[2].split('.')[0]))) + coords[2]
-                        # Output the line
-                        output_gro.write( output_line + '\n' )
-
-                # Footer: box dimensions
-		dims = ts.dimensions[:3]
-                # Convert back to nm from Angstroms
-		self.convert_pos_to_native(dims)   # in-place !
-		output_gro.write( (' ' * (4 - len(str(dims[0]).split('.')[0]))) + '%.5f' % dims[0] + (' ' * (4 - len(str(dims[1]).split('.')[0]))) + '%.5f' % dims[1] + (' ' * (4 - len(str(dims[2]).split('.')[0]))) + '%.5f' % dims[2] + '\n')
-                output_gro.close()
-
-
 
