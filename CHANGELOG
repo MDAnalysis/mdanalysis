@@ -17,7 +17,7 @@ The rules for this file:
           structures for hydrogen bonding analysis TODO: H-BOND
           ANALYSIS NOT WORKING YET
 
-09/15/10 orbeckst, danny.parton
+09/16/10 orbeckst, danny.parton
 	* release 0.6.4
 	* GRO writer added
 	* fixed XTC writer (Issue 38)
