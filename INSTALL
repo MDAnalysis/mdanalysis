@@ -158,6 +158,18 @@ sources) with ::
   python setup develop [options]
 
 
+If you want to use optional functionality (such as running some of the
+analysis code in the MDAnalysis.analysis module or running the test
+suite) then you can have easy_install fetch and install additionaly
+required packages if you have not been able to install them through
+your package manager (always preferred!). For instance,
+
+  easy_install ./mdanalysis[analysis]
+
+should also install packages required for analysis.
+
+
+
 Additional non-standard python packages
 =======================================
 
@@ -176,14 +188,16 @@ Required python packages
 
 In order to use the library in your own python code you will need at least
 
-    * numpy of version 1.0.3 or greater 
-    * BioPython's Bio.PDB 
+    * numpy of version 1.0.3 or greater (http://numpy.scipy.org/)
+    * BioPython's Bio.PDB (http://biopython.org)
 
 Optional python packages:
 
-The LAMMPS parser uses
-
-    * ScientificPython's Scientific.IO.FortranFormat 
+    * networkx (http://networkx.lanl.gov/) --- for analysis of lipid 
+      leaflets via MDAnalysis.analysis.leaflet
+    * nose (http://somethingaboutorange.com/mrl/projects/nose/) -- for testing
+    * ScientificPython http://dirac.cnrs-orleans.fr/plone/software/scientificpython/
+      Scientific.IO.FortranFormat (experimental LAMMPS parser)
 
 
 OS specific notes
