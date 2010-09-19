@@ -20,6 +20,7 @@ but replaces the standard PDB file parser with one that uses the
 to cope with very large pdb files as commonly encountered in MD
 simulations.
 """
+from __future__ import with_statement
 
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
