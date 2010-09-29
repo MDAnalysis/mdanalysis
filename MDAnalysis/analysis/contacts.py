@@ -3,12 +3,12 @@
 # Copyright (c) 2006-2010 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
 # Released under the GNU Public Licence, v2
 """
+Contact analysis ("q1-q2") --- :mod:`MDAnalysis.analysis.contacts`
+===================================================================
+
 :Author: Oliver Beckstein
 :Year: 2010
 :Copyright: GNU Public License v3
-
-Contact analysis ("q1-q2")
-==========================
 
 See http://lorentz.dynstr.pasteur.fr/joel/adenylate.php for an example of
 contact analysis applied to MinActionPath trajectories of AdK (although this
@@ -157,7 +157,7 @@ class ContactAnalysis(object):
         """Analyze trajectory and produce timeseries.
 
         Stores results in :attr:`ContactAnalysis.timeseries` (if
-        store=True) and write it to a bzip2-compressed data file.
+        store=True) and writes them to a bzip2-compressed data file.
         """
         if self._skip or self.output_exists(force=force):
             print "File %(output)r or %(output_bz2)r already exists, skipping %(trajectory)r." % vars(self)

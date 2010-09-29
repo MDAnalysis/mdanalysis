@@ -4,14 +4,11 @@
 # Released under the GNU Public Licence, v2
 
 """
-Distance analysis
-=================
+Distance analysis --- :mod:`MDAnalysis.distances`
+==================================================
 
 This module provides functions to rapidly compute distances between
 atoms or groups of atoms.
-
-.. autofunction:: distance_array
-.. autofunction:: self_distance_array
 
 """
 

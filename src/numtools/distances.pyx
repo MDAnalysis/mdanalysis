@@ -55,21 +55,23 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
 
     d = distance_array(ref,conf,box[,result=d[,copy=True]])
 
-    :Input:
-    ref        reference coordinate array
-    conf       configuration coordinate array
-    box        orthorhombic unit cell dimensions (minimum image convention
-               is applied) or None [None]
-    result     optional preallocated result array which must have the shape
-               (len(ref),len(conf)) and dtype=numpy.float64. Avoids creating the 
-               array which saves time when the function is called repeatedly. [None]
-    copy       makes internal copies of the input arrays; see note below [True]
+    :Arguments:
+		*ref*
+			reference coordinate array
+		*conf*
+		   	configuration coordinate array
+		*box*
+		  	orthorhombic unit cell dimensions (minimum image convention is applied) or None [None]
+		*result*
+			optional preallocated result array which must have the shape (len(ref),len(conf)) and dtype=numpy.float64. Avoids creating the              array which saves time when the function is called repeatedly. [None]
+		*copy*  
+			makes internal copies of the input arrays; see note below [True]
 
-    :Output:
-    d          (len(ref),len(conf)) numpy array with the distances d[i,j]
-               between ref coordinates i and conf coordinates j
+    :Returns:
+		*d* 
+			(len(ref),len(conf)) numpy array with the distances d[i,j] between ref coordinates i and conf coordinates j
 
-    Note: This method is slower than it could be because internally we need to
+    .. Note:: This method is slower than it could be because internally we need to
           make copies of the ref and conf arrays. If you know what you are doing
           you can disable this copy by setting copy=False; however, in most cases
           this leads to WRONG results!
@@ -127,25 +129,31 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
 
     d = self_distance_array(ref,box[,result=d[,copy=True]])
 
-    :Input:
-    ref        reference coordinate array with N=len(ref) coordinates
-    box        orthorhombic unit cell dimensions (minimum image convention
-               is applied) or None [None]
-    result     optional preallocated result array which must have the shape
-               (N*(N-1)/2,) and dtype ``numpy.float64``. Avoids creating 
-               the array which saves time when the function is called repeatedly. [None]
-    copy       makes internal copies of the input arrays; see note below [True]               
+    :Arguments:
+		*ref*
+			reference coordinate array with N=len(ref) coordinates
+		*box*
+			orthorhombic unit cell dimensions (minimum image convention
+		           is applied) or None [None]
+		*result*
+			optional preallocated result array which must have the shape
+		           (N*(N-1)/2,) and dtype ``numpy.float64``. Avoids creating 
+		           the array which saves time when the function is called repeatedly. [None]
+		*copy*
+			makes internal copies of the input arrays; see note below [True]               
 
-    :Output:
-    d          N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
-               coordinates i and j at position d[k]. Loop through d::
-                 for i in xrange(N):
-                    for j in xrange(i+1, N):
-                        k += 1
-                        dist[i,j] = d[k]
+    :Returns:
+		*d*
+			N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
+		           coordinates i and j at position d[k]. Loop through d::
 
-    Note: This method is slower than it could be because internally we need to
-          make copies of the ref and conf arrays. If you know what you are doing
+		             for i in xrange(N):
+		                for j in xrange(i+1, N):
+		                    k += 1
+		                    dist[i,j] = d[k]
+
+    .. Note:: This method is slower than it could be because internally we need to
+          make copies of the coordinate arrays. If you know what you are doing
           you can disable this copy by setting copy=False; however, in most cases
           this leads to WRONG results!
     """

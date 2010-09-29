@@ -3,14 +3,14 @@
 # Copyright (c) 2006-2010 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
 # Released under the GNU Public Licence, v2+
 """
-Coordinate fitting and alignment
-================================
+Coordinate fitting and alignment --- :mod:`MDAnalysis.analysis.align`
+=====================================================================
 
 :Author: Oliver Beckstein
 :Year: 2010
 :Copyright: GNU Public License v3
 
-The script show how to select a group of atoms (such as the C-alphas),
+The script shows how to select a group of atoms (such as the C-alphas),
 calculate the RMSD and transformation matrix, and apply the
 transformation to the current frame of a trajectory to obtain the
 rotated structure.
@@ -32,7 +32,7 @@ fitting of structural homologs or wild type and mutant.
 
 If a alignment was provided as "sequences.aln" one would first produce
 the appropriate MDAnalysis selections with the :func:`fasta2select`
-function and the feed the resulting dictionary to :func:`rms_fit_trj`::
+function and then feed the resulting dictionary to :func:`rms_fit_trj`::
 
    >>> seldict = fasta2select('sequences.aln')
    >>> rms_fit_trj(trj, ref, filename='rmsfit.dcd', select=seldict)
@@ -87,7 +87,7 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_'):
     instances. If they contain a trajectory then it is used. The
     output file format is the same as the input *traj*.
 
-    .. Note:: This function is flexible but slow. In order to fit long
+    .. Note:: This function is flexible but slow. In order to fit a long
        trajectory it is suggested to only align one frame and then use
        that frame with a more efficient program (that otherwise could
        not easily deal with aligning different molecules).
@@ -196,14 +196,14 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_'):
 def fasta2select(fastafilename,is_aligned=False,
                  ref_resids=None, target_resids=None,
                  ref_offset=0,target_offset=0,verbosity=3):
-    """Align two sequences from a fasta file and construct a MDAnalysis
+    """Align two sequences from a FASTA file and construct a MDAnalysis
     selection string of the common atoms.
 
       fasta2select(fastafilename) -> selection_dict
 
-    *fastafilename* contains the the two un-aligned sequences in FASTA
-    format. The reference is assumed to be be the first sequence, the
-    target the second. :program:`ClustalW` produces a pairwise
+    *fastafilename* contains the two un-aligned sequences in FASTA
+    format. The reference is assumed to be the first sequence, the
+    target the second. ClustalW_ produces a pairwise
     alignment (which is written to a file with suffix .aln).  The
     output contains atom selection strings that select the same atoms
     in the two structures.
@@ -222,24 +222,24 @@ def fasta2select(fastafilename,is_aligned=False,
     (This translation table *is* combined with any value for *xxx_offset*!)
 
     :Arguments:
-      fastafilename    
+      *fastafilename*    
          FASTA file with first sequence as reference and
          second the one to be aligned (ORDER IS IMPORTANT!)
-      is_aligned
+      *is_aligned*
          False: run clustalw for sequence alignment; True: use
          the alignment in the file (e.g. from STAMP)
-      ref_offset
-         add this number to the column number in the FASTA
+      *ref_offset*
+         add this number to the column number in the FASTA file
          to get the original residue number
-      target_offset
+      *target_offset*
          same for the target
-      ref_resids
+      *ref_resids*
          sequence of resids as they appear in the reference structure
-      target_resids
+      *target_resids*
          sequence of resids as they appear in the target
  
     :Returns:
-      select_dict      
+      *select_dict*      
           dictionary with 'reference' and 'target' selection string
           that can be used immediately in :func:`rms_fit_trj` as
           ``select=select_dict``.
@@ -289,7 +289,7 @@ def fasta2select(fastafilename,is_aligned=False,
     seq2resids = [resids + offset for resids,offset in zip(orig_resids,offsets)]
     del orig_resids
     del offsets
-
+	
     def resid_factory(alignment,seq2resids):
         """Return a function that gives the resid for a position ipos in
         the nseq'th alignment.

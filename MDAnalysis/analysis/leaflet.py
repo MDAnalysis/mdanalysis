@@ -4,12 +4,12 @@
 # Released under the GNU Public Licence, v2
 
 """
+Leaflet identification --- :mod:`MDAnalysis.analysis.leaflet`  
+==============================================================
+
 :Author: Oliver Beckstein
 :Year: 2010
 :Copyright: GNU Public License v3
-
-:mod:`MDAnalysis.analysis.leaflet` --- Leaflet indentification
-==============================================================
 
 Algorithm:
   1. build a graph of all phosphate distances < cutoff
@@ -20,10 +20,6 @@ You could identify the upper and lower leaflet of a planar membrane by
 comparing the median of the centres of masses, or for a vesicle by
 comparing distances from the centre of geometry, but neither is
 implemented at the moment.
-
-
-.. autoclass:: LeafletFinder
-   :members:
 
 """
 from __future__ import with_statement
@@ -58,7 +54,7 @@ class LeafletFinder(object):
         :Keywords:
              *cutoff*
                  head group-defining atoms within a distance of *cutoff*
-                 Angstroem are deemed to be in the same leaflet [15.0]
+                 Angstroms are deemed to be in the same leaflet [15.0]
              *pbc*
                  take periodic boundary conditions into account (only works
                  for orthorhombic boxes) [``False``]
@@ -140,9 +136,12 @@ def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
     """Find cutoff that minimizes number of disconnected groups.
 
     Applies heuristics to find best groups:
+
     1. at least two groups (assumes that there are at least 2 leaflets)
-    2. reject any solutions for which
-              |N0 - N1|/|N0 + N1| > *max_imbalance*
+    2. reject any solutions for which:
+
+              `|N0 - N1|/|N0 + N1| > *max_imbalance*`
+
        Ni = number of lipids in group i. This heuristic picks groups with 
        balanced numbers of lipids.
 
@@ -152,7 +151,7 @@ def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
       *selection*
           selection string as used for :class:`LeafletFinder`
       *dmin*, *dmax*, *step*
-          scan cutoffs from *dmin* to *dmax* at stepsize *step (in angstroem)
+          scan cutoffs from *dmin* to *dmax* at stepsize*step (in Angstroms)
       *max_imbalance*
           tuning parameter for the balancing heuristic (2) [0.2]
       *kwargs*
