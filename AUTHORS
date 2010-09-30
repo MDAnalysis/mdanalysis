@@ -4,8 +4,8 @@
 
 MDAnalysis was originally written by Naveen Michaud-Agrawal.
 
-Oliver Beckstein and Elizabeth J. Denning are contributing to the
-development and are maintaining the project.
+Oliver Beckstein and Elizabeth J. Denning are maintaining the project
+and contributing to the development.
 
 Also see the project page
 http://code.google.com/p/mdanalysis/people/list for a list of people
@@ -20,6 +20,7 @@ Chronological list of authors
 - Oliver Beckstein (2007)
 - Danny Parton (2010)
 - Philip Fowler (2010)
+- Tyler Reddy (2010)
 
 
 External code
@@ -36,7 +37,7 @@ numpy.i
   - Bill Spotz
 
 KDTree
-  - Thomas Hamelryck (thamelry@binf.ku.dk)
+  - Thomas Hamelryck <thamelry@binf.ku.dk>
 
 DCD reader from catdcd
   - Justin Gullingsrud
