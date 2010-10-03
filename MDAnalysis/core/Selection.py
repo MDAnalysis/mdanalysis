@@ -524,9 +524,7 @@ class SelectionParser:
 
     def __consume_token(self):
         """Pops off the next token in our token stream."""
-        next_token = self.tokens[0]
-        del self.tokens[0]
-        return next_token
+        return self.tokens.pop(0)
 
     def __error(self, token):
         """Stops parsing and reports and error."""
@@ -540,7 +538,7 @@ class SelectionParser:
 
     def parse(self, selectstr):
         self.selectstr = selectstr
-        self.tokens = selectstr.split()+[self.EOF]
+        self.tokens = selectstr.replace('(',' ( ').replace(')',' ) ').split()+[self.EOF]
         parsetree = self.__parse_expression(0)
         self.__expect(self.EOF)
         return parsetree
