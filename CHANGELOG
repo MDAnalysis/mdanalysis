@@ -9,7 +9,7 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/10 orbeckst
+??/??/10 orbeckst, tyler.je.reddy
         (Running list of enhancements, to be edited for final
         entry when stable changes are merged back into trunk)
 
@@ -18,6 +18,11 @@ The rules for this file:
           ANALYSIS NOT WORKING YET
 	* whitespace is no longer required around parentheses for 
 	  selectAtoms strings (Issue 43)
+
+09/19/10 orbeckst
+	* quick-fix release 0.6.4.1
+	* fixed import issue with python 2.5 (Issue 41)
+
 09/16/10 orbeckst, danny.parton
 	* release 0.6.4
 	* GRO writer added
