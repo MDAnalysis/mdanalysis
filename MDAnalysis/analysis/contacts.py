@@ -27,7 +27,14 @@ conformation and plot the trajectory projected on q1-q2::
   C.run()
   C.plot()
 
+Classes
+-------
+
+.. autoclass:: ContactAnalysis
+   :members:
+
 """
+from __future__ import with_statement
 
 import os
 import warnings
@@ -127,8 +134,8 @@ class ContactAnalysis(object):
             self.u.trajectory[0]      # rewind, just in case...
         self.ref2 = ref2
 
-        r1 = MDAnalysis.Universe(topology, pdbfilename=self.ref1)
-        r2 = MDAnalysis.Universe(topology, pdbfilename=self.ref2)
+        r1 = MDAnalysis.Universe(topology, self.ref1)
+        r2 = MDAnalysis.Universe(topology, self.ref2)
     
         self.ca = self.u.selectAtoms('name CA')
         ca1 = r1.selectAtoms('name CA')
@@ -160,11 +167,16 @@ class ContactAnalysis(object):
         store=True) and writes them to a bzip2-compressed data file.
         """
         if self._skip or self.output_exists(force=force):
-            print "File %(output)r or %(output_bz2)r already exists, skipping %(trajectory)r." % vars(self)
+            import warnings
+            warnings.warn("File %(output)r or %(output_bz2)r already exists, loading %(trajectory)r." % vars(self))
+            try:
+                self.load(self.output)
+            except IOError:
+                self.load(self.output_bz2)                
             return None
         
+        outbz2 = bz2.BZ2File(self.output_bz2, mode='w', buffering=8192)
         try:
-            outbz2 = bz2.BZ2File(self.output_bz2, mode='w', buffering=8192)
             outbz2.write("# q1-q2 analysis\n# nref1 = %d\n# nref2 = %d\n" 
                          % (self.nref[0], self.nref[1]))
             outbz2.write("# frame  q1  q2   n1  n2\n")
@@ -212,6 +224,17 @@ class ContactAnalysis(object):
             numpy.logical_and(q, self.qref[n], out)
         contacts = out.sum()
         return contacts, float(contacts)/self.nref[n]
+
+    def load(self, filename):
+        """Load the data file."""
+        from MDAnalysis.core.util import openany
+        records = []
+        with openany(filename) as data:
+            for line in data:
+                if line.startswith('#'):
+                    continue
+                records.append(map(float, line.split()))
+        self.timeseries = numpy.array(records).T
 
     def plot(self, **kwargs):
         """Plot q1-q2."""
