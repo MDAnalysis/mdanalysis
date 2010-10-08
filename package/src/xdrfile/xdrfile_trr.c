@@ -200,7 +200,7 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
         }
 		
 		if ((sh->x_size != 0) || (sh->v_size != 0) || (sh->f_size != 0)) {
-			dx = calloc(sh->natoms*DIM,sizeof(dx[0]));
+			dx = (double *)calloc(sh->natoms*DIM,sizeof(dx[0]));
 			if (NULL == dx)
 				return exdrNOMEM;
 		}
@@ -328,7 +328,7 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
         }
 		
 		if ((sh->x_size != 0) || (sh->v_size != 0) || (sh->f_size != 0)) {
-			fx = calloc(sh->natoms*DIM,sizeof(fx[0]));
+			fx = (float *)calloc(sh->natoms*DIM,sizeof(fx[0]));
 			if (NULL == fx)
 				return exdrNOMEM;
 		}
@@ -411,7 +411,7 @@ static int do_trn(XDRFILE *xd,mybool bRead,int *step,float *t,float *lambda,
     t_trnheader *sh;
     int result;
   
-    sh = calloc(1,sizeof(*sh));
+    sh = (t_trnheader *)calloc(1,sizeof(*sh));
   
     if (!bRead) {
         sh->box_size = (NULL != box) ? sizeof(matrix):0;
