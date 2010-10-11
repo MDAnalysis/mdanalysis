@@ -132,6 +132,9 @@ del h
 class SelectionError(Exception):
     """Raised when a atom selection failed."""
 
+class NoDataError(ValueError):
+    """Raised when empty input is not allowed."""
+
 # removed these imports in the next major version (0.7); they clutter the name space
 # and are not really needed [OB 0.6.4]
 from core import AtomGroup,Selection,Timeseries

@@ -33,7 +33,7 @@ The important classes and functions:
 import warnings
 
 import numpy
-from MDAnalysis import SelectionError
+from MDAnalysis import SelectionError, NoDataError
 
 class Atom(object):
     """A single atom definition
@@ -169,7 +169,7 @@ class AtomGroup(object):
     universe = property(**universe())
 
     def __init__(self, atoms):
-        if len(atoms) < 1: raise Exception("No atoms defined for AtomGroup")
+        if len(atoms) < 1: raise NoDataError("No atoms defined for AtomGroup")
         # __atoms property is effectively readonly        
         # check that atoms is indexable:
         try:
@@ -579,7 +579,7 @@ class Residue(AtomGroup):
         try:
             return self.universe.selectAtoms('resid %d and name C' % (self.id - 1)) \
                 + self.N + self.CA + self.C
-        except:
+        except (SelectionError, NoDataError):
             return None
 
     def psi_selection(self):
@@ -592,7 +592,7 @@ class Residue(AtomGroup):
         try:
             return self.N + self.CA + self.C + \
                 self.universe.selectAtoms('resid %d and name N' % (self.id + 1))
-        except:
+        except (SelectionError, NoDataError):
             return None
 
     def omega_selection(self):
@@ -610,7 +610,7 @@ class Residue(AtomGroup):
         try:
             return self.CA + self.C +\
                 self.universe.selectAtoms('resid %d and name N' % nextres, 'resid %d and name CA' % nextres)
-        except:
+        except (SelectionError, NoDataError):
             return None
 
     def __getitem__(self, item):
