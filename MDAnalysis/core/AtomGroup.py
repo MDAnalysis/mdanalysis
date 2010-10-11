@@ -556,6 +556,50 @@ class Residue(AtomGroup):
         # Should I cache the positions of atoms within a residue?
         if not Residue.__cache.has_key(name):
             Residue.__cache[name] = dict([(a.name, i) for i, a in enumerate(self.atoms)])
+    def phi_selection(self):
+        """AtomGroup corresponding to the phi protein backbone dihedral C'-N-CA-C.
+
+        :Returns: 4-atom selection in the correct order.  If no C'
+                  found in the previous residue (by resid) then this
+                  method returns ``None``.
+        """
+        try:
+            return self.universe.selectAtoms('resid %d and name C' % (self.id - 1)) \
+                + self.N + self.CA + self.C
+        except:
+            return None
+
+    def psi_selection(self):
+        """AtomGroup corresponding to the psi protein backbone dihedral N-CA-C-N'.
+
+        :Returns: 4-atom selection in the correct order.  If no N'
+                  found in the following residue (by resid) then this
+                  method returns ``None``.
+        """
+        try:
+            return self.N + self.CA + self.C + \
+                self.universe.selectAtoms('resid %d and name N' % (self.id + 1))
+        except:
+            return None
+
+    def omega_selection(self):
+        """AtomGroup corresponding to the omega protein backbone dihedral CA-C-N'-CA'.
+
+        omega described the -C-N- peptide bond. Typically, it is trans
+        (180 degrees) although cis-bonds (0 degrees) are also
+        occasionally observed (especially near Proline).
+
+        :Returns: 4-atom selection in the correct order.  If no C'
+                  found in the previous residue (by resid) then this
+                  method returns ``None``.
+        """
+        nextres = self.id + 1
+        try:
+            return self.CA + self.C +\
+                self.universe.selectAtoms('resid %d and name N' % nextres, 'resid %d and name CA' % nextres)
+        except:
+            return None
+
     def __getitem__(self, item):
         if (type(item) == int) or (type(item) == slice):
             return self.atoms[item]
