@@ -72,12 +72,15 @@ class Atom(object):
         if isinstance(other, Atom): return AtomGroup([self, other])
         else: return AtomGroup([self]+other.atoms)
 
-    def pos():
-        doc = "Current cartesian coordinates of the atom."
-        def fget(self):
-            return self.universe.coord[self.number] # PDB numbering starts at 0
-        return locals()
-    pos = property(**pos())
+    @property
+    def pos(self):
+        """Current cartesian coordinates of the atom."""
+        return self.universe.coord[self.number] # PDB numbering starts at 0
+
+    def centroid(self):
+        """The centroid of an atom is its position, :attr:`Atom.pos`."""
+        # centroid exists for compatibility with AtomGroup
+        return self.pos
 
     def bfactor():
         doc = "Crystallographic B-factor (if universe was built from a pdb) or None"
@@ -245,10 +248,14 @@ class AtomGroup(object):
     def charges(self):
         return numpy.array([atom.charge for atom in self.atoms])
     def totalCharge(self):
+        """Sum of all partial charges (must be defined in topology)."""
         return numpy.sum(self.charges(), axis=0)
     def centerOfGeometry(self):
+        """Center of geometry (also known as centroid) of the selection."""
         return numpy.sum(self.coordinates(), axis=0)/self.numberOfAtoms()
+    centroid = centerOfGeometry
     def centerOfMass(self):
+        """Center of mass of the selection."""
         return numpy.sum(self.coordinates()*self.masses()[:,numpy.newaxis],axis=0)/self.totalMass()
     def radiusOfGyration(self):
         masses = self.masses()
@@ -329,7 +336,7 @@ class AtomGroup(object):
         """
         try:
             sel1,sel2 = t
-            x1,x2 = sel1.centerOfGeometry(), sel2.centerOfGeometry()
+            x1,x2 = sel1.centroid(), sel2.centroid()
             vector = x2 - x1
         except (ValueError, AttributeError):
             vector = numpy.asarray(t)
@@ -380,7 +387,7 @@ class AtomGroup(object):
         alpha = numpy.radians(angle)
         try:
             sel1,sel2 = axis
-            x1,x2 = sel1.centerOfGeometry(), sel2.centerOfGeometry()
+            x1,x2 = sel1.centroid(), sel2.centroid()
             v = x2 - x1
             n = v/numpy.linalg.norm(v)
             if point is None:
@@ -388,10 +395,10 @@ class AtomGroup(object):
         except (ValueError, AttributeError):
             n = numpy.asarray(axis)
         if point is None:
-            p = self.centerOfGeometry()
+            p = self.centroid()
         else:
             try:
-                p = point.centerOfGeometry()
+                p = point.centroid()
             except AttributeError:
                 p = numpy.asarray(point)
         M = rotation_matrix(alpha, n, point=p)
