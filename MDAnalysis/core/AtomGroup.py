@@ -311,11 +311,37 @@ class AtomGroup(object):
         return self.principalAxes().T
 
     def coordinates(self, ts=None, copy=False, dtype=numpy.float32):
+        """NumPy array of the coordinates."""
         if ts == None:
-            ts = self.universe.coord
+            ts = self.universe.trajectory.ts
         return numpy.array(ts[self.indices()], copy=copy, dtype=dtype)
 
+    def translate(self, t):
+        """Apply translation vector *t* to the selection's coordinates.
+
+            x' = x + t
+        """
+        t = numpy.asarray(t)
+        # changes the coordinates (in place)
+        self.universe.trajectory.ts._pos[self.indices()] += t
+
+    def rotate(self, R):
+        """Apply a rotation matrix *R* to the selection's coordinates.
+
+        Note that *R* must act on a vector to the left:
+
+            x' = x.R
+        """
+        R = numpy.matrix(R, copy=False, dtype=numpy.float32)
+        # changes the coordinates (in place)
+        x = self.universe.trajectory.ts._pos[self.indices()]
+        x[:] = x * R     # R acts to the left & is broadcasted N times.
+
     def selectAtoms(self, sel, *othersel):
+        """Selection of atoms using the MDAnalysis selection syntax.
+
+        .. SeeAlso:: :meth:`Universe.selectAtoms`
+        """
         import Selection
         atomgrp = Selection.Parser.parse(sel).apply(self)
         if len(othersel) == 0: return atomgrp
@@ -415,15 +441,24 @@ class AtomGroup(object):
 
     @property
     def ts(self):
-        """Temporary Timestep that contains the selection coordinates."""
+        """Temporary Timestep that contains the selection coordinates.
+
+        If the :attr:`AtomGroup.ts`
+        :class:`~MDAnalysis.coordinates.base.Timestep` object is modified then
+        these modifications will be present until the frame number changes
+        (which typically happens when the underlying trajectory frame changes).
+
+        It is not possible to assign a new
+        :class:`~MDAnalysis.coordinates.base.Timestep` to the
+        :attr:`AtomGroup.ts` attribute; change attributes of the object.
+        """
         trj_ts = self.universe.trajectory.ts  # original time step
-        if not self.__ts is None and self.__ts.frame == trj_ts.frame:
-            return self.__ts
-        # create a timestep of same type as the underlying trajectory
-        ts = trj_ts.__class__(self.coordinates())
-        ts._unitcell = trj_ts._unitcell.copy()
-        ts.frame = trj_ts.frame
-        self.__ts = ts
+        if self.__ts is None or self.__ts.frame != trj_ts.frame:
+            # create a timestep of same type as the underlying trajectory
+            ts = trj_ts.__class__(self.coordinates())
+            ts._unitcell = trj_ts._unitcell.copy()
+            ts.frame = trj_ts.frame
+            self.__ts = ts
         return self.__ts
 
 class Residue(AtomGroup):
