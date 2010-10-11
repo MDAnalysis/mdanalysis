@@ -179,7 +179,7 @@ class GROWriter(base.Writer):
 			output_gro.write(self.fmt['numatoms'] % len(atoms))
 
 			# Atom descriptions and coords
-			coordinates = atoms.coordinates()
+			coordinates = selection.coordinates()
 			self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, in-place !
 		
 			for atom_index,atom in enumerate(atoms):

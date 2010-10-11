@@ -81,18 +81,16 @@ class _WriteAtoms(TestCase):
         return MDAnalysis.Universe(self.outfile)
 
     def test_write_atoms(self):
-        """Test writing all atoms to external file."""
         self.universe.atoms.write(self.outfile)
         u2 = self.universe_from_tmp()
         assert_array_almost_equal(self.universe.atoms.coordinates(), u2.atoms.coordinates(), self.precision,
                                   err_msg="atom coordinate mismatch between original and %s file" % self.ext)
 
     def test_write_selection(self):
-        """test_write_selection: Test writing CA atoms to external file."""
         CA = self.universe.selectAtoms('name CA')
         CA.write(self.outfile)
         u2 = self.universe_from_tmp()
-        CA2 = u2.selectAtoms('name CA')
+        CA2 = u2.selectAtoms('all')   # check EVERYTHING, otherwise we might get false positives!
 
         assert_equal(len(u2.atoms), len(CA), "written CA selection does not match original selection")
         assert_almost_equal(CA2.coordinates(), CA.coordinates(), self.precision,
