@@ -320,22 +320,88 @@ class AtomGroup(object):
         """Apply translation vector *t* to the selection's coordinates.
 
             x' = x + t
+
+        The translation can also be given as a tuple of two MDAnalysis
+        selections (selA, selB) so that the translation vector is computed as
+        the difference between the center of mass of B and A:
+
+        t = selB.centerOfMass() - selA.centerOfMass()
         """
-        t = numpy.asarray(t)
+        try:
+            sel1,sel2 = t
+            x1,x2 = sel1.centerOfGeometry(), sel2.centerOfGeometry()
+            vector = x2 - x1
+        except (ValueError, AttributeError):
+            vector = numpy.asarray(t)
         # changes the coordinates (in place)
-        self.universe.trajectory.ts._pos[self.indices()] += t
+        self.universe.trajectory.ts._pos[self.indices()] += vector
+        return vector
 
     def rotate(self, R):
         """Apply a rotation matrix *R* to the selection's coordinates.
 
-        Note that *R* must act on a vector to the left:
+        *R* is a 3x3 orthogonal matrix that transforms x --> x':
 
-            x' = x.R
+            x' = R.x
         """
         R = numpy.matrix(R, copy=False, dtype=numpy.float32)
         # changes the coordinates (in place)
-        x = self.universe.trajectory.ts._pos[self.indices()]
-        x[:] = x * R     # R acts to the left & is broadcasted N times.
+        x = self.universe.trajectory.ts._pos
+        idx = self.indices()
+        x[idx] = x[idx] * R.T     # R.T acts to the left & is broadcasted N times.
+        return R
+
+    def rotateby(self, angle, axis, point=None):
+        """Apply a rotation to the selection's coordinates.
+
+        x' = R.(x-p) + p
+
+        where R is the rotation by *angle* around the *axis* going through
+        *point* p.
+
+        :Arguments:
+          *angle*
+             rotation angle in degrees
+          *axis*
+             rotation axis vector, a 3-tuple, list, or array, or a 2-tuple of
+             two MDAnalysis selections from which the axis is calculated as the
+             vector from the first the second center of geometry.
+          *point*
+             point on the rotation axis; by default (``None``) the center of
+             geometry of the selection is chosen, or, if *axis* is a tuple of
+             selections, it defaults to the first point of the axis. *point*
+             can be a 3-tuple, list, or array or a MDAnalysis selection (in which
+             case its centerOfGeometry() is used).
+
+        :Returns: The 4x4 matrix which consists of the rotation matrix M[:3,:3]
+                  and the translation vectort M[:3,3].
+        """
+        from transformations import rotation_matrix
+        alpha = numpy.radians(angle)
+        try:
+            sel1,sel2 = axis
+            x1,x2 = sel1.centerOfGeometry(), sel2.centerOfGeometry()
+            v = x2 - x1
+            n = v/numpy.linalg.norm(v)
+            if point is None:
+                point = x1
+        except (ValueError, AttributeError):
+            n = numpy.asarray(axis)
+        if point is None:
+            p = self.centerOfGeometry()
+        else:
+            try:
+                p = point.centerOfGeometry()
+            except AttributeError:
+                p = numpy.asarray(point)
+        M = rotation_matrix(alpha, n, point=p)
+        R = M[:3,:3]
+        t = M[:3, 3]
+        x = self.universe.trajectory.ts._pos
+        idx = self.indices() 
+        x[idx]  = numpy.dot(x[idx], R.T)
+        x[idx] += t
+        return M
 
     def selectAtoms(self, sel, *othersel):
         """Selection of atoms using the MDAnalysis selection syntax.
