@@ -548,14 +548,23 @@ class AtomGroup(object):
         return self.__ts
 
 class Residue(AtomGroup):
-    """A group of atoms corresponding to a residue
+    """A group of atoms corresponding to a residue.
 
-    Data: type, name
+    Pythonic access to atoms:
+      - Using a atom name as attribute returns the matching atom (a
+        :class:`Atom` instance), i.e. ``r.name``. Example:
+          >>> from MDAnalysis.tests.datafiles import PSF,DCD
+          >>> u = Universe(PSF,DCD)
+          >>> print(u.s4AKE.r1.CA)  # C-alpha of M1
+          < Atom 5: name 'CA' of type '22' of resname 'MET', resid 1 and segid '4AKE'>
+      - ``r['name']`` or ``r[id]`` - returns the atom corresponding to that name
 
-    Methods:
-        r = Residue()
-        r['name'] or r[id] - returns the atom corresponding to that name
-        r.name
+    :Data: 
+      :attr:`Residue.name`
+        Three letter residue name.
+      :attr:`Residue.id`
+        Numeric (integer) resid, taken from the topology.
+
     """
     __cache = {}
     def __init__(self, name, id, atoms):
@@ -630,14 +639,21 @@ class Residue(AtomGroup):
         return '<'+self.__class__.__name__+' '+repr(self.name)+', '+repr(self.id)+'>'
 
 class ResidueGroup(AtomGroup):
-    """A group of residues
+    """A group of residues.
 
-    Data: residues
+    Pythonic access to atoms:
+      - Using a atom name as attribute returns a list of all atoms (a
+        :class:`AtomGroup`) of the same name. Example:
+          >>> from MDAnalysis.tests.datafiles import PSF,DCD
+          >>> u = Universe(PSF,DCD)
+          >>> print(u.s4AKE.MET.CA)  # C-alpha of all Met
+          <AtomGroup with 6 atoms>
 
-    Methods:
-       rg = ResidueGroup()
+    :Data: :attr:`ResidueGroup.residues`
+
     """
     def __init__(self, residues):
+        """Initialize the ResidueGroup with a list of :class:`Residue` instances."""
         self._residues = residues
         atoms = []
         for res in residues:
@@ -658,14 +674,29 @@ class ResidueGroup(AtomGroup):
         return '<'+self.__class__.__name__+' '+repr(self._residues)+'>'
 
 class Segment(ResidueGroup):
-    """A group of residues corresponding to one segment of the PSF
+    """A group of residues corresponding to one segment of the topology.
 
-    Data: name
+    Pythonic access to residues:
+      - The attribute rN returns the N-th residue :class:`Residue` of the 
+        segment (numbering starts at N=1). Example:
+          >>> from MDAnalysis.tests.datafiles import PSF,DCD
+          >>> u = Universe(PSF,DCD)
+          >>> print(u.s4AKE.r1)
+          <Residue 'MET', 1>
+      - Using a residue name as attribute returns a list of all residues (a
+        :class:`ResidueGroup`) of the same name. Example:
+          >>> from MDAnalysis.tests.datafiles import PSF,DCD
+          >>> u = Universe(PSF,DCD)
+          >>> print(u.s4AKE.CYS)
+          <ResidueGroup [<Residue 'CYS', 77>]>
+          >>> print(u.s4AKE.MET)
+          <ResidueGroup [<Residue 'MET', 1>, <Residue 'MET', 21>, <Residue 'MET', 34>, <Residue 'MET', 53>, <Residue 'MET', 96>, <Residue 'MET', 174>]>
 
-    Methods:
-       s = Segment()
+    :Data: :attr:`Segment.name` is the segid from the topology or the
+           chain identifier when loaded from a PDB
     """
     def __init__(self, name, residues):
+        """Initialize a Segment with segid *name* from a list of :class:`Residue` instances."""
         super(Segment, self).__init__(residues)
         self.name = name
         for res in self._residues:
@@ -674,7 +705,7 @@ class Segment(ResidueGroup):
                 atom.segment = self
     def __getattr__(self, attr):
         if attr[0] == 'r':
-            resnum = int(attr[1:])
+            resnum = int(attr[1:]) - 1   # 1-based for the user, 0-based internally
             return self[resnum]
         else:
             # There can be multiple residues with the same name
@@ -682,7 +713,7 @@ class Segment(ResidueGroup):
             for res in self._residues:
                 if (res.name == attr): r.append(res)
             if (len(r) == 0): return super(Segment, self).__getattr__(attr)
-            elif (len(r) == 1): return r[0]
+            # elif (len(r) == 1): return r[0]  ## creates unexpected behaviour (Issue 47)
             else: return ResidueGroup(r)
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self.name)+'>'
@@ -750,6 +781,7 @@ class Universe(object):
         # trajectory format type (i.e. the extension))
         self.__trajectory = None
 
+        # TODO 0.7
         # for 0.7 we will rename psffile -> topologyfile, and dcdfile -> coordinatefile
         if not pdbfilename is None:
             warnings.warn("Usage of 'pdbfilename=PDB' is deprecated and will be removed. Just use the PDB "
