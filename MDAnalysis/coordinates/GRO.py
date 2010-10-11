@@ -132,7 +132,7 @@ class GROWriter(base.Writer):
 	       'box_triclinic': "%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n",
 	       }
 
-        def __init__(self,filename):
+        def __init__(self,filename,**kwargs):
 		"""Set up a GROWriter with a precision of 3 decimal places.
 
 		:Arguments:
