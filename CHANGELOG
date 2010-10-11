@@ -25,7 +25,11 @@ The rules for this file:
              appropriate writer for the desired file format
 	   - Writer.write() accepts a Timestep, a Universe, or a 
 	     arbitrary AtomGroup (e.g. from a selection); this is much
-	     more flexible than Writer.write_next_timestep()     	    
+	     more flexible than Writer.write_next_timestep()
+         * new attributes residues and segments for AtomGroup to give 
+           access to the list of residue/segment objects of the group 
+	 * new special dihedral angle selections defined for Residue
+           class to simplify analysis of backbone torsions
 
 09/19/10 orbeckst
 	* quick-fix release 0.6.4.1

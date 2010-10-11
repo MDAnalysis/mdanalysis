@@ -212,33 +212,46 @@ class AtomGroup(object):
     def numberOfAtoms(self):
         return len(self.atoms)
     def numberOfResidues(self):
-        current_resid = -1
-        num_res = 0
-        for atom in self.atoms:
-            if atom.resid != current_resid:
-                num_res += 1
-            current_resid = atom.resid
-        return num_res
+        return len(self.residues)
+    def numberOfSegments(self):
+        return len(self.segments)
     def indices(self):
         if not hasattr(self,'_cached_indices'):
             self._cached_indices = numpy.array([atom.number for atom in self.atoms])
         return self._cached_indices
+    @property
+    def residues(self):
+        """Read-only list of :class:`Residue` objects."""
+        if not hasattr(self,'_cached_residues'):
+            residues = []
+            current_residue = None
+            for atom in self.atoms:
+                if atom.residue != current_residue:
+                    residues.append(atom.residue)
+                current_residue = atom.residue
+            self._cached_residues = residues
+        return self._cached_residues
     def resids(self):
-        list_resids = []
-        current_resid = -1
-        for atom in self.atoms:
-            if atom.resid != current_resid:
-                list_resids.append(atom.resid)
-            current_resid = atom.resid
-        return list_resids
+        """Returns a list of residue numbers."""
+        return [r.id for r in self.residues]
     def resnames(self):
-        list_resnames = []
-        current_resid = -1
-        for atom in self.atoms:
-            if atom.resid != current_resid:
-                list_resnames.append(atom.resname)
-            current_resid = atom.resid
-        return list_resnames
+        """Returns a list of residue names."""
+        return [r.name for r in self.residues]
+    @property
+    def segments(self):
+        """Read-only list of :class:`Segment` objects."""
+        if not hasattr(self,'_cached_segments'):
+            segments = []
+            current_segment = None
+            for atom in self.atoms:
+                if atom.segment != current_segment:
+                    segments.append(atom.segment)
+                current_segment = atom.segment
+            self._cached_segments = segments
+        return self._cached_segments
+    def segids(self):
+        """Returns a list of segment ids (=segment names)."""
+        return [s.name for s in self.segments]
     def masses(self):
         if not hasattr(self, "_cached_masses"):
             self._cached_masses = numpy.array([atom.mass for atom in self.atoms])
