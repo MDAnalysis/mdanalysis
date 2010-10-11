@@ -93,9 +93,15 @@ class PDBWriter(base.Writer):
     This is not cleanly implemented at the moment. One must supply a
     universe, even though this is nominally an optional argument. The
     class behaves slightly differently depending on if the structure
-    was loaded from a PDB (then the full-fledged Bio.PDB writer is
+    was loaded from a PDB (then the full-fledged :mod:`Bio.PDB` writer is
     used) or if this is really only an atom selection (then a less
     sophistiocated writer is employed).
+
+    .. Note:: The standard PDBWriter can only write the *whole system*. 
+      In order to write a selection, use the :class:`PrimitivePDBWriter`, 
+      which happens automatically when the
+      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of a 
+      :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance is used.
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
@@ -153,7 +159,10 @@ class PDBWriter(base.Writer):
                     ts = self.universe.trajectory.ts
                 except AttributeError:
                     warnings.warn("PDBWriter: Not writing frame as neither universe nor timestep supplied.")
-                    return            
+                    return
+            if not hasattr(ts, '_pos'):
+                raise TypeError("The PDBWriter can only process a Timestep as optional argument, not "
+                                "e.g. a selection. Use the PrimitivePDBWriter instead and see the docs.")
             for a,pos in zip(self.PDBstructure.get_atoms(), ts._pos):
                 a.set_coord(pos)
             io = pdb.extensions.SloppyPDBIO()
@@ -343,7 +352,8 @@ class PrimitivePDBWriter(base.Writer):
         
         self.TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
         self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
-        for i, atom in enumerate(selection.atoms):
+        atoms = selection.atoms   # make sure to use atoms (Issue 46)
+        for i, atom in enumerate(atoms):
             self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
                       x=coor[i,0], y=coor[i,1], z=coor[i,2])
         # get bfactor, too?

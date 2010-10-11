@@ -57,23 +57,20 @@ class CRDWriter(base.Writer):
                 frame = 1   # should catch cases when we are analyzing a single PDB (?)
         coor = selection.coordinates()
        
+        atoms = selection.atoms   # make sure to use atoms (Issue 46)
+
         self.crd = open(self.filename,'w')
         try:
             self._TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
             self._TITLE("")
-            self._NUMATOMS(len(u.atoms))
-            inst_resid = 0
-            for i, atom in enumerate(selection.atoms):
-          	#print selection[i].resname, selection[i-1].resname
-	        #print selection[i].resid, selection[i-1].resid
-                if selection[i].resid != selection[i-1].resid:
-                    inst_resid += 1
-                    totres = inst_resid
-                else:
-                    inst_resid = inst_resid 
-                    totres = inst_resid
+            self._NUMATOMS(len(atoms))
+            current_resid = 0
+            for i, atom in enumerate(atoms):
+                if atoms[i].resid != atoms[i-1].resid:
+                    # note that this compares first and LAST atom on first iteration... but it works
+                    current_resid += 1
                 self._ATOM(serial=i+1, resSeq=atom.resid, resName=atom.resname, name=atom.name,
-                          x=coor[i,0], y=coor[i,1], z=coor[i,2], chainID=atom.segid,tempFactor=0.0,TotRes=totres)
+                          x=coor[i,0], y=coor[i,1], z=coor[i,2], chainID=atom.segid,tempFactor=0.0,TotRes=current_resid)
                 # get bfactor, too?
         finally:
             self.crd.close()

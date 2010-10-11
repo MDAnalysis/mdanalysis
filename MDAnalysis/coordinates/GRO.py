@@ -169,17 +169,20 @@ class GROWriter(base.Writer):
 			except AttributeError:
 				frame = 1   # should catch cases when we are analyzing a single GRO (?)
 
+		# MUST use atoms so that this works for Segments etc:
+		atoms = selection.atoms
+
                 output_gro = open(self.filename , 'w')
 		try:
 			# Header
 			output_gro.write('Written by MDAnalysis\n')
-			output_gro.write(self.fmt['numatoms'] % len(selection))
+			output_gro.write(self.fmt['numatoms'] % len(atoms))
 
 			# Atom descriptions and coords
-			coordinates = selection.coordinates()
+			coordinates = atoms.coordinates()
 			self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, in-place !
 		
-			for atom_index,atom in enumerate(selection):
+			for atom_index,atom in enumerate(atoms):
 				c = coordinates[atom_index]
 				output_line = self.fmt['xyz'] % \
 				    (str(atom.resid)[-5:],     # truncate highest digits on overflow
