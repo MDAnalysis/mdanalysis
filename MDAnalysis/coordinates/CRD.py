@@ -32,7 +32,7 @@ class CRDWriter(base.Writer):
 	   'NUMATOMS':"%5d\n",
            }
 
-    def __init__(self,filename):
+    def __init__(self,filename,**kwargs):
         self.filename = util.filename(filename,ext='crd')
         self.crd = None
 

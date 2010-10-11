@@ -106,14 +106,20 @@ class Atom(object):
     universe = property(**universe())
 
 class AtomGroup(object):
-    """A group of atoms
+    """A group of atoms.
 
-    Currently contains a list of atoms from the main system that correspond to this group.
+    Currently contains a list of atoms from the main system that
+    correspond to this group.
 
-    Data: atoms - a list of references to the corresponding atoms in Universe.atoms
-          AtomGroups are immutable
+    :Data:
+        atoms
+            a list of references to the corresponding atoms in :attr:`Universe.atoms`;
+            AtomGroups are immutable, i.e. this list cannot be changed.
+        ts
+            A :class:`~MDAnalysis.coordinates.base.Timestep` instance, which can
+            be passed to a trjectory writer.
 
-    Methods:
+    Methods::
         ag = universe.selectAtoms("...")
         ag.numberOfAtoms() - return the number of atoms in group
         ag.numberOfResidues() - return the number of residues in group
@@ -130,8 +136,9 @@ class AtomGroup(object):
         ag.principleAxis() - returns the principle axis of rotation
         ag.bfactors() - returns B-factors (if they were loaded from a PDB)
         c = ag.coordinates() - return array of coordinates
-
+        
         ag.write() - write all atoms in the group to a file
+        ag.write_selection() - write a selection for VMD, PyMOL, Gromacs or CHARMM
     """
     def atoms():
         doc = "a list of references to atoms in Universe corresponding to a specifies subset"
@@ -170,6 +177,8 @@ class AtomGroup(object):
         # If the number of atoms is very large, create a dictionary cache for lookup
         if len(atoms) > 10000:
             self._atom_cache = dict([(x,None) for x in self.__atoms])
+        # managed timestep object
+        self.__ts = None
     def __len__(self):
         #import warnings
         #warnings.warn("To prevent confusion with AtomGroup subclasses you should use numberOfAtoms() instead", category=Warning, stacklevel=2)
@@ -345,9 +354,8 @@ class AtomGroup(object):
             trjname,ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt % vars()
         filename = util.filename(filename,ext=format.lower(),keep=True)
-        FrameWriter = MDAnalysis.coordinates.get_writer_for(filename)
-        writer = FrameWriter(filename)
-        writer.write(self)         # wants a atomgroup
+        framewriter = MDAnalysis.coordinates.writer(filename)
+        framewriter.write(self)         # wants a atomgroup
 
     # TODO: This is _almost_ the same code as write() --- should unify!
     def write_selection(self,filename=None,format="vmd",filenamefmt="%(trjname)s_%(frame)d",
@@ -404,7 +412,19 @@ class AtomGroup(object):
             return self.universe.bfactors[self.indices()]
         else:
             raise AttributeError("This AtomGroup does not belong to a Universe.")
-        
+
+    @property
+    def ts(self):
+        """Temporary Timestep that contains the selection coordinates."""
+        trj_ts = self.universe.trajectory.ts  # original time step
+        if not self.__ts is None and self.__ts.frame == trj_ts.frame:
+            return self.__ts
+        # create a timestep of same type as the underlying trajectory
+        ts = trj_ts.__class__(self.coordinates())
+        ts._unitcell = trj_ts._unitcell.copy()
+        ts.frame = trj_ts.frame
+        self.__ts = ts
+        return self.__ts
 
 class Residue(AtomGroup):
     """A group of atoms corresponding to a residue

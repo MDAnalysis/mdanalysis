@@ -354,6 +354,28 @@ class Writer(IObase):
         self.convert_pos_to_native(lengths)
         return numpy.concatenate([lengths, angles])
 
+    def write(self, obj):
+        """Write current timestep, using the supplied *obj*.
+
+        The argument should be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or 
+        a :class:`~MDAnalysis.Universe` or a :class:`Timestep` instance.
+
+        .. Note:: The size of the *obj* must be the same as the number
+                  of atom provided when setting up the trajectory.
+        """
+        if isinstance(obj, Timestep):
+            ts = obj
+        else:
+            try:
+                ts = obj.ts
+            except AttributeError:
+                try:
+                    # special case: can supply a Universe, too...
+                    ts = obj.trajectory.ts
+                except AttributeError:
+                    raise TypeError("No Timestep found in obj argument")
+        return self.write_next_timestep(ts)
+
     def __del__(self):
         self.close_trajectory()
 

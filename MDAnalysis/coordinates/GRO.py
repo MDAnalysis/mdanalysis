@@ -49,7 +49,7 @@ class GROReader(base.Reader):
 	units = {'time': None, 'length': 'nm'}
 	_Timestep = Timestep
 
-	def __init__(self,grofilename,convert_units=None):
+	def __init__(self,grofilename,convert_units=None,**kwargs):
 		self.grofilename = grofilename
 		self.filename = self.grofilename
 		if convert_units is None:

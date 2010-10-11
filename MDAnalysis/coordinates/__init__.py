@@ -38,6 +38,7 @@ History
 
 - 2010-04-30 Draft [orbeckst]
 - 2010-08-20 added single frame writers to API [orbeckst]
+- 2010-10-09 added write() method to Writers [orbeckst]
 
 
 Registry
@@ -222,13 +223,18 @@ Typically, many methods and attributes are overriden.
 Signature::
    W = TrajectoryWriter(filename,numatoms,**kwargs)
    W.write_next_timestep(TimeStep)
-
+or::
+   W.write(TimeStep)    # same as above
+   W.write(AtomGroup)   # write a selection
+   W.write(Universe)    # write a whole universe
 
 Methods
 .......
 
  __init__(filename,numatoms[,start[,step[,delta[,remarks]]]])
      opens *filename* and writes header if required by format
+ write(obj)
+     write Timestep data in *obj*
  write_next_timestep([timestep])
      write data in *timestep* to trajectory file
  convert_dimensions_to_unitcell(timestep)
@@ -272,13 +278,18 @@ numbers) and hence it is possible to write selections of atoms in a meaningful
 way.
 
 Signature::
-   W = FrameWriter(filename)
+   W = FrameWriter(filename, **kwargs)
    W.write(AtomGroup)
+
+The blanket kwargs is required so that one can pass the same kind of
+arguments (filename and numatoms) as for the Trajectory writers. In
+this way, the simple :func:`writer` factory function can be used for
+all writers.
 
 Methods
 .......
- __init__(filename)
-   opens *filename* for writing
+ __init__(filename, **kwargs)
+   opens *filename* for writing; kwargs are typically ignored
  write(AtomGroup)
    writes the group of atoms (typically obtained from a selection) to the file
    and closes the file

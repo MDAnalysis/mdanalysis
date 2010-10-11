@@ -92,7 +92,7 @@ def get_writer_for(filename=None, format='DCD'):
         except KeyError:
             raise TypeError("No trajectory or frame writer for format %r" % format)
 
-def writer(filename, numatoms, **kwargs):
+def writer(filename, numatoms=None, **kwargs):
     """Initialize a trajectory writer instance for *filename*.
 
     :Arguments:
@@ -100,7 +100,8 @@ def writer(filename, numatoms, **kwargs):
            Output filename of the trajectory; the extension determines the 
            format.
        *numatoms*
-            The number of atoms in the output trajectory.
+            The number of atoms in the output trajectory; can be ommitted 
+            for single-frame writers.
        *kwargs*
             Keyword arguments for the writer; all trajectory Writers accept
             at least
@@ -120,7 +121,7 @@ def writer(filename, numatoms, **kwargs):
                and :class:`~MDAnalysis.coordinates.TRR.TRRWriter` for Gromacs.
     """
     Writer = get_writer_for(filename, format=kwargs.pop('format',None))
-    return Writer(filename, numatoms, **kwargs)
+    return Writer(filename, numatoms=numatoms, **kwargs)
 
 def get_ext(filename):
     """Return the lower-cased extension of *filename* without a leading dot.

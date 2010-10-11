@@ -316,7 +316,7 @@ class PrimitivePDBWriter(base.Writer):
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self,filename):
+    def __init__(self,filename,**kwargs):
         self.filename = util.filename(filename,ext='pdb')
         self.pdb = open(self.filename,'w')
 

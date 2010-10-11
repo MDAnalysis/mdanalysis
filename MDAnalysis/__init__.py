@@ -116,7 +116,7 @@ the OPLS/AA force field.
 # a error (TODO: catch that ImportError when no liblapack.so found so that we 
 # can issue sensible advice)
 __all__ = ['AtomGroup','Selection','Timeseries','distances','rms_fitting',
-           'Universe', 'asUniverse', 'writer', 'collection']
+           'Universe', 'asUniverse', 'Writer', 'collection']
 
 import logging
 # see the advice on logging and libraries in
@@ -139,6 +139,6 @@ from core import distances, rms_fitting
 
 # Bring some often used objects into the current namespace
 from core.AtomGroup import Universe, asUniverse
-from coordinates.core import writer
+from coordinates.core import writer as Writer
 
 collection = Timeseries.TimeseriesCollection()
