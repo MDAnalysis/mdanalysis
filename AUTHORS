@@ -41,3 +41,6 @@ KDTree
 
 DCD reader from catdcd
   - Justin Gullingsrud
+
+transformations
+  - Christoph Gohlke <http://www.lfd.uci.edu/~gohlke/>
