@@ -19,20 +19,26 @@ class DCDWriter(base.Writer):
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
-    def __init__(self, dcdfilename, numatoms, start=0, step=1, delta=1.0, remarks="Created by DCDWriter"):
+    def __init__(self, filename, numatoms, start=0, step=1, delta=1.0, 
+                 remarks="Created by DCDWriter", convert_units=None):
         """Create a new DCDWriter
 
-        dcdfilename - name of output file
+        filename - name of output file
         numatoms - number of atoms in dcd file
         start - starting timestep
         step  - skip between subsequent timesteps
         delta - timestep
         remarks - comments to annotate dcd file
+        convert_units - units are converted to the MDAnalysis base format; ``None`` selects
+                        the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
         """
         if numatoms == 0:
             raise ValueError("DCDWriter: no atoms in output trajectory")
-        self.dcdfilename = dcdfilename
-        self.filename = self.dcdfilename
+        self.filename = filename
+        self.dcdfilename = filename  # backward compatibility
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+        self.convert_units = convert_units    # convert length and time to base units on the fly?
         self.numatoms = numatoms
 
         self.frames_written = 0
@@ -63,6 +69,8 @@ class DCDWriter(base.Writer):
         # Check to make sure Timestep has the correct number of atoms
         elif not ts.numatoms == self.numatoms:
             raise Exception("DCDWriter: Timestep does not have the correct number of atoms")
+        if self.convert_units:
+            self.convert_pos_to_native(ts._pos)             # in-place !
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
         self._write_next_frame(ts._x, ts._y, ts._z, unitcell)
         self.frames_written += 1

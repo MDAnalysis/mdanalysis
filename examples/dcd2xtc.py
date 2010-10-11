@@ -10,7 +10,7 @@ different trajectory formats.
 """
 
 from MDAnalysis.tests.datafiles import PDB_small, DCD
-from MDAnalysis import Universe, get_writer_for
+from MDAnalysis import Universe, writer
 
 
 import os.path
@@ -20,10 +20,8 @@ xtcname = root + '.xtc'  # output format determined by extension
 
 u = Universe(PDB_small, DCD)
 
-# obtain a Writer class appropriate for the output file
-Writer = get_writer_for(xtcname)
 # create a writer instance for the output trajectory
-w = Writer(xtcname, u.trajectory.numatoms)
+w = writer(xtcname, u.trajectory.numatoms)
 
 # loop through the trajectory and write a frame for every step
 for ts in u.trajectory:

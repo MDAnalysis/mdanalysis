@@ -205,7 +205,7 @@ class ChainReader(Reader):
 
     def __init__(self, filenames, **kwargs):
         self.filenames = asiterable(filenames)
-        self.readers = [core.init_reader_for(filename, **kwargs) for filename in self.filenames]
+        self.readers = [core.reader(filename, **kwargs) for filename in self.filenames]
         self.__active_reader_index = 0   # pointer to "active" trajectory index into self.readers
 
         self.skip = kwargs.get('skip', 1)

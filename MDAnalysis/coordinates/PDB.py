@@ -206,7 +206,7 @@ class PrimitivePDBReader(base.Reader):
     units = {'time': None, 'length': 'Angstrom'}
     _Timestep = Timestep
 
-    def __init__(self, filename, convert_units=None):
+    def __init__(self, filename, convert_units=None, **kwargs):
         """Read coordinates from *filename*.
 
         *filename* can be a gzipped or bzip2ed compressed PDB file.
