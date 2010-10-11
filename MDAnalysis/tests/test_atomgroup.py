@@ -91,10 +91,36 @@ class _WriteAtoms(TestCase):
         CA.write(self.outfile)
         u2 = self.universe_from_tmp()
         CA2 = u2.selectAtoms('all')   # check EVERYTHING, otherwise we might get false positives!
-
-        assert_equal(len(u2.atoms), len(CA), "written CA selection does not match original selection")
+        assert_equal(len(u2.atoms), len(CA.atoms), "written CA selection does not match original selection")
         assert_almost_equal(CA2.coordinates(), CA.coordinates(), self.precision,
                             err_msg="CA coordinates do not agree with original")
+
+    def test_write_Residue(self):
+        G = self.universe.s4AKE.ARG[-2]   # 2nd but last Arg
+        G.write(self.outfile)
+        u2 = self.universe_from_tmp()
+        G2 = u2.selectAtoms('all')   # check EVERYTHING, otherwise we might get false positives!
+        assert_equal(len(u2.atoms), len(G.atoms), "written R206 Residue does not match original ResidueGroup")
+        assert_almost_equal(G2.coordinates(), G.coordinates(), self.precision,
+                            err_msg="Residue R206 coordinates do not agree with original")
+
+    def test_write_ResidueGroup(self):
+        G = self.universe.s4AKE.LEU
+        G.write(self.outfile)
+        u2 = self.universe_from_tmp()
+        G2 = u2.selectAtoms('all')   # check EVERYTHING, otherwise we might get false positives!
+        assert_equal(len(u2.atoms), len(G.atoms), "written LEU ResidueGroup does not match original ResidueGroup")
+        assert_almost_equal(G2.coordinates(), G.coordinates(), self.precision,
+                            err_msg="ResidueGroup LEU coordinates do not agree with original")
+
+    def test_write_Segment(self):
+        G = self.universe.s4AKE
+        G.write(self.outfile)
+        u2 = self.universe_from_tmp()
+        G2 = u2.selectAtoms('all')   # check EVERYTHING, otherwise we might get false positives!
+        assert_equal(len(u2.atoms), len(G.atoms), "written s4AKE segment does not match original segment")
+        assert_almost_equal(G2.coordinates(), G.coordinates(), self.precision,
+                            err_msg="segment s4AKE coordinates do not agree with original")
 
     def tearDown(self):
         try:
@@ -122,9 +148,36 @@ class TestWriteCRD(_WriteAtoms):
                         "CRD reader is not implemented yet (see Issue 40)")
     def test_write_selection(self):
         super(TestWriteCRD, self).test_write_selection()
+    @dec.knownfailureif(not 'CRD' in MDAnalysis.coordinates._trajectory_readers, 
+                        "CRD reader is not implemented yet (see Issue 40)")
+    def test_write_Residue(self):
+        super(TestWriteCRD, self).test_write_Residue()
+    @dec.knownfailureif(not 'CRD' in MDAnalysis.coordinates._trajectory_readers, 
+                        "CRD reader is not implemented yet (see Issue 40)")
+    def test_write_ResidueGroup(self):
+        super(TestWriteCRD, self).test_write_ResidueGroup()
+    @dec.knownfailureif(not 'CRD' in MDAnalysis.coordinates._trajectory_readers, 
+                        "CRD reader is not implemented yet (see Issue 40)")
+    def test_write_Segment(self):
+        super(TestWriteCRD, self).test_write_Segment()
+
+
+
 
 class TestWriteGRO(_WriteAtoms):
     ext = "gro"
     precision = 2
 
+import MDAnalysis.core.AtomGroup
+def test_generated_residueselection():
+    """Test that a generated residue group always returns a ResidueGroup (Issue 47)"""
+    universe = MDAnalysis.Universe(PSF, DCD)
+    # only a single Cys in AdK
+    cys = universe.s4AKE.CYS
+    assert_(isinstance(cys, MDAnalysis.core.AtomGroup.ResidueGroup), 
+            "Single Cys77 is NOT returned as a ResidueGroup with a single Residue (Issue 47)")
 
+    # multiple Met
+    met = universe.s4AKE.MET
+    assert_(isinstance(met, MDAnalysis.core.AtomGroup.ResidueGroup),
+            "Met selection does not return a ResidueGroup")
