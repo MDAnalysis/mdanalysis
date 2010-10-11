@@ -18,6 +18,14 @@ The rules for this file:
           ANALYSIS NOT WORKING YET
 	* whitespace is no longer required around parentheses for 
 	  selectAtoms strings (Issue 43)
+	* AtomGroup coordinates can be manipulated (translate(),
+          rotate() and rotateby() methods)
+	* improved trajectory writing
+           - MDAnalysis.Writer() factory function that provides an
+             appropriate writer for the desired file format
+	   - Writer.write() accepts a Timestep, a Universe, or a 
+	     arbitrary AtomGroup (e.g. from a selection); this is much
+	     more flexible than Writer.write_next_timestep()     	    
 
 09/19/10 orbeckst
 	* quick-fix release 0.6.4.1
