@@ -27,6 +27,8 @@ from __future__ import with_statement
 import numpy
 import MDAnalysis
 import networkx as NX
+import distances
+import warnings
 
 class LeafletFinder(object):
     """Identify atoms in the same leaflet of a lipid bilayer.
@@ -77,14 +79,22 @@ class LeafletFinder(object):
     # work.
 
     def _get_graph(self):
-        """Build graph from adjacency matrix at the given cutoff."""
+        """Build graph from adjacency matrix at the given cutoff.
+        Automatically select between high and low memory usage versions of
+        contact_matrix."""
         # could use self_distance_array to speed up but then need to deal with the sparse indexing
         if self.pbc:
             box = self.universe.trajectory.ts.dimensions
         else:
             box = None
         coord = self.selection.coordinates()        
-        adj =  (MDAnalysis.distances.distance_array(coord,coord,box=box) < self.cutoff)
+        # this works for small systems
+        try:
+            adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="numpy",box=box)
+        # but use a sparse matrix method for larger systems for memory reasons
+        except ValueError:
+            warnings.warn('N x N array too big - switching to sparse matrix method (works fine, but is currently rather slow)' , category=UserWarning , stacklevel=2)
+            adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="sparse",box=box)
         return NX.Graph(adj)
         
     def _get_components(self):

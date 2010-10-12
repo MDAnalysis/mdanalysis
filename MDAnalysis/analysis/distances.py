@@ -12,6 +12,72 @@ atoms or groups of atoms.
 
 """
 
-__all__ = ['distance_array', 'self_distance_array']
+__all__ = ['distance_array', 'self_distance_array', 'contact_matrix']
 from MDAnalysis.core.distances import distance_array, self_distance_array
+from MDAnalysis.analysis.util import progress_meter
+from scipy import sparse
+
+
+def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
+    '''
+    Calculates a matrix of contacts between a list of coordinates.
+    There is a fast, high-memory-usage version for small systems (returntype='numpy'),
+    and a slower, low-memory-usage version for larger systesm (returntype='sparse').
+    '''
+    if returntype=="numpy":
+        adj = (distance_array(coord,coord,box=box) < cutoff)
+        return adj
+
+    elif returntype=="sparse":
+        # Initialize square List of Lists matrix of dimensions equal to number of coordinates passed
+        sparse_contacts = sparse.lil_matrix((len(coord),len(coord))  , dtype='bool')
+        # if PBC
+        if box != None:
+            print box
+            box_half = box[0:3] / 2.
+            print box_half
+
+            for i in range(len(coord)):
+                # Print progress every hundred atoms
+                # TODO progress_meter will be changed to a class
+                if i % 100 == 0:
+                    progress_meter(i , len(coord))
+
+                for j in range(len(coord)):
+                    diff = coord[j] - coord[i]
+                    if abs(diff[0]) > box_half[0]:
+                        if diff[0] < 0.:
+                            diff[0] += box[0]
+                        else:
+                            diff[0] -= box[0]
+                    if abs(diff[1]) > box_half[1]:
+                        if diff[1] < 0.:
+                            diff[1] += box[1]
+                        else:
+                            diff[1] -= box[1]
+                    if abs(diff[2]) > box_half[2]:
+                        if diff[2] < 0.:
+                            diff[2] += box[2]
+                        else:
+                            diff[2] -= box[2]
+
+                    dist = ( ( diff[0] ** 2. ) + ( diff[1] ** 2. ) + ( diff[2] ** 2. ) ) ** 0.5
+                    if dist != 0.0 and dist < cutoff:
+                        sparse_contacts[i,j] = True
+
+            # if no PBC
+        else:
+            for i in range(len(coord)):
+                # Print progress every hundred atoms
+                # TODO progress_meter will be changed to a class
+                if i % 100 == 0:
+                    progress_meter(i , len(coord))
+
+                for j in range(len(coord)):
+                    diff = coord[j] - coord[i]
+                    dist = ( ( diff[0] ** 2. ) + ( diff[1] ** 2. ) + ( diff[2] ** 2. ) ) ** 0.5
+                    if dist != 0.0 and dist < cutoff:
+                        sparse_contacts[i,j] = True
+
+        return sparse_contacts
 
