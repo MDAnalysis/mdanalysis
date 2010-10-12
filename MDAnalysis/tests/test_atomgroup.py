@@ -162,13 +162,12 @@ class TestWriteCRD(_WriteAtoms):
         super(TestWriteCRD, self).test_write_Segment()
 
 
-
-
 class TestWriteGRO(_WriteAtoms):
     ext = "gro"
     precision = 2
 
 import MDAnalysis.core.AtomGroup
+@attr("issue")
 def test_generated_residueselection():
     """Test that a generated residue group always returns a ResidueGroup (Issue 47)"""
     universe = MDAnalysis.Universe(PSF, DCD)

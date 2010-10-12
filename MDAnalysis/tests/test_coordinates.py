@@ -298,7 +298,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
 
 @attr('issue')
 def TestDCD_Issue32():
-    """Issue 32: 0-size dcds lead to a segfault: now caught with IOError"""
+    """Test for Issue 32: 0-size dcds lead to a segfault: now caught with IOError"""
     assert_raises(IOError, mda.Universe, PSF, DCD_empty)
 
 class _TestDCD(TestCase):
@@ -549,7 +549,7 @@ class _GromacsReader(TestCase):
     @dec.slow
     @attr('issue')
     def test_unitcell(self):
-        """Check for fixed Issue 34"""
+        """Test that xtc/trr unitcell is read correctly (Issue 34)"""
         self.universe.trajectory.rewind()
         uc = self.ts.dimensions
         ref_uc = np.array([ 80.017,  80.017,  80.017,  90., 60., 60.], dtype=np.float32)
