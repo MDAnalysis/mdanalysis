@@ -112,9 +112,9 @@ class LeafletFinder(object):
         return dict(((idx,len(component)) for idx,component in enumerate(self.components)))
 
     def atoms(self, component_index):
-        """Return a :class:`MDAnalysis.AtomGroup.AtomGroup` for *component_index*."""
+        """Return a :class:`MDAnalysis.core.AtomGroup.AtomGroup` for *component_index*."""
         # maybe cache this?
-        return MDAnalysis.AtomGroup.AtomGroup(
+        return MDAnalysis.core.AtomGroup.AtomGroup(
             [self.selection[i] for i in self.components[component_index]])
 
     def atoms_iter(self):
