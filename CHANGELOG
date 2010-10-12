@@ -9,12 +9,14 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/10 orbeckst, tyler.je.reddy
+??/??/10 orbeckst, tyler.je.reddy, danny.parton
         (Running list of enhancements, to be edited for final
         entry when stable changes are merged back into trunk)
         * reads hydrogen bond donor/acceptor list from psf and sets up
           structures for hydrogen bonding analysis TODO: H-BOND
           ANALYSIS NOT WORKING YET
+        * major release 0.7.0
+          (includes changes that can BREAK BACKWARDS COMPATIBILITY)
         * Removed ALL DEPRECATED code:
 	  - AtomGroup._atoms removed
 	  - AtomGroup.principleAxes (Issue 33)
@@ -48,23 +50,24 @@ The rules for this file:
 	   - Writer.write() accepts a Timestep, a Universe, or a 
 	     arbitrary AtomGroup (e.g. from a selection); this is much
 	     more flexible than Writer.write_next_timestep()
-         * new attributes residues and segments for AtomGroup to give 
-           access to the list of residue/segment objects of the group 
-         * new exception NoDataError; raised when creation of an empty
-	   AtomGroup is attempted
-         * improvements to Residue, ResidueGroup and Segment classes 
-           - documented accessing residues from Segment as
-             Segment.r<resid>; resid is 1-based -- BREAKS OLD CODE 
-	     that relied on this being 0-based  
-           - can write from Residue, ResidueGroup and Segment (Issue 46)
-           - residue name attribute of a Segment now consistently
-             returns a ResidueGroup (Issue 47) -- MIGHT BREAK OLD CODE
-           - added documentation and examples in the doc strings
-	   - new special dihedral angle selections defined for Residue
-             class to simplify analysis of backbone torsions
-    * new contact_matrix method for calculating contacts
-        - for large (N > ~10000) coordinate arrays automatically switches
-          to a method using a sparse matrix (slower)
+	* new attributes residues and segments for AtomGroup to give 
+	  access to the list of residue/segment objects of the group 
+	* new exception NoDataError; raised when creation of an empty
+	  AtomGroup is attempted
+	* improvements to Residue, ResidueGroup and Segment classes 
+	  - documented accessing residues from Segment as
+	    Segment.r<resid>; resid is 1-based -- BREAKS OLD CODE 
+	    that relied on this being 0-based  
+	  - can write from Residue, ResidueGroup and Segment (Issue 46)
+	  - residue name attribute of a Segment now consistently
+	    returns a ResidueGroup (Issue 47) -- MIGHT BREAK OLD CODE
+	  - added documentation and examples in the doc strings
+	  - new special dihedral angle selections defined for Residue
+	    class to simplify analysis of backbone torsions
+	* new contact_matrix method for calculating contacts 
+	  (Issue 30); for large (N > ~10000) coordinate arrays
+	  automatically switches to a method using a sparse matrix
+	  (slower)
 
 09/19/10 orbeckst
 	* quick-fix release 0.6.4.1
