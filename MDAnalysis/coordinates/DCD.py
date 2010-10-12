@@ -71,7 +71,7 @@ class DCDWriter(base.Writer):
         .. Note:: This function only exists for debugging purposes and might be
                   removed without notice.
         """
-        # currently broken (no idea why [orbeckst]), see Issue 27
+        # was broken (no idea why [orbeckst]), see Issue 27
         # 'PiiiiiidiPPiiii' should be the unpack string according to the struct.
         #    struct.unpack("LLiiiiidiPPiiii",self._dcd_C_str)
         # seems to do the job on Mac OS X 10.6.4 ... but I have no idea why,
@@ -145,9 +145,36 @@ class DCDReader(base.Reader):
         # Read in the first timestep
         self._read_next_timestep()
     def _dcd_header(self):
+        """Returns contents of the DCD header C structure:: 
+             typedef struct {
+               fio_fd fd;                 // FILE *
+               fio_size_t header_size;    // size_t == sizeof(int)
+               int natoms;
+               int nsets;
+               int setsread;
+               int istart;
+               int nsavc;
+               double delta;
+               int nfixed;
+               int *freeind;
+               float *fixedcoords;
+               int reverse;
+               int charmm;
+               int first;
+               int with_unitcell;
+             } dcdhandle;
+
+        .. Note:: This function only exists for debugging purposes and might be
+                  removed without notice.
+        """
+        # was broken (no idea why [orbeckst]), see Issue 27
+        # 'PiiiiiidiPPiiii' should be the unpack string according to the struct.
+        #    struct.unpack("LLiiiiidiPPiiii",self._dcd_C_str)
+        # seems to do the job on Mac OS X 10.6.4 ... but I have no idea why,
+        # given that the C code seems to define them as normal integers
         import struct
         desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']
-        return dict(zip(desc, struct.unpack("iiiiiiidiPPiiii",self._dcd_C_str)))
+        return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii",self._dcd_C_str)))
     def __iter__(self):
         # Reset the trajectory file, read from the start
         # usage is "from ts in dcd:" where dcd does not have indexes
