@@ -49,9 +49,36 @@ class DCDWriter(base.Writer):
         self.remarks = remarks
         self._write_dcd_header(numatoms, start, step, delta, remarks)
     def _dcd_header(self):
+        """Returns contents of the DCD header C structure:: 
+             typedef struct {
+               fio_fd fd;                 // FILE *
+               fio_size_t header_size;    // size_t == sizeof(int)
+               int natoms;
+               int nsets;
+               int setsread;
+               int istart;
+               int nsavc;
+               double delta;
+               int nfixed;
+               int *freeind;
+               float *fixedcoords;
+               int reverse;
+               int charmm;
+               int first;
+               int with_unitcell;
+             } dcdhandle;
+
+        .. Note:: This function only exists for debugging purposes and might be
+                  removed without notice.
+        """
+        # currently broken (no idea why [orbeckst]), see Issue 27
+        # 'PiiiiiidiPPiiii' should be the unpack string according to the struct.
+        #    struct.unpack("LLiiiiidiPPiiii",self._dcd_C_str)
+        # seems to do the job on Mac OS X 10.6.4 ... but I have no idea why,
+        # given that the C code seems to define them as normal integers
         import struct
         desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']
-        return dict(zip(desc, struct.unpack("iiiiiiidiPPiiii",self._dcd_C_str)))
+        return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii",self._dcd_C_str)))
     def write_next_timestep(self, ts=None):
         ''' write a new timestep to the dcd file
             ts - timestep object containing coordinates to be written to dcd file
