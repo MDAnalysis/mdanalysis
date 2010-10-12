@@ -302,7 +302,7 @@ import PDB, DCD, CRD, XTC, TRR, GRO, XYZ
 import base
 from core import reader, writer
 
-# trajectory readers: present unified interface (based on DCD.Timestep)
+#: trajectory readers: present unified interface (based on DCD.Timestep)
 _trajectory_readers = {'DCD': DCD.DCDReader,
                        'TRJ': DCD.DCDReader,
                        'XTC': XTC.XTCReader,
@@ -312,12 +312,18 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'GRO': GRO.GROReader,
                        'CHAIN': base.ChainReader,
                        }
+#: readers of files that contain both topology/atom data and coordinates
+#: (currently only the keys are used)
+_topology_coordinates_readers = {
+                       'PDB': PDB.PrimitivePDBReader,
+                       'GRO': GRO.GROReader,
+}    
 
-# hack: readers that ignore most errors (permissive=True)
+#: hack: readers that ignore most errors (permissive=True)
 _trajectory_readers_permissive = _trajectory_readers.copy()
 _trajectory_readers_permissive['PDB'] =  PDB.PrimitivePDBReader
 
-# frame writers: export to single frame formats such as PDB, gro, crd
+#: frame writers: export to single frame formats such as PDB, gro, crd
 # Signature:
 #   W = FrameWriter(filename)
 #   W.write(AtomGroup)
@@ -332,6 +338,9 @@ _frame_writers = {'PDB': PDB.PrimitivePDBWriter,
 # Signature:
 #   W = TrajectoryWriter(filename,numatoms,**kwargs)
 #   W.write_next_timestep(TimeStep)
+#   W.write(Timestep)
+#   W.write(AtomGroup)
+#   W.write(Universe)
 _trajectory_writers = {'DCD': DCD.DCDWriter,
                        'XTC': XTC.XTCWriter,
                        'TRR': TRR.TRRWriter,

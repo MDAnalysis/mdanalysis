@@ -48,11 +48,6 @@ class DCDWriter(base.Writer):
         self.dcdfile = file(dcdfilename, 'wb')
         self.remarks = remarks
         self._write_dcd_header(numatoms, start, step, delta, remarks)
-    def dcd_header(self):
-        import warnings
-        warnings.warn('dcd_header is not part of the trajectory API and will be renamed to _dcd_header',
-                      DeprecationWarning)
-        self._dcd_header()
     def _dcd_header(self):
         import struct
         desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']
@@ -122,11 +117,6 @@ class DCDReader(base.Reader):
         self.ts = Timestep(self.numatoms)
         # Read in the first timestep
         self._read_next_timestep()
-    def dcd_header(self):
-        import warnings
-        warnings.warn('dcd_header is not part of the trajectory API and will be renamed to _dcd_header',
-                      DeprecationWarning)
-        self._dcd_header()
     def _dcd_header(self):
         import struct
         desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']

@@ -150,13 +150,6 @@ class AtomGroup(object):
         return locals()
     atoms = property(**atoms())
     
-    def _atoms():
-        def fget(self):
-            warnings.warn("Usage of '_atoms' is deprecated. Use 'atoms' instead.", category=DeprecationWarning, stacklevel=2)
-            return self.__atoms
-        return locals()
-    _atoms = property(**_atoms())
-
     # Universe pointer is important for Selections to work on groups
     def universe():
         doc = "The universe to which the atoms belong (read-only)."
@@ -183,8 +176,6 @@ class AtomGroup(object):
         # managed timestep object
         self.__ts = None
     def __len__(self):
-        #import warnings
-        #warnings.warn("To prevent confusion with AtomGroup subclasses you should use numberOfAtoms() instead", category=Warning, stacklevel=2)
         return self.numberOfAtoms()
     def __getitem__(self, item):
         if (numpy.dtype(type(item)) == numpy.dtype(int)) or (type(item) == slice):
@@ -312,23 +303,6 @@ class AtomGroup(object):
         indices = numpy.argsort(eigenval)
         # Return transposed in more logical form. See Issue 33.
         return eigenvec[:,indices].T
-
-    # old behaviour, wrong spelling, confusing behaviour (Issue 33)
-    def principleAxes(self):
-        """Calculate the principal axes from the moment of inertia.
-
-        :Returns: 3x3 numpy array *v*; the first eigenvector is
-                  ``v[:,0]``, the second one ``v[:,1]``; ``v[0]`` is
-                  the vector of the three x-components. Transpose to have the first index 
-
-        .. warning:: This method is *deprecated* and will be removed. 
-                     Use :meth:`principalAxes` instead.
-        """
-        warnings.warn("You are using the old principleAxes() method which might go away soon. "
-                      "Please use principalAxes() (spelling!) which CHANGED the way eigenvectors "
-                      "are returned. CHECK THE DOCS!",
-                      category=DeprecationWarning)
-        return self.principalAxes().T
 
     def coordinates(self, ts=None, copy=False, dtype=numpy.float32):
         """NumPy array of the coordinates."""
@@ -742,35 +716,34 @@ class Universe(object):
               trajectories. If a PDB is used instead of a PSF then
               charges are not correct, masses are guessed, and bonds are not available.
     """
-    def __init__(self, psffilename, dcdfilename=None, pdbfilename=None, **kwargs):
+    def __init__(self, topologyfile, coordinatefile=None, **kwargs):
         """Initialize the central MDAnalysis Universe object.
 
         :Arguments:
-          *psffilename*
+          *topologyfile*
              A Charmm/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to define the
              list of atoms. If the file includes bond information, partial
              charges, atom masses, ... then these data will be available to
              MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
              topology) is always required.
-          *dcdfilename*
-             A CHARMM DCD trajectory or Gromacs XTC/TRR/GRO or PDB; will provide coordinates.
-             If a list of filenames is provided then they are sequentially read and appear
-             as one single trajectory to the Universe.
+          *coordinatefile*
+             A trajectory (such as CHARMM DCD, Gromacs XTC/TRR/GRO, XYZ, ZYZ.bz2) or a PDB that
+             will provide coordinates, possibly multiple frames.
+             If a **list of filenames** is provided then they are sequentially read and appear
+             as one single trajectory to the Universe. The list can contain different file
+             formats.
           *permissive*
              Set to ``True`` in order to ignore most errors (currently only relevant
              for PDB files) [``False``]
 
         This routine tries to do the right thing: 
-          1. If a pdb file is provided instead of a psf and neither a dcd nor a
-             pdb structure then the coordinates are taken from the first pdb
-             file. Thus you can load a functional universe with ::
+          1. If a pdb/gro file is provided instead of a psf and no *coordinatefile*
+             then the coordinates are taken from the first file. Thus you can load 
+             a functional universe with ::
 
                 u = Universe('1ake.pdb')
    
-          2. If a pdb coordinate file is provided in the *dcdfilename* argument
-             then it is silently opened as a pdb file.
-
-          3. If only a psf file is provided one will have to load coordinates
+          2. If only a psf file is provided one will have to load coordinates
              manually using :meth:`Universe.load_new_dcd` or
              :meth:`Universe.load_new_pdb`.
         """
@@ -780,14 +753,6 @@ class Universe(object):
         # attribute is also aliased as Universe.<EXT> where <EXT> is the
         # trajectory format type (i.e. the extension))
         self.__trajectory = None
-
-        # TODO 0.7
-        # for 0.7 we will rename psffile -> topologyfile, and dcdfile -> coordinatefile
-        if not pdbfilename is None:
-            warnings.warn("Usage of 'pdbfilename=PDB' is deprecated and will be removed. Just use the PDB "
-                          "as the second argument of Universe().", category=DeprecationWarning)
-        topologyfile = psffilename
-        coordinatefile = dcdfilename or pdbfilename
 
         # build the topology (or at least a list of atoms)
         try:
@@ -819,9 +784,9 @@ class Universe(object):
 
         # Load coordinates
         if coordinatefile is None and \
-                MDAnalysis.topology.core.guess_format(topologyfile) in ('PDB', 'GRO'):
-            # hack for pdb/gro - only
-            coordinatefile = topologyfile
+                MDAnalysis.topology.core.guess_format(topologyfile) in \
+                MDAnalysis.coordinates._topology_coordinates_readers:
+            coordinatefile = topologyfile         # hack for pdb/gro - only
         self.load_new(coordinatefile, **kwargs)
 
     def load_new(self, filename, **kwargs):
@@ -855,17 +820,14 @@ class Universe(object):
             raise TypeError("Universe.load_new() cannot find an appropriate coordinate reader "
                             "for file %r.\n%r" % (filename, err))
         self.trajectory = TRJReader(filename, **kwargs)    # unified trajectory API
-        trjtype = self.trajectory.format.lower() # lower case for the legacy attribute
-        self.__dict__[trjtype] = self.trajectory # legacy (deprecated) -- remove in 0.7
-        # Make sure that they both have the same number of atoms
-        if (self.trajectory.numatoms != self.atoms.numberOfAtoms()):
-            raise ValueError("The topology and %s trajectory files  don't have the same number of atoms!" % trjtype)
+        if self.trajectory.numatoms != self.atoms.numberOfAtoms():
+            raise ValueError("The topology and %s trajectory files don't have the same number of atoms!" % self.trajectory.format)
         # hack for PDB
-        if trjtype == "PDB":
+        if self.trajectory.format == "PDB":
             # add B-factor to atoms
             for a, bfactor in izip(self.atoms, self.trajectory.get_bfactors()):
                 a.bfactor = bfactor  ## does this work with mmLib??
-        return filename, trjtype
+        return filename, self.trajectory.format
             
     def selectAtoms(self, sel, *othersel):
         """Select atoms using a CHARMM selection string. 

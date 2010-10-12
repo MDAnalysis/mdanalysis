@@ -12,12 +12,34 @@ The rules for this file:
 ??/??/10 orbeckst, tyler.je.reddy
         (Running list of enhancements, to be edited for final
         entry when stable changes are merged back into trunk)
-
         * reads hydrogen bond donor/acceptor list from psf and sets up
           structures for hydrogen bonding analysis TODO: H-BOND
           ANALYSIS NOT WORKING YET
+        * Removed ALL DEPRECATED code:
+	  - AtomGroup._atoms removed
+	  - AtomGroup.principleAxes (Issue 33)
+	  - DCD.DCDReader.dcd_header() and DCD.DCDWriter.dcd_header()
+	    (use _dcd_header())
+          - Universe.dcd (and Universe.xtc, Universe.trr...) --- from
+  	    now on only Universe.trajectory is supported. 
+	    WILL BREAK LEGACY CODE!
+          - removed the following packages from top-level MDAnalysis
+ 	    name space:
+            - AtomGroup, Selection: import them from MDAnalysis.core if
+	      really needed (e.g. 'import MDAnalysis.core.AtomGroup')
+	    - distances, rms_fitting: 'import MDAnalysis.analysis.distances'
+              or 'import MDAnalysis.analysis.align.rms_fitting' (the
+	      actual modules still live in MDAnalysis.core but they
+	      might get moved in the future and bundled with
+	      transformations)
+            - 'from MDAnalysis import *' will only get ['Timeseries',
+	      'Universe', 'asUniverse', 'Writer', 'collection']
+          - removed copy flag from distance_array and self_distance_array:
+            setting it to False would always give wrong results so there was
+            no good reason keeping it around 
 	* whitespace is no longer required around parentheses for 
-	  selectAtoms strings (Issue 43)
+	  selectAtoms strings but the old syntax with white space
+	  still works (Issue 43)
 	* AtomGroup coordinates can be manipulated (translate(),
           rotate() and rotateby() methods)
 	* improved trajectory writing

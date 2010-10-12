@@ -115,8 +115,7 @@ the OPLS/AA force field.
 # people don't need it we rather wait for them to import it and then throw
 # a error (TODO: catch that ImportError when no liblapack.so found so that we 
 # can issue sensible advice)
-__all__ = ['AtomGroup','Selection','Timeseries','distances','rms_fitting',
-           'Universe', 'asUniverse', 'Writer', 'collection']
+__all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
 
 import logging
 # see the advice on logging and libraries in
@@ -135,13 +134,10 @@ class SelectionError(Exception):
 class NoDataError(ValueError):
     """Raised when empty input is not allowed."""
 
-# removed these imports in the next major version (0.7); they clutter the name space
-# and are not really needed [OB 0.6.4]
-from core import AtomGroup,Selection,Timeseries
-from core import distances, rms_fitting
-
 # Bring some often used objects into the current namespace
+from core import Timeseries
 from core.AtomGroup import Universe, asUniverse
 from coordinates.core import writer as Writer
 
 collection = Timeseries.TimeseriesCollection()
+

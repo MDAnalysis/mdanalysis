@@ -43,6 +43,7 @@ function and then feed the resulting dictionary to :func:`rms_fit_trj`::
 import numpy
 import MDAnalysis
 import MDAnalysis.core.rms_fitting
+from MDAnalysis.core.rms_fitting import rms_rotation_matrix
 from MDAnalysis import SelectionError
 
 import os.path

@@ -5,7 +5,7 @@
 
 Fast C-routines to calculate distance arrays from coordinate arrays.
 
-.. function:: distance_array(ref,conf,[box,[,result[,copy]]])
+.. function:: distance_array(ref,conf,[box,[,result]])
 
    Calculate all distances d_ij between the coordinates ref[i] and
    conf[j] in the numpy arrays *ref* and *conf*. If an orthorhombic
@@ -16,7 +16,7 @@ Fast C-routines to calculate distance arrays from coordinate arrays.
    len(conf))`` is provided in *result* then this preallocated array is
    filled. This can speed up calculations.
 
-.. function:: self_distance_array(ref,[box[,result[,copy]]])
+.. function:: self_distance_array(ref,[box[,result]])
 
    Calculate all distances d_ij between atoms i and j in the reference
    coordinates *ref* for all N coordinates. Other options as in
@@ -25,13 +25,6 @@ Fast C-routines to calculate distance arrays from coordinate arrays.
    If a 1D numpy array of dtype ``numpy.float64`` with ``N*(N-1)/2`` elements is
    provided in *result* then this preallocated array is filled. This can speed
    up calculations.
-
-.. Warning:: The *copy* flag should be ``True`` in most cases as it guarantees
-             that input arrays are correctly interpreted by the underlying
-             C-code (a slightly expensive copy of the array is made). If you
-             know what you are doing you can speed up the routines by setting
-             it to ``False`` but this will *produce wrong results* in most
-             cases, e.g. if the arrays are numpy "views" on arrays.
 """
 
 cimport c_numpy
@@ -50,10 +43,10 @@ cdef extern from "calc_distances.h":
 
 
 import numpy
-def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_numpy.ndarray box=None, c_numpy.ndarray result=None, copy=True):
+def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_numpy.ndarray box=None, c_numpy.ndarray result=None):
     """Calculate all distances between a reference set and another configuration.
 
-    d = distance_array(ref,conf,box[,result=d[,copy=True]])
+    d = distance_array(ref,conf,box[,result=d])
 
     :Arguments:
 		*ref*
@@ -64,33 +57,23 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
 		  	orthorhombic unit cell dimensions (minimum image convention is applied) or None [None]
 		*result*
 			optional preallocated result array which must have the shape (len(ref),len(conf)) and dtype=numpy.float64. Avoids creating the              array which saves time when the function is called repeatedly. [None]
-		*copy*  
-			makes internal copies of the input arrays; see note below [True]
 
     :Returns:
 		*d* 
 			(len(ref),len(conf)) numpy array with the distances d[i,j] between ref coordinates i and conf coordinates j
 
     .. Note:: This method is slower than it could be because internally we need to
-          make copies of the ref and conf arrays. If you know what you are doing
-          you can disable this copy by setting copy=False; however, in most cases
-          this leads to WRONG results!
+          make copies of the ref and conf arrays.
     """
     cdef c_numpy.ndarray ref, conf
     cdef c_numpy.ndarray distances
     cdef int confnum, refnum
 
-    if copy:
-        # Work-around for a severe bug: function produces wrong numbers if
-        # input arrays are views (eg slices from other arrays): copy to force a
-        # new contiguous array in memory (and just make sure its in C order)
-        ref = reference.copy('C')
-        conf = configuration.copy('C')
-    else:
-        # WARNING: this produces wrong results unless the arrays are contiguous
-        # in memory
-        ref = reference
-        conf = configuration
+    # Work-around for a severe bug: function produces wrong numbers if
+    # input arrays are views (eg slices from other arrays): copy to force a
+    # new contiguous array in memory (and just make sure its in C order)
+    ref = reference.copy('C')
+    conf = configuration.copy('C')
 
     if (conf.nd != 2 and conf.dimensions[1] != 3):
         raise ValueError("conf must be a sequence of 3 dimensional coordinates")
@@ -124,10 +107,10 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
 
     return distances
 
-def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_numpy.ndarray result=None, copy=True):
+def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_numpy.ndarray result=None):
     """Calculate all distances d_ij between atoms i and j within a configuration *ref*.
 
-    d = self_distance_array(ref,box[,result=d[,copy=True]])
+    d = self_distance_array(ref,box[,result=d])
 
     :Arguments:
 		*ref*
@@ -139,8 +122,6 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
 			optional preallocated result array which must have the shape
 		           (N*(N-1)/2,) and dtype ``numpy.float64``. Avoids creating 
 		           the array which saves time when the function is called repeatedly. [None]
-		*copy*
-			makes internal copies of the input arrays; see note below [True]               
 
     :Returns:
 		*d*
@@ -153,24 +134,17 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
 		                    dist[i,j] = d[k]
 
     .. Note:: This method is slower than it could be because internally we need to
-          make copies of the coordinate arrays. If you know what you are doing
-          you can disable this copy by setting copy=False; however, in most cases
-          this leads to WRONG results!
+          make copies of the coordinate arrays.
     """
 
     cdef c_numpy.ndarray ref
     cdef c_numpy.ndarray distances
     cdef int refnum, distnum
 
-    if copy:
-        # Work-around for a severe bug: function produces wrong numbers if
-        # input arrays are views (eg slices from other arrays): copy to force a
-        # new contiguous array in memory (and just make sure its in C order)
-        ref = reference.copy('C')
-    else:
-        # WARNING: this produces wrong results unless the arrays are contiguous
-        # in memory
-        ref = reference
+    # Work-around for a severe bug: function produces wrong numbers if
+    # input arrays are views (eg slices from other arrays): copy to force a
+    # new contiguous array in memory (and just make sure its in C order)
+    ref = reference.copy('C')
 
     if (ref.nd != 2 and ref.dimensions[1] != 3):
         raise ValueError("ref must be a sequence of 3 dimensional coordinates")
