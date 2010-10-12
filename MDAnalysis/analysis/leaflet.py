@@ -74,9 +74,9 @@ class LeafletFinder(object):
         self.graph = self._get_graph()
         self.components = self._get_components()
 
-    # The last two lines of code in _get_graph() and the single line in
-    # _get_components() is all that's needed to make the leaflet detection
-    # work.
+    # The last two calls in _get_graph() and the single line in
+    # _get_components() are all that are needed to make the leaflet
+    # detection work.
 
     def _get_graph(self):
         """Build graph from adjacency matrix at the given cutoff.
@@ -93,7 +93,7 @@ class LeafletFinder(object):
             adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="numpy",box=box)
         # but use a sparse matrix method for larger systems for memory reasons
         except ValueError:
-            warnings.warn('N x N array too big - switching to sparse matrix method (works fine, but is currently rather slow)' , category=UserWarning , stacklevel=2)
+            warnings.warn('N x N matrix too big - switching to sparse matrix method (works fine, but is currently rather slow)' , category=UserWarning , stacklevel=2)
             adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="sparse",box=box)
         return NX.Graph(adj)
         

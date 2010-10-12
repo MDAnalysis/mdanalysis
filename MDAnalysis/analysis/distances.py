@@ -18,11 +18,18 @@ from MDAnalysis.analysis.util import progress_meter
 from scipy import sparse
 
 
-def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
+def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_meter_freq=100, suppress_progmet=False):
     '''
     Calculates a matrix of contacts between a list of coordinates.
-    There is a fast, high-memory-usage version for small systems (returntype='numpy'),
-    and a slower, low-memory-usage version for larger systesm (returntype='sparse').
+    There is a fast, high-memory-usage version for small systems
+    (returntype='numpy'), and a slower, low-memory-usage version
+    for larger systems (returntype='sparse').
+
+    If box dimensions are passed, then periodic boundary conditions
+    are applied.
+
+    Change progress_meter_freq to alter frequency of progress meter
+    updates. Or switch suppress_progmet to True to suppress it completely.
     '''
     if returntype=="numpy":
         adj = (distance_array(coord,coord,box=box) < cutoff)
@@ -40,7 +47,7 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
             for i in range(len(coord)):
                 # Print progress every hundred atoms
                 # TODO progress_meter will be changed to a class
-                if i % 100 == 0:
+                if i % progress_meter_freq == 0 and suppress_progmet == False:
                     progress_meter(i , len(coord))
 
                 for j in range(len(coord)):
@@ -70,7 +77,7 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
             for i in range(len(coord)):
                 # Print progress every hundred atoms
                 # TODO progress_meter will be changed to a class
-                if i % 100 == 0:
+                if i % progress_meter_freq == 0 and suppress_progmet == False:
                     progress_meter(i , len(coord))
 
                 for j in range(len(coord)):
