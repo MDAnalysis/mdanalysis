@@ -153,56 +153,46 @@ class Atom(object):
 class AtomGroup(object):
     """A group of atoms.
 
-    Currently contains a list of atoms from the main system that
-    correspond to this group.
+    ag = universe.selectAtoms("...")
+
+    The AtomGroup contains a list of atoms; typically, a AtomGroup is generated
+    from a selection.
 
     :Data:
         atoms
-            a list of references to the corresponding atoms in :attr:`Universe.atoms`;
+            The AtomGroup itself; provided for unified access across the hierarchy. 
+            Use :attr:`_atoms` if you really only need a list.
+        _atoms
+            A list of references to the corresponding atoms in :attr:`Universe.atoms`;
             AtomGroups are immutable, i.e. this list cannot be changed.
+        residues
+            A :class:`ResidueGroup` of all residues that contain atoms in this group.
+        segments
+            A :class:`SegmentGroup` of all segments that contain atoms in this group.
         ts
             A :class:`~MDAnalysis.coordinates.base.Timestep` instance, which can
             be passed to a trjectory writer.
 
-    Methods::
-        ag = universe.selectAtoms("...")
-        ag.numberOfAtoms() - return the number of atoms in group
-        ag.numberOfResidues() - return the number of residues in group
-        ag.indices() - return indices into main atom array
-        ag.resids() - return list of resids
-        ag.resnames() - return list of resnames
-        ag.masses() - array of masses
-        ag.totalMass() - total mass
-        ag.charges() - array of charges
-        ag.totalCharge() - total charge
-        ag.centerOfGeometry() - center of geometry
-        ag.centerOfMass() - center of mass
-        ag.radiusOfGyration() - radius of gyration
-        ag.principleAxis() - returns the principle axis of rotation
-        ag.bfactors() - returns B-factors (if they were loaded from a PDB)
-        c = ag.coordinates() - return array of coordinates
+    :Methods:
+        :meth:`AtomGroup.numberOfAtoms() - return the number of atoms in group
+        :meth:`AtomGroup.numberOfResidues() - return the number of residues in group
+        :meth:`AtomGroup.indices() - return indices into main atom array
+        :meth:`AtomGroup.resids() - return list of resids
+        :meth:`AtomGroup.resnames() - return list of resnames
+        :meth:`AtomGroup.masses() - array of masses
+        :meth:`AtomGroup.totalMass() - total mass
+        :meth:`AtomGroup.charges() - array of charges
+        :meth:`AtomGroup.totalCharge() - total charge
+        :meth:`AtomGroup.centerOfGeometry() - center of geometry
+        :meth:`AtomGroup.centerOfMass() - center of mass
+        :meth:`AtomGroup.radiusOfGyration() - radius of gyration
+        :meth:`AtomGroup.principleAxis() - returns the principle axis of rotation
+        :meth:`AtomGroup.bfactors() - returns B-factors (if they were loaded from a PDB)
+        c = :meth:`AtomGroup.coordinates() - return array of coordinates
         
-        ag.write() - write all atoms in the group to a file
-        ag.write_selection() - write a selection for VMD, PyMOL, Gromacs or CHARMM
+        :meth:`AtomGroup.write() - write all atoms in the group to a file
+        :meth:`AtomGroup.write_selection() - write a selection for VMD, PyMOL, Gromacs or CHARMM
     """
-    def atoms():
-        doc = "a list of references to atoms in Universe corresponding to a specifies subset"
-        def fget(self):
-            return self.__atoms
-        return locals()
-    atoms = property(**atoms())
-    
-    # Universe pointer is important for Selections to work on groups
-    def universe():
-        doc = "The universe to which the atoms belong (read-only)."
-        def fget(self):
-            try:
-                return self.__atoms[0].universe
-            except AttributeError:
-                return None
-        return locals()
-    universe = property(**universe())
-
     def __init__(self, atoms):
         if len(atoms) < 1: raise NoDataError("No atoms defined for AtomGroup")
         # __atoms property is effectively readonly        
@@ -212,45 +202,77 @@ class AtomGroup(object):
             self.__atoms = atoms      
         except TypeError:
             self.__atoms = list(atoms)
+        # sanity check
+        if not isinstance(self.__atoms[0], Atom):
+            raise TypeError("atoms must be a Atom or a list of Atoms.")
         # If the number of atoms is very large, create a dictionary cache for lookup
         if len(atoms) > 10000:
             self._atom_cache = dict([(x,None) for x in self.__atoms])
         # managed timestep object
         self.__ts = None
+        # to keep a consistent API between AtomGroup, Residue, ResidueGroup, Segment;
+        # access the list as _atoms (although atoms supports all list-like operations
+        ###self.atoms = self
+
+    @property
+    def atoms(self):
+        """AtomGroup of all atoms in this group"""
+        # cannot just return self because fails with inheritance from AtomGroup
+        if type(self) == AtomGroup:            
+            return self
+        return AtomGroup(self.__atoms)
+
+    @property
+    def _atoms(self):
+        """a immutable list of references to the atoms in the group"""
+        return self.__atoms
+    
+    # Universe pointer is important for Selections to work on groups
+    @property
+    def universe(self):
+        """The universe to which the atoms belong (read-only)."""
+        try:
+            return self._atoms[0].universe
+        except AttributeError:
+            return None
+
     def __len__(self):
         return self.numberOfAtoms()
     def __getitem__(self, item):
         if (numpy.dtype(type(item)) == numpy.dtype(int)) or (type(item) == slice):
-            return self.atoms[item]
-        else: return super(AtomGroup, self).__getitem__(item)
+            return self._atoms[item]
+        else: 
+            return super(AtomGroup, self).__getitem__(item)
     def __getattr__(self, name):
         # There can be more than one atom with the same name
-        atomlist = [atom for atom in self.atoms if name == atom.name]
+        atomlist = [atom for atom in self._atoms if name == atom.name]
         if len(atomlist) == 0: raise SelectionError("No atoms with name "+name)
-        elif len(atomlist) == 1: return atomlist[0]
-        else: return AtomGroup(atomlist)
+        elif len(atomlist) == 1: return atomlist[0]  # XXX: should this be commented out? 
+        else: return AtomGroup(atomlist)             # XXX: inconsistent....
     def __iter__(self):
-        return iter(self.atoms)
+        return iter(self._atoms)
     def __contains__(self, other):
         if hasattr(self, "_atom_cache"):
             return other in self._atom_cache
-        else: return other in self.atoms
+        else: 
+            return other in self._atoms
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
             raise TypeError('Can only concatenate AtomGroup (not "'+repr(other.__class__.__name__)+'") to AtomGroup')
-        if isinstance(other, AtomGroup): return AtomGroup(self.atoms + other.atoms)
-        else: return AtomGroup(self.atoms+[other])
+        if isinstance(other, AtomGroup): 
+            return AtomGroup(self._atoms + other.atoms)
+        else: return AtomGroup(self._atoms+[other])
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(self.numberOfAtoms())+' atoms>'
     def numberOfAtoms(self):
-        return len(self.atoms)
+        return len(self._atoms)
     def numberOfResidues(self):
         return len(self.residues)
     def numberOfSegments(self):
         return len(self.segments)
     def indices(self):
         if not hasattr(self,'_cached_indices'):
-            self._cached_indices = numpy.array([atom.number for atom in self.atoms])
+            self._cached_indices = numpy.array([atom.number for atom in self._atoms])
         return self._cached_indices
     @property
     def residues(self):
@@ -258,7 +280,7 @@ class AtomGroup(object):
         if not hasattr(self,'_cached_residues'):
             residues = []
             current_residue = None
-            for atom in self.atoms:
+            for atom in self._atoms:
                 if atom.residue != current_residue:
                     residues.append(atom.residue)
                 current_residue = atom.residue
@@ -276,7 +298,7 @@ class AtomGroup(object):
         if not hasattr(self,'_cached_segments'):
             segments = []
             current_segment = None
-            for atom in self.atoms:
+            for atom in self._atoms:
                 if atom.segment != current_segment:
                     segments.append(atom.segment)
                 current_segment = atom.segment
@@ -286,13 +308,16 @@ class AtomGroup(object):
         """Returns a list of segment ids (=segment names)."""
         return [s.name for s in self.segments]
     def masses(self):
+        """Array of atomic masses (as defined in the topology)"""
         if not hasattr(self, "_cached_masses"):
-            self._cached_masses = numpy.array([atom.mass for atom in self.atoms])
+            self._cached_masses = numpy.array([atom.mass for atom in self._atoms])
         return self._cached_masses
     def totalMass(self):
+        """Total mass of the selection (masses are taken from the topology or guessed)."""
         return numpy.sum(self.masses(), axis=0)
     def charges(self):
-        return numpy.array([atom.charge for atom in self.atoms])
+        """Array of partial charges of the atoms (as defined in the topology)"""
+        return numpy.array([atom.charge for atom in self._atoms])
     def totalCharge(self):
         """Sum of all partial charges (must be defined in topology)."""
         return numpy.sum(self.charges(), axis=0)
@@ -304,11 +329,13 @@ class AtomGroup(object):
         """Center of mass of the selection."""
         return numpy.sum(self.coordinates()*self.masses()[:,numpy.newaxis],axis=0)/self.totalMass()
     def radiusOfGyration(self):
+        """Radius of gyration."""
         masses = self.masses()
         recenteredpos = self.coordinates() - self.centerOfMass()
         rog_sq = numpy.sum(masses*numpy.sum(numpy.power(recenteredpos, 2), axis=1))/self.totalMass()
         return numpy.sqrt(rog_sq)
     def momentOfInertia(self):
+        """Tensor of inertia as 3x3 NumPy array."""
         # Convert to local coordinates
         recenteredpos = self.coordinates() - self.centerOfMass()
         masses = self.masses()
@@ -331,7 +358,7 @@ class AtomGroup(object):
     def principalAxes(self):
         """Calculate the principal axes from the moment of inertia.
 
-           e1,e2,e3 = selection.principalAxes()
+        e1,e2,e3 = AtomGroup.principalAxes()
 
         The eigenvectors are sorted by eigenvalue, i.e. the first one
         corresponds to the highest eigenvalue and is thus the first principal axes.
@@ -355,13 +382,21 @@ class AtomGroup(object):
     def translate(self, t):
         """Apply translation vector *t* to the selection's coordinates.
 
+        AtomGroup.translate(t)
+
+        AtomGroup.translate((A, B))
+
+        The method applies a translation to the AtomGroup from current
+        coordinates x to new coordinates x':
+
             x' = x + t
 
-        The translation can also be given as a tuple of two MDAnalysis
-        selections (selA, selB) so that the translation vector is computed as
-        the difference between the center of mass of B and A:
+        The translation can also be given as a tuple of two MDAnalysis objects
+        such as two selections (selA, selB), i.e. two :class:`AtomGroup`s, or
+        two :class:`Atom`s. The translation vector is computed as the
+        difference between the centers of geometry (centroid) of B and A:
 
-        t = selB.centerOfMass() - selA.centerOfMass()
+        t = B.centroid() - A.centroid()
         """
         try:
             sel1,sel2 = t
@@ -375,6 +410,8 @@ class AtomGroup(object):
 
     def rotate(self, R):
         """Apply a rotation matrix *R* to the selection's coordinates.
+
+        AtomGroup.rotate(R)
 
         *R* is a 3x3 orthogonal matrix that transforms x --> x':
 
@@ -390,7 +427,11 @@ class AtomGroup(object):
     def rotateby(self, angle, axis, point=None):
         """Apply a rotation to the selection's coordinates.
 
-        x' = R.(x-p) + p
+        AtomGroup.rotateby(angle,axis[,point])
+
+        The transformation from current coordinates x to new coordinates x' is
+
+          x' = R.(x-p) + p
 
         where R is the rotation by *angle* around the *axis* going through
         *point* p.
@@ -400,14 +441,14 @@ class AtomGroup(object):
              rotation angle in degrees
           *axis*
              rotation axis vector, a 3-tuple, list, or array, or a 2-tuple of
-             two MDAnalysis selections from which the axis is calculated as the
-             vector from the first the second center of geometry.
+             two MDAnalysis objects from which the axis is calculated as the
+             vector from the first to the second center of geometry.
           *point*
              point on the rotation axis; by default (``None``) the center of
              geometry of the selection is chosen, or, if *axis* is a tuple of
              selections, it defaults to the first point of the axis. *point*
-             can be a 3-tuple, list, or array or a MDAnalysis selection (in which
-             case its centerOfGeometry() is used).
+             can be a 3-tuple, list, or array or a MDAnalysis object (in which
+             case its :meth:`centroid` is used).
 
         :Returns: The 4x4 matrix which consists of the rotation matrix M[:3,:3]
                   and the translation vectort M[:3,3].
@@ -442,6 +483,8 @@ class AtomGroup(object):
     def selectAtoms(self, sel, *othersel):
         """Selection of atoms using the MDAnalysis selection syntax.
 
+        AtomGroup.selectAtoms(selection[,selection[,...]])
+
         .. SeeAlso:: :meth:`Universe.selectAtoms`
         """
         import Selection
@@ -459,7 +502,7 @@ class AtomGroup(object):
     def write(self,filename=None,format="PDB",filenamefmt="%(trjname)s_%(frame)d"):
         """Write AtomGroup to a file.
 
-        AG.write(filename,format='pdb')
+        AtomGroup.write(filename[,format])
         
         :Keywords:
           *filename*
@@ -593,7 +636,7 @@ class Residue(AtomGroup):
             a.residue = self
         # Should I cache the positions of atoms within a residue?
         if not Residue.__cache.has_key(name):
-            Residue.__cache[name] = dict([(a.name, i) for i, a in enumerate(self.atoms)])
+            Residue.__cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
     def phi_selection(self):
         """AtomGroup corresponding to the phi protein backbone dihedral C'-N-CA-C.
 
@@ -640,7 +683,7 @@ class Residue(AtomGroup):
 
     def __getitem__(self, item):
         if (type(item) == int) or (type(item) == slice):
-            return self.atoms[item]
+            return self._atoms[item]
         else: return self.__getattr__(item)
     def __getattr__(self, name):
         # There can only be one atom with a certain name
@@ -649,7 +692,7 @@ class Residue(AtomGroup):
         #    if (name == atom.name): return atom
         try:
             index = Residue.__cache[self.name][name]
-            return self.atoms[index]
+            return self._atoms[index]
         except KeyError: raise SelectionError("No atom in residue "+self.name+" with name "+name)
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self.name)+', '+repr(self.id)+'>'

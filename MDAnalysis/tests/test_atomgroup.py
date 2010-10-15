@@ -95,7 +95,7 @@ class TestAtomGroup(TestCase):
 
     def test_segments(self):
         u = self.universe
-        assert_equal(u.segments.s4AKE.atoms, u.selectAtoms('segid 4AKE').atoms, 
+        assert_equal(u.segments.s4AKE.atoms[:], u.selectAtoms('segid 4AKE').atoms[:], 
                 "Direct selection of segment 4AKE from segments failed.")
 
 class _WriteAtoms(TestCase):
