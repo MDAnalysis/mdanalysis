@@ -150,10 +150,24 @@ class Atom(object):
 class AtomGroup(object):
     """A group of atoms.
 
-    ag = universe.selectAtoms("...")
+    ag = universe.selectAtoms(atom-list)
 
     The AtomGroup contains a list of atoms; typically, a AtomGroup is generated
-    from a selection.
+    from a selection. It is build from any list-like collection of
+    :class:`Atom` instances.
+
+    Atoms can also be accessed in a Pythonic fashion by using the atom name as
+    an attribute. For instance, ::
+      
+       ag.CA
+
+    will provide a list of all CA atoms in the group. 
+
+    .. Note:: The name-attribute access to atoms is mainly meant for quick
+       interactive work. Thus it either returns a ingle :class:`Atom` if there
+       is only one matching atom, *or* a new :class:`AtomGroup` for multiple
+       matches. This makes it difficult to use the feature consistently in
+       scripts but is much better for interactive work.
 
     :Data:
         atoms
@@ -169,26 +183,8 @@ class AtomGroup(object):
         ts
             A :class:`~MDAnalysis.coordinates.base.Timestep` instance, which can
             be passed to a trjectory writer.
-
-    :Methods:
-        :meth:`AtomGroup.numberOfAtoms() - return the number of atoms in group
-        :meth:`AtomGroup.numberOfResidues() - return the number of residues in group
-        :meth:`AtomGroup.indices() - return indices into main atom array
-        :meth:`AtomGroup.resids() - return list of resids
-        :meth:`AtomGroup.resnames() - return list of resnames
-        :meth:`AtomGroup.masses() - array of masses
-        :meth:`AtomGroup.totalMass() - total mass
-        :meth:`AtomGroup.charges() - array of charges
-        :meth:`AtomGroup.totalCharge() - total charge
-        :meth:`AtomGroup.centerOfGeometry() - center of geometry
-        :meth:`AtomGroup.centerOfMass() - center of mass
-        :meth:`AtomGroup.radiusOfGyration() - radius of gyration
-        :meth:`AtomGroup.principleAxis() - returns the principle axis of rotation
-        :meth:`AtomGroup.bfactors() - returns B-factors (if they were loaded from a PDB)
-        c = :meth:`AtomGroup.coordinates() - return array of coordinates
-        
-        :meth:`AtomGroup.write() - write all atoms in the group to a file
-        :meth:`AtomGroup.write_selection() - write a selection for VMD, PyMOL, Gromacs or CHARMM
+        *atom-name*
+            Auto-generated attribute for each atom name encountered in the group.
     """
     def __init__(self, atoms):
         if len(atoms) < 1: raise NoDataError("No atoms defined for AtomGroup")
@@ -204,17 +200,17 @@ class AtomGroup(object):
             raise TypeError("atoms must be a Atom or a list of Atoms.")
         # If the number of atoms is very large, create a dictionary cache for lookup
         if len(atoms) > 10000:
-            self._atom_cache = dict([(x,None) for x in self.__atoms])
+            self._atom_cache = dict(((x,None) for x in self.__atoms))
         # managed timestep object
         self.__ts = None
-        # to keep a consistent API between AtomGroup, Residue, ResidueGroup, Segment;
-        # access the list as _atoms (although atoms supports all list-like operations
-        ###self.atoms = self
 
+    # AtomGroup.atoms is guaranteed to be a AtomGroupTo; keeps a consistent API
+    # between AtomGroup, Residue, ResidueGroup, Segment; access the list as
+    # _atoms (although atoms supports all list-like operations, too).
     @property
     def atoms(self):
         """AtomGroup of all atoms in this group"""
-        # cannot just return self because fails with inheritance from AtomGroup
+        # Cannot just return self because fails with inheritance from AtomGroup
         if type(self) == AtomGroup:            
             return self
         return AtomGroup(self.__atoms)
@@ -244,8 +240,8 @@ class AtomGroup(object):
         # There can be more than one atom with the same name
         atomlist = [atom for atom in self._atoms if name == atom.name]
         if len(atomlist) == 0: raise SelectionError("No atoms with name "+name)
-        elif len(atomlist) == 1: return atomlist[0]  # XXX: should this be commented out? 
-        else: return AtomGroup(atomlist)             # XXX: inconsistent....
+        elif len(atomlist) == 1: return atomlist[0]  # XXX: keep this, makes more sense for names
+        else: return AtomGroup(atomlist)             # XXX: but inconsistent (see residues and Issue 47)
     def __iter__(self):
         return iter(self._atoms)
     def __contains__(self, other):
@@ -257,8 +253,9 @@ class AtomGroup(object):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
             raise TypeError('Can only concatenate AtomGroup (not "'+repr(other.__class__.__name__)+'") to AtomGroup')
         if isinstance(other, AtomGroup): 
-            return AtomGroup(self._atoms + other.atoms)
-        else: return AtomGroup(self._atoms+[other])
+            return AtomGroup(self._atoms + other._atoms)
+        else: 
+            return AtomGroup(self._atoms+[other])
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(self.numberOfAtoms())+' atoms>'
     def numberOfAtoms(self):

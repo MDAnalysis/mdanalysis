@@ -349,6 +349,7 @@ class TestDCDCorrel(_TestDCD):
         all = self.universe.atoms
         ca = self.universe.s4AKE.CA
         ca_termini =  mda.core.AtomGroup.AtomGroup([ca[0], ca[-1]])
+        # note that this is not quite phi... HN should be C of prec. residue
         phi151 = self.universe.selectAtoms('resid 151').selectAtoms('name HN', 'name N', 'name CA', 'name CB')
         C.addTimeseries(TS.Atom('v', ca_termini))       # 0
         C.addTimeseries(TS.Bond(ca_termini))            # 1

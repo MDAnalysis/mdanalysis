@@ -15,12 +15,12 @@ class TestSelections(TestCase):
     def test_segid(self):
         sel = self.universe.selectAtoms('segid 4AKE')
         assert_equal(sel.numberOfAtoms(), 3341, "failed to select segment 4AKE")
-        assert_equal(sel.atoms, self.universe.s4AKE.atoms, 
+        assert_equal(sel.atoms[:], self.universe.s4AKE.atoms[:], 
                      "selected segment 4AKE is not the same as auto-generated segment s4AKE")
     def test_protein(self):
         sel = self.universe.selectAtoms('protein')
         assert_equal(sel.numberOfAtoms(), 3341, "failed to select protein")
-        assert_equal(sel.atoms, self.universe.s4AKE.atoms, 
+        assert_equal(sel.atoms[:], self.universe.s4AKE.atoms[:], 
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
     def test_backbone(self):
@@ -41,7 +41,7 @@ class TestSelections(TestCase):
         sel = self.universe.selectAtoms('resname LEU')
         assert_equal(sel.numberOfAtoms(), 304, "Failed to find all 'resname LEU' atoms.")
         assert_equal(sel.numberOfResidues(), 16, "Failed to find all 'resname LEU' residues.")
-        assert_equal(sel.atoms, self.universe.s4AKE.LEU.atoms,
+        assert_equal(sel.atoms[:], self.universe.s4AKE.LEU.atoms[:],
                      "selected 'resname LEU' atoms are not the same as aut-generated s4AKE.LEU")
 
     def test_name(self):
@@ -89,3 +89,10 @@ class TestSelections(TestCase):
 
     # TODO:
     # test for checking ordering and multiple comma-separated selections
+
+    def test_concatenated_selection(self):
+        E151 = self.universe.s4AKE.r151
+        # note that this is not quite phi... HN should be C of prec. residue
+        phi151 = E151.selectAtoms('name HN', 'name N', 'name CA', 'name CB')
+        assert_equal(len(phi151), 4)
+        assert_equal(phi151[0].name, 'HN', "wrong ordering in selection, should be HN-N-CA-CB") 
