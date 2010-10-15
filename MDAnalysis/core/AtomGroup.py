@@ -82,8 +82,7 @@ class Atom(object):
            The current position (as a numpy array) of this atom
     """
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", 
-                 "mass", "charge", "residue", "segment", "bonds", "__universe", 
-                 "acceptor", "donor")
+                 "mass", "charge", "residue", "segment", "bonds", "__universe",)
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
                  residue=None, segment=None):
@@ -97,8 +96,6 @@ class Atom(object):
         self.segment = segment  # typically patched in later
         self.mass = mass
         self.charge = charge
-        self.donor = None     # H-bond properties (filled in later)
-        self.acceptor = None
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
                repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'
