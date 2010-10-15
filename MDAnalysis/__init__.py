@@ -134,6 +134,9 @@ class SelectionError(Exception):
 class NoDataError(ValueError):
     """Raised when empty input is not allowed."""
 
+class SelectionWarning(Warning):
+    """Warning indicating a possible problem with a selection."""
+
 # Bring some often used objects into the current namespace
 from core import Timeseries
 from core.AtomGroup import Universe, asUniverse

@@ -1,7 +1,7 @@
 # $Id$
 """
-:mod:`MDAnalysis.core.AtomGroup` --- AtomGroup Hierarchy
-========================================================
+:mod:`MDAnalysis.core.AtomGroup` --- Basic Organization of the library
+======================================================================
 
 The most important data structure in MDAnalysis is the
 :class:`AtomGroup`, which contains :class:`Atom` instances.
@@ -9,13 +9,34 @@ The most important data structure in MDAnalysis is the
 A :class:`Universe` is the user-visible entry point and collects all
 information needed to analyze a structure or a whole trajectory.
 
-**Class Hierarchy**::
-    AtomGroup -> ResidueGroup  -> Segment
-              -> Residue
-    Atom
-    Universe
+Segments and Residues are a way to refer to a collection of atoms. By
+convention, a :class:`Residue` is a single amino acid, or a water
+molecule, ion, or ligand. A :class:`Segment` is a collection of
+residues such as a whole protein or a chain in a protein or all the
+water in the system. 
 
-The important classes and functions:
+Class Hierarchy
+---------------
+
+A :class:`Universe` contains Segments, which contain Residues, which
+contain Atoms; all containers are derived from :class:`AtomGroup`, and
+thus one can always analyze them as a collection of atoms, independent
+of the hierarchical level.
+
+    Segment > Residue > Atom
+
+Depending on the use case, it can be more convenient to access data
+on, for instance, the basis of residues than atoms, or to write out
+individual chains (segments) of a protein. MDAnalysis simply provides
+access to these groupings and keeps track of where an atom
+belongs. Each object provides three attributes (:attr:`atoms`,
+:attr:`residues` or :attr:`~Atom.residue`, :attr:`segments` or
+:attr:`~Atom.segment`) that give access to the tiers in the hierarchy
+that the object belongs to.
+
+
+Classes and functions
+---------------------
 
 .. autoclass:: Universe
    :members:
@@ -26,33 +47,54 @@ The important classes and functions:
 .. autoclass:: Residue
 .. autoclass:: ResidueGroup
 .. autoclass:: Segment
+.. autoclass:: SegmentGroup
 
 .. autofunction:: asUniverse
 .. autoexception:: SelectionError
+.. autoexception:: SelectionWarning
 """
 import warnings
 
 import numpy
-from MDAnalysis import SelectionError, NoDataError
+from MDAnalysis import SelectionError, NoDataError, SelectionWarning
 
 class Atom(object):
     """A single atom definition
 
-    Data: number, segid, resid, resname, name, type, mass, charge
+    a = Atom()
 
-    Methods:
-        a = Atom()
-        a.pos     - The current position (as a numpy array) of this atom
+    :Data: 
+        number
+          atom number
+        segid
+          name of the segment
+        resid
+           residue number
+        resname
+           residue name
+        residue
+           :class:`Residue` object containing the atoms
+        name
+        type
+        mass
+        charge
+        :attr:`~Atom.pos`
+           The current position (as a numpy array) of this atom
     """
-    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", "mass", "charge", "residue", "segment", "bonds", "__universe", "acceptor", "donor")
+    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", 
+                 "mass", "charge", "residue", "segment", "bonds", "__universe", 
+                 "acceptor", "donor")
 
-    def __init__(self, number, name, type, resname, resid, segid, mass, charge):
+    def __init__(self, number, name, type, resname, resid, segid, mass, charge,
+                 residue=None, segment=None):
         self.number = number
         self.name = name
         self.type = type
         self.resname = resname
         self.resid = resid
+        self.residue = residue  # typically patched in later
         self.segid = segid
+        self.segment = segment  # typically patched in later
         self.mass = mass
         self.charge = charge
         self.donor = None     # H-bond properties (filled in later)
@@ -220,7 +262,7 @@ class AtomGroup(object):
                 if atom.residue != current_residue:
                     residues.append(atom.residue)
                 current_residue = atom.residue
-            self._cached_residues = residues
+            self._cached_residues = ResidueGroup(residues)
         return self._cached_residues
     def resids(self):
         """Returns a list of residue numbers."""
@@ -238,7 +280,7 @@ class AtomGroup(object):
                 if atom.segment != current_segment:
                     segments.append(atom.segment)
                 current_segment = atom.segment
-            self._cached_segments = segments
+            self._cached_segments = SegmentGroup(segments)
         return self._cached_segments
     def segids(self):
         """Returns a list of segment ids (=segment names)."""
@@ -623,7 +665,7 @@ class ResidueGroup(AtomGroup):
           >>> print(u.s4AKE.MET.CA)  # C-alpha of all Met
           <AtomGroup with 6 atoms>
 
-    :Data: :attr:`ResidueGroup.residues`
+    :Data: :attr:`ResidueGroup._residues`
 
     """
     def __init__(self, residues):
@@ -692,25 +734,70 @@ class Segment(ResidueGroup):
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self.name)+'>'
 
+class SegmentGroup(ResidueGroup):
+    """A group of segments.
+
+    Pythonic access to segments:
+      - Using a segid as attribute returns the segment. Because
+        of python language rule, any segid starting with a non-letter 
+        character is prefixed with 's', thus '4AKE' --> 's4AKE'.
+        Example:
+          >>> from MDAnalysis.tests.datafiles import PSF,DCD
+          >>> u = Universe(PSF,DCD)
+          >>> print(u.atoms.segments.s4AKE)  # segment 4AKE
+          <AtomGroup with 3314 atoms>
+       - Indexing the group returns the appropriate segment.
+
+    :Data: :attr:`SegmentGroup._segments`
+
+    """
+    def __init__(self, segments):
+        """Initialize the SegmentGroup with a list of :class:`Segment` instances."""
+        self._segments = segments
+        residues = []
+        for s in segments:
+            residues.extend(s.residues)
+        super(SegmentGroup, self).__init__(residues)
+    def __iter__(self):
+        return iter(self._segments)
+    def __len__(self):
+        return len(self._segments)
+    def __getitem__(self, item):
+        if (type(item) == int) or (type(item) == slice):
+            return self._segments[item]
+        else: raise NotImplementedError()
+    def __getattr__(self, attr):
+        if attr.startswith('s') and attr[1].isdigit():
+            attr = attr[1:]  # sNxxx only used for python, the name is stored without s-prefix
+        seglist = [segment for segment in self._segments if segment.name == attr]
+        if len(seglist) == 0:
+            return super(SegmentGroup, self).__getattr__(attr)
+        if len(seglist) > 1:
+            warnings.warn("SegmentGroup: Multiple segments with the same name %r; only the "
+                          "FIRST one is returned." % attr, category=SelectionWarning)
+        return seglist[0]
+    def __repr__(self):
+        return '<'+self.__class__.__name__+' '+repr(self._segments)+'>'
+
+
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
 
     Built from a psf, pdb or gro file.
 
     Attributes: 
-       - bonds, angles, dihedrals, impropers, donors, acceptors [TODO]
-       - :attr:`Universe.coord`: current coordinate array for all the atoms in the universe
        - :attr:`Universe.trajectory`: currently loaded trajectory reader; 
-          :attr:`Universe.trajectory.ts` is the current time step
+         :attr:`Universe.trajectory.ts` is the current time step
        - :attr:`Universe.dimensions`: current system dimensions (simulation unit cell, if 
          set in the trajectory)
+       - bonds, angles, dihedrals, impropers (low level access through :attr:`Universe._psf`)
 
     Methods:
        - m = Universe(psffile, trajectory)          # read system from file(s)
        - m = Universe(pdbfile)                      # read atoms and coordinates from PDB or GRO
        - m = Universe(psffile, [traj1, traj2, ...]) # read from a list of trajectories
        - m.load_new(trajectory)                     # read from a new trajectory file
-       - m.selectAtoms(...)                         # select atoms using similar selection string as charmm
+       - m.selectAtoms(...)                         # select atoms using similar selection string as CHARMM
 
     .. Note:: Only a single-frame PDB file is supported; use DCDs or XTC/TRR for
               trajectories. If a PDB is used instead of a PSF then
@@ -721,13 +808,13 @@ class Universe(object):
 
         :Arguments:
           *topologyfile*
-             A Charmm/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to define the
+             A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to define the
              list of atoms. If the file includes bond information, partial
              charges, atom masses, ... then these data will be available to
              MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
              topology) is always required.
           *coordinatefile*
-             A trajectory (such as CHARMM DCD, Gromacs XTC/TRR/GRO, XYZ, ZYZ.bz2) or a PDB that
+             A trajectory (such as CHARMM DCD, Gromacs XTC/TRR/GRO, XYZ, XYZ.bz2) or a PDB that
              will provide coordinates, possibly multiple frames.
              If a **list of filenames** is provided then they are sequentially read and appear
              as one single trajectory to the Universe. The list can contain different file
@@ -776,6 +863,11 @@ class Universe(object):
                 segments[newsegname] = segments[seg]
                 del segments[seg]
         self.__dict__.update(segments)
+        # convenience access to residues and segments (these are managed attributes
+        # (properties) and are built on the fly or read from a cache) -- does this 
+        # create memory problems?
+        self.segments = self.atoms.segments
+        self.residues = self.atoms.residues
 
         #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
         # Let atoms access the universe

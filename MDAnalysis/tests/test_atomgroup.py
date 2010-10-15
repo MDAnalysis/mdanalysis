@@ -8,6 +8,28 @@ from nose.plugins.attrib import attr
 
 import tempfile
 
+class TestAtom(TestCase):
+    """Tests of Atom."""
+    def setUp(self):
+        """Set up the standard AdK system in implicit solvent."""
+        self.universe = MDAnalysis.Universe(PSF, DCD)
+        self.atom = self.universe.atoms[1000]  # Leu67:CG
+    
+    def test_attributes(self):
+        u = self.universe
+        a = self.atom
+        assert_equal(a.name, 'CG')
+        assert_equal(a.resname, 'LEU')
+        assert_almost_equal(a.pos, array([  3.94543672, -12.4060812 ,  -7.26820087], dtype=float32))
+        asel =  u.selectAtoms('atom 4AKE 67 CG').atoms[0]
+        assert_equal(a, asel)
+
+    def test_hierarchy(self):
+        u = self.universe
+        a = self.atom
+        assert_equal(a.segment, u.s4AKE)
+        assert_equal(a.residue, u.residues[66])
+
 class TestAtomGroup(TestCase):
     """Tests of AtomGroup; selections are tested separately."""
     def setUp(self):
@@ -66,6 +88,15 @@ class TestAtomGroup(TestCase):
 
     # add new methods here...
 
+    def test_residues(self):
+        u = self.universe
+        assert_equal(u.residues[100].atoms[:],  u.selectAtoms('resname ILE and resid 101')[:],
+                     "Direct selection from residue group does not match expected I101.")
+
+    def test_segments(self):
+        u = self.universe
+        assert_equal(u.segments.s4AKE.atoms, u.selectAtoms('segid 4AKE').atoms, 
+                "Direct selection of segment 4AKE from segments failed.")
 
 class _WriteAtoms(TestCase):
     """Set up the standard AdK system in implicit solvent."""
@@ -180,3 +211,4 @@ def test_generated_residueselection():
     met = universe.s4AKE.MET
     assert_(isinstance(met, MDAnalysis.core.AtomGroup.ResidueGroup),
             "Met selection does not return a ResidueGroup")
+
