@@ -54,10 +54,15 @@ The rules for this file:
 	  access to the list of residue/segment objects of the group 
 	* new exception NoDataError; raised when creation of an empty
 	  AtomGroup is attempted
+        * consistent representation of the Segment > Residue > Atom
+	  hierarchy: all classes related to AtomGroup have the
+	  attributes 'atoms', 'residues', 'segments' which provide
+	  access to groups of the corresponding objects
 	* improvements to Residue, ResidueGroup and Segment classes 
 	  - documented accessing residues from Segment as
 	    Segment.r<resid>; resid is 1-based -- BREAKS OLD CODE 
-	    that relied on this being 0-based  
+	    that relied on this being 0-based
+          - added SegmentGroup class
 	  - can write from Residue, ResidueGroup and Segment (Issue 46)
 	  - residue name attribute of a Segment now consistently
 	    returns a ResidueGroup (Issue 47) -- MIGHT BREAK OLD CODE
