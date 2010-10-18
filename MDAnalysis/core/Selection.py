@@ -174,6 +174,9 @@ class PointSelection(Selection):
         sys_indices = numpy.array([a.number for a in self._group_atoms_list])
         sys_coor = Selection.coord[sys_indices]
         ref_coor = self.ref[numpy.newaxis,...]
+        # Fix: Arrarys need to be converted to dtype=float32 to work with distance_array
+        sys_coor = numpy.asarray(sys_coor , dtype=numpy.float32)
+        ref_coor = numpy.asarray(ref_coor , dtype=numpy.float32)
         if self.periodic:
             box = group.dimensions[:3]
         else:

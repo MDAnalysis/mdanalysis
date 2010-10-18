@@ -1019,10 +1019,10 @@ class Universe(object):
            point
               selects all atoms within a sphere of given radius around point::
 
-                point distance x y z
+                point x y z distance
 
-              Make sure coordinate is separated by spaces, i.e. "point 3.5
-              5.0 5.0 5.0" selects all atoms within 3.5 Angstroms of the
+              Make sure coordinate is separated by spaces, i.e. "point 5.0
+              5.0 5.0 3.5" selects all atoms within 3.5 Angstroms of the
               coordinate (5.0, 5.0, 5.0)
 
            prop
