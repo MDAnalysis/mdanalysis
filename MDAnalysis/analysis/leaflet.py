@@ -21,6 +21,16 @@ comparing the median of the centres of masses, or for a vesicle by
 comparing distances from the centre of geometry, but neither is
 implemented at the moment.
 
+See example scripts in the ``examples/`` directory on how to use
+:class:`LeafletFinder`. The function :func:`optimize_cutoff` implements a
+(slow) heuristic method to find the best cut off for the LeafletFinder
+algorithm.
+
+.. autoclass:: LeafletFinder
+   :methods:
+
+.. autofunction:: optimize_cutoff
+
 """
 from __future__ import with_statement
 

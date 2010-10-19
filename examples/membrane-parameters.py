@@ -1,21 +1,42 @@
 #!/usr/bin/env python
-# Example script, part of MDAnalysis
 """
 :Author: Oliver Beckstein
 :Year: 2010
 :Copyright: GNU Public License v3
 
-MDAnalysis example: Lipid bilayer composition
-=============================================
+MDAnalysis example: Lipid bilayer position and thickness
+========================================================
 
-Find the leaflets of a membrane system and print a breakdown of the
-counts of the different residue names in each leaflet.
+This example shows how to use the
+:class:`MDAnalysis.analysis.leaflet.LeafletFinder` to determine the
+centre of a bilayer and its approximate thickness of a approximately planar bilayer.
+
+.. Note:: This is a very promitive script. Depending on what you want
+   to know and what your system looks like you will have to work
+   significantly harder to compute appropriate numbers. This approach
+   is not generally recommended for quantitative work!
+
+Algorithm
+---------
+
+We compute the z coordinates of the centroids (center of geometry) of
+the upper and lower leaflet, named *c1z* and *c2z*. Leaflets are
+identified through the phosphate headgroup atoms.  The z-coordinate of
+the **center of the bilayer** is approximately
+
+  z_mem = (c1z + c2z)/2
+
+The approximate thickness is
+
+  t_mem = abs(c1z - c2z)
+ 
 """
 
 usage = """%%prog [options] structure-file
 
-Calculate the lipid composition in the two leaflets of the membrane
-stored in *structure-file*.
+Calculate the approximate thickness and z-coordinate of the center of
+a planar lipid bilayer. The bilayer normal is assumed to be roughly
+parallel to the z-axis.
 
 The default selection string (--headgroup-selection) is suitable for
 coarse-grained bilayers including phospholipids and
@@ -23,10 +44,21 @@ cholesterol. Adjust it so that it selects one atom from each head
 group.
 """
 
+import numpy
 import MDAnalysis
 from MDAnalysis.analysis.leaflet import LeafletFinder, optimize_cutoff
 
-import numpy
+def get_membrane_parameters(universe, leafletfinder):
+    L = leafletfinder
+
+    L0 = L.group(0)
+    L1 = L.group(1)
+
+    parameters = {}
+    parameters['thickness'] = numpy.abs((L1.centroid() - L0.centroid())[2])   # z coordinate
+    parameters['zmem'] = 0.5*(L1.centroid() + L0.centroid())[2]   # z coordinate
+    return parameters
+
 
 if __name__ == "__main__":
     import errno
@@ -66,7 +98,6 @@ if __name__ == "__main__":
     #       combined with fingerprinting in the future to do this automagically;
     #       Hard coded for now.
     
-
     options, args = parser.parse_args()
     
     try:
@@ -75,7 +106,7 @@ if __name__ == "__main__":
         raise ValueError("Need structure file (pdb, gro, ...) as input")
 
     if not os.path.exists(structure):
-        raise IOError(errno.ENOENT, "PQR file not found", structure)
+        raise IOError(errno.ENOENT, "Structure file not found", structure)
 
     if not options.topology:
         options.topology = structure
@@ -95,27 +126,11 @@ if __name__ == "__main__":
         print "# Using fixed cutoff=%(cutoff).1f A" % vars()
 
     LF = LeafletFinder(u, options.selection, cutoff=cutoff, pbc=options.pbc)
-    
-    print "# group sizes = %r " % LF.sizes()
-    
-    # two leaflets
-    def print_line(symbol="-"):
-        print "#" + (12+5) * symbol
-    print_line("=")
-    print "#%2s  %5s  %6s" % ("ll", "resn", "count")
-    print_line("=")
+    p = get_membrane_parameters(u, LF)
 
-    for groupindex in xrange(len(LF.components)):
-        resnames = [a.resname for a in LF.groups(groupindex)]
-        # there CERTAINLY is a better way to count occurrences than this...
-        keys = numpy.unique(resnames)
-        for k in keys:
-            count = resnames.count(k)
-            print " %2d  %5s  %6d" % (groupindex,k,count)
-        total = LF.sizes()[groupindex]
-        if total > 1:
-            print_line()
-            print "#%2d  %5s  %6d" % (groupindex, '', total)
-        print
+    # show results
+    print "#" + 60*"="
+    print "thickness tmem = %(thickness).2f A" % p
+    print "center    zmem = %(zmem).2f A" % p
+    print "#" + 60*"="
 
-    
