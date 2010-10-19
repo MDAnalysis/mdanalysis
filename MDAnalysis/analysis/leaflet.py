@@ -36,11 +36,20 @@ class LeafletFinder(object):
     The components of the graph are stored in the list
     :attr:`LeafletFinder.components`; the atoms in each component are numbered
     consecutively, starting at 0. To obtain the atoms in the input structure
-    use :meth:`LeafletFinder.atoms`::
+    use :meth:`LeafletFinder.groups`::
 
        L = LeafletFinder(PDB, 'name P*')
-       leaflet0 = L.atoms(0)
-       leaflet1 = L.atoms(1)
+       leaflet0 = L.groups(0)
+       leaflet1 = L.groups(1)
+
+    The residues can be accessed through the standard MDAnalysis mechanism::
+
+       leaflet0.residues
+
+    provides a :class:`~MDAnalysis.core.AtomGroup.ResidueGroup`
+    instance. Similarly, all atoms in the first leaflet are then ::
+
+       leaflet0.residues.atoms
     """
 
     def __init__(self, universe, selectionstring, cutoff=15.0, pbc=False):
@@ -111,15 +120,37 @@ class LeafletFinder(object):
         """Dict of component index with size of component."""
         return dict(((idx,len(component)) for idx,component in enumerate(self.components)))
 
-    def atoms(self, component_index):
+    def groups(self, component_index=None):
+        """Return a :class:`MDAnalysis.core.AtomGroup.AtomGroup` for *component_index*.
+
+        If no argument is supplied, then a list of all leaflet groups is returned.
+        
+        .. SeeAlso:: :meth:`LeafletFinder.group` and meth:`LeafletFinder.groups_iter`
+        """
+        if component_index is None:
+            return list(self.groups_iter())
+        else:
+            return self.group(component_index)
+    
+    def group(self, component_index):
         """Return a :class:`MDAnalysis.core.AtomGroup.AtomGroup` for *component_index*."""
         # maybe cache this?
         return MDAnalysis.core.AtomGroup.AtomGroup(
             [self.selection[i] for i in self.components[component_index]])
 
-    def atoms_iter(self):
+    def atoms(self, component_index):
+        """Return a :class:`MDAnalysis.core.AtomGroup.AtomGroup` for *component_index*.
+
+        .. warning:: **Deprecated**. Will be removed for 0.7.0. 
+                     Use :meth:`LeafletFinder.groups` instead.
+        """
+        warnings.warn("LeafletFinder.atoms() is deprecated and will be removed in 0.7.0."
+                      "Use LeafletFinder.groups() instead.", category=DeprecationWarning)
+        return self.group(component_index)
+
+    def groups_iter(self):
         for component_index in xrange(len(self.components)):
-            yield self.atoms(component_index)
+            yield self.group(component_index)
 
     def write_selection(self, filename, **kwargs):
         """Write selections for the leaflets to *filename*.
@@ -136,9 +167,14 @@ class LeafletFinder(object):
             filename, mode=kwargs.pop('mode', 'wa'), 
             preamble="leaflets based on selection=%(selectionstring)r cutoff=%(cutoff)f\n" % vars(self), 
             **kwargs)
-        for i, ag in enumerate(self.atoms_iter()):
+        for i, ag in enumerate(self.groups_iter()):
             name = "leaflet_%d" % (i+1)
             writer.write(ag, name=name)
+
+    def __repr__(self):
+        return "<LeafletFinder(%r, cutoff=%.1f A) with %d atoms in %d groups>" % \
+            (self.selectionstring, self.cutoff, self.selection.numberOfAtoms(),
+             len(self.components))
 
 
 def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5, 
