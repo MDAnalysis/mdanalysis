@@ -131,7 +131,15 @@ class IObase(object):
         t *= f
         return t
 
+    def close(self):
+        """Close the trajectory file."""
+        self.close_trajectory()
+
     def close_trajectory(self):
+        """Specific implementation of trajectory closing."""
+        # close_trajectory() was the pre-0.7.0 way of closing a 
+        # trajectory; it is being kept around but user code should
+        # use close() and not rely on close_trajectory()
         pass
 
 class Reader(IObase):

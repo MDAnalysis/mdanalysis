@@ -39,6 +39,7 @@ History
 - 2010-04-30 Draft [orbeckst]
 - 2010-08-20 added single frame writers to API [orbeckst]
 - 2010-10-09 added write() method to Writers [orbeckst]
+- 2010-10-19 use close() instead of close_trajectory() [orbeckst]
 
 
 Registry
@@ -144,7 +145,7 @@ The following methods must be implemented in a Reader class.
      allow iteration from beginning to end::
         for ts in trajectory:
             print ts.frame
- close_trajectory()
+ close()
      close the file and cease I/O
  __del__()
      ensure that the trajectory is closed

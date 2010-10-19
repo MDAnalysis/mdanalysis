@@ -623,7 +623,7 @@ class _GromacsWriter(TestCase):
         W = self.Writer(self.outfile, t.numatoms, delta=t.delta, step=t.skip_timestep)
         for ts in self.universe.trajectory:
             W.write_next_timestep(ts)
-        W.close_trajectory()
+        W.close()
 
         uw = mda.Universe(GRO, self.outfile)
 
