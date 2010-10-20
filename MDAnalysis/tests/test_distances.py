@@ -10,7 +10,7 @@ from MDAnalysis.tests.datafiles import PSF,DCD
 class TestDistanceArrayDCD(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
-        self.dcd = self.universe.trajectory
+        self.trajectory = self.universe.trajectory
         self.ca = self.universe.selectAtoms('name CA')
         # reasonable precision so that tests succeed on 32 and 64 bit machines
         # (the reference values were obtained on 64 bit)
@@ -22,13 +22,15 @@ class TestDistanceArrayDCD(TestCase):
 
     def tearDown(self):
         del self.universe
+        del self.trajectory
+        del self.ca
 
     @attr('issue')    
     def test_simple(self):
         U = self.universe
-        self.dcd.rewind()
+        self.trajectory.rewind()
         x0 = U.atoms.coordinates(copy=True)
-        self.dcd[10]
+        self.trajectory[10]
         x1 = U.atoms.coordinates(copy=True)
         d = MDAnalysis.core.distances.distance_array(x0, x1)
         assert_equal(d.shape, (3341, 3341), "wrong shape (should be (Natoms,Natoms))")
@@ -39,9 +41,9 @@ class TestDistanceArrayDCD(TestCase):
 
     def test_outarray(self):
         U = self.universe
-        self.dcd.rewind()
+        self.trajectory.rewind()
         x0 = U.atoms.coordinates(copy=True)
-        self.dcd[10]
+        self.trajectory[10]
         x1 = U.atoms.coordinates(copy=True)
         natoms = len(U.atoms)
         d = np.zeros((natoms, natoms), np.float64)
@@ -55,9 +57,9 @@ class TestDistanceArrayDCD(TestCase):
     def test_periodic(self):
         # boring with the current dcd as that has no PBC
         U = self.universe
-        self.dcd.rewind()
+        self.trajectory.rewind()
         x0 = U.atoms.coordinates(copy=True)
-        self.dcd[10]
+        self.trajectory[10]
         x1 = U.atoms.coordinates(copy=True)
         d = MDAnalysis.core.distances.distance_array(x0, x1, box=U.coord.dimensions)
         assert_equal(d.shape, (3341, 3341), "should be square matrix with Natoms entries")
@@ -70,17 +72,19 @@ class TestDistanceArrayDCD(TestCase):
 class TestSelfDistanceArrayDCD(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
-        self.dcd = self.universe.trajectory
+        self.trajectory = self.universe.trajectory
         self.ca = self.universe.selectAtoms('name CA')
         # see comments above on precision
         self.prec = 5
 
     def tearDown(self):
         del self.universe
-    
+        del self.trajectory
+        del self.ca
+
     def test_simple(self):
         U = self.universe
-        self.dcd.rewind()
+        self.trajectory.rewind()
         x0 = U.atoms.coordinates(copy=True)
         d = MDAnalysis.core.distances.self_distance_array(x0)
         N = 3341 * (3341 - 1) / 2
@@ -92,7 +96,7 @@ class TestSelfDistanceArrayDCD(TestCase):
 
     def test_outarray(self):
         U = self.universe
-        self.dcd.rewind()
+        self.trajectory.rewind()
         x0 = U.atoms.coordinates(copy=True)
         natoms = len(U.atoms)
         N = natoms*(natoms-1) / 2
@@ -107,7 +111,7 @@ class TestSelfDistanceArrayDCD(TestCase):
     def test_periodic(self):
         # boring with the current dcd as that has no PBC
         U = self.universe
-        self.dcd.rewind()
+        self.trajectory.rewind()
         x0 = U.atoms.coordinates(copy=True)
         natoms = len(U.atoms)
         N = natoms*(natoms-1) / 2

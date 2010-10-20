@@ -21,6 +21,7 @@ class TestContactMatrix(TestCase):
 
     def tearDown(self):
         del self.universe
+        del self.dcd
 
     def test_numpy(self):
         U = self.universe

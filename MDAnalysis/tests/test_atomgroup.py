@@ -18,6 +18,7 @@ class TestAtom(TestCase):
 
     def tearDown(self):
         del self.universe
+        del self.atom
     
     def test_attributes(self):
         u = self.universe

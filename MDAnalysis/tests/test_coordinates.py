@@ -180,6 +180,7 @@ class TestGROReader(TestCase, RefAdK):
 
     def tearDown(self):
         del self.universe
+        del self.ts
 
     def test_load_gro(self):
         U = self.universe
@@ -224,6 +225,8 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
 
     def tearDown(self):
         mda.core.flags['convert_gromacs_lengths'] = True  # default
+        del self.universe
+        del self.ts
 
     def test_coordinates(self):
         # note: these are the native coordinates in nm; for the test to succeed:
@@ -262,13 +265,10 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
         
 
 class TestPDBReaderBig(TestCase, RefAdK):
-    # do 'slow' decorators work on setUp?? ... apparently
-    @dec.slow
     def setUp(self):
         self.universe = mda.Universe(PDB)
         self.prec = 6
 
-    @dec.slow
     def tearDown(self):
         del self.universe
 
@@ -325,6 +325,8 @@ class _TestDCD(TestCase):
 
     def tearDown(self):
         del self.universe
+        del self.dcd
+        del self.ts
 
 class TestDCDReader(_TestDCD):
     def test_rewind_dcd(self):
@@ -384,7 +386,8 @@ class TestDCDCorrel(_TestDCD):
         C.compute(self.dcd)
 
     def tearDown(self):
-        del self.universe
+        del self.collection
+        super(TestDCDCorrel, self).tearDown()
 
     def test_correl(self):
         assert_equal(len(self.collection), 10, "Correl: len(collection)")
@@ -594,6 +597,8 @@ class _XDRNoConversion(TestCase):
         self.ts = self.universe.trajectory.ts
     def tearDown(self):
         mda.core.flags['convert_gromacs_lengths'] = True  # default
+        del self.universe
+        del self.ts
 
     @dec.slow
     def test_coordinates(self):
@@ -637,6 +642,7 @@ class _GromacsWriter(TestCase):
         except:
             pass
         del self.universe
+        del self.Writer
 
     @dec.slow
     @attr('issue')    
