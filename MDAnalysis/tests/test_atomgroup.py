@@ -1,6 +1,7 @@
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PSF,DCD
 import MDAnalysis.core.AtomGroup
+from MDAnalysis.core.AtomGroup import Atom, AtomGroup
 
 from numpy.testing import *
 from numpy import array, float32
@@ -90,13 +91,42 @@ class TestAtomGroup(TestCase):
 
     def test_residues(self):
         u = self.universe
-        assert_equal(u.residues[100].atoms[:],  u.selectAtoms('resname ILE and resid 101')[:],
+        assert_equal(u.residues[100]._atoms,  
+                     u.selectAtoms('resname ILE and resid 101')._atoms,
                      "Direct selection from residue group does not match expected I101.")
 
     def test_segments(self):
         u = self.universe
-        assert_equal(u.segments.s4AKE.atoms[:], u.selectAtoms('segid 4AKE').atoms[:], 
-                "Direct selection of segment 4AKE from segments failed.")
+        assert_equal(u.segments.s4AKE._atoms, 
+                     u.selectAtoms('segid 4AKE')._atoms, 
+                     "Direct selection of segment 4AKE from segments failed.")
+
+    def test_index_integer(self):
+        u = self.universe
+        a = u.atoms[100]
+        assert_(isinstance(a, Atom), "integer index did not return Atom")
+
+    def test_index_slice(self):
+        u = self.universe
+        a = u.atoms[100:200:10]
+        assert_(isinstance(a, AtomGroup), "slice index did not return AtomGroup")
+
+    def test_index_slice_empty(self):
+        u = self.universe
+        def do_empty_selection():
+            return u.atoms[0:0]
+        # at the moment, empty AtomGroups are not allowed but
+        # we need to check that this is trying to make a AG
+        assert_raises(MDAnalysis.NoDataError, do_empty_selection)
+                      
+    def test_index_advancedslice(self):
+        u = self.universe
+        aslice = [0, 10, 20, -1, 10]
+        ag = u.atoms[aslice]
+        assert_(isinstance(ag, AtomGroup), 
+                "advanced slicing does not produce a AtomGroup")
+        assert_equal(ag[1], ag[-1], "advanced slicing does not preserve order")
+        
 
 class _WriteAtoms(TestCase):
     """Set up the standard AdK system in implicit solvent."""

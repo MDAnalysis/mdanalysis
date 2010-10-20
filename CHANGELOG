@@ -10,8 +10,6 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/10 orbeckst, tyler.je.reddy, danny.parton
-        (Running list of enhancements, to be edited for final
-        entry when stable changes are merged back into trunk)
         * major release 0.7.0
           (includes changes that can BREAK BACKWARDS COMPATIBILITY)
         * Removed ALL DEPRECATED code:
@@ -39,22 +37,29 @@ The rules for this file:
 	* whitespace is no longer required around parentheses for 
 	  selectAtoms strings but the old syntax with white space
 	  still works (Issue 43)
-	* AtomGroup coordinates can be manipulated (translate(),
-          rotate() and rotateby() methods)
 	* improved trajectory writing
            - MDAnalysis.Writer() factory function that provides an
              appropriate writer for the desired file format
 	   - Writer.write() accepts a Timestep, a Universe, or a 
 	     arbitrary AtomGroup (e.g. from a selection); this is much
 	     more flexible than Writer.write_next_timestep()
-	* new attributes residues and segments for AtomGroup to give 
-	  access to the list of residue/segment objects of the group 
-	* new exception NoDataError; raised when creation of an empty
-	  AtomGroup is attempted
-        * consistent representation of the Segment > Residue > Atom
-	  hierarchy: all classes related to AtomGroup have the
-	  attributes 'atoms', 'residues', 'segments' which provide
-	  access to groups of the corresponding objects
+        * Changes to AtomGroup
+          - Indexing is made consistent with the way lists behave:
+            1. indexing with integers returns a single Atom
+	    2. slicing always returns a new AtomGroup
+	    3. advanced slicing with a list or array returns a new
+	       AtomGroup (NEW, fixes Issue 36) 
+	  - AtomGroup coordinates can be manipulated (translate(),
+            rotate() and rotateby() methods; when appropriate, these methods
+	    can take AtomGroups or arrays to determine coordinates)
+	  - new attributes 'residues' and 'segments' for AtomGroup to give 
+	    access to the list of residue/segment objects of the group 
+	  - new exception 'NoDataError'; raised when creation of an empty
+	    AtomGroup is attempted (see also Issue 12)
+          - consistent representation of the Segment > Residue > Atom
+	    hierarchy: all classes related to AtomGroup have the
+	    attributes 'atoms', 'residues', 'segments' which provide
+	    access to groups of the corresponding objects
 	* improvements to Residue, ResidueGroup and Segment classes 
 	  - documented accessing residues from Segment as
 	    Segment.r<resid>; resid is 1-based -- BREAKS OLD CODE 
@@ -65,11 +70,13 @@ The rules for this file:
 	    returns a ResidueGroup (Issue 47) -- MIGHT BREAK OLD CODE
 	  - added documentation and examples in the doc strings
 	  - new special dihedral angle selections defined for Residue
-	    class to simplify analysis of backbone torsions
+	    class to simplify analysis of backbone torsions (experimental)
 	* new contact_matrix method for calculating contacts 
 	  (Issue 30); for large (N > ~10000) coordinate arrays
 	  automatically switches to a method using a sparse matrix
 	  (slower)
+        * more example scripts (e.g. for membrane analysis, trajectory writing,
+	  coordinate transformations)
 
 09/19/10 orbeckst
 	* quick-fix release 0.6.4.1

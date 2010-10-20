@@ -156,15 +156,41 @@ class AtomGroup(object):
     from a selection. It is build from any list-like collection of
     :class:`Atom` instances.
 
+    An AtomGroup can be indexed and sliced like a list ::
+
+       ag[0], ag[-1]   
+
+    will return the first and the last :class:`Atom` in the group
+    whereas the slice
+
+       ag[0:6:2]
+
+    returns every second element, corresponding to indices 0, 2, and 4.
+
+    It also supports "advanced slicing" when the argument is a
+    :class:`numpy.ndarray` or a :class:`list`::
+
+       aslice = [0, 3, -1, 10, 3]
+       ag[aslice]
+
+    will return a new :class:`AtomGroup` containing (ag[0], ag[3], ag[-1],
+    ag[10], ag[3]).
+
+    .. Note:: AtomGroups originating from a selection are sorted and
+       duplicate elements are removed. This is not true for AtomGroups
+       produced by slicing. Thus slicing can be used when the order of
+       atoms is crucial (for instance, in order to define angles or
+       dihedrals).
+
     Atoms can also be accessed in a Pythonic fashion by using the atom name as
     an attribute. For instance, ::
       
        ag.CA
 
-    will provide a list of all CA atoms in the group. 
+    will provide a :class:`AtomGroup` of all CA atoms in the group. 
 
     .. Note:: The name-attribute access to atoms is mainly meant for quick
-       interactive work. Thus it either returns a ingle :class:`Atom` if there
+       interactive work. Thus it either returns a single :class:`Atom` if there
        is only one matching atom, *or* a new :class:`AtomGroup` for multiple
        matches. This makes it difficult to use the feature consistently in
        scripts but is much better for interactive work.
@@ -232,9 +258,16 @@ class AtomGroup(object):
     def __len__(self):
         return self.numberOfAtoms()
     def __getitem__(self, item):
-        if (numpy.dtype(type(item)) == numpy.dtype(int)) or (type(item) == slice):
+        """Return Atom (index) or AtomGroup (slicing)"""
+        # consistent with the way list indexing/slicing behaves:
+        if numpy.dtype(type(item)) == numpy.dtype(int):
             return self._atoms[item]
-        else: 
+        elif type(item) == slice:
+            return AtomGroup(self._atoms[item])
+        elif isinstance(item, (numpy.ndarray, list)):
+            # advanced slicing, requires array or list
+            return AtomGroup([self._atoms[i] for i in item])
+        else:
             return super(AtomGroup, self).__getitem__(item)
     def __getattr__(self, name):
         # There can be more than one atom with the same name
