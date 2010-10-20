@@ -19,6 +19,9 @@ class TestContactMatrix(TestCase):
         #   DESIRED: 52.470257062419059
         self.prec = 5
 
+    def tearDown(self):
+        del self.universe
+
     def test_numpy(self):
         U = self.universe
         self.dcd.rewind()

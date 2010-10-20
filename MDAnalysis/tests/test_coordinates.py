@@ -68,6 +68,9 @@ class TestXYZReader(TestCase, Ref2r9r):
         self.universe = mda.Universe(XYZ_psf, XYZ)
         self.prec = 3 # 4 decimals in xyz file
 
+    def tearDown(self):
+        del self.universe
+
     def test_load_xyz(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from PSF and XYZ")
@@ -93,6 +96,9 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
     def setUp(self):
         self.universe = mda.Universe(XYZ_psf, XYZ_bz2)
         self.prec = 3 # 4 decimals in xyz file
+
+    def tearDown(self):
+        del self.universe
 
     def test_load_xyz(self):
         U = self.universe
@@ -120,6 +126,9 @@ class TestPDBReader(TestCase, RefAdKSmall):
     def setUp(self):
         self.universe = mda.Universe(PDB_small) 
         self.prec = 6  # 6 decimals in A in PDB
+
+    def tearDown(self):
+        del self.universe
 
     def test_load_pdb(self):
         U = self.universe
@@ -168,6 +177,9 @@ class TestGROReader(TestCase, RefAdK):
 	self.universe = mda.Universe(GRO)
         self.ts = self.universe.trajectory.ts
         self.prec = 2  # lower prec in gro!! (3 decimals nm -> 2 decimals in Angstroem)
+
+    def tearDown(self):
+        del self.universe
 
     def test_load_gro(self):
         U = self.universe
@@ -257,6 +269,10 @@ class TestPDBReaderBig(TestCase, RefAdK):
         self.prec = 6
 
     @dec.slow
+    def tearDown(self):
+        del self.universe
+
+    @dec.slow
     def test_load_pdb(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from big PDB")
@@ -306,6 +322,9 @@ class _TestDCD(TestCase):
         self.universe = mda.Universe(PSF, DCD)
         self.dcd = self.universe.trajectory
         self.ts = self.universe.coord
+
+    def tearDown(self):
+        del self.universe
 
 class TestDCDReader(_TestDCD):
     def test_rewind_dcd(self):
@@ -363,6 +382,9 @@ class TestDCDCorrel(_TestDCD):
         C.addTimeseries(TS.CenterOfGeometry(all))       # 9
         # cannot test WaterDipole because there's no water in the test dcd
         C.compute(self.dcd)
+
+    def tearDown(self):
+        del self.universe
 
     def test_correl(self):
         assert_equal(len(self.collection), 10, "Correl: len(collection)")
@@ -614,6 +636,7 @@ class _GromacsWriter(TestCase):
             os.unlink(self.outfile)
         except:
             pass
+        del self.universe
 
     @dec.slow
     @attr('issue')    

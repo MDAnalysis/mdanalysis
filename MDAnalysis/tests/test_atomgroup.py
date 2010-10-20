@@ -15,6 +15,9 @@ class TestAtom(TestCase):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.atom = self.universe.atoms[1000]  # Leu67:CG
+
+    def tearDown(self):
+        del self.universe
     
     def test_attributes(self):
         u = self.universe
@@ -137,7 +140,14 @@ class _WriteAtoms(TestCase):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         suffix = '.' + self.ext
         fd, self.outfile = tempfile.mkstemp(suffix=suffix)
-        
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+        del self.universe
+
     def universe_from_tmp(self):
         return MDAnalysis.Universe(self.outfile)
 
@@ -183,11 +193,7 @@ class _WriteAtoms(TestCase):
         assert_almost_equal(G2.coordinates(), G.coordinates(), self.precision,
                             err_msg="segment s4AKE coordinates do not agree with original")
 
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except:
-            pass
+
 
 class TestWritePDB(_WriteAtoms):
     ext = "pdb"
@@ -242,3 +248,4 @@ def test_generated_residueselection():
     assert_(isinstance(met, MDAnalysis.core.AtomGroup.ResidueGroup),
             "Met selection does not return a ResidueGroup")
 
+    del universe

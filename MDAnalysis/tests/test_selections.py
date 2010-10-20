@@ -12,15 +12,18 @@ class TestSelections(TestCase):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
 
+    def tearDown(self):
+        del self.universe
+
     def test_segid(self):
         sel = self.universe.selectAtoms('segid 4AKE')
         assert_equal(sel.numberOfAtoms(), 3341, "failed to select segment 4AKE")
-        assert_equal(sel.atoms[:], self.universe.s4AKE.atoms[:], 
+        assert_equal(sel._atoms, self.universe.s4AKE._atoms, 
                      "selected segment 4AKE is not the same as auto-generated segment s4AKE")
     def test_protein(self):
         sel = self.universe.selectAtoms('protein')
         assert_equal(sel.numberOfAtoms(), 3341, "failed to select protein")
-        assert_equal(sel.atoms[:], self.universe.s4AKE.atoms[:], 
+        assert_equal(sel._atoms, self.universe.s4AKE._atoms, 
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
     def test_backbone(self):
@@ -41,7 +44,7 @@ class TestSelections(TestCase):
         sel = self.universe.selectAtoms('resname LEU')
         assert_equal(sel.numberOfAtoms(), 304, "Failed to find all 'resname LEU' atoms.")
         assert_equal(sel.numberOfResidues(), 16, "Failed to find all 'resname LEU' residues.")
-        assert_equal(sel.atoms[:], self.universe.s4AKE.LEU.atoms[:],
+        assert_equal(sel._atoms, self.universe.s4AKE.LEU._atoms,
                      "selected 'resname LEU' atoms are not the same as aut-generated s4AKE.LEU")
 
     def test_name(self):

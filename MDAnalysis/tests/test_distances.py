@@ -20,6 +20,9 @@ class TestDistanceArrayDCD(TestCase):
         #   DESIRED: 52.470257062419059
         self.prec = 5
 
+    def tearDown(self):
+        del self.universe
+
     @attr('issue')    
     def test_simple(self):
         U = self.universe
@@ -71,6 +74,9 @@ class TestSelfDistanceArrayDCD(TestCase):
         self.ca = self.universe.selectAtoms('name CA')
         # see comments above on precision
         self.prec = 5
+
+    def tearDown(self):
+        del self.universe
     
     def test_simple(self):
         U = self.universe
