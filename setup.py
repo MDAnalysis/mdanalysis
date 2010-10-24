@@ -177,11 +177,13 @@ if __name__ == '__main__':
           long_description  = LONG_DESCRIPTION,
           cmdclass = {'build_ext': build_ext},
           install_requires = ['numpy>=1.0',  # currently not useful because without numpy we don't get here
-                              'biopython',   # pretty much required at the moment
+                              'biopython',   # required for standard PDB reader
                               ],
           extras_require = {
                 'tests': ['nose>=0.10'],
-                'analysis': ['networkx>=1.0'],
+                'analysis': ['networkx>=1.0',  # LeafletFinder
+                             'scipy',          # sparse contact matrix
+                             ],
                 },          
           zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
           )
