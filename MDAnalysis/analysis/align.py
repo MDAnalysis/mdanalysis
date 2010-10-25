@@ -42,7 +42,7 @@ function and then feed the resulting dictionary to :func:`rms_fit_trj`::
 
 import numpy
 import MDAnalysis
-import MDAnalysis.core.rms_fitting
+import MDAnalysis.core.rms_fitting, MDAnalysis.coordinates
 from MDAnalysis.core.rms_fitting import rms_rotation_matrix
 from MDAnalysis import SelectionError
 
@@ -61,7 +61,7 @@ def echo(s=''):
     sys.stderr.write(s)
     sys.stderr.flush()
 
-def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_'):
+def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_',tol_mass=0.1):
     """RMS-fit trajectory to a reference structure using a selection.
 
       rms_fit_trj(traj, ref, 'backbone or name CB or name OT*')
@@ -72,17 +72,20 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_'):
       *ref*
          reference coordinates; :class:`MDAnalysis.Universe` object
          (uses the current time step of the object)
-      *filename*
-         file name for the RMS-fitted trajectory or pdb; defaults to the 
-         original trajectory filename (from *traj*) with *prefix* prepended
-      *prefix*
-         prefix for autogenerating the new output filename
       *select*
          any valid selection string for
          :meth:`MDAnalysis.AtomGroup.selectAtoms` that produces identical
          selections in *traj* and *ref* or dictionary {'reference':sel1,
          'target':sel2}.  The :func:`fasta2select` function returns such a
          dictionary based on a ClustalW_ or STAMP_ sequence alignment.
+      *filename*
+         file name for the RMS-fitted trajectory or pdb; defaults to the 
+         original trajectory filename (from *traj*) with *prefix* prepended
+      *prefix*
+         prefix for autogenerating the new output filename
+      *tol_mass*
+         Reject match if the atomic masses for matched atoms differ by more than
+         *tol_mass* [0.1]
 
     Both reference and trajectory must be :class:`MDAnalysis.Universe`
     instances. If they contain a trajectory then it is used. The
@@ -107,6 +110,7 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_'):
 
     # TODO: dealing with different formats is not nice; this should be
     # rewritten with the trajectory API in mind...
+    # A trajectory Reader should be able to return the native Writer! [OB]
     if isinstance(frames,MDAnalysis.coordinates.DCD.DCDReader):
         writer = MDAnalysis.coordinates.DCD.DCDWriter(
             filename,frames.numatoms,
@@ -132,6 +136,10 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_'):
         writer = MDAnalysis.coordinates.PDB.PDBWriter( # still working like this?
             filename, universe=traj,
             remarks='RMS fitted pdb frame to ref')
+    elif isinstance(frames,MDAnalysis.coordinates.PDB.PrimitivePDBReader):
+        writer = MDAnalysis.coordinates.PDB.PrimitivePDBWriter( # still working like this?
+            filename, universe=traj,
+            remarks='RMS fitted pdb frame to ref')
     else:
         raise TypeError('traj must contain a DCD, XTC, TRR, or a PDB.')
 
@@ -142,7 +150,7 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_'):
                              "the same number of atoms: N_ref=%d, N_traj=%d" % \
                              (len(ref_atoms), len(traj_atoms)))
     logger.info("RMS-fitting on %d atoms." % len(ref_atoms))
-    mass_mismatches = (numpy.absolute(ref_atoms.masses() - traj_atoms.masses()) > 0)
+    mass_mismatches = (numpy.absolute(ref_atoms.masses() - traj_atoms.masses()) > tol_mass)
     if numpy.any(mass_mismatches):
         # diagnostic output:
         logger.error("Atoms: reference | trajectory")
@@ -151,7 +159,7 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_'):
                 logger.error("%4s %3d %3s %3s %6.3f  |  %4s %3d %3s %3s %6.3f" %  \
                       (ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
                        at.segid, at.resid, at.resname, at.name, at.mass,))
-        errmsg = "Inconsistent selections, masses don't match; mis-matching atoms are shown above."
+        errmsg = "Inconsistent selections, masses differ by more than %f; mis-matching atoms are shown above." % tol_mass
         logger.error(errmsg)
         raise SelectionError(errmsg)
     del mass_mismatches
@@ -179,7 +187,7 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_'):
         ts._pos   -= x_com
         ts._pos[:] = ts._pos * R # R acts to the left & is broadcasted N times.
         ts._pos   += ref_com
-        writer.write_next_timestep(ts)
+        writer.write(traj.atoms) # write whole input trajectory system
         # for debugging:
         # rmsd_old = rmsd(ref_atoms.coordinates(),traj_coordinates)
         # rmsd_new = rmsd(ref_atoms.coordinates(),traj_atoms.coordinates())
