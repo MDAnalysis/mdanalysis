@@ -42,6 +42,8 @@ The rules for this file:
 	   - Writer.write() accepts a Timestep, a Universe, or a 
 	     arbitrary AtomGroup (e.g. from a selection); this is much
 	     more flexible than Writer.write_next_timestep()
+        * New attributes for trajectory readers: dt (time between
+  	  frames) and totaltime (length of the trajectory)
         * Changes to AtomGroup
           - Indexing is made consistent with the way lists behave:
             1. indexing with integers returns a single Atom

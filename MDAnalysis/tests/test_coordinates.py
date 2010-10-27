@@ -360,6 +360,12 @@ class TestDCDReader(_TestDCD):
     def test_numframes(self):
         assert_equal(self.universe.trajectory.numframes, 98, "wrong number of frames in dcd")
 
+    def test_dt(self):
+        assert_equal(self.universe.trajectory.dt, 1.0, "wrong timestep dt")
+
+    def test_totaltime(self):
+        assert_equal(self.universe.trajectory.totaltime, 98.0, "wrong total length of AdK trajectory")
+
 class TestDCDWriter(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
@@ -546,6 +552,7 @@ class TestChainedReader(TestCase):
         assert_equal(frames, [6, 9, 12, 15], "slicing dcd [5:17:3]")
 
 class _GromacsReader(TestCase):
+    # This base class assumes same lengths and dt for XTC and TRR test cases!
     filename = None
     def setUp(self):
         self.universe = mda.Universe(GRO, self.filename) # loading from GRO is 4x faster than the PDB reader
@@ -612,6 +619,14 @@ class _GromacsReader(TestCase):
         uc = self.ts.dimensions
         ref_uc = np.array([ 80.017,  80.017,  80.017,  90., 60., 60.], dtype=np.float32)
         assert_array_almost_equal(uc, ref_uc, self.prec, err_msg="unit cell dimensions (rhombic dodecahedron)")
+
+    @dec.slow
+    def test_dt(self):
+        assert_equal(self.universe.trajectory.dt, 100.0, "wrong timestep dt")
+
+    @dec.slow
+    def test_totaltime(self):
+        assert_equal(self.universe.trajectory.totaltime, 1000.0, "wrong total length of trajectory")
 
 
 class TestXTCReader(_GromacsReader):

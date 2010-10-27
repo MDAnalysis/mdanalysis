@@ -36,6 +36,11 @@ class DCDWriter(base.Writer):
         """
         if numatoms == 0:
             raise ValueError("DCDWriter: no atoms in output trajectory")
+        elif numatoms is None:
+            # probably called from MDAnalysis.Writer() so need to give user a gentle heads up...
+            raise ValueError("DCDWriter: REQUIRES the number of atoms in the 'numatoms' keyword\n"+\
+                                 " "*len("ValueError: ") +\
+                                 "For example: numatoms=universe.atoms.numberOfAtoms()")            
         self.filename = filename
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
@@ -103,7 +108,7 @@ class DCDWriter(base.Writer):
         self.dcdfile.close()
         self.dcdfile = None
     def __del__(self):
-        if self.dcdfile is not None:
+        if hasattr(self, 'dcdfile') and not self.dcdfile is None:
             self.close_trajectory()
 
 class DCDReader(base.Reader):

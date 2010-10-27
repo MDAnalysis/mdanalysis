@@ -208,6 +208,8 @@ Attributes
      time between frames in ps; a managed attribute (read only) that computes
      on the fly skip_timestep * delta and converts to the MDAnalysis base
      unit for time (pico seconds by default)
+ totaltime
+     total length of the trajectory = numframes * dt
 
 **Optional attributes**
 
