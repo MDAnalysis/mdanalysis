@@ -359,6 +359,38 @@ class TestDCDReader(_TestDCD):
 
     def test_numframes(self):
         assert_equal(self.universe.trajectory.numframes, 98, "wrong number of frames in dcd")
+
+class TestDCDWriter(TestCase):
+    def setUp(self):
+        self.universe = mda.Universe(PSF, DCD)
+        ext = ".dcd"
+        fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        self.Writer = MDAnalysis.coordinates.DCD.DCDWriter
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+        del self.universe
+        del self.Writer
+
+    @attr('issue')    
+    def test_write_trajectory(self):
+        """Test writing DCD trajectories (Issue 50)"""
+        t = self.universe.trajectory
+        W = self.Writer(self.outfile, t.numatoms, delta=t.delta, step=t.skip_timestep)
+        for ts in self.universe.trajectory:
+            W.write_next_timestep(ts)
+        W.close()
+
+        uw = mda.Universe(PSF, self.outfile)
+
+        # check that the coordinates are identical for each time step
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
+                                      err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+
         
 class TestDCDCorrel(_TestDCD):
     def setUp(self):

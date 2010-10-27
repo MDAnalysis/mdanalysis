@@ -8,6 +8,8 @@ import numpy
 import base
 from base import Timestep
 
+import MDAnalysis.core
+
 class DCDWriter(base.Writer):
     """Writes to a DCD file
 
@@ -35,7 +37,6 @@ class DCDWriter(base.Writer):
         if numatoms == 0:
             raise ValueError("DCDWriter: no atoms in output trajectory")
         self.filename = filename
-        self.dcdfilename = filename  # backward compatibility
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
         self.convert_units = convert_units    # convert length and time to base units on the fly?
@@ -45,7 +46,7 @@ class DCDWriter(base.Writer):
         self.start = start
         self.step = step
         self.delta = delta
-        self.dcdfile = file(dcdfilename, 'wb')
+        self.dcdfile = file(self.filename, 'wb')
         self.remarks = remarks
         self._write_dcd_header(numatoms, start, step, delta, remarks)
     def _dcd_header(self):
