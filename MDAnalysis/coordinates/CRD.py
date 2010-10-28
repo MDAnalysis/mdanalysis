@@ -76,35 +76,32 @@ class CRDWriter(base.Writer):
     """
     format = 'CRD'
     units = {'time': None, 'length': 'Angstrom'}
-    crdtype = 'standard'
+    #crdtype = ''
 
+    def __init__(self,filename,**kwargs):
+        self.filename = util.filename(filename,ext='crd')
+        self.crd = None
 
+    #crdtype = 'extended'
+    # =====  EXTENDED format =======                                    ==========
+    # %(serial)10d %(TotRes)9d  %(resName)-4s      %(name)-4s         %(x)15.10f     %(y)15.10f     %(z)15.10f  %(chainID)-4s      %(resSeq)-6d       %(tempFactor)15.10f
+    fmt = {'ATOM_EXT':"%(serial)10d %(TotRes)9d  %(resName)-4s      %(name)-4s    %(x)20.10f%(y)20.10f%(z)20.10f  %(chainID)-4s      %(resSeq)-6d       %(tempFactor)15.10f\n",
+    'NUMATOMS_EXT':"%10d  EXT\n",
+    # 
+    # 
+    #crdtype = 'standard'
     #          1         2         3         4         5         6         7         8
     # 123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
     # ATOM__seria nameAres CressI   xxxxxxxxyyyyyyyyzzzzzzzzOCCUPAtempft          elCH
     # %5d   %-4s %-3s %4d %1s %8.3f   %8.3f   %8.3f   %6.2f %6.2f           %2s
     #                 %1s  %1s                                                      %2d
-    if crdtype == 'standard': 
-    	# =====  Standard format =======                                    ==========
-    	# %5d %4d %-4s %-4s %9.5f %9.5f %9.5f %-4s %-4d  %9.5f\n
-    	# %(serial)5d %(TotRes)4d %(resName)-4s %(name)-4s %(x)9.5f %(y)9.5f %(z)9.5f %(chainID)-4s %(resSeq)-4d %(tempFactor)9.5f
-    	fmt = {'ATOM':"%(serial)5d %(TotRes)4d %(resName)-4s %(name)-4s %(x)9.5f %(y)9.5f %(z)9.5f %(chainID)-4s %(resSeq)-4d %(tempFactor)9.5f\n",
-        'TITLE':  "*%s\n",
-	'NUMATOMS':"%5d\n",
-        }
-
-    if crdtype == 'extended':
-        # =====  EXTENDED format =======                                    ==========
-        # %(serial)10d %(TotRes)9d  %(resName)-4s      %(name)-4s         %(x)15.10f     %(y)15.10f     %(z)15.10f  %(chainID)-4s      %(resSeq)-4d         %(tempFactor)15.10f 
-        fmt = {'ATOM':"%(serial)10d %(TotRes)9d  %(resName)-4s      %(name)-4s         %(x)15.10f     %(y)15.10f     %(z)15.10f  %(chainID)-4s      %(resSeq)-4d         %(tempFactor)15.10f\n",
-        'TITLE':  "*%s\n",
-        'NUMATOMS':"%10d  EXT\n",
-        }
-
-
-    def __init__(self,filename,**kwargs):
-        self.filename = util.filename(filename,ext='crd')
-        self.crd = None
+    # =====  Standard format =======                                    ==========
+    # %5d %4d %-4s %-4s %9.5f %9.5f %9.5f %-4s %-4d  %9.5f\n
+    # %(serial)5d %(TotRes)4d %(resName)-4s %(name)-4s %(x)9.5f %(y)9.5f %(z)9.5f %(chainID)-4s %(resSeq)-4d %(tempFactor)9.5f
+    'ATOM':"%(serial)5d %(TotRes)4d %(resName)-4s %(name)-4s %(x)9.5f %(y)9.5f %(z)9.5f %(chainID)-4s %(resSeq)-4d %(tempFactor)9.5f\n",
+    'TITLE':  "*%s\n",
+    'NUMATOMS':"%5d\n",
+    }
 
     def close_trajectory(self):
         pass
@@ -128,7 +125,7 @@ class CRDWriter(base.Writer):
         coor = selection.coordinates()
        
         atoms = selection.atoms   # make sure to use atoms (Issue 46)
-
+        
         self.crd = open(self.filename,'w')
         try:
             self._TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
@@ -140,7 +137,7 @@ class CRDWriter(base.Writer):
                     # note that this compares first and LAST atom on first iteration... but it works
                     current_resid += 1
                 self._ATOM(serial=i+1, resSeq=atom.resid, resName=atom.resname, name=atom.name,
-                          x=coor[i,0], y=coor[i,1], z=coor[i,2], chainID=atom.segid,tempFactor=0.0,TotRes=current_resid)
+                          x=coor[i,0], y=coor[i,1], z=coor[i,2], chainID=atom.segid,tempFactor=0.0,TotRes=current_resid,numatoms=len(atoms))
                 # get bfactor, too?
         finally:
             self.crd.close()
@@ -157,9 +154,12 @@ class CRDWriter(base.Writer):
     def _NUMATOMS(self,numatoms):
 	"""Write generic total number of atoms in system)
 	"""
-	self.crd.write(self.fmt['NUMATOMS'] % numatoms)
+        if numatoms > 99999:
+	    self.crd.write(self.fmt['NUMATOMS_EXT'] % numatoms) 
+        else: 
+            self.crd.write(self.fmt['NUMATOMS'] % numatoms)
     
-    def _ATOM(self,serial=None,resSeq=None,resName=None,name=None,x=None,y=None,z=None,chainID=None,tempFactor=0.0,TotRes=None):
+    def _ATOM(self,serial=None,resSeq=None,resName=None,name=None,x=None,y=None,z=None,chainID=None,tempFactor=0.0,TotRes=None,numatoms=None):
         """Write ATOM record. 
 
         All inputs are cut to the maximum allowed length. For integer
@@ -181,6 +181,8 @@ class CRDWriter(base.Writer):
         chainID = chainID[:4]
         resSeq = int(str(resSeq)[-4:]) # check for overflow here?
 	totres = int(str(TotRes)[-4:])
-	self.crd.write(self.fmt['ATOM'] % vars())
-        
+        if numatoms > 99999:	
+	    self.crd.write(self.fmt['ATOM_EXT'] % vars())
+        else:
+	    self.crd.write(self.fmt['ATOM'] % vars())
 
