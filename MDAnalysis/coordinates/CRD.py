@@ -10,27 +10,97 @@ VERY Primative CRD generator (may still have to be debugged!)
 
 """
 
+import MDAnalysis
 import MDAnalysis.core.util as util
 import base
+import numpy
+from base import Timestep
+
+
+class CRDReader(base.Reader):
+    """CRD reader that implements the standard and extended CRD coordinate formats
+    """
+    format = 'CRD'
+    units = {'time': None, 'length': 'nm'}
+    _Timestep = Timestep
+ 
+    def __init__(self, crdfilename, convert_units=None):
+        self.crdfilename = crdfilename
+        self.filename = self.crdfilename
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+        self.convert_units = convert_units  # convert length and time to base units
+
+	coords_list = []
+        crdfile = open(crdfilename , 'r').readlines()
+        
+        for linenum,line in enumerate(crdfile):
+	   if line.split()[0] == '*':
+               continue 
+               #print line.split()[0]
+	   elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) == True: 
+	       extended = 'yes'
+           elif line.split()[0] == line.split()[-1] and line.split()[0] != '*':
+	       extended = 'no' 
+	   elif extended == 'yes':
+               coords_list.append( numpy.array( map( float , line[45:100].split()[0:3] ) ) )
+	   elif extended == 'no':
+               coords_list.append( numpy.array( map( float , line[20:50].split()[0:3] ) ) )
+           else:
+               "Check CRD format"
+
+	self.numatoms = len(coords_list)
+	coords_list = numpy.array(coords_list)
+        self.numframes = 1
+        self.fixed = 0          # parse B field for fixed atoms?
+        self.skip = 1
+        self.periodic = False
+        self.delta = 0
+        self.skip_timestep = 1
+        self.ts = self._Timestep(coords_list)
+
+    def __len__(self):
+        return self.numframes
+    def __iter__(self):
+        yield self.ts  # Just a single frame
+        raise StopIteration
+    def __getitem__(self, frame):
+        if frame != 0:
+            raise IndexError('PrimitivePDBReader can only read a single frame at index 0')
+        return self.ts
+    def _read_next_timestep(self):
+        raise IndexError("PrimitivePDBReader can only read a single frame")
 
 class CRDWriter(base.Writer):
     """CRD writer that implements the standard CRD coordinate format.
     """
     format = 'CRD'
     units = {'time': None, 'length': 'Angstrom'}
+    crdtype = 'standard'
+
 
     #          1         2         3         4         5         6         7         8
     # 123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
     # ATOM__seria nameAres CressI   xxxxxxxxyyyyyyyyzzzzzzzzOCCUPAtempft          elCH
     # %5d   %-4s %-3s %4d %1s %8.3f   %8.3f   %8.3f   %6.2f %6.2f           %2s
     #                 %1s  %1s                                                      %2d
-    #            =        =      ===                                    ==========
-    # %5d %4d %-4s %-4s %9.5f %9.5f %9.5f %-4s %-4d  %9.5f\n
-    # %(serial)5d %(TotRes)4d %(resName)-4s %(name)-4s %(x)9.5f %(y)9.5f %(z)9.5f %(chainID)-4s %(resSeq)-4d %(tempFactor)9.5f
-    fmt = {'ATOM':"%(serial)5d %(TotRes)4d %(resName)-4s %(name)-4s %(x)9.5f %(y)9.5f %(z)9.5f %(chainID)-4s %(resSeq)-4d %(tempFactor)9.5f\n",
-           'TITLE':  "*%s\n",
-	   'NUMATOMS':"%5d\n",
-           }
+    if crdtype == 'standard': 
+    	# =====  Standard format =======                                    ==========
+    	# %5d %4d %-4s %-4s %9.5f %9.5f %9.5f %-4s %-4d  %9.5f\n
+    	# %(serial)5d %(TotRes)4d %(resName)-4s %(name)-4s %(x)9.5f %(y)9.5f %(z)9.5f %(chainID)-4s %(resSeq)-4d %(tempFactor)9.5f
+    	fmt = {'ATOM':"%(serial)5d %(TotRes)4d %(resName)-4s %(name)-4s %(x)9.5f %(y)9.5f %(z)9.5f %(chainID)-4s %(resSeq)-4d %(tempFactor)9.5f\n",
+        'TITLE':  "*%s\n",
+	'NUMATOMS':"%5d\n",
+        }
+
+    if crdtype == 'extended':
+        # =====  EXTENDED format =======                                    ==========
+        # %(serial)10d %(TotRes)9d  %(resName)-4s      %(name)-4s         %(x)15.10f     %(y)15.10f     %(z)15.10f  %(chainID)-4s      %(resSeq)-4d         %(tempFactor)15.10f 
+        fmt = {'ATOM':"%(serial)10d %(TotRes)9d  %(resName)-4s      %(name)-4s         %(x)15.10f     %(y)15.10f     %(z)15.10f  %(chainID)-4s      %(resSeq)-4d         %(tempFactor)15.10f\n",
+        'TITLE':  "*%s\n",
+        'NUMATOMS':"%10d  EXT\n",
+        }
+
 
     def __init__(self,filename,**kwargs):
         self.filename = util.filename(filename,ext='crd')

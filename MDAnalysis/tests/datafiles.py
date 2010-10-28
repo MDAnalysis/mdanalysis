@@ -11,7 +11,8 @@ directory. File names are in all caps. Use as ::
 __all__ = ["PSF", "DCD",                        # CHARMM
            "PDB_small",                         # PDB
            "PDB", "GRO", "XTC", "TRR", "TPR",   # Gromacs
-           "XYZ", "XYZ_bz2" ]                   # XYZ
+           "XYZ", "XYZ_bz2" ,                   # XYZ
+           "CRD_small" ]                        # CRD
 
 from pkg_resources import resource_filename
 
@@ -19,6 +20,7 @@ PSF = resource_filename(__name__, 'data/adk.psf')
 DCD = resource_filename(__name__, 'data/adk_dims.dcd')
 DCD_empty = resource_filename(__name__, 'data/empty.dcd')
 
+CRD_small = resource_filename(__name__, 'data/adk.crd')
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')

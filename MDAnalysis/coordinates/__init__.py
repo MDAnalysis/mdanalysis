@@ -312,6 +312,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'XYZ': XYZ.XYZReader,
                        'TRR': TRR.TRRReader,
                        'PDB': PDB.PDBReader,
+                       'CRD': CRD.CRDReader,
                        'GRO': GRO.GROReader,
                        'CHAIN': base.ChainReader,
                        }

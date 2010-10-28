@@ -6,7 +6,7 @@ import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
-from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,XTC,TRR,GRO,XYZ,XYZ_bz2,XYZ_psf
+from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,CRD,XTC,TRR,GRO,XYZ,XYZ_bz2,XYZ_psf
 
 import os.path, tempfile
 import itertools
@@ -156,6 +156,35 @@ class TestPDBReader(TestCase, RefAdKSmall):
         d = atom_distance(NTERM, CTERM)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="distance between M1:N and G214:C")
+
+class TestPSF_CRDReader(TestCRDReader):
+    def setUp(self):
+        self.universe = mda.Universe(PSF, CRD_small)
+        self.prec = 6
+
+    def tearDown(self):
+        del self.universe
+
+    def test_load_crd(self):
+        U = self.universe
+        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from small PDB")
+        assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0],
+                     U.atoms[self.ref_E151HA2_index], "Atom selections")
+
+    def test_numatoms(self):
+        assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
+
+    def test_numres(self):
+        assert_equal(self.universe.atoms.numberOfResidues(), 214, "wrong number of residues")
+
+    def test_numframes(self):
+        assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames in crd")
+
+    def test_coordinates(self):
+        A10CA = self.universe.s4AKE.CA[10]
+        assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'],
+                            err_msg="wrong coordinates for A10:CA")
+
 
 class TestPSF_PDBReader(TestPDBReader):
     def setUp(self):
