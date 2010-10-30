@@ -13,6 +13,7 @@ VERY Primative CRD generator (may still have to be debugged!)
 import MDAnalysis
 import MDAnalysis.core.util as util
 import base
+from MDAnalysis import FormatError
 import numpy
 from base import Timestep
 
@@ -47,7 +48,7 @@ class CRDReader(base.Reader):
 	   elif extended == 'no':
                coords_list.append( numpy.array( map( float , line[20:50].split()[0:3] ) ) )
            else:
-               "Check CRD format"
+               raise FormatError("Check CRD format at line %d: %s" % (linenum, line.rstrip()))
 
 	self.numatoms = len(coords_list)
 	coords_list = numpy.array(coords_list)
@@ -72,36 +73,29 @@ class CRDReader(base.Reader):
         raise IndexError("PrimitivePDBReader can only read a single frame")
 
 class CRDWriter(base.Writer):
-    """CRD writer that implements the standard CRD coordinate format.
+    """CRD writer that implements the CHARMM CRD coordinate format.
+
+    It automatically writes the CHARMM EXT extended format if there
+    are more than 99,999 atoms.
     """
     format = 'CRD'
     units = {'time': None, 'length': 'Angstrom'}
-    #crdtype = ''
+
+    fmt = {
+        #crdtype = 'extended'
+        #fortran_format = '(2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10)'
+        'ATOM_EXT':"%(serial)10d%(TotRes)10d  %(resName)-8s  %(name)-8s%(x)20.10f%(y)20.10f%(z)20.10f  %(chainID)-8s  %(resSeq)-8d%(tempFactor)20.10f\n",
+        'NUMATOMS_EXT':"%10d  EXT\n",
+        #crdtype = 'standard'
+        #fortran_format = '(2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5)'
+        'ATOM':"%(serial)5d%(TotRes)5d %(resName)-4s %(name)-4s%(x)10.5f%(y)10.5f%(z)10.5f %(chainID)-4s %(resSeq)-4d%(tempFactor)10.5f\n",
+        'TITLE':  "*%s\n",
+        'NUMATOMS':"%5d\n",
+        }
 
     def __init__(self,filename,**kwargs):
         self.filename = util.filename(filename,ext='crd')
         self.crd = None
-
-    #crdtype = 'extended'
-    # =====  EXTENDED format =======                                    ==========
-    # %(serial)10d %(TotRes)9d  %(resName)-4s      %(name)-4s         %(x)15.10f     %(y)15.10f     %(z)15.10f  %(chainID)-4s      %(resSeq)-6d       %(tempFactor)15.10f
-    fmt = {'ATOM_EXT':"%(serial)10d %(TotRes)9d  %(resName)-4s      %(name)-4s    %(x)20.10f%(y)20.10f%(z)20.10f  %(chainID)-4s      %(resSeq)-6d       %(tempFactor)15.10f\n",
-    'NUMATOMS_EXT':"%10d  EXT\n",
-    # 
-    # 
-    #crdtype = 'standard'
-    #          1         2         3         4         5         6         7         8
-    # 123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
-    # ATOM__seria nameAres CressI   xxxxxxxxyyyyyyyyzzzzzzzzOCCUPAtempft          elCH
-    # %5d   %-4s %-3s %4d %1s %8.3f   %8.3f   %8.3f   %6.2f %6.2f           %2s
-    #                 %1s  %1s                                                      %2d
-    # =====  Standard format =======                                    ==========
-    # %5d %4d %-4s %-4s %9.5f %9.5f %9.5f %-4s %-4d  %9.5f\n
-    # %(serial)5d %(TotRes)4d %(resName)-4s %(name)-4s %(x)9.5f %(y)9.5f %(z)9.5f %(chainID)-4s %(resSeq)-4d %(tempFactor)9.5f
-    'ATOM':"%(serial)5d %(TotRes)4d %(resName)-4s %(name)-4s %(x)9.5f %(y)9.5f %(z)9.5f %(chainID)-4s %(resSeq)-4d %(tempFactor)9.5f\n",
-    'TITLE':  "*%s\n",
-    'NUMATOMS':"%5d\n",
-    }
 
     def close_trajectory(self):
         pass
@@ -172,17 +166,22 @@ class CRDWriter(base.Writer):
         for arg in ('serial','name','resName','resSeq','x','y','z','tempFactor'):
             if locals()[arg] is None:
                 raise ValueError('parameter '+arg+' must be defined.')
-        serial = int(str(serial)[-5:])  # check for overflow here?
-        name = name[:4]
-        if len(name) < 4:
-            name = name   # customary to start in column 14
-        resName = resName[:4]
+
         chainID = chainID or ""   # or should we provide a chainID such as 'A'?
-        chainID = chainID[:4]
-        resSeq = int(str(resSeq)[-4:]) # check for overflow here?
-	totres = int(str(TotRes)[-4:])
-        if numatoms > 99999:	
+        if numatoms > 99999:
+            serial = int(str(serial)[-10:])  # check for overflow here?
+            name = name[:8]
+            resName = resName[:8]
+            chainID = chainID[:8]
+            resSeq = int(str(resSeq)[-8:]) # check for overflow here?
+            TotRes = int(str(TotRes)[-10:])
 	    self.crd.write(self.fmt['ATOM_EXT'] % vars())
         else:
+            serial = int(str(serial)[-5:])  # check for overflow here?
+            name = name[:4]
+            resName = resName[:4]
+            chainID = chainID[:4]
+            resSeq = int(str(resSeq)[-4:]) # check for overflow here?
+            TotRes = int(str(TotRes)[-5:])
 	    self.crd.write(self.fmt['ATOM'] % vars())
 
