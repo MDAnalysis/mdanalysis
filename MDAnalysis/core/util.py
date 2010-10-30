@@ -24,6 +24,12 @@ Containers and lists
 .. autofunction:: asiterable
 
 
+File parsing
+------------
+
+.. autoclass:: FORTRANReader
+.. autodata:: FORTRAN_format_regex
+
 """
 from __future__ import with_statement
 
@@ -32,7 +38,7 @@ __docformat__ = "restructuredtext en"
 import os.path
 from contextlib import contextmanager
 import bz2, gzip
-
+import re
 
 def filename(name,ext=None,keep=False):
     """Return a new name that has suffix attached; replaces other extensions.
@@ -143,3 +149,101 @@ def asiterable(obj):
     if not iterable(obj):
         obj = [obj]
     return obj
+
+#: Regular expresssion (see :mod:`re`) to parse a simple `FORTRAN edit descriptor`_.
+#:   ``(?P<repeat>\d?)(?P<format>[IFELAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?``
+#: .. _FORTRAN edit descriptor: http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html
+FORTRAN_format_regex = "(?P<repeat>\d?)(?P<format>[IFEAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?"
+_FORTRAN_format_pattern = re.compile(FORTRAN_format_regex)
+
+def strip(s):
+    """Convert *s* to a string and return it whit-space stripped."""
+    return str(s).strip()
+
+class FixedcolumnEntry(object):
+    convertors = {'I': int, 'F': float, 'E': float, 'A': strip}
+    def __init__(self, start, stop, typespecifier):
+        """Read string  line[start:stop] and convert according to typespecifier"""
+        self.start = start
+        self.stop = stop
+        self.typespecifier = typespecifier
+        self.convertor = self.convertors[typespecifier]
+    def read(self, line):
+        return self.convertor(line[self.start:self.stop])
+    def __repr__(self):
+        return "FixedcolumnEntry(%d,%d,%r)" % (self.start, self.stop, self.typespecifier)
+
+class FORTRANReader(object):
+    """FORTRANReader provides a method to parse FORTRAN formatted lines in a file.
+
+    Usage::
+       atomformat = FORTRANReader('2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
+       for line in open('coordinates.crd'):
+           serial,TotRes,resName,name,x,y,z,chainID,resSeq,tempFactor = atomformat.read(line)
+
+    Fortran format edit descriptors: See
+    http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html
+    for the syntax.
+
+    Only simple one-character specifiers supported here: *I F E A X* (see
+    :data:`FORTRAN_format_regex`).
+
+    Strings are stripped of leading and trailing white space.
+    """
+
+    def __init__(self, fmt):
+        """Set up the reader with the FORTRAN format string.
+
+        The string *fmt* should look like '2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10'.
+        """
+        self.fmt = fmt.split(',')
+        descriptors = [self.parse_FORTRAN_format(descriptor) for descriptor in self.fmt]
+        start = 0
+        self.entries = []
+        for d in descriptors:
+            if d['format'] != 'X':
+                for x in range(d['repeat']):
+                    stop = start + d['length']
+                    self.entries.append(FixedcolumnEntry(start,stop,d['format']))
+                    start = stop
+            else:
+                start += d['totallength']
+
+    def read(self, line):
+        """Parse *line* according to the format string and return list of values.
+
+        Values are converted to Python types according to the format specifier."""
+        return [e.read(line) for e in self.entries]
+
+    def parse_FORTRAN_format(self, edit_descriptor):
+        """Parse the descriptor.
+
+          parse_FORTRAN_format(edit_descriptor) --> dict
+
+        :Returns: dict with totallength (in chars), repeat, length,
+                  format, decimals; if the specifier could not be parsed,
+                  an empty dict is returned.
+        :Raises: :exc:`ValueError` if the *edit_descriptor* is not recognized.
+
+        .. Note:: Specifiers: *L ES EN T TL TR / r S SP SS BN BZ* are *not*
+           supported, and neither are the scientific notation *Ew.dEe* forms.
+        """
+
+        m = _FORTRAN_format_pattern.match(edit_descriptor)
+        if m is None:
+            raise ValueError("unrecognized FORTRAN format %r" % edit_descriptor)
+        d = m.groupdict()
+        if d['repeat'] == '':
+            d['repeat'] = 1
+        if d['format'] == 'X':
+            d['length'] = 1
+        for k in ('repeat','length','decimals'):
+            try:
+                d[k] = int(d[k])
+            except ValueError:   # catches ''
+                d[k] = 0
+            except TypeError:    # keep None
+                pass
+        d['totallength'] = d['repeat'] * d['length']
+        return d
+

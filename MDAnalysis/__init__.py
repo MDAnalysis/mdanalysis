@@ -147,6 +147,9 @@ class SelectionError(Exception):
 class NoDataError(ValueError):
     """Raised when empty input is not allowed."""
 
+class FormatError(EnvironmentError):
+    """Raised when there appears to be a problem with format of input files."""
+
 class SelectionWarning(Warning):
     """Warning indicating a possible problem with a selection."""
 

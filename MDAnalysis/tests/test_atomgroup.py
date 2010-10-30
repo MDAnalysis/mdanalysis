@@ -203,32 +203,7 @@ class TestWritePDB(_WriteAtoms):
 import MDAnalysis.coordinates
 class TestWriteCRD(_WriteAtoms):
     ext = "crd"
-    precision = 2
-
-    # replicated methods here so that I can decorate as known failures;
-    # remove once Issue 40 is resolved.
-    @dec.knownfailureif(not 'CRD' in MDAnalysis.coordinates._trajectory_readers, 
-                        "CRD reader is not implemented yet (see Issue 40)")
-    def test_write_atoms(self):
-        super(TestWriteCRD, self).test_write_atoms()
-
-    @dec.knownfailureif(not 'CRD' in MDAnalysis.coordinates._trajectory_readers, 
-                        "CRD reader is not implemented yet (see Issue 40)")
-    def test_write_selection(self):
-        super(TestWriteCRD, self).test_write_selection()
-    @dec.knownfailureif(not 'CRD' in MDAnalysis.coordinates._trajectory_readers, 
-                        "CRD reader is not implemented yet (see Issue 40)")
-    def test_write_Residue(self):
-        super(TestWriteCRD, self).test_write_Residue()
-    @dec.knownfailureif(not 'CRD' in MDAnalysis.coordinates._trajectory_readers, 
-                        "CRD reader is not implemented yet (see Issue 40)")
-    def test_write_ResidueGroup(self):
-        super(TestWriteCRD, self).test_write_ResidueGroup()
-    @dec.knownfailureif(not 'CRD' in MDAnalysis.coordinates._trajectory_readers, 
-                        "CRD reader is not implemented yet (see Issue 40)")
-    def test_write_Segment(self):
-        super(TestWriteCRD, self).test_write_Segment()
-
+    precision = 5
 
 class TestWriteGRO(_WriteAtoms):
     ext = "gro"

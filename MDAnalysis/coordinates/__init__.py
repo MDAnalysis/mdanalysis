@@ -321,6 +321,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
 _topology_coordinates_readers = {
                        'PDB': PDB.PrimitivePDBReader,
                        'GRO': GRO.GROReader,
+                       'CRD': CRD.CRDReader,
 }    
 
 #: hack: readers that ignore most errors (permissive=True)

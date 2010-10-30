@@ -10,10 +10,10 @@ A rudimentary PDB parser obtains the list of atoms from a PDB file but
 it lacks bond information, charges, and masses at the moment.
 """
 
-__all__ = ['core', 'PSFParser', 'PDBParser', 'GROParser']
+__all__ = ['core', 'PSFParser', 'PDBParser', 'GROParser', 'CRDParser']
 
 import core
-import PSFParser, PDBParser, PrimitivePDBParser, GROParser
+import PSFParser, PDBParser, PrimitivePDBParser, GROParser, CRDParser
 
 # dictionary of known file formats and the corresponding file parser
 # (all parser should essentially do the same thing; the PSFParser is
@@ -22,6 +22,7 @@ import PSFParser, PDBParser, PrimitivePDBParser, GROParser
 _topology_parsers = {'PSF': PSFParser.parse,
                      'PDB': PDBParser.parse,
                      'GRO': GROParser.parse,
+                     'CRD': CRDParser.parse,
                      }
 _topology_parsers_permissive = _topology_parsers.copy()
 _topology_parsers_permissive['PDB'] = PrimitivePDBParser.parse

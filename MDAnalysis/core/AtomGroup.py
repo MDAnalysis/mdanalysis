@@ -948,7 +948,7 @@ class Universe(object):
         if coordinatefile is None and \
                 MDAnalysis.topology.core.guess_format(topologyfile) in \
                 MDAnalysis.coordinates._topology_coordinates_readers:
-            coordinatefile = topologyfile         # hack for pdb/gro - only
+            coordinatefile = topologyfile         # hack for pdb/gro/crd - only
         self.load_new(coordinatefile, **kwargs)
 
     def load_new(self, filename, **kwargs):
