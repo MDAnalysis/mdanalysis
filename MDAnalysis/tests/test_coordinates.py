@@ -183,6 +183,7 @@ class TestPSF_PrimitivePDBReader(TestPDBReader):
 
 class TestGROReader(TestCase, RefAdK):
     def setUp(self):
+        mda.core.flags['convert_gromacs_lengths'] = True  # default
 	self.universe = mda.Universe(GRO)
         self.ts = self.universe.trajectory.ts
         self.prec = 2  # lower prec in gro!! (3 decimals nm -> 2 decimals in Angstroem)
@@ -204,6 +205,8 @@ class TestGROReader(TestCase, RefAdK):
         assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames")
 
     def test_coordinates(self):
+        assert_equal(mda.core.flags['convert_gromacs_lengths'], True,
+                     "oops, mda.core.flags['convert_gromacs_lengths'] should be True for this test")
         A10CA = self.universe.SYSTEM.CA[10]
         assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], self.prec,
                             err_msg="wrong coordinates for A10:CA")
@@ -211,6 +214,8 @@ class TestGROReader(TestCase, RefAdK):
     def test_distances(self):
         # NOTE that the prec is only 1 decimal: subtracting two low precision coordinates
         #      low prec: 9.3455122920041109; high prec (from pdb): 9.3513174
+        assert_equal(mda.core.flags['convert_gromacs_lengths'], True,
+                     "oops, mda.core.flags['convert_gromacs_lengths'] should be True for this test")
         NTERM = self.universe.SYSTEM.N[0]
         CTERM = self.universe.SYSTEM.C[-1]
         d = atom_distance(NTERM, CTERM)
@@ -222,6 +227,8 @@ class TestGROReader(TestCase, RefAdK):
         assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
 
     def test_unitcell(self):
+        assert_equal(mda.core.flags['convert_gromacs_lengths'], True,
+                     "oops, mda.core.flags['convert_gromacs_lengths'] should be True for this test")
         assert_array_almost_equal(self.ts.dimensions, self.ref_unitcell, self.prec, 
                                   err_msg="unit cell dimensions (rhombic dodecahedron)")
 
@@ -564,6 +571,7 @@ class _GromacsReader(TestCase):
     # This base class assumes same lengths and dt for XTC and TRR test cases!
     filename = None
     def setUp(self):
+        mda.core.flags['convert_gromacs_lengths'] = True  # default--just make sure!
         self.universe = mda.Universe(GRO, self.filename) # loading from GRO is 4x faster than the PDB reader
         self.trajectory = self.universe.trajectory
         self.prec = 3
