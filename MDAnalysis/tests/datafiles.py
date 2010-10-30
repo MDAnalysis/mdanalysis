@@ -19,8 +19,8 @@ from pkg_resources import resource_filename
 PSF = resource_filename(__name__, 'data/adk.psf')
 DCD = resource_filename(__name__, 'data/adk_dims.dcd')
 DCD_empty = resource_filename(__name__, 'data/empty.dcd')
+CRD = resource_filename(__name__, 'data/adk_open.crd')
 
-CRD_small = resource_filename(__name__, 'data/adk.crd')
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')

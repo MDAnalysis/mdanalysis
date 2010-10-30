@@ -26,7 +26,7 @@ class RefAdKSmall(object):
        default.
     """
     ref_coordinates = {
-        'A10CA': np.array([ -1.19799995,   7.9369998 ,  22.65399933]),
+        'A10CA': np.array([ -1.198, 7.937, 22.654]),   # G11:CA, copied frm adk_open.pdb
         }
     ref_distances = {'endtoend': 11.016959}
     ref_E151HA2_index = 2314
@@ -122,17 +122,15 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
 
 
 
-class TestPDBReader(TestCase, RefAdKSmall):
-    def setUp(self):
-        self.universe = mda.Universe(PDB_small) 
-        self.prec = 6  # 6 decimals in A in PDB
+class _SingleFrameReader(TestCase, RefAdKSmall):
+    # see TestPDBReader how to set up!
 
     def tearDown(self):
         del self.universe
 
-    def test_load_pdb(self):
+    def test_load_file(self):
         U = self.universe
-        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from small PDB")
+        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from file %s" % U.trajectory.filename)
         assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0], 
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
@@ -147,7 +145,8 @@ class TestPDBReader(TestCase, RefAdKSmall):
 
     def test_coordinates(self):
         A10CA = self.universe.s4AKE.CA[10]
-        assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], 
+        # restrict accuracy to maximum in PDB files (3 decimals)
+        assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], decimals=3,
                             err_msg="wrong coordinates for A10:CA")
         
     def test_distances(self):
@@ -157,34 +156,15 @@ class TestPDBReader(TestCase, RefAdKSmall):
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="distance between M1:N and G214:C")
 
-class TestPSF_CRDReader(TestCRDReader):
+class TestPDBReader(_SingleFrameReader):
     def setUp(self):
-        self.universe = mda.Universe(PSF, CRD_small)
+        self.universe = mda.Universe(PDB_small) 
+        self.prec = 6  # 6 decimals in A in PDB
+
+class TestPSF_CRDReader(_SingleFrameReader):
+    def setUp(self):
+        self.universe = mda.Universe(PSF, CRD)
         self.prec = 6
-
-    def tearDown(self):
-        del self.universe
-
-    def test_load_crd(self):
-        U = self.universe
-        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from small PDB")
-        assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0],
-                     U.atoms[self.ref_E151HA2_index], "Atom selections")
-
-    def test_numatoms(self):
-        assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
-
-    def test_numres(self):
-        assert_equal(self.universe.atoms.numberOfResidues(), 214, "wrong number of residues")
-
-    def test_numframes(self):
-        assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames in crd")
-
-    def test_coordinates(self):
-        A10CA = self.universe.s4AKE.CA[10]
-        assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'],
-                            err_msg="wrong coordinates for A10:CA")
-
 
 class TestPSF_PDBReader(TestPDBReader):
     def setUp(self):
