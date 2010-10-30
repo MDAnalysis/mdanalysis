@@ -146,7 +146,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_coordinates(self):
         A10CA = self.universe.s4AKE.CA[10]
         # restrict accuracy to maximum in PDB files (3 decimals)
-        assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], decimals=3,
+        assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], 3,
                             err_msg="wrong coordinates for A10:CA")
         
     def test_distances(self):
@@ -159,27 +159,27 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
 class TestPDBReader(_SingleFrameReader):
     def setUp(self):
         self.universe = mda.Universe(PDB_small) 
-        self.prec = 6  # 6 decimals in A in PDB
+        self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
 class TestPSF_CRDReader(_SingleFrameReader):
     def setUp(self):
         self.universe = mda.Universe(PSF, CRD)
-        self.prec = 6
+        self.prec = 5  # precision in CRD (at least we are writing %9.5f)
 
 class TestPSF_PDBReader(TestPDBReader):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small)
-        self.prec = 6
+        self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
 class TestPrimitivePDBReader(TestPDBReader):
     def setUp(self):
         self.universe = mda.Universe(PDB_small, permissive=True) 
-        self.prec = 6  # 6 decimals in A in PDB
+        self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
 class TestPSF_PrimitivePDBReader(TestPDBReader):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True) 
-        self.prec = 6  # 6 decimals in A in PDB
+        self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
 class TestGROReader(TestCase, RefAdK):
     def setUp(self):
