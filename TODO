@@ -1,19 +1,38 @@
-$Id$
+===========
+ TODO List
+===========
 
-== Feature requests and pertinent bugs ==
+Notes on features that we might want to add in the future. If you are
+willing to work on any of those projects and want to contribute ideas
+or code then please get in touch with us (see README/AUTHORS for
+contact details or http://mdanalysis.cooglecode.com)
+
+Feature requests and pertinent bugs
+===================================
 (see also http://code.google.com/p/mdanalysis/issues/list )
-
-* full Gromacs support (read topology from tpr file and trajectory
-  from xtc/trr) #1, #2
-
-* generate a primitive topology (psf) from a pdb file so that one
-  can read in pdbs directly
 
 * hydrogen bond analysis
 
-* read xyz files (maybe we can use the VMD molfile plugin for all the file reading??)
+* possibly use VMD's molfile plugins for reading?
 
-== Installation ==
+* robust guessing of masses
+
+* build a bonds list from a structure
+
+* introduce new Residue classes such as AminoAcid(Residue) or
+  NucleicAcid(Residue) with specific methods (e.g. phi/psi dihedrals);
+  Bio.PDB has something like this
+
+* add density data and enhance selections so that one can select
+  molecules that are within a certain region
+
+
+
+Installation
+============
+
+* simplify installation (e.g. find the fast algebra library
+  automatically or bundle a light-weight version as a fall back)
 
 * intel compiler does not work (at least Ubuntu 8.04 Linux) 
   
