@@ -194,6 +194,14 @@ class _WriteAtoms(TestCase):
         assert_almost_equal(G2.coordinates(), G.coordinates(), self.precision,
                             err_msg="segment s4AKE coordinates do not agree with original")
 
+    def test_write_Universe(self):
+        U = self.universe
+        W = MDAnalysis.Writer(self.outfile)
+        W.write(U)
+        u2 = self.universe_from_tmp()
+        assert_equal(len(u2.atoms), len(U.atoms), "written 4AKE universe does not match original universe in size")
+        assert_almost_equal(u2.atoms.coordinates(), U.atoms.coordinates(), self.precision,
+                            err_msg="written universe 4AKE coordinates do not agree with original")
 
 
 class TestWritePDB(_WriteAtoms):

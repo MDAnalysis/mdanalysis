@@ -938,6 +938,7 @@ class Universe(object):
         # create memory problems?
         self.segments = self.atoms.segments
         self.residues = self.atoms.residues
+        self.universe = self    # for Writer.write(universe), see Issue 49
 
         #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
         # Let atoms access the universe

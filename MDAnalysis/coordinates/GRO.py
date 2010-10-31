@@ -151,6 +151,7 @@ class GROWriter(base.Writer):
 		:Arguments:
 		  selection
                       MDAnalysis AtomGroup (selection or Universe.atoms)
+		      or also Universe
                 :Keywords:
 		  frame             
                       optionally move to frame number *frame*
@@ -169,19 +170,16 @@ class GROWriter(base.Writer):
 			except AttributeError:
 				frame = 1   # should catch cases when we are analyzing a single GRO (?)
 
-		# MUST use atoms so that this works for Segments etc:
-		atoms = selection.atoms
-
+		atoms = selection.atoms           # make sure to use atoms (Issue 46)
+		coordinates = atoms.coordinates() # can write from selection == Universe (Issue 49)
+		self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, in-place !
                 output_gro = open(self.filename , 'w')
 		try:
 			# Header
 			output_gro.write('Written by MDAnalysis\n')
 			output_gro.write(self.fmt['numatoms'] % len(atoms))
 
-			# Atom descriptions and coords
-			coordinates = selection.coordinates()
-			self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, in-place !
-		
+			# Atom descriptions and coords		
 			for atom_index,atom in enumerate(atoms):
 				c = coordinates[atom_index]
 				output_line = self.fmt['xyz'] % \

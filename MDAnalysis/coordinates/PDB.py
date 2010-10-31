@@ -348,11 +348,11 @@ class PrimitivePDBWriter(base.Writer):
                 frame = u.trajectory.ts.frame
             except AttributeError:
                 frame = 1   # should catch cases when we are analyzing a single PDB (?)
-        coor = selection.coordinates()
         
         self.TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
         self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
-        atoms = selection.atoms   # make sure to use atoms (Issue 46)
+        atoms = selection.atoms    # make sure to use atoms (Issue 46)
+        coor = atoms.coordinates() # can write from selection == Universe (Issue 49)
         for i, atom in enumerate(atoms):
             self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
                       x=coor[i,0], y=coor[i,1], z=coor[i,2])

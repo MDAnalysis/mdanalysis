@@ -116,10 +116,9 @@ class CRDWriter(base.Writer):
                 frame = u.trajectory.ts.frame
             except AttributeError:
                 frame = 1   # should catch cases when we are analyzing a single PDB (?)
-        coor = selection.coordinates()
        
-        atoms = selection.atoms   # make sure to use atoms (Issue 46)
-        
+        atoms = selection.atoms     # make sure to use atoms (Issue 46)
+        coor = atoms.coordinates()  # can write from selection == Universe (Issue 49)
         self.crd = open(self.filename,'w')
         try:
             self._TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
