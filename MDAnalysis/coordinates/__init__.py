@@ -17,6 +17,12 @@ be accessible through this entry point in the same manner (`duck typing`_)
 
 .. _duck typing: http://c2.com/cgi/wiki?DuckTyping
 
+In order to write coordinates, a factory function is provided
+(:func:`MDAnalysis.core.writer`) which is made available as
+:func:`MDAnalysis.Writer`) that returns a Writer appropriate for the desired
+file format.
+
+
 
 Trajectory API
 --------------
@@ -40,6 +46,9 @@ History
 - 2010-08-20 added single frame writers to API [orbeckst]
 - 2010-10-09 added write() method to Writers [orbeckst]
 - 2010-10-19 use close() instead of close_trajectory() [orbeckst]
+- 2010-10-30 clarified Writer write() methods (see also `Issue 49`_)
+
+.. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
 
 
 Registry
@@ -220,16 +229,21 @@ compressed
 Trajectory Writer class
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Trajectory readers are derived from :class:`MDAnalysis.coordinates.base.Writer`.
+Trajectory readers are derived from
+:class:`MDAnalysis.coordinates.base.Writer`. They are use to write multiple
+frames to a trajectory file. Every time the write() method is called, another
+frame is appended to the trajectory.
+
 Typically, many methods and attributes are overriden.
 
 Signature::
    W = TrajectoryWriter(filename,numatoms,**kwargs)
-   W.write_next_timestep(TimeStep)
+   W.write_next_timestep(Timestep)
 or::
-   W.write(TimeStep)    # same as above
    W.write(AtomGroup)   # write a selection
    W.write(Universe)    # write a whole universe
+   W.write(Timestep)    # same as write_next_timestep()
+
 
 Methods
 .......
@@ -283,6 +297,7 @@ way.
 Signature::
    W = FrameWriter(filename, **kwargs)
    W.write(AtomGroup)
+   W.write(Universe)
 
 The blanket kwargs is required so that one can pass the same kind of
 arguments (filename and numatoms) as for the Trajectory writers. In
@@ -293,9 +308,15 @@ Methods
 .......
  __init__(filename, **kwargs)
    opens *filename* for writing; kwargs are typically ignored
- write(AtomGroup)
-   writes the group of atoms (typically obtained from a selection) to the file
-   and closes the file
+ write(obj)
+   writes the object *obj*, containing a
+   :class:`~MDAnalysis.core.AtomGroup.AtomGroup` group of atoms (typically
+   obtained from a selection) or :class:`~MDAnalysis.core.AtomGroup.Universe`
+   to the file and closes the file
+
+.. Note:: Trajectory and Frame writers can be used in almost exactly the same
+   manner with the one difference that Frame writers cannot deal with raw
+   :class:`~MDAnalysis.coordinates.base.Timestep` objects.
 
 """
 
