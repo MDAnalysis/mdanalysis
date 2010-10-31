@@ -3,7 +3,7 @@ Location of data files for the MDAnalysis unit tests
 ====================================================
 
 Real MD simulation data are stored in the ``data/`` sub
-directory. File names are in all caps. Use as ::
+directory. Use as ::
 
   from MDAnalysis.tests.datafiles import *
 
@@ -12,7 +12,7 @@ __all__ = ["PSF", "DCD",                        # CHARMM
            "PDB_small",                         # PDB
            "PDB", "GRO", "XTC", "TRR", "TPR",   # Gromacs
            "XYZ", "XYZ_bz2" ,                   # XYZ
-           "CRD_small" ]                        # CRD
+           "CRD" ]                              # CRD
 
 from pkg_resources import resource_filename
 
