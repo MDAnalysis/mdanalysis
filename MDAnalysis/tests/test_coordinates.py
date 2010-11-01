@@ -128,6 +128,11 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def tearDown(self):
         del self.universe
 
+    def test_flag_permissive_pdb_reader(self):
+        """test_flag_permissive_pdb_reader: permissive_pdb_reader==True enables primitive PDB reader"""
+        assert_equal(mda.core.flags['permissive_pdb_reader'], True,
+                     "'permissive_pdb_reader' flag should be True as MDAnalysis default")
+
     def test_load_file(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from file %s" % U.trajectory.filename)
@@ -158,8 +163,16 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
 
 class TestPDBReader(_SingleFrameReader):
     def setUp(self):
+        mda.core.flags['permissive_pdb_reader'] = False # enable Bio.PDB reader!!
         self.universe = mda.Universe(PDB_small) 
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+    def tearDown(self):
+        mda.core.flags['permissive_pdb_reader'] = True  # MDAnalysis default 
+
+    def test_flag_permissive_pdb_reader(self):
+        """test_flag_permissive_pdb_reader: permissive_pdb_reader==False enables Bio.PDB"""
+        assert_equal(mda.core.flags['permissive_pdb_reader'], False,
+                     "'permissive_pdb_reader' flag must be False for Bio.PDB reader testing")
 
 class TestPSF_CRDReader(_SingleFrameReader):
     def setUp(self):
@@ -168,17 +181,18 @@ class TestPSF_CRDReader(_SingleFrameReader):
 
 class TestPSF_PDBReader(TestPDBReader):
     def setUp(self):
+        mda.core.flags['permissive_pdb_reader'] = False
         self.universe = mda.Universe(PSF, PDB_small)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
-class TestPrimitivePDBReader(TestPDBReader):
+class TestPrimitivePDBReader(_SingleFrameReader):
     def setUp(self):
-        self.universe = mda.Universe(PDB_small, permissive=True) 
+        self.universe = mda.Universe(PDB_small) 
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
-class TestPSF_PrimitivePDBReader(TestPDBReader):
+class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
     def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small, permissive=True) 
+        self.universe = mda.Universe(PSF, PDB_small) 
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
 class TestGROReader(TestCase, RefAdK):
@@ -277,7 +291,7 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
                                   err_msg="unit cell A,B,C (rhombic dodecahedron)")
         # angles should not have changed
         assert_array_almost_equal(self.ts.dimensions[3:], self.ref_unitcell[3:], self.prec, 
-                                  err_msg="unit cell alpha,bet,gamma (rhombic dodecahedron)")
+                                  err_msg="unit cell alpha,beta,gamma (rhombic dodecahedron)")
         
 
 class TestPDBReaderBig(TestCase, RefAdK):

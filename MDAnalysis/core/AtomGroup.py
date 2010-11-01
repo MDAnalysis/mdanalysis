@@ -853,7 +853,35 @@ class SegmentGroup(ResidueGroup):
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
 
-    Built from a psf, pdb or gro file.
+      Universe(topology[,trajectory[,permissive]]) --> universe
+
+    The system always requires a *topology* file --- in the simplest
+    case just a list of atoms. This can be a CHARMM/NAMD PSF file or a
+    simple coordinate file with atom informations such as PDB, Gromacs
+    GRO, or CHARMM CRD.
+
+    A trajectory provides coordinates; the coordinates have to be
+    ordered in the same way as the topology. A trajectory can be a
+    single frame such as a PDB, CRD, or GRO file, or it can be a MD
+    trajectory (in CHARMM/NAMD/LAMMOS DCD, Gromacs XTC/TRR, or generic
+    XYZ format).
+
+    As a special case, when the topology is a PDB, GRO or CRD file
+    then the coordinates re immediately loaded from the "topology"
+    file unless a trajectory is supplied.
+
+    Examples for setting up a universe::
+       u = Universe(topology, trajectory)          # read system from file(s)
+       u = Universe(pdbfile)                       # read atoms and coordinates from PDB or GRO
+       u = Universe(topology, [traj1, traj2, ...]) # read from a list of trajectories
+
+    Load new data into a universe (replaces old trajectory and does *not* append): 
+       u.load_new(trajectory)                      # read from a new trajectory file
+
+    Select atoms, with syntax similar to CHARMM (see
+   :class:`AtomGroup.selectAtoms` for details)::
+       u.selectAtoms(...)
+
 
     Attributes: 
        - :attr:`Universe.trajectory`: currently loaded trajectory reader; 
@@ -862,16 +890,10 @@ class Universe(object):
          set in the trajectory)
        - bonds, angles, dihedrals, impropers (low level access through :attr:`Universe._psf`)
 
-    Methods:
-       - m = Universe(psffile, trajectory)          # read system from file(s)
-       - m = Universe(pdbfile)                      # read atoms and coordinates from PDB or GRO
-       - m = Universe(psffile, [traj1, traj2, ...]) # read from a list of trajectories
-       - m.load_new(trajectory)                     # read from a new trajectory file
-       - m.selectAtoms(...)                         # select atoms using similar selection string as CHARMM
-
     .. Note:: Only a single-frame PDB file is supported; use DCDs or XTC/TRR for
-              trajectories. If a PDB is used instead of a PSF then
-              charges are not correct, masses are guessed, and bonds are not available.
+              trajectories or supply a list of PDB files as the trajectory argument.
+              If a PDB is used instead of a PSF then charges are not correct, masses 
+              are guessed, and bonds are not available.
     """
     def __init__(self, topologyfile, coordinatefile=None, **kwargs):
         """Initialize the central MDAnalysis Universe object.
@@ -890,8 +912,10 @@ class Universe(object):
              as one single trajectory to the Universe. The list can contain different file
              formats.
           *permissive*
-             Set to ``True`` in order to ignore most errors (currently only relevant
-             for PDB files) [``False``]
+             currently only relevant for PDB files: Set to ``True`` in order to ignore most errors
+             and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
+             which can be useful for real Protein Databank PDB files. ``None``  selects the 
+             MDAnalysis default (which is set in :class:`MDAnalysis.core.flags`) [``None``]
 
         This routine tries to do the right thing: 
           1. If a pdb/gro file is provided instead of a psf and no *coordinatefile*
@@ -911,9 +935,11 @@ class Universe(object):
         # trajectory format type (i.e. the extension))
         self.__trajectory = None
 
+        if kwargs.get('permissive',None) is None:
+            kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
         # build the topology (or at least a list of atoms)
         try:
-            parser = MDAnalysis.topology.core.get_parser_for(topologyfile, permissive=kwargs.get('permissive',False))
+            parser = MDAnalysis.topology.core.get_parser_for(topologyfile, permissive=kwargs['permissive'])
             struc = parser(topologyfile)
         except TypeError, err:
             raise ValueError("Failed to build a topology from either a psf, pdb or gro (%s)" % err)
@@ -960,8 +986,10 @@ class Universe(object):
                  the coordinate file (single frame or trajectory) OR a list of
                  filenames, which are read one after another
              *permissive*
-                 If set to ``True``, ignore most errors (at the moment, this is only
-                 relevant for PDB) [``False``]
+                 currently only relevant for PDB files: Set to ``True`` in order to ignore most errors
+                 and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
+                 which can be useful for real Protein Databank PDB files. ``None``  selects the 
+                 MDAnalysis default (which is set in :class:`MDAnalysis.core.flags`) [``None``]
              *kwargs*
                  other kwargs are passed to the trajectory reader (only for advanced use)
 
@@ -975,10 +1003,10 @@ class Universe(object):
         import MDAnalysis.coordinates.core
         from itertools import izip
 
-        permissive = kwargs.pop('permissive', False)
-
+        if kwargs.get('permissive',None) is None:
+            kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
         try:
-            TRJReader = MDAnalysis.coordinates.core.get_reader_for(filename, permissive=permissive)
+            TRJReader = MDAnalysis.coordinates.core.get_reader_for(filename, permissive=kwargs.pop('permissive'))
         except TypeError, err:
             raise TypeError("Universe.load_new() cannot find an appropriate coordinate reader "
                             "for file %r.\n%r" % (filename, err))

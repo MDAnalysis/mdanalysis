@@ -236,7 +236,34 @@ _flags = [
 
          """
          ),
+    Flag('permissive_pdb_reader',
+         True,
+         {'primitive': True, 'permissive': True, True: True,
+          'Bio.PDB': False, 'biopython': False, False: False,
+          },
+         """
+            Select the default reader for PDB Brookhaven databank files.
+           
+            >>> flags['%(name)s'] = value
 
+            The Bio.PDB reader (value=``False``) can deal with 'proper' PDB
+            files from the Protein Databank that contain special PDB features
+            such as insertion codes and it can auto-correct some common
+            mistakes; see :mod:`Bio.PDB` for details. However, Bio.PDB has been
+            known to read some simulation system PDB files **incompletely**; a
+            sure sign of problems is a warning that an atom has appeared twice
+            in a residue.
+
+            Therefore, the default for the PDB reader is ``True``, which
+            selects the "primitive" (or "permissive") reader
+            :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`, which
+            essentially just reads ATOM and HETATM lines and puts atoms in a
+            list.
+
+            One can manually switch between the two by providing the *permissive*
+            keyword to :class:`MDAnalysis.Universe`.
+         """
+         ),
     ]
 
 # Global flag registry for core

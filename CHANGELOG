@@ -78,6 +78,20 @@ The rules for this file:
 	  (slower)
         * more example scripts (e.g. for membrane analysis, trajectory writing,
 	  coordinate transformations)
+        * By default, PDB files are read with the PrimitivePDBReader and not
+	  the Bio.PDB reader anymore because the latter can drop atoms when
+	  they have the same name in a residue (which happens for systems
+	  generated from MD simulations) The PrimitivePDBReader copes just fine
+	  with those cases (but does not handle esoteric PDB features such as
+	  alternative atoms and insertion codes that are not needed for
+	  handling MD simulation data).  
+	  - The default behaviour of MDAnalysis  can be set through the flag
+	       MDAnalysis.core.flag['permissive_pdb_reader'] 
+            The default is True.  
+          - One can always manually select the PDB reader by providing the
+	    permissive keyword to Universe; e.g. Universe(...,permissive=False)
+	    will read the input file with the Bio.PDB reader. This might be
+	    useful when processing true Protein Databank PDB files.
 
 09/19/10 orbeckst
 	* quick-fix release 0.6.4.1
