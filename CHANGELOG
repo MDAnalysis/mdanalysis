@@ -9,7 +9,7 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/10 orbeckst, tyler.je.reddy, danny.parton
+??/??/10 orbeckst, denniej0, tyler.je.reddy, danny.parton
         * major release 0.7.0
           (includes changes that can BREAK BACKWARDS COMPATIBILITY)
         * Removed ALL DEPRECATED code:
@@ -78,6 +78,9 @@ The rules for this file:
 	  (slower)
         * more example scripts (e.g. for membrane analysis, trajectory writing,
 	  coordinate transformations)
+	* CRDReader added (fixes  Issue 40 ) ... it will work for both
+	  standard and extended formats: NO special flags needed. 
+        * CRDWriter will now write extended crd files: NO special flags needed.  
         * By default, PDB files are read with the PrimitivePDBReader and not
 	  the Bio.PDB reader anymore because the latter can drop atoms when
 	  they have the same name in a residue (which happens for systems
