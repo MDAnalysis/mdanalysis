@@ -150,7 +150,7 @@ class _WriteAtoms(TestCase):
         del self.universe
 
     def universe_from_tmp(self):
-        return MDAnalysis.Universe(self.outfile)
+        return MDAnalysis.Universe(self.outfile, convert_units=True)
 
     def test_write_atoms(self):
         self.universe.atoms.write(self.outfile)
@@ -216,6 +216,13 @@ class TestWriteCRD(_WriteAtoms):
 class TestWriteGRO(_WriteAtoms):
     ext = "gro"
     precision = 2
+
+    def test_flag_convert_gromacs_length(self):
+        assert_equal(MDAnalysis.core.flags['convert_gromacs_lengths'], True,
+                     "The flag convert_gromacs_lengths SHOULD be True by default! "
+                     "(If it is not then this might indicate a race condition in the "
+                     "testing suite.)")
+
 
 import MDAnalysis.core.AtomGroup
 @attr("issue")
