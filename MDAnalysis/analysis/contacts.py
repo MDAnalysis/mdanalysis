@@ -3,17 +3,41 @@
 # Copyright (c) 2006-2010 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
 # Released under the GNU Public Licence, v2
 """
-Contact analysis ("q1-q2") --- :mod:`MDAnalysis.analysis.contacts`
-===================================================================
+Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`
+================================================================
 
 :Author: Oliver Beckstein
 :Year: 2010
 :Copyright: GNU Public License v3
 
-See http://lorentz.dynstr.pasteur.fr/joel/adenylate.php for an example of
-contact analysis applied to MinActionPath trajectories of AdK (although this
-was *not* performed with MDAnalysis --- it is just to give an idea what it is
-about).
+Analysis of native contacts *q* over a trajectory.
+
+ * a "contact" exists between two atoms i and j if the distance between them is
+   smaller than the *radius*
+
+ * a "native contact" exists between i and j if a contact exists and if the
+   contact also exists in between the equivalent atoms in the reference
+   structure
+
+The "fraction of native contacts" q(t) is a number between 0 and 1 and
+calculated as the total number of native contacts for a given time frame
+divided by the total number of contacts in the reference structure.
+
+Contacts can be defined between two separate groups of atoms (use
+:class:`ContactAnalysis1`) or between all atoms in a protein (use
+:class:`ContactAnalysis`).
+
+For equilibrium trajectories one can analyze the time series q(t).
+
+Transition pathways have been analyzed in terms of two variables q1 and q2 that
+relate to the native contacts in the end states of the transition ("q1-q2"
+analysis; can be carried out with :class:`ContactAnalysis`).
+
+.. SeeAlso:: See http://lorentz.dynstr.pasteur.fr/joel/adenylate.php for an
+   example of contact analysis applied to MinActionPath trajectories of AdK
+   (although this was *not* performed with MDAnalysis --- it is just to give an
+   idea what it is about).
+
 
 Example
 -------
@@ -26,6 +50,9 @@ conformation and plot the trajectory projected on q1-q2::
   C = MDAnalysis.analysis.contacts.ContactAnalysis(PSF, DCD)
   C.run()
   C.plot()
+
+See the docs for :class:`ContactAnalysis1` for another example.
+
 
 Classes
 -------
@@ -261,10 +288,64 @@ class ContactAnalysis(object):
 class ContactAnalysis1(object):
     """Perform a very flexible native contact analysis with respect to a single reference.
 
+    This analysis class allows one to calculate the fraction of native contacts
+    *q* between two arbitrary groups of atoms with respect to an arbitrary
+    reference structure. For instance, as a reference one could take a crystal
+    structure of a complex, and as the two groups atoms one selects two
+    molecules A and B in the complex. Then the question to be answered by *q*
+    is, is which percentage of the contacts between A and B persist during the simulation.
+
+    First prepare :class:`~MDAnalysis.core.AtomGroup.AtomGroup` selections for
+    the reference atoms; this example uses some arbitrary selections::
+
+      ref = Universe('crystal.pdb')
+      refA = re.selectAtoms('name CA and segid A and resid 6:100')
+      refB = re.selectAtoms('name CA and segid B and resid 1:40')
+
+    Load the trajectory::
+
+      u = Universe(topology, trajectory)
+
+    We then need two selection strings *selA* and *selB* that, when applied as
+    ``u.selectAtoms(selA)`` produce a list of atoms that is equivalent to the
+    reference (i.e. ``u.selectAtoms(selA)`` must select the same atoms as
+    ``refA`` in this example)::
+
+      selA = 'name CA and resid 1:95'     # corresponds to refA
+      selB = 'name CA and resid 150:189'  # corresponds to refB
+
+    .. Note:: It is the user's responsibility to provide a reference group (or
+              groups) that describe equivalent atoms to the ones selected by
+              *selection*.
+
+    Now we are ready to set up the analysis::
+
+      CA1 = ContactAnalysis1(u, selection=(selA,selB), refgroup=(refA,refB), radius=8.0, outfile="q.dat")
+
+    If the groups do not match in length then a :exc:`ValueError` is raised.
+
+    The analysis across the whole trajectory is performed with ::
+
+      CA1.run()
+
+    Results are saved to *outfile* (framenumber q N) and can also be plotted
+    with ::
+
+      CA1.plot()        # plots the time series q(t)
+      CA1.plot_qavg()   # plots the matrix of average contacts <q>
+
+    **Description of computed values**
+
+    *N*
+         number of native contacts
+
+    *q*
+         fraction of native contacts relative to the reference
+    
     """
 
     def __init__(self, *args, **kwargs):
-        """Calculate native contacts from two reference structures.
+        """Calculate native contacts within a group or between two groups.
 
         ContactAnalysis1(topology, trajectory[,selection[,refgroup[,radius[,outfile]]]]) --> obj
 
@@ -305,16 +386,16 @@ class ContactAnalysis1(object):
         The timeseries is written to a bzip2-compressed file in *targetdir*
         named "basename(*trajectory*)*infix*_q1q2.dat.bz2" and is also
         accessible as the attribute :attr:`ContactAnalysis.timeseries`.
-
-        .. Note:: It is the user's responsibility to provide a reference group
-                  (or groups) that describe equivalent atoms to the ones
-                  selected by *selection*.
         """
 
         # XX or should I use as input
         #   sel = (group1, group2), ref = (refgroup1, refgroup2)
         # and get the universe from sel?
         # Currently it's a odd hybrid.
+        #
+        # Enhancements:
+        # - select contact pairs to write out as a timecourse
+        # - make this selection based on qavg
 
         self.selection_strings = self._return_tuple2(kwargs.pop('selection', "name CA or name B*"), "selection")
         self.references = self._return_tuple2(kwargs.pop('refgroup', None), "refgroup")
@@ -455,3 +536,47 @@ class ContactAnalysis1(object):
         plot(t[0], t[1], **kwargs)
         xlabel(r"frame number $t$")
         ylabel(r"native contacts $q_1$")
+
+    def _plot_qavg_pcolor(self, **kwargs):
+        """Plot :attr:`ContactAnalysis1.qavg`, the matrix of average native contacts."""
+        from pylab import pcolor, gca, meshgrid, xlabel, ylabel, xlim, ylim, colorbar
+
+        x,y = self.selections[0].resids(), self.selections[1].resids()
+        X,Y = meshgrid(x,y)
+        
+        pcolor(X,Y,self.qavg.T, **kwargs)
+        gca().set_aspect('equal')
+
+        xlim(min(x),max(x))
+        ylim(min(y),max(y))             
+
+        xlabel("residues")
+        ylabel("residues")
+
+        colorbar()
+
+
+    def plot_qavg(self, **kwargs):
+        """Plot :attr:`ContactAnalysis1.qavg`, the matrix of average native contacts."""
+        from pylab import imshow, xlabel, ylabel, xlim, ylim, colorbar
+        from pylab import cm
+
+        x,y = self.selections[0].resids(), self.selections[1].resids()
+
+        kwargs['origin'] = 'lower'
+        kwargs.setdefault('aspect', 'equal')
+        kwargs.setdefault('interpolation', 'nearest')
+        kwargs.setdefault('vmin', 0)
+        kwargs.setdefault('vmax', 1)
+        kwargs.setdefault('cmap', cm.hot)
+        kwargs.setdefault('extent', (min(x), max(x), min(y), max(y)))        
+
+        imshow(self.qavg.T, **kwargs)
+
+        xlim(min(x),max(x))
+        ylim(min(y),max(y))             
+
+        xlabel("residue from %r" % self.selection_strings[0])
+        ylabel("residue from %r" % self.selection_strings[1])
+
+        colorbar()

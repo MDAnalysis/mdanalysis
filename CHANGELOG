@@ -9,7 +9,12 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/10 orbeckst, denniej0, tyler.je.reddy, danny.parton
+??/??/10 orbeckst
+        * 0.7.1 release
+        * new analysis.contacts.ContactAnalysis1 class that supports a
+	  native contact analysis between arbitrary groups
+
+11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton
         * major release 0.7.0
           (includes changes that can BREAK BACKWARDS COMPATIBILITY)
         * Removed ALL DEPRECATED code:
