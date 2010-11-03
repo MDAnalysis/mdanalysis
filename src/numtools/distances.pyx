@@ -75,11 +75,11 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
     ref = reference.copy('C')
     conf = configuration.copy('C')
 
-    if (conf.nd != 2 and conf.dimensions[1] != 3):
+    if (conf.nd != 2 or conf.dimensions[1] != 3):
         raise ValueError("conf must be a sequence of 3 dimensional coordinates")
-    if (ref.nd != 2 and ref.dimensions[1] != 3):
+    if (ref.nd != 2 or ref.dimensions[1] != 3):
         raise ValueError("ref must be a sequence of 3 dimensional coordinates")
-    if (conf.dtype!=numpy.dtype(numpy.float32) and ref.dtype!=numpy.dtype(numpy.float32)):
+    if (conf.dtype!=numpy.dtype(numpy.float32) or ref.dtype!=numpy.dtype(numpy.float32)):
         raise TypeError("coordinate data must be of type float32")
     with_PBC = (box is not None)
     if with_PBC is True:
@@ -146,7 +146,7 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
     # new contiguous array in memory (and just make sure its in C order)
     ref = reference.copy('C')
 
-    if (ref.nd != 2 and ref.dimensions[1] != 3):
+    if (ref.nd != 2 or ref.dimensions[1] != 3):
         raise ValueError("ref must be a sequence of 3 dimensional coordinates")
     if (ref.dtype!=numpy.dtype(numpy.float32)):
         raise TypeError("coordinate data must be of type float32")
@@ -161,7 +161,7 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
     distnum = (refnum*(refnum-1))/2
 
     if not result is None:
-        if (result.nd != 1 and result.dimensions[0] != distnum):
+        if (result.nd != 1 or result.dimensions[0] != distnum):
             raise ValueError("result array has incorrect size or datatype - should be (%d)"%(distnum))
         if (result.dtype != numpy.dtype(numpy.float64)):
             raise TypeError("result array must be of type numpy.float64")
