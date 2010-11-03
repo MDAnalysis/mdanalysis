@@ -32,6 +32,8 @@ Classes
 
 .. autoclass:: ContactAnalysis
    :members:
+.. autoclass:: ContactAnalysis1
+   :members:
 
 """
 from __future__ import with_statement
@@ -39,10 +41,11 @@ from __future__ import with_statement
 import os
 import warnings
 import bz2
+from itertools import izip
 import numpy
 import MDAnalysis
-from MDAnalysis.core.distances import self_distance_array
-
+from MDAnalysis.core.distances import distance_array, self_distance_array
+from MDAnalysis.core.util import openany
 
 class ContactAnalysis(object):
     """Perform a native contact analysis ("q1-q2").
@@ -150,7 +153,7 @@ class ContactAnalysis(object):
 
         self.d = numpy.zeros_like(dref[0])
         self.q = self.qarray(self.d)
-        self.qtmp = numpy.zeros_like(self.q)  # pre-allocated array
+        self._qtmp = numpy.zeros_like(self.q)  # pre-allocated array
 
     def output_exists(self, force=False):
         """Return True if default output file already exists.
@@ -186,8 +189,8 @@ class ContactAnalysis(object):
                 # use pre-allocated distance array to save a little bit of time
                 self_distance_array(self.ca.coordinates(), result=self.d)
                 self.qarray(self.d, out=self.q)
-                n1, q1 = self.qN(self.q, 0, out=self.qtmp)
-                n2, q2 = self.qN(self.q, 1, out=self.qtmp)
+                n1, q1 = self.qN(self.q, 0, out=self._qtmp)
+                n2, q2 = self.qN(self.q, 1, out=self._qtmp)
 
                 if store:
                     records.append((frame, q1, q2, n1, n2))
@@ -248,3 +251,207 @@ class ContactAnalysis(object):
         ylabel(r"$q_2$")
 
 
+# ContactAnalysis1 is a (hopefully) temporary hack. It should be unified with ContactAnalysis
+# or either should be derived from a base class because many methods are copy&paste with
+# minor changes (mostly for going from q1q2 -> q1 only).
+# If ContactAnalysis is enhanced to accept two references then this should be even easier.
+# It might also be worthwhile making a simpler class that just does the q calculation
+# and use it for both reference and trajectory data.
+
+class ContactAnalysis1(object):
+    """Perform a very flexible native contact analysis with respect to a single reference.
+
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Calculate native contacts from two reference structures.
+
+        ContactAnalysis1(topology, trajectory[,selection[,refgroup[,radius[,outfile]]]]) --> obj
+
+        ContactAnalysis1(universe[,selection[,refgroup[,radius[,outfile]]]]) --> obj
+
+        :Arguments:
+          *topology*
+            psf or pdb file
+          *trajectory*
+            dcd or xtc/trr file
+          *universe*
+            instead of a topology/trajectory combination, one can also supply
+            a :class:`MDAnalysis.Universe`
+
+        :Keywords:
+          *selection*
+            selection string that determines which distances are calculated; if this
+            is a tuple or list with two entries then distances are calculated between
+            these two different groups ["name CA or name B*"]
+          *refgroup*
+            reference group, either a single :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+            (if there is only a single *selection*) or a list of two such groups.
+            The reference contacts are directly computed from *refgroup* and hence
+            the atoms in the reference group(s) must be equivalent to the ones produced
+            by the *selection* on the input trajectory.
+          *radius*
+            contacts are deemed any atoms within radius [8.0 A]
+          *outfile*
+            name of the output file; with the gz or bz2 suffix, a compressed
+            file is written ["q1.dat.bz2"]
+
+        The function calculates the percentage of native contacts q1
+        along a trajectory. "Contacts" are defined as the number of atoms
+        within *radius* of a given other atom. *q1* is the fraction of contacts
+        relative to the reference state 1 (typically the starting conformation
+        of the trajectory).
+
+        The timeseries is written to a bzip2-compressed file in *targetdir*
+        named "basename(*trajectory*)*infix*_q1q2.dat.bz2" and is also
+        accessible as the attribute :attr:`ContactAnalysis.timeseries`.
+
+        .. Note:: It is the user's responsibility to provide a reference group
+                  (or groups) that describe equivalent atoms to the ones
+                  selected by *selection*.
+        """
+
+        # XX or should I use as input
+        #   sel = (group1, group2), ref = (refgroup1, refgroup2)
+        # and get the universe from sel?
+        # Currently it's a odd hybrid.
+
+        self.selection_strings = self._return_tuple2(kwargs.pop('selection', "name CA or name B*"), "selection")
+        self.references = self._return_tuple2(kwargs.pop('refgroup', None), "refgroup")
+        self.radius = kwargs.pop('radius', 8.0)
+        self.targetdir = kwargs.pop('targetdir', os.path.curdir)
+        self.output = kwargs.pop('outfile', "q1.dat.bz2")
+        self.force = kwargs.pop('force', False)
+
+        self.timeseries = None  # final result
+
+        self.filenames = args
+        self.universe = MDAnalysis.asUniverse(*args, **kwargs)
+
+        self.selections = [self.universe.selectAtoms(s) for s in self.selection_strings]
+
+        # sanity checkes
+        for x in self.references:
+            if x is None:
+                raise ValueError("a reference AtomGroup must be supplied")
+        for ref,sel,s in izip(self.references, self.selections, self.selection_strings):
+            if ref.atoms.numberOfAtoms() != sel.atoms.numberOfAtoms():
+                raise ValueError("selection=%r: Number of atoms differ between "
+                                 "reference (%d) and trajectory (%d)" %
+                                 (s, ref.atoms.numberOfAtoms(), sel.atoms.numberOfAtoms()))
+
+        # compute reference contacts
+        dref = distance_array(self.references[0].coordinates(), self.references[1].coordinates())
+        self.qref = self.qarray(dref)
+        self.nref = self.qref.sum()
+
+        # setup arrays for the trajectory
+        self.d = numpy.zeros_like(dref)
+        self.q = self.qarray(self.d)
+        self._qtmp = numpy.zeros_like(self.q)  # pre-allocated array
+
+        self.qavg = numpy.zeros(shape=self.q.shape, dtype=numpy.float64)
+        
+    def _return_tuple2(self, x, name):
+        if not isinstance(x, (tuple, list, numpy.ndarray)):
+            t = (x,)
+        else:
+            t = x
+        if len(t) == 2:
+            return t
+        elif len(t) == 1:
+            return (x, x)
+        else:
+            raise ValueError("%(name)s must be a single object or a tuple/list with two objects "
+                             "and not %(x)r" % vars())
+
+    def output_exists(self, force=False):
+        """Return True if default output file already exists.
+
+        Disable with force=True (will always return False)
+        """
+        return os.path.isfile(self.output) and not (self.force or force)
+
+    def run(self, store=True, force=False):
+        """Analyze trajectory and produce timeseries.
+
+        Stores results in :attr:`ContactAnalysis1.timeseries` (if
+        store=True) and writes them to a bzip2-compressed data file.
+        """
+        if self.output_exists(force=force):
+            import warnings
+            warnings.warn("File %r already exists, loading it INSTEAD of trajectory %r. "
+                          "Use force=True to overwrite the output file. " % 
+                          (self.output, self.universe.trajectory.filename))
+            self.load(self.output)
+            return None
+        
+        with openany(self.output, 'w') as out:
+            out.write("# q1 analysis\n# nref = %d\n" % (self.nref))
+            out.write("# frame  q1  n1\n")
+            records = []
+            self.qavg *= 0  # average contact existence
+            A,B = self.selections
+            for ts in self.universe.trajectory:
+                frame = ts.frame
+                # use pre-allocated distance array to save a little bit of time
+                distance_array(A.coordinates(), B.coordinates(), result=self.d)
+                self.qarray(self.d, out=self.q)
+                n1, q1 = self.qN(self.q, out=self._qtmp)
+                self.qavg += self.q
+                if store:
+                    records.append((frame, q1, n1))
+                out.write("%(frame)4d  %(q1)8.6f %(n1)5d\n" % vars())
+        if store:
+            self.timeseries = numpy.array(records).T
+        self.qavg /= self.universe.trajectory.numframes
+        return self.output
+
+    def qarray(self, d, out=None):
+        """Return distance array with True for contacts.
+
+        If *out* is supplied as a pre-allocated array of the correct
+        shape then it is filled instead of allocating a new one in
+        order to increase performance.
+        """
+        if out is None:
+            out = (d <= self.radius)
+        else:
+            out[:] = (d <= self.radius)
+        return out
+
+    def qN(self, q, out=None):
+        """Calculate native contacts relative to reference state.
+
+        If *out* is supplied as a pre-allocated array of the correct
+        shape then it is filled instead of allocating a new one in
+        order to increase performance.
+        """
+        if out is None:
+            out = numpy.logical_and(q, self.qref)
+        else:
+            numpy.logical_and(q, self.qref, out)
+        contacts = out.sum()
+        return contacts, float(contacts)/self.nref
+
+    def load(self, filename):
+        """Load the data file."""
+        from MDAnalysis.core.util import openany
+        records = []
+        with openany(filename) as data:
+            for line in data:
+                if line.startswith('#'):
+                    continue
+                records.append(map(float, line.split()))
+        self.timeseries = numpy.array(records).T
+
+    def plot(self, **kwargs):
+        """Plot q1-q2."""
+        from pylab import plot, xlabel, ylabel
+        kwargs.setdefault('color', 'black')        
+        if self.timeseries is None:
+            raise ValueError("No timeseries data; do 'ContactAnalysis.run(store=True)' first.")
+        t = self.timeseries
+        plot(t[0], t[1], **kwargs)
+        xlabel(r"frame number $t$")
+        ylabel(r"native contacts $q_1$")
