@@ -163,16 +163,18 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
 
 class TestPDBReader(_SingleFrameReader):
     def setUp(self):
-        mda.core.flags['permissive_pdb_reader'] = False # enable Bio.PDB reader!!
-        self.universe = mda.Universe(PDB_small) 
+        ##mda.core.flags['permissive_pdb_reader'] = False # enable Bio.PDB reader!!
+        # use permissive=False instead of changing the global flag as this
+        # can lead to race conditions when testing in parallel
+        self.universe = mda.Universe(PDB_small, permissive=False) 
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
-    def tearDown(self):
-        mda.core.flags['permissive_pdb_reader'] = True  # MDAnalysis default 
+    #def tearDown(self):
+    #    mda.core.flags['permissive_pdb_reader'] = True  # MDAnalysis default 
 
-    def test_flag_permissive_pdb_reader(self):
-        """test_flag_permissive_pdb_reader: permissive_pdb_reader==False enables Bio.PDB"""
-        assert_equal(mda.core.flags['permissive_pdb_reader'], False,
-                     "'permissive_pdb_reader' flag must be False for Bio.PDB reader testing")
+    #def test_flag_permissive_pdb_reader(self):
+    #    """test_flag_permissive_pdb_reader: permissive_pdb_reader==False enables Bio.PDB"""
+    #    assert_equal(mda.core.flags['permissive_pdb_reader'], False,
+    #                 "'permissive_pdb_reader' flag must be False for Bio.PDB reader testing")
 
 class TestPSF_CRDReader(_SingleFrameReader):
     def setUp(self):
@@ -181,23 +183,22 @@ class TestPSF_CRDReader(_SingleFrameReader):
 
 class TestPSF_PDBReader(TestPDBReader):
     def setUp(self):
-        mda.core.flags['permissive_pdb_reader'] = False
-        self.universe = mda.Universe(PSF, PDB_small)
+        # mda.core.flags['permissive_pdb_reader'] = False
+        self.universe = mda.Universe(PSF, PDB_small, permissive=False)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
 class TestPrimitivePDBReader(_SingleFrameReader):
     def setUp(self):
-        self.universe = mda.Universe(PDB_small) 
+        self.universe = mda.Universe(PDB_small, permissive=True) 
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
 class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
     def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small) 
+        self.universe = mda.Universe(PSF, PDB_small, permissive=True) 
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
 class TestGROReader(TestCase, RefAdK):
     def setUp(self):
-        mda.core.flags['convert_gromacs_lengths'] = True  # default
 	self.universe = mda.Universe(GRO)
         self.ts = self.universe.trajectory.ts
         self.prec = 2  # lower prec in gro!! (3 decimals nm -> 2 decimals in Angstroem)
@@ -205,6 +206,10 @@ class TestGROReader(TestCase, RefAdK):
     def tearDown(self):
         del self.universe
         del self.ts
+
+    def test_flag_convert_gromacs_lengths(self):
+        assert_equal(mda.core.flags['convert_gromacs_lengths'], True,
+                     "MDAnalysis.core.flags['convert_gromacs_lengths'] should be True by default")
 
     def test_load_gro(self):
         U = self.universe
@@ -219,8 +224,6 @@ class TestGROReader(TestCase, RefAdK):
         assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames")
 
     def test_coordinates(self):
-        assert_equal(mda.core.flags['convert_gromacs_lengths'], True,
-                     "oops, mda.core.flags['convert_gromacs_lengths'] should be True for this test")
         A10CA = self.universe.SYSTEM.CA[10]
         assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], self.prec,
                             err_msg="wrong coordinates for A10:CA")
@@ -228,8 +231,6 @@ class TestGROReader(TestCase, RefAdK):
     def test_distances(self):
         # NOTE that the prec is only 1 decimal: subtracting two low precision coordinates
         #      low prec: 9.3455122920041109; high prec (from pdb): 9.3513174
-        assert_equal(mda.core.flags['convert_gromacs_lengths'], True,
-                     "oops, mda.core.flags['convert_gromacs_lengths'] should be True for this test")
         NTERM = self.universe.SYSTEM.N[0]
         CTERM = self.universe.SYSTEM.C[-1]
         d = atom_distance(NTERM, CTERM)
@@ -241,37 +242,30 @@ class TestGROReader(TestCase, RefAdK):
         assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
 
     def test_unitcell(self):
-        assert_equal(mda.core.flags['convert_gromacs_lengths'], True,
-                     "oops, mda.core.flags['convert_gromacs_lengths'] should be True for this test")
         assert_array_almost_equal(self.ts.dimensions, self.ref_unitcell, self.prec, 
                                   err_msg="unit cell dimensions (rhombic dodecahedron)")
 
 class TestGROReaderNoConversion(TestCase, RefAdK):
     def setUp(self):
-        mda.core.flags['convert_gromacs_lengths'] = False
-        self.universe = mda.Universe(GRO)
+        ##mda.core.flags['convert_gromacs_lengths'] = False
+        self.universe = mda.Universe(GRO, convert_units=False)
         self.ts = self.universe.trajectory.ts
         self.prec = 3
 
     def tearDown(self):
-        mda.core.flags['convert_gromacs_lengths'] = True  # default
+        ##mda.core.flags['convert_gromacs_lengths'] = True  # default
         del self.universe
         del self.ts
 
     def test_coordinates(self):
-        # note: these are the native coordinates in nm; for the test to succeed:
-        assert_equal(mda.core.flags['convert_gromacs_lengths'], False, 
-                     "oops, mda.core.flags['convert_gromacs_lengths'] should be False for this test")
+        # note: these are the native coordinates in nm; for the test to succeed
+        # we loaded with convert_units=False
         A10CA = self.universe.SYSTEM.CA[10]
         assert_almost_equal(A10CA.pos, RefAdK.ref_coordinates['A10CA']/10.0,  # coordinates in nm 
                             self.prec,
                             err_msg="wrong native coordinates (in nm) for A10:CA")
         
     def test_distances(self):
-        # note: these are the native coordinates in nm; for the test to succeed:
-        assert_equal(mda.core.flags['convert_gromacs_lengths'], False, 
-                     "oops, mda.core.flags['convert_gromacs_lengths'] should be False for this test")
-
         # 3 decimals on nm in gro but we compare to the distance
         # computed from the pdb file, so the effective precision is 2 again.
         # (Otherwise the distance test fails: 
@@ -585,11 +579,19 @@ class _GromacsReader(TestCase):
     # This base class assumes same lengths and dt for XTC and TRR test cases!
     filename = None
     def setUp(self):
-        mda.core.flags['convert_gromacs_lengths'] = True  # default--just make sure!
-        self.universe = mda.Universe(GRO, self.filename) # loading from GRO is 4x faster than the PDB reader
+        # default flag--just make sure!... but can lead to race conditions
+        # use explicit convert_units argument to specify behaviour
+        ##mda.core.flags['convert_gromacs_lengths'] = True
+        # loading from GRO is 4x faster than the PDB reader
+        self.universe = mda.Universe(GRO, self.filename, convert_units=True)
         self.trajectory = self.universe.trajectory
         self.prec = 3
         self.ts = self.universe.coord
+
+    @dec.slow
+    def test_flag_convert_gromacs_lengths(self):
+        assert_equal(mda.core.flags['convert_gromacs_lengths'], True,
+                     "MDAnalysis.core.flags['convert_gromacs_lengths'] should be True by default")
     
     @dec.slow
     def test_rewind_xdrtrj(self):
@@ -625,9 +627,6 @@ class _GromacsReader(TestCase):
 
     @dec.slow
     def test_coordinates(self):
-        # note: these are the native coordinates in nm; for the test to succeed:
-        assert_equal(mda.core.flags['convert_gromacs_lengths'], True, 
-                     "oops, mda.core.flags['convert_gromacs_lengths'] should be True")
         ca_nm = np.array([[ 6.043369675,  7.385184479,  1.381425762]], dtype=np.float32)
         # coordinates in the base unit (needed for True)
         ca_Angstrom = ca_nm * 10.0
@@ -670,19 +669,20 @@ class TestTRRReader(_GromacsReader):
 class _XDRNoConversion(TestCase):
     filename = None
     def setUp(self):
-        mda.core.flags['convert_gromacs_lengths'] = False
-        self.universe = mda.Universe(PDB, self.filename)
+        # not needed when using convert_units=False
+        ##mda.core.flags['convert_gromacs_lengths'] = False
+        self.universe = mda.Universe(PDB, self.filename, convert_units=False)
         self.ts = self.universe.trajectory.ts
     def tearDown(self):
-        mda.core.flags['convert_gromacs_lengths'] = True  # default
+        ##mda.core.flags['convert_gromacs_lengths'] = True  # default
         del self.universe
         del self.ts
 
     @dec.slow
     def test_coordinates(self):
         # note: these are the native coordinates in nm; for the test to succeed:
-        assert_equal(mda.core.flags['convert_gromacs_lengths'], False, 
-                     "oops, mda.core.flags['convert_gromacs_lengths'] should be False for this test")
+        ##assert_equal(mda.core.flags['convert_gromacs_lengths'], False, 
+        ##             "oops, mda.core.flags['convert_gromacs_lengths'] should be False for this test")
         ca_nm = np.array([[ 6.043369675,  7.385184479,  1.381425762]], dtype=np.float32)
         U = self.universe
         T = U.trajectory
@@ -694,7 +694,7 @@ class _XDRNoConversion(TestCase):
         # low precision match because we also look at the trr: only 3 decimals in nm in xtc!
         assert_array_almost_equal(ca.coordinates(), ca_nm, 3,
                                   err_msg="native coords of Ca of resid 122 do not match for frame 3 "\
-                                      "with core.flags['convert_gromacs_lengths'] = False")
+                                      "with convert_units=False")
 
 class TestXTCNoConversion(_XDRNoConversion):
     filename = XTC
