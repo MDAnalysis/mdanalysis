@@ -65,7 +65,7 @@ Classes
 """
 from __future__ import with_statement
 
-import os
+import os, errno
 import warnings
 import bz2
 from itertools import izip
@@ -73,6 +73,9 @@ import numpy
 import MDAnalysis
 from MDAnalysis.core.distances import distance_array, self_distance_array
 from MDAnalysis.core.util import openany
+
+import logging
+logger = logging.getLogger("MDAnalysis.analysis.contacts")
 
 class ContactAnalysis(object):
     """Perform a native contact analysis ("q1-q2").
@@ -347,9 +350,9 @@ class ContactAnalysis1(object):
     def __init__(self, *args, **kwargs):
         """Calculate native contacts within a group or between two groups.
 
-        ContactAnalysis1(topology, trajectory[,selection[,refgroup[,radius[,outfile]]]]) --> obj
+        .. class:: ContactAnalysis1(topology, trajectory[,selection[,refgroup[,radius[,outfile]]]]) --> obj
 
-        ContactAnalysis1(universe[,selection[,refgroup[,radius[,outfile]]]]) --> obj
+        .. class:: ContactAnalysis1(universe[,selection[,refgroup[,radius[,outfile]]]]) --> obj
 
         :Arguments:
           *topology*
@@ -375,7 +378,12 @@ class ContactAnalysis1(object):
             contacts are deemed any atoms within radius [8.0 A]
           *outfile*
             name of the output file; with the gz or bz2 suffix, a compressed
-            file is written ["q1.dat.bz2"]
+            file is written. The average <q> is written to a second, gzipped
+            file that has the same name with 'array' included. E.g. for the
+            default name "q1.dat.gz" the <q> file will be "q1.array.gz". The
+            format is the matrix in column-row format, i.e. selection 1
+            residues are the columns and selection 2 residues are rows. The
+            file can be read with :func:`numpy.loadtxt`.  ["q1.dat.gz"]
 
         The function calculates the percentage of native contacts q1
         along a trajectory. "Contacts" are defined as the number of atoms
@@ -383,9 +391,8 @@ class ContactAnalysis1(object):
         relative to the reference state 1 (typically the starting conformation
         of the trajectory).
 
-        The timeseries is written to a bzip2-compressed file in *targetdir*
-        named "basename(*trajectory*)*infix*_q1q2.dat.bz2" and is also
-        accessible as the attribute :attr:`ContactAnalysis.timeseries`.
+        The timeseries is written to a file *outfile* and is also accessible as
+        the attribute :attr:`ContactAnalysis1.timeseries`.
         """
 
         # XX or should I use as input
@@ -396,12 +403,14 @@ class ContactAnalysis1(object):
         # Enhancements:
         # - select contact pairs to write out as a timecourse
         # - make this selection based on qavg
+        from os.path import splitext
 
         self.selection_strings = self._return_tuple2(kwargs.pop('selection', "name CA or name B*"), "selection")
         self.references = self._return_tuple2(kwargs.pop('refgroup', None), "refgroup")
         self.radius = kwargs.pop('radius', 8.0)
         self.targetdir = kwargs.pop('targetdir', os.path.curdir)
-        self.output = kwargs.pop('outfile', "q1.dat.bz2")
+        self.output = kwargs.pop('outfile', "q1.dat.gz")
+        self.outarray = splitext(splitext(self.output)[0])[0]+".array.gz"
         self.force = kwargs.pop('force', False)
 
         self.timeseries = None  # final result
@@ -456,8 +465,9 @@ class ContactAnalysis1(object):
     def run(self, store=True, force=False):
         """Analyze trajectory and produce timeseries.
 
-        Stores results in :attr:`ContactAnalysis1.timeseries` (if
-        store=True) and writes them to a bzip2-compressed data file.
+        Stores results in :attr:`ContactAnalysis1.timeseries` (if store=True)
+        and writes them to a data file. The average q is written to a second
+        data file.
         """
         if self.output_exists(force=force):
             import warnings
@@ -486,6 +496,7 @@ class ContactAnalysis1(object):
         if store:
             self.timeseries = numpy.array(records).T
         self.qavg /= self.universe.trajectory.numframes
+        numpy.savetxt(self.outarray, self.qavg, fmt="%8.6f")
         return self.output
 
     def qarray(self, d, out=None):
@@ -525,11 +536,24 @@ class ContactAnalysis1(object):
                     continue
                 records.append(map(float, line.split()))
         self.timeseries = numpy.array(records).T
+        try:
+            self.qavg = numpy.loadtxt(self.outarray)
+        except IOError, err:
+            if err.errno != errno.ENOENT:
+                raise
 
-    def plot(self, **kwargs):
-        """Plot q1-q2."""
-        from pylab import plot, xlabel, ylabel
-        kwargs.setdefault('color', 'black')        
+    def plot(self, filename=None, **kwargs):
+        """Plot q(t).
+
+        .. function:: ContactAnalysis1.plot([filename, ...])
+
+        If *filename* is supplied then the figure is also written to file (the
+        suffix determines the file type, e.g. pdf, png, eps, ...). All other
+        keyword arguments are passed on to :func:`pylab.plot`.
+        """
+        from pylab import plot, xlabel, ylabel, savefig
+        kwargs.setdefault('color', 'black')
+        kwargs.setdefault('linewidth', 2)
         if self.timeseries is None:
             raise ValueError("No timeseries data; do 'ContactAnalysis.run(store=True)' first.")
         t = self.timeseries
@@ -537,9 +561,12 @@ class ContactAnalysis1(object):
         xlabel(r"frame number $t$")
         ylabel(r"native contacts $q_1$")
 
-    def _plot_qavg_pcolor(self, **kwargs):
+        if not filename is None:
+            savefig(filename)
+
+    def _plot_qavg_pcolor(self, filename=None, **kwargs):
         """Plot :attr:`ContactAnalysis1.qavg`, the matrix of average native contacts."""
-        from pylab import pcolor, gca, meshgrid, xlabel, ylabel, xlim, ylim, colorbar
+        from pylab import pcolor, gca, meshgrid, xlabel, ylabel, xlim, ylim, colorbar, savefig
 
         x,y = self.selections[0].resids(), self.selections[1].resids()
         X,Y = meshgrid(x,y)
@@ -555,11 +582,20 @@ class ContactAnalysis1(object):
 
         colorbar()
 
+        if not filename is None:
+            saevfig(filename)
 
-    def plot_qavg(self, **kwargs):
-        """Plot :attr:`ContactAnalysis1.qavg`, the matrix of average native contacts."""
-        from pylab import imshow, xlabel, ylabel, xlim, ylim, colorbar
-        from pylab import cm
+
+    def plot_qavg(self, filename=None, **kwargs):
+        """Plot :attr:`ContactAnalysis1.qavg`, the matrix of average native contacts.
+
+        .. function:: ContactAnalysis1.plot_qavg([filename, ...])
+
+        If *filename* is supplied then the figure is also written to file (the
+        suffix determines the file type, e.g. pdf, png, eps, ...). All other
+        keyword arguments are passed on to :func:`pylab.imshow`.
+        """
+        from pylab import imshow, xlabel, ylabel, xlim, ylim, colorbar, cm, clf, savefig
 
         x,y = self.selections[0].resids(), self.selections[1].resids()
 
@@ -571,6 +607,7 @@ class ContactAnalysis1(object):
         kwargs.setdefault('cmap', cm.hot)
         kwargs.setdefault('extent', (min(x), max(x), min(y), max(y)))        
 
+        clf()
         imshow(self.qavg.T, **kwargs)
 
         xlim(min(x),max(x))
@@ -580,3 +617,6 @@ class ContactAnalysis1(object):
         ylabel("residue from %r" % self.selection_strings[1])
 
         colorbar()
+
+        if not filename is None:
+            savefig(filename)
