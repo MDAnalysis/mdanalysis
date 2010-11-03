@@ -301,6 +301,9 @@ class AtomGroup(object):
         if not hasattr(self,'_cached_indices'):
             self._cached_indices = numpy.array([atom.number for atom in self._atoms])
         return self._cached_indices
+    def names(self):
+        """Returns a list of atom names."""
+        return [a.name for a in self._atoms]
     @property
     def residues(self):
         """Read-only list of :class:`Residue` objects."""
