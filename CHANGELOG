@@ -14,7 +14,7 @@ The rules for this file:
         * new analysis.contacts.ContactAnalysis1 class that supports a
 	  native contact analysis between arbitrary groups
 
-11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton
+11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose
         * major release 0.7.0
           (includes changes that can BREAK BACKWARDS COMPATIBILITY)
         * Removed ALL DEPRECATED code:
@@ -100,6 +100,9 @@ The rules for this file:
 	    permissive keyword to Universe; e.g. Universe(...,permissive=False)
 	    will read the input file with the Bio.PDB reader. This might be
 	    useful when processing true Protein Databank PDB files.
+        * fixed Issue 51 (distance_array() did not properly check its
+          input and wrong results could be returned if the input was a
+          float64 and a float32 array)
 
 09/19/10 orbeckst
 	* quick-fix release 0.6.4.1
