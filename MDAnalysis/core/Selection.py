@@ -337,7 +337,7 @@ class NucleicXstalSelection(Selection):
     * from the Charmm force field
     awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_na.rtf
     """
-    nucl_res = dict([(x,None) for x in ['  A', '  U', '  C', '  G', '  T','A  ','U  ','C  ','G  ','T  ']])
+    nucl_res = dict([(x,None) for x in ['A', 'U', 'C', 'G', 'T']])
     def _apply(self, group):
         return set([a for a in group.atoms if a.resname in self.nucl_res])
     def __repr__(self):
