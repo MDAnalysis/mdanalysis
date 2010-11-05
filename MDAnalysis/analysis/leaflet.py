@@ -27,7 +27,7 @@ See example scripts in the ``examples/`` directory on how to use
 algorithm.
 
 .. autoclass:: LeafletFinder
-   :methods:
+   :members:
 
 .. autofunction:: optimize_cutoff
 

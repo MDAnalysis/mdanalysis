@@ -4,26 +4,37 @@
 Specific analysis modules
 **************************
 
-These modules are located in the mdanalysis/MDAnalysis/analysis/ directory and abstract functionality for specific analysis tasks (for example, bilayer :mod:`leaflet` selection). In many cases it will be preferable to use these provided tools over manually-coded alternatives because some components may be written in C for time-critical routines. 
+These modules are located in the :mod:`MDAnalysis.analysis` module (and the
+code lives in the ``MDAnalysis/analysis/`` directory). They contain abstract
+functionality for specific analysis tasks (for example, bilayer
+:mod:`~MDAnalysis.analysis.leaflet` selection). In many cases it will be
+preferable to use these provided tools over manually-coded alternatives because
+some components may be written in C for time-critical routines.
 
-.. automodule:: align
-   :members:
+These modules are not imported by defaulty; in order to use them one has to ::
 
-.. automodule:: contacts
-   :members:
+  import MDAnalysis.analysis
 
-.. automodule:: distances
-   :members:
+.. _scipy: http://www.scipy.org/
+.. _networkx: http://networkx.lanl.gov/
 
-.. automodule:: leaflet
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/align
+   analysis/contacts
+   analysis/distances
+   analysis/leaflet
+
+.. Note:: Some of the modules require additional Python packages such as
+  :mod:`scipy` from the SciPy_ package or :mod:`networkx` from
+  NetworkX_. These package are *not automatically installed* (although one can
+  add the ``[analysis]`` requirement to the :program:`easy_install` command
+  line to force their installation.
+
+.. TODO: write a INSTALLATION page and link to it
    
-	.. autoclass:: LeafletFinder
-
-	.. autofunction:: optimize_cutoff	  
-
-
-
-
 
 
 
