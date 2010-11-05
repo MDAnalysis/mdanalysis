@@ -56,6 +56,7 @@ Classes and functions
 import warnings
 
 import numpy
+from math import *
 from MDAnalysis import SelectionError, NoDataError, SelectionWarning
 
 class Atom(object):
@@ -385,6 +386,66 @@ class AtomGroup(object):
         Iyz = Izy = -1*reduce(lambda t,a: t+a[0]*a[1][1]*a[1][2], values, 0.)
         return numpy.array([[Ixx, Ixy, Ixz],[Iyx, Iyy, Iyz],[Izx, Izy, Izz]])
 
+    def dihedral(self):
+        #takes two points in three dimensional space and finds the vector between them
+	def vector(atm1, atm2):
+		vector = [0,0,0]
+		vector[0] = atm1[0] - atm2[0]
+		vector[1] = atm1[1] - atm2[1]
+		vector[2] = atm1[2] - atm2[2]
+		return vector
+	#takes two vectors and finds a UNIT vector normal to them
+	def normal(vec1, vec2):
+		normal = [0,0,0]
+		normal[0] = vec1[1]*vec2[2] - vec1[2]*vec2[1]
+		normal[1] = vec1[2]*vec2[0] - vec1[0]*vec2[2]
+		normal[2] = vec1[0]*vec2[1] - vec1[1]*vec2[0]
+		dist = sqrt(normal[0]**2 + normal[1]**2 + normal[2]**2)
+		try:
+			normal[0] = normal[0]/dist
+			normal[1] = normal[1]/dist
+			normal[2] = normal[2]/dist
+		except ZeroDivisionError:
+			print ''
+		return normal
+
+        #finds the angle between two vectors
+	def angle(norm1, norm2):
+		dist1 = sqrt(norm1[0]**2 + norm1[1]**2 + norm1[2]**2)
+		dist2 = sqrt(norm2[0]**2 + norm2[1]**2 + norm2[2]**2)
+		cosa1 = norm1[0]/dist1; cosb1 = norm1[1]/dist1; cosg1 = norm1[2]/dist1
+		cosa2 = norm2[0]/dist2; cosb2 = norm2[1]/dist2; cosg2 = norm2[2]/dist2
+		costheta = cosa1*cosa2 + cosb1*cosb2 + cosg1*cosg2
+		theta = acos(costheta)*180./pi
+		return theta
+	
+	# finds the dot product of two vectors
+	def dot(vec1, vec2):
+		return vec1[0]*vec2[0] + vec1[1]*vec2[1] + vec1[2]*vec2[2]
+
+	#Takes the cross product of two vectors
+	def cross(vec1, vec2):
+		return [vec1[1]*vec2[2] - vec1[2]*vec2[1],\
+		vec1[2]*vec2[0] - vec1[0]*vec2[2],\
+		vec1[0]*vec2[1] - vec1[1]*vec2[0]]
+
+	#Takes the scalar triple product of three vectors
+	def stp(vec1, vec2, vec3):
+		return dot(vec3, cross(vec1, vec2))
+
+	#Determines the sign (+/-) of the angle in question
+	def anglecheck(angle,vec1,vec2,vec3):
+		angleout=angle
+		if stp(vec1, vec2, vec3) > 0.0:
+			angleout = -angle
+		return angleout
+
+	norm1 = normal(vector(self.coordinates()[0], self.coordinates()[1]), vector(self.coordinates()[1], self.coordinates()[2]))
+	norm2 = normal(vector(self.coordinates()[1], self.coordinates()[2]), vector(self.coordinates()[2], self.coordinates()[3]))
+	pre_dihe  = angle(norm1, norm2)
+	dihe = anglecheck(pre_dihe, vector(self.coordinates()[0], self.coordinates()[1]), vector(self.coordinates()[1], self.coordinates()[2]), vector(self.coordinates()[2], self.coordinates()[3]))
+	return dihe
+    
     def principalAxes(self):
         """Calculate the principal axes from the moment of inertia.
 
