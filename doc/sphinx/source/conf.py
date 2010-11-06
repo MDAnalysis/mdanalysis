@@ -187,7 +187,7 @@ htmlhelp_basename = 'MDAnalysisdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('mdanalysis_documentation_index', 'MDAnalysis.tex', u'MDAnalysis Documentation',
+  ('MDAnalysis.tex', u'MDAnalysis Documentation',
    authors, 'manual'),
 ]
 
@@ -220,7 +220,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('mdanalysis_documentation_index', 'mdanalysis', u'MDAnalysis Documentation',
+    ('mdanalysis', u'MDAnalysis Documentation',
      [authors], 1)
 ]
 

@@ -11,7 +11,7 @@ functionality for specific analysis tasks (for example, bilayer
 preferable to use these provided tools over manually-coded alternatives because
 some components may be written in C for time-critical routines.
 
-These modules are not imported by defaulty; in order to use them one has to ::
+These modules are not imported by default; in order to use them one has to ::
 
   import MDAnalysis.analysis
 

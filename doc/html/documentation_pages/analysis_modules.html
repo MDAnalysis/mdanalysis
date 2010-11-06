@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>1. Specific analysis modules &mdash; MDAnalysis v0.6.5 documentation</title>
+    <title>3. Specific analysis modules &mdash; MDAnalysis v0.7.0 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6.5',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,8 +22,9 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="MDAnalysis v0.6.5 documentation" href="../index.html" />
-    <link rel="prev" title="MDAnalysis documentation" href="../mdanalysis_documentation_index.html" /> 
+    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../index.html" />
+    <link rel="next" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align" href="analysis/align.html" />
+    <link rel="prev" title="2. Selection Commands" href="selections.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,9 +37,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../mdanalysis_documentation_index.html" title="MDAnalysis documentation"
+          <a href="analysis/align.html" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="selections.html" title="2. Selection Commands"
              accesskey="P">previous</a> |</li>
-        <li><a href="../mdanalysis_documentation_index.html">MDAnalysis v0.6.5 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -48,540 +52,32 @@
           <div class="body">
             
   <div class="section" id="specific-analysis-modules">
-<h1>1. Specific analysis modules<a class="headerlink" href="#specific-analysis-modules" title="Permalink to this headline">¶</a></h1>
-<p>These modules are located in the mdanalysis/MDAnalysis/analysis/ directory and abstract functionality for specific analysis tasks (for example, bilayer <a class="reference internal" href="#module-leaflet" title="leaflet"><tt class="xref py py-mod docutils literal"><span class="pre">leaflet</span></tt></a> selection). In many cases it will be preferable to use these provided tools over manually-coded alternatives because some components may be written in C for time-critical routines.</p>
-<span class="target" id="module-align"></span><div class="section" id="coordinate-fitting-and-alignment-mdanalysis-analysis-align">
-<h2>1.1. Coordinate fitting and alignment &#8212; <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt><a class="headerlink" href="#coordinate-fitting-and-alignment-mdanalysis-analysis-align" title="Permalink to this headline">¶</a></h2>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Author:</th><td class="field-body">Oliver Beckstein</td>
-</tr>
-<tr class="field"><th class="field-name">Year:</th><td class="field-body">2010</td>
-</tr>
-<tr class="field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
-</tr>
-</tbody>
-</table>
-<p>The script shows how to select a group of atoms (such as the C-alphas),
-calculate the RMSD and transformation matrix, and apply the
-transformation to the current frame of a trajectory to obtain the
-rotated structure.</p>
-<p>In this example we use files provided as part of the MDAnalysis test
-suite (in the variables PSF, DCD, and PDB_small):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.align</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">PDB_small</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ref</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">PDB_small</span><span class="p">)</span>   <span class="c"># reference structure 1AKE</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trj</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>         <span class="c"># trajectory of change 1AKE-&gt;4AKE</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rms_fit_trj</span><span class="p">(</span><span class="n">trj</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;rmsfit.dcd&#39;</span><span class="p">)</span>
+<h1>3. Specific analysis modules<a class="headerlink" href="#specific-analysis-modules" title="Permalink to this headline">¶</a></h1>
+<p>These modules are located in the <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis</span></tt> module (and the
+code lives in the <tt class="docutils literal"><span class="pre">MDAnalysis/analysis/</span></tt> directory). They contain abstract
+functionality for specific analysis tasks (for example, bilayer
+<a class="reference internal" href="analysis/leaflet.html#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><tt class="xref py py-mod docutils literal"><span class="pre">leaflet</span></tt></a> selection). In many cases it will be
+preferable to use these provided tools over manually-coded alternatives because
+some components may be written in C for time-critical routines.</p>
+<p>These modules are not imported by default; in order to use them one has to</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis.analysis</span>
 </pre></div>
 </div>
-<p>It is also possible to align two arbitrary structures by providing a
-mapping between atoms based on a sequence alignment. This allows
-fitting of structural homologs or wild type and mutant.</p>
-<p>If a alignment was provided as &#8220;sequences.aln&#8221; one would first produce
-the appropriate MDAnalysis selections with the <a class="reference internal" href="#align.fasta2select" title="align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a>
-function and then feed the resulting dictionary to <a class="reference internal" href="#align.rms_fit_trj" title="align.rms_fit_trj"><tt class="xref py py-func docutils literal"><span class="pre">rms_fit_trj()</span></tt></a>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">seldict</span> <span class="o">=</span> <span class="n">fasta2select</span><span class="p">(</span><span class="s">&#39;sequences.aln&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rms_fit_trj</span><span class="p">(</span><span class="n">trj</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;rmsfit.dcd&#39;</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">seldict</span><span class="p">)</span>
-</pre></div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis/align.html">3.1. Coordinate fitting and alignment &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/contacts.html">3.2. Native contacts analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/distances.html">3.3. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/leaflet.html">3.4. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></li>
+</ul>
 </div>
-<p>(See the documentation of the functions for this advanced usage.)</p>
-<dl class="function">
-<dt id="align.echo">
-<tt class="descclassname">align.</tt><tt class="descname">echo</tt><big>(</big><em>s=''</em><big>)</big><a class="reference internal" href="../_modules/align.html#echo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#align.echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simple string output that immediately prints to the console.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="align.fasta2select">
-<tt class="descclassname">align.</tt><tt class="descname">fasta2select</tt><big>(</big><em>fastafilename</em>, <em>is_aligned=False</em>, <em>ref_resids=None</em>, <em>target_resids=None</em>, <em>ref_offset=0</em>, <em>target_offset=0</em>, <em>verbosity=3</em><big>)</big><a class="reference internal" href="../_modules/align.html#fasta2select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#align.fasta2select" title="Permalink to this definition">¶</a></dt>
-<dd><p>Align two sequences from a FASTA file and construct a MDAnalysis
-selection string of the common atoms.</p>
-<blockquote>
-fasta2select(fastafilename) -&gt; selection_dict</blockquote>
-<p><em>fastafilename</em> contains the two un-aligned sequences in FASTA
-format. The reference is assumed to be the first sequence, the
-target the second. <a class="reference external" href="http://www.clustal.org/">ClustalW</a> produces a pairwise
-alignment (which is written to a file with suffix .aln).  The
-output contains atom selection strings that select the same atoms
-in the two structures.</p>
-<p>Unless <em>ref_offset</em> and/or <em>target_offset</em> are specified, the resids
-in the structure are assumed to correspond to the positions in the
-un-aligned sequence, namely the first residue has resid == 1.</p>
-<p>In more complicated cases (e.g. when the resid numbering in the
-structure/psf has gaps due to missing parts), simply provide the
-sequence of resids as they appear in the psf in <em>ref_resids</em> or
-<em>target_resids</em>, e.g.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">target_resids</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">resid</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">trj</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;name CA&#39;</span><span class="p">)]</span>
-</pre></div>
-</div>
-<p>(This translation table <em>is</em> combined with any value for <em>xxx_offset</em>!)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt><em>fastafilename</em>    </dt>
-<dd><p class="first last">FASTA file with first sequence as reference and
-second the one to be aligned (ORDER IS IMPORTANT!)</p>
-</dd>
-<dt><em>is_aligned</em></dt>
-<dd><p class="first last">False: run clustalw for sequence alignment; True: use
-the alignment in the file (e.g. from STAMP)</p>
-</dd>
-<dt><em>ref_offset</em></dt>
-<dd><p class="first last">add this number to the column number in the FASTA file
-to get the original residue number</p>
-</dd>
-<dt><em>target_offset</em></dt>
-<dd><p class="first last">same for the target</p>
-</dd>
-<dt><em>ref_resids</em></dt>
-<dd><p class="first last">sequence of resids as they appear in the reference structure</p>
-</dd>
-<dt><em>target_resids</em></dt>
-<dd><p class="first last">sequence of resids as they appear in the target</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>select_dict</em>      </dt>
-<dd><p class="first last">dictionary with &#8216;reference&#8217; and &#8216;target&#8217; selection string
-that can be used immediately in <a class="reference internal" href="#align.rms_fit_trj" title="align.rms_fit_trj"><tt class="xref py py-func docutils literal"><span class="pre">rms_fit_trj()</span></tt></a> as
-<tt class="docutils literal"><span class="pre">select=select_dict</span></tt>.</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="align.rms_fit_trj">
-<tt class="descclassname">align.</tt><tt class="descname">rms_fit_trj</tt><big>(</big><em>traj</em>, <em>ref</em>, <em>select='backbone'</em>, <em>filename=None</em>, <em>prefix='rmsfit_'</em><big>)</big><a class="reference internal" href="../_modules/align.html#rms_fit_trj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#align.rms_fit_trj" title="Permalink to this definition">¶</a></dt>
-<dd><p>RMS-fit trajectory to a reference structure using a selection.</p>
-<blockquote>
-rms_fit_trj(traj, ref, &#8216;backbone or name CB or name OT*&#8217;)</blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>traj</em></dt>
-<dd><p class="first last">trajectory, <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> object</p>
-</dd>
-<dt><em>ref</em></dt>
-<dd><p class="first last">reference coordinates; <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> object
-(uses the current time step of the object)</p>
-</dd>
-<dt><em>filename</em></dt>
-<dd><p class="first last">file name for the RMS-fitted trajectory or pdb; defaults to the 
-original trajectory filename (from <em>traj</em>) with <em>prefix</em> prepended</p>
-</dd>
-<dt><em>prefix</em></dt>
-<dd><p class="first last">prefix for autogenerating the new output filename</p>
-</dd>
-<dt><em>select</em></dt>
-<dd><p class="first last">any valid selection string for
-<tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.AtomGroup.selectAtoms()</span></tt> that produces identical
-selections in <em>traj</em> and <em>ref</em> or dictionary {&#8216;reference&#8217;:sel1,
-&#8216;target&#8217;:sel2}.  The <a class="reference internal" href="#align.fasta2select" title="align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
-dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment.</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<p>Both reference and trajectory must be <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>
-instances. If they contain a trajectory then it is used. The
-output file format is the same as the input <em>traj</em>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This function is flexible but slow. In order to fit a long
-trajectory it is suggested to only align one frame and then use
-that frame with a more efficient program (that otherwise could
-not easily deal with aligning different molecules).</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="align.rmsd">
-<tt class="descclassname">align.</tt><tt class="descname">rmsd</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="reference internal" href="../_modules/align.html#rmsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#align.rmsd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns RMSD between two coordinate sets a and b.</p>
-</dd></dl>
-
-</div>
-<span class="target" id="module-contacts"></span><div class="section" id="contact-analysis-q1-q2-mdanalysis-analysis-contacts">
-<h2>1.2. Contact analysis (&#8220;q1-q2&#8221;) &#8212; <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt><a class="headerlink" href="#contact-analysis-q1-q2-mdanalysis-analysis-contacts" title="Permalink to this headline">¶</a></h2>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Author:</th><td class="field-body">Oliver Beckstein</td>
-</tr>
-<tr class="field"><th class="field-name">Year:</th><td class="field-body">2010</td>
-</tr>
-<tr class="field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
-</tr>
-</tbody>
-</table>
-<p>See <a class="reference external" href="http://lorentz.dynstr.pasteur.fr/joel/adenylate.php">http://lorentz.dynstr.pasteur.fr/joel/adenylate.php</a> for an example of
-contact analysis applied to MinActionPath trajectories of AdK (although this
-was <em>not</em> performed with MDAnalysis &#8212; it is just to give an idea what it is
-about).</p>
-<div class="section" id="example">
-<h3>1.2.1. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
-<p>Analyze a single DIMS transition of AdK between its closed and open
-conformation and plot the trajectory projected on q1-q2:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.contacts</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">contacts</span><span class="o">.</span><span class="n">ContactAnalysis</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
-<span class="n">C</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">C</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-</pre></div>
-</div>
-<dl class="class">
-<dt id="contacts.ContactAnalysis">
-<em class="property">class </em><tt class="descclassname">contacts.</tt><tt class="descname">ContactAnalysis</tt><big>(</big><em>topology</em>, <em>trajectory</em>, <em>ref1=None</em>, <em>ref2=None</em>, <em>radius=8.0</em>, <em>targetdir='.'</em>, <em>infix=''</em>, <em>force=False</em><big>)</big><a class="reference internal" href="../_modules/contacts.html#ContactAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contacts.ContactAnalysis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform a native contact analysis (&#8220;q1-q2&#8221;).</p>
-<p>The analysis of the trajectory is performed with the
-<a class="reference internal" href="#contacts.ContactAnalysis.run" title="contacts.ContactAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">ContactAnalysis.run()</span></tt></a> method. The result is stored in
-<tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis.timeseries</span></tt>. It is a numpy array which
-contains the frame number at index 0, q1 and q2 at index 1 and 2,
-and the total number of contacts in 3 and 4.</p>
-<div class="highlight-python"><pre>frame  q1 q2  n1 n2</pre>
-</div>
-<p>The total number of contacts in the reference states 1 and 2 are
-stored in <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis.nref</span></tt> (index 0 and 1).</p>
-<p>Calculate native contacts from two reference structures.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>topology</em></dt>
-<dd><p class="first last">psf or pdb file</p>
-</dd>
-<dt><em>trajectory</em></dt>
-<dd><p class="first last">dcd or xtc/trr file</p>
-</dd>
-<dt><em>ref1</em></dt>
-<dd><p class="first last">structure of the reference conformation 1 (pdb); if <tt class="xref docutils literal"><span class="pre">None</span></tt> the <em>first</em>
-frame of the trajectory is chosen</p>
-</dd>
-<dt><em>ref2</em></dt>
-<dd><p class="first last">structure of the reference conformation 2 (pdb); if <tt class="xref docutils literal"><span class="pre">None</span></tt> the <em>last</em>
-frame of the trajectory is chosen</p>
-</dd>
-<dt><em>radius</em></dt>
-<dd><p class="first last">contacts are deemed any Ca within radius [8 A]</p>
-</dd>
-<dt><em>targetdir</em></dt>
-<dd><p class="first last">output files are saved there [.]</p>
-</dd>
-<dt><em>infix</em></dt>
-<dd><p class="first last">additional tag string that is inserted into the output filename of the
-data file [&#8220;&#8221;]</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<p>The function calculates the percentage of native contacts q1 and q2
-along a trajectory. &#8220;Contacts&#8221; are defined as the number of Ca atoms
-within <em>radius</em> of a primary Ca. <em>q1</em> is the fraction of contacts
-relative to the reference state 1 (typically the starting conformation
-of the trajectory) and <em>q2</em> is the fraction of contacts relative to the
-conformation 2.</p>
-<p>The timeseries is written to a bzip2-compressed file in <em>targetdir</em>
-named &#8220;basename(<em>trajectory</em>)*infix*_q1q2.dat.bz2&#8221; and is also
-accessible as the attribute <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis.timeseries</span></tt>.</p>
-<dl class="method">
-<dt id="contacts.ContactAnalysis.output_exists">
-<tt class="descname">output_exists</tt><big>(</big><em>force=False</em><big>)</big><a class="reference internal" href="../_modules/contacts.html#ContactAnalysis.output_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contacts.ContactAnalysis.output_exists" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return True if default output file already exists.</p>
-<p>Disable with force=True (will always return False)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="contacts.ContactAnalysis.plot">
-<tt class="descname">plot</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/contacts.html#ContactAnalysis.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contacts.ContactAnalysis.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot q1-q2.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="contacts.ContactAnalysis.qN">
-<tt class="descname">qN</tt><big>(</big><em>q</em>, <em>n</em>, <em>out=None</em><big>)</big><a class="reference internal" href="../_modules/contacts.html#ContactAnalysis.qN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contacts.ContactAnalysis.qN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate native contacts relative to state n.</p>
-<p>If <em>out</em> is supplied as a pre-allocated array of the correct
-shape then it is filled instead of allocating a new one in
-order to increase performance.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="contacts.ContactAnalysis.qarray">
-<tt class="descname">qarray</tt><big>(</big><em>d</em>, <em>out=None</em><big>)</big><a class="reference internal" href="../_modules/contacts.html#ContactAnalysis.qarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contacts.ContactAnalysis.qarray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return distance array with True for contacts.</p>
-<p>If <em>out</em> is supplied as a pre-allocated array of the correct
-shape then it is filled instead of allocating a new one in
-order to increase performance.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="contacts.ContactAnalysis.run">
-<tt class="descname">run</tt><big>(</big><em>store=True</em>, <em>force=False</em><big>)</big><a class="reference internal" href="../_modules/contacts.html#ContactAnalysis.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contacts.ContactAnalysis.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Analyze trajectory and produce timeseries.</p>
-<p>Stores results in <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis.timeseries</span></tt> (if
-store=True) and writes them to a bzip2-compressed data file.</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-</div>
-<span class="target" id="module-distances"></span><div class="section" id="distance-analysis-mdanalysis-distances">
-<h2>1.3. Distance analysis &#8212; <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.distances</span></tt><a class="headerlink" href="#distance-analysis-mdanalysis-distances" title="Permalink to this headline">¶</a></h2>
-<p>This module provides functions to rapidly compute distances between
-atoms or groups of atoms.</p>
-<dl class="function">
-<dt id="distances.distance_array">
-<tt class="descclassname">distances.</tt><tt class="descname">distance_array</tt><big>(</big><big>)</big><a class="headerlink" href="#distances.distance_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate all distances between a reference set and another configuration.</p>
-<p>d = distance_array(ref,conf,box[,result=d[,copy=True]])</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt><em>ref</em></dt>
-<dd><p class="first last">reference coordinate array</p>
-</dd>
-<dt><em>conf</em></dt>
-<dd><p class="first last">configuration coordinate array</p>
-</dd>
-<dt><em>box</em></dt>
-<dd><p class="first last">orthorhombic unit cell dimensions (minimum image convention is applied) or None [None]</p>
-</dd>
-<dt><em>result</em></dt>
-<dd><p class="first last">optional preallocated result array which must have the shape (len(ref),len(conf)) and dtype=numpy.float64. Avoids creating the              array which saves time when the function is called repeatedly. [None]</p>
-</dd>
-<dt><em>copy</em>  </dt>
-<dd><p class="first last">makes internal copies of the input arrays; see note below [True]</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>d</em> </dt>
-<dd><p class="first last">(len(ref),len(conf)) numpy array with the distances d[i,j] between ref coordinates i and conf coordinates j</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This method is slower than it could be because internally we need to
-make copies of the ref and conf arrays. If you know what you are doing
-you can disable this copy by setting copy=False; however, in most cases
-this leads to WRONG results!</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="distances.self_distance_array">
-<tt class="descclassname">distances.</tt><tt class="descname">self_distance_array</tt><big>(</big><big>)</big><a class="headerlink" href="#distances.self_distance_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate all distances d_ij between atoms i and j within a configuration <em>ref</em>.</p>
-<p>d = self_distance_array(ref,box[,result=d[,copy=True]])</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt><em>ref</em></dt>
-<dd><p class="first last">reference coordinate array with N=len(ref) coordinates</p>
-</dd>
-<dt><em>box</em></dt>
-<dd><dl class="first last docutils">
-<dt>orthorhombic unit cell dimensions (minimum image convention</dt>
-<dd><p class="first last">is applied) or None [None]</p>
-</dd>
-</dl>
-</dd>
-<dt><em>result</em></dt>
-<dd><dl class="first last docutils">
-<dt>optional preallocated result array which must have the shape</dt>
-<dd><p class="first last">(N*(N-1)/2,) and dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt>. Avoids creating 
-the array which saves time when the function is called repeatedly. [None]</p>
-</dd>
-</dl>
-</dd>
-<dt><em>copy</em></dt>
-<dd><p class="first last">makes internal copies of the input arrays; see note below [True]</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>d</em></dt>
-<dd><dl class="first last docutils">
-<dt>N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref</dt>
-<dd><p class="first">coordinates i and j at position d[k]. Loop through d:</p>
-<div class="last highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-   <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
-       <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
-       <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This method is slower than it could be because internally we need to
-make copies of the coordinate arrays. If you know what you are doing
-you can disable this copy by setting copy=False; however, in most cases
-this leads to WRONG results!</p>
-</div>
-</dd></dl>
-
-</div>
-<span class="target" id="module-leaflet"></span><div class="section" id="leaflet-identification-mdanalysis-analysis-leaflet">
-<h2>1.4. Leaflet identification &#8212; <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt><a class="headerlink" href="#leaflet-identification-mdanalysis-analysis-leaflet" title="Permalink to this headline">¶</a></h2>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Author:</th><td class="field-body">Oliver Beckstein</td>
-</tr>
-<tr class="field"><th class="field-name">Year:</th><td class="field-body">2010</td>
-</tr>
-<tr class="field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Algorithm:</dt>
-<dd><ol class="first last arabic simple">
-<li>build a graph of all phosphate distances &lt; cutoff</li>
-<li>identify the largest connected subgraphs</li>
-<li>analyse first and second largest graph, which correspond to the leaflets</li>
-</ol>
-</dd>
-</dl>
-<p>You could identify the upper and lower leaflet of a planar membrane by
-comparing the median of the centres of masses, or for a vesicle by
-comparing distances from the centre of geometry, but neither is
-implemented at the moment.</p>
-<dl class="class">
-<dt id="leaflet.LeafletFinder">
-<em class="property">class </em><tt class="descclassname">leaflet.</tt><tt class="descname">LeafletFinder</tt><big>(</big><em>universe</em>, <em>selectionstring</em>, <em>cutoff=15.0</em>, <em>pbc=False</em><big>)</big><a class="reference internal" href="../_modules/leaflet.html#LeafletFinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leaflet.LeafletFinder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Identify atoms in the same leaflet of a lipid bilayer.</p>
-<p>The components of the graph are stored in the list
-<tt class="xref py py-attr docutils literal"><span class="pre">LeafletFinder.components</span></tt>; the atoms in each component are numbered
-consecutively, starting at 0. To obtain the atoms in the input structure
-use <tt class="xref py py-meth docutils literal"><span class="pre">LeafletFinder.atoms()</span></tt>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">L</span> <span class="o">=</span> <span class="n">LeafletFinder</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="s">&#39;name P*&#39;</span><span class="p">)</span>
-<span class="n">leaflet0</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">atoms</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">leaflet1</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">atoms</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Initialize from a <em>universe</em> or pdb file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt><em>universe</em></dt>
-<dd><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> or a PDB file name.</p>
-</dd>
-<dt><em>selectionstring</em></dt>
-<dd><p class="first last"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.Universe.selectAtoms()</span></tt> selection
-for atoms that define the lipid head groups, e.g.
-&#8220;name PO4&#8221; or &#8220;name P*&#8221;</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>cutoff</em></dt>
-<dd><p class="first last">head group-defining atoms within a distance of <em>cutoff</em>
-Angstroms are deemed to be in the same leaflet [15.0]</p>
-</dd>
-<dt><em>pbc</em></dt>
-<dd><p class="first last">take periodic boundary conditions into account (only works
-for orthorhombic boxes) [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="leaflet.optimize_cutoff">
-<tt class="descclassname">leaflet.</tt><tt class="descname">optimize_cutoff</tt><big>(</big><em>universe</em>, <em>selection</em>, <em>dmin=10.0</em>, <em>dmax=20.0</em>, <em>step=0.5</em>, <em>max_imbalance=0.20000000000000001</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/leaflet.html#optimize_cutoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#leaflet.optimize_cutoff" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find cutoff that minimizes number of disconnected groups.</p>
-<p>Applies heuristics to find best groups:</p>
-<ol class="arabic">
-<li><p class="first">at least two groups (assumes that there are at least 2 leaflets)</p>
-</li>
-<li><p class="first">reject any solutions for which:</p>
-<blockquote>
-<p><cite>|N0 - N1|/|N0 + N1| &gt; *max_imbalance*</cite></p>
-</blockquote>
-<p>Ni = number of lipids in group i. This heuristic picks groups with 
-balanced numbers of lipids.</p>
-</li>
-</ol>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt><em>universe</em></dt>
-<dd><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> instance</p>
-</dd>
-<dt><em>selection</em></dt>
-<dd><p class="first last">selection string as used for <a class="reference internal" href="#leaflet.LeafletFinder" title="leaflet.LeafletFinder"><tt class="xref py py-class docutils literal"><span class="pre">LeafletFinder</span></tt></a></p>
-</dd>
-<dt><em>dmin</em>, <em>dmax</em>, <em>step</em></dt>
-<dd><p class="first last">scan cutoffs from <em>dmin</em> to <em>dmax</em> at stepsize*step (in Angstroms)</p>
-</dd>
-<dt><em>max_imbalance</em></dt>
-<dd><p class="first last">tuning parameter for the balancing heuristic (2) [0.2]</p>
-</dd>
-<dt><em>kwargs</em></dt>
-<dd><p class="first last">other arguments for  <a class="reference internal" href="#leaflet.LeafletFinder" title="leaflet.LeafletFinder"><tt class="xref py py-class docutils literal"><span class="pre">LeafletFinder</span></tt></a></p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">(cutoff,N)</span></tt> optimum cutoff and number of groups found</p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last">can die in various ways if really no appropriate number of groups 
-can be found; needs to be made more robust</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+<p class="last">Some of the modules require additional Python packages such as
+<tt class="xref py py-mod docutils literal"><span class="pre">scipy</span></tt> from the <a class="reference external" href="http://www.scipy.org/">SciPy</a> package or <tt class="xref py py-mod docutils literal"><span class="pre">networkx</span></tt> from
+<a class="reference external" href="http://networkx.lanl.gov/">NetworkX</a>. These package are <em>not automatically installed</em> (although one can
+add the <tt class="docutils literal"><span class="pre">[analysis]</span></tt> requirement to the <strong class="program">easy_install</strong> command
+line to force their installation.</p>
 </div>
 </div>
 
@@ -591,23 +87,12 @@ can be found; needs to be made more robust</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../mdanalysis_documentation_index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">1. Specific analysis modules</a><ul>
-<li><a class="reference internal" href="#coordinate-fitting-and-alignment-mdanalysis-analysis-align">1.1. Coordinate fitting and alignment &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></li>
-<li><a class="reference internal" href="#contact-analysis-q1-q2-mdanalysis-analysis-contacts">1.2. Contact analysis (&#8220;q1-q2&#8221;) &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a><ul>
-<li><a class="reference internal" href="#example">1.2.1. Example</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#distance-analysis-mdanalysis-distances">1.3. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></li>
-<li><a class="reference internal" href="#leaflet-identification-mdanalysis-analysis-leaflet">1.4. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
-  <p class="topless"><a href="../mdanalysis_documentation_index.html"
-                        title="previous chapter">MDAnalysis documentation</a></p>
+  <p class="topless"><a href="selections.html"
+                        title="previous chapter">2. Selection Commands</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="analysis/align.html"
+                        title="next chapter">3.1. Coordinate fitting and alignment &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/documentation_pages/analysis_modules.txt"
@@ -640,13 +125,16 @@ can be found; needs to be made more robust</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../mdanalysis_documentation_index.html" title="MDAnalysis documentation"
+          <a href="analysis/align.html" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="selections.html" title="2. Selection Commands"
              >previous</a> |</li>
-        <li><a href="../mdanalysis_documentation_index.html">MDAnalysis v0.6.5 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy.
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>

@@ -1,7 +1,7 @@
 # $Id: GRO.py 101 2010-07-22 13:19:06Z Danny.Parton $
 """
-GRO file format
-===============
+GRO file format --- :mod:`MDAnalysis.coordinates.GRO`
+======================================================
 
 Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 `GRO format`_ which includes a conversion routine for the box.

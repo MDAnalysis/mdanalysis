@@ -1,6 +1,6 @@
 # $Id: XYZ.py 330 2010-06-25 01:52:07Z orbeckst $
-"""XYZ Hierarchy
-
+"""XYZ Hierarchy --- :mod:`MDAnalysis.coordinates.XYZ`
+=========================================================
 """
 import os, errno
 import numpy

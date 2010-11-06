@@ -1,5 +1,5 @@
 """
-:mod:`MDAnalysis.coordinates.core` --- Common functions for coordinate reading
+Common functions for coordinate reading --- :mod:`MDAnalysis.coordinates.core`  
 ==============================================================================
 
 Important base classes are collected in :mod:`MDAnalysis.coordinates.base`.

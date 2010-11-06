@@ -1,5 +1,6 @@
 # $Id: CRD.py 101 2009-08-11 13:19:06Z denniej0 $
-"""CRD structure files in MDAnalysis
+"""CRD structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.CRD`
+===========================================================================
 
 Only coordinates are written at the moment.
 

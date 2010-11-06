@@ -1,7 +1,7 @@
 # $Id: PDB.py 101 2008-05-18 13:19:06Z orbeckst $
 """
-PDB structure files in MDAnalysis
-=================================
+PDB structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.PDB`
+========================================================================
 
 MDAnalysis reads coordinates from PDB files and additional optional
 data such as B-factors. It is also possible to substitute a PDB file

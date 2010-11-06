@@ -1,6 +1,6 @@
 """
-:mod:`MDAnalysis.coordinates.base --- base classes
-==================================================
+Base classes --- :mod:`MDAnalysis.coordinates.base`  
+====================================================
 
 Derive other Reader and Writer classes from the classes in this module.
 
