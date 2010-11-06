@@ -52,6 +52,7 @@ except ImportError:
     print "*** package 'numpy' not found ***"
     print "MDAnalysis requires a version of NumPy, even for setup."
     print "Please get it from http://numpy.scipy.org/ or install it through your package manager."
+    raise
     sys.exit(-1)
 
 try:
@@ -176,7 +177,7 @@ if __name__ == '__main__':
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
           cmdclass = {'build_ext': build_ext},
-          install_requires = ['numpy>=1.0',  # currently not useful because without numpy we don't get here
+          install_requires = [#'numpy>=1.0',  # currently not useful because without numpy we don't get here
                               'biopython',   # required for standard PDB reader
                               ],
           extras_require = {

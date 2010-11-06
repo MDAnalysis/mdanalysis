@@ -9,6 +9,23 @@ from nose.plugins.attrib import attr
 
 import tempfile
 
+try:
+    from numpy.testing import assert_
+except ImportError:
+    def assert_(val, msg='') :
+        """
+        Assert that works in release mode.
+        
+        The Python built-in ``assert`` does not work when executing code in
+        optimized mode (the ``-O`` flag) - no byte-code is generated for it.
+
+        For documentation on usage, refer to the Python documentation.
+        
+        (Code taken from numpy.testing 1.4)
+        """
+        if not val :
+            raise AssertionError(msg)
+
 class TestAtom(TestCase):
     """Tests of Atom."""
     def setUp(self):
