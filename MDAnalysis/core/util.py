@@ -1,7 +1,7 @@
 # $Id$
 """
-Helper functions
-================
+Helper functions --- :mod:`MDAnalysis.core.util`
+====================================================
 
 Small helper functions that don't fit anywhere else.
 

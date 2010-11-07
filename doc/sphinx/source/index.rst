@@ -56,6 +56,7 @@ Contents
    ./documentation_pages/selections
    ./documentation_pages/analysis_modules
    ./documentation_pages/coordinates_modules
+   ./documentation_pages/core_modules
 
 	
 

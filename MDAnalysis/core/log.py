@@ -4,8 +4,8 @@
 # Published under the GNU Public Licence v3
 
 """
-:mod:`MDAnalysis.core.log` -- setting up logging
-================================================
+Setting up logging --- :mod:`MDAnalysis.core.log`
+====================================================
 
 Configure logging for MDAnalysis. Import this module if logging is
 desired in application code.

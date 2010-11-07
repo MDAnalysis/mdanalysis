@@ -1,7 +1,7 @@
 # $Id$
 """
-:mod:`MDAnalysis.Timeseries` --- compute observable timeseries from trajectories
-================================================================================
+Compute observable timeseries from trajectories --- :mod:`MDAnalysis.core.Timeseries`
+=======================================================================================
 
 The collection of timeseries (such as :class:`Atom`, :class:`Bond`,
 :class:`Dihedral`...)  can be computed from a trajectory in one go, foregoing

@@ -1,5 +1,7 @@
 # $Id$
-"""Atom selection Hierarchy
+"""
+Atom selection Hierarchy --- :mod:`MDAnalysis.core.Selection`
+======================================================================
 
 These objects are constructed and applied to the group
 

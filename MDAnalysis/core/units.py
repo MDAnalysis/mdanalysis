@@ -16,8 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Constants and unit conversion
-=============================
+Constants and unit conversion --- :mod:`MDAnalysis.core.units`
+===============================================================
 
 The base units of MDAnalysis are *Angstrom* for *length* (1 Angstrom =
 0.1 nm = 10^-10 m) and *ps* (pico second) for *time* (1 ps = 10^-12

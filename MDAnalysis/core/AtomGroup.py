@@ -1,6 +1,6 @@
 # $Id$
 """
-:mod:`MDAnalysis.core.AtomGroup` --- Basic Organization of the library
+Basic Organization of the Library --- :mod:`MDAnalysis.core.AtomGroup` 
 ======================================================================
 
 The most important data structure in MDAnalysis is the
