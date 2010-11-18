@@ -16,6 +16,8 @@
 #     python (list_search(), list_get_index())
 
 """
+KDTree --- :mod:`MDAnalysis.KDTree.KDTree`
+===============================================
 The KD tree data structure can be used for all kinds of searches that
 involve N-dimensional vectors, e.g.  neighbor searches (find all points
 within a radius of a given point) or finding all point pairs in a set

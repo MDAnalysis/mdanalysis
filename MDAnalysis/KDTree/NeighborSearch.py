@@ -4,7 +4,8 @@
 # [Copyright (C) 2002, Thomas Hamelryck (thamelry@binf.ku.dk)]
 # under the terms of the Biopython license.
 
-"""Fast atom neighbor lookup using a KD tree (implemented in C++).
+"""Fast atom neighbor lookup using a KD tree (implemented in C++) --- :mod:`MDAnalysis.KDTree.NeighborSearch`
+==================================================================================================================
 
 If you know that you are using a specific selection repeatedly then it
 may be faster to explicitly build the selection using the
