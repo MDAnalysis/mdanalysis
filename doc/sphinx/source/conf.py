@@ -268,7 +268,7 @@ epub_copyright = u'2010, '+authors
 # Configuration for intersphinx: refer to the Python standard library
 # and other packages used by MDAnalysis
 intersphinx_mapping = {'http://docs.python.org/': None,
-                       #'http://docs.scipy.org/doc/numpy/': None,
-                       #'http://docs.scipy.org/doc/scipy/reference/': None,
+                       'http://docs.scipy.org/doc/numpy/': None,
+                       'http://docs.scipy.org/doc/scipy/reference/': None,
                        # 'http://networkx.lanl.gov/reference/': None,  ## ask them to publish objects.inv
                        }
