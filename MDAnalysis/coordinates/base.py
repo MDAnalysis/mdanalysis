@@ -393,7 +393,11 @@ class Writer(IObase):
         self.close_trajectory()
 
     def __repr__(self):
-        return "< %s %r for %d atoms >" % (self.__class__.__name__, self.filename, self.numatoms)
+        try:
+            return "< %s %r for %d atoms >" % (self.__class__.__name__, self.filename, self.numatoms)
+        except TypeError:
+            # no trajectory loaded yet
+            return "< %s %r >" % (self.__class__.__name__, self.filename)
 
     # def write_next_timestep(self, ts=None)
 
