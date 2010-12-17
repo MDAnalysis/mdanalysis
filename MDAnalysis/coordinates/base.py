@@ -267,7 +267,7 @@ class ChainReader(Reader):
         return self.active_reader.skip_timestep
     @property
     def delta(self):
-        self.active_reader.delta
+        return self.active_reader.delta
     @property
     def periodic(self):
         return self.active_reader.periodic
