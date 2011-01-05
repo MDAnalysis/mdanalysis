@@ -1,0 +1,185 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.4. DCD Hierarchy — MDAnalysis.coordinates.DCD &mdash; MDAnalysis v0.7.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="4. Coordinates modules" href="../coordinates_modules.html" />
+    <link rel="next" title="4.5. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" />
+    <link rel="prev" title="4.3. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" href="CRD.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="GRO.html" title="4.5. GRO file format — MDAnalysis.coordinates.GRO"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="CRD.html" title="4.3. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" accesskey="U">4. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.DCD"></span><div class="section" id="dcd-hierarchy-mdanalysis-coordinates-dcd">
+<h1>4.4. DCD Hierarchy &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.DCD" title="MDAnalysis.coordinates.DCD"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a><a class="headerlink" href="#dcd-hierarchy-mdanalysis-coordinates-dcd" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">DCDReader</tt><big>(</big><em>dcdfilename</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads from a DCD file
+Data:</p>
+<blockquote>
+ts                     - Timestep object containing coordinates of current frame</blockquote>
+<dl class="docutils">
+<dt>Methods:</dt>
+<dd>dcd = DCD(dcdfilename)             - open dcd file and read header
+len(dcd)                           - return number of frames in dcd
+for ts in dcd:                     - iterate through trajectory
+for ts in dcd[start:stop:skip]:    - iterate through a trajectory
+dcd[i]                             - random access into the trajectory (i corresponds to frame number)
+data = dcd.timeseries(...)         - retrieve a subset of coordinate information for a group of atoms
+data = dcd.correl(...)             - populate a Timeseries.Collection object with computed timeseries</dd>
+</dl>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader.correl">
+<tt class="descname">correl</tt><big>(</big><em>timeseries</em>, <em>start=0</em>, <em>stop=-1</em>, <em>skip=1</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.correl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populate a TimeseriesCollection object with timeseries computed from the trajectory</p>
+<p>timeseries - TimeseriesCollection
+start, stop, skip - subset of trajectory to use, with start and stop being inclusive</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader.timeseries">
+<tt class="descname">timeseries</tt><big>(</big><em>asel</em>, <em>start=0</em>, <em>stop=-1</em>, <em>skip=1</em>, <em>format='afc'</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a subset of coordinate data for an AtomGroup</p>
+<p>asel - AtomGroup object
+start, stop, skip - range of trajectory to access, start and stop are inclusive
+format - the order/shape of the return data array, corresponding to (a)tom, (f)rame, (c)oordinates</p>
+<blockquote>
+all six combinations of &#8216;a&#8217;, &#8216;f&#8217;, &#8216;c&#8217; are allowed
+ie &#8220;fac&#8221; - return array where the shape is (frame, number of atoms, coordinates)</blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.DCD.DCDWriter">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">DCDWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=1.0</em>, <em>remarks='Created by DCDWriter'</em>, <em>convert_units=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes to a DCD file</p>
+<p>Data:</p>
+<dl class="docutils">
+<dt>Methods:</dt>
+<dd>d = DCDWriter(dcdfilename, numatoms, start, step, delta, remarks)</dd>
+</dl>
+<p>Create a new DCDWriter</p>
+<p>filename - name of output file
+numatoms - number of atoms in dcd file
+start - starting timestep
+step  - skip between subsequent timesteps
+delta - timestep
+remarks - comments to annotate dcd file
+convert_units - units are converted to the MDAnalysis base format; <tt class="xref docutils literal"><span class="pre">None</span></tt> selects</p>
+<blockquote>
+the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a>MDAnalysis.core.flags`[&#8216;convert_gromacs_lengths&#8217;]</blockquote>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep">
+<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>write a new timestep to the dcd file
+ts - timestep object containing coordinates to be written to dcd file</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="CRD.html"
+                        title="previous chapter">4.3. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="GRO.html"
+                        title="next chapter">4.5. GRO file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/coordinates/DCD.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="GRO.html" title="4.5. GRO file format — MDAnalysis.coordinates.GRO"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="CRD.html" title="4.3. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" >4. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

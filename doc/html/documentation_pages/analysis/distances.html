@@ -1,0 +1,231 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3.3. Distance analysis — MDAnalysis.distances &mdash; MDAnalysis v0.7.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="3. Specific analysis modules" href="../analysis_modules.html" />
+    <link rel="next" title="3.4. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" />
+    <link rel="prev" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts" href="contacts.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="leaflet.html" title="3.4. Leaflet identification — MDAnalysis.analysis.leaflet"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="contacts.html" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../analysis_modules.html" accesskey="U">3. Specific analysis modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.analysis.distances"></span><div class="section" id="distance-analysis-mdanalysis-distances">
+<h1>3.3. Distance analysis &#8212; <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.distances</span></tt><a class="headerlink" href="#distance-analysis-mdanalysis-distances" title="Permalink to this headline">¶</a></h1>
+<p>This module provides functions to rapidly compute distances between
+atoms or groups of atoms.</p>
+<dl class="function">
+<dt id="MDAnalysis.analysis.distances.distance_array">
+<tt class="descclassname">MDAnalysis.analysis.distances.</tt><tt class="descname">distance_array</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.distances.distance_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate all distances between a reference set and another configuration.</p>
+<p>d = distance_array(ref,conf,box[,result=d])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>ref</em></dt>
+<dd><p class="first last">reference coordinate array</p>
+</dd>
+<dt><em>conf</em></dt>
+<dd><p class="first last">configuration coordinate array</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">orthorhombic unit cell dimensions (minimum image convention is applied) or None [None]</p>
+</dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">optional preallocated result array which must have the shape (len(ref),len(conf)) and dtype=numpy.float64. Avoids creating the              array which saves time when the function is called repeatedly. [None]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>d</em> </dt>
+<dd><p class="first last">(len(ref),len(conf)) numpy array with the distances d[i,j] between ref coordinates i and conf coordinates j</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is slower than it could be because internally we need to
+make copies of the ref and conf arrays.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.distances.self_distance_array">
+<tt class="descclassname">MDAnalysis.analysis.distances.</tt><tt class="descname">self_distance_array</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.distances.self_distance_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate all distances d_ij between atoms i and j within a configuration <em>ref</em>.</p>
+<p>d = self_distance_array(ref,box[,result=d])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>ref</em></dt>
+<dd><p class="first last">reference coordinate array with N=len(ref) coordinates</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><dl class="first last docutils">
+<dt>orthorhombic unit cell dimensions (minimum image convention</dt>
+<dd><p class="first last">is applied) or None [None]</p>
+</dd>
+</dl>
+</dd>
+<dt><em>result</em></dt>
+<dd><dl class="first last docutils">
+<dt>optional preallocated result array which must have the shape</dt>
+<dd><p class="first last">(N*(N-1)/2,) and dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt>. Avoids creating 
+the array which saves time when the function is called repeatedly. [None]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>d</em></dt>
+<dd><dl class="first last docutils">
+<dt>N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref</dt>
+<dd><p class="first">coordinates i and j at position d[k]. Loop through d:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+   <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+       <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+       <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is slower than it could be because internally we need to
+make copies of the coordinate arrays.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.distances.contact_matrix">
+<tt class="descclassname">MDAnalysis.analysis.distances.</tt><tt class="descname">contact_matrix</tt><big>(</big><em>coord</em>, <em>cutoff=15.0</em>, <em>returntype='numpy'</em>, <em>box=None</em>, <em>progress_meter_freq=100</em>, <em>suppress_progmet=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.distances.contact_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a matrix of contacts between a list of coordinates.
+There is a fast, high-memory-usage version for small systems
+(returntype=&#8217;numpy&#8217;), and a slower, low-memory-usage version
+for larger systems (returntype=&#8217;sparse&#8217;).</p>
+<p>If box dimensions are passed, then periodic boundary conditions
+are applied.</p>
+<p>Change progress_meter_freq to alter frequency of progress meter
+updates. Or switch suppress_progmet to True to suppress it completely.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="contacts.html"
+                        title="previous chapter">3.2. Native contacts analysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="leaflet.html"
+                        title="next chapter">3.4. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/analysis/distances.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="leaflet.html" title="3.4. Leaflet identification — MDAnalysis.analysis.leaflet"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="contacts.html" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../analysis_modules.html" >3. Specific analysis modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

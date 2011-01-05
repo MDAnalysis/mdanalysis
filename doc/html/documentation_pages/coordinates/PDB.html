@@ -1,0 +1,395 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.6. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB &mdash; MDAnalysis v0.7.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="4. Coordinates modules" href="../coordinates_modules.html" />
+    <link rel="next" title="4.7. XYZ Hierarchy — MDAnalysis.coordinates.XYZ" href="XYZ.html" />
+    <link rel="prev" title="4.5. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="XYZ.html" title="4.7. XYZ Hierarchy — MDAnalysis.coordinates.XYZ"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="GRO.html" title="4.5. GRO file format — MDAnalysis.coordinates.GRO"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" accesskey="U">4. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.PDB"></span><div class="section" id="pdb-structure-files-in-mdanalysis-mdanalysis-coordinates-pdb">
+<h1>4.6. PDB structure files in MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a><a class="headerlink" href="#pdb-structure-files-in-mdanalysis-mdanalysis-coordinates-pdb" title="Permalink to this headline">¶</a></h1>
+<p>MDAnalysis reads coordinates from PDB files and additional optional
+data such as B-factors. It is also possible to substitute a PDB file
+instead of PSF file in order to define the list of atoms (but no
+connectivity information will be  available in this case).</p>
+<p>The <tt class="xref py py-mod docutils literal"><span class="pre">PDB</span></tt> module makes heavy use of Biopython&#8217;s <tt class="xref py py-mod docutils literal"><span class="pre">Bio.PDB</span></tt>:</p>
+<blockquote>
+<p>Hamelryck, T., Manderick, B. (2003) PDB parser and structure class 
+implemented in Python. Bioinformatics, 19, 2308-2310.</p>
+<p><a class="reference external" href="http://biopython.org">http://biopython.org</a></p>
+</blockquote>
+<p>but replaces the standard PDB file parser with one that uses the
+<tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder</span></tt>
+to cope with very large pdb files as commonly encountered in MD
+simulations.</p>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.PDB.PDBReader">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PDBReader</tt><big>(</big><em>pdbfilename</em>, <em>convert_units=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a pdb file into a BioPython pdb structure.</p>
+<p>The coordinates are also supplied as one numpy array and wrapped
+into a Timestep object; attributes are set so that the PDBReader
+object superficially resembles the DCDReader object.</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PDBReader.get_bfactors">
+<tt class="descname">get_bfactors</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader.get_bfactors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an array of bfactors (tempFactor) in atom order.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.PDB.PDBWriter">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PDBWriter</tt><big>(</big><em>pdbfilename</em>, <em>universe=None</em>, <em>multi=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write out the current time step as a pdb file.</p>
+<p>This is not cleanly implemented at the moment. One must supply a
+universe, even though this is nominally an optional argument. The
+class behaves slightly differently depending on if the structure
+was loaded from a PDB (then the full-fledged <tt class="xref py py-mod docutils literal"><span class="pre">Bio.PDB</span></tt> writer is
+used) or if this is really only an atom selection (then a less
+sophistiocated writer is employed).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The standard PDBWriter can only write the <em>whole system</em>. 
+In order to write a selection, use the <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a>, 
+which happens automatically when the
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.write" title="MDAnalysis.core.AtomGroup.AtomGroup.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method of a 
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> instance is used.</p>
+</div>
+<p>pdbwriter = PDBWriter(&lt;pdbfilename&gt;,PDBstructure==universe.pdb.pdb,**kwargs)
+:Arguments:
+pdbfilename     filename; if multi=True, embed a %%d formatstring</p>
+<blockquote>
+so that write_next_timestep() can insert the frame number</blockquote>
+<p>universe        supply a universe [really REQUIRED; optional only for compatibility]
+multi           False: write a single structure to a single pdb</p>
+<blockquote>
+True: write all frames to multiple pdb files</blockquote>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PDBWriter.write">
+<tt class="descname">write</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write timestep as a pdb file.</p>
+<p>If ts=None then we try to get the current one from the universe.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PrimitivePDBReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>PDBReader that reads a PDB-formatted file, no frills.</p>
+<dl class="docutils">
+<dt>Records read:</dt>
+<dd><ul class="first last simple">
+<li>CRYST1 for unitcell A,B,C, alpha,beta,gamm</li>
+<li>ATOM. HETATM for x,y,z</li>
+</ul>
+</dd>
+</dl>
+<p><a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html">http://www.wwpdb.org/documentation/format32/sect9.html</a></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="15%" />
+<col width="14%" />
+<col width="56%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">COLUMNS</th>
+<th class="head">DATA  TYPE</th>
+<th class="head">FIELD</th>
+<th class="head">DEFINITION</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>1 -  6</td>
+<td>Record name</td>
+<td>&#8220;CRYST1&#8221;</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>7 - 15</td>
+<td>Real(9.3)</td>
+<td>a</td>
+<td>a (Angstroms).</td>
+</tr>
+<tr><td>16 - 24</td>
+<td>Real(9.3)</td>
+<td>b</td>
+<td>b (Angstroms).</td>
+</tr>
+<tr><td>25 - 33</td>
+<td>Real(9.3)</td>
+<td>c</td>
+<td>c (Angstroms).</td>
+</tr>
+<tr><td>34 - 40</td>
+<td>Real(7.2)</td>
+<td>alpha</td>
+<td>alpha (degrees).</td>
+</tr>
+<tr><td>41 - 47</td>
+<td>Real(7.2)</td>
+<td>beta</td>
+<td>beta (degrees).</td>
+</tr>
+<tr><td>48 - 54</td>
+<td>Real(7.2)</td>
+<td>gamma</td>
+<td>gamma (degrees).</td>
+</tr>
+<tr><td>1 -  6</td>
+<td>Record name</td>
+<td>&#8220;ATOM  &#8220;</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>7 - 11</td>
+<td>Integer</td>
+<td>serial</td>
+<td>Atom  serial number.</td>
+</tr>
+<tr><td>13 - 16</td>
+<td>Atom</td>
+<td>name</td>
+<td>Atom name.</td>
+</tr>
+<tr><td>17</td>
+<td>Character</td>
+<td>altLoc</td>
+<td>Alternate location indicator. IGNORED</td>
+</tr>
+<tr><td>18 - 20</td>
+<td>Residue name</td>
+<td>resName</td>
+<td>Residue name.</td>
+</tr>
+<tr><td>22</td>
+<td>Character</td>
+<td>chainID</td>
+<td>Chain identifier.</td>
+</tr>
+<tr><td>23 - 26</td>
+<td>Integer</td>
+<td>resSeq</td>
+<td>Residue sequence number.</td>
+</tr>
+<tr><td>27</td>
+<td>AChar</td>
+<td>iCode</td>
+<td>Code for insertion of residues. IGNORED</td>
+</tr>
+<tr><td>31 - 38</td>
+<td>Real(8.3)</td>
+<td>x</td>
+<td>Orthogonal coordinates for X in Angstroms.</td>
+</tr>
+<tr><td>39 - 46</td>
+<td>Real(8.3)</td>
+<td>y</td>
+<td>Orthogonal coordinates for Y in Angstroms.</td>
+</tr>
+<tr><td>47 - 54</td>
+<td>Real(8.3)</td>
+<td>z</td>
+<td>Orthogonal coordinates for Z in Angstroms.</td>
+</tr>
+<tr><td>55 - 60</td>
+<td>Real(6.2)</td>
+<td>occupancy</td>
+<td>Occupancy.</td>
+</tr>
+<tr><td>61 - 66</td>
+<td>Real(6.2)</td>
+<td>tempFactor</td>
+<td>Temperature  factor.</td>
+</tr>
+<tr><td>67 - 76</td>
+<td>String</td>
+<td>segID</td>
+<td>(unofficial CHARMM extension ?)</td>
+</tr>
+<tr><td>77 - 78</td>
+<td>LString(2)</td>
+<td>element</td>
+<td>Element symbol, right-justified. IGNORED</td>
+</tr>
+<tr><td>79 - 80</td>
+<td>LString(2)</td>
+<td>charge</td>
+<td>Charge  on the atom. IGNORED</td>
+</tr>
+</tbody>
+</table>
+<p>Read coordinates from <em>filename</em>.</p>
+<p><em>filename</em> can be a gzipped or bzip2ed compressed PDB file.</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_bfactors">
+<tt class="descname">get_bfactors</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_bfactors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an array of bfactors (tempFactor) in atom order.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_occupancy">
+<tt class="descname">get_occupancy</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_occupancy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an array of occupancies atom order.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PrimitivePDBWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>PDB writer that implements a subset of the PDB 3.2 standard.
+<a class="reference external" href="http://www.wwpdb.org/documentation/format32/v3.2.html">http://www.wwpdb.org/documentation/format32/v3.2.html</a></p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM">
+<tt class="descname">ATOM</tt><big>(</big><em>serial=None</em>, <em>name=None</em>, <em>altLoc=None</em>, <em>resName=None</em>, <em>chainID=None</em>, <em>resSeq=None</em>, <em>iCode=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em>, <em>occupancy=1.0</em>, <em>tempFactor=0.0</em>, <em>element=None</em>, <em>charge=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write ATOM record. 
+<a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html">http://www.wwpdb.org/documentation/format32/sect9.html</a>
+Only some keword args are optional (altLoc, iCode, chainID), for some defaults are set.</p>
+<p>All inputs are cut to the maximum allowed length. For integer
+numbers the highest-value digits are chopped (so that the
+serial and reSeq wrap); for strings the trailing characters
+are chopped.</p>
+<p>Note: Floats are not checked and can potentially screw up the format.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.CRYST1">
+<tt class="descname">CRYST1</tt><big>(</big><em>dimensions</em>, <em>spacegroup='P 1'</em>, <em>zvalue=1</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.CRYST1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write CRYST1 record.
+<a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect8.html">http://www.wwpdb.org/documentation/format32/sect8.html</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.REMARK">
+<tt class="descname">REMARK</tt><big>(</big><em>*remark</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.REMARK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write generic REMARK record (without number).
+<a class="reference external" href="http://www.wwpdb.org/documentation/format32/remarks1.html">http://www.wwpdb.org/documentation/format32/remarks1.html</a>
+<a class="reference external" href="http://www.wwpdb.org/documentation/format32/remarks2.html">http://www.wwpdb.org/documentation/format32/remarks2.html</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.TITLE">
+<tt class="descname">TITLE</tt><big>(</big><em>*title</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.TITLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write TITLE record.
+<a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect2.html">http://www.wwpdb.org/documentation/format32/sect2.html</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write">
+<tt class="descname">write</tt><big>(</big><em>selection</em>, <em>frame=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write selection at current trajectory frame to file.</p>
+<p>write(selection,frame=FRAME)</p>
+<p>selection         MDAnalysis AtomGroup
+frame             optionally move to frame FRAME</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="GRO.html"
+                        title="previous chapter">4.5. GRO file format &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="XYZ.html"
+                        title="next chapter">4.7. XYZ Hierarchy &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/coordinates/PDB.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="XYZ.html" title="4.7. XYZ Hierarchy — MDAnalysis.coordinates.XYZ"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="GRO.html" title="4.5. GRO file format — MDAnalysis.coordinates.GRO"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" >4. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

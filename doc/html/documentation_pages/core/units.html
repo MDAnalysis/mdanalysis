@@ -1,0 +1,256 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.6. Constants and unit conversion — MDAnalysis.core.units &mdash; MDAnalysis v0.7.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="5. Core modules" href="../core_modules.html" />
+    <link rel="next" title="5.7. Helper functions — MDAnalysis.core.util" href="util.html" />
+    <link rel="prev" title="5.5. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations" href="transformations.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="util.html" title="5.7. Helper functions — MDAnalysis.core.util"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="transformations.html" title="5.5. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../core_modules.html" accesskey="U">5. Core modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.core.units"></span><div class="section" id="constants-and-unit-conversion-mdanalysis-core-units">
+<h1>5.6. Constants and unit conversion &#8212; <a class="reference internal" href="#module-MDAnalysis.core.units" title="MDAnalysis.core.units"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a><a class="headerlink" href="#constants-and-unit-conversion-mdanalysis-core-units" title="Permalink to this headline">¶</a></h1>
+<p>The base units of MDAnalysis are <em>Angstrom</em> for <em>length</em> (1 Angstrom =
+0.1 nm = 10^-10 m) and <em>ps</em> (pico second) for <em>time</em> (1 ps = 10^-12
+sec).</p>
+<p>All conversions: the conversion factor f to a unit b&#8217; for a quantity X
+(whose numeric value relative to the base unit b is stored in the
+program) is a quantity with unit b&#8217;/b. In the dictionaries below only
+the numeric value f(b-&gt;b&#8217;) is stored.</p>
+<blockquote>
+X/b&#8217; = f(b-&gt;b&#8217;) * X/b</blockquote>
+<p><a class="reference internal" href="#MDAnalysis.core.units.get_conversion_factor" title="MDAnalysis.core.units.get_conversion_factor"><tt class="xref py py-func docutils literal"><span class="pre">get_conversion_factor()</span></tt></a> returns the appropriate factor f(b-&gt;b&#8217;).</p>
+<p>Conversion is done via the base units:</p>
+<div class="highlight-python"><pre>x is in u1: from u1 to b:  x'  = x  / factor[u1]
+            from b  to u2: x'' = x' * factor[u2]
+so f[u1,u2] = factor[u2]/factor[u1]</pre>
+</div>
+<div class="section" id="conversions">
+<h2>5.6.1. Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h2>
+<p>density conversion factor. Base unit is A**-3</p>
+<blockquote>
+n/x = n/A**3 * densityUnit_factor[x]</blockquote>
+<p>nm:</p>
+<blockquote>
+f = 1 A^-3/1 nm^-3 = 1/(10A)^-3 = 1/1000</blockquote>
+<p>Molar:</p>
+<blockquote>
+factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)</blockquote>
+<p>relative to a density rho0 in g/cm^3:</p>
+<blockquote>
+<p>M(H2O) = 18 g/mol   Molar mass of water</p>
+<p>factor = 1/(1e-24 * N_Avogadro / M(H2O))</p>
+</blockquote>
+<p>from rho/rho0 = n/(N_A * M**-1) / rho0  where [n] = 1/Volume, [rho] = mass/Volume</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Maybe we should simply use <a class="reference external" href="http://packages.python.org/quantities/">Quantities</a> instead of this
+home grown attempt?</p>
+</div>
+<dl class="data">
+<dt id="MDAnalysis.core.units.N_Avogadro">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">N_Avogadro</tt><a class="headerlink" href="#MDAnalysis.core.units.N_Avogadro" title="Permalink to this definition">¶</a></dt>
+<dd><p>Avogadro&#8217;s constant in mol**-1, from <a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?na">http://physics.nist.gov/cgi-bin/cuu/Value?na</a></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.core.units.conversion_factor">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">conversion_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.conversion_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#MDAnalysis.core.units.conversion_factor" title="MDAnalysis.core.units.conversion_factor"><tt class="xref py py-data docutils literal"><span class="pre">conversion_factor</span></tt></a> is used by <a class="reference internal" href="#MDAnalysis.core.units.get_conversion_factor" title="MDAnalysis.core.units.get_conversion_factor"><tt class="xref py py-func docutils literal"><span class="pre">get_conversion_factor()</span></tt></a>:</p>
+<p>Note: any observable with a unit (i.e. one with an entry in</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.units.convert">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">convert</tt><big>(</big><em>x</em>, <em>u1</em>, <em>u2</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.units.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert value in unit <em>u1</em> to <em>u2</em>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.core.units.densityUnit_factor">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">densityUnit_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.densityUnit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>for water densities, this is the volume per water molecule in A**3</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.units.get_conversion_factor">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">get_conversion_factor</tt><big>(</big><em>unit_type</em>, <em>u1</em>, <em>u2</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.units.get_conversion_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate the conversion factor u1 -&gt; u2 by using the base unit as an intermediate</p>
+<p>f[u1 -&gt; u2] = factor[u2]/factor[u1]</p>
+<p>Conversion of X (in u1) to X&#8217; (in u2):</p>
+<blockquote>
+X&#8217; = conversion_factor * X</blockquote>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.core.units.lengthUnit_factor">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">lengthUnit_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.lengthUnit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>conversion factors between the base unit (Angstrom) and other lengthUnits x:
+L/x = L/A * lengthUnit_factor[x]</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.core.units.timeUnit_factor">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">timeUnit_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.timeUnit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>basic unit is ps
+1 AKMA time unit = 4.888821E-14 sec
+<a class="reference external" href="http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA">http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA</a>
+1200ps/ps * f = 1.2 ns/ns  ==&gt; f = 1/1000</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.core.units.unit_types">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">unit_types</tt><a class="headerlink" href="#MDAnalysis.core.units.unit_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generated lookup table (dict): returns the type of unit for a known input unit.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.core.units.water">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">water</tt><a class="headerlink" href="#MDAnalysis.core.units.water" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>water density: Jorgensen &amp; Jenson, JCompChem 19 (1998), 1179: T=298K, P=1atm</dt>
+<dd><table border="1" class="first last docutils">
+<colgroup>
+<col width="47%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">model</th>
+<th class="head">g cm**-3</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>SPC</td>
+<td>0.985(1)</td>
+</tr>
+<tr><td>TIP3P</td>
+<td>1.002(1)</td>
+</tr>
+<tr><td>TIP4P</td>
+<td>1.001(1)</td>
+</tr>
+<tr><td>exp</td>
+<td>0.997</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>and molar mass 18.016 g mol**-1.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.6. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a><ul>
+<li><a class="reference internal" href="#conversions">5.6.1. Conversions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="transformations.html"
+                        title="previous chapter">5.5. Homogeneous Transformation Matrices and Quaternions &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.transformations</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="util.html"
+                        title="next chapter">5.7. Helper functions &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/core/units.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="util.html" title="5.7. Helper functions — MDAnalysis.core.util"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="transformations.html" title="5.5. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../core_modules.html" >5. Core modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

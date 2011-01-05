@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align &mdash; MDAnalysis v0.7.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="3. Specific analysis modules" href="../analysis_modules.html" />
+    <link rel="next" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts" href="contacts.html" />
+    <link rel="prev" title="3. Specific analysis modules" href="../analysis_modules.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="contacts.html" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../analysis_modules.html" title="3. Specific analysis modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../analysis_modules.html" accesskey="U">3. Specific analysis modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.analysis.align"></span><div class="section" id="coordinate-fitting-and-alignment-mdanalysis-analysis-align">
+<h1>3.1. Coordinate fitting and alignment &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.align" title="MDAnalysis.analysis.align"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a><a class="headerlink" href="#coordinate-fitting-and-alignment-mdanalysis-analysis-align" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Author:</th><td class="field-body">Oliver Beckstein</td>
+</tr>
+<tr class="field"><th class="field-name">Year:</th><td class="field-body">2010</td>
+</tr>
+<tr class="field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
+</tr>
+</tbody>
+</table>
+<p>The script shows how to select a group of atoms (such as the C-alphas),
+calculate the RMSD and transformation matrix, and apply the
+transformation to the current frame of a trajectory to obtain the
+rotated structure.</p>
+<p>In this example we use files provided as part of the MDAnalysis test
+suite (in the variables PSF, DCD, and PDB_small):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.align</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">PDB_small</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ref</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">PDB_small</span><span class="p">)</span>   <span class="c"># reference structure 1AKE</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trj</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>         <span class="c"># trajectory of change 1AKE-&gt;4AKE</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rms_fit_trj</span><span class="p">(</span><span class="n">trj</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;rmsfit.dcd&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is also possible to align two arbitrary structures by providing a
+mapping between atoms based on a sequence alignment. This allows
+fitting of structural homologs or wild type and mutant.</p>
+<p>If a alignment was provided as &#8220;sequences.aln&#8221; one would first produce
+the appropriate MDAnalysis selections with the <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a>
+function and then feed the resulting dictionary to <a class="reference internal" href="#MDAnalysis.analysis.align.rms_fit_trj" title="MDAnalysis.analysis.align.rms_fit_trj"><tt class="xref py py-func docutils literal"><span class="pre">rms_fit_trj()</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">seldict</span> <span class="o">=</span> <span class="n">fasta2select</span><span class="p">(</span><span class="s">&#39;sequences.aln&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rms_fit_trj</span><span class="p">(</span><span class="n">trj</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;rmsfit.dcd&#39;</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">seldict</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(See the documentation of the functions for this advanced usage.)</p>
+<dl class="function">
+<dt id="MDAnalysis.analysis.align.echo">
+<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">echo</tt><big>(</big><em>s=''</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.echo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple string output that immediately prints to the console.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.align.fasta2select">
+<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">fasta2select</tt><big>(</big><em>fastafilename</em>, <em>is_aligned=False</em>, <em>ref_resids=None</em>, <em>target_resids=None</em>, <em>ref_offset=0</em>, <em>target_offset=0</em>, <em>verbosity=3</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.fasta2select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Align two sequences from a FASTA file and construct a MDAnalysis
+selection string of the common atoms.</p>
+<blockquote>
+fasta2select(fastafilename) -&gt; selection_dict</blockquote>
+<p><em>fastafilename</em> contains the two un-aligned sequences in FASTA
+format. The reference is assumed to be the first sequence, the
+target the second. <a class="reference external" href="http://www.clustal.org/">ClustalW</a> produces a pairwise
+alignment (which is written to a file with suffix .aln).  The
+output contains atom selection strings that select the same atoms
+in the two structures.</p>
+<p>Unless <em>ref_offset</em> and/or <em>target_offset</em> are specified, the resids
+in the structure are assumed to correspond to the positions in the
+un-aligned sequence, namely the first residue has resid == 1.</p>
+<p>In more complicated cases (e.g. when the resid numbering in the
+structure/psf has gaps due to missing parts), simply provide the
+sequence of resids as they appear in the psf in <em>ref_resids</em> or
+<em>target_resids</em>, e.g.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">target_resids</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">resid</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">trj</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;name CA&#39;</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>(This translation table <em>is</em> combined with any value for <em>xxx_offset</em>!)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>fastafilename</em>    </dt>
+<dd><p class="first last">FASTA file with first sequence as reference and
+second the one to be aligned (ORDER IS IMPORTANT!)</p>
+</dd>
+<dt><em>is_aligned</em></dt>
+<dd><p class="first last">False: run clustalw for sequence alignment; True: use
+the alignment in the file (e.g. from STAMP)</p>
+</dd>
+<dt><em>ref_offset</em></dt>
+<dd><p class="first last">add this number to the column number in the FASTA file
+to get the original residue number</p>
+</dd>
+<dt><em>target_offset</em></dt>
+<dd><p class="first last">same for the target</p>
+</dd>
+<dt><em>ref_resids</em></dt>
+<dd><p class="first last">sequence of resids as they appear in the reference structure</p>
+</dd>
+<dt><em>target_resids</em></dt>
+<dd><p class="first last">sequence of resids as they appear in the target</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>select_dict</em>      </dt>
+<dd><p class="first last">dictionary with &#8216;reference&#8217; and &#8216;target&#8217; selection string
+that can be used immediately in <a class="reference internal" href="#MDAnalysis.analysis.align.rms_fit_trj" title="MDAnalysis.analysis.align.rms_fit_trj"><tt class="xref py py-func docutils literal"><span class="pre">rms_fit_trj()</span></tt></a> as
+<tt class="docutils literal"><span class="pre">select=select_dict</span></tt>.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.align.rms_fit_trj">
+<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">rms_fit_trj</tt><big>(</big><em>traj</em>, <em>ref</em>, <em>select='backbone'</em>, <em>filename=None</em>, <em>prefix='rmsfit_'</em>, <em>tol_mass=0.10000000000000001</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.rms_fit_trj" title="Permalink to this definition">¶</a></dt>
+<dd><p>RMS-fit trajectory to a reference structure using a selection.</p>
+<blockquote>
+rms_fit_trj(traj, ref, &#8216;backbone or name CB or name OT*&#8217;)</blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>traj</em></dt>
+<dd><p class="first last">trajectory, <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> object</p>
+</dd>
+<dt><em>ref</em></dt>
+<dd><p class="first last">reference coordinates; <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> object
+(uses the current time step of the object)</p>
+</dd>
+<dt><em>select</em></dt>
+<dd><p class="first last">any valid selection string for
+<tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.AtomGroup.selectAtoms()</span></tt> that produces identical
+selections in <em>traj</em> and <em>ref</em> or dictionary {&#8216;reference&#8217;:sel1,
+&#8216;target&#8217;:sel2}.  The <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
+dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment.</p>
+</dd>
+<dt><em>filename</em></dt>
+<dd><p class="first last">file name for the RMS-fitted trajectory or pdb; defaults to the 
+original trajectory filename (from <em>traj</em>) with <em>prefix</em> prepended</p>
+</dd>
+<dt><em>prefix</em></dt>
+<dd><p class="first last">prefix for autogenerating the new output filename</p>
+</dd>
+<dt><em>tol_mass</em></dt>
+<dd><p class="first last">Reject match if the atomic masses for matched atoms differ by more than
+<em>tol_mass</em> [0.1]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Both reference and trajectory must be <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>
+instances. If they contain a trajectory then it is used. The
+output file format is the same as the input <em>traj</em>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function is flexible but slow. In order to fit a long
+trajectory it is suggested to only align one frame and then use
+that frame with a more efficient program (that otherwise could
+not easily deal with aligning different molecules).</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.align.rmsd">
+<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">rmsd</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.rmsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns RMSD between two coordinate sets a and b.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../analysis_modules.html"
+                        title="previous chapter">3. Specific analysis modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="contacts.html"
+                        title="next chapter">3.2. Native contacts analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/analysis/align.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="contacts.html" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../analysis_modules.html" title="3. Specific analysis modules"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../analysis_modules.html" >3. Specific analysis modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

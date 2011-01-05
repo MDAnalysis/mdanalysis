@@ -1,0 +1,253 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.1. Base classes — MDAnalysis.coordinates.base &mdash; MDAnalysis v0.7.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="4. Coordinates modules" href="../coordinates_modules.html" />
+    <link rel="next" title="4.2. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" />
+    <link rel="prev" title="4. Coordinates modules" href="../coordinates_modules.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="4.2. Common functions for coordinate reading — MDAnalysis.coordinates.core"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../coordinates_modules.html" title="4. Coordinates modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" accesskey="U">4. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.base"></span><div class="section" id="base-classes-mdanalysis-coordinates-base">
+<h1>4.1. Base classes &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this headline">¶</a></h1>
+<p>Derive other Reader and Writer classes from the classes in this module.</p>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.base.Timestep">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timestep data for one frame</p>
+<dl class="docutils">
+<dt>Data:     numatoms                   - number of atoms</dt>
+<dd>frame                      - frame number
+dimensions                 - system box dimensions (x, y, z, alpha, beta, gamma)</dd>
+<dt>Methods:  t = Timestep(numatoms) - create a timestep object with space for numatoms (done automatically)</dt>
+<dd>t[i]                   - return coordinates for the i&#8217;th atom (0-based)
+t[start:stop:skip]     - return an array of coordinates, where start, stop and skip correspond to atom indices (0-based)</dd>
+</dl>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Timestep.dimensions">
+<tt class="descname">dimensions</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>get unitcell dimensions (A, B, C, alpha, beta, gamma)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.base.IObase">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">IObase</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class bundling common functionality for trajectory I/O.</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.IObase.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the trajectory file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.IObase.close_trajectory">
+<tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.close_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specific implementation of trajectory closing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.IObase.convert_pos_from_native">
+<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array x from native units to base units.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.IObase.convert_pos_to_native">
+<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array x from base units to native units.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.IObase.convert_time_from_native">
+<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from native units to base units.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.IObase.convert_time_to_native">
+<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from base units to native units.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.IObase.format">
+<tt class="descname">format</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>override to define trajectory format of the reader/writer (DCD, XTC, ...)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.IObase.units">
+<tt class="descname">units</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.units" title="Permalink to this definition">¶</a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+... for formats that support it)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.base.Reader">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">Reader</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for trajectory readers.</p>
+<p>See Trajectory API definition in <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt> for
+the required attributes and methods.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Reader.dt">
+<tt class="descname">dt</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader.dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time between two trajectory frames in picoseconds, rounded to 4 decimals.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.Reader.next">
+<tt class="descname">next</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward one step to next frame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.Reader.rewind">
+<tt class="descname">rewind</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader.rewind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Position at beginning of trajectory</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Reader.totaltime">
+<tt class="descname">totaltime</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader.totaltime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total length of the trajectory numframes * dt.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.base.Writer">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">Writer</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for trajectory writers.</p>
+<p>See Trajectory API definition in <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt> for
+the required attributes and methods.</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell">
+<tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read dimensions from timestep <em>ts</em> and return appropriate unitcell</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.Writer.write">
+<tt class="descname">write</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write current timestep, using the supplied <em>obj</em>.</p>
+<p>The argument should be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or 
+a <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> or a <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The size of the <em>obj</em> must be the same as the number
+of atom provided when setting up the trajectory.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../coordinates_modules.html"
+                        title="previous chapter">4. Coordinates modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="core.html"
+                        title="next chapter">4.2. Common functions for coordinate reading &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/coordinates/base.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="4.2. Common functions for coordinate reading — MDAnalysis.coordinates.core"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../coordinates_modules.html" title="4. Coordinates modules"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" >4. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

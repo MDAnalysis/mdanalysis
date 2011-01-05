@@ -1,0 +1,146 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.3. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD &mdash; MDAnalysis v0.7.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="4. Coordinates modules" href="../coordinates_modules.html" />
+    <link rel="next" title="4.4. DCD Hierarchy — MDAnalysis.coordinates.DCD" href="DCD.html" />
+    <link rel="prev" title="4.2. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="DCD.html" title="4.4. DCD Hierarchy — MDAnalysis.coordinates.DCD"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="4.2. Common functions for coordinate reading — MDAnalysis.coordinates.core"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" accesskey="U">4. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.CRD"></span><div class="section" id="crd-structure-files-in-mdanalysis-mdanalysis-coordinates-crd">
+<h1>4.3. CRD structure files in MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.CRD" title="MDAnalysis.coordinates.CRD"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a><a class="headerlink" href="#crd-structure-files-in-mdanalysis-mdanalysis-coordinates-crd" title="Permalink to this headline">¶</a></h1>
+<p>Only coordinates are written at the moment.</p>
+<p>VERY Primative CRD generator (may still have to be debugged!)</p>
+<blockquote>
+It may need some debugging (i.e.-it might not work for large systems
+as they usually need the extended version of crd writing).</blockquote>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.CRD.CRDReader">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.CRD.</tt><tt class="descname">CRDReader</tt><big>(</big><em>crdfilename</em>, <em>convert_units=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.CRD.CRDReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>CRD reader that implements the standard and extended CRD coordinate formats</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.CRD.CRDWriter">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.CRD.</tt><tt class="descname">CRDWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.CRD.CRDWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>CRD writer that implements the CHARMM CRD coordinate format.</p>
+<p>It automatically writes the CHARMM EXT extended format if there
+are more than 99,999 atoms.</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.CRD.CRDWriter.write">
+<tt class="descname">write</tt><big>(</big><em>selection</em>, <em>frame=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.CRD.CRDWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write selection at current trajectory frame to file.</p>
+<p>write(selection,frame=FRAME)</p>
+<p>selection         MDAnalysis AtomGroup
+frame             optionally move to frame FRAME</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="core.html"
+                        title="previous chapter">4.2. Common functions for coordinate reading &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="DCD.html"
+                        title="next chapter">4.4. DCD Hierarchy &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/coordinates/CRD.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="DCD.html" title="4.4. DCD Hierarchy — MDAnalysis.coordinates.DCD"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="4.2. Common functions for coordinate reading — MDAnalysis.coordinates.core"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" >4. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

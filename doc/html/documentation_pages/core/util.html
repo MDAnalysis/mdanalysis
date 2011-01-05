@@ -1,0 +1,215 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.7. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis v0.7.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="5. Core modules" href="../core_modules.html" />
+    <link rel="next" title="6. KDTree modules" href="../KDTree_modules.html" />
+    <link rel="prev" title="5.6. Constants and unit conversion — MDAnalysis.core.units" href="units.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../KDTree_modules.html" title="6. KDTree modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="units.html" title="5.6. Constants and unit conversion — MDAnalysis.core.units"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../core_modules.html" accesskey="U">5. Core modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.core.util"></span><div class="section" id="helper-functions-mdanalysis-core-util">
+<h1>5.7. Helper functions &#8212; <a class="reference internal" href="#module-MDAnalysis.core.util" title="MDAnalysis.core.util"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a><a class="headerlink" href="#helper-functions-mdanalysis-core-util" title="Permalink to this headline">¶</a></h1>
+<p>Small helper functions that don&#8217;t fit anywhere else.</p>
+<div class="section" id="files-and-directories">
+<h2>5.7.1. Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.core.util.filename">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">filename</tt><big>(</big><em>name</em>, <em>ext=None</em>, <em>keep=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new name that has suffix attached; replaces other extensions.</p>
+<p>name        filename; extension is replaced unless keep=True
+ext         extension
+keep        False: replace existing extension; True: keep if exists</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.util.openany">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">openany</tt><big>(</big><em>directory</em><span class="optional">[</span>, <em>mode='r'</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.openany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Context manager to open a compressed (bzip2, gzip) or plain file
+(uses <a class="reference internal" href="#MDAnalysis.core.util.anyopen" title="MDAnalysis.core.util.anyopen"><tt class="xref py py-func docutils literal"><span class="pre">anyopen()</span></tt></a>).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.util.anyopen">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">anyopen</tt><big>(</big><em>datasource</em>, <em>mode='r'</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.anyopen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open datasource (gzipped, bzipped, uncompressed) and return a stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><em>datasource</em>: a file or a stream</li>
+<li><em>mode</em>: &#8216;r&#8217; or &#8216;w&#8217;</li>
+</ul>
+</dd></dl>
+
+</div>
+<div class="section" id="containers-and-lists">
+<h2>5.7.2. Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.core.util.iterable">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">iterable</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.iterable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>obj</em> can be iterated over and is <em>not</em> a  string.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.util.asiterable">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">asiterable</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.asiterable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns obj so that it can be iterated over; a string is <em>not</em> treated as iterable</p>
+</dd></dl>
+
+</div>
+<div class="section" id="file-parsing">
+<h2>5.7.3. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.core.util.FORTRANReader">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">FORTRANReader</tt><big>(</big><em>fmt</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>FORTRANReader provides a method to parse FORTRAN formatted lines in a file.</p>
+<dl class="docutils">
+<dt>Usage::</dt>
+<dd><p class="first">atomformat = FORTRANReader(&#8216;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#8217;)
+for line in open(&#8216;coordinates.crd&#8217;):</p>
+<blockquote class="last">
+serial,TotRes,resName,name,x,y,z,chainID,resSeq,tempFactor = atomformat.read(line)</blockquote>
+</dd>
+</dl>
+<p>Fortran format edit descriptors: See
+<a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html</a>
+for the syntax.</p>
+<p>Only simple one-character specifiers supported here: <em>I F E A X</em> (see
+<a class="reference internal" href="#MDAnalysis.core.util.FORTRAN_format_regex" title="MDAnalysis.core.util.FORTRAN_format_regex"><tt class="xref py py-data docutils literal"><span class="pre">FORTRAN_format_regex</span></tt></a>).</p>
+<p>Strings are stripped of leading and trailing white space.</p>
+<p>Set up the reader with the FORTRAN format string.</p>
+<p>The string <em>fmt</em> should look like &#8216;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#8217;.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.core.util.FORTRAN_format_regex">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">FORTRAN_format_regex</tt><a class="headerlink" href="#MDAnalysis.core.util.FORTRAN_format_regex" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Regular expresssion (see <a class="reference external" href="http://docs.python.org/library/re.html#module-re" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">re</span></tt></a>) to parse a simple <a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">FORTRAN edit descriptor</a>.</dt>
+<dd><tt class="docutils literal"><span class="pre">(?P&lt;repeat&gt;\d?)(?P&lt;format&gt;[IFELAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\d+)(\.(?P&lt;decimals&gt;\d+))?)?</span></tt></dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.7. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a><ul>
+<li><a class="reference internal" href="#files-and-directories">5.7.1. Files and directories</a></li>
+<li><a class="reference internal" href="#containers-and-lists">5.7.2. Containers and lists</a></li>
+<li><a class="reference internal" href="#file-parsing">5.7.3. File parsing</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="units.html"
+                        title="previous chapter">5.6. Constants and unit conversion &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../KDTree_modules.html"
+                        title="next chapter">6. KDTree modules</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/core/util.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../KDTree_modules.html" title="6. KDTree modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="units.html" title="5.6. Constants and unit conversion — MDAnalysis.core.units"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../core_modules.html" >5. Core modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

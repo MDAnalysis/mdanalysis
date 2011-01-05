@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. Selection Commands &mdash; MDAnalysis v0.7.0 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../index.html" />
+    <link rel="next" title="3. Specific analysis modules" href="analysis_modules.html" />
+    <link rel="prev" title="1. Overview over MDAnalysis" href="overview.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="analysis_modules.html" title="3. Specific analysis modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="1. Overview over MDAnalysis"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="selection-commands">
+<span id="selection-commands-label"></span><h1>2. Selection Commands<a class="headerlink" href="#selection-commands" title="Permalink to this headline">¶</a></h1>
+<p>Once you have the universe object, you can select atoms (using a syntax very
+similar to <a class="reference external" href="http://www.charmm.org/html/documentation/c35b1/select.html">CHARMM&#8217;s atom selection syntax</a>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">kalp</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid KALP&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.Universe.selectAtoms()</span></tt> returns a
+<a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a>, so you can use all the methods
+defined for AtomGroups on them. Selections always return an AtomGroup with
+atoms sorted according to their index in the topology (this is to ensure that
+there aren&#8217;t any duplicates, which can happen with complicated selections).</p>
+<p>One can group subselections using parentheses:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid DMPC and not (name H* or name O*)&quot;</span><span class="p">)</span>
+<span class="go">&lt;AtomGroup with 3420 atoms&gt;</span>
+</pre></div>
+</div>
+<p>Almost all the basic CHARMM selections work.</p>
+<div class="section" id="selection-keywords">
+<h2>2.1. Selection Keywords<a class="headerlink" href="#selection-keywords" title="Permalink to this headline">¶</a></h2>
+<p>The following describes all selection keywords currently understood by the
+selection parser. The following applies to all selections:</p>
+<ul class="simple">
+<li>Keywords are case sensitive.</li>
+<li>Atoms are automatically sequentially ordered in a resulting selection
+(see notes below on <a class="reference internal" href="#ordered-selections-label"><em>Ordered selections</em></a> for how to circumvent this if
+necessary).</li>
+<li>Selections are parsed left to right and parentheses can be used for
+grouping.</li>
+<li>Currently, only &#8220;stemming&#8221; is implemented as a primitive form of pattern
+matching: Using the <tt class="docutils literal"><span class="pre">*</span></tt> character in a string such as <tt class="docutils literal"><span class="pre">GL*</span></tt> selects
+all strings that start with &#8220;GL&#8221; such as &#8220;GLU&#8221;, &#8220;GLY&#8221;, &#8220;GLX29&#8221;, &#8220;GLN&#8221;.</li>
+</ul>
+<div class="section" id="simple-selections">
+<h3>2.1.1. Simple selections<a class="headerlink" href="#simple-selections" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<dl class="docutils">
+<dt>protein, backbone, nucleic, nucleicbackbone</dt>
+<dd>selects all atoms that belong to a standard set of residues; a protein
+is identfied by a hard-coded set of residue names so it  may not
+work for esoteric residues.</dd>
+<dt>segid <em>seg-name</em></dt>
+<dd>select by segid (as given in the topology), e.g. <tt class="docutils literal"><span class="pre">segid</span> <span class="pre">4AKE</span></tt> or <tt class="docutils literal"><span class="pre">segid</span> <span class="pre">DMPC</span></tt></dd>
+<dt>resid <em>residue-number-range</em></dt>
+<dd>resid can take a single residue number or a range of numbers. A range
+consists of two numbers separated by a colon (inclusive) such
+as <tt class="docutils literal"><span class="pre">resid</span> <span class="pre">1:5</span></tt>. A residue number (&#8220;resid&#8221;) is taken directly from the
+topology.</dd>
+<dt>resname <em>residue-name</em></dt>
+<dd>select by residue name, e.g. <tt class="docutils literal"><span class="pre">resname</span> <span class="pre">LYS</span></tt></dd>
+<dt>name <em>atom-name</em></dt>
+<dd>select by atom name (as given in the topology). Often, this is force
+field dependent. Example: <tt class="docutils literal"><span class="pre">name</span> <span class="pre">CA</span></tt> (for C&amp;alpha; atoms) or <tt class="docutils literal"><span class="pre">name</span> <span class="pre">OW</span></tt> (for SPC water oxygen)</dd>
+<dt>type <em>atom-type</em></dt>
+<dd>select by atom type; this is either a string or a number and depends on
+the force field; it is read from the topology file (e.g. the CHARMM PSF
+file contains numeric atom types). It has non-sensical values when a
+PDB or GRO file is used as a topology.</dd>
+<dt>atom <em>seg-name</em>  <em>residue-number</em>  <em>atom-name</em></dt>
+<dd>a selector for a single atom consisting of segid resid atomname,
+e.g. <tt class="docutils literal"><span class="pre">DMPC</span> <span class="pre">1</span> <span class="pre">C2</span></tt> selects the C2 carbon of the first residue of the DMPC
+segment</dd>
+</dl>
+</blockquote>
+</div>
+<div class="section" id="boolean">
+<h3>2.1.2. Boolean<a class="headerlink" href="#boolean" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<dl class="docutils">
+<dt>not</dt>
+<dd>all atoms not in the selection, e.g. <tt class="docutils literal"><span class="pre">not</span> <span class="pre">protein</span></tt> selects all atoms that aren&#8217;t part of a protein</dd>
+<dt>and, or</dt>
+<dd>combine two selections according to the rules of boolean algebra,
+e.g. <tt class="docutils literal"><span class="pre">protein</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">(resname</span> <span class="pre">ALA</span> <span class="pre">or</span> <span class="pre">resname</span> <span class="pre">LYS)</span></tt> selects all atoms
+that belong to a protein, but are not in a lysine or alanine residue</dd>
+</dl>
+</blockquote>
+</div>
+<div class="section" id="geometric">
+<h3>2.1.3. Geometric<a class="headerlink" href="#geometric" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<dl class="docutils">
+<dt>around <em>distance</em>  <em>selection</em></dt>
+<dd>selects all atoms a certain cutoff away from another selection,
+e.g. <tt class="docutils literal"><span class="pre">around</span> <span class="pre">3.5</span> <span class="pre">protein</span></tt> selects all atoms not belonging to protein
+that are within 3.5 Angstroms from the protein</dd>
+<dt>point <em>distance</em>  <em>x</em> <em>y</em> <em>z</em></dt>
+<dd>selects all atoms within a cutoff of a point in space, make sure
+coordinate is separated by spaces, e.g. <tt class="docutils literal"><span class="pre">point</span> <span class="pre">3.5</span>&nbsp; <span class="pre">5.0</span> <span class="pre">5.0</span> <span class="pre">5.0</span></tt> selects
+all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0, 5.0)</dd>
+<dt>prop <em>property</em>  <em>operator</em>  <em>value</em></dt>
+<dd>selects atoms based on position, using <em>property</em>  <strong>x</strong>, <strong>y</strong>, or
+<strong>z</strong> coordinate. Supports the <strong>abs</strong> keyword (for absolute value) and
+the following <em>operators</em>: <strong>&lt;, &gt;, &lt;=, &gt;=, ==, !=</strong>. For example, <tt class="docutils literal"><span class="pre">prop</span> <span class="pre">z</span> <span class="pre">&gt;=</span> <span class="pre">5.0</span></tt>
+selects all atoms with z coordinate greater than 5.0; <tt class="docutils literal"><span class="pre">prop</span> <span class="pre">abs</span> <span class="pre">z</span> <span class="pre">&lt;=</span> <span class="pre">5.0</span></tt>
+selects all atoms within -5.0 &lt;= z &lt;= 5.0.</dd>
+</dl>
+</blockquote>
+<p>From version 0.6 onwards, geometric selections can use a k-d tree based, fast
+search algorithm (about three times faster than the previous version). However,
+it does not take periodicity into account. The fast algorithm is the default
+for around. See the python doc strings for details and how to change the
+default algorithm.</p>
+</div>
+<div class="section" id="connectivity">
+<h3>2.1.4. Connectivity<a class="headerlink" href="#connectivity" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<dl class="docutils">
+<dt>byres <em>selection</em></dt>
+<dd>selects all atoms that are in the same segment and residue as
+selection, e.g. specify the subselection after the byres keyword</dd>
+</dl>
+</blockquote>
+</div>
+<div class="section" id="index">
+<h3>2.1.5. Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<dl class="docutils">
+<dt>bynum <em>index-range</em></dt>
+<dd>selects all atoms within a range of (1-based) inclusive indices,
+e.g. <tt class="docutils literal"><span class="pre">bynum</span> <span class="pre">1</span></tt> selects the first atom in the universe; <tt class="docutils literal"><span class="pre">bynum</span> <span class="pre">5:10</span></tt>
+selects atoms 5 through 10 inclusive. All atoms in the
+<tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> are consecutively numbered, and the index
+runs from 1 up to the total number of atoms.</dd>
+</dl>
+</blockquote>
+</div>
+</div>
+<div class="section" id="instant-selectors">
+<h2>2.2. Instant selectors<a class="headerlink" href="#instant-selectors" title="Permalink to this headline">¶</a></h2>
+<p>For interactive work it becomes rather tedious to type common selection strings
+repeatedly. MDAnalysis automatically generates a number of <em>instant selectors</em>
+as attributes of the <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> and number of other levels
+of the structural hierarchy, namely for
+<tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt>,
+<tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt>,
+<tt class="xref py py-class docutils literal"><span class="pre">ResidueGroup</span></tt>,
+<tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt> and
+<tt class="xref py py-class docutils literal"><span class="pre">SegmentGroup</span></tt>.</p>
+<div class="section" id="segment-selector">
+<h3>2.2.1. Segment selector<a class="headerlink" href="#segment-selector" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">universe.&lt;segid&gt;</span></tt> or <tt class="docutils literal"><span class="pre">universe.s&lt;segid&gt;</span></tt> (if <em>&lt;segid&gt;</em> starts with a
+number)</p>
+</li>
+<li><p class="first">returns a <tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt></p>
+</li>
+<li><p class="first">works for <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> and <tt class="xref py py-class docutils literal"><span class="pre">SegmentGroup</span></tt></p>
+</li>
+<li><dl class="first docutils">
+<dt>example</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span>
+<span class="go">&lt;Segment &#39;4AKE&#39;&gt;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="resid-selector">
+<h3>2.2.2. Resid selector<a class="headerlink" href="#resid-selector" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">seg.r&lt;N&gt;</span></tt> selects residue with number <tt class="docutils literal"><span class="pre">&lt;N&gt;</span></tt></p>
+</li>
+<li><p class="first">returns a <tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></p>
+</li>
+<li><p class="first">works for <tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt> and <tt class="xref py py-class docutils literal"><span class="pre">SegmentGroup</span></tt></p>
+</li>
+<li><dl class="first docutils">
+<dt>example</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span> <span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">r100</span>
+<span class="go">&lt;Residue &#39;GLY&#39;, 100&gt;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="residue-name-selector">
+<h3>2.2.3. Residue name selector<a class="headerlink" href="#residue-name-selector" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">seg.&lt;resname&gt;</span></tt> selects residues with residue name <tt class="docutils literal"><span class="pre">&lt;resname&gt;</span></tt></p>
+</li>
+<li><p class="first">returns a <tt class="xref py py-class docutils literal"><span class="pre">ResidueGroup</span></tt></p>
+</li>
+<li><p class="first">works for <tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt> and <tt class="xref py py-class docutils literal"><span class="pre">SegmentGroup</span></tt></p>
+</li>
+<li><dl class="first docutils">
+<dt>examples</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">MET</span>
+<span class="go">&lt;ResidueGroup [&lt;Residue &#39;MET&#39;, 1&gt;, &lt;Residue &#39;MET&#39;, 21&gt;, &lt;Residue &#39;MET&#39;, 34&gt;, &lt;Residue &#39;MET&#39;, 53&gt;, &lt;Residue &#39;MET&#39;, 96&gt;, &lt;Residue &#39;MET&#39;, 174&gt;]&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">CYS</span>
+<span class="go">&lt;ResidueGroup [&lt;Residue &#39;CYS&#39;, 77&gt;]&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">TRP</span>
+<span class="go">NoDataError: No atoms defined for AtomGroup</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><p class="first">The result is always a <tt class="xref py py-class docutils literal"><span class="pre">ResidueGroup</span></tt>; if no
+residues can be found then a <tt class="xref py py-exc docutils literal"><span class="pre">MDAnalysis.NoDataError</span></tt> is raised.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="atom-name-selector">
+<h3>2.2.4. Atom name selector<a class="headerlink" href="#atom-name-selector" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">g.&lt;atomname&gt;</span></tt> selects a single atom or a group of atoms with name
+<tt class="docutils literal"><span class="pre">&lt;atomname&gt;</span></tt></p>
+</li>
+<li><dl class="first docutils">
+<dt>returns</dt>
+<dd><ul class="first last simple">
+<li>a <tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt> if only a single atom was found,</li>
+<li>a <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt> if more than one atom was
+found, or</li>
+<li>raises a <tt class="xref py py-exc docutils literal"><span class="pre">MDAnalysis.SelectionError</span></tt> if no atom was found.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">works for any group derived from <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt>
+(i.e. all the ones mentioned above)</p>
+</li>
+<li><dl class="first docutils">
+<dt>examples</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">CG</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">&lt;</span><span class="n">AtomGroup</span> <span class="k">with</span> <span class="mi">125</span> <span class="n">atoms</span><span class="o">&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">CG</span>
+<span class="go">&lt;AtomGroup with 125 atoms&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">r100</span><span class="o">.</span><span class="n">CA</span>
+<span class="go">&lt; Atom 1516: name &#39;CA&#39; of type &#39;23&#39; of resname &#39;GLY&#39;, resid 100 and segid &#39;4AKE&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">r100</span><span class="o">.</span><span class="n">CB</span>
+<span class="go">SelectionError: No atom in residue GLY with name CB</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="ordered-selections">
+<span id="ordered-selections-label"></span><h2>2.3. Ordered selections<a class="headerlink" href="#ordered-selections" title="Permalink to this headline">¶</a></h2>
+<p><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt> sorts the atoms in the
+<a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> by atom index before returning them (this is to
+eliminate possible duplicates in the selection). If the ordering of atoms is
+crucial (for instance when describing angles or dihedrals) or if duplicate
+atoms are required then one has to concatenate multiple AtomGroups, which does
+not sort them.</p>
+<p>The most straightforward way to concatentate two AtomGroups is by using the
+<strong>+</strong> operator:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ordered</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid DMPC and resid 3 and name P&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid DMPC and resid 2 and name P&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">list</span><span class="p">(</span><span class="n">ordered</span><span class="p">)</span>
+<span class="go">[&lt; Atom 570: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 3 and &#39;DMPC&#39;&gt;,</span>
+<span class="go">&lt; Atom 452: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 2 and &#39;DMPC&#39;&gt;]</span>
+</pre></div>
+</div>
+<p>A shortcut is to provide <em>two or more</em> selections to
+<tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt>, which then does the concatenation
+automatically:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">list</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid DMPC and resid 3 and name P&quot;</span><span class="p">,</span> <span class="s">&quot;segid DMPC and resid 2 and name P&quot;</span><span class="p">))</span>
+<span class="go">[&lt; Atom 570: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 3 and &#39;DMPC&#39;&gt;,</span>
+<span class="go">&lt; Atom 452: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 2 and &#39;DMPC&#39;&gt;]</span>
+</pre></div>
+</div>
+<p>Just for comparison to show that a single selection string does not work as one
+might expect:</p>
+<div class="highlight-python"><pre># WRONG!
+&gt;&gt;&gt; print list(universe.selectAtoms("segid DMPC and ( resid 3 or resid 2 ) and name P"))
+[&lt; Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'&gt;,
+&lt; Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'&gt;]</pre>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">2. Selection Commands</a><ul>
+<li><a class="reference internal" href="#selection-keywords">2.1. Selection Keywords</a><ul>
+<li><a class="reference internal" href="#simple-selections">2.1.1. Simple selections</a></li>
+<li><a class="reference internal" href="#boolean">2.1.2. Boolean</a></li>
+<li><a class="reference internal" href="#geometric">2.1.3. Geometric</a></li>
+<li><a class="reference internal" href="#connectivity">2.1.4. Connectivity</a></li>
+<li><a class="reference internal" href="#index">2.1.5. Index</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#instant-selectors">2.2. Instant selectors</a><ul>
+<li><a class="reference internal" href="#segment-selector">2.2.1. Segment selector</a></li>
+<li><a class="reference internal" href="#resid-selector">2.2.2. Resid selector</a></li>
+<li><a class="reference internal" href="#residue-name-selector">2.2.3. Residue name selector</a></li>
+<li><a class="reference internal" href="#atom-name-selector">2.2.4. Atom name selector</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ordered-selections">2.3. Ordered selections</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="overview.html"
+                        title="previous chapter">1. Overview over MDAnalysis</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="analysis_modules.html"
+                        title="next chapter">3. Specific analysis modules</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/documentation_pages/selections.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="analysis_modules.html" title="3. Specific analysis modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="overview.html" title="1. Overview over MDAnalysis"
+             >previous</a> |</li>
+        <li><a href="../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

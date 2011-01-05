@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6.3. Fast atom neighbor lookup using a KD tree (implemented in C++) — MDAnalysis.KDTree.NeighborSearch &mdash; MDAnalysis v0.7.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="6. KDTree modules" href="../KDTree_modules.html" />
+    <link rel="prev" title="6.2. KDTree — MDAnalysis.KDTree.KDTree" href="KDTree.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="KDTree.html" title="6.2. KDTree — MDAnalysis.KDTree.KDTree"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../KDTree_modules.html" accesskey="U">6. KDTree modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.KDTree.NeighborSearch"></span><div class="section" id="fast-atom-neighbor-lookup-using-a-kd-tree-implemented-in-c-mdanalysis-kdtree-neighborsearch">
+<h1>6.3. Fast atom neighbor lookup using a KD tree (implemented in C++) &#8212; <a class="reference internal" href="#module-MDAnalysis.KDTree.NeighborSearch" title="MDAnalysis.KDTree.NeighborSearch"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.KDTree.NeighborSearch</span></tt></a><a class="headerlink" href="#fast-atom-neighbor-lookup-using-a-kd-tree-implemented-in-c-mdanalysis-kdtree-neighborsearch" title="Permalink to this headline">¶</a></h1>
+<p>If you know that you are using a specific selection repeatedly then it
+may be faster to explicitly build the selection using the
+AtomNeighborSearch class instead of using MDAnalysis selections.</p>
+<p>Example:</p>
+<blockquote>
+<p>import MDAnalysis.KDTree.NeighborSearch as NS</p>
+<p>u = Universe(psf,dcd)
+water = u.selectAtoms(&#8216;name OH2&#8217;)
+protein = u.selectAtoms(&#8216;protein&#8217;)</p>
+<p>ns_w = NS.AtomNeighborSearch(water)
+solvation_shell = ns_w.search_list(protein,4.0)  # water oxygens within 4A of protein</p>
+</blockquote>
+<dl class="class">
+<dt id="MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.KDTree.NeighborSearch.</tt><tt class="descname">AtomNeighborSearch</tt><big>(</big><em>atom_list</em>, <em>bucket_size=10</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class can be used for two related purposes:</p>
+<p>1. To find all atoms/residues/segments within radius 
+of a given query position.</p>
+<p>2. To find all atoms/residues/segments that are within 
+a fixed radius of each other.</p>
+<p>AtomNeighborSearch makes use of the KDTree C++ module, so it&#8217;s fast.</p>
+<p>o atom_list - list of atoms. This list is used in the queries.
+It can contain atoms from different structures.
+o bucket_size - bucket size of KD tree. You can play around 
+with this to optimize speed if you feel like it.</p>
+<dl class="method">
+<dt id="MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch.search">
+<tt class="descname">search</tt><big>(</big><em>center</em>, <em>radius</em>, <em>level='A'</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Neighbor search.</p>
+<p>Return all atoms/residues/segments
+that have at least one atom within radius of center.
+What entitity level is returned (e.g. atoms or residues)
+is determined by level (A=atoms, R=residues, S=Segments).</p>
+<p>o center - numpy array 
+o radius - float
+o level - char (A, R, S)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch.search_all">
+<tt class="descname">search_all</tt><big>(</big><em>radius</em>, <em>level='A'</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch.search_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>All neighbor search.</p>
+<p>Search all entities that have atoms pairs within
+radius.</p>
+<p>o radius - float
+o level - char (A, R, S)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch.search_list">
+<tt class="descname">search_list</tt><big>(</big><em>other</em>, <em>radius</em>, <em>level='A'</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch.search_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search neighbours near all atoms in atoms.</p>
+<p>Returns all atoms/residues/segments that contain atoms that are
+within radius of any other atom listed in other, i.e. &#8220;find all A
+within R of B&#8221; where A are the atoms used for setting up the
+AtomNeighborSearch and B are the other atoms.</p>
+<p>o other  - AtomGroup
+o radius - float
+o level  - char (A, R, S)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.KDTree.NeighborSearch.</tt><tt class="descname">CoordinateNeighborSearch</tt><big>(</big><em>coordinates</em>, <em>bucket_size=10</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class can be used for two related purposes:</p>
+<p>1. To find all indices of a coordinate list within radius 
+of a given query position.</p>
+<p>2. To find all indices of a coordinate list that are within 
+a fixed radius of each other.</p>
+<p>CoordinateNeighborSearch makes use of the KDTree C++ module, so it&#8217;s fast.</p>
+<p>o list of N coordinates (Nx3 numpy array)
+o bucket_size - bucket size of KD tree. You can play around 
+with this to optimize speed if you feel like it.</p>
+<dl class="method">
+<dt id="MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search">
+<tt class="descname">search</tt><big>(</big><em>center</em>, <em>radius</em>, <em>distances=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Neighbor search.</p>
+<p>Return all indices in the coordinates list that have at least
+one atom within radius of center.</p>
+<p>o center - numpy array 
+o radius - float
+o distances - bool  True:  return (indices,distances)</p>
+<blockquote>
+False: return indices only</blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search_all">
+<tt class="descname">search_all</tt><big>(</big><em>radius</em>, <em>distances=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>All neighbor search.</p>
+<p>Return all index pairs corresponding to coordinates within the radius.</p>
+<p>o radius - float
+o distances - bool  True:  return (indices,distances)</p>
+<blockquote>
+False: return indices only</blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search_list">
+<tt class="descname">search_list</tt><big>(</big><em>centers</em>, <em>radius</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search neighbours near all centers.</p>
+<p>Returns all indices that are within radius of any center listed in
+centers, i.e. &#8220;find all A within R of B&#8221; where A are the
+coordinates used for setting up the CoordinateNeighborSearch and B
+are the centers.</p>
+<p>o centers - Mx3 numpy array of M centers
+o radius  - float</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="KDTree.html"
+                        title="previous chapter">6.2. KDTree &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/KDTree/NeighborSearch.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="KDTree.html" title="6.2. KDTree — MDAnalysis.KDTree.KDTree"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+          <li><a href="../KDTree_modules.html" >6. KDTree modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>
