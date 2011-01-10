@@ -1791,6 +1791,18 @@ def _import_module(module_name, warn=True, prefix='_py_', ignore='_'):
             globals()[attr] = getattr(module, attr)
         return True
 
+# orbeckst --- some simple geometry
+
+def vecangle(a,b):
+    """Return the angle between vectors a and b in radians."""
+    from numpy.linalg import norm
+    return numpy.arccos(numpy.dot(a,b)/(norm(a)*norm(b)))
+
+def rotaxis(a,b):
+    """Return the rotation axis to rotate vector a into b."""
+    c = numpy.cross(a,b)
+    return c/numpy.linalg.norm(c)
+
 
 _import_module('_transformations')
 

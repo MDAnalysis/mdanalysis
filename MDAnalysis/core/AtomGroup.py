@@ -387,15 +387,22 @@ class AtomGroup(object):
         return numpy.array([[Ixx, Ixy, Ixz],[Iyx, Iyy, Iyz],[Izx, Izy, Izz]])
 
     def dihedral(self):
-        #takes two points in three dimensional space and finds the vector between them
+        """Calculate the dihedral angle.
+
+        .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 4
+           :class:`Atom`; anything else will raise a :exc:`ValueError`.
+        """
+        # NOTE: should be rewritten with numpy!!
+
 	def vector(atm1, atm2):
+               """takes two points in three dimensional space and finds the vector between them"""
 		vector = [0,0,0]
 		vector[0] = atm1[0] - atm2[0]
 		vector[1] = atm1[1] - atm2[1]
 		vector[2] = atm1[2] - atm2[2]
 		return vector
-	#takes two vectors and finds a UNIT vector normal to them
 	def normal(vec1, vec2):
+	        """takes two vectors and finds a UNIT vector normal to them"""
 		normal = [0,0,0]
 		normal[0] = vec1[1]*vec2[2] - vec1[2]*vec2[1]
 		normal[1] = vec1[2]*vec2[0] - vec1[0]*vec2[2]
@@ -408,9 +415,8 @@ class AtomGroup(object):
 		except ZeroDivisionError:
 			print ''
 		return normal
-
-        #finds the angle between two vectors
 	def angle(norm1, norm2):
+                """finds the angle between two vectors"""
 		dist1 = sqrt(norm1[0]**2 + norm1[1]**2 + norm1[2]**2)
 		dist2 = sqrt(norm2[0]**2 + norm2[1]**2 + norm2[2]**2)
 		cosa1 = norm1[0]/dist1; cosb1 = norm1[1]/dist1; cosg1 = norm1[2]/dist1
@@ -419,26 +425,29 @@ class AtomGroup(object):
 		theta = acos(costheta)*180./pi
 		return theta
 	
-	# finds the dot product of two vectors
 	def dot(vec1, vec2):
+                """finds the dot product of two vectors"""
 		return vec1[0]*vec2[0] + vec1[1]*vec2[1] + vec1[2]*vec2[2]
 
-	#Takes the cross product of two vectors
 	def cross(vec1, vec2):
+	        """Takes the cross product of two vectors"""
 		return [vec1[1]*vec2[2] - vec1[2]*vec2[1],\
 		vec1[2]*vec2[0] - vec1[0]*vec2[2],\
 		vec1[0]*vec2[1] - vec1[1]*vec2[0]]
 
-	#Takes the scalar triple product of three vectors
 	def stp(vec1, vec2, vec3):
+                """Takes the scalar triple product of three vectors"""
 		return dot(vec3, cross(vec1, vec2))
 
-	#Determines the sign (+/-) of the angle in question
 	def anglecheck(angle,vec1,vec2,vec3):
+                """Determines the sign (+/-) of the angle in question"""
 		angleout=angle
 		if stp(vec1, vec2, vec3) > 0.0:
 			angleout = -angle
 		return angleout
+
+        if len(self) != 4:
+            raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
 
 	norm1 = normal(vector(self.coordinates()[0], self.coordinates()[1]), vector(self.coordinates()[1], self.coordinates()[2]))
 	norm2 = normal(vector(self.coordinates()[1], self.coordinates()[2]), vector(self.coordinates()[2], self.coordinates()[3]))
@@ -470,6 +479,23 @@ class AtomGroup(object):
             ts = self.universe.trajectory.ts
         return numpy.array(ts[self.indices()], copy=copy, dtype=dtype)
 
+    def transform(self, M):
+        """Apply homogenous transformation matrix *M* to the coordinates.
+
+        The matrix *M* must be a 4x4 matrix, with the rotation in
+        ``M[:3,:3]`` and the translation in ``M[:3,3]``.
+
+        .. SeeAlso: :mod:`MDAnalysis.core.transformations`
+        """
+        R = M[:3,:3]
+        t = M[:3, 3]
+        # changes the coordinates (in place)
+        x = self.universe.trajectory.ts._pos
+        idx = self.indices()
+        x[idx]  = numpy.dot(x[idx], R.T)
+        x[idx] += t
+        return R
+        
     def translate(self, t):
         """Apply translation vector *t* to the selection's coordinates.
 
@@ -563,13 +589,33 @@ class AtomGroup(object):
             except AttributeError:
                 p = numpy.asarray(point)
         M = rotation_matrix(alpha, n, point=p)
-        R = M[:3,:3]
-        t = M[:3, 3]
-        x = self.universe.trajectory.ts._pos
-        idx = self.indices() 
-        x[idx]  = numpy.dot(x[idx], R.T)
-        x[idx] += t
+        self.transform(M)
         return M
+
+    def align_principalAxis(self, axis, vector):
+        """Align principal axis with index *axis* with *vector*.
+
+        :Arguments:
+          *axis*
+            Index of the principal axis (0, 1, or 2), as produced by
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.principalAxes`.
+          *vector*
+            A 3D vector such as the z-axis (``[0,0,1]``); can be
+            anything that looks like a list with three entries.
+
+        To align the long axis of a channel (the first principal axis,
+        i.e. *axis* = 0) with the z-axis::
+
+          u.atoms.align_principalAxis(0, [0,0,1])
+          u.atoms.write("aligned.pdb")
+        """
+        from transformations import vecangle, rotaxis
+        p = self.principalAxes()[axis]
+        angle = numpy.degrees(vecangle(p, vector))
+        ax = rotaxis(p, vector)
+        #print "principal[%d] = %r" % (axis, p)
+        #print "axis = %r, angle = %f deg" % (ax, angle)
+        return self.rotateby(angle, ax)
 
     def selectAtoms(self, sel, *othersel):
         """Selection of atoms using the MDAnalysis selection syntax.
