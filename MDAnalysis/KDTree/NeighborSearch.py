@@ -7,11 +7,16 @@
 """Fast atom neighbor lookup using a KD tree (implemented in C++) --- :mod:`MDAnalysis.KDTree.NeighborSearch`
 ==================================================================================================================
 
-If you know that you are using a specific selection repeatedly then it
-may be faster to explicitly build the selection using the
-AtomNeighborSearch class instead of using MDAnalysis selections.
+One can use KD-Trees to speed up searches. MDAnalysis uses Thomas
+Hamelryck's C++ implementation from Biopython_. The following are
+fairly technical descriptions of the available classes.
 
-Example:
+If you know that you are using a specific selection repeatedly then
+may be faster to explicitly build the selection using the
+:class:`AtomNeighborSearch` class instead of using MDAnalysis
+selections.
+
+Example::
 
   import MDAnalysis.KDTree.NeighborSearch as NS
 
@@ -19,9 +24,12 @@ Example:
   water = u.selectAtoms('name OH2')
   protein = u.selectAtoms('protein')
    
+  # when analyzing a trajectory, carry out the next two steps
+  # for every frame
   ns_w = NS.AtomNeighborSearch(water)
   solvation_shell = ns_w.search_list(protein,4.0)  # water oxygens within 4A of protein
 
+.. _Biopython: http://biopython.org
 """
 
 import numpy
@@ -48,9 +56,12 @@ class CoordinateNeighborSearch(object):
     """
     def __init__(self, coordinates, bucket_size=10): ##, copy=True):
         """
-        o list of N coordinates (Nx3 numpy array)
-        o bucket_size - bucket size of KD tree. You can play around 
-        with this to optimize speed if you feel like it.
+        :Arguments:
+         *coordinates*
+            list of N coordinates (Nx3 numpy array)
+         *bucket_size*
+            bucket size of KD tree. You can play around with this to
+            optimize speed if you feel like it.
         """
         # to Nx3 array of type float (required for the C++ code)
         ## (also force a copy by default and make sure that the array order is compatible
@@ -67,12 +78,15 @@ class CoordinateNeighborSearch(object):
         """Neighbor search.
 
         Return all indices in the coordinates list that have at least
-        one atom within radius of center.
+        one atom within *radius* of *center*.
 
-        o center - numpy array 
-        o radius - float
-        o distances - bool  True:  return (indices,distances)
-                            False: return indices only
+        :Arguments:
+          * center
+              numpy array 
+          * radius
+              float
+          * distances 
+              bool  ``True``: return (indices,distances); ``False``: return indices only
         """
         self.kdt.search(center, radius)
         if distances:
@@ -83,13 +97,16 @@ class CoordinateNeighborSearch(object):
     def search_list(self, centers, radius):
         """Search neighbours near all centers.
 
-        Returns all indices that are within radius of any center listed in
-        centers, i.e. "find all A within R of B" where A are the
+        Returns all indices that are within *radius* of any center listed in
+        *centers*, i.e. "find all A within R of B" where A are the
         coordinates used for setting up the CoordinateNeighborSearch and B
         are the centers.
 
-        o centers - Mx3 numpy array of M centers
-        o radius  - float
+        :Arguments:
+          *centers*
+            Mx3 numpy array of M centers
+          *radius*
+           float
         """
         self.kdt.list_search(centers, radius)
         return self.kdt.list_get_indices()
@@ -97,11 +114,14 @@ class CoordinateNeighborSearch(object):
     def search_all(self, radius, distances=False):
         """All neighbor search.
 
-        Return all index pairs corresponding to coordinates within the radius.
+        Return all index pairs corresponding to coordinates within the *radius*.
 
-        o radius - float
-        o distances - bool  True:  return (indices,distances)
-                            False: return indices only
+        :Arguments:
+          *radius*
+            float
+          *distances*
+            bool  ``True``:  return (indices,distances); ``False``: return indices only
+            [``False``]
         """
         self.kdt.all_search(radius)
         if distances:
@@ -131,10 +151,13 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
     """
     def __init__(self, atom_list, bucket_size=10):
         """
-        o atom_list - list of atoms. This list is used in the queries.
-        It can contain atoms from different structures.
-        o bucket_size - bucket size of KD tree. You can play around 
-        with this to optimize speed if you feel like it.
+        :Arguments:
+          *atom_list*
+            list of atoms (:class:`~MDAnalysis.core.AtomGroup.Atom`) or a 
+            :class:`~MDAnalysis.core.AtomGroup.AtomGroup`.
+            This list is used in the queries. It can contain atoms from different structures.
+          *bucket_size*
+            bucket size of KD tree. You can play around with this to optimize speed if you feel like it. 
         """
         self.atom_list=atom_list
         if not hasattr(atom_list,'coordinates'):
@@ -146,13 +169,24 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
         """Neighbor search.
 
         Return all atoms/residues/segments
-        that have at least one atom within radius of center.
-        What entitity level is returned (e.g. atoms or residues)
-        is determined by level (A=atoms, R=residues, S=Segments).
+        that have at least one atom within *radius* of *center*.
 
-        o center - numpy array 
-        o radius - float
-        o level - char (A, R, S)
+        :Arguments:
+          *center*
+            numpy array of shape 3  (cartesian coordinates)
+          *radius*
+            float
+          *level*
+            char (A, R, S); what entitity level is returned
+            (e.g. atoms or residues) is determined by level (A=atoms,
+            R=residues, S=Segments).
+
+        In order to obtain the coordinates for the *center* argument
+        from a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` one can
+        simply provide the output of the
+        :class:`~MDAnalysis.core.AtomGroup.AtomGroup.centroid` or
+        :class:`~MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass`
+        functions.
         """
         self.kdt.search(center, radius)
         indices=self.kdt.get_indices()
@@ -162,13 +196,20 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
         """Search neighbours near all atoms in atoms.
 
         Returns all atoms/residues/segments that contain atoms that are
-        within radius of any other atom listed in other, i.e. "find all A
+        within *radius* of any other atom listed in *other*, i.e. "find all A
         within R of B" where A are the atoms used for setting up the
         AtomNeighborSearch and B are the other atoms.
 
-        o other  - AtomGroup
-        o radius - float
-        o level  - char (A, R, S)
+        :Arguments:
+          *other*
+            :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances
+          *radius*
+            float
+          *level*
+            char (A, R, S); what entitity level is returned
+            (e.g. atoms or residues) is determined by level (A=atoms,
+            R=residues, S=Segments).
+
         """
         self.kdt.list_search(other.coordinates(), radius)
         indices=self.kdt.list_get_indices()
@@ -196,10 +237,16 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
         """All neighbor search.
 
         Search all entities that have atoms pairs within
-        radius. 
+        *radius*. 
 
-        o radius - float
-        o level - char (A, R, S)
+        :Arguments:
+          *radius*
+            float
+          *level*
+            char (A, R, S); what entitity level is returned
+            (e.g. atoms or residues) is determined by level (A=atoms,
+            R=residues, S=Segments).
+
         """
         if not level in entity_levels:
             raise ValueError("%s: Unknown level" % level)

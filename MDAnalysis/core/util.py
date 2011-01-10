@@ -43,9 +43,13 @@ import re
 def filename(name,ext=None,keep=False):
     """Return a new name that has suffix attached; replaces other extensions.
 
-    name        filename; extension is replaced unless keep=True
-    ext         extension
-    keep        False: replace existing extension; True: keep if exists
+    :Arguments:
+    *name*
+         filename; extension is replaced unless keep=True
+    *ext*
+         extension
+    *keep*
+         ``False``: replace existing extension; ``True``: keep if exists
     """ 
     name = str(name)
     if ext is None:
@@ -72,8 +76,10 @@ def anyopen(datasource, mode='r'):
     """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
 
     :Arguments:
-    - *datasource*: a file or a stream
-    - *mode*: 'r' or 'w'
+     *datasource*
+        a file or a stream
+     *mode*
+        'r' or 'w'
     """
     # TODO: - make this act as ContextManager (and not return filename)
     #       - need to add binary 'b' to mode for compressed files?
@@ -161,14 +167,31 @@ def strip(s):
     return str(s).strip()
 
 class FixedcolumnEntry(object):
+    """Represent an entry at specific fixed columns.
+
+    Reads from line[start:stop] and converts according to
+    typespecifier.
+    """
     convertors = {'I': int, 'F': float, 'E': float, 'A': strip}
     def __init__(self, start, stop, typespecifier):
-        """Read string  line[start:stop] and convert according to typespecifier"""
+        """
+        :Arguments:
+         *start*
+            first column
+         *stop*
+            last column + 1
+         *typespecifier*
+            'I': int, 'F': float, 'E': float, 'A': stripped string
+
+        The start/stop arguments follow standard Python convention in that
+        they are 0-based and that the *stop* argument is not included.
+        """
         self.start = start
         self.stop = stop
         self.typespecifier = typespecifier
         self.convertor = self.convertors[typespecifier]
     def read(self, line):
+        """Read the entry from *line* and convert to appropriate type."""
         return self.convertor(line[self.start:self.stop])
     def __repr__(self):
         return "FixedcolumnEntry(%d,%d,%r)" % (self.start, self.stop, self.typespecifier)
@@ -177,6 +200,7 @@ class FORTRANReader(object):
     """FORTRANReader provides a method to parse FORTRAN formatted lines in a file.
 
     Usage::
+
        atomformat = FORTRANReader('2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
        for line in open('coordinates.crd'):
            serial,TotRes,resName,name,x,y,z,chainID,resSeq,tempFactor = atomformat.read(line)
