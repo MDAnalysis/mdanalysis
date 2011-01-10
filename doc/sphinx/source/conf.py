@@ -52,8 +52,8 @@ copyright = u'2005-2010, ' + authors
 # built documents.
 #
 # Dynamically calculate the version 
-##packageversion = __import__('gromacs').get_version()
-packageversion = '0.7.0'
+##packageversion = __import__('MDAnalysis').get_version()
+packageversion = '0.7.1'
 # The short X.Y version.
 version = '.'.join(packageversion.split('.')[:2])
 # The full version, including alpha/beta/rc tags.

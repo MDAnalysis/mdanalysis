@@ -395,8 +395,8 @@ class AtomGroup(object):
         # NOTE: should be rewritten with numpy!!
 
 	def vector(atm1, atm2):
-               """takes two points in three dimensional space and finds the vector between them"""
-		vector = [0,0,0]
+                """takes two points in three dimensional space and finds the vector between them"""
+                vector = [0,0,0]
 		vector[0] = atm1[0] - atm2[0]
 		vector[1] = atm1[1] - atm2[1]
 		vector[2] = atm1[2] - atm2[2]
@@ -447,7 +447,7 @@ class AtomGroup(object):
 		return angleout
 
         if len(self) != 4:
-            raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
+                raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
 
 	norm1 = normal(vector(self.coordinates()[0], self.coordinates()[1]), vector(self.coordinates()[1], self.coordinates()[2]))
 	norm2 = normal(vector(self.coordinates()[1], self.coordinates()[2]), vector(self.coordinates()[2], self.coordinates()[3]))
