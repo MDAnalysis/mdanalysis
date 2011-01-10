@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6. KDTree modules &mdash; MDAnalysis v0.7.0 documentation</title>
+    <title>6. KDTree module &mdash; MDAnalysis v0.7.1 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7.0',
+        VERSION:     '0.7.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.1 documentation" href="../index.html" />
     <link rel="next" title="6.1. KDTree — MDAnalysis.KDTree.KDTree" href="KDTree/KDTree.html" />
     <link rel="prev" title="5.7. Helper functions — MDAnalysis.core.util" href="core/util.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="core/util.html" title="5.7. Helper functions — MDAnalysis.core.util"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -51,8 +51,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-MDAnalysis.KDTree.__init__">
-<span id="kdtree-modules"></span><h1>6. KDTree modules<a class="headerlink" href="#module-MDAnalysis.KDTree.__init__" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="kdtree-module">
+<h1>6. KDTree module<a class="headerlink" href="#kdtree-module" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -68,9 +68,12 @@
 <p>The KD tree data structure can be used for all kinds of searches that
 involve N-dimensional vectors. For example, neighbor searches (find all points
 within a radius of a given point) or finding all point pairs in a set
-that are within a certain radius of each other. See &#8220;Computational Geometry: 
-Algorithms and Applications&#8221; (Mark de Berg, Marc van Kreveld, Mark Overmars, 
+that are within a certain radius of each other. See &#8220;Computational Geometry:
+Algorithms and Applications&#8221; (Mark de Berg, Marc van Kreveld, Mark Overmars,
 Otfried Schwarzkopf).</p>
+<p>MDAnalysis uses Biopython&#8217;s KDTree module for distance selections
+between atoms but the user is of course welcome to use the module for
+any purpose.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="KDTree/KDTree.html">6.1. KDTree &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></tt></a></li>
@@ -128,7 +131,7 @@ Otfried Schwarzkopf).</p>
         <li class="right" >
           <a href="core/util.html" title="5.7. Helper functions — MDAnalysis.core.util"
              >previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

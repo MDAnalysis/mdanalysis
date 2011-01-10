@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1. Basic Organization of the Library — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.0 documentation</title>
+    <title>5.1. Basic Organization of the Library — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.1 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.0',
+        VERSION:     '0.7.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.1 documentation" href="../../index.html" />
     <link rel="up" title="5. Core modules" href="../core_modules.html" />
     <link rel="next" title="5.2. Setting up logging — MDAnalysis.core.log" href="log.html" />
     <link rel="prev" title="5. Core modules" href="../core_modules.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../core_modules.html" title="5. Core modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">5. Core modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -442,6 +442,36 @@ be passed to a trjectory writer.</p>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.align_principalAxis">
+<tt class="descname">align_principalAxis</tt><big>(</big><em>axis</em>, <em>vector</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.align_principalAxis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Align principal axis with index <em>axis</em> with <em>vector</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>axis</em></dt>
+<dd><p class="first last">Index of the principal axis (0, 1, or 2), as produced by
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.principalAxes" title="MDAnalysis.core.AtomGroup.AtomGroup.principalAxes"><tt class="xref py py-meth docutils literal"><span class="pre">principalAxes()</span></tt></a>.</p>
+</dd>
+<dt><em>vector</em></dt>
+<dd><p class="first last">A 3D vector such as the z-axis (<tt class="docutils literal"><span class="pre">[0,0,1]</span></tt>); can be
+anything that looks like a list with three entries.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>To align the long axis of a channel (the first principal axis,
+i.e. <em>axis</em> = 0) with the z-axis:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">align_principalAxis</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;aligned.pdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.atoms">
 <tt class="descname">atoms</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.atoms" title="Permalink to this definition">¶</a></dt>
@@ -482,6 +512,17 @@ be passed to a trjectory writer.</p>
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.coordinates">
 <tt class="descname">coordinates</tt><big>(</big><em>ts=None</em>, <em>copy=False</em>, <em>dtype=&lt;type 'numpy.float32'&gt;</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>NumPy array of the coordinates.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.dihedral">
+<tt class="descname">dihedral</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.dihedral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the dihedral angle.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only makes sense for a <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> with exactly 4
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>; anything else will raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>.</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -634,6 +675,14 @@ and the translation vectort M[:3,3].</p>
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.totalMass">
 <tt class="descname">totalMass</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.totalMass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Total mass of the selection (masses are taken from the topology or guessed).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.transform">
+<tt class="descname">transform</tt><big>(</big><em>M</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply homogenous transformation matrix <em>M</em> to the coordinates.</p>
+<p>The matrix <em>M</em> must be a 4x4 matrix, with the rotation in
+<tt class="docutils literal"><span class="pre">M[:3,:3]</span></tt> and the translation in <tt class="docutils literal"><span class="pre">M[:3,3]</span></tt>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1044,7 +1093,7 @@ asUniverse(<a href="#id13"><span class="problematic" id="id14">*</span></a>args,
         <li class="right" >
           <a href="../core_modules.html" title="5. Core modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >5. Core modules</a> &raquo;</li> 
       </ul>
     </div>
