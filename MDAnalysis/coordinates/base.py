@@ -2,7 +2,9 @@
 Base classes --- :mod:`MDAnalysis.coordinates.base`  
 ====================================================
 
-Derive other Reader and Writer classes from the classes in this module.
+Derive other Reader and Writer classes from the classes in this
+module. The derived classes must follow the Trajectory API in
+:mod:`MDAnalysis.coordinates.__init__`.
 
 .. autoclass:: Timestep
    :members:
@@ -28,13 +30,37 @@ import core
 class Timestep(object):
     """Timestep data for one frame
 
-    Data:     numatoms                   - number of atoms
-              frame                      - frame number
-              dimensions                 - system box dimensions (x, y, z, alpha, beta, gamma)
+    :Attributes:
+      :attr:`numatoms`
+        number of atoms
+      :attr:`frame`
+        frame number
+      :attr:`_pos`
+        coordinates as a (*numatoms*,3) :class:`numpy.ndarray` of dtype
+        :data:`~numpy.float32`.
 
-    Methods:  t = Timestep(numatoms) - create a timestep object with space for numatoms (done automatically)
-              t[i]                   - return coordinates for the i'th atom (0-based)
-              t[start:stop:skip]     - return an array of coordinates, where start, stop and skip correspond to atom indices (0-based)
+        .. Note:: normally one does not directly access :attr:`_pos`
+           but uses the
+           :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.coordinates`
+           method of an :meth:`~MDAnalysis.core.AtomGroup.AtomGroup`
+           but sometimes it can be faster to directly use the raw
+           coordinates. Any changes to this array are imediately
+           reflected in atom positions. If the frame is written to a
+           new trajectory then the coordinates are changed. If a new
+           trajectory frame is loaded, then *all* contents of
+           :attr:`_pos` are overwritten.
+
+      :attr:`dimensions`:
+         system box dimensions (A, B, C, alpha, beta, gamma); lengths
+         are in the MDAnalysis length unit, and angles are in degrees.
+
+    :Methods:  
+      ``t = Timestep(numatoms)``
+         create a timestep object with space for numatoms (done automatically)
+      ``t[i]``
+         return coordinates for the i'th atom (0-based)
+      ``t[start:stop:skip]``
+         return an array of coordinates, where start, stop and skip correspond to atom indices (0-based)
     """
     def __init__(self, arg):
         if numpy.dtype(type(arg)) == numpy.dtype(int):
@@ -145,7 +171,7 @@ class IObase(object):
 class Reader(IObase):
     """Base class for trajectory readers.
 
-    See Trajectory API definition in :mod:`MDAnalysis.coordinates` for
+    See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
     the required attributes and methods.
     """
 
@@ -356,7 +382,7 @@ class ChainReader(Reader):
 class Writer(IObase):
     """Base class for trajectory writers.
 
-    See Trajectory API definition in :mod:`MDAnalysis.coordinates` for
+    See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
     the required attributes and methods.
     """
 

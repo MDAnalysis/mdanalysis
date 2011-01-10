@@ -18,9 +18,10 @@ be accessible through this entry point in the same manner (`duck typing`_)
 .. _duck typing: http://c2.com/cgi/wiki?DuckTyping
 
 In order to write coordinates, a factory function is provided
-(:func:`MDAnalysis.core.writer`) which is made available as
-:func:`MDAnalysis.Writer`) that returns a Writer appropriate for the desired
-file format.
+(:func:`MDAnalysis.coordinates.core.writer`) which is made available
+as :func:`MDAnalysis.Writer`) that returns a *Writer* appropriate for
+the desired file format. Similarly, there is also a
+:func:`MDAnalysis.coordinates.core.reader` function available.
 
 
 
@@ -142,7 +143,8 @@ Typically, many methods and attributes are overriden.
 Methods
 .......
 
-The :class:`DCD.DCDReader` class is the primary implementation example.
+The :class:`MDAnalysis.coordinates.DCD.DCDReader` class is the primary
+implementation example.
 
 **Mandatory methods**
 
@@ -230,16 +232,20 @@ Trajectory Writer class
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Trajectory readers are derived from
-:class:`MDAnalysis.coordinates.base.Writer`. They are use to write multiple
-frames to a trajectory file. Every time the write() method is called, another
-frame is appended to the trajectory.
+:class:`MDAnalysis.coordinates.base.Writer`. They are use to write
+multiple frames to a trajectory file. Every time the
+:meth:`~MDAnalysis.coordinates.base.Writer.write` method is called,
+another frame is appended to the trajectory.
 
 Typically, many methods and attributes are overriden.
 
 Signature::
+
    W = TrajectoryWriter(filename,numatoms,**kwargs)
    W.write_next_timestep(Timestep)
+
 or::
+
    W.write(AtomGroup)   # write a selection
    W.write(Universe)    # write a whole universe
    W.write(Timestep)    # same as write_next_timestep()
@@ -271,7 +277,7 @@ Attributes
      first and last frame and step 
  units
      dictionary with keys *time* and *length* and the appropriate 
-     unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and 'nm' 
+     unit (e.g. 'AKMA' and 'Angstrom' for CHARMM dcds, 'ps' and 'nm' 
      for Gromacs trajectories, ``None`` and 'Angstrom' for PDB)
  format
      string that identifies the file format, e.g. "DCD", "PDB", "CRD", "XTC",
@@ -289,20 +295,21 @@ Single Frame Writer class
 
 A single frame writer is a special case of a trajectory writer in that it
 writes only a single coordinate frame to a file, for instance, a pdb or gro
-file. Unlike trajectory formats, which only contains coordinates, "single
-frame" formats contains much more information (e.g. atom and residue names and
+file. Unlike trajectory formats, which only contains coordinates, *single
+frame* formats contain much more information (e.g. atom and residue names and
 numbers) and hence it is possible to write selections of atoms in a meaningful
 way.
 
 Signature::
+
    W = FrameWriter(filename, **kwargs)
    W.write(AtomGroup)
    W.write(Universe)
 
-The blanket kwargs is required so that one can pass the same kind of
+The blanket *kwargs* is required so that one can pass the same kind of
 arguments (filename and numatoms) as for the Trajectory writers. In
-this way, the simple :func:`writer` factory function can be used for
-all writers.
+this way, the simple :func:`~MDAnalysis.coordinates.core.writer`
+factory function can be used for all writers.
 
 Methods
 .......
@@ -318,6 +325,21 @@ Methods
    manner with the one difference that Frame writers cannot deal with raw
    :class:`~MDAnalysis.coordinates.base.Timestep` objects.
 
+
+Reader/Writer registry
+----------------------
+
+The following data structures connect reader/writer classes to their
+format identifiers. They are documented for programmers who want to
+enhance MDAnalysis; the casual user is unlikely to access them
+directly.
+
+.. autodata:: _trajectory_readers
+.. autodata:: _topology_coordinates_readers
+.. autodata:: _trajectory_readers_permissive
+.. autodata:: _frame_writers
+.. autodata:: _trajectory_writers
+
 """
 
 __all__ = ['reader', 'writer']
@@ -326,7 +348,7 @@ import PDB, DCD, CRD, XTC, TRR, GRO, XYZ
 import base
 from core import reader, writer
 
-#: trajectory readers: present unified interface (based on DCD.Timestep)
+#: standard trajectory readers (dict with identifier as key and reader class as value)
 _trajectory_readers = {'DCD': DCD.DCDReader,
                        'TRJ': DCD.DCDReader,
                        'XTC': XTC.XTCReader,
@@ -345,30 +367,32 @@ _topology_coordinates_readers = {
                        'CRD': CRD.CRDReader,
 }    
 
-#: hack: readers that ignore most errors (permissive=True)
+#: hack: readers that ignore most errors (permissive=True); at the moment
+#: the same as :data:`_trajectory_readers` with the exception of the
+#: the PDB reader (:class:`~MDAnalysis.coordinates.PDB.PDBReader` is replaced by :class:`~MDAnalysis.coordinates.PDB.PrimitivePDBReader`).
 _trajectory_readers_permissive = _trajectory_readers.copy()
 _trajectory_readers_permissive['PDB'] =  PDB.PrimitivePDBReader
 
 #: frame writers: export to single frame formats such as PDB, gro, crd
-# Signature:
-#   W = FrameWriter(filename)
-#   W.write(AtomGroup)
+#: Signature::
+#:
+#:   W = FrameWriter(filename)
+#:   W.write(AtomGroup)
 _frame_writers = {'PDB': PDB.PrimitivePDBWriter,
                   'CRD': CRD.CRDWriter,
                   'GRO': GRO.GROWriter,
                  }
 
-# trajectory writers: export frames, typically only saving coordinates
-# (although PDB movies are the exception); maybe look at OpenBabel as
-# not to reinvent the wheel.
-# Signature:
-#   W = TrajectoryWriter(filename,numatoms,**kwargs)
-#   W.write_next_timestep(TimeStep)
-#   W.write(Timestep)
-#   W.write(AtomGroup)
-#   W.write(Universe)
+#: trajectory writers: export frames, typically only saving coordinates
+#: Signature::
+#:
+#:   W = TrajectoryWriter(filename,numatoms,**kwargs)
+#:   W.write_next_timestep(TimeStep)
+#:   W.write(Timestep)
+#:   W.write(AtomGroup)
+#:   W.write(Universe)
 _trajectory_writers = {'DCD': DCD.DCDWriter,
                        'XTC': XTC.XTCWriter,
                        'TRR': TRR.TRRWriter,
                        }
-
+# note: no PDB movies yet

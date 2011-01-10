@@ -1,7 +1,13 @@
 # $Id$
-"""DCD Hierarchy --- :mod:`MDAnalysis.coordinates.DCD`
-=======================================================
+"""DCD trajectory I/O  --- :mod:`MDAnalysis.coordinates.DCD`
+============================================================
 
+Classes to read and write CHARMM/LAMMPS DCD binary
+trajectories. Trajectories can be read regardless of system-endianness
+as this is auto-detected.
+
+The classes in this module are the reference implementations for the
+Trajectory API.
 """
 import os, errno
 import numpy
@@ -14,10 +20,8 @@ import MDAnalysis.core
 class DCDWriter(base.Writer):
     """Writes to a DCD file
 
-    Data:
-
-    Methods:
-       d = DCDWriter(dcdfilename, numatoms, start, step, delta, remarks)
+    :Methods:
+       ``d = DCDWriter(dcdfilename, numatoms, start, step, delta, remarks)``
     """
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
@@ -26,14 +30,22 @@ class DCDWriter(base.Writer):
                  remarks="Created by DCDWriter", convert_units=None):
         """Create a new DCDWriter
 
-        filename - name of output file
-        numatoms - number of atoms in dcd file
-        start - starting timestep
-        step  - skip between subsequent timesteps
-        delta - timestep
-        remarks - comments to annotate dcd file
-        convert_units - units are converted to the MDAnalysis base format; ``None`` selects
-                        the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
+        :Arguments:
+         *filename*
+           name of output file
+         *numatoms*
+           number of atoms in dcd file
+         *start*
+           starting timestep
+         *step*
+           skip between subsequent timesteps
+         *delta*
+           timestep
+         *remarks*
+           comments to annotate dcd file
+         *convert_units*
+           units are converted to the MDAnalysis base format; ``None`` selects
+           the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
         """
         if numatoms == 0:
             raise ValueError("DCDWriter: no atoms in output trajectory")
@@ -88,6 +100,7 @@ class DCDWriter(base.Writer):
         return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii",self._dcd_C_str)))
     def write_next_timestep(self, ts=None):
         ''' write a new timestep to the dcd file
+
             ts - timestep object containing coordinates to be written to dcd file
         '''
         if ts is None:
@@ -114,17 +127,27 @@ class DCDWriter(base.Writer):
 
 class DCDReader(base.Reader):
     """Reads from a DCD file
-    Data:
-        ts                     - Timestep object containing coordinates of current frame
 
-    Methods:
-        dcd = DCD(dcdfilename)             - open dcd file and read header
-        len(dcd)                           - return number of frames in dcd
-        for ts in dcd:                     - iterate through trajectory
-        for ts in dcd[start:stop:skip]:    - iterate through a trajectory
-        dcd[i]                             - random access into the trajectory (i corresponds to frame number)
-        data = dcd.timeseries(...)         - retrieve a subset of coordinate information for a group of atoms
-        data = dcd.correl(...)             - populate a Timeseries.Collection object with computed timeseries
+    :Data:
+        ts
+          :class:`~MDAnalysis.coordinates.base.Timestep` object
+          containing coordinates of current frame
+
+    :Methods:
+        ``dcd = DCD(dcdfilename)``
+           open dcd file and read header
+        ``len(dcd)``
+           return number of frames in dcd
+        ``for ts in dcd:``
+           iterate through trajectory
+        ``for ts in dcd[start:stop:skip]:``
+           iterate through a trajectory
+        ``dcd[i]``
+           random access into the trajectory (i corresponds to frame number)
+        ``data = dcd.timeseries(...)``
+           retrieve a subset of coordinate information for a group of atoms
+        ``data = dcd.correl(...)``
+           populate a :class:`MDAnalysis.core.Timeseries.Collection` object with computed timeseries
     """
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
@@ -221,11 +244,17 @@ class DCDReader(base.Reader):
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
         """Return a subset of coordinate data for an AtomGroup
 
-            asel - AtomGroup object
-            start, stop, skip - range of trajectory to access, start and stop are inclusive
-            format - the order/shape of the return data array, corresponding to (a)tom, (f)rame, (c)oordinates
-                     all six combinations of 'a', 'f', 'c' are allowed
-                     ie "fac" - return array where the shape is (frame, number of atoms, coordinates)
+        :Arguments:
+            *asel*
+               :class:`~MDAnalysis.core.AtomGroup.AtomGroup` object
+            *start, stop, skip*
+               range of trajectory to access, start and stop are inclusive
+            *format*
+               the order/shape of the return data array, corresponding
+               to (a)tom, (f)rame, (c)oordinates all six combinations
+               of 'a', 'f', 'c' are allowed ie "fac" - return array
+               where the shape is (frame, number of atoms,
+               coordinates)
         """
         start, stop, skip = self._check_slice_indices(start, stop, skip)
         if len(asel) == 0:
@@ -240,8 +269,11 @@ class DCDReader(base.Reader):
     def correl(self, timeseries, start=0, stop=-1, skip=1):
         """Populate a TimeseriesCollection object with timeseries computed from the trajectory
 
-            timeseries - TimeseriesCollection
-            start, stop, skip - subset of trajectory to use, with start and stop being inclusive
+        :Arguments:
+            *timeseries*
+               :class:`MDAnalysis.core.Timeseries.TimeseriesCollection`
+            *start, stop, skip*
+               subset of trajectory to use, with start and stop being inclusive
         """
         start, stop, skip = self._check_slice_indices(start, stop, skip)
         atomlist = timeseries._getAtomList()

@@ -8,6 +8,7 @@ Important base classes are collected in :mod:`MDAnalysis.coordinates.base`.
 .. autofunction:: writer
 
 Helper functions:
+
 .. autofunction:: get_reader_for
 .. autofunction:: get_writer_for
 .. autofunction:: guess_format

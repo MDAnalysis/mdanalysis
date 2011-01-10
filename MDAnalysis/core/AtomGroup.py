@@ -1,7 +1,7 @@
 # $Id$
 """
-Basic Organization of the Library --- :mod:`MDAnalysis.core.AtomGroup` 
-======================================================================
+Fundamental building blocks --- :mod:`MDAnalysis.core.AtomGroup` 
+================================================================
 
 The most important data structure in MDAnalysis is the
 :class:`AtomGroup`, which contains :class:`Atom` instances.

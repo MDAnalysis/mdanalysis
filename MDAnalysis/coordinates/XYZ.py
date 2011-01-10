@@ -1,7 +1,24 @@
 # $Id: XYZ.py 330 2010-06-25 01:52:07Z orbeckst $
-"""XYZ Hierarchy --- :mod:`MDAnalysis.coordinates.XYZ`
-=========================================================
+"""XYZ trajectory reader --- :mod:`MDAnalysis.coordinates.XYZ`
+==============================================================
+
+Resources: the XYZ format was taken from
+http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html and
+is therefore compatible with VMD (you need a PDB or PSF file to define
+the topology, just as here)
+    
+* comments are not allowed in the XYZ file
+* the atom name (first column) is ignored
+* the coordinates are assumed to be space-delimited rather than fixed width (this may cause issues - see below)
+* all fields to the right of the z-coordinate are ignored
+* it is assumed that the number following "frame" is the time in picoseconds
+* it is assumed that the coordinates are in Angstroms
+* the unitcell information is all zeros since this is not recorded in the XYZ format
+    
+There appears to be no rigid format definition so it is likely users
+will need to tweak this Class.
 """
+
 import os, errno
 import numpy
 import bz2
@@ -13,33 +30,28 @@ from base import Timestep
 
 class XYZReader(base.Reader):
     """Reads from an XYZ file
-    Data:
-        ts                     		 - Timestep object containing coordinates of current frame
 
-    Methods:
-        len(xyz)                           - return number of frames in xyz
-        for ts in xyz:                     - iterate through trajectory
-    
-    Note: this can read both compressed (foo.xyz) and compressed (foo.xyz.bz2 or foo.xyz.gz) files; 
-          uncompression is handled on the fly 
+    :Data:
+        ts
+          Timestep object containing coordinates of current frame
 
-    Validation: the geometric centre of 1284 atoms was calculated over 500 frames using both MDAnalysis and 
-    a VMD Tcl script. There was exact agreement (measured to 3DP). bzipped and gzipped versions of the XYZ file
-    were also tested
-          
-    Resources: the XYZ format was taken from
-        http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
-    and is therefore compatible with VMD (you need a PDB or PSF file to define the topology, just as here)
+    :Methods:
+        ``len(xyz)``
+          return number of frames in xyz
+        ``for ts in xyz:``
+          iterate through trajectory
     
-    # comments are not allowed in the XYZ file
-    # the atom name (first column) is ignored
-    # the coordinates are assumed to be space-delimited rather than fixed width (this may cause issues - see below)
-    # all fields to the right of the z-coordinate are ignored
-    # it is assumed that the number following "frame" is the time in picoseconds
-    # it is assumed that the coordinates are in Angstroms
-    # the unitcell information is all zeros since this is not recorded in the XYZ format
-    
-    There appears to be no rigid format definition so it is likely users will need to tweak this Class    
+    .. Note: this can read both compressed (foo.xyz) and compressed
+          (foo.xyz.bz2 or foo.xyz.gz) files; uncompression is handled
+          on the fly
+
+    File format: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
+
+    Validation: the geometric centre of 1284 atoms was calculated over
+    500 frames using both MDAnalysis and a VMD Tcl script. There was
+    exact agreement (measured to 3DP). bzipped and gzipped versions of
+    the XYZ file were also tested
+
     """
 
     # this will be overidden when an instance is created and the file extension checked
@@ -81,7 +93,7 @@ class XYZReader(base.Reader):
 
     @property
     def numatoms(self):
-
+        """number of atoms in a frame"""
         if not self.__numatoms is None:   # return cached value
             return self.__numatoms
         try:
@@ -183,6 +195,7 @@ class XYZReader(base.Reader):
         raise EOFError
                             
     def rewind(self):
+        """reposition on first frame"""
         self._reopen()
         # the next method is inherited from the Reader Class and calls _read_next_timestep
         self.next()

@@ -2,11 +2,13 @@
 """
 Core functions of MDAnalysis
 ============================
+The basic class is an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`;
+the whole simulation is called the
+:class:`~MDAnalysis.core.AtomGroup.Universe`. Selections are computed
+on an :class:`~MDAnalysis.core.AtomGroup.AtomGroup` and return another
+:class:`~MDAnalysis.core.AtomGroup.AtomGroup`.
 
-The basic class is an AtomGroup; the whole simulation is called the
-Universe. Selections are computed on an AtomGroup and return another AtomGroup.
-
-Timeseries are a convenient way to analyse trajectories.
+:mod:`~MDAnalysis.Timeseries` are a convenient way to analyse trajectories.
 
 To get started, load the Universe::
 
@@ -18,11 +20,13 @@ A simple selection of all water oxygens within 4 A of the protein::
   water_shell.numberOfAtoms()   # how many waters were selected
   water_shell.totalMass()       # their total mass
 
-AtomGroups have various methods that allow calculation of simple
-properties. For more complicated analysis, obtain the coordinates as a
-numpy array::
+:class:`AtomGroup` instances have various methods that allow
+calculation of simple properties. For more complicated analysis,
+obtain the coordinates as a numpy array ::
 
   coords = water_shell.coordinates()
+
+and write your own Python code.
 
 
 Flags
@@ -31,14 +35,32 @@ Flags
 (This is an advanced topic and can probably be skipped by most people.)
 
 There are a number flags that influence how MDAnalysis behaves. They are accessible
-through the pseudo-dictionary 
-
-  :attr:`MDAnalysis.core.flags`
+through the pseudo-dictionary :data:`MDAnalysis.core.flags`.
 
 The entries appear as 'name'-'value' pairs. Flags check values and illegal ones
-raise a ValueError. Documentation on all flags can be obtained with ::
+raise a :exc:`ValueError`. Documentation on all flags can be obtained with ::
 
- print MDAnalysis.core.flags.__doc__
+ print MDAnalysis.core.flags.doc()
+
+
+List of MDAnalysis flags with default values
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: flagsDocs
+
+
+Classes
+~~~~~~~
+
+.. data:: flags
+
+.. autoclass:: Flags
+   :members:
+
+.. autoclass:: Flag
+   :members:
+
+
 """
 
 __all__ = ['AtomGroup', 'Selection', 'Timeseries']
@@ -51,23 +73,19 @@ class Flags(dict):
     There are a number flags defined that influence how MDAnalysis behaves. They are
     accessible through the pseudo-dictionary
 
-      MDAnalysis.core.flags
+      :data:`MDAnalysis.core.flags`
 
     The entries appear as 'name'-'value' pairs. Flags check values and illegal ones
-    raise a ValueError. Documentation on all flags can be obtained with
+    raise a :exc:`ValueError`. Documentation on all flags can be obtained with ::
 
       print MDAnalysis.core.flags.__doc__
 
-    New flags are added with the Flags.register() method which takes a new Flag
+    New flags are added with the :meth:`Flags.register` method which takes a new :class:`Flag`
     instance as an argument.
     """
     def __init__(self,*args):
-        """For DEVELOPERS: Initialize Flags registry with a *list* of core.Flag instances."""
+        """For DEVELOPERS: Initialize Flags registry with a *list* of :class:`Flag` instances."""
         super(Flags,self).__init__([(flag.name,flag) for flag in args])
-    @property
-    def __doc__(self):
-        # generate dynamic docs on all flags
-        return self.doc()
     def get_flag(self,name):
         return super(Flags,self).__getitem__(name)
     def doc(self):
@@ -102,6 +120,17 @@ class Flags(dict):
     def __repr__(self):
         return str(self.items())
 
+class FlagsDynamicDocs(Flags):
+    # docs are generated on the fly for interactive use; but because
+    # this does not work well with the sphinx documentation system
+    # ("AttributeError: 'property' object has no attribute
+    # 'expandtabs'") we split the class...
+    @property
+    def __doc__(self):
+        # generate dynamic docs on all flags
+        return self.doc()
+    
+
 class IdentityMapping(dict):
     def __getitem__(self,key):
         return key
@@ -111,26 +140,33 @@ class Flag(object):
     def __init__(self,name,default,mapping=None,doc=None):
         """Create a new flag which will be registered with FLags.
 
-        newflag = Flag(name,default,mapping,doc)
+          newflag = Flag(name,default,mapping,doc)
 
-        name        name of the flag, must be a legal python name
-        default     default value
-        mapping     dict that maps allowed input values to canonical values; 
-                    if None then no argument checking will be performed and 
-                    all values are directly set.
-        doc         doc string; may contain string interpolation mappings for
+        :Arguments:
+         *name*
+            name of the flag, must be a legal python name
+         *default*
+            default value
+         *mapping*
+            dict that maps allowed input values to canonical values; 
+            if ``None`` then no argument checking will be performed and 
+            all values are directly set.
+         *doc*
+            doc string; may contain string interpolation mappings for::
+
                     %%(name)s        name of the flag
                     %%(default)r     default value
                     %%(value)r       current value
                     %%(mapping)r     mapping
-                    Doc strings are generated dynamically and reflect the current state.
+
+            Doc strings are generated dynamically and reflect the current state.
         """
         self.name = name
         self.value = default
         self.default = default
         # {v1:v1,v2:v1,v3:v3, ...} mapping of allowed values to canonical ones
         self.mapping = mapping or IdentityMapping()
-        self._doctemplate = "%(name)s = %(value)r\n" + (doc or "undocumented flag")
+        self._doctemplate = "**%(name)s** = *%(value)r*\n" + (doc or "*undocumented flag*")
     def get(self):
         return self.value
     def set(self,value):
@@ -145,13 +181,15 @@ class Flag(object):
         return {'fget':self.get, 'fset':self.set, 'doc':self.__doc__}
     def __repr__(self):
         return """Flag('%(name)s',%(value)r)""" % self.__dict__
+
+class _Flag(Flag):
     @property
     def __doc__(self):
         # generate dynamic docs with current values
         return  self._doctemplate % self.__dict__
 
 _flags = [
-    Flag('use_periodic_selections',
+    _Flag('use_periodic_selections',
          True,
          {True:True,False:False},
          """
@@ -160,8 +198,8 @@ _flags = [
             >>> flags['%(name)s'] = value
 
             Values of flag:
-            True     - periodicity is taken into account if supported
-            False    - periodicity is ignored
+             * True     - periodicity is taken into account if supported
+             * False    - periodicity is ignored
 
             The MDAnalysis preset of this flag is %(default)r.
 
@@ -169,7 +207,7 @@ _flags = [
             details see the docs for the 'use_KDTree_routines' flag.)
             """
          ),
-    Flag('use_KDTree_routines',
+    _Flag('use_KDTree_routines',
          'fast',
          {True:'fast','fast':'fast',   # only KDTree if advantageous
           'always':'always',           # always even if slower (for testing)
@@ -181,22 +219,22 @@ _flags = [
 
             Values for flag:
 
-            True, 'fast'   - only use KDTree routines that are typically faster than others
-                             POINT      uses distance matrix routines (with periodicity)
-                             AROUND     uses KDTree routines (always ignores periodicity)
-            'always'       - always use KDTree routines where available (eg for benchmarking)
-            False, 'never' - always use alternatives
+            * True, 'fast'   - only use KDTree routines that are typically faster than others
+              -               POINT      uses distance matrix routines (with periodicity)
+              -               AROUND     uses KDTree routines (always ignores periodicity)
+            * 'always'       - always use KDTree routines where available (eg for benchmarking)
+            * False, 'never' - always use alternatives
 
             The preset value for MDAnalysis is %(default)r.
 
-            KDTree routines are significantly faster for some distance
+            :mod:`MDAnalysis.KDTree` routines are significantly faster for some distance
             selections. However, they cannot deal with periodic boxes and thus ignore
             periodicity; if periodicity is crucial, disable KDTree routines with
 
             >>> MDAnalysis.core.flags['use_KDTree_routines'] = False
             """
          ),
-    Flag('convert_gromacs_lengths',
+    _Flag('convert_gromacs_lengths',
          True,
          {True:True, False:False},
          """
@@ -210,7 +248,7 @@ _flags = [
             trajectories.
          """
          ),
-    Flag('length_unit',
+    _Flag('length_unit',
          'Angstrom',
          {'Angstrom': 'Angstrom', 'A':'Angstrom',
           'nm': 'nm', 'nano meter': 'nm', 'nanometer': 'nm'
@@ -236,7 +274,7 @@ _flags = [
 
          """
          ),
-    Flag('permissive_pdb_reader',
+    _Flag('permissive_pdb_reader',
          True,
          {'primitive': True, 'permissive': True, True: True,
           'Bio.PDB': False, 'biopython': False, False: False,
@@ -266,9 +304,13 @@ _flags = [
          ),
     ]
 
-# Global flag registry for core
-# Can be accessed like a dictionary and appears to the casual user as such.
-flags = Flags(*_flags)
+#: Global flag registry for :mod:`core`.
+#: Can be accessed like a dictionary and appears to the casual user as such.
+flags = FlagsDynamicDocs(*_flags)
 del _flags
+
+# only for sphinx docs
+class flagsDocs(object):
+    __doc__ = flags.doc()
 
 import AtomGroup, Selection, Timeseries
