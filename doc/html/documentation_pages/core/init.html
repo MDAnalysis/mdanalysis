@@ -1,0 +1,345 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.1. Core functions of MDAnalysis &mdash; MDAnalysis v0.7.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.1 documentation" href="../../index.html" />
+    <link rel="up" title="5. Core modules" href="../core_modules.html" />
+    <link rel="next" title="5.2. Fundamental building blocks — MDAnalysis.core.AtomGroup" href="AtomGroup.html" />
+    <link rel="prev" title="5. Core modules" href="../core_modules.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="AtomGroup.html" title="5.2. Fundamental building blocks — MDAnalysis.core.AtomGroup"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../core_modules.html" title="5. Core modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
+          <li><a href="../core_modules.html" accesskey="U">5. Core modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.core.__init__"></span><div class="section" id="core-functions-of-mdanalysis">
+<h1>5.1. Core functions of MDAnalysis<a class="headerlink" href="#core-functions-of-mdanalysis" title="Permalink to this headline">¶</a></h1>
+<p>The basic class is an <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>;
+the whole simulation is called the
+<a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>. Selections are computed
+on an <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> and return another
+<a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>.</p>
+<p><tt class="xref py py-mod docutils literal"><span class="pre">Timeseries</span></tt> are a convenient way to analyse trajectories.</p>
+<p>To get started, load the Universe:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">psffilename</span><span class="p">,</span><span class="n">dcdfilename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A simple selection of all water oxygens within 4 A of the protein:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">water_shell</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;name OH2 and around 4.0 protein&#39;</span><span class="p">)</span>
+<span class="n">water_shell</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span>   <span class="c"># how many waters were selected</span>
+<span class="n">water_shell</span><span class="o">.</span><span class="n">totalMass</span><span class="p">()</span>       <span class="c"># their total mass</span>
+</pre></div>
+</div>
+<p><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt> instances have various methods that allow
+calculation of simple properties. For more complicated analysis,
+obtain the coordinates as a numpy array</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">coords</span> <span class="o">=</span> <span class="n">water_shell</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>and write your own Python code.</p>
+<div class="section" id="flags">
+<h2>5.1.1. Flags<a class="headerlink" href="#flags" title="Permalink to this headline">¶</a></h2>
+<p>(This is an advanced topic and can probably be skipped by most people.)</p>
+<p>There are a number flags that influence how MDAnalysis behaves. They are accessible
+through the pseudo-dictionary <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt>.</p>
+<p>The entries appear as &#8216;name&#8217;-&#8216;value&#8217; pairs. Flags check values and illegal ones
+raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>. Documentation on all flags can be obtained with</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="list-of-mdanalysis-flags-with-default-values">
+<h3>5.1.1.1. List of MDAnalysis flags with default values<a class="headerlink" href="#list-of-mdanalysis-flags-with-default-values" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="MDAnalysis.core.__init__.flagsDocs">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.__init__.</tt><tt class="descname">flagsDocs</tt><a class="headerlink" href="#MDAnalysis.core.__init__.flagsDocs" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>use_periodic_selections</strong> = <em>True</em></p>
+<blockquote>
+<p>Determines if distance selections (AROUND, POINT) respect periodicity.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_periodic_selections&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>Values of flag:</dt>
+<dd><ul class="first last simple">
+<li>True     - periodicity is taken into account if supported</li>
+<li>False    - periodicity is ignored</li>
+</ul>
+</dd>
+</dl>
+<p>The MDAnalysis preset of this flag is True.</p>
+<p>Note that KD-tree based distance selections always ignore this flag. (For
+details see the docs for the &#8216;use_KDTree_routines&#8217; flag.)</p>
+</blockquote>
+<p><strong>use_KDTree_routines</strong> = <em>&#8216;fast&#8217;</em></p>
+<blockquote>
+<p>Determines which KDTree routines are used for distance selections</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_KDTree_routines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p>Values for flag:</p>
+<ul class="simple">
+<li>True, &#8216;fast&#8217;   - only use KDTree routines that are typically faster than others
+-               POINT      uses distance matrix routines (with periodicity)
+-               AROUND     uses KDTree routines (always ignores periodicity)</li>
+<li>&#8216;always&#8217;       - always use KDTree routines where available (eg for benchmarking)</li>
+<li>False, &#8216;never&#8217; - always use alternatives</li>
+</ul>
+<p>The preset value for MDAnalysis is &#8216;fast&#8217;.</p>
+<p><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.KDTree</span></tt> routines are significantly faster for some distance
+selections. However, they cannot deal with periodic boxes and thus ignore
+periodicity; if periodicity is crucial, disable KDTree routines with</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_KDTree_routines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+</div>
+</blockquote>
+<p><strong>length_unit</strong> = <em>&#8216;Angstrom&#8217;</em></p>
+<blockquote>
+<p>Base unit for lengths (in particular coordinates in trajectories)</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;length_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Do not change, only Angstrom fully supported.</p>
+</div>
+</blockquote>
+<p>A Flag, essentially a variable that knows its default and legal values.</p>
+<p><strong>convert_gromacs_lengths</strong> = <em>True</em></p>
+<blockquote>
+<p>Determine if the XTC and TRR trajectory reader and writer convert units.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_gromacs_lengths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p>Gromacs trajectories are in nm, MDAnalysis in Angstroem. If
+<tt class="xref docutils literal"><span class="pre">True</span></tt> then coordinates are automatically converted, with
+<tt class="xref docutils literal"><span class="pre">False</span></tt> the coordinate values are presented as read from the
+trajectories.</p>
+</blockquote>
+<p><strong>permissive_pdb_reader</strong> = <em>True</em></p>
+<blockquote>
+<p>Select the default reader for PDB Brookhaven databank files.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;permissive_pdb_reader&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p>The Bio.PDB reader (value=``False``) can deal with &#8216;proper&#8217; PDB
+files from the Protein Databank that contain special PDB features
+such as insertion codes and it can auto-correct some common
+mistakes; see <tt class="xref py py-mod docutils literal"><span class="pre">Bio.PDB</span></tt> for details. However, Bio.PDB has been
+known to read some simulation system PDB files <strong>incompletely</strong>; a
+sure sign of problems is a warning that an atom has appeared twice
+in a residue.</p>
+<p>Therefore, the default for the PDB reader is <tt class="xref docutils literal"><span class="pre">True</span></tt>, which
+selects the &#8220;primitive&#8221; (or &#8220;permissive&#8221;) reader
+<a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.PDB.PrimitivePDBReader</span></tt></a>, which
+essentially just reads ATOM and HETATM lines and puts atoms in a
+list.</p>
+<p>One can manually switch between the two by providing the <em>permissive</em>
+keyword to <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>.</p>
+</blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="classes">
+<h3>5.1.1.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<dl class="data">
+<dt id="MDAnalysis.core.__init__.flags">
+<tt class="descclassname">MDAnalysis.core.__init__.</tt><tt class="descname">flags</tt><a class="headerlink" href="#MDAnalysis.core.__init__.flags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.__init__.Flags">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.__init__.</tt><tt class="descname">Flags</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Global registry of flags. Acts like a dict for item access.</p>
+<p>There are a number flags defined that influence how MDAnalysis behaves. They are
+accessible through the pseudo-dictionary</p>
+<blockquote>
+<tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt></blockquote>
+<p>The entries appear as &#8216;name&#8217;-&#8216;value&#8217; pairs. Flags check values and illegal ones
+raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>. Documentation on all flags can be obtained with</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">__doc__</span>
+</pre></div>
+</div>
+<p>New flags are added with the <a class="reference internal" href="#MDAnalysis.core.__init__.Flags.register" title="MDAnalysis.core.__init__.Flags.register"><tt class="xref py py-meth docutils literal"><span class="pre">Flags.register()</span></tt></a> method which takes a new <a class="reference internal" href="#MDAnalysis.core.__init__.Flag" title="MDAnalysis.core.__init__.Flag"><tt class="xref py py-class docutils literal"><span class="pre">Flag</span></tt></a>
+instance as an argument.</p>
+<p>For DEVELOPERS: Initialize Flags registry with a <em>list</em> of <a class="reference internal" href="#MDAnalysis.core.__init__.Flag" title="MDAnalysis.core.__init__.Flag"><tt class="xref py py-class docutils literal"><span class="pre">Flag</span></tt></a> instances.</p>
+<dl class="method">
+<dt id="MDAnalysis.core.__init__.Flags.doc">
+<tt class="descname">doc</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flags.doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows doc strings for all flags.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.__init__.Flags.register">
+<tt class="descname">register</tt><big>(</big><em>flag</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flags.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a new Flag instance with the Flags registry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.__init__.Flags.update">
+<tt class="descname">update</tt><big>(</big><em>*flags</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flags.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update Flags registry with a list of Flag instances.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.__init__.Flag">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.__init__.</tt><tt class="descname">Flag</tt><big>(</big><em>name</em>, <em>default</em>, <em>mapping=None</em>, <em>doc=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Flag, essentially a variable that knows its default and legal values.</p>
+<p>Create a new flag which will be registered with FLags.</p>
+<blockquote>
+newflag = Flag(name,default,mapping,doc)</blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em></dt>
+<dd><p class="first last">name of the flag, must be a legal python name</p>
+</dd>
+<dt><em>default</em></dt>
+<dd><p class="first last">default value</p>
+</dd>
+<dt><em>mapping</em></dt>
+<dd><p class="first last">dict that maps allowed input values to canonical values; 
+if <tt class="xref docutils literal"><span class="pre">None</span></tt> then no argument checking will be performed and 
+all values are directly set.</p>
+</dd>
+<dt><em>doc</em></dt>
+<dd><p class="first">doc string; may contain string interpolation mappings for:</p>
+<div class="highlight-python"><pre>%%(name)s        name of the flag
+%%(default)r     default value
+%%(value)r       current value
+%%(mapping)r     mapping</pre>
+</div>
+<p class="last">Doc strings are generated dynamically and reflect the current state.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="MDAnalysis.core.__init__.Flag.prop">
+<tt class="descname">prop</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flag.prop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use this for property(<a href="#id1"><span class="problematic" id="id2">**</span></a>flag.prop())</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.1. Core functions of MDAnalysis</a><ul>
+<li><a class="reference internal" href="#flags">5.1.1. Flags</a><ul>
+<li><a class="reference internal" href="#list-of-mdanalysis-flags-with-default-values">5.1.1.1. List of MDAnalysis flags with default values</a></li>
+<li><a class="reference internal" href="#classes">5.1.1.2. Classes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../core_modules.html"
+                        title="previous chapter">5. Core modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="AtomGroup.html"
+                        title="next chapter">5.2. Fundamental building blocks &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/core/init.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="AtomGroup.html" title="5.2. Fundamental building blocks — MDAnalysis.core.AtomGroup"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../core_modules.html" title="5. Core modules"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
+          <li><a href="../core_modules.html" >5. Core modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

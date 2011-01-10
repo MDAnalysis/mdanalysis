@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.7. XYZ Hierarchy — MDAnalysis.coordinates.XYZ &mdash; MDAnalysis v0.7.1 documentation</title>
+    <title>4.8. XYZ trajectory reader — MDAnalysis.coordinates.XYZ &mdash; MDAnalysis v0.7.1 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -25,7 +25,7 @@
     <link rel="top" title="MDAnalysis v0.7.1 documentation" href="../../index.html" />
     <link rel="up" title="4. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5. Core modules" href="../core_modules.html" />
-    <link rel="prev" title="4.6. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB" href="PDB.html" /> 
+    <link rel="prev" title="4.7. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB" href="PDB.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,7 +41,7 @@
           <a href="../core_modules.html" title="5. Core modules"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="PDB.html" title="4.6. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
+          <a href="PDB.html" title="4.7. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">4. Coordinates modules</a> &raquo;</li> 
@@ -53,42 +53,71 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <span class="target" id="module-MDAnalysis.coordinates.XYZ"></span><div class="section" id="xyz-hierarchy-mdanalysis-coordinates-xyz">
-<h1>4.7. XYZ Hierarchy &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.XYZ" title="MDAnalysis.coordinates.XYZ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a><a class="headerlink" href="#xyz-hierarchy-mdanalysis-coordinates-xyz" title="Permalink to this headline">¶</a></h1>
+  <span class="target" id="module-MDAnalysis.coordinates.XYZ"></span><div class="section" id="xyz-trajectory-reader-mdanalysis-coordinates-xyz">
+<h1>4.8. XYZ trajectory reader &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.XYZ" title="MDAnalysis.coordinates.XYZ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a><a class="headerlink" href="#xyz-trajectory-reader-mdanalysis-coordinates-xyz" title="Permalink to this headline">¶</a></h1>
+<p>Resources: the XYZ format was taken from
+<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html</a> and
+is therefore compatible with VMD (you need a PDB or PSF file to define
+the topology, just as here)</p>
+<ul class="simple">
+<li>comments are not allowed in the XYZ file</li>
+<li>the atom name (first column) is ignored</li>
+<li>the coordinates are assumed to be space-delimited rather than fixed width (this may cause issues - see below)</li>
+<li>all fields to the right of the z-coordinate are ignored</li>
+<li>it is assumed that the number following &#8220;frame&#8221; is the time in picoseconds</li>
+<li>it is assumed that the coordinates are in Angstroms</li>
+<li>the unitcell information is all zeros since this is not recorded in the XYZ format</li>
+</ul>
+<p>There appears to be no rigid format definition so it is likely users
+will need to tweak this Class.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.XYZ.XYZReader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.XYZ.</tt><tt class="descname">XYZReader</tt><big>(</big><em>xyzfilename</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads from an XYZ file
-Data:</p>
-<blockquote>
-ts                               - Timestep object containing coordinates of current frame</blockquote>
-<dl class="docutils">
-<dt>Methods:</dt>
-<dd>len(xyz)                           - return number of frames in xyz
-for ts in xyz:                     - iterate through trajectory</dd>
-<dt>Note: this can read both compressed (foo.xyz) and compressed (foo.xyz.bz2 or foo.xyz.gz) files; </dt>
-<dd>uncompression is handled on the fly</dd>
+<dd><p>Reads from an XYZ file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Data :</th><td class="field-body"><dl class="first docutils">
+<dt>ts</dt>
+<dd><p class="first last">Timestep object containing coordinates of current frame</p>
+</dd>
 </dl>
-<p>Validation: the geometric centre of 1284 atoms was calculated over 500 frames using both MDAnalysis and 
-a VMD Tcl script. There was exact agreement (measured to 3DP). bzipped and gzipped versions of the XYZ file
-were also tested</p>
-<dl class="docutils">
-<dt>Resources: the XYZ format was taken from</dt>
-<dd><a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html</a></dd>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Methods :</th><td class="field-body"><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">len(xyz)</span></tt></dt>
+<dd><p class="first last">return number of frames in xyz</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">for</span> <span class="pre">ts</span> <span class="pre">in</span> <span class="pre">xyz:</span></tt></dt>
+<dd><p class="first last">iterate through trajectory</p>
+</dd>
 </dl>
-<p>and is therefore compatible with VMD (you need a PDB or PSF file to define the topology, just as here)</p>
-<p># comments are not allowed in the XYZ file
-# the atom name (first column) is ignored
-# the coordinates are assumed to be space-delimited rather than fixed width (this may cause issues - see below)
-# all fields to the right of the z-coordinate are ignored
-# it is assumed that the number following &#8220;frame&#8221; is the time in picoseconds
-# it is assumed that the coordinates are in Angstroms
-# the unitcell information is all zeros since this is not recorded in the XYZ format</p>
-<p>There appears to be no rigid format definition so it is likely users will need to tweak this Class</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>File format: <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html</a></p>
+<p>Validation: the geometric centre of 1284 atoms was calculated over
+500 frames using both MDAnalysis and a VMD Tcl script. There was
+exact agreement (measured to 3DP). bzipped and gzipped versions of
+the XYZ file were also tested</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.XYZ.XYZReader.close_trajectory">
 <tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.close_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close xyz trajectory file if it was open.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XYZ.XYZReader.numatoms">
+<tt class="descname">numatoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.numatoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of atoms in a frame</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XYZ.XYZReader.rewind">
+<tt class="descname">rewind</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.rewind" title="Permalink to this definition">¶</a></dt>
+<dd><p>reposition on first frame</p>
 </dd></dl>
 
 </dd></dl>
@@ -103,7 +132,7 @@ were also tested</p>
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="PDB.html"
-                        title="previous chapter">4.6. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></p>
+                        title="previous chapter">4.7. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../core_modules.html"
                         title="next chapter">5. Core modules</a></p>
@@ -142,7 +171,7 @@ were also tested</p>
           <a href="../core_modules.html" title="5. Core modules"
              >next</a> |</li>
         <li class="right" >
-          <a href="PDB.html" title="4.6. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
+          <a href="PDB.html" title="4.7. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >4. Coordinates modules</a> &raquo;</li> 

@@ -7,10 +7,11 @@ Core modules
 .. toctree::
    :maxdepth: 1
 
+   core/init
    core/AtomGroup
-   core/log
    core/Selection
    core/Timeseries
    core/transformations
    core/units
    core/util
+   core/log

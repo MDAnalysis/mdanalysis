@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.2. Common functions for coordinate reading — MDAnalysis.coordinates.core &mdash; MDAnalysis v0.7.1 documentation</title>
+    <title>4.3. Common functions for coordinate reading — MDAnalysis.coordinates.core &mdash; MDAnalysis v0.7.1 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.1 documentation" href="../../index.html" />
     <link rel="up" title="4. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="4.3. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" href="CRD.html" />
-    <link rel="prev" title="4.1. Base classes — MDAnalysis.coordinates.base" href="base.html" /> 
+    <link rel="next" title="4.4. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" href="CRD.html" />
+    <link rel="prev" title="4.2. Base classes — MDAnalysis.coordinates.base" href="base.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,10 +38,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="CRD.html" title="4.3. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
+          <a href="CRD.html" title="4.4. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="base.html" title="4.1. Base classes — MDAnalysis.coordinates.base"
+          <a href="base.html" title="4.2. Base classes — MDAnalysis.coordinates.base"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">4. Coordinates modules</a> &raquo;</li> 
@@ -54,7 +54,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.core"></span><div class="section" id="common-functions-for-coordinate-reading-mdanalysis-coordinates-core">
-<h1>4.2. Common functions for coordinate reading &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.core" title="MDAnalysis.coordinates.core"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a><a class="headerlink" href="#common-functions-for-coordinate-reading-mdanalysis-coordinates-core" title="Permalink to this headline">¶</a></h1>
+<h1>4.3. Common functions for coordinate reading &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.core" title="MDAnalysis.coordinates.core"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a><a class="headerlink" href="#common-functions-for-coordinate-reading-mdanalysis-coordinates-core" title="Permalink to this headline">¶</a></h1>
 <p>Important base classes are collected in <a class="reference internal" href="base.html#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a>.</p>
 <dl class="function">
 <dt id="MDAnalysis.coordinates.core.reader">
@@ -146,10 +146,48 @@ and <tt class="xref py py-class docutils literal"><span class="pre">TRRWriter</s
 </table>
 </dd></dl>
 
-<p>Helper functions:
-.. autofunction:: get_reader_for
-.. autofunction:: get_writer_for
-.. autofunction:: guess_format</p>
+<p>Helper functions:</p>
+<dl class="function">
+<dt id="MDAnalysis.coordinates.core.get_reader_for">
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">get_reader_for</tt><big>(</big><em>filename</em>, <em>permissive=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.get_reader_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the appropriate trajectory reader class for <em>filename</em>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.coordinates.core.get_writer_for">
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">get_writer_for</tt><big>(</big><em>filename=None</em>, <em>format='DCD'</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.get_writer_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an appropriate trajectory or frame writer class for <em>filename</em>.</p>
+<p>The format is determined by the <em>format</em> argument or the extension
+of <em>filename</em>. The default is to return a dcd writer (<em>format</em> = &#8216;dcd&#8217;).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">The filename for the trajectory is examined for its extension and 
+the Writer is chosen accordingly.</p>
+</dd>
+<dt><em>format</em></dt>
+<dd><p class="first last">If no <em>filename</em> is supplied then the format can be explicitly set;
+possible values are &#8220;DCD&#8221;, &#8220;XTC&#8221;, &#8220;TRR&#8221;; &#8220;PDB&#8221;, &#8220;CRD&#8221;, &#8220;GRO&#8221;.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.coordinates.core.guess_format">
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">guess_format</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.guess_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the type of coordinate file <em>filename</em>.</p>
+<p>The current heuristic simply looks at the filename extension but
+more complicated probes could be implemented here or in the
+individual packages (e.g. as static methods).</p>
+</dd></dl>
+
 </div>
 
 
@@ -160,10 +198,10 @@ and <tt class="xref py py-class docutils literal"><span class="pre">TRRWriter</s
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="base.html"
-                        title="previous chapter">4.1. Base classes &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></p>
+                        title="previous chapter">4.2. Base classes &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="CRD.html"
-                        title="next chapter">4.3. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></p>
+                        title="next chapter">4.4. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/core.txt"
@@ -196,10 +234,10 @@ and <tt class="xref py py-class docutils literal"><span class="pre">TRRWriter</s
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="CRD.html" title="4.3. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
+          <a href="CRD.html" title="4.4. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
              >next</a> |</li>
         <li class="right" >
-          <a href="base.html" title="4.1. Base classes — MDAnalysis.coordinates.base"
+          <a href="base.html" title="4.2. Base classes — MDAnalysis.coordinates.base"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >4. Coordinates modules</a> &raquo;</li> 

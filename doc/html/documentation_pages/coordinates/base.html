@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.1. Base classes — MDAnalysis.coordinates.base &mdash; MDAnalysis v0.7.1 documentation</title>
+    <title>4.2. Base classes — MDAnalysis.coordinates.base &mdash; MDAnalysis v0.7.1 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.1 documentation" href="../../index.html" />
     <link rel="up" title="4. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="4.2. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" />
-    <link rel="prev" title="4. Coordinates modules" href="../coordinates_modules.html" /> 
+    <link rel="next" title="4.3. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" />
+    <link rel="prev" title="4.1. MDAnalysis.coordinates — reading and writing coordinates" href="init.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,10 +38,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="core.html" title="4.2. Common functions for coordinate reading — MDAnalysis.coordinates.core"
+          <a href="core.html" title="4.3. Common functions for coordinate reading — MDAnalysis.coordinates.core"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../coordinates_modules.html" title="4. Coordinates modules"
+          <a href="init.html" title="4.1. MDAnalysis.coordinates — reading and writing coordinates"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">4. Coordinates modules</a> &raquo;</li> 
@@ -54,20 +54,64 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.base"></span><div class="section" id="base-classes-mdanalysis-coordinates-base">
-<h1>4.1. Base classes &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this headline">¶</a></h1>
-<p>Derive other Reader and Writer classes from the classes in this module.</p>
+<h1>4.2. Base classes &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this headline">¶</a></h1>
+<p>Derive other Reader and Writer classes from the classes in this
+module. The derived classes must follow the Trajectory API in
+<a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a>.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.base.Timestep">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Timestep data for one frame</p>
-<dl class="docutils">
-<dt>Data:     numatoms                   - number of atoms</dt>
-<dd>frame                      - frame number
-dimensions                 - system box dimensions (x, y, z, alpha, beta, gamma)</dd>
-<dt>Methods:  t = Timestep(numatoms) - create a timestep object with space for numatoms (done automatically)</dt>
-<dd>t[i]                   - return coordinates for the i&#8217;th atom (0-based)
-t[start:stop:skip]     - return an array of coordinates, where start, stop and skip correspond to atom indices (0-based)</dd>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Attributes :</th><td class="field-body"><dl class="first docutils">
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">numatoms</span></tt></dt>
+<dd><p class="first last">number of atoms</p>
+</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">frame</span></tt></dt>
+<dd><p class="first last">frame number</p>
+</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt></dt>
+<dd><p class="first">coordinates as a (<em>numatoms</em>,3) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-d43668c)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype
+<tt class="xref py py-data docutils literal"><span class="pre">float32</span></tt>.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">normally one does not directly access <tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt>
+but uses the
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.coordinates" title="MDAnalysis.core.AtomGroup.AtomGroup.coordinates"><tt class="xref py py-meth docutils literal"><span class="pre">coordinates()</span></tt></a>
+method of an <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup()</span></tt></a>
+but sometimes it can be faster to directly use the raw
+coordinates. Any changes to this array are imediately
+reflected in atom positions. If the frame is written to a
+new trajectory then the coordinates are changed. If a new
+trajectory frame is loaded, then <em>all</em> contents of
+<tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt> are overwritten.</p>
+</div>
+</dd>
+<dt><a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">dimensions</span></tt></a>:</dt>
+<dd><p class="first last">system box dimensions (A, B, C, alpha, beta, gamma); lengths
+are in the MDAnalysis length unit, and angles are in degrees.</p>
+</dd>
 </dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Methods :</th><td class="field-body"><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">Timestep(numatoms)</span></tt></dt>
+<dd><p class="first last">create a timestep object with space for numatoms (done automatically)</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">t[i]</span></tt></dt>
+<dd><p class="first last">return coordinates for the i&#8217;th atom (0-based)</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">t[start:stop:skip]</span></tt></dt>
+<dd><p class="first last">return an array of coordinates, where start, stop and skip correspond to atom indices (0-based)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.Timestep.dimensions">
 <tt class="descname">dimensions</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
@@ -135,7 +179,7 @@ t[start:stop:skip]     - return an array of coordinates, where start, stop and s
 <dt id="MDAnalysis.coordinates.base.Reader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">Reader</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for trajectory readers.</p>
-<p>See Trajectory API definition in <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt> for
+<p>See Trajectory API definition in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for
 the required attributes and methods.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.Reader.dt">
@@ -167,7 +211,7 @@ the required attributes and methods.</p>
 <dt id="MDAnalysis.coordinates.base.Writer">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">Writer</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for trajectory writers.</p>
-<p>See Trajectory API definition in <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt> for
+<p>See Trajectory API definition in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for
 the required attributes and methods.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell">
@@ -199,11 +243,11 @@ of atom provided when setting up the trajectory.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="../coordinates_modules.html"
-                        title="previous chapter">4. Coordinates modules</a></p>
+  <p class="topless"><a href="init.html"
+                        title="previous chapter">4.1. <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt> &#8212; reading and writing coordinates</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="core.html"
-                        title="next chapter">4.2. Common functions for coordinate reading &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
+                        title="next chapter">4.3. Common functions for coordinate reading &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/base.txt"
@@ -236,10 +280,10 @@ of atom provided when setting up the trajectory.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="core.html" title="4.2. Common functions for coordinate reading — MDAnalysis.coordinates.core"
+          <a href="core.html" title="4.3. Common functions for coordinate reading — MDAnalysis.coordinates.core"
              >next</a> |</li>
         <li class="right" >
-          <a href="../coordinates_modules.html" title="4. Coordinates modules"
+          <a href="init.html" title="4.1. MDAnalysis.coordinates — reading and writing coordinates"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >4. Coordinates modules</a> &raquo;</li> 

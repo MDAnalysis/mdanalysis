@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.1 documentation" href="../index.html" />
-    <link rel="next" title="4.1. Base classes — MDAnalysis.coordinates.base" href="coordinates/base.html" />
+    <link rel="next" title="4.1. MDAnalysis.coordinates — reading and writing coordinates" href="coordinates/init.html" />
     <link rel="prev" title="3.4. Leaflet identification — MDAnalysis.analysis.leaflet" href="analysis/leaflet.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="coordinates/base.html" title="4.1. Base classes — MDAnalysis.coordinates.base"
+          <a href="coordinates/init.html" title="4.1. MDAnalysis.coordinates — reading and writing coordinates"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="analysis/leaflet.html" title="3.4. Leaflet identification — MDAnalysis.analysis.leaflet"
@@ -53,15 +53,23 @@
             
   <div class="section" id="coordinates-modules">
 <h1>4. Coordinates modules<a class="headerlink" href="#coordinates-modules" title="Permalink to this headline">¶</a></h1>
+<p>The coordinates module contains the classes to read and write
+trajectories. Typically, MDAnalysis recognizes formats by the file
+extension and hence most users probably do not need to concern
+themselves with classes and functions described here.</p>
+<p>Programmers and anyone trying to implement new functionality should
+read the <strong>Trajectory API</strong> that is described in
+<tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt>.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/base.html">4.1. Base classes &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/core.html">4.2. Common functions for coordinate reading &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/CRD.html">4.3. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/DCD.html">4.4. DCD Hierarchy &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/GRO.html">4.5. GRO file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/PDB.html">4.6. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/XYZ.html">4.7. XYZ Hierarchy &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/init.html">4.1. <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt> &#8212; reading and writing coordinates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/base.html">4.2. Base classes &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/core.html">4.3. Common functions for coordinate reading &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/CRD.html">4.4. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/DCD.html">4.5. DCD trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/GRO.html">4.6. GRO file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/PDB.html">4.7. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/XYZ.html">4.8. XYZ trajectory reader &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></li>
 </ul>
 </div>
 </div>
@@ -74,10 +82,10 @@
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="analysis/leaflet.html"
-                        title="previous chapter">3.4. Leaflet identification &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
+                        title="previous chapter">3.4. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="coordinates/base.html"
-                        title="next chapter">4.1. Base classes &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></p>
+  <p class="topless"><a href="coordinates/init.html"
+                        title="next chapter">4.1. <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt> &#8212; reading and writing coordinates</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/documentation_pages/coordinates_modules.txt"
@@ -110,7 +118,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="coordinates/base.html" title="4.1. Base classes — MDAnalysis.coordinates.base"
+          <a href="coordinates/init.html" title="4.1. MDAnalysis.coordinates — reading and writing coordinates"
              >next</a> |</li>
         <li class="right" >
           <a href="analysis/leaflet.html" title="3.4. Leaflet identification — MDAnalysis.analysis.leaflet"

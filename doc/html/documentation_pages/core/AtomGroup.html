@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1. Basic Organization of the Library — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.1 documentation</title>
+    <title>5.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.1 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.1 documentation" href="../../index.html" />
     <link rel="up" title="5. Core modules" href="../core_modules.html" />
-    <link rel="next" title="5.2. Setting up logging — MDAnalysis.core.log" href="log.html" />
-    <link rel="prev" title="5. Core modules" href="../core_modules.html" /> 
+    <link rel="next" title="5.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
+    <link rel="prev" title="5.1. Core functions of MDAnalysis" href="init.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,10 +38,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="log.html" title="5.2. Setting up logging — MDAnalysis.core.log"
+          <a href="Selection.html" title="5.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../core_modules.html" title="5. Core modules"
+          <a href="init.html" title="5.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">5. Core modules</a> &raquo;</li> 
@@ -53,8 +53,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <span class="target" id="module-MDAnalysis.core.AtomGroup"></span><div class="section" id="basic-organization-of-the-library-mdanalysis-core-atomgroup">
-<h1>5.1. Basic Organization of the Library &#8212; <a class="reference internal" href="#module-MDAnalysis.core.AtomGroup" title="MDAnalysis.core.AtomGroup"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><a class="headerlink" href="#basic-organization-of-the-library-mdanalysis-core-atomgroup" title="Permalink to this headline">¶</a></h1>
+  <span class="target" id="module-MDAnalysis.core.AtomGroup"></span><div class="section" id="fundamental-building-blocks-mdanalysis-core-atomgroup">
+<h1>5.2. Fundamental building blocks &#8212; <a class="reference internal" href="#module-MDAnalysis.core.AtomGroup" title="MDAnalysis.core.AtomGroup"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><a class="headerlink" href="#fundamental-building-blocks-mdanalysis-core-atomgroup" title="Permalink to this headline">¶</a></h1>
 <p>The most important data structure in MDAnalysis is the
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>, which contains <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
 <p>A <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> is the user-visible entry point and collects all
@@ -65,7 +65,7 @@ molecule, ion, or ligand. A <a class="reference internal" href="#MDAnalysis.core
 residues such as a whole protein or a chain in a protein or all the
 water in the system.</p>
 <div class="section" id="class-hierarchy">
-<h2>5.1.1. Class Hierarchy<a class="headerlink" href="#class-hierarchy" title="Permalink to this headline">¶</a></h2>
+<h2>5.2.1. Class Hierarchy<a class="headerlink" href="#class-hierarchy" title="Permalink to this headline">¶</a></h2>
 <p>A <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> contains Segments, which contain Residues, which
 contain Atoms; all containers are derived from <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>, and
 thus one can always analyze them as a collection of atoms, independent
@@ -82,7 +82,7 @@ belongs. Each object provides three attributes (<tt class="xref py py-attr docut
 that the object belongs to.</p>
 </div>
 <div class="section" id="classes-and-functions">
-<h2>5.1.2. Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
+<h2>5.2.2. Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.Universe">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Universe</tt><big>(</big><em>topologyfile</em>, <em>coordinatefile=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe" title="Permalink to this definition">¶</a></dt>
@@ -1043,19 +1043,19 @@ asUniverse(<a href="#id13"><span class="problematic" id="id14">*</span></a>args,
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.1. Basic Organization of the Library &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><ul>
-<li><a class="reference internal" href="#class-hierarchy">5.1.1. Class Hierarchy</a></li>
-<li><a class="reference internal" href="#classes-and-functions">5.1.2. Classes and functions</a></li>
+<li><a class="reference internal" href="#">5.2. Fundamental building blocks &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><ul>
+<li><a class="reference internal" href="#class-hierarchy">5.2.1. Class Hierarchy</a></li>
+<li><a class="reference internal" href="#classes-and-functions">5.2.2. Classes and functions</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="../core_modules.html"
-                        title="previous chapter">5. Core modules</a></p>
+  <p class="topless"><a href="init.html"
+                        title="previous chapter">5.1. Core functions of MDAnalysis</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="log.html"
-                        title="next chapter">5.2. Setting up logging &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
+  <p class="topless"><a href="Selection.html"
+                        title="next chapter">5.3. Atom selection Hierarchy &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.Selection</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/AtomGroup.txt"
@@ -1088,10 +1088,10 @@ asUniverse(<a href="#id13"><span class="problematic" id="id14">*</span></a>args,
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="log.html" title="5.2. Setting up logging — MDAnalysis.core.log"
+          <a href="Selection.html" title="5.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
              >next</a> |</li>
         <li class="right" >
-          <a href="../core_modules.html" title="5. Core modules"
+          <a href="init.html" title="5.1. Core functions of MDAnalysis"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >5. Core modules</a> &raquo;</li> 
