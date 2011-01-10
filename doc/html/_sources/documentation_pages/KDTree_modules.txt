@@ -4,11 +4,11 @@
 KDTree modules
 **************************
 
+.. automodule:: MDAnalysis.KDTree.__init__
+
 .. toctree::
    :maxdepth: 1
 
-   KDTree/init
-   KDTree/CKDTree
    KDTree/KDTree
    KDTree/NeighborSearch
 

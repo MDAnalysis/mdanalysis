@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3. Fast atom neighbor lookup using a KD tree (implemented in C++) — MDAnalysis.KDTree.NeighborSearch &mdash; MDAnalysis v0.7.0 documentation</title>
+    <title>6.2. Fast atom neighbor lookup using a KD tree (implemented in C++) — MDAnalysis.KDTree.NeighborSearch &mdash; MDAnalysis v0.7.0 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.0 documentation" href="../../index.html" />
     <link rel="up" title="6. KDTree modules" href="../KDTree_modules.html" />
-    <link rel="prev" title="6.2. KDTree — MDAnalysis.KDTree.KDTree" href="KDTree.html" /> 
+    <link rel="prev" title="6.1. KDTree — MDAnalysis.KDTree.KDTree" href="KDTree.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,7 +37,7 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="KDTree.html" title="6.2. KDTree — MDAnalysis.KDTree.KDTree"
+          <a href="KDTree.html" title="6.1. KDTree — MDAnalysis.KDTree.KDTree"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
           <li><a href="../KDTree_modules.html" accesskey="U">6. KDTree modules</a> &raquo;</li> 
@@ -50,19 +50,27 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.KDTree.NeighborSearch"></span><div class="section" id="fast-atom-neighbor-lookup-using-a-kd-tree-implemented-in-c-mdanalysis-kdtree-neighborsearch">
-<h1>6.3. Fast atom neighbor lookup using a KD tree (implemented in C++) &#8212; <a class="reference internal" href="#module-MDAnalysis.KDTree.NeighborSearch" title="MDAnalysis.KDTree.NeighborSearch"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.KDTree.NeighborSearch</span></tt></a><a class="headerlink" href="#fast-atom-neighbor-lookup-using-a-kd-tree-implemented-in-c-mdanalysis-kdtree-neighborsearch" title="Permalink to this headline">¶</a></h1>
-<p>If you know that you are using a specific selection repeatedly then it
+<h1>6.2. Fast atom neighbor lookup using a KD tree (implemented in C++) &#8212; <a class="reference internal" href="#module-MDAnalysis.KDTree.NeighborSearch" title="MDAnalysis.KDTree.NeighborSearch"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.KDTree.NeighborSearch</span></tt></a><a class="headerlink" href="#fast-atom-neighbor-lookup-using-a-kd-tree-implemented-in-c-mdanalysis-kdtree-neighborsearch" title="Permalink to this headline">¶</a></h1>
+<p>One can use KD-Trees to speed up searches. MDAnalysis uses Thomas
+Hamelryck&#8217;s C++ implementation from <a class="reference external" href="http://biopython.org">Biopython</a>. The following are
+fairly technical descriptions of the available classes.</p>
+<p>If you know that you are using a specific selection repeatedly then
 may be faster to explicitly build the selection using the
-AtomNeighborSearch class instead of using MDAnalysis selections.</p>
+<a class="reference internal" href="#MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch" title="MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch"><tt class="xref py py-class docutils literal"><span class="pre">AtomNeighborSearch</span></tt></a> class instead of using MDAnalysis
+selections.</p>
 <p>Example:</p>
-<blockquote>
-<p>import MDAnalysis.KDTree.NeighborSearch as NS</p>
-<p>u = Universe(psf,dcd)
-water = u.selectAtoms(&#8216;name OH2&#8217;)
-protein = u.selectAtoms(&#8216;protein&#8217;)</p>
-<p>ns_w = NS.AtomNeighborSearch(water)
-solvation_shell = ns_w.search_list(protein,4.0)  # water oxygens within 4A of protein</p>
-</blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis.KDTree.NeighborSearch</span> <span class="kn">as</span> <span class="nn">NS</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span><span class="n">dcd</span><span class="p">)</span>
+<span class="n">water</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;name OH2&#39;</span><span class="p">)</span>
+<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;protein&#39;</span><span class="p">)</span>
+ 
+<span class="c"># when analyzing a trajectory, carry out the next two steps</span>
+<span class="c"># for every frame</span>
+<span class="n">ns_w</span> <span class="o">=</span> <span class="n">NS</span><span class="o">.</span><span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="n">water</span><span class="p">)</span>
+<span class="n">solvation_shell</span> <span class="o">=</span> <span class="n">ns_w</span><span class="o">.</span><span class="n">search_list</span><span class="p">(</span><span class="n">protein</span><span class="p">,</span><span class="mf">4.0</span><span class="p">)</span>  <span class="c"># water oxygens within 4A of protein</span>
+</pre></div>
+</div>
 <dl class="class">
 <dt id="MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.KDTree.NeighborSearch.</tt><tt class="descname">AtomNeighborSearch</tt><big>(</big><em>atom_list</em>, <em>bucket_size=10</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch" title="Permalink to this definition">¶</a></dt>
@@ -72,21 +80,57 @@ of a given query position.</p>
 <p>2. To find all atoms/residues/segments that are within 
 a fixed radius of each other.</p>
 <p>AtomNeighborSearch makes use of the KDTree C++ module, so it&#8217;s fast.</p>
-<p>o atom_list - list of atoms. This list is used in the queries.
-It can contain atoms from different structures.
-o bucket_size - bucket size of KD tree. You can play around 
-with this to optimize speed if you feel like it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>atom_list</em></dt>
+<dd><p class="first last">list of atoms (<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>) or a 
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>.
+This list is used in the queries. It can contain atoms from different structures.</p>
+</dd>
+<dt><em>bucket_size</em></dt>
+<dd><p class="first last">bucket size of KD tree. You can play around with this to optimize speed if you feel like it.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch.search">
 <tt class="descname">search</tt><big>(</big><em>center</em>, <em>radius</em>, <em>level='A'</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch.search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Neighbor search.</p>
 <p>Return all atoms/residues/segments
-that have at least one atom within radius of center.
-What entitity level is returned (e.g. atoms or residues)
-is determined by level (A=atoms, R=residues, S=Segments).</p>
-<p>o center - numpy array 
-o radius - float
-o level - char (A, R, S)</p>
+that have at least one atom within <em>radius</em> of <em>center</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>center</em></dt>
+<dd><p class="first last">numpy array of shape 3  (cartesian coordinates)</p>
+</dd>
+<dt><em>radius</em></dt>
+<dd><p class="first last">float</p>
+</dd>
+<dt><em>level</em></dt>
+<dd><p class="first last">char (A, R, S); what entitity level is returned
+(e.g. atoms or residues) is determined by level (A=atoms,
+R=residues, S=Segments).</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>In order to obtain the coordinates for the <em>center</em> argument
+from a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> one can
+simply provide the output of the
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centroid" title="MDAnalysis.core.AtomGroup.AtomGroup.centroid"><tt class="xref py py-class docutils literal"><span class="pre">centroid</span></tt></a> or
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass" title="MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass"><tt class="xref py py-class docutils literal"><span class="pre">centerOfMass</span></tt></a>
+functions.</p>
 </dd></dl>
 
 <dl class="method">
@@ -94,9 +138,25 @@ o level - char (A, R, S)</p>
 <tt class="descname">search_all</tt><big>(</big><em>radius</em>, <em>level='A'</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch.search_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>All neighbor search.</p>
 <p>Search all entities that have atoms pairs within
-radius.</p>
-<p>o radius - float
-o level - char (A, R, S)</p>
+<em>radius</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>radius</em></dt>
+<dd><p class="first last">float</p>
+</dd>
+<dt><em>level</em></dt>
+<dd><p class="first last">char (A, R, S); what entitity level is returned
+(e.g. atoms or residues) is determined by level (A=atoms,
+R=residues, S=Segments).</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -104,12 +164,30 @@ o level - char (A, R, S)</p>
 <tt class="descname">search_list</tt><big>(</big><em>other</em>, <em>radius</em>, <em>level='A'</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch.search_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search neighbours near all atoms in atoms.</p>
 <p>Returns all atoms/residues/segments that contain atoms that are
-within radius of any other atom listed in other, i.e. &#8220;find all A
+within <em>radius</em> of any other atom listed in <em>other</em>, i.e. &#8220;find all A
 within R of B&#8221; where A are the atoms used for setting up the
 AtomNeighborSearch and B are the other atoms.</p>
-<p>o other  - AtomGroup
-o radius - float
-o level  - char (A, R, S)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>other</em></dt>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or list of <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances</p>
+</dd>
+<dt><em>radius</em></dt>
+<dd><p class="first last">float</p>
+</dd>
+<dt><em>level</em></dt>
+<dd><p class="first last">char (A, R, S); what entitity level is returned
+(e.g. atoms or residues) is determined by level (A=atoms,
+R=residues, S=Segments).</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -123,43 +201,107 @@ of a given query position.</p>
 <p>2. To find all indices of a coordinate list that are within 
 a fixed radius of each other.</p>
 <p>CoordinateNeighborSearch makes use of the KDTree C++ module, so it&#8217;s fast.</p>
-<p>o list of N coordinates (Nx3 numpy array)
-o bucket_size - bucket size of KD tree. You can play around 
-with this to optimize speed if you feel like it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>coordinates</em></dt>
+<dd><p class="first last">list of N coordinates (Nx3 numpy array)</p>
+</dd>
+<dt><em>bucket_size</em></dt>
+<dd><p class="first last">bucket size of KD tree. You can play around with this to
+optimize speed if you feel like it.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search">
 <tt class="descname">search</tt><big>(</big><em>center</em>, <em>radius</em>, <em>distances=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Neighbor search.</p>
 <p>Return all indices in the coordinates list that have at least
-one atom within radius of center.</p>
-<p>o center - numpy array 
-o radius - float
-o distances - bool  True:  return (indices,distances)</p>
-<blockquote>
-False: return indices only</blockquote>
+one atom within <em>radius</em> of <em>center</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first last">
+<li><dl class="first docutils">
+<dt>center</dt>
+<dd><p class="first last">numpy array</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>radius</dt>
+<dd><p class="first last">float</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>distances </dt>
+<dd><p class="first last">bool  <tt class="xref docutils literal"><span class="pre">True</span></tt>: return (indices,distances); <tt class="xref docutils literal"><span class="pre">False</span></tt>: return indices only</p>
+</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search_all">
 <tt class="descname">search_all</tt><big>(</big><em>radius</em>, <em>distances=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>All neighbor search.</p>
-<p>Return all index pairs corresponding to coordinates within the radius.</p>
-<p>o radius - float
-o distances - bool  True:  return (indices,distances)</p>
-<blockquote>
-False: return indices only</blockquote>
+<p>Return all index pairs corresponding to coordinates within the <em>radius</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>radius</em></dt>
+<dd><p class="first last">float</p>
+</dd>
+<dt><em>distances</em></dt>
+<dd><p class="first last">bool  <tt class="xref docutils literal"><span class="pre">True</span></tt>:  return (indices,distances); <tt class="xref docutils literal"><span class="pre">False</span></tt>: return indices only
+[<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search_list">
 <tt class="descname">search_list</tt><big>(</big><em>centers</em>, <em>radius</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search neighbours near all centers.</p>
-<p>Returns all indices that are within radius of any center listed in
-centers, i.e. &#8220;find all A within R of B&#8221; where A are the
+<p>Returns all indices that are within <em>radius</em> of any center listed in
+<em>centers</em>, i.e. &#8220;find all A within R of B&#8221; where A are the
 coordinates used for setting up the CoordinateNeighborSearch and B
 are the centers.</p>
-<p>o centers - Mx3 numpy array of M centers
-o radius  - float</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>centers</em></dt>
+<dd><p class="first last">Mx3 numpy array of M centers</p>
+</dd>
+<dt><em>radius</em></dt>
+<dd><p class="first last">float</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -174,7 +316,7 @@ o radius  - float</p>
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="KDTree.html"
-                        title="previous chapter">6.2. KDTree &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></tt></a></p>
+                        title="previous chapter">6.1. KDTree &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/KDTree/NeighborSearch.txt"
@@ -207,7 +349,7 @@ o radius  - float</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="KDTree.html" title="6.2. KDTree — MDAnalysis.KDTree.KDTree"
+          <a href="KDTree.html" title="6.1. KDTree — MDAnalysis.KDTree.KDTree"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.0 documentation</a> &raquo;</li>
           <li><a href="../KDTree_modules.html" >6. KDTree modules</a> &raquo;</li> 

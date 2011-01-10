@@ -62,9 +62,22 @@
 <dt id="MDAnalysis.core.util.filename">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">filename</tt><big>(</big><em>name</em>, <em>ext=None</em>, <em>keep=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new name that has suffix attached; replaces other extensions.</p>
-<p>name        filename; extension is replaced unless keep=True
-ext         extension
-keep        False: replace existing extension; True: keep if exists</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt><em>name</em></dt>
+<dd>filename; extension is replaced unless keep=True</dd>
+<dt><em>ext</em></dt>
+<dd>extension</dd>
+<dt><em>keep</em></dt>
+<dd><tt class="xref docutils literal"><span class="pre">False</span></tt>: replace existing extension; <tt class="xref docutils literal"><span class="pre">True</span></tt>: keep if exists</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -82,14 +95,18 @@ keep        False: replace existing extension; True: keep if exists</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"></td>
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>datasource</em></dt>
+<dd><p class="first last">a file or a stream</p>
+</dd>
+<dt><em>mode</em></dt>
+<dd><p class="first last">&#8216;r&#8217; or &#8216;w&#8217;</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
-<ul class="simple">
-<li><em>datasource</em>: a file or a stream</li>
-<li><em>mode</em>: &#8216;r&#8217; or &#8216;w&#8217;</li>
-</ul>
 </dd></dl>
 
 </div>
@@ -114,14 +131,12 @@ keep        False: replace existing extension; True: keep if exists</p>
 <dt id="MDAnalysis.core.util.FORTRANReader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">FORTRANReader</tt><big>(</big><em>fmt</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>FORTRANReader provides a method to parse FORTRAN formatted lines in a file.</p>
-<dl class="docutils">
-<dt>Usage::</dt>
-<dd><p class="first">atomformat = FORTRANReader(&#8216;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#8217;)
-for line in open(&#8216;coordinates.crd&#8217;):</p>
-<blockquote class="last">
-serial,TotRes,resName,name,x,y,z,chainID,resSeq,tempFactor = atomformat.read(line)</blockquote>
-</dd>
-</dl>
+<p>Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">atomformat</span> <span class="o">=</span> <span class="n">FORTRANReader</span><span class="p">(</span><span class="s">&#39;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;coordinates.crd&#39;</span><span class="p">):</span>
+    <span class="n">serial</span><span class="p">,</span><span class="n">TotRes</span><span class="p">,</span><span class="n">resName</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">chainID</span><span class="p">,</span><span class="n">resSeq</span><span class="p">,</span><span class="n">tempFactor</span> <span class="o">=</span> <span class="n">atomformat</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Fortran format edit descriptors: See
 <a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html</a>
 for the syntax.</p>
@@ -162,7 +177,7 @@ for the syntax.</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="units.html"
-                        title="previous chapter">5.6. Constants and unit conversion &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
+                        title="previous chapter">5.6. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../KDTree_modules.html"
                         title="next chapter">6. KDTree modules</a></p>
