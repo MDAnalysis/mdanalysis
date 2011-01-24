@@ -344,7 +344,7 @@ directly.
 
 __all__ = ['reader', 'writer']
 
-import PDB, DCD, CRD, XTC, TRR, GRO, XYZ
+import PDB, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ  #, NETCDF
 import base
 from core import reader, writer
 
@@ -357,7 +357,9 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'PDB': PDB.PDBReader,
                        'CRD': CRD.CRDReader,
                        'GRO': GRO.GROReader,
-                       'CHAIN': base.ChainReader,
+                       'TRJ':TRJ.TRJReader,
+		       #'NETCDF':NETCDFReader,
+		       'CHAIN': base.ChainReader,
                        }
 #: readers of files that contain both topology/atom data and coordinates
 #: (currently only the keys are used)

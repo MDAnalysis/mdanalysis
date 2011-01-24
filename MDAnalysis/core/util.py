@@ -159,7 +159,7 @@ def asiterable(obj):
 #: Regular expresssion (see :mod:`re`) to parse a simple `FORTRAN edit descriptor`_.
 #:   ``(?P<repeat>\d?)(?P<format>[IFELAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?``
 #: .. _FORTRAN edit descriptor: http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html
-FORTRAN_format_regex = "(?P<repeat>\d?)(?P<format>[IFEAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?"
+FORTRAN_format_regex = "(?P<repeat>\d+?)(?P<format>[IFEAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?"
 _FORTRAN_format_pattern = re.compile(FORTRAN_format_regex)
 
 def strip(s):
@@ -253,9 +253,12 @@ class FORTRANReader(object):
            supported, and neither are the scientific notation *Ew.dEe* forms.
         """
 
-        m = _FORTRAN_format_pattern.match(edit_descriptor)
-        if m is None:
-            raise ValueError("unrecognized FORTRAN format %r" % edit_descriptor)
+	m = _FORTRAN_format_pattern.match(edit_descriptor.upper())
+	if m is None:
+            try:
+	    	m = _FORTRAN_format_pattern.match("1"+edit_descriptor.upper())
+	    except:
+	    	raise ValueError("unrecognized FORTRAN format %r" % edit_descriptor)
         d = m.groupdict()
         if d['repeat'] == '':
             d['repeat'] = 1
