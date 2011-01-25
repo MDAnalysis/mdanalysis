@@ -176,7 +176,7 @@ if __name__ == '__main__':
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
           cmdclass = {'build_ext': build_ext},
-          install_requires = ['numpy>=1.0',  # currently not useful because without numpy we don't get here
+          install_requires = ['numpy>=1.0.3',  # currently not useful because without numpy we don't get here
                               'biopython',   # required for standard PDB reader
                               ],
           extras_require = {

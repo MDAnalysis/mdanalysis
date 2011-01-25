@@ -9,10 +9,11 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/10 orbeckst
+??/??/10 orbeckst, jandom
         * 0.7.1 release
         * new analysis.contacts.ContactAnalysis1 class that supports a
 	  native contact analysis between arbitrary groups
+        * new examples (e.g. peptide helix clustering in a membrane)
 
 11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose
         * major release 0.7.0
