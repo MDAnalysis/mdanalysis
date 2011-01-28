@@ -60,10 +60,10 @@
 sec).</p>
 <p>All conversions: the conversion factor f to a unit b&#8217; for a quantity X
 (whose numeric value relative to the base unit b is stored in the
-program) is a quantity with unit b&#8217;/b. In the dictionaries below only
-the numeric value f(b-&gt;b&#8217;) is stored.</p>
-<blockquote>
-X/b&#8217; = f(b-&gt;b&#8217;) * X/b</blockquote>
+program) is a quantity with unit <cite>b&#8217;/b</cite>. In the dictionaries below only
+the numeric value <cite>f(b-&gt;b&#8217;)</cite> is stored:</p>
+<div class="highlight-python"><pre>X/b' = f(b-&gt;b') * X/b</pre>
+</div>
 <p><a class="reference internal" href="#MDAnalysis.core.units.get_conversion_factor" title="MDAnalysis.core.units.get_conversion_factor"><tt class="xref py py-func docutils literal"><span class="pre">get_conversion_factor()</span></tt></a> returns the appropriate factor f(b-&gt;b&#8217;).</p>
 <p>Conversion is done via the base units:</p>
 <div class="highlight-python"><pre>x is in u1: from u1 to b:  x'  = x  / factor[u1]
@@ -72,51 +72,30 @@ so f[u1,u2] = factor[u2]/factor[u1]</pre>
 </div>
 <div class="section" id="conversions">
 <h2>5.6.1. Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h2>
-<p>density conversion factor. Base unit is A**-3</p>
-<blockquote>
-n/x = n/A**3 * densityUnit_factor[x]</blockquote>
+<p>density conversion factor. Base unit is A**-3:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">n</span><span class="o">/</span><span class="n">x</span> <span class="o">=</span> <span class="n">n</span><span class="o">/</span><span class="n">A</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">densityUnit_factor</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+</pre></div>
+</div>
 <p>nm:</p>
-<blockquote>
-f = 1 A^-3/1 nm^-3 = 1/(10A)^-3 = 1/1000</blockquote>
+<div class="highlight-python"><pre>f = 1 A^-3/1 nm^-3 = 1/(10A)^-3 = 1/1000</pre>
+</div>
 <p>Molar:</p>
-<blockquote>
-factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)</blockquote>
+<div class="highlight-python"><pre>factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)</pre>
+</div>
 <p>relative to a density rho0 in g/cm^3:</p>
-<blockquote>
-<p>M(H2O) = 18 g/mol   Molar mass of water</p>
-<p>factor = 1/(1e-24 * N_Avogadro / M(H2O))</p>
-</blockquote>
-<p>from rho/rho0 = n/(N_A * M**-1) / rho0  where [n] = 1/Volume, [rho] = mass/Volume</p>
+<div class="highlight-python"><pre>M(H2O) = 18 g/mol   Molar mass of water
+
+factor = 1/(1e-24 * N_Avogadro / M(H2O))</pre>
+</div>
+<p>from <cite>rho/rho0 = n/(N_A * M**-1) / rho0</cite>  where <cite>[n] = 1/Volume</cite>, <cite>[rho] = mass/Volume</cite></p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">Maybe we should simply use <a class="reference external" href="http://packages.python.org/quantities/">Quantities</a> instead of this
 home grown attempt?</p>
 </div>
-<dl class="data">
-<dt id="MDAnalysis.core.units.N_Avogadro">
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">N_Avogadro</tt><a class="headerlink" href="#MDAnalysis.core.units.N_Avogadro" title="Permalink to this definition">¶</a></dt>
-<dd><p>Avogadro&#8217;s constant in mol**-1, from <a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?na">http://physics.nist.gov/cgi-bin/cuu/Value?na</a></p>
-</dd></dl>
-
-<dl class="data">
-<dt id="MDAnalysis.core.units.conversion_factor">
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">conversion_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.conversion_factor" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference internal" href="#MDAnalysis.core.units.conversion_factor" title="MDAnalysis.core.units.conversion_factor"><tt class="xref py py-data docutils literal"><span class="pre">conversion_factor</span></tt></a> is used by <a class="reference internal" href="#MDAnalysis.core.units.get_conversion_factor" title="MDAnalysis.core.units.get_conversion_factor"><tt class="xref py py-func docutils literal"><span class="pre">get_conversion_factor()</span></tt></a>:</p>
-<p>Note: any observable with a unit (i.e. one with an entry in</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="MDAnalysis.core.units.convert">
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">convert</tt><big>(</big><em>x</em>, <em>u1</em>, <em>u2</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.units.convert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert value in unit <em>u1</em> to <em>u2</em>.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="MDAnalysis.core.units.densityUnit_factor">
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">densityUnit_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.densityUnit_factor" title="Permalink to this definition">¶</a></dt>
-<dd><p>for water densities, this is the volume per water molecule in A**3</p>
-</dd></dl>
-
+</div>
+<div class="section" id="functions">
+<h2>5.6.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.units.get_conversion_factor">
 <tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">get_conversion_factor</tt><big>(</big><em>unit_type</em>, <em>u1</em>, <em>u2</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.units.get_conversion_factor" title="Permalink to this definition">¶</a></dt>
@@ -127,6 +106,15 @@ home grown attempt?</p>
 X&#8217; = conversion_factor * X</blockquote>
 </dd></dl>
 
+<dl class="function">
+<dt id="MDAnalysis.core.units.convert">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">convert</tt><big>(</big><em>x</em>, <em>u1</em>, <em>u2</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.units.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert value in unit <em>u1</em> to <em>u2</em>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="data">
+<h2>5.6.3. Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
 <dt id="MDAnalysis.core.units.lengthUnit_factor">
 <tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">lengthUnit_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.lengthUnit_factor" title="Permalink to this definition">¶</a></dt>
@@ -135,12 +123,67 @@ L/x = L/A * lengthUnit_factor[x]</p>
 </dd></dl>
 
 <dl class="data">
+<dt id="MDAnalysis.core.units.N_Avogadro">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">N_Avogadro</tt><a class="headerlink" href="#MDAnalysis.core.units.N_Avogadro" title="Permalink to this definition">¶</a></dt>
+<dd><p>Avogadro&#8217;s constant in mol**-1, from <a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?na">http://physics.nist.gov/cgi-bin/cuu/Value?na</a></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.core.units.water">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">water</tt><a class="headerlink" href="#MDAnalysis.core.units.water" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>water density: Jorgensen &amp; Jenson, JCompChem 19 (1998), 1179: T=298K, P=1atm</dt>
+<dd><table border="1" class="first last docutils">
+<colgroup>
+<col width="47%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">model</th>
+<th class="head">g cm**-3</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>SPC</td>
+<td>0.985(1)</td>
+</tr>
+<tr><td>TIP3P</td>
+<td>1.002(1)</td>
+</tr>
+<tr><td>TIP4P</td>
+<td>1.001(1)</td>
+</tr>
+<tr><td>exp</td>
+<td>0.997</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>and molar mass 18.016 g mol**-1.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.core.units.densityUnit_factor">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">densityUnit_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.densityUnit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>for water densities, this is the volume per water molecule in A**3</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="MDAnalysis.core.units.timeUnit_factor">
 <tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">timeUnit_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.timeUnit_factor" title="Permalink to this definition">¶</a></dt>
-<dd><p>basic unit is ps
-1 AKMA time unit = 4.888821E-14 sec
-<a class="reference external" href="http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA">http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA</a>
-1200ps/ps * f = 1.2 ns/ns  ==&gt; f = 1/1000</p>
+<dd><p>basic unit is ps;
+1 AKMA time unit = 4.888821E-14 sec; see
+<a class="reference external" href="http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA">http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA</a></p>
+<blockquote>
+1200ps/ps * f = 1.2 ns/ns  ==&gt; f = 1/1000</blockquote>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.core.units.conversion_factor">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">conversion_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.conversion_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#MDAnalysis.core.units.conversion_factor" title="MDAnalysis.core.units.conversion_factor"><tt class="xref py py-data docutils literal"><span class="pre">conversion_factor</span></tt></a> is used by <a class="reference internal" href="#MDAnalysis.core.units.get_conversion_factor" title="MDAnalysis.core.units.get_conversion_factor"><tt class="xref py py-func docutils literal"><span class="pre">get_conversion_factor()</span></tt></a>:</p>
+<p>Note: any observable with a unit (i.e. one with an entry in</p>
 </dd></dl>
 
 <dl class="data">
@@ -150,8 +193,66 @@ L/x = L/A * lengthUnit_factor[x]</p>
 </dd></dl>
 
 <dl class="data">
-<dt id="MDAnalysis.core.units.water">
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">water</tt><a class="headerlink" href="#MDAnalysis.core.units.water" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">N_Avogadro</tt></dt>
+<dd><p>Avogadro&#8217;s constant in mol**-1, from <a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?na">http://physics.nist.gov/cgi-bin/cuu/Value?na</a></p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">conversion_factor</tt></dt>
+<dd><p><a class="reference internal" href="#MDAnalysis.core.units.conversion_factor" title="MDAnalysis.core.units.conversion_factor"><tt class="xref py py-data docutils literal"><span class="pre">conversion_factor</span></tt></a> is used by <a class="reference internal" href="#MDAnalysis.core.units.get_conversion_factor" title="MDAnalysis.core.units.get_conversion_factor"><tt class="xref py py-func docutils literal"><span class="pre">get_conversion_factor()</span></tt></a>:</p>
+<p>Note: any observable with a unit (i.e. one with an entry in</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">convert</tt><big>(</big><em>x</em>, <em>u1</em>, <em>u2</em><big>)</big></dt>
+<dd><p>Convert value in unit <em>u1</em> to <em>u2</em>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">densityUnit_factor</tt></dt>
+<dd><p>for water densities, this is the volume per water molecule in A**3</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">get_conversion_factor</tt><big>(</big><em>unit_type</em>, <em>u1</em>, <em>u2</em><big>)</big></dt>
+<dd><p>generate the conversion factor u1 -&gt; u2 by using the base unit as an intermediate</p>
+<p>f[u1 -&gt; u2] = factor[u2]/factor[u1]</p>
+<p>Conversion of X (in u1) to X&#8217; (in u2):</p>
+<blockquote>
+X&#8217; = conversion_factor * X</blockquote>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">lengthUnit_factor</tt></dt>
+<dd><p>conversion factors between the base unit (Angstrom) and other lengthUnits x:
+L/x = L/A * lengthUnit_factor[x]</p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">timeUnit_factor</tt></dt>
+<dd><p>basic unit is ps;
+1 AKMA time unit = 4.888821E-14 sec; see
+<a class="reference external" href="http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA">http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA</a></p>
+<blockquote>
+1200ps/ps * f = 1.2 ns/ns  ==&gt; f = 1/1000</blockquote>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">unit_types</tt></dt>
+<dd><p>Generated lookup table (dict): returns the type of unit for a known input unit.</p>
+</dd></dl>
+
+<dl class="data">
+<dt>
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">water</tt></dt>
 <dd><dl class="docutils">
 <dt>water density: Jorgensen &amp; Jenson, JCompChem 19 (1998), 1179: T=298K, P=1atm</dt>
 <dd><table border="1" class="first last docutils">
@@ -197,6 +298,8 @@ L/x = L/A * lengthUnit_factor[x]</p>
   <ul>
 <li><a class="reference internal" href="#">5.6. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a><ul>
 <li><a class="reference internal" href="#conversions">5.6.1. Conversions</a></li>
+<li><a class="reference internal" href="#functions">5.6.2. Functions</a></li>
+<li><a class="reference internal" href="#data">5.6.3. Data</a></li>
 </ul>
 </li>
 </ul>
