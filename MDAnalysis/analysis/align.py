@@ -118,14 +118,14 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_',tol_ma
             frames.skip_timestep,
             frames.delta,
             remarks='RMS fitted trajectory to ref')
-    if isinstance(frames,MDAnalysis.coordinates.XTC.XTCReader):
+    elif isinstance(frames,MDAnalysis.coordinates.XTC.XTCReader):
         writer = MDAnalysis.coordinates.XTC.XTCWriter(  # untested!
             filename,frames.numatoms,
             frames.start_timestep,
             frames.skip_timestep,
             frames.delta,
             remarks='RMS fitted trajectory to ref')
-    if isinstance(frames,MDAnalysis.coordinates.TRR.TRRReader):
+    elif isinstance(frames,MDAnalysis.coordinates.TRR.TRRReader):
         writer = MDAnalysis.coordinates.TRR.TRRWriter(  # untested!
             filename,frames.numatoms,
             frames.start_timestep,

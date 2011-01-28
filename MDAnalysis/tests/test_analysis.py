@@ -1,9 +1,13 @@
 import MDAnalysis
-import MDAnalysis.analysis.distances as distances
+import MDAnalysis.analysis.distances
+import MDAnalysis.analysis.align
 
 import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
+
+import os
+import tempfile
 
 from MDAnalysis.tests.datafiles import PSF,DCD
 
@@ -28,7 +32,7 @@ class TestContactMatrix(TestCase):
         self.dcd.rewind()
         self.dcd[10]
         # small cutoff value as the input file is a protein
-        contacts = distances.contact_matrix(U.atoms.coordinates() , cutoff=1.5 , returntype="numpy")
+        contacts = MDAnalysis.analysis.distances.contact_matrix(U.atoms.coordinates() , cutoff=1.5 , returntype="numpy")
         assert_equal(contacts.shape, (3341, 3341), "wrong shape (should be (Natoms,Natoms))")
         assert_equal(contacts[0][0] , True , "first entry should be a contact")
         assert_equal(contacts[0][-1] , False , "last entry for first atom should be a non-contact")
@@ -41,9 +45,43 @@ class TestContactMatrix(TestCase):
         selection = U.selectAtoms('bynum 1:50')
         # small cutoff value as the input file is a protein
         # High progress_meter_freq so progress meter is not printed during test
-        contacts = distances.contact_matrix(selection.coordinates() , cutoff=1.0 , returntype="sparse" , suppress_progmet=True)
+        contacts = MDAnalysis.analysis.distances.contact_matrix(selection.coordinates() , cutoff=1.0 , returntype="sparse" , suppress_progmet=True)
         assert_equal(contacts.shape, (50, 50), "wrong shape (should be (50,50))")
         assert_equal(contacts[0,0] , False , "entry (0,0) should be a non-contact")
         assert_equal(contacts[19,20] , True , "entry (19,20) should be a contact")
+
+
+class TestAlign(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PSF, DCD)
+        self.target = MDAnalysis.Universe(PSF, DCD)
+        # outfile MUST be same type as input at the moment
+        fd, self.outfile = tempfile.mkstemp(suffix='.dcd')
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.universe
+        del self.target
+
+    @dec.slow
+    @attr('issue')
+    def test_rms_fit_trj(self):
+        """Testing align.rms_fit_trj() (Issue 58)"""
+        # align to *last frame* in target... just for the heck of it
+        self.target.trajectory[-1]
+        MDAnalysis.analysis.align.rms_fit_trj(self.universe, self.target, 
+                                              filename=self.outfile)
+        fitted = MDAnalysis.Universe(PSF, self.outfile)
+        self._assert_rmsd(fitted, 0,  6.9381810858039268)
+        self._assert_rmsd(fitted, -1, 0.0)
+
+    def _assert_rmsd(self, fitted, frame, desired):
+        fitted.trajectory[frame]
+        rmsd = MDAnalysis.analysis.align.rmsd(self.universe.atoms.coordinates(), fitted.atoms.coordinates())
+        assert_almost_equal(rmsd, desired, decimal=3, 
+                            err_msg="frame %d of fit does not have expected RMSD" % frame)
 
 
