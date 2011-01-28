@@ -80,7 +80,24 @@ import os,os.path,errno
 import cPickle
 import warnings
 
-from gridData import Grid    # http://github.com/orbeckst/GridDataFormats 
+try:
+    from gridData import Grid    # http://github.com/orbeckst/GridDataFormats 
+except ImportError:
+    print """ERROR --- The GridDataFormats package can not be found!
+
+The 'gridData' module from GridDataFormats could not be
+imported. Please install it first.  You can try installing with
+setuptools directly from the internet: 
+
+    easy_install GridDataFormats
+
+Alternatively, download the package from
+
+    http://pypi.python.org/pypi/GridDataFormats/
+
+and install in the usual manner.
+"""
+    raise
 
 import MDAnalysis
 from MDAnalysis.core.util import fixedwidth_bins, iterable, asiterable
