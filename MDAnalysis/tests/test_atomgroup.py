@@ -7,6 +7,7 @@ from numpy.testing import *
 from numpy import array, float32
 from nose.plugins.attrib import attr
 
+import os
 import tempfile
 
 class TestAtom(TestCase):
@@ -145,7 +146,7 @@ class _WriteAtoms(TestCase):
     def tearDown(self):
         try:
             os.unlink(self.outfile)
-        except:
+        except OSError:
             pass
         del self.universe
 

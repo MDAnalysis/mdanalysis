@@ -8,7 +8,8 @@ from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,CRD,XTC,TRR,GRO,XYZ,XYZ_bz2,XYZ_psf
 
-import os.path, tempfile
+import os
+import tempfile
 import itertools
 
 def atom_distance(a, b):
@@ -400,7 +401,7 @@ class TestDCDWriter(TestCase):
     def tearDown(self):
         try:
             os.unlink(self.outfile)
-        except:
+        except OSError:
             pass
         del self.universe
         del self.Writer
