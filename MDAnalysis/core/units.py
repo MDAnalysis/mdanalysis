@@ -1,5 +1,5 @@
+# MDAnalysis -- units
 # -*- coding: utf-8 -*-
-
 # Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ sec).
 
 All conversions: the conversion factor f to a unit b' for a quantity X
 (whose numeric value relative to the base unit b is stored in the
-program) is a quantity with unit b'/b. In the dictionaries below only
-the numeric value f(b->b') is stored.
+program) is a quantity with unit `b'/b`. In the dictionaries below only
+the numeric value `f(b->b')` is stored::
 
   X/b' = f(b->b') * X/b
 
@@ -42,36 +42,54 @@ Conversion is done via the base units::
 Conversions
 -----------
 
-density conversion factor. Base unit is A**-3
+density conversion factor. Base unit is A**-3::
 
    n/x = n/A**3 * densityUnit_factor[x]
 
-nm:
+nm::
 
    f = 1 A^-3/1 nm^-3 = 1/(10A)^-3 = 1/1000
 
-Molar:
+Molar::
 
    factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)
 
-relative to a density rho0 in g/cm^3:
+relative to a density rho0 in g/cm^3::
 
     M(H2O) = 18 g/mol   Molar mass of water
 
     factor = 1/(1e-24 * N_Avogadro / M(H2O))
 
-from rho/rho0 = n/(N_A * M**-1) / rho0  where [n] = 1/Volume, [rho] = mass/Volume
+from `rho/rho0 = n/(N_A * M**-1) / rho0`  where `[n] = 1/Volume`, `[rho] = mass/Volume`
 
 
 .. SeeAlso:: Maybe we should simply use Quantities_ instead of this
              home grown attempt?
 
 .. _Quantities: http://packages.python.org/quantities/
+
+Functions
+---------
+
+.. autofunction:: get_conversion_factor
+.. autofunction:: convert
+
+Data
+----
+
+.. autodata:: lengthUnit_factor
+.. autodata:: N_Avogadro
+.. autodata:: water
+.. autodata:: densityUnit_factor
+.. autodata:: timeUnit_factor
+.. autodata:: conversion_factor
+.. autodata:: unit_types
+
 """
 
 #: conversion factors between the base unit (Angstrom) and other lengthUnits x:
 #: L/x = L/A * lengthUnit_factor[x]
-lengthUnit_factor = {'Angstrom': 1.0, 'A': 1.0, 'Ã…': 1.0,
+lengthUnit_factor = {'Angstrom': 1.0, 'A': 1.0, 'Å': 1.0,
                      'nm': 1.0/10, 'nanometer': 1.0/10,
                      }
 
@@ -96,7 +114,7 @@ water = {'exp':0.997, 'SPC':0.985, 'TIP3P':1.002, 'TIP4P':1.001,  # in g cm**-3
 
 #: for water densities, this is the volume per water molecule in A**3
 densityUnit_factor = {
-    'Angstrom^{-3}': 1/1.0, 'A^{-3}': 1/1.0, 'Ã…^{-3}': 1/1.0, 
+    'Angstrom^{-3}': 1/1.0, 'A^{-3}': 1/1.0, 'Å^{-3}': 1/1.0, 
     'nm^{-3}': 1/1e-3, 'nanometer^{-3}': 1/1e-3,
     'Molar': 1/(1e-27*N_Avogadro),
     'SPC':   1/(1e-24*N_Avogadro*water['SPC']  / water['MolarMass']),
@@ -106,10 +124,10 @@ densityUnit_factor = {
     }
 
 
-#: basic unit is ps
-#: 1 AKMA time unit = 4.888821E-14 sec
+#: basic unit is ps; 
+#: 1 AKMA time unit = 4.888821E-14 sec; see
 #: http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA
-#: 1200ps/ps * f = 1.2 ns/ns  ==> f = 1/1000
+#:    1200ps/ps * f = 1.2 ns/ns  ==> f = 1/1000
 timeUnit_factor = {'ps': 1/1.0,
                    'ns': 1/1e3,
                    'second': 1/1e12,

@@ -30,6 +30,13 @@ File parsing
 .. autoclass:: FORTRANReader
 .. autodata:: FORTRAN_format_regex
 
+
+Data manipulation and handling
+------------------------------
+
+
+.. autofunction:: fixedwidth_bins
+
 """
 from __future__ import with_statement
 
@@ -273,4 +280,22 @@ class FORTRANReader(object):
                 pass
         d['totallength'] = d['repeat'] * d['length']
         return d
+
+def fixedwidth_bins(delta,xmin,xmax):
+    """Return bins of width delta that cover xmin,xmax (or a larger range).
+
+    dict = fixedwidth_bins(delta,xmin,xmax)
+
+    The dict contains 'Nbins', 'delta', 'min', and 'max'.
+    """
+    import numpy
+    if not numpy.all(xmin < xmax):
+        raise ValueError('Boundaries are not sane: should be xmin < xmax.')
+    _delta = numpy.asarray(delta,dtype=numpy.float_)
+    _xmin = numpy.asarray(xmin,dtype=numpy.float_)
+    _xmax = numpy.asarray(xmax,dtype=numpy.float_)
+    _length = _xmax - _xmin
+    N = numpy.ceil(_length/_delta).astype(numpy.int_)      # number of bins
+    dx = 0.5 * (N*_delta - _length)   # add half of the excess to each end
+    return {'Nbins':N, 'delta':_delta,'min':_xmin-dx, 'max':_xmax+dx}
 

@@ -145,13 +145,16 @@ class SelectionError(Exception):
     """Raised when a atom selection failed."""
 
 class NoDataError(ValueError):
-    """Raised when empty input is not allowed."""
+    """Raised when empty input is not allowed or required data are missing."""
 
 class FormatError(EnvironmentError):
     """Raised when there appears to be a problem with format of input files."""
 
 class SelectionWarning(Warning):
     """Warning indicating a possible problem with a selection."""
+
+class MissingDataWarning(Warning):
+    """Warning indicating is that required data are missing."""
 
 # Bring some often used objects into the current namespace
 from core import Timeseries

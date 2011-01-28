@@ -17,6 +17,8 @@ The rules for this file:
         * new examples (e.g. peptide helix clustering in a membrane)
 	* fixed Issue 58 (align.rms_fit_trj; fix reported by Joshua
   	  Adelman)
+	* new analysis module 'density': creation and analysis of
+	  volume data
 
 11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose
         * major release 0.7.0

@@ -183,6 +183,7 @@ if __name__ == '__main__':
                 'tests': ['nose>=0.10'],
                 'analysis': ['networkx>=1.0',  # LeafletFinder
                              'scipy',          # sparse contact matrix
+                             'GridDataFormats',# http://github.com/orbeckst/GridDataFormats  
                              ],
                 },          
           zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
