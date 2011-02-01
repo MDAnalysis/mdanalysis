@@ -174,6 +174,11 @@ True
 >>> is_same_transform(M, M1)
 True
 
+Functions
+---------
+
+.. See `help(MDAnalysis.core.transformations)` for a listing of functions or
+.. the online help.
 """
 
 from __future__ import division

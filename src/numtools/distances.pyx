@@ -5,6 +5,9 @@
 
 Fast C-routines to calculate distance arrays from coordinate arrays.
 
+Overview
+--------
+
 .. function:: distance_array(ref,conf,[box,[,result]])
 
    Calculate all distances d_ij between the coordinates ref[i] and
@@ -25,6 +28,9 @@ Fast C-routines to calculate distance arrays from coordinate arrays.
    If a 1D numpy array of dtype ``numpy.float64`` with ``N*(N-1)/2`` elements is
    provided in *result* then this preallocated array is filled. This can speed
    up calculations.
+
+Functions
+---------
 """
 
 cimport c_numpy

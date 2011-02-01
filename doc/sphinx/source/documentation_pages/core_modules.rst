@@ -11,7 +11,9 @@ Core modules
    core/AtomGroup
    core/Selection
    core/Timeseries
+   core/distances
    core/transformations
+   core/qcprot
    core/units
    core/util
    core/log
