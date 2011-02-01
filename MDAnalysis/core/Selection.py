@@ -310,11 +310,14 @@ class ProteinSelection(Selection):
     * from the Charmm force field
          awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_lipid.rtf
     * manually added:
-         HIS CHO EAM
+         - CHO EAM (special in CHARMM)
+         - HIS (Gromacs etc)
+         - HIE (Amber)
     """
     prot_res = dict([(x,None) for x in ['ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'HSD',
                                         'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
                                         'TRP', 'TYR', 'VAL', 'ALAD',
+                                        'HIE',
                                         'CHO', 'EAM']])
     def _apply(self, group):
         return set([a for a in group.atoms if a.resname in self.prot_res])
@@ -322,10 +325,11 @@ class ProteinSelection(Selection):
         return "<'ProteinSelection' >"
 
 class NucleicSelection(Selection):
-    """A nucleic selection consists of all residues with  recognized residue names.
+    """A nucleic selection consists of all atoms in nucleic acid residues with  recognized residue names.
     Recognized residue names:
     * from the Charmm force field
       awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_na.rtf
+    * recognized: 'ADE', 'URA', 'CYT', 'GUA', 'THY'
     """
     nucl_res = dict([(x,None) for x in ['ADE', 'URA', 'CYT', 'GUA', 'THY']])
     def _apply(self, group):
@@ -334,10 +338,11 @@ class NucleicSelection(Selection):
         return "<'NucleicSelection' >"
 
 class NucleicXstalSelection(Selection):
-    """A nucleic selection consists of all residues with  recognized residue names.
+    """A nucleic selection consists of all atoms in nucleic acid residues with PDB-like resnames.
     Recognized residue names:
-    * from the Charmm force field
-    awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_na.rtf
+    * from the Charmm force field:
+      awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_na.rtf
+    * recognized: 'A', 'U', 'C', 'G', 'DT','DA','DC','DG'
     """
     nucl_res = dict([(x,None) for x in ['A', 'U', 'C', 'G', 'DT','DA','DC','DG']])
     def _apply(self, group):
@@ -366,10 +371,12 @@ class NucleicBackboneSelection(NucleicSelection):
         return "<'NucleicBackboneSelection' >"
 
 class BaseSelection(NucleicSelection):
-    """A protein selection consists of all residues with  recognized residue names.
-        Recognized residue names:
-       * from the Charmm force field
-       awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_lipid.rtf
+    """Selection of atoms in nucleobases.
+    
+    Recognized atom names (from CHARMM):
+    
+     'N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
+     'O6','N2','N6', 'O2','N4','O4','C5M'
     """
     base_atoms = dict([(x,None) for x in ['N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
                                           'O6','N2','N6',
@@ -389,6 +396,8 @@ class NucleicSugarSelection(NucleicSelection):
         return "<'NucleicSugarSelection' >"
 
 class CASelection(BackboneSelection):
+    """Select atoms named CA in protein residues (supposed to be the C-alphas)
+    """
     def _apply(self, group):
         return set([a for a in group.atoms if (a.name == "CA" and a.resname in self.prot_res)])
     def __repr__(self):
