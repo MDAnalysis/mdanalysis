@@ -152,7 +152,7 @@ class DCDReader(base.Reader):
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
-    def __init__(self, dcdfilename):
+    def __init__(self, dcdfilename, **kwargs):
         self.dcdfilename = dcdfilename
         self.filename = self.dcdfilename
         self.dcdfile = None  # set right away because __del__ checks

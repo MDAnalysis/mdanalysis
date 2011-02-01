@@ -60,7 +60,7 @@ class XYZReader(base.Reader):
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
-    def __init__(self, xyzfilename):
+    def __init__(self, xyzfilename, **kwargs):
         self.filename = xyzfilename
         
         # the filename has been parsed to be either be foo.xyz or foo.xyz.bz2 by coordinates::core.py

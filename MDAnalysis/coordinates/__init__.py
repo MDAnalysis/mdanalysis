@@ -48,6 +48,7 @@ History
 - 2010-10-09 added write() method to Writers [orbeckst]
 - 2010-10-19 use close() instead of close_trajectory() [orbeckst]
 - 2010-10-30 clarified Writer write() methods (see also `Issue 49`_)
+- 2011-02-01 extended call signatur of Reader class
 
 .. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
 
@@ -150,12 +151,19 @@ implementation example.
 
 The following methods must be implemented in a Reader class.
 
- __init__(filename)
-     open *filename*
+ __init__(filename, **kwargs)
+     open *filename*; other *kwargs* are processed as needed and the
+     Reader is free to ignore them. Typically, MDAnalysis supplies as
+     much information as possible to the Reader:
+      
+      - *numatoms*: the number of atoms (known from the topology)
+
  __iter__()
      allow iteration from beginning to end::
+
         for ts in trajectory:
             print ts.frame
+
  close()
      close the file and cease I/O
  __del__()
@@ -337,6 +345,7 @@ directly.
 .. autodata:: _trajectory_readers
 .. autodata:: _topology_coordinates_readers
 .. autodata:: _trajectory_readers_permissive
+.. autodata:: _compressed_formats
 .. autodata:: _frame_writers
 .. autodata:: _trajectory_writers
 
@@ -357,10 +366,15 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'PDB': PDB.PDBReader,
                        'CRD': CRD.CRDReader,
                        'GRO': GRO.GROReader,
-                       'TRJ':TRJ.TRJReader,
-		       #'NETCDF':NETCDFReader,
+                       'TRJ':TRJ.TRJReader,     # Amber text
+                       'MDCRD':TRJ.TRJReader,   # Amber text
+		       #'NETCDF':NETCDFReader,  # Amber netcdf
 		       'CHAIN': base.ChainReader,
                        }
+
+#: formats of readers that can also handle gzip or bzip2 compressed files
+_compressed_formats = ['XYZ', 'TRJ', 'MDCRD']
+
 #: readers of files that contain both topology/atom data and coordinates
 #: (currently only the keys are used)
 _topology_coordinates_readers = {

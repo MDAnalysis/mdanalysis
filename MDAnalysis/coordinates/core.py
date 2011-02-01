@@ -171,7 +171,7 @@ def check_compressed_format(root, ext):
             root, ext = get_ext(root) 
         except:
             raise TypeError("Cannot determine coordinate format for %r" % filename)
-        if ext.upper() != "XYZ": 
+        if not ext.upper() in MDAnalysis.coordinates._compressed_formats: 
             # only bzipped xyz files can be parsed right now (might be useful to parse foo.pdb.bz2 ?) 
             raise TypeError("Cannot handle %r in compressed format" % filename)
     return ext.upper()

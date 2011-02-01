@@ -47,7 +47,7 @@ class PDBReader(base.Reader):
     units = {'time': None, 'length': 'Angstrom'}
     _Timestep = Timestep
 
-    def __init__(self, pdbfilename, convert_units=None):
+    def __init__(self, pdbfilename, convert_units=None, **kwargs):
         self.pdbfilename = pdbfilename
         self.filename = self.pdbfilename
         if convert_units is None:

@@ -88,7 +88,7 @@ class TrjReader(base.Reader):
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC
     _Timestep = Timestep
 
-    def __init__(self, filename, convert_units=None):
+    def __init__(self, filename, convert_units=None, **kwargs):
         self.filename = filename
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']

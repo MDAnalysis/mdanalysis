@@ -1120,6 +1120,8 @@ class Universe(object):
         except TypeError, err:
             raise TypeError("Universe.load_new() cannot find an appropriate coordinate reader "
                             "for file %r.\n%r" % (filename, err))
+        # supply number of atoms for readers that cannot do it for themselves
+        kwargs['numatoms'] = self.atoms.numberOfAtoms()
         self.trajectory = TRJReader(filename, **kwargs)    # unified trajectory API
         if self.trajectory.numatoms != self.atoms.numberOfAtoms():
             raise ValueError("The topology and %s trajectory files don't have the same number of atoms!" % self.trajectory.format)

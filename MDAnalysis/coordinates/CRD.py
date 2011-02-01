@@ -26,7 +26,7 @@ class CRDReader(base.Reader):
     units = {'time': None, 'length': 'nm'}
     _Timestep = Timestep
  
-    def __init__(self, crdfilename, convert_units=None):
+    def __init__(self, crdfilename, convert_units=None, **kwargs):
         self.crdfilename = crdfilename
         self.filename = self.crdfilename
         if convert_units is None:

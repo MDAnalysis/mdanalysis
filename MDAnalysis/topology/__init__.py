@@ -3,14 +3,34 @@
 :mod:`MDAnalysis.topology` -- topology readers
 ==============================================
 
-This submodule contains topology readers; at the moment, only
-Charmm/XPLOR psf is supported well.
+This submodule contains topology readers.
 
 A rudimentary PDB parser obtains the list of atoms from a PDB file but
 it lacks bond information, charges, and masses at the moment.
+
+Supporte topologies; formats marked with ans asterisk * also hold coordinates.
+
+=============  ==========  =====================================================
+Name           extension   remarks
+=============  ==========  =====================================================
+CHARMM/XPLOR   psf         reads either format, but only atoms and bonds 
+                           information is used at the moment
+
+CHARMM*        crd         "CARD" coordinate output from CHARMM; deals with
+                           either standard or EXTended format
+
+Brookhaven*    pdb         a simplified PDB format (as used in MD simulations)
+                           is read by default; the full format can be read by
+                           supplying the `permissive=False` flag to 
+                           :class:`MDAnalysis.Universe`
+GROMOS96*      gro         
+
+Amber          top         simple Amber format read (only supports a subset of 
+               prmtop      flags)
+=============  ==========  =====================================================
 """
 
-__all__ = ['core', 'PSFParser', 'PDBParser', 'GROParser', 'CRDParser','TOPPareser']
+__all__ = ['core', 'PSFParser', 'PDBParser', 'GROParser', 'CRDParser','TOPParser']
 
 import core
 import PSFParser, PDBParser, PrimitivePDBParser, GROParser, CRDParser, TOPParser 
@@ -24,6 +44,7 @@ _topology_parsers = {'PSF': PSFParser.parse,
                      'GRO': GROParser.parse,
                      'CRD': CRDParser.parse,
                      'TOP': TOPParser.parse,
+                     'PRMTOP': TOPParser.parse,
 		     }
 _topology_parsers_permissive = _topology_parsers.copy()
 _topology_parsers_permissive['PDB'] = PrimitivePDBParser.parse

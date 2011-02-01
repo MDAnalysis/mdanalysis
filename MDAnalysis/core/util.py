@@ -200,6 +200,9 @@ class FixedcolumnEntry(object):
     def read(self, line):
         """Read the entry from *line* and convert to appropriate type."""
         return self.convertor(line[self.start:self.stop])
+    def __len__(self):
+        """Length of the field in columns (stop - start)"""
+        return self.stop - self.start
     def __repr__(self):
         return "FixedcolumnEntry(%d,%d,%r)" % (self.start, self.stop, self.typespecifier)
 
@@ -280,6 +283,13 @@ class FORTRANReader(object):
                 pass
         d['totallength'] = d['repeat'] * d['length']
         return d
+
+    def __len__(self):
+        """Returns number of entries."""
+        return len(self.entries)
+
+    def __repr__(self):
+        return self.__class__.__name__+"("+",".join(self.fmt)+")"
 
 def fixedwidth_bins(delta,xmin,xmax):
     """Return bins of width delta that cover xmin,xmax (or a larger range).
