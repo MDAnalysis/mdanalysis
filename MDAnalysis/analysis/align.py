@@ -43,7 +43,7 @@ function and then feed the resulting dictionary to :func:`rms_fit_trj`::
 
 (See the documentation of the functions for this advanced usage.)
 
-.. SeeAlso:: :mod:`MDAnalysis.core.qcp` for the fast RMSD algorithm.
+.. SeeAlso:: :mod:`MDAnalysis.core.qcprot` for the fast RMSD algorithm.
 """
 
 import numpy
