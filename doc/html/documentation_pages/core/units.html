@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.6. Constants and unit conversion — MDAnalysis.core.units &mdash; MDAnalysis v0.7.1 documentation</title>
+    <title>5.8. Constants and unit conversion — MDAnalysis.core.units &mdash; MDAnalysis v0.7.1 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.1 documentation" href="../../index.html" />
     <link rel="up" title="5. Core modules" href="../core_modules.html" />
-    <link rel="next" title="5.7. Helper functions — MDAnalysis.core.util" href="util.html" />
-    <link rel="prev" title="5.5. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations" href="transformations.html" /> 
+    <link rel="next" title="5.9. Helper functions — MDAnalysis.core.util" href="util.html" />
+    <link rel="prev" title="5.7. Fast QCP RMSD structure alignment — :mod:`MDAnalysis.core.qcprot" href="qcprot.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,10 +38,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="util.html" title="5.7. Helper functions — MDAnalysis.core.util"
+          <a href="util.html" title="5.9. Helper functions — MDAnalysis.core.util"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="transformations.html" title="5.5. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations"
+          <a href="qcprot.html" title="5.7. Fast QCP RMSD structure alignment — :mod:`MDAnalysis.core.qcprot"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">5. Core modules</a> &raquo;</li> 
@@ -54,7 +54,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.core.units"></span><div class="section" id="constants-and-unit-conversion-mdanalysis-core-units">
-<h1>5.6. Constants and unit conversion &#8212; <a class="reference internal" href="#module-MDAnalysis.core.units" title="MDAnalysis.core.units"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a><a class="headerlink" href="#constants-and-unit-conversion-mdanalysis-core-units" title="Permalink to this headline">¶</a></h1>
+<h1>5.8. Constants and unit conversion &#8212; <a class="reference internal" href="#module-MDAnalysis.core.units" title="MDAnalysis.core.units"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a><a class="headerlink" href="#constants-and-unit-conversion-mdanalysis-core-units" title="Permalink to this headline">¶</a></h1>
 <p>The base units of MDAnalysis are <em>Angstrom</em> for <em>length</em> (1 Angstrom =
 0.1 nm = 10^-10 m) and <em>ps</em> (pico second) for <em>time</em> (1 ps = 10^-12
 sec).</p>
@@ -71,7 +71,7 @@ the numeric value <cite>f(b-&gt;b&#8217;)</cite> is stored:</p>
 so f[u1,u2] = factor[u2]/factor[u1]</pre>
 </div>
 <div class="section" id="conversions">
-<h2>5.6.1. Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h2>
+<h2>5.8.1. Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h2>
 <p>density conversion factor. Base unit is A**-3:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">n</span><span class="o">/</span><span class="n">x</span> <span class="o">=</span> <span class="n">n</span><span class="o">/</span><span class="n">A</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">densityUnit_factor</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
 </pre></div>
@@ -95,7 +95,7 @@ home grown attempt?</p>
 </div>
 </div>
 <div class="section" id="functions">
-<h2>5.6.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<h2>5.8.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.units.get_conversion_factor">
 <tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">get_conversion_factor</tt><big>(</big><em>unit_type</em>, <em>u1</em>, <em>u2</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.units.get_conversion_factor" title="Permalink to this definition">¶</a></dt>
@@ -114,7 +114,7 @@ X&#8217; = conversion_factor * X</blockquote>
 
 </div>
 <div class="section" id="data">
-<h2>5.6.3. Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<h2>5.8.3. Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
 <dt id="MDAnalysis.core.units.lengthUnit_factor">
 <tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">lengthUnit_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.lengthUnit_factor" title="Permalink to this definition">¶</a></dt>
@@ -296,20 +296,20 @@ L/x = L/A * lengthUnit_factor[x]</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.6. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a><ul>
-<li><a class="reference internal" href="#conversions">5.6.1. Conversions</a></li>
-<li><a class="reference internal" href="#functions">5.6.2. Functions</a></li>
-<li><a class="reference internal" href="#data">5.6.3. Data</a></li>
+<li><a class="reference internal" href="#">5.8. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a><ul>
+<li><a class="reference internal" href="#conversions">5.8.1. Conversions</a></li>
+<li><a class="reference internal" href="#functions">5.8.2. Functions</a></li>
+<li><a class="reference internal" href="#data">5.8.3. Data</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="transformations.html"
-                        title="previous chapter">5.5. Homogeneous Transformation Matrices and Quaternions &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.transformations</span></tt></a></p>
+  <p class="topless"><a href="qcprot.html"
+                        title="previous chapter">5.7. Fast QCP RMSD structure alignment &#8212; :mod:`MDAnalysis.core.qcprot</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="util.html"
-                        title="next chapter">5.7. Helper functions &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a></p>
+                        title="next chapter">5.9. Helper functions &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/units.txt"
@@ -342,10 +342,10 @@ L/x = L/A * lengthUnit_factor[x]</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="util.html" title="5.7. Helper functions — MDAnalysis.core.util"
+          <a href="util.html" title="5.9. Helper functions — MDAnalysis.core.util"
              >next</a> |</li>
         <li class="right" >
-          <a href="transformations.html" title="5.5. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations"
+          <a href="qcprot.html" title="5.7. Fast QCP RMSD structure alignment — :mod:`MDAnalysis.core.qcprot"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >5. Core modules</a> &raquo;</li> 

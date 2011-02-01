@@ -1,0 +1,255 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.5. MDAnalysis.core.distances — fast distance array computation &mdash; MDAnalysis v0.7.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.1 documentation" href="../../index.html" />
+    <link rel="up" title="5. Core modules" href="../core_modules.html" />
+    <link rel="next" title="5.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations" href="transformations.html" />
+    <link rel="prev" title="5.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries" href="Timeseries.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="transformations.html" title="5.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Timeseries.html" title="5.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
+          <li><a href="../core_modules.html" accesskey="U">5. Core modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.core.distances"></span><div class="section" id="mdanalysis-core-distances-fast-distance-array-computation">
+<h1>5.5. <a class="reference internal" href="#module-MDAnalysis.core.distances" title="MDAnalysis.core.distances"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.distances</span></tt></a> &#8212; fast distance array computation<a class="headerlink" href="#mdanalysis-core-distances-fast-distance-array-computation" title="Permalink to this headline">¶</a></h1>
+<p>Fast C-routines to calculate distance arrays from coordinate arrays.</p>
+<div class="section" id="overview">
+<h2>5.5.1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.core.distances.distance_array">
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">distance_array</tt><big>(</big><em>ref</em>, <em>conf</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.distance_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate all distances d_ij between the coordinates ref[i] and
+conf[j] in the numpy arrays <em>ref</em> and <em>conf</em>. If an orthorhombic
+<em>box</em> is supplied then a minimum image convention is used before
+calculating distances.</p>
+<p>If a 2D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with the shape <tt class="docutils literal"><span class="pre">(len(ref),</span>
+<span class="pre">len(conf))</span></tt> is provided in <em>result</em> then this preallocated array is
+filled. This can speed up calculations.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.distances.self_distance_array">
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">self_distance_array</tt><big>(</big><em>ref</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.self_distance_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate all distances d_ij between atoms i and j in the reference
+coordinates <em>ref</em> for all N coordinates. Other options as in
+<a class="reference internal" href="#MDAnalysis.core.distances.distance_array" title="MDAnalysis.core.distances.distance_array"><tt class="xref py py-func docutils literal"><span class="pre">distance_array()</span></tt></a>.</p>
+<p>If a 1D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with <tt class="docutils literal"><span class="pre">N*(N-1)/2</span></tt> elements is
+provided in <em>result</em> then this preallocated array is filled. This can speed
+up calculations.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="functions">
+<h2>5.5.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt>
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">distance_array</tt><big>(</big><big>)</big></dt>
+<dd><p>Calculate all distances between a reference set and another configuration.</p>
+<p>d = distance_array(ref,conf,box[,result=d])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>ref</em></dt>
+<dd><p class="first last">reference coordinate array</p>
+</dd>
+<dt><em>conf</em></dt>
+<dd><p class="first last">configuration coordinate array</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">orthorhombic unit cell dimensions (minimum image convention is applied) or None [None]</p>
+</dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">optional preallocated result array which must have the shape (len(ref),len(conf)) and dtype=numpy.float64. Avoids creating the              array which saves time when the function is called repeatedly. [None]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>d</em> </dt>
+<dd><p class="first last">(len(ref),len(conf)) numpy array with the distances d[i,j] between ref coordinates i and conf coordinates j</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is slower than it could be because internally we need to
+make copies of the ref and conf arrays.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">self_distance_array</tt><big>(</big><big>)</big></dt>
+<dd><p>Calculate all distances d_ij between atoms i and j within a configuration <em>ref</em>.</p>
+<p>d = self_distance_array(ref,box[,result=d])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>ref</em></dt>
+<dd><p class="first last">reference coordinate array with N=len(ref) coordinates</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><dl class="first last docutils">
+<dt>orthorhombic unit cell dimensions (minimum image convention</dt>
+<dd><p class="first last">is applied) or None [None]</p>
+</dd>
+</dl>
+</dd>
+<dt><em>result</em></dt>
+<dd><dl class="first last docutils">
+<dt>optional preallocated result array which must have the shape</dt>
+<dd><p class="first last">(N*(N-1)/2,) and dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt>. Avoids creating 
+the array which saves time when the function is called repeatedly. [None]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>d</em></dt>
+<dd><dl class="first last docutils">
+<dt>N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref</dt>
+<dd><p class="first">coordinates i and j at position d[k]. Loop through d:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+   <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+       <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+       <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is slower than it could be because internally we need to
+make copies of the coordinate arrays.</p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.5. <tt class="docutils literal"><span class="pre">MDAnalysis.core.distances</span></tt> &#8212; fast distance array computation</a><ul>
+<li><a class="reference internal" href="#overview">5.5.1. Overview</a></li>
+<li><a class="reference internal" href="#functions">5.5.2. Functions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Timeseries.html"
+                        title="previous chapter">5.4. Compute observable timeseries from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.Timeseries</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="transformations.html"
+                        title="next chapter">5.6. Homogeneous Transformation Matrices and Quaternions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.transformations</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/core/distances.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="transformations.html" title="5.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Timeseries.html" title="5.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
+          <li><a href="../core_modules.html" >5. Core modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

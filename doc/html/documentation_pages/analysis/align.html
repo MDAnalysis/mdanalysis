@@ -59,15 +59,18 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Author:</th><td class="field-body">Oliver Beckstein</td>
+<tr class="field"><th class="field-name">Author:</th><td class="field-body">Oliver Beckstein, Joshua Adelman</td>
 </tr>
-<tr class="field"><th class="field-name">Year:</th><td class="field-body">2010</td>
+<tr class="field"><th class="field-name">Year:</th><td class="field-body">2010&#8211;2011</td>
 </tr>
 <tr class="field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
 </tr>
 </tbody>
 </table>
-<p>The script shows how to select a group of atoms (such as the C-alphas),
+<p>The module contains functions to fit a target structure to a reference
+structure. They use the fast QCP algorithm to calculate the RMSD and
+the rotation matrix that minimizes the RMSD difference.</p>
+<p>Typically, one selects a group of atoms (such as the C-alphas),
 calculate the RMSD and transformation matrix, and apply the
 transformation to the current frame of a trajectory to obtain the
 rotated structure.</p>
@@ -92,6 +95,10 @@ function and then feed the resulting dictionary to <a class="reference internal"
 </pre></div>
 </div>
 <p>(See the documentation of the functions for this advanced usage.)</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.qcp</span></tt> for the fast RMSD algorithm.</p>
+</div>
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.echo">
 <tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">echo</tt><big>(</big><em>s=''</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.echo" title="Permalink to this definition">¶</a></dt>
@@ -166,7 +173,7 @@ that can be used immediately in <a class="reference internal" href="#MDAnalysis.
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.rms_fit_trj">
-<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">rms_fit_trj</tt><big>(</big><em>traj</em>, <em>ref</em>, <em>select='backbone'</em>, <em>filename=None</em>, <em>prefix='rmsfit_'</em>, <em>tol_mass=0.10000000000000001</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.rms_fit_trj" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">rms_fit_trj</tt><big>(</big><em>traj</em>, <em>ref</em>, <em>select='backbone'</em>, <em>filename=None</em>, <em>rmsdfile=None</em>, <em>prefix='rmsfit_'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.10000000000000001</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.rms_fit_trj" title="Permalink to this definition">¶</a></dt>
 <dd><p>RMS-fit trajectory to a reference structure using a selection.</p>
 <blockquote>
 rms_fit_trj(traj, ref, &#8216;backbone or name CB or name OT*&#8217;)</blockquote>
@@ -183,15 +190,21 @@ rms_fit_trj(traj, ref, &#8216;backbone or name CB or name OT*&#8217;)</blockquot
 (uses the current time step of the object)</p>
 </dd>
 <dt><em>select</em></dt>
-<dd><p class="first last">any valid selection string for
+<dd><ul class="first last simple">
+<li>any valid selection string for
 <tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.AtomGroup.selectAtoms()</span></tt> that produces identical
-selections in <em>traj</em> and <em>ref</em> or dictionary {&#8216;reference&#8217;:sel1,
-&#8216;target&#8217;:sel2}.  The <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
-dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment.</p>
+selections in <em>traj</em> and <em>ref</em>; or</li>
+<li>dictionary <tt class="docutils literal"><span class="pre">{'reference':sel1,</span> <span class="pre">'target':sel2}</span></tt>.  
+The <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
+dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment.</li>
+</ul>
 </dd>
 <dt><em>filename</em></dt>
 <dd><p class="first last">file name for the RMS-fitted trajectory or pdb; defaults to the 
 original trajectory filename (from <em>traj</em>) with <em>prefix</em> prepended</p>
+</dd>
+<dt><em>rmsdfile</em></dt>
+<dd><p class="first last">file name for writing the RMSD timeseries [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>prefix</em></dt>
 <dd><p class="first last">prefix for autogenerating the new output filename</p>
