@@ -179,7 +179,10 @@ if __name__ == '__main__':
           package_data      = {'MDAnalysis':
                                    ['tests/data/*.psf','tests/data/*.dcd','tests/data/*.pdb',
                                     'tests/data/*.gro', 'tests/data/*.xtc','tests/data/*.trr',
-                                    'tests/data/*.crd', 'tests/data/*.xyz', 'tests/data/*bz2'],
+                                    'tests/data/*.crd', 'tests/data/*.xyz', 
+                                    'tests/data/*.prmtop', 'tests/data/*.trj', 'tests/data/*.mdcrd',
+                                    'tests/data/*.bz2',
+                                    ],
                                },
           ext_package       = 'MDAnalysis',
           ext_modules       = extensions,

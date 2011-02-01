@@ -6,7 +6,8 @@ import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
-from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,CRD,XTC,TRR,GRO,XYZ,XYZ_bz2,XYZ_psf
+from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,CRD,XTC,TRR,GRO, \
+    XYZ,XYZ_bz2,XYZ_psf, PRM,TRJ,TRJ_bz2
 
 import os
 import tempfile
@@ -121,6 +122,54 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
         assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
 
+
+class RefACHE(object):
+    """Mixin class to provide comparison numbers.
+
+    ACHE peptide
+
+    .. Note:: All distances must be in ANGSTROEM as this is the
+       MDAnalysis default unit. All readers must return Angstroem by
+       default.
+    """
+    ref_numatoms = 252
+    ref_sum_centre_of_geometry = 430.44807815551758
+    ref_numframes = 11
+
+class TestTRJReader(TestCase, RefACHE):
+    def setUp(self):
+        self.universe = mda.Universe(PRM, TRJ)
+        self.prec = 3
+
+    def tearDown(self):
+        del self.universe
+
+    def test_load_prm(self):
+        U = self.universe
+        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from PRM and TRJ")
+   
+    def test_numatoms(self):
+        assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
+
+    def test_numframes(self):
+        assert_equal(self.universe.trajectory.numframes, self.ref_numframes, "wrong number of frames in xyz")
+
+    def test_amber_proteinselection(self):
+        protein = self.universe.selectAtoms('protein')
+        assert_equal(protein.numberOfAtoms(), self.ref_numatoms, "error in protein selection (HIS??)")
+
+    def test_sum_centres_of_geometry(self):
+        centreOfGeometry=0
+        for ts in self.universe.trajectory:
+            centreOfGeometry += np.sum(self.universe.atoms.centerOfGeometry())
+        
+        assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
+                            err_msg="sum of centers of geometry over the trajectory do not match")
+
+class TestBzippedTRJReader(TestTRJReader):
+    def setUp(self):
+        self.universe = mda.Universe(PRM, TRJ_bz2)
+        self.prec = 3
 
 
 class _SingleFrameReader(TestCase, RefAdKSmall):

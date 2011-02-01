@@ -12,7 +12,9 @@ __all__ = ["PSF", "DCD",                        # CHARMM
            "PDB_small",                         # PDB
            "PDB", "GRO", "XTC", "TRR", "TPR",   # Gromacs
            "XYZ", "XYZ_bz2" ,                   # XYZ
-           "CRD" ]                              # CRD
+           "CRD",                               # CRD
+           "PRM", "TRJ", "TRJ_bz2",             # Amber (no periodic box)
+           ]
 
 from pkg_resources import resource_filename
 
@@ -32,3 +34,7 @@ TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
 XYZ = resource_filename(__name__, 'data/2r9r-1b.xyz')
+
+PRM = resource_filename(__name__, 'data/ache.prmtop')
+TRJ = resource_filename(__name__, 'data/ache.mdcrd')
+TRJ_bz2 = resource_filename(__name__, 'data/ache.mdcrd.bz2')
