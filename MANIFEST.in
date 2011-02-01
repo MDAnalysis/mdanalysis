@@ -2,6 +2,7 @@ include src/dcd/include/*.h
 include src/numtools/*.h
 include src/KDTree/*
 include src/xdrfile/*
+include src/pyqcprot/*
 graft   MDAnalysis/tests/data/
 recursive-include src *.pyx *.pxd 
 recursive-include doc index.html DevelopmentBranch.txt

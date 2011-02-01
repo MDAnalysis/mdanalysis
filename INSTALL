@@ -11,7 +11,7 @@ build the library some C and C++ code needs to be compiled. Thus you will need
     * python (>=2.4)
     * a C and a C++ compiler (e.g. gcc or Intel icc),
     * the python header files (typically in a package python-dev),
-    * numpy and pyrex to compile the DCD reader and numerical extensions,
+    * numpy and cython to compile the DCD reader and numerical extensions,
     * a LAPACK library (standard LAPACK/BLAS, ATLAS, or the Intel Math
       Kernel Library (MKL); on Mac OS X we simply use the native fast
       vecLib framework so you don't have to install anything else).
@@ -46,7 +46,7 @@ Installation from source
 ========================
 
 Currently MDAnalysis is only distributed in source form. You will need
-a C compiler and pyrex to compile the DCD reader and numerical
+a C compiler and cython to compile the DCD reader and numerical
 extensions.
 
 In the top directory, you can customize the setup by copying the setup
@@ -255,7 +255,7 @@ Linux
 
 * Install prerequisite packages on Ubuntu or Debian with
 
-    sudo aptitude install python-dev python-pyrex python-numpy g++
+    sudo aptitude install python-dev python-cython python-numpy g++
     sudo aptitude install liblapack-dev   # also see notes on fast_numeric_*
 
   Install packages needed for full functionality
@@ -278,10 +278,13 @@ OS specific notes
 * fink hints:
   Install prerequisite packages using fink::
 
-     fink install pyrex-py25 scipy-core-py25 scipy-py25
+     fink install cython-py25 scipy-core-py25 scipy-py25
 
   Install packages needed for full functionality::
 
      fink install  matplotlib-py25 biopython-py25
 
+* MacPorts hints::
 
+     port install  py26-numpy  py26-cython
+     port install  py26-scipy  py26-matplotlib py26-biopython

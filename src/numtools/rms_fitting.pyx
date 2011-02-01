@@ -25,6 +25,7 @@ cdef eigen4x4sym(double* mat, double* eval, double* evec):
 c_numpy.import_array()
 
 import numpy
+import warnings
 def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarray weights):
     ''' Computes the weighted RMS rotation matrix between a reference set of coordinates and a comparison set.
         conf - Nx3 array of comparison coordinates (size float - 32 bits)
@@ -38,6 +39,9 @@ def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarr
     cdef c_numpy.ndarray e, v
     cdef int i, numatoms
     cdef double possq
+
+    warnings.warn("rms_rotation_matrix() is deprecated and will be removed in 0.8. Use MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix()",
+                  category=DeprecationWarning)
 
     if conf.dimensions[0] != ref.dimensions[0]:
         raise Exception("Error: RMS fit - conformation and reference don't have the same number of atoms")

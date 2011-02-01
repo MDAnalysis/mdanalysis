@@ -50,3 +50,7 @@ DCD reader from catdcd
 
 transformations
   - Christoph Gohlke <http://www.lfd.uci.edu/~gohlke/>
+
+pyqcprot
+  - Joshua L. Adelman, University of Pittsburgh <jla65@pitt.edu>
+  - https://github.com/synapticarbors/pyqcprot

@@ -9,7 +9,7 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/11 orbeckst, jandom, tyler.je.reddy
+??/??/11 orbeckst, jandom, tyler.je.reddy, Joshua Adelman
         * 0.7.1 release
         * online documentation
         * new analysis.contacts.ContactAnalysis1 class that supports a
@@ -19,6 +19,14 @@ The rules for this file:
   	  Adelman)
 	* new analysis module 'density': creation and analysis of
 	  volume data
+        * fast RMSD aligner based on Douglas Theobald's QCP method for
+	  calculating the minimum RMSD between two structures and
+	  determining the optimal least-squares rotation matrix;
+	  replaces the slower previous code (implemented by Joshua Adelman from
+	  his pyqcprot package https://github.com/synapticarbors/pyqcprot);
+	  deprecated core.rms_fitting.rms_rotation_matrix() and scheduled for
+	   removal in 0.8
+        * uses cython instead of pyrex
 
 11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose
         * major release 0.7.0

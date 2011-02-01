@@ -6,11 +6,15 @@
 Coordinate fitting and alignment --- :mod:`MDAnalysis.analysis.align`
 =====================================================================
 
-:Author: Oliver Beckstein
-:Year: 2010
+:Author: Oliver Beckstein, Joshua Adelman
+:Year: 2010--2011
 :Copyright: GNU Public License v3
 
-The script shows how to select a group of atoms (such as the C-alphas),
+The module contains functions to fit a target structure to a reference
+structure. They use the fast QCP algorithm to calculate the RMSD and
+the rotation matrix that minimizes the RMSD difference.
+
+Typically, one selects a group of atoms (such as the C-alphas),
 calculate the RMSD and transformation matrix, and apply the
 transformation to the current frame of a trajectory to obtain the
 rotated structure.
@@ -38,12 +42,14 @@ function and then feed the resulting dictionary to :func:`rms_fit_trj`::
    >>> rms_fit_trj(trj, ref, filename='rmsfit.dcd', select=seldict)
 
 (See the documentation of the functions for this advanced usage.)
+
+.. SeeAlso:: :mod:`MDAnalysis.core.qcp` for the fast RMSD algorithm.
 """
 
 import numpy
 import MDAnalysis
-import MDAnalysis.core.rms_fitting, MDAnalysis.coordinates
-from MDAnalysis.core.rms_fitting import rms_rotation_matrix
+import MDAnalysis.coordinates
+import MDAnalysis.core.qcprot as qcp
 from MDAnalysis import SelectionError
 
 import os.path
@@ -61,7 +67,8 @@ def echo(s=''):
     sys.stderr.write(s)
     sys.stderr.flush()
 
-def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_',tol_mass=0.1):
+def rms_fit_trj(traj, ref, select='backbone', filename=None, rmsdfile=None, prefix='rmsfit_',
+                mass_weighted=False, tol_mass=0.1):
     """RMS-fit trajectory to a reference structure using a selection.
 
       rms_fit_trj(traj, ref, 'backbone or name CB or name OT*')
@@ -73,14 +80,17 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_',tol_ma
          reference coordinates; :class:`MDAnalysis.Universe` object
          (uses the current time step of the object)
       *select*
-         any valid selection string for
-         :meth:`MDAnalysis.AtomGroup.selectAtoms` that produces identical
-         selections in *traj* and *ref* or dictionary {'reference':sel1,
-         'target':sel2}.  The :func:`fasta2select` function returns such a
-         dictionary based on a ClustalW_ or STAMP_ sequence alignment.
+         - any valid selection string for
+           :meth:`MDAnalysis.AtomGroup.selectAtoms` that produces identical
+           selections in *traj* and *ref*; or 
+         - dictionary ``{'reference':sel1, 'target':sel2}``.  
+           The :func:`fasta2select` function returns such a
+           dictionary based on a ClustalW_ or STAMP_ sequence alignment.
       *filename*
          file name for the RMS-fitted trajectory or pdb; defaults to the 
          original trajectory filename (from *traj*) with *prefix* prepended
+      *rmsdfile*
+         file name for writing the RMSD timeseries [``None``]
       *prefix*
          prefix for autogenerating the new output filename
       *tol_mass*
@@ -145,6 +155,7 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_',tol_ma
 
     ref_atoms = ref.selectAtoms(select['reference'])
     traj_atoms = traj.selectAtoms(select['target'])
+    natoms = traj_atoms.numberOfAtoms()
     if len(ref_atoms) != len(traj_atoms):
         raise SelectionError("Reference and trajectory atom selections do not contain "+
                              "the same number of atoms: N_ref=%d, N_traj=%d" % \
@@ -165,6 +176,13 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_',tol_ma
     del mass_mismatches
     masses = ref_atoms.masses()
 
+    if mass_weighted:
+        # if performing a mass-weighted alignment/rmsd calculation
+        weight = masses/numpy.mean(masses)
+        raise NotImplementedError("mass weighting not implemented at the moment")
+    else:
+        weight = None
+
     # reference centre of mass system
     # (compatibility with pre 1.0 numpy: explicitly cast coords to float32)
     ref_com = ref_atoms.centerOfMass().astype(numpy.float32)
@@ -173,16 +191,27 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_',tol_ma
     # allocate the array for selection atom coords
     traj_coordinates = traj_atoms.coordinates().copy()
 
+    # RMSD timeseries
+    nframes = len(frames)
+    rmsd = numpy.zeros((nframes,))
+
     # R: rotation matrix that aligns r-r_com, x~-x~com   
     #    (x~: selected coordinates, x: all coordinates)
     # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
-    for ts in frames:
+    for k,ts in enumerate(frames):
         # shift coordinates for rotation fitting
         # selection is updated with the time frame
         x_com = traj_atoms.centerOfMass().astype(numpy.float32)
         traj_coordinates[:] = traj_atoms.coordinates() - x_com
-        R = numpy.matrix(MDAnalysis.core.rms_fitting.rms_rotation_matrix(
-                traj_coordinates,ref_coordinates,masses),dtype=numpy.float32)
+
+        R = numpy.zeros((9,),dtype=numpy.float64)
+        # Need to transpose coordinates such that the coordinate array is
+        # 3xN instead of Nx3. Also qcp requires that the dtype be float64
+        rmsd[k] = qcp.CalcRMSDRotationalMatrix(ref_coordinates.T.astype('float64'),
+                                               traj_coordinates.T.astype('float64'),
+                                               natoms, R, weight)
+        R = numpy.matrix(R.reshape(3,3))
+
         # Transform each atom in the trajectory (use inplace ops to avoid copying arrays)
         ts._pos   -= x_com
         ts._pos[:] = ts._pos * R # R acts to the left & is broadcasted N times.
@@ -200,7 +229,10 @@ def rms_fit_trj(traj,ref,select='backbone',filename=None,prefix='rmsfit_',tol_ma
     # done
     echo("Fitted frame %5d/%d  [%5.1f%%]\r\n" % \
              (ts.frame,frames.numframes,100.0*ts.frame/frames.numframes))
-    logger.info("Wrote %d RMS-fitted coordinate frames to file %r" % (frames.numframes, filename))
+    logger.info("Wrote %d RMS-fitted coordinate frames to file %r", frames.numframes, filename)
+    if not rmsdfile is None:
+        numpy.savetxt(rmsdfile,rmsd)
+        logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
 
 def fasta2select(fastafilename,is_aligned=False,
                  ref_resids=None, target_resids=None,

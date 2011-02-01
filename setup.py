@@ -59,7 +59,14 @@ try:
 except AttributeError:
     numpy_include = numpy.get_numpy_include()
 
-from Pyrex.Distutils import build_ext
+try:
+    from Cython.Distutils import build_ext
+except ImportError:
+    print "*** package 'Cython' not found ***"
+    print "MDAnalysis requires Cython at the setup and build stage."
+    print "Please get it from http://cython.org/ or install it through your package manager."
+    sys.exit(-1)
+
 import ConfigParser
 
 include_dirs = [numpy_include]
@@ -125,6 +132,9 @@ if __name__ == '__main__':
                             include_dirs = include_dirs+fast_numeric_include,
                             extra_link_args=fast_numeric_link,
                             extra_compile_args=extra_compile_args),
+                  Extension('core.qcprot', ['src/pyqcprot/pyqcprot.pyx'],
+                            include_dirs=include_dirs,
+                            extra_compile_args=["-O3","-ffast-math"]),
                   Extension('core._transformations', ['src/transformations/transformations.c'],
                             libraries = ['m'],
                             define_macros=define_macros,
