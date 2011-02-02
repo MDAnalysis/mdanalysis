@@ -16,6 +16,8 @@ Files and directories
 
 .. autofunction:: anyopen
 
+.. autofunction:: greedy_splitext
+
 
 Containers and lists
 --------------------
@@ -143,6 +145,16 @@ def _get_stream(filename, openfunction=file, mode='r'):
         stream = None
     return stream
 
+def greedy_splitext(p):
+    """Split extension in path *p* at the left-most separator."""
+    path, root = os.path.split(p)
+    extension = ''
+    while True:
+        root, ext = os.path.splitext(root)
+        extension = ext + extension
+        if not ext:
+            break
+    return root, extension
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
@@ -199,7 +211,11 @@ class FixedcolumnEntry(object):
         self.convertor = self.convertors[typespecifier]
     def read(self, line):
         """Read the entry from *line* and convert to appropriate type."""
-        return self.convertor(line[self.start:self.stop])
+        try:
+            return self.convertor(line[self.start:self.stop])
+        except ValueError:            
+            raise ValueError("%r: Failed to read&convert %r",
+                             self, line[self.start:self.stop])
     def __len__(self):
         """Length of the field in columns (stop - start)"""
         return self.stop - self.start
@@ -246,8 +262,27 @@ class FORTRANReader(object):
     def read(self, line):
         """Parse *line* according to the format string and return list of values.
 
-        Values are converted to Python types according to the format specifier."""
+        Values are converted to Python types according to the format specifier.
+
+        :Returns: list of entries with appropriate types
+        :Raises: :exc:`ValueError` if any of the conversions cannot be made 
+                 (e.g. space for an int)
+
+        .. SeeAlso:: :meth:`FORTRANReader.number_of_matches`
+        """
         return [e.read(line) for e in self.entries]
+
+    def number_of_matches(self, line):
+        """Return how many format entries could be populated with legal values."""
+        # not optimal, I suppose...
+        matches = 0
+        for e in self.entries:
+            try:
+                e.read(line)
+                matches += 1
+            except ValueError:
+                pass
+        return matches
 
     def parse_FORTRAN_format(self, edit_descriptor):
         """Parse the descriptor.

@@ -14,6 +14,7 @@ __all__ = ["PSF", "DCD",                        # CHARMM
            "XYZ", "XYZ_bz2" ,                   # XYZ
            "CRD",                               # CRD
            "PRM", "TRJ", "TRJ_bz2",             # Amber (no periodic box)
+           "PRMpbc", "TRJpbc_bz2",              # Amber (periodic box)
            ]
 
 from pkg_resources import resource_filename
@@ -38,3 +39,6 @@ XYZ = resource_filename(__name__, 'data/2r9r-1b.xyz')
 PRM = resource_filename(__name__, 'data/ache.prmtop')
 TRJ = resource_filename(__name__, 'data/ache.mdcrd')
 TRJ_bz2 = resource_filename(__name__, 'data/ache.mdcrd.bz2')
+
+PRMpbc = resource_filename(__name__, 'data/capped-ala.prmtop')
+TRJpbc_bz2 = resource_filename(__name__, 'data/capped-ala.mdcrd.bz2')

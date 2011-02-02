@@ -42,6 +42,8 @@ Limitations
 * No direct access of frames is implemented, only iteration through
   the trajectory.
 
+* Trajectories with fewer than 4 atoms probably fail to be read (BUG).
+
 * If the trajectory contains exactly *one* atom then it is always
   assumed to be non-periodic (for technical reasons).
 
@@ -131,7 +133,11 @@ class TRJReader(base.Reader):
 				# less than 10 entries on the line:
 				_coords.extend(self.last_line_parser.read(line))
 			if number == self.lines_per_frame - 1:
+				# read all atoms that are there in this frame
 				break
+		if _coords == []:
+			# at the end of the stream (the loop has not been entered)
+			raise EOFError
 
 		# Read box information
 		if self.periodic:
@@ -180,20 +186,14 @@ class TRJReader(base.Reader):
 		self.periodic = False      # make sure that only coordinates are read
 		self._read_next_timestep()
 		ts = self.ts
+		# TODO: what do we do with 1-frame trajectories? Try..except EOFError?
 		line = self.trjfile.next()
-		try:
-			box = self.box_line_parser.read(line)
-			if len(box) == 3:
-				ts._unitcell[:3] = box
-				ts._unitcell[3:] = [90.,90.,90.]  # assumed
-				self.periodic = True
-			else:
-				raise ValueError  # break into except clause
-		except ValueError:
-			# 1) line has FEWER than 3 values (box_line_parser.read()
-			#    raises ValueError)
-			# 2) not exactly 3 values
-			# --> no box, but next frame so we need to back up
+		nentries = self.default_line_parser.number_of_matches(line)
+		if nentries == 3:			
+			self.periodic = True
+			ts._unitcell[:3] = self.box_line_parser.read(line)
+			ts._unitcell[3:] = [90.,90.,90.]  # assumed
+		else:
 			self.periodic = False
 			ts._unitcell = numpy.zeros(6, numpy.float32)
 		self.close()
@@ -253,6 +253,16 @@ class TRJReader(base.Reader):
     	def open_trajectory(self):
 		self.trjfile, filename = util.anyopen(self.filename, 'r')
 		self.header = self.trjfile.readline()  # ignore first line
+		if len(self.header.rstrip()) > 80:
+			# Chimera uses this check
+			raise OSError("Header of Amber formatted trajectory has more than 80 chars. "
+				      "This is probably not a Amber trajectory.")
+		# reset ts
+		ts = self.ts
+		ts.status = 1
+		ts.frame = 0
+		ts.step = 0
+		ts.time = 0
 		return self.trjfile
 
 	def close_trajectory(self):

@@ -7,7 +7,7 @@ from numpy.testing import *
 from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,CRD,XTC,TRR,GRO, \
-    XYZ,XYZ_bz2,XYZ_psf, PRM,TRJ,TRJ_bz2
+    XYZ,XYZ_bz2,XYZ_psf, PRM,TRJ,TRJ_bz2, PRMpbc, TRJpbc_bz2
 
 import os
 import tempfile
@@ -128,19 +128,48 @@ class RefACHE(object):
 
     ACHE peptide
 
-    .. Note:: All distances must be in ANGSTROEM as this is the
-       MDAnalysis default unit. All readers must return Angstroem by
-       default.
+    # COM check in VMD::
+
+        set p [atomselect top "not water"]
+        set total {0 0 0}; 
+        for {set i 0} {$i < 11} {incr i} {
+           $p frame $i; set total [vecadd $total [measure center $p]]}
+
+        puts [vecsum $total]
+        # 472.2592159509659
+
     """
     ref_numatoms = 252
-    ref_sum_centre_of_geometry = 430.44807815551758
+    ref_proteinatoms = ref_numatoms
+    ref_sum_centre_of_geometry = 472.2592159509659 #430.44807815551758
     ref_numframes = 11
+    ref_periodic = False
 
-class TestTRJReader(TestCase, RefACHE):
-    def setUp(self):
-        self.universe = mda.Universe(PRM, TRJ)
-        self.prec = 3
+class RefCappedAla(object):
+    """Mixin class to provide comparison numbers.
 
+    Capped Ala in water
+
+    # COM check in VMD (load trajectory as *AMBER with periodic box*!)::
+
+        set p [atomselect top "not water"]
+        set total {0 0 0}; 
+        for {set i 0} {$i < 11} {incr i} {
+           $p frame $i; set total [vecadd $total [measure center $p]]}
+
+        puts [vecsum $total]
+        # 686.276834487915
+
+    """
+    ref_numatoms = 5071
+    ref_proteinatoms = 22
+    ref_sum_centre_of_geometry =  686.276834487915
+    ref_numframes = 11
+    ref_periodic = True
+
+
+class _TRJReaderTest(TestCase):
+    # use as a base class (override setUp()) and mixin a reference
     def tearDown(self):
         del self.universe
 
@@ -154,23 +183,34 @@ class TestTRJReader(TestCase, RefACHE):
     def test_numframes(self):
         assert_equal(self.universe.trajectory.numframes, self.ref_numframes, "wrong number of frames in xyz")
 
+    def test_periodic(self):
+        assert_equal(self.universe.trajectory.periodic, self.ref_periodic)
+
     def test_amber_proteinselection(self):
         protein = self.universe.selectAtoms('protein')
-        assert_equal(protein.numberOfAtoms(), self.ref_numatoms, "error in protein selection (HIS??)")
+        assert_equal(protein.numberOfAtoms(), self.ref_proteinatoms, "error in protein selection (HIS or termini?)")
 
     def test_sum_centres_of_geometry(self):
-        centreOfGeometry=0
-        for ts in self.universe.trajectory:
-            centreOfGeometry += np.sum(self.universe.atoms.centerOfGeometry())
-        
-        assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
+        protein = self.universe.selectAtoms('protein')
+        total = np.sum([protein.centerOfGeometry() for ts in self.universe.trajectory])
+        assert_almost_equal(total, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
+
+
+class TestTRJReader(_TRJReaderTest, RefACHE):
+    def setUp(self):
+        self.universe = mda.Universe(PRM, TRJ)
+        self.prec = 3
 
 class TestBzippedTRJReader(TestTRJReader):
     def setUp(self):
         self.universe = mda.Universe(PRM, TRJ_bz2)
         self.prec = 3
 
+class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
+    def setUp(self):
+        self.universe = mda.Universe(PRMpbc, TRJpbc_bz2)
+        self.prec = 3
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
     # see TestPDBReader how to set up!
