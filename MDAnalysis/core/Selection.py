@@ -312,12 +312,12 @@ class ProteinSelection(Selection):
     * manually added:
          - CHO EAM (special in CHARMM)
          - HIS (Gromacs etc)
-         - HIE (Amber)
+         - HIE ACE NME (Amber)
     """
     prot_res = dict([(x,None) for x in ['ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'HSD',
                                         'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
                                         'TRP', 'TYR', 'VAL', 'ALAD',
-                                        'HIE',
+                                        'HIE', 'ACE', 'NME',
                                         'CHO', 'EAM']])
     def _apply(self, group):
         return set([a for a in group.atoms if a.resname in self.prot_res])
