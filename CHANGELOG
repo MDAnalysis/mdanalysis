@@ -9,9 +9,10 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/11 orbeckst, jandom, tyler.je.reddy, Joshua Adelman
+??/??/11 orbeckst, denniej0, jandom, tyler.je.reddy, Joshua Adelman
         * 0.7.1 release
         * online documentation
+        * AMBER topology and trj capabilities (netcdf not yet available)
         * new analysis.contacts.ContactAnalysis1 class that supports a
 	  native contact analysis between arbitrary groups
         * new examples (e.g. peptide helix clustering in a membrane)
