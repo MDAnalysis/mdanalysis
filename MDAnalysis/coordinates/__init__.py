@@ -353,7 +353,7 @@ directly.
 
 __all__ = ['reader', 'writer']
 
-import PDB, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ  #, NETCDF
+import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ  #, NETCDF
 import base
 from core import reader, writer
 
@@ -369,11 +369,12 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'TRJ':TRJ.TRJReader,     # Amber text
                        'MDCRD':TRJ.TRJReader,   # Amber text
 		       #'NETCDF':NETCDFReader,  # Amber netcdf
+                       'PQR': PQR.PQRReader,
 		       'CHAIN': base.ChainReader,
                        }
 
 #: formats of readers that can also handle gzip or bzip2 compressed files
-_compressed_formats = ['XYZ', 'TRJ', 'MDCRD']
+_compressed_formats = ['XYZ', 'TRJ', 'MDCRD', 'PQR']
 
 #: readers of files that contain both topology/atom data and coordinates
 #: (currently only the keys are used)
@@ -381,6 +382,7 @@ _topology_coordinates_readers = {
                        'PDB': PDB.PrimitivePDBReader,
                        'GRO': GRO.GROReader,
                        'CRD': CRD.CRDReader,
+                       'PQR': PQR.PQRReader,
 }    
 
 #: hack: readers that ignore most errors (permissive=True); at the moment

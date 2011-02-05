@@ -15,6 +15,7 @@ __all__ = ["PSF", "DCD",                        # CHARMM
            "CRD",                               # CRD
            "PRM", "TRJ", "TRJ_bz2",             # Amber (no periodic box)
            "PRMpbc", "TRJpbc_bz2",              # Amber (periodic box)
+           "PQR",                               # PQR
            ]
 
 from pkg_resources import resource_filename
@@ -42,3 +43,5 @@ TRJ_bz2 = resource_filename(__name__, 'data/ache.mdcrd.bz2')
 
 PRMpbc = resource_filename(__name__, 'data/capped-ala.prmtop')
 TRJpbc_bz2 = resource_filename(__name__, 'data/capped-ala.mdcrd.bz2')
+
+PQR = resource_filename(__name__, 'data/adk_open.pqr')

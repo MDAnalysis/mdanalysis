@@ -23,6 +23,10 @@ Brookhaven*    pdb         a simplified PDB format (as used in MD simulations)
                            is read by default; the full format can be read by
                            supplying the `permissive=False` flag to 
                            :class:`MDAnalysis.Universe`
+
+PQR            pqr         PDB-like but whitespace-separated files with charge
+                           and radius information
+
 GROMOS96*      gro         
 
 Amber          top         simple Amber format read (only supports a subset of 
@@ -30,10 +34,11 @@ Amber          top         simple Amber format read (only supports a subset of
 =============  ==========  =====================================================
 """
 
-__all__ = ['core', 'PSFParser', 'PDBParser', 'GROParser', 'CRDParser','TOPParser']
+__all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser', 'CRDParser','TOPParser']
 
 import core
-import PSFParser, PDBParser, PrimitivePDBParser, GROParser, CRDParser, TOPParser 
+import PSFParser, TOPParser, \
+    PDBParser, PrimitivePDBParser, PQRParser, GROParser, CRDParser
 
 # dictionary of known file formats and the corresponding file parser
 # (all parser should essentially do the same thing; the PSFParser is
@@ -41,6 +46,7 @@ import PSFParser, PDBParser, PrimitivePDBParser, GROParser, CRDParser, TOPParser
 # are the known topology formats.
 _topology_parsers = {'PSF': PSFParser.parse,
                      'PDB': PDBParser.parse,
+                     'PQR': PQRParser.parse,
                      'GRO': GROParser.parse,
                      'CRD': CRDParser.parse,
                      'TOP': TOPParser.parse,

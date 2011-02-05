@@ -13,20 +13,20 @@ The rules for this file:
         * 0.7.1 release
         * online documentation
         * AMBER topology and trj capabilities (netcdf not yet available)
+        * PQR file reading support
         * new analysis.contacts.ContactAnalysis1 class that supports a
-	  native contact analysis between arbitrary groups
+	  native contact analysis between arbitrary groups     
         * new examples (e.g. peptide helix clustering in a membrane)
 	* fixed Issue 58 (align.rms_fit_trj; fix reported by Joshua
   	  Adelman)
-	* new analysis module 'density': creation and analysis of
-	  volume data
+	* new analysis module 'density': creation and analysis of volume data
         * fast RMSD aligner based on Douglas Theobald's QCP method for
 	  calculating the minimum RMSD between two structures and
 	  determining the optimal least-squares rotation matrix;
 	  replaces the slower previous code (implemented by Joshua Adelman from
 	  his pyqcprot package https://github.com/synapticarbors/pyqcprot);
 	  deprecated core.rms_fitting.rms_rotation_matrix() and scheduled for
-	   removal in 0.8
+          removal in 0.8
         * uses cython instead of pyrex
 
 11/05/10 orbeckst, denniej0, tyler.je.reddy, danny.parton, joseph.goose

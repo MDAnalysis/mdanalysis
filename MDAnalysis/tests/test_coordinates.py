@@ -7,7 +7,7 @@ from numpy.testing import *
 from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,CRD,XTC,TRR,GRO, \
-    XYZ,XYZ_bz2,XYZ_psf, PRM,TRJ,TRJ_bz2, PRMpbc, TRJpbc_bz2
+    XYZ,XYZ_bz2,XYZ_psf, PRM,TRJ,TRJ_bz2, PRMpbc, TRJpbc_bz2, PQR
 
 import os
 import tempfile
@@ -33,6 +33,10 @@ class RefAdKSmall(object):
     ref_distances = {'endtoend': 11.016959}
     ref_E151HA2_index = 2314
     ref_numatoms = 3341
+    ref_charmm_totalcharge = -4.0
+    ref_charmm_Hcharges = [0.33] + 203*[0.31]
+    ref_charmm_ArgCAcharges = 13 * [0.07]
+    ref_charmm_ProNcharges = 10 * [-0.29]
 
 class RefAdK(object):
     """Mixin class to provide comparison numbers.
@@ -239,14 +243,14 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames in pdb")
 
     def test_coordinates(self):
-        A10CA = self.universe.s4AKE.CA[10]
+        A10CA = self.universe.atoms.CA[10]
         # restrict accuracy to maximum in PDB files (3 decimals)
         assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], 3,
                             err_msg="wrong coordinates for A10:CA")
         
     def test_distances(self):
-        NTERM = self.universe.s4AKE.N[0]
-        CTERM = self.universe.s4AKE.C[-1]
+        NTERM = self.universe.atoms.N[0]
+        CTERM = self.universe.atoms.C[-1]
         d = atom_distance(NTERM, CTERM)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="distance between M1:N and G214:C")
@@ -287,6 +291,30 @@ class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True) 
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
+class TestPQRReader(_SingleFrameReader):
+    def setUp(self):
+        self.universe = mda.Universe(PQR) 
+        self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+    
+    def test_totalCharge(self):
+        assert_almost_equal(self.universe.atoms.totalCharge(), self.ref_charmm_totalcharge, 3,
+                            "Total charge (in CHARMM) does not match expected value.")
+
+    def test_hydrogenCharges(self):
+        assert_almost_equal(self.universe.atoms.H.charges(), self.ref_charmm_Hcharges, 3,
+                            "Charges for H atoms do not match.")
+
+    # Note that the whole system gets the sysID 'SYSTEM' for the PQR file (when read with
+    # a PSF it is 's4AKE')
+    def test_ArgCACharges(self):
+        assert_almost_equal(self.universe.SYSTEM.ARG.CA.charges(), self.ref_charmm_ArgCAcharges, 3,
+                            "Charges for CA atoms in Arg residues do not match.")
+
+    def test_ProNCharges(self):
+        assert_almost_equal(self.universe.SYSTEM.PRO.N.charges(), self.ref_charmm_ProNcharges, 3,
+                            "Charges for N atoms in Pro residues do not match.")
+                     
+                            
 class TestGROReader(TestCase, RefAdK):
     def setUp(self):
 	self.universe = mda.Universe(GRO)
