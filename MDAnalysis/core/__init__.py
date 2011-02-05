@@ -274,6 +274,19 @@ _flags = [
 
          """
          ),
+    Flag('charge_unit',
+         'e',
+         {'e': 'e', 'electron charge': 'e',
+          'Amber': 'Amber',
+          'C': 'C', 'Coulomb': 'C', 'As': 'C',
+          },
+         """
+            Base unit for charge
+
+            >>> flags['%(name)s'] = value
+
+         """
+         ),
     _Flag('permissive_pdb_reader',
          True,
          {'primitive': True, 'permissive': True, True: True,

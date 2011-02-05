@@ -87,10 +87,13 @@ Data
 
 """
 
-#: conversion factors between the base unit (Angstrom) and other lengthUnits x:
-#: L/x = L/A * lengthUnit_factor[x]
+#: The basic unit of *length* in MDAnalysis is the Angstrom.
+#: Conversion factors between the base unit and other lengthUnits *x* are stored.
+#: Conversions follow `L/x = L/Angstrom * lengthUnit_factor[x]`.
+#: *x* can be *nm*/*nanometer* or *fm*.
 lengthUnit_factor = {'Angstrom': 1.0, 'A': 1.0, 'Å': 1.0,
                      'nm': 1.0/10, 'nanometer': 1.0/10,
+                     'fm': 1.0/1000, 'femtometer': 1.0/1000,
                      }
 
 
@@ -98,7 +101,7 @@ lengthUnit_factor = {'Angstrom': 1.0, 'A': 1.0, 'Å': 1.0,
 N_Avogadro = 6.02214179e+23  # mol**-1   
 
 
-#: water density: Jorgensen & Jenson, JCompChem 19 (1998), 1179: T=298K, P=1atm
+#: water density values: Jorgensen & Jenson, JCompChem 19 (1998), 1179: T=298K, P=1atm
 #:  ======== =========
 #:  model    g cm**-3
 #:  ======== =========
@@ -112,7 +115,10 @@ water = {'exp':0.997, 'SPC':0.985, 'TIP3P':1.002, 'TIP4P':1.001,  # in g cm**-3
          'MolarMass': 18.016,                                     # in g mol**-1
          }
 
-#: for water densities, this is the volume per water molecule in A**3
+#: The basic unit for *densities* is Angstroem**(-3), i.e. 
+#: the volume per molecule in A**3. Especially for water
+#: it can be convenient to measure the density relative to bulk, and
+#: hence a number of values are pre-stored in :data:`water`.
 densityUnit_factor = {
     'Angstrom^{-3}': 1/1.0, 'A^{-3}': 1/1.0, 'Å^{-3}': 1/1.0, 
     'nm^{-3}': 1/1e-3, 'nanometer^{-3}': 1/1e-3,
@@ -124,23 +130,31 @@ densityUnit_factor = {
     }
 
 
-#: basic unit is ps; 
-#: 1 AKMA time unit = 4.888821E-14 sec; see
-#: http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA
-#:    1200ps/ps * f = 1.2 ns/ns  ==> f = 1/1000
+#: For *time*, the basic unit is ps; in particular CHARMM's
+#: 1 AKMA_ time unit = 4.888821E-14 sec is supported.
+#: .. _AKMA: http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA
 timeUnit_factor = {'ps': 1/1.0,
                    'ns': 1/1e3,
                    'second': 1/1e12,
                    'AKMA': 1/4.888821e-2,
                    }
+# getting the factor f:  1200ps * f = 1.2 ns  ==> f = 1/1000 ns/ps
+
+#: *Charge* is measured in multiples of the `electron charge`_ 
+#: *e* =  1.602176487 x 10**(-19) C.
+#: .. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
+chargeUnit_factor = {'e': 1.0,
+                     'Amber': 18.2223,  # http://ambermd.org/formats.html#parm
+                     'C': 1.602176487e-19, 'As': 1.602176487e-19,
+                     }
 
 #: :data:`conversion_factor` is used by :func:`get_conversion_factor`:
-#:
 #: Note: any observable with a unit (i.e. one with an entry in
-# the :attr:`unit` attribute) needs an entry in :data:`conversion_factor`
+#: the :attr:`unit` attribute) needs an entry in :data:`conversion_factor`
 conversion_factor = {'length': lengthUnit_factor,
                      'density': densityUnit_factor,
                      'time': timeUnit_factor,
+                     'charge': chargeUnit_factor,
                      }
 
 #: Generated lookup table (dict): returns the type of unit for a known input unit.

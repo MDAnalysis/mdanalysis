@@ -1,7 +1,20 @@
 # $Id: TOPParser.py 325 2011-01-22 14:58:19Z Elizabeth Denning $
-""" TOPParser - reads a Amber top file to build the system
+"""
+TOPParser - reads a Amber top file to build the system
+======================================================
+
+The format is defined in `PARM parameter/topology file specification`_.
+
+.. Note:: The Amber charge is converted to electron charges as used in
+          MDAnalysis and other packages. To get back Amber charges,
+          multiply by 18.2223.
+
+.. _`PARM parameter/topology file specification`:
+   http://ambermd.org/formats.html#topology
 """
 
+import MDAnalysis.core
+import MDAnalysis.core.units
 from MDAnalysis.core import util
 
 class TOPParseError(Exception):
@@ -91,7 +104,8 @@ def parse(topfilename):
     for i in range(sys_info[0]):
     	if structure.keys()[0] == "_charge":
 		index += 1
-		charge = structure.items()[0][1][i]
+		charge = MDAnalysis.core.units.convert(structure.items()[0][1][i], 
+                                                       'Amber', MDAnalysis.core.flags['charge_unit'])
 		if structure.items()[5][1][j] <= index < structure.items()[5][1][j+1]:
 			resid = j + 1
 			resname = structure.items()[1][1][j]
@@ -102,7 +116,7 @@ def parse(topfilename):
 		mass = structure.items()[2][1][i]
 		atomtype = structure.items()[3][1][i]
 		atomname = structure.items()[4][1][i]
-		segid = "XXXX"
+		segid = 'SYSTEM'  # does not exist in Amber
 	else:
 		raise TOPParseError("Something is screwy with this top file")
     	atom_desc = Atom(index-1,atomname,atomtype,resname,resid,segid,mass,charge)
