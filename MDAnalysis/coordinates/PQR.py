@@ -10,13 +10,21 @@ following is adopted from the description of the PQR_ format as used by APBS_:
 *MDAnalysis* reads very loosely-formatted PQR files: all fields are
 **whitespace-delimited** rather than the strict column formatting mandated
 by the PDB_ format. This more liberal formatting allows coordinates
-which are larger/smaller than ± 999 Å.
+which are larger/smaller than Â±999 Ã….
 
 MDAnalysis reads data on a per-line basis from PQR files using the following format::
 
    recordName serial atomName residueName chainID residueNumber X Y Z charge radius
 
-where the whitespace is the most important feature of this format. The fields are:
+If this fails it is assumed that the *chainID* was ommitted and the shorter format is read::
+
+   recordName serial atomName residueName residueNumber X Y Z charge radius
+
+Anything else will raise a :exc:`ValueError`.
+
+The whitespace is the most important feature of this format: fields
+*must* be separated by at least one space or tab character. The fields
+are:
 
 *recordName*
     A string which specifies the type of PQR entry and should either be ATOM or
@@ -37,7 +45,7 @@ where the whitespace is the most important feature of this format. The fields ar
 *charge*
     A float which provides the atomic charge (in electrons).
 *radius*
-    A float which provides the atomic radius (in Å).
+    A float which provides the atomic radius (in Ã…).
 
 Clearly, this format can deviate wildly from PDB_ due to the use of whitespaces
 rather than specific column widths and alignments. This deviation can be

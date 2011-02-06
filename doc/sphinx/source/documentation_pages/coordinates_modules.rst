@@ -23,4 +23,6 @@ read the **Trajectory API** that is described in
    coordinates/DCD
    coordinates/GRO
    coordinates/PDB	
+   coordinates/PQR
+   coordinates/TRJ
    coordinates/XYZ

@@ -1,10 +1,11 @@
 # $Id: TRJ.py 101 2011-01-22 13:19:06Z Elizabeth Denning $
+# -*- coding: utf-8 -*-
 """
-Amber TRJ file format
-=====================
+TRJ/MDCRD file format (Amber) --- :mod:`MDAnalysis.coordinates.TRJ`
+===================================================================
 
-Classes to read Amber_ TRJ coordinate files as defined in `Amber TRJ
-format`_. It is also possible to directly read *bzip2* or *gzip*
+Classes to read formatted Amber_ TRJ coordinate files as defined in `Amber
+TRJ format`_. It is also possible to directly read *bzip2* or *gzip*
 compressed files.
 
 Amber trajectories are recognised by the suffix '.trj' or '.mdcrd'
@@ -48,6 +49,15 @@ Limitations
   assumed to be non-periodic (for technical reasons).
 
 .. _Amber netcdf: http://ambermd.org/netcdf/nctraj.html
+
+Classes
+-------
+
+.. autoclass:: Timestep
+   :members:
+.. autoclass:: TRJReader
+   :members:
+
 """
 
 import numpy
@@ -60,19 +70,40 @@ class Timestep(base.Timestep):
 	"""Amber trajectory Timestep"""
 	@property
 	def dimensions(self):
-	        """unitcell dimensions (A, B, C, alpha, beta, gamma)
-		- A, B, C are the lengths of the primitive cell vectors e1, e2, e3
-		- alpha = angle(e1, e2)
-		- beta = angle(e1, e3)
-		- gamma = angle(e2, e3)
+	        """unitcell dimensions (`A, B, C, alpha, beta, gamma`)
 
-		Note that the Amber trajectory only contains box lengths A,B,C; we assume
-		an orthorhombic box.
+		- `A, B, C` are the lengths of the primitive cell vectors `e1, e2, e3`
+		- `alpha` = angle(`e1, e2`)
+		- `beta` = angle(`e1, e3`)
+		- `gamma` = angle(`e2, e3`)
+
+		.. Note:: The Amber trajectory only contains box lengths
+ 		           `A,B,C`; we assume an orthorhombic box and set all
+ 		           angles to 90º.
 		"""
 		# Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
 		return self._unitcell
 
 class TRJReader(base.Reader):
+	"""Amber trajectory reader.
+
+	Reads the ASCII formatted `Amber TRJ format`_. Periodic box information
+	is auto-detected.
+
+	The number of atoms in a timestep *must* be provided in the `numatoms`
+	keyword because it is not stored in the trajectory header and cannot be
+	reliably autodetected. The constructor raises a :exc:`ValueError` if
+	`numatoms` is left at its default value of ``None``.
+
+	The length of a timestep is not stored in the trajectory itself but can
+	be set by passing the `delta` keyword argument to the constructor; it
+	is assumed to be in ps. The default value is 1 ps.
+
+	Functionality is currently limited to simple iteration over the
+	trajectory.
+
+	.. _Amber TRJ format: http://ambermd.org/formats.html#trajectory
+	"""
 	format = 'TRJ'
 	units = {'time': 'ps', 'length': 'Angstroms'}
 	_Timestep = Timestep
@@ -202,6 +233,7 @@ class TRJReader(base.Reader):
 		
 	@property
 	def numframes(self):
+		"""Number of frames (obtained from reading the whole trajectory)."""
 	        if not self.__numframes is None:   # return cached value
 		        return self.__numframes
 		try:
@@ -251,6 +283,7 @@ class TRJReader(base.Reader):
 		self.open_trajectory()
 
     	def open_trajectory(self):
+		"""Open the trajectory for reading and load first frame."""
 		self.trjfile, filename = util.anyopen(self.filename, 'r')
 		self.header = self.trjfile.readline()  # ignore first line
 		if len(self.header.rstrip()) > 80:
@@ -274,6 +307,7 @@ class TRJReader(base.Reader):
 
 
 	def rewind(self):
+		"""Reposition at the beginning of the trajectory"""
 		self._reopen()
 		self.next()
 
