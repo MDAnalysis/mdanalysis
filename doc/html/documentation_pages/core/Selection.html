@@ -67,14 +67,17 @@
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.BaseSelection">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">BaseSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.BaseSelection" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>A protein selection consists of all residues with  recognized residue names.</dt>
-<dd>Recognized residue names:</dd>
-</dl>
-<ul class="simple">
-<li>from the Charmm force field</li>
-</ul>
-<p>awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_lipid.rtf</p>
+<dd><p>Selection of atoms in nucleobases.</p>
+<p>Recognized atom names (from CHARMM):</p>
+<blockquote>
+&#8216;N9&#8217;, &#8216;N7&#8217;, &#8216;C8&#8217;, &#8216;C5&#8217;, &#8216;C4&#8217;, &#8216;N3&#8217;, &#8216;C2&#8217;, &#8216;N1&#8217;, &#8216;C6&#8217;,
+&#8216;O6&#8217;,&#8217;N2&#8217;,&#8217;N6&#8217;, &#8216;O2&#8217;,&#8217;N4&#8217;,&#8217;O4&#8217;,&#8217;C5M&#8217;</blockquote>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.Selection.CASelection">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">CASelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.CASelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select atoms named CA in protein residues (supposed to be the C-alphas)</p>
 </dd></dl>
 
 <dl class="class">
@@ -86,11 +89,14 @@
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.NucleicSelection">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicSelection" title="Permalink to this definition">¶</a></dt>
-<dd><p>A nucleic selection consists of all residues with  recognized residue names.
+<dd><p>A nucleic selection consists of all atoms in nucleic acid residues with  recognized residue names.
 Recognized residue names:
 * from the Charmm force field</p>
 <blockquote>
 awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</blockquote>
+<ul class="simple">
+<li>recognized: &#8216;ADE&#8217;, &#8216;URA&#8217;, &#8216;CYT&#8217;, &#8216;GUA&#8217;, &#8216;THY&#8217;</li>
+</ul>
 </dd></dl>
 
 <dl class="class">
@@ -102,10 +108,14 @@ awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.NucleicXstalSelection">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicXstalSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicXstalSelection" title="Permalink to this definition">¶</a></dt>
-<dd><p>A nucleic selection consists of all residues with  recognized residue names.
+<dd><p>A nucleic selection consists of all atoms in nucleic acid residues with PDB-like resnames.
 Recognized residue names:
-* from the Charmm force field
-awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</p>
+* from the Charmm force field:</p>
+<blockquote>
+awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</blockquote>
+<ul class="simple">
+<li>recognized: &#8216;A&#8217;, &#8216;U&#8217;, &#8216;C&#8217;, &#8216;G&#8217;, &#8216;DT&#8217;,&#8217;DA&#8217;,&#8217;DC&#8217;,&#8217;DG&#8217;</li>
+</ul>
 </dd></dl>
 
 <dl class="class">
@@ -126,7 +136,11 @@ awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8
 <ul>
 <li><dl class="first docutils">
 <dt>manually added:</dt>
-<dd><p class="first last">HIS CHO EAM</p>
+<dd><ul class="first last simple">
+<li>CHO EAM (special in CHARMM)</li>
+<li>HIS (Gromacs etc)</li>
+<li>HIE ACE NME (Amber)</li>
+</ul>
 </dd>
 </dl>
 </li>

@@ -144,18 +144,6 @@ periodicity; if periodicity is crucial, disable KDTree routines with</p>
 <p class="last">Do not change, only Angstrom fully supported.</p>
 </div>
 </blockquote>
-<p>A Flag, essentially a variable that knows its default and legal values.</p>
-<p><strong>convert_gromacs_lengths</strong> = <em>True</em></p>
-<blockquote>
-<p>Determine if the XTC and TRR trajectory reader and writer convert units.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_gromacs_lengths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
-</div>
-<p>Gromacs trajectories are in nm, MDAnalysis in Angstroem. If
-<tt class="xref docutils literal"><span class="pre">True</span></tt> then coordinates are automatically converted, with
-<tt class="xref docutils literal"><span class="pre">False</span></tt> the coordinate values are presented as read from the
-trajectories.</p>
-</blockquote>
 <p><strong>permissive_pdb_reader</strong> = <em>True</em></p>
 <blockquote>
 <p>Select the default reader for PDB Brookhaven databank files.</p>
@@ -177,6 +165,19 @@ list.</p>
 <p>One can manually switch between the two by providing the <em>permissive</em>
 keyword to <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>.</p>
 </blockquote>
+<p>A Flag, essentially a variable that knows its default and legal values.</p>
+<p><strong>convert_gromacs_lengths</strong> = <em>True</em></p>
+<blockquote>
+<p>Determine if the XTC and TRR trajectory reader and writer convert units.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_gromacs_lengths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p>Gromacs trajectories are in nm, MDAnalysis in Angstroem. If
+<tt class="xref docutils literal"><span class="pre">True</span></tt> then coordinates are automatically converted, with
+<tt class="xref docutils literal"><span class="pre">False</span></tt> the coordinate values are presented as read from the
+trajectories.</p>
+</blockquote>
+<p>A Flag, essentially a variable that knows its default and legal values.</p>
 </dd></dl>
 
 </div>

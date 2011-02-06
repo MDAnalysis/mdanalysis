@@ -87,6 +87,7 @@ I/O code can be written in C or python or a mixture thereof.</p>
 <li>2010-10-09 added write() method to Writers [orbeckst]</li>
 <li>2010-10-19 use close() instead of close_trajectory() [orbeckst]</li>
 <li>2010-10-30 clarified Writer write() methods (see also <a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=49">Issue 49</a>)</li>
+<li>2011-02-01 extended call signatur of Reader class</li>
 </ul>
 </div>
 <div class="section" id="registry">
@@ -188,17 +189,22 @@ implementation example.</p>
 <p>The following methods must be implemented in a Reader class.</p>
 <blockquote>
 <dl class="docutils">
-<dt>__init__(filename)</dt>
-<dd>open <em>filename</em></dd>
-<dt>__iter__()</dt>
-<dd><dl class="first last docutils">
-<dt>allow iteration from beginning to end::</dt>
-<dd><dl class="first last docutils">
-<dt>for ts in trajectory:</dt>
-<dd>print ts.frame</dd>
-</dl>
+<dt>__init__(filename, <a href="#id2"><span class="problematic" id="id3">**</span></a>kwargs)</dt>
+<dd><p class="first">open <em>filename</em>; other <em>kwargs</em> are processed as needed and the
+Reader is free to ignore them. Typically, MDAnalysis supplies as
+much information as possible to the Reader:</p>
+<blockquote class="last">
+<ul class="simple">
+<li><em>numatoms</em>: the number of atoms (known from the topology)</li>
+</ul>
+</blockquote>
 </dd>
-</dl>
+<dt>__iter__()</dt>
+<dd><p class="first">allow iteration from beginning to end:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+</pre></div>
+</div>
 </dd>
 <dt>close()</dt>
 <dd>close the file and cease I/O</dd>
@@ -230,8 +236,8 @@ with observable timeseries computed from the trajectory</dd>
 </dl>
 </blockquote>
 </div>
-<div class="section" id="id2">
-<h4>4.1.1.4.2. Attributes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id4">
+<h4>4.1.1.4.2. Attributes<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <dl class="docutils">
 <dt>filename</dt>
@@ -296,8 +302,8 @@ another frame is appended to the trajectory.</p>
 <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">Timestep</span><span class="p">)</span>    <span class="c"># same as write_next_timestep()</span>
 </pre></div>
 </div>
-<div class="section" id="id3">
-<h4>4.1.1.5.1. Methods<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id5">
+<h4>4.1.1.5.1. Methods<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <dl class="docutils">
 <dt>__init__(filename,numatoms[,start[,step[,delta[,remarks]]]])</dt>
@@ -316,8 +322,8 @@ unitcell representation of the format</dd>
 </dl>
 </blockquote>
 </div>
-<div class="section" id="id4">
-<h4>4.1.1.5.2. Attributes<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id6">
+<h4>4.1.1.5.2. Attributes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <dl class="docutils">
 <dt>filename</dt>
@@ -360,11 +366,11 @@ way.</p>
 arguments (filename and numatoms) as for the Trajectory writers. In
 this way, the simple <a class="reference internal" href="core.html#MDAnalysis.coordinates.core.writer" title="MDAnalysis.coordinates.core.writer"><tt class="xref py py-func docutils literal"><span class="pre">writer()</span></tt></a>
 factory function can be used for all writers.</p>
-<div class="section" id="id5">
-<h4>4.1.1.6.1. Methods<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id7">
+<h4>4.1.1.6.1. Methods<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <dl class="docutils">
-<dt>__init__(filename, <a href="#id6"><span class="problematic" id="id7">**</span></a>kwargs)</dt>
+<dt>__init__(filename, <a href="#id8"><span class="problematic" id="id9">**</span></a>kwargs)</dt>
 <dd>opens <em>filename</em> for writing; kwargs are typically ignored</dd>
 <dt>write(obj)</dt>
 <dd>writes the object <em>obj</em>, containing a
@@ -407,6 +413,12 @@ directly.</p>
 <dd><p>hack: readers that ignore most errors (permissive=True); at the moment
 the same as <a class="reference internal" href="#MDAnalysis.coordinates.__init__._trajectory_readers" title="MDAnalysis.coordinates.__init__._trajectory_readers"><tt class="xref py py-data docutils literal"><span class="pre">_trajectory_readers</span></tt></a> with the exception of the
 the PDB reader (<a class="reference internal" href="PDB.html#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><tt class="xref py py-class docutils literal"><span class="pre">PDBReader</span></tt></a> is replaced by <a class="reference internal" href="PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBReader</span></tt></a>).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.coordinates.__init__._compressed_formats">
+<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_compressed_formats</tt><a class="headerlink" href="#MDAnalysis.coordinates.__init__._compressed_formats" title="Permalink to this definition">¶</a></dt>
+<dd><p>formats of readers that can also handle gzip or bzip2 compressed files</p>
 </dd></dl>
 
 <dl class="data">
@@ -457,16 +469,16 @@ Signature:</p>
 </li>
 <li><a class="reference internal" href="#trajectory-reader-class">4.1.1.4. Trajectory Reader class</a><ul>
 <li><a class="reference internal" href="#id1">4.1.1.4.1. Methods</a></li>
-<li><a class="reference internal" href="#id2">4.1.1.4.2. Attributes</a></li>
+<li><a class="reference internal" href="#id4">4.1.1.4.2. Attributes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#trajectory-writer-class">4.1.1.5. Trajectory Writer class</a><ul>
-<li><a class="reference internal" href="#id3">4.1.1.5.1. Methods</a></li>
-<li><a class="reference internal" href="#id4">4.1.1.5.2. Attributes</a></li>
+<li><a class="reference internal" href="#id5">4.1.1.5.1. Methods</a></li>
+<li><a class="reference internal" href="#id6">4.1.1.5.2. Attributes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#single-frame-writer-class">4.1.1.6. Single Frame Writer class</a><ul>
-<li><a class="reference internal" href="#id5">4.1.1.6.1. Methods</a></li>
+<li><a class="reference internal" href="#id7">4.1.1.6.1. Methods</a></li>
 </ul>
 </li>
 </ul>
