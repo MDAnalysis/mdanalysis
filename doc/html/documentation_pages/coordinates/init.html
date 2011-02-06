@@ -57,20 +57,125 @@
 <h1>4.1. <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt> &#8212; reading and writing coordinates<a class="headerlink" href="#mdanalysis-coordinates-reading-and-writing-coordinates" title="Permalink to this headline">¶</a></h1>
 <p>The coordinates submodule contains code to read coordinates, either
 single frames (e.g. the PDB module) or trajectories (such as the DCD
-reader). All readers are supposed to expose a Reader object that
-represents a common API to the other code.</p>
-<p>The Universe contains the API entry point attribute</p>
+reader). All readers are supposed to expose a <tt class="xref py py-class docutils literal"><span class="pre">Reader</span></tt> object
+that presents a common <a class="reference internal" href="#trajectory-api">Trajectory API</a> to other code.</p>
+<p>The <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> contains the API
+entry point attribute</p>
 <blockquote>
 <tt class="xref py py-attr docutils literal"><span class="pre">Universe.trajectory</span></tt></blockquote>
-<p>that points to the actual Reader object; all Readers are supposed to
+<p>that points to the actual <tt class="xref py py-class docutils literal"><span class="pre">Reader</span></tt> object; all Readers are supposed to
 be accessible through this entry point in the same manner (<a class="reference external" href="http://c2.com/cgi/wiki?DuckTyping">duck typing</a>)</p>
 <p>In order to write coordinates, a factory function is provided
 (<a class="reference internal" href="core.html#MDAnalysis.coordinates.core.writer" title="MDAnalysis.coordinates.core.writer"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.coordinates.core.writer()</span></tt></a>) which is made available
 as <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></tt>) that returns a <em>Writer</em> appropriate for
 the desired file format. Similarly, there is also a
 <a class="reference internal" href="core.html#MDAnalysis.coordinates.core.reader" title="MDAnalysis.coordinates.core.reader"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.coordinates.core.reader()</span></tt></a> function available.</p>
+<div class="section" id="supported-coordinate-formats">
+<span id="id1"></span><h2>4.1.1. Supported coordinate formats<a class="headerlink" href="#supported-coordinate-formats" title="Permalink to this headline">¶</a></h2>
+<p>The table below lists the coordinate file formats understood by MDAnalysis. The
+emphasis is on formats that are used in popular molecular dynamics
+codes. MDAnalysis figures out formats by looking at the extension. Thus, a DCD
+file always has to end with &#8221;.dcd&#8221; to be recognized as such. (A number of files
+are also recognized when they are compressed with <strong class="program">gzip</strong> or
+<strong class="program">bzip2</strong> such as &#8221;.xyz.bz2&#8221;.)</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="13%" />
+<col width="8%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Name</th>
+<th class="head">extension</th>
+<th class="head">IO</th>
+<th class="head">remarks</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>CHARMM,
+NAMD,
+LAMMPS</td>
+<td>dcd</td>
+<td>r/w</td>
+<td>standard CHARMM binary trajectory; endianness is
+autodetected. Fixed atoms may not be handled
+correctly (requires testing). Module
+<a class="reference internal" href="DCD.html#module-MDAnalysis.coordinates.DCD" title="MDAnalysis.coordinates.DCD"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a></td>
+</tr>
+<tr><td>Gromacs</td>
+<td>xtc</td>
+<td>r/w</td>
+<td>Compressed (lossy) xtc trajectory format. Module
+<tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></td>
+</tr>
+<tr><td>Gromacs</td>
+<td>trr</td>
+<td>r/w</td>
+<td>Full precision trr trajectory. Only coordinates are
+processed at the moment. Module
+<tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></td>
+</tr>
+<tr><td>XYZ</td>
+<td>xyz</td>
+<td>r</td>
+<td>Generic white-space separate XYZ format; can be
+compressed. Module
+<a class="reference internal" href="XYZ.html#module-MDAnalysis.coordinates.XYZ" title="MDAnalysis.coordinates.XYZ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></td>
+</tr>
+<tr><td>Amber</td>
+<td>trj,
+mdcrd</td>
+<td>r</td>
+<td>formatted (ASCII) trajectories; the presence of a
+periodic box is autodetected (<em>experimental</em>).
+Module <a class="reference internal" href="TRJ.html#module-MDAnalysis.coordinates.TRJ" title="MDAnalysis.coordinates.TRJ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></td>
+</tr>
+<tr><td>Brookhaven
+<a class="footnote-reference" href="#a" id="id2">[1]</a></td>
+<td>pdb</td>
+<td>r/w</td>
+<td>a simplified PDB format (as used in MD simulations)
+is read by default; the full format can be read by
+supplying the <cite>permissive=False</cite> flag to
+<tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>. Module
+<a class="reference internal" href="PDB.html#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></td>
+</tr>
+<tr><td>CHARMM <a class="footnote-reference" href="#a" id="id3">[1]</a></td>
+<td>crd</td>
+<td>r/w</td>
+<td>&#8220;CARD&#8221; coordinate output from CHARMM; deals with
+either standard or EXTended format. Module
+<a class="reference internal" href="CRD.html#module-MDAnalysis.coordinates.CRD" title="MDAnalysis.coordinates.CRD"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></td>
+</tr>
+<tr><td>PQR <a class="footnote-reference" href="#a" id="id4">[1]</a></td>
+<td>pqr</td>
+<td>r</td>
+<td>PDB-like but whitespace-separated files with charge
+and radius information. Module
+<a class="reference internal" href="PQR.html#module-MDAnalysis.coordinates.PQR" title="MDAnalysis.coordinates.PQR"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></td>
+</tr>
+<tr><td>GROMOS96
+<a class="footnote-reference" href="#a" id="id5">[1]</a></td>
+<td>gro</td>
+<td>r/w</td>
+<td>basic GROMOS96 format (without velocities). Module
+<a class="reference internal" href="GRO.html#module-MDAnalysis.coordinates.GRO" title="MDAnalysis.coordinates.GRO"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="a" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id3">2</a>, <a class="fn-backref" href="#id4">3</a>, <a class="fn-backref" href="#id5">4</a>)</em> This format can also be used to provide basic <em>topology</em>
+information (i.e. the list of atoms); it is possible to create a
+full <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-mod docutils literal"><span class="pre">Universe</span></tt></a> by simply
+providing a file of this format: <tt class="docutils literal"><span class="pre">u</span> <span class="pre">=</span> <span class="pre">Universe(filename)</span></tt></td></tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="trajectory-api">
-<h2>4.1.1. Trajectory API<a class="headerlink" href="#trajectory-api" title="Permalink to this headline">¶</a></h2>
+<span id="id6"></span><h2>4.1.2. Trajectory API<a class="headerlink" href="#trajectory-api" title="Permalink to this headline">¶</a></h2>
 <p>The <strong>Trajectory API</strong> defines how classes have to be structured that allow
 reading and writing of coordinate files. By following the API it is possible to
 seamlessly enhance the I/O capabilities of MDAnalysis. The actual underlying
@@ -80,7 +185,7 @@ I/O code can be written in C or python or a mixture thereof.</p>
 <p>Reader and Writer classes are derived from base classes in
 <a class="reference internal" href="base.html#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a>.</p>
 <div class="section" id="history">
-<h3>4.1.1.1. History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h3>
+<h3>4.1.2.1. History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>2010-04-30 Draft [orbeckst]</li>
 <li>2010-08-20 added single frame writers to API [orbeckst]</li>
@@ -91,7 +196,7 @@ I/O code can be written in C or python or a mixture thereof.</p>
 </ul>
 </div>
 <div class="section" id="registry">
-<h3>4.1.1.2. Registry<a class="headerlink" href="#registry" title="Permalink to this headline">¶</a></h3>
+<h3>4.1.2.2. Registry<a class="headerlink" href="#registry" title="Permalink to this headline">¶</a></h3>
 <p>In various places, MDAnalysis tries to automatically select appropriate formats
 (e.g. by looking at file extensions). In order to allow it to choose the
 correct format, all I/O classes must be registered in one of three dictionaries
@@ -106,70 +211,70 @@ with the format (typically the file extension in upper case):</p>
 </ul>
 </div>
 <div class="section" id="timestep-class">
-<h3>4.1.1.3. Timestep class<a class="headerlink" href="#timestep-class" title="Permalink to this headline">¶</a></h3>
+<h3>4.1.2.3. Timestep class<a class="headerlink" href="#timestep-class" title="Permalink to this headline">¶</a></h3>
 <p>A Timestep instance holds data for the current frame. It is updated whenever a
 new frame of the trajectory is read.</p>
 <p>Timestep classes are derived from
 <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep</span></tt></a>, which is the primary
 implementation example (and used directly for the DCDReader).</p>
 <div class="section" id="methods">
-<h4>4.1.1.3.1. Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h4>
+<h4>4.1.2.3.1. Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <dl class="docutils">
-<dt>__init__(arg)</dt>
+<dt><tt class="docutils literal"><span class="pre">__init__(arg)</span></tt></dt>
 <dd><p class="first">depending on the type of <em>arg</em>, Timestep instances are created in
 different ways:</p>
 <blockquote>
 <dl class="docutils">
-<dt>int</dt>
+<dt><tt class="docutils literal"><span class="pre">int</span></tt></dt>
 <dd>empty Timestep for <em>arg</em> atoms (allocate arrays etc)</dd>
-<dt>Timestep</dt>
+<dt><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></dt>
 <dd>makes a deep copy of the <em>arg</em></dd>
-<dt>numpy.ndarray</dt>
+<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-cdac120)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
 <dd>update the Timesteps positions array with the contents of <em>arg</em></dd>
 </dl>
 </blockquote>
 <p class="last">Anything else raises an exception; in particular it is not possible to
-create a &#8220;empty&#8221; Timestep instance.</p>
+create a &#8220;empty&#8221; <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt> instance.</p>
 </dd>
-<dt>__getitem__(atoms)</dt>
+<dt><tt class="docutils literal"><span class="pre">__getitem__(atoms)</span></tt></dt>
 <dd>position(s) of atoms; can be a slice or numpy array and then returns
 coordinate array</dd>
-<dt>__len__()</dt>
+<dt><tt class="docutils literal"><span class="pre">__len__()</span></tt></dt>
 <dd>number of coordinates (atoms) in the frame</dd>
-<dt>__iter__()</dt>
+<dt><tt class="docutils literal"><span class="pre">__iter__()</span></tt></dt>
 <dd>iterator over all coordinates</dd>
-<dt>copy()</dt>
+<dt><tt class="docutils literal"><span class="pre">copy()</span></tt></dt>
 <dd>deep copy of the instance</dd>
 </dl>
 </blockquote>
 </div>
 <div class="section" id="attributes">
-<h4>4.1.1.3.2. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h4>
+<h4>4.1.2.3.2. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <dl class="docutils">
-<dt>numatoms</dt>
+<dt><tt class="docutils literal"><span class="pre">numatoms</span></tt></dt>
 <dd>number of atoms in the frame</dd>
-<dt>frame</dt>
+<dt><tt class="docutils literal"><span class="pre">frame</span></tt></dt>
 <dd>current frame number</dd>
-<dt>dimensions</dt>
-<dd>system box dimensions (x, y, z, alpha, beta, gamma)
+<dt><tt class="docutils literal"><span class="pre">dimensions</span></tt></dt>
+<dd>system box dimensions (<cite>x, y, z, alpha, beta, gamma</cite>)
 (typically implemented as a property because it needs to translate whatever is in the
 underlying <tt class="xref py py-attr docutils literal"><span class="pre">Timestep._unitcell</span></tt> attribute)</dd>
 </dl>
 </blockquote>
 </div>
 <div class="section" id="private-attributes">
-<h4>4.1.1.3.3. Private attributes<a class="headerlink" href="#private-attributes" title="Permalink to this headline">¶</a></h4>
+<h4>4.1.2.3.3. Private attributes<a class="headerlink" href="#private-attributes" title="Permalink to this headline">¶</a></h4>
 <p>These attributes are set directly by the underlying trajectory
 readers. Normally the user should not have to directly access tose (although in
 some cases it is convenient to directly use <tt class="xref py py-attr docutils literal"><span class="pre">Timestep._pos</span></tt>).</p>
 <blockquote>
 <dl class="docutils">
-<dt>_pos</dt>
-<dd>raw coordinates, a numpy.float32 array; X = _pos[:,0], Y =
-_pos[:,1], Z = _pos[:,2]</dd>
-<dt>_unitcell</dt>
+<dt><tt class="docutils literal"><span class="pre">_pos</span></tt></dt>
+<dd>raw coordinates, a <tt class="xref py py-class docutils literal"><span class="pre">numpy.float32</span></tt> array; <tt class="docutils literal"><span class="pre">X</span> <span class="pre">=</span> <span class="pre">_pos[:,0],</span> <span class="pre">Y</span> <span class="pre">=</span>
+<span class="pre">_pos[:,1],</span> <span class="pre">Z</span> <span class="pre">=</span> <span class="pre">_pos[:,2]</span></tt></dd>
+<dt><tt class="docutils literal"><span class="pre">_unitcell</span></tt></dt>
 <dd>unit cell dimensions and angles; the format depends on the underlying
 trajectory format. A user should use <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></tt> to
 access the data in a standard format.</dd>
@@ -178,42 +283,44 @@ access the data in a standard format.</dd>
 </div>
 </div>
 <div class="section" id="trajectory-reader-class">
-<h3>4.1.1.4. Trajectory Reader class<a class="headerlink" href="#trajectory-reader-class" title="Permalink to this headline">¶</a></h3>
+<h3>4.1.2.4. Trajectory Reader class<a class="headerlink" href="#trajectory-reader-class" title="Permalink to this headline">¶</a></h3>
 <p>Trajectory readers are derived from <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Reader" title="MDAnalysis.coordinates.base.Reader"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.Reader</span></tt></a>.
 Typically, many methods and attributes are overriden.</p>
-<div class="section" id="id1">
-<h4>4.1.1.4.1. Methods<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id7">
+<h4>4.1.2.4.1. Methods<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
 <p>The <a class="reference internal" href="DCD.html#MDAnalysis.coordinates.DCD.DCDReader" title="MDAnalysis.coordinates.DCD.DCDReader"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.DCD.DCDReader</span></tt></a> class is the primary
 implementation example.</p>
 <p><strong>Mandatory methods</strong></p>
 <p>The following methods must be implemented in a Reader class.</p>
 <blockquote>
 <dl class="docutils">
-<dt>__init__(filename, <a href="#id2"><span class="problematic" id="id3">**</span></a>kwargs)</dt>
+<dt><tt class="docutils literal"><span class="pre">__init__(filename,</span> <span class="pre">**kwargs)</span></tt></dt>
 <dd><p class="first">open <em>filename</em>; other <em>kwargs</em> are processed as needed and the
 Reader is free to ignore them. Typically, MDAnalysis supplies as
-much information as possible to the Reader:</p>
+much information as possible to the Reader in <cite>kwargs</cite>; at the moment the
+following data are supplied in keywords when a trajectory is loaded from
+within <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>:</p>
 <blockquote class="last">
 <ul class="simple">
 <li><em>numatoms</em>: the number of atoms (known from the topology)</li>
 </ul>
 </blockquote>
 </dd>
-<dt>__iter__()</dt>
+<dt><tt class="docutils literal"><span class="pre">__iter__()</span></tt></dt>
 <dd><p class="first">allow iteration from beginning to end:</p>
 <div class="last highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">:</span>
     <span class="k">print</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
 </pre></div>
 </div>
 </dd>
-<dt>close()</dt>
+<dt><tt class="docutils literal"><span class="pre">close()</span></tt></dt>
 <dd>close the file and cease I/O</dd>
-<dt>__del__()</dt>
+<dt><tt class="docutils literal"><span class="pre">__del__()</span></tt></dt>
 <dd>ensure that the trajectory is closed</dd>
-<dt>next()</dt>
+<dt><tt class="docutils literal"><span class="pre">next()</span></tt></dt>
 <dd>advance to next time step or raise <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> when moving
 past the last frame</dd>
-<dt>rewind()</dt>
+<dt><tt class="docutils literal"><span class="pre">rewind()</span></tt></dt>
 <dd>reposition to first frame</dd>
 </dl>
 </blockquote>
@@ -223,68 +330,70 @@ data are not available or the methods have not been implemented. Code should
 deal with missing methods gracefully.</p>
 <blockquote>
 <dl class="docutils">
-<dt>__len__()</dt>
+<dt><tt class="docutils literal"><span class="pre">__len__()</span></tt></dt>
 <dd>number of frames in trajectory</dd>
-<dt>__getitem__(arg)</dt>
-<dd>advance to time step arg=*frame* and return Timestep; or if arg is a
+<dt><tt class="docutils literal"><span class="pre">__getitem__(arg)</span></tt></dt>
+<dd>advance to time step arg=*frame* and return <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt>; or if <cite>arg</cite> is a
 slice, then return an interator over that part of the trajectory</dd>
-<dt>timeseries(atomGroup, [start[,stop[,skip[,format]]]])</dt>
+<dt><tt class="docutils literal"><span class="pre">timeseries(atomGroup,</span> <span class="pre">[start[,stop[,skip[,format]]]])</span></tt></dt>
 <dd>returns a subset of coordinate data</dd>
-<dt>correl(timeseriesCollection[,start[,stop[,skip]]])</dt>
+<dt><tt class="docutils literal"><span class="pre">correl(timeseriesCollection[,start[,stop[,skip]]])</span></tt></dt>
 <dd>populate a <a class="reference internal" href="../core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection" title="MDAnalysis.core.Timeseries.TimeseriesCollection"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.Timeseries.TimeseriesCollection</span></tt></a> object
 with observable timeseries computed from the trajectory</dd>
 </dl>
 </blockquote>
 </div>
-<div class="section" id="id4">
-<h4>4.1.1.4.2. Attributes<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id8">
+<h4>4.1.2.4.2. Attributes<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <dl class="docutils">
-<dt>filename</dt>
+<dt><tt class="docutils literal"><span class="pre">filename</span></tt></dt>
 <dd>filename of the trajectory</dd>
-<dt>numatoms</dt>
+<dt><tt class="docutils literal"><span class="pre">numatoms</span></tt></dt>
 <dd>number of atoms (coordinate sets) in a frame (constant)</dd>
-<dt>numframes</dt>
-<dd>total number of frames (if known) &#8211; None if not known</dd>
-<dt>fixed</dt>
+<dt><tt class="docutils literal"><span class="pre">numframes</span></tt></dt>
+<dd>total number of frames (if known) &#8211; <tt class="xref docutils literal"><span class="pre">None</span></tt> if not known</dd>
+<dt><tt class="docutils literal"><span class="pre">fixed</span></tt></dt>
 <dd>bool, saying if there are fixed atoms (e.g. dcds)</dd>
-<dt>skip</dt>
+<dt><tt class="docutils literal"><span class="pre">skip</span></tt></dt>
 <dd>step size for iterating through the trajectory [1]</dd>
-<dt>skip_timestep</dt>
+<dt><tt class="docutils literal"><span class="pre">skip_timestep</span></tt></dt>
 <dd>number of integrator steps between frames + 1 (i.e.
 the stride at which the MD simulation was sampled)</dd>
-<dt>delta</dt>
-<dd>integrator time step (in native units); hence the &#8220;length&#8221; 
-of a trajctory frame is  skip_timestep*delta time units</dd>
-<dt>periodic</dt>
-<dd>contains box information for periodic boundary conditions (???)</dd>
-<dt>ts</dt>
+<dt><tt class="docutils literal"><span class="pre">delta</span></tt></dt>
+<dd>integrator time step (in native units); hence the &#8220;length&#8221;
+of a trajctory frame is  <tt class="docutils literal"><span class="pre">skip_timestep*delta</span></tt> time units</dd>
+<dt><tt class="docutils literal"><span class="pre">periodic</span></tt></dt>
+<dd>contains box information for periodic boundary conditions</dd>
+<dt><tt class="docutils literal"><span class="pre">ts</span></tt></dt>
 <dd>the <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt> object; typically customized for each
 trajectory format and derived from <tt class="xref py py-class docutils literal"><span class="pre">base.Timestep</span></tt>.</dd>
-<dt>units</dt>
-<dd>dictionary with keys <em>time</em> and <em>length</em> and the appropriate 
-unit (e.g. &#8216;AKMA&#8217; and &#8216;Angstrom&#8217; for Charmm dcds, &#8216;ps&#8217; and &#8216;nm&#8217; 
+<dt><tt class="docutils literal"><span class="pre">units</span></tt></dt>
+<dd>dictionary with keys <em>time</em> and <em>length</em> and the appropriate
+unit (e.g. &#8216;AKMA&#8217; and &#8216;Angstrom&#8217; for Charmm dcds, &#8216;ps&#8217; and &#8216;nm&#8217;
 for Gromacs trajectories, <tt class="xref docutils literal"><span class="pre">None</span></tt> and &#8216;Angstrom&#8217; for PDB).</dd>
-<dt>format</dt>
+<dt><tt class="docutils literal"><span class="pre">format</span></tt></dt>
 <dd>string that identifies the file format, e.g. &#8220;DCD&#8221;, &#8220;PDB&#8221;, &#8220;CRD&#8221;, &#8220;XTC&#8221;,
 &#8220;TRR&#8221;; this is typically the file extension in upper case.</dd>
-<dt>dt</dt>
+<dt><tt class="docutils literal"><span class="pre">dt</span></tt></dt>
 <dd>time between frames in ps; a managed attribute (read only) that computes
-on the fly skip_timestep * delta and converts to the MDAnalysis base
+on the fly <tt class="docutils literal"><span class="pre">skip_timestep</span> <span class="pre">*</span> <span class="pre">delta</span></tt> and converts to the MDAnalysis base
 unit for time (pico seconds by default)</dd>
-<dt>totaltime</dt>
-<dd>total length of the trajectory = numframes * dt</dd>
+<dt><tt class="docutils literal"><span class="pre">totaltime</span></tt></dt>
+<dd>total length of the trajectory = <tt class="docutils literal"><span class="pre">numframes</span> <span class="pre">*</span> <span class="pre">dt</span></tt></dd>
 </dl>
 </blockquote>
 <p><strong>Optional attributes</strong></p>
+<blockquote>
 <dl class="docutils">
-<dt>compressed</dt>
+<dt><tt class="docutils literal"><span class="pre">compressed</span></tt></dt>
 <dd>string that identifies the compression (e.g. &#8220;gz&#8221; or &#8220;bz2&#8221;) or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd>
 </dl>
+</blockquote>
 </div>
 </div>
 <div class="section" id="trajectory-writer-class">
-<h3>4.1.1.5. Trajectory Writer class<a class="headerlink" href="#trajectory-writer-class" title="Permalink to this headline">¶</a></h3>
+<h3>4.1.2.5. Trajectory Writer class<a class="headerlink" href="#trajectory-writer-class" title="Permalink to this headline">¶</a></h3>
 <p>Trajectory readers are derived from
 <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Writer" title="MDAnalysis.coordinates.base.Writer"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.Writer</span></tt></a>. They are use to write
 multiple frames to a trajectory file. Every time the
@@ -302,39 +411,39 @@ another frame is appended to the trajectory.</p>
 <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">Timestep</span><span class="p">)</span>    <span class="c"># same as write_next_timestep()</span>
 </pre></div>
 </div>
-<div class="section" id="id5">
-<h4>4.1.1.5.1. Methods<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id9">
+<h4>4.1.2.5.1. Methods<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <dl class="docutils">
-<dt>__init__(filename,numatoms[,start[,step[,delta[,remarks]]]])</dt>
+<dt><tt class="docutils literal"><span class="pre">__init__(filename,numatoms[,start[,step[,delta[,remarks]]]])</span></tt></dt>
 <dd>opens <em>filename</em> and writes header if required by format</dd>
-<dt>write(obj)</dt>
+<dt><tt class="docutils literal"><span class="pre">write(obj)</span></tt></dt>
 <dd>write Timestep data in <em>obj</em></dd>
-<dt>write_next_timestep([timestep])</dt>
+<dt><tt class="docutils literal"><span class="pre">write_next_timestep([timestep])</span></tt></dt>
 <dd>write data in <em>timestep</em> to trajectory file</dd>
-<dt>convert_dimensions_to_unitcell(timestep)</dt>
+<dt><tt class="docutils literal"><span class="pre">convert_dimensions_to_unitcell(timestep)</span></tt></dt>
 <dd>take the dimensions from the timestep and convert to the native
 unitcell representation of the format</dd>
-<dt>close_trajectory()</dt>
+<dt><tt class="docutils literal"><span class="pre">close_trajectory()</span></tt></dt>
 <dd>close file and finish I/O</dd>
-<dt>__del__()</dt>
-<dd>ensure that close_trajectory() is called</dd>
+<dt><tt class="docutils literal"><span class="pre">__del__()</span></tt></dt>
+<dd>ensures that close_trajectory() is called</dd>
 </dl>
 </blockquote>
 </div>
-<div class="section" id="id6">
-<h4>4.1.1.5.2. Attributes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id10">
+<h4>4.1.2.5.2. Attributes<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <dl class="docutils">
-<dt>filename</dt>
+<dt><tt class="docutils literal"><span class="pre">filename</span></tt></dt>
 <dd>name of the trajectory file</dd>
-<dt>start, stop, step</dt>
+<dt><tt class="docutils literal"><span class="pre">start,</span> <span class="pre">stop,</span> <span class="pre">step</span></tt></dt>
 <dd>first and last frame and step</dd>
-<dt>units</dt>
-<dd>dictionary with keys <em>time</em> and <em>length</em> and the appropriate 
-unit (e.g. &#8216;AKMA&#8217; and &#8216;Angstrom&#8217; for CHARMM dcds, &#8216;ps&#8217; and &#8216;nm&#8217; 
+<dt><tt class="docutils literal"><span class="pre">units</span></tt></dt>
+<dd>dictionary with keys <em>time</em> and <em>length</em> and the appropriate
+unit (e.g. &#8216;AKMA&#8217; and &#8216;Angstrom&#8217; for CHARMM dcds, &#8216;ps&#8217; and &#8216;nm&#8217;
 for Gromacs trajectories, <tt class="xref docutils literal"><span class="pre">None</span></tt> and &#8216;Angstrom&#8217; for PDB)</dd>
-<dt>format</dt>
+<dt><tt class="docutils literal"><span class="pre">format</span></tt></dt>
 <dd>string that identifies the file format, e.g. &#8220;DCD&#8221;, &#8220;PDB&#8221;, &#8220;CRD&#8221;, &#8220;XTC&#8221;,
 &#8220;TRR&#8221;</dd>
 </dl>
@@ -342,14 +451,14 @@ for Gromacs trajectories, <tt class="xref docutils literal"><span class="pre">No
 <p><strong>Optional</strong></p>
 <blockquote>
 <dl class="docutils">
-<dt>ts</dt>
-<dd>Timestep instance</dd>
+<dt><tt class="docutils literal"><span class="pre">ts</span></tt></dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt> instance</dd>
 </dl>
 </blockquote>
 </div>
 </div>
 <div class="section" id="single-frame-writer-class">
-<h3>4.1.1.6. Single Frame Writer class<a class="headerlink" href="#single-frame-writer-class" title="Permalink to this headline">¶</a></h3>
+<h3>4.1.2.6. Single Frame Writer class<a class="headerlink" href="#single-frame-writer-class" title="Permalink to this headline">¶</a></h3>
 <p>A single frame writer is a special case of a trajectory writer in that it
 writes only a single coordinate frame to a file, for instance, a pdb or gro
 file. Unlike trajectory formats, which only contains coordinates, <em>single
@@ -366,13 +475,13 @@ way.</p>
 arguments (filename and numatoms) as for the Trajectory writers. In
 this way, the simple <a class="reference internal" href="core.html#MDAnalysis.coordinates.core.writer" title="MDAnalysis.coordinates.core.writer"><tt class="xref py py-func docutils literal"><span class="pre">writer()</span></tt></a>
 factory function can be used for all writers.</p>
-<div class="section" id="id7">
-<h4>4.1.1.6.1. Methods<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id11">
+<h4>4.1.2.6.1. Methods<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <dl class="docutils">
-<dt>__init__(filename, <a href="#id8"><span class="problematic" id="id9">**</span></a>kwargs)</dt>
-<dd>opens <em>filename</em> for writing; kwargs are typically ignored</dd>
-<dt>write(obj)</dt>
+<dt><tt class="docutils literal"><span class="pre">__init__(filename,</span> <span class="pre">**kwargs)</span></tt></dt>
+<dd>opens <em>filename</em> for writing; <cite>kwargs</cite> are typically ignored</dd>
+<dt><tt class="docutils literal"><span class="pre">write(obj)</span></tt></dt>
 <dd>writes the object <em>obj</em>, containing a
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> group of atoms (typically
 obtained from a selection) or <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>
@@ -389,7 +498,7 @@ manner with the one difference that Frame writers cannot deal with raw
 </div>
 </div>
 <div class="section" id="reader-writer-registry">
-<h2>4.1.2. Reader/Writer registry<a class="headerlink" href="#reader-writer-registry" title="Permalink to this headline">¶</a></h2>
+<h2>4.1.3. Reader/Writer registry<a class="headerlink" href="#reader-writer-registry" title="Permalink to this headline">¶</a></h2>
 <p>The following data structures connect reader/writer classes to their
 format identifiers. They are documented for programmers who want to
 enhance MDAnalysis; the casual user is unlikely to access them
@@ -458,32 +567,33 @@ Signature:</p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">4.1. <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt> &#8212; reading and writing coordinates</a><ul>
-<li><a class="reference internal" href="#trajectory-api">4.1.1. Trajectory API</a><ul>
-<li><a class="reference internal" href="#history">4.1.1.1. History</a></li>
-<li><a class="reference internal" href="#registry">4.1.1.2. Registry</a></li>
-<li><a class="reference internal" href="#timestep-class">4.1.1.3. Timestep class</a><ul>
-<li><a class="reference internal" href="#methods">4.1.1.3.1. Methods</a></li>
-<li><a class="reference internal" href="#attributes">4.1.1.3.2. Attributes</a></li>
-<li><a class="reference internal" href="#private-attributes">4.1.1.3.3. Private attributes</a></li>
+<li><a class="reference internal" href="#supported-coordinate-formats">4.1.1. Supported coordinate formats</a></li>
+<li><a class="reference internal" href="#trajectory-api">4.1.2. Trajectory API</a><ul>
+<li><a class="reference internal" href="#history">4.1.2.1. History</a></li>
+<li><a class="reference internal" href="#registry">4.1.2.2. Registry</a></li>
+<li><a class="reference internal" href="#timestep-class">4.1.2.3. Timestep class</a><ul>
+<li><a class="reference internal" href="#methods">4.1.2.3.1. Methods</a></li>
+<li><a class="reference internal" href="#attributes">4.1.2.3.2. Attributes</a></li>
+<li><a class="reference internal" href="#private-attributes">4.1.2.3.3. Private attributes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#trajectory-reader-class">4.1.1.4. Trajectory Reader class</a><ul>
-<li><a class="reference internal" href="#id1">4.1.1.4.1. Methods</a></li>
-<li><a class="reference internal" href="#id4">4.1.1.4.2. Attributes</a></li>
+<li><a class="reference internal" href="#trajectory-reader-class">4.1.2.4. Trajectory Reader class</a><ul>
+<li><a class="reference internal" href="#id7">4.1.2.4.1. Methods</a></li>
+<li><a class="reference internal" href="#id8">4.1.2.4.2. Attributes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#trajectory-writer-class">4.1.1.5. Trajectory Writer class</a><ul>
-<li><a class="reference internal" href="#id5">4.1.1.5.1. Methods</a></li>
-<li><a class="reference internal" href="#id6">4.1.1.5.2. Attributes</a></li>
+<li><a class="reference internal" href="#trajectory-writer-class">4.1.2.5. Trajectory Writer class</a><ul>
+<li><a class="reference internal" href="#id9">4.1.2.5.1. Methods</a></li>
+<li><a class="reference internal" href="#id10">4.1.2.5.2. Attributes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#single-frame-writer-class">4.1.1.6. Single Frame Writer class</a><ul>
-<li><a class="reference internal" href="#id7">4.1.1.6.1. Methods</a></li>
+<li><a class="reference internal" href="#single-frame-writer-class">4.1.2.6. Single Frame Writer class</a><ul>
+<li><a class="reference internal" href="#id11">4.1.2.6.1. Methods</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#reader-writer-registry">4.1.2. Reader/Writer registry</a></li>
+<li><a class="reference internal" href="#reader-writer-registry">4.1.3. Reader/Writer registry</a></li>
 </ul>
 </li>
 </ul>
@@ -493,7 +603,7 @@ Signature:</p>
                         title="previous chapter">4. Coordinates modules</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="base.html"
-                        title="next chapter">4.2. Base classes &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></p>
+                        title="next chapter">4.2. Base classes &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/init.txt"
