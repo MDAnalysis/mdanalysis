@@ -1,15 +1,15 @@
 .. Contains the formatted docstrings from the analysis modules located in 'mdanalysis/MDAnalysis/analysis', although in some cases the documentation imports functions and docstrings from other files which are also curated to reStructuredText markup.
 
-**************************
-Specific analysis modules
-**************************
+****************
+Analysis modules
+****************
 
 These modules are located in the :mod:`MDAnalysis.analysis` module (and the
 code lives in the ``MDAnalysis/analysis/`` directory). They contain abstract
 functionality for specific analysis tasks (for example, bilayer
 :mod:`~MDAnalysis.analysis.leaflet` selection). In many cases it will be
 preferable to use these provided tools over manually-coded alternatives because
-some components may be written in C for time-critical routines.
+some components may have already been written in C for time-critical routines.
 
 These modules are not imported by default; in order to use them one has to ::
 
