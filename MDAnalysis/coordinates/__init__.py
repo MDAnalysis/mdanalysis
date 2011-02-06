@@ -184,7 +184,7 @@ Private attributes
 ..................
 
 These attributes are set directly by the underlying trajectory
-readers. Normally the user should not have to directly access tose (although in
+readers. Normally the user should not have to directly access those (although in
 some cases it is convenient to directly use :attr:`Timestep._pos`).
 
   ``_pos``
@@ -248,8 +248,34 @@ deal with missing methods gracefully.
  ``__len__()``
      number of frames in trajectory
  ``__getitem__(arg)``
-     advance to time step arg=*frame* and return :class:`Timestep`; or if `arg` is a
-     slice, then return an interator over that part of the trajectory
+     advance to time step `arg` = `frame` and return :class:`Timestep`; or if `arg` is a
+     slice, then return an iterator over that part of the trajectory. 
+
+     The first functionality allows one to randomly access frames in the
+     trajectory::
+
+       universe.trajectory[314]
+
+     would load frame 314 in the current :class:`Timestep`. 
+
+     Using slices allows iteration over parts of a trajectory ::
+
+       for ts in universe.trajectory[1000:2000]:
+           process_frame(ts)   # do something
+  
+     or skipping frames ::
+
+       for ts in universe.trajectory[1000::100]:
+           process_frame(ts)   # do something
+
+     The last example starts reading the trajectory at frame 1000 and
+     reads every 100th frame until the end.
+
+     The performance of the ``__getitem__()`` method depends on the underlying
+     trajectory reader and if it can implement random access to frames. In many
+     cases this is not easily (or reliably) implementable and thus one is
+     restricted to sequential iteration.
+
  ``timeseries(atomGroup, [start[,stop[,skip[,format]]]])``
      returns a subset of coordinate data
  ``correl(timeseriesCollection[,start[,stop[,skip]]])``
