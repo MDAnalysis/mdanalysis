@@ -267,7 +267,7 @@ underlying <tt class="xref py py-attr docutils literal"><span class="pre">Timest
 <div class="section" id="private-attributes">
 <h4>4.1.2.3.3. Private attributes<a class="headerlink" href="#private-attributes" title="Permalink to this headline">¶</a></h4>
 <p>These attributes are set directly by the underlying trajectory
-readers. Normally the user should not have to directly access tose (although in
+readers. Normally the user should not have to directly access those (although in
 some cases it is convenient to directly use <tt class="xref py py-attr docutils literal"><span class="pre">Timestep._pos</span></tt>).</p>
 <blockquote>
 <dl class="docutils">
@@ -333,8 +333,31 @@ deal with missing methods gracefully.</p>
 <dt><tt class="docutils literal"><span class="pre">__len__()</span></tt></dt>
 <dd>number of frames in trajectory</dd>
 <dt><tt class="docutils literal"><span class="pre">__getitem__(arg)</span></tt></dt>
-<dd>advance to time step arg=*frame* and return <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt>; or if <cite>arg</cite> is a
-slice, then return an interator over that part of the trajectory</dd>
+<dd><p class="first">advance to time step <cite>arg</cite> = <cite>frame</cite> and return <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt>; or if <cite>arg</cite> is a
+slice, then return an iterator over that part of the trajectory.</p>
+<p>The first functionality allows one to randomly access frames in the
+trajectory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">314</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>would load frame 314 in the current <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt>.</p>
+<p>Using slices allows iteration over parts of a trajectory</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">1000</span><span class="p">:</span><span class="mi">2000</span><span class="p">]:</span>
+    <span class="n">process_frame</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>   <span class="c"># do something</span>
+</pre></div>
+</div>
+<p>or skipping frames</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">1000</span><span class="p">::</span><span class="mi">100</span><span class="p">]:</span>
+    <span class="n">process_frame</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>   <span class="c"># do something</span>
+</pre></div>
+</div>
+<p>The last example starts reading the trajectory at frame 1000 and
+reads every 100th frame until the end.</p>
+<p class="last">The performance of the <tt class="docutils literal"><span class="pre">__getitem__()</span></tt> method depends on the underlying
+trajectory reader and if it can implement random access to frames. In many
+cases this is not easily (or reliably) implementable and thus one is
+restricted to sequential iteration.</p>
+</dd>
 <dt><tt class="docutils literal"><span class="pre">timeseries(atomGroup,</span> <span class="pre">[start[,stop[,skip[,format]]]])</span></tt></dt>
 <dd>returns a subset of coordinate data</dd>
 <dt><tt class="docutils literal"><span class="pre">correl(timeseriesCollection[,start[,stop[,skip]]])</span></tt></dt>
