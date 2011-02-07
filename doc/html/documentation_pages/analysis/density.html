@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.1 documentation" href="../../index.html" />
-    <link rel="up" title="3. Specific analysis modules" href="../analysis_modules.html" />
+    <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.5. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" />
     <link rel="prev" title="3.3. Distance analysis — MDAnalysis.distances" href="distances.html" /> 
   </head>
@@ -44,7 +44,7 @@
           <a href="distances.html" title="3.3. Distance analysis — MDAnalysis.distances"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
-          <li><a href="../analysis_modules.html" accesskey="U">3. Specific analysis modules</a> &raquo;</li> 
+          <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -415,6 +415,65 @@ in Angstroem [2.0]</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="MDAnalysis.analysis.density.density_from_PDB">
+<tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">density_from_PDB</tt><big>(</big><em>pdb</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_PDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a density from a single frame PDB.</p>
+<p>Typical use is to make a density from the crystal water
+molecules. The density is created from isotropic gaussians
+centered at each selected atoms. If B-factors are present in the
+file then they are used to calculate the width of the gaussian.</p>
+<p>Using the <cite>sigma</cite> keyword, one can override this choice and
+prescribe a gaussian width for all atoms (in Angstrom), which is calculated as</p>
+<blockquote>
+B = [(8*PI**2)/3] * (RMSF)**2</blockquote>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">func:<cite>Bfactor2RMSF</cite> and <a class="reference internal" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="MDAnalysis.analysis.density.BfactorDensityCreator"><tt class="xref py py-class docutils literal"><span class="pre">BfactorDensityCreator</span></tt></a>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>pdb</em></dt>
+<dd><p class="first last">PDB file (should have the temperatureFactor set); ANISO
+records are currently <em>not</em> processed</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<dt><em>atomselection</em></dt>
+<dd><p class="first last">selection string (MDAnalysis syntax) for the species to be analyzed
+[&#8216;resname HOH and name O&#8217;]</p>
+</dd>
+<dt><em>delta</em></dt>
+<dd><p class="first last">approximate bin size for the density grid (same in x,y,z)
+(It is slightly adjusted when the box length is not an integer multiple
+of delta.) [1.0]</p>
+</dd>
+<dt><em>metadata</em></dt>
+<dd><p class="first last">dictionary of additional data to be saved with the object [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+<dt><em>padding</em></dt>
+<dd><p class="first last">increase histogram dimensions by padding (on top of initial box size) [1.0]</p>
+</dd>
+<dt><em>sigma</em></dt>
+<dd><p class="first last">width (in Angstrom) of the gaussians that are used to build up the
+density; if <tt class="xref docutils literal"><span class="pre">None</span></tt> then uses B-factors from <em>pdb</em> [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a> object with a density measured relative to the
+water density at standard conditions</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="MDAnalysis.analysis.density.Bfactor2RMSF">
 <tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">Bfactor2RMSF</tt><big>(</big><em>B</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Bfactor2RMSF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Atomic root mean square fluctuation (in Angstrom) from the crystallographic B-factor</p>
@@ -425,10 +484,10 @@ Univ. Press, 1975</p>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.density.BfactorDensityCreator">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">BfactorDensityCreator</tt><big>(</big><em>psf</em>, <em>pdb</em>, <em>delta=1.0</em>, <em>atomselection='name OH2'</em>, <em>metadata=None</em>, <em>padding=4.0</em>, <em>sigma=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">BfactorDensityCreator</tt><big>(</big><em>pdb</em>, <em>delta=1.0</em>, <em>atomselection='resname HOH and name O'</em>, <em>metadata=None</em>, <em>padding=1.0</em>, <em>sigma=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density grid from a pdb file using MDAnalysis.</p>
 <blockquote>
-dens = BfactorDensityCreator(psf,pdb,...).Density()</blockquote>
+dens = BfactorDensityCreator(pdb,...).Density()</blockquote>
 <p>The main purpose of this function is to convert crystal waters in
 an X-ray structure into a density so that one can compare the
 experimental density with the one from molecular dynamics
@@ -454,7 +513,7 @@ acceptable if one only runs this once)</li>
 </table>
 <p>Construct the density from psf and pdb and the atomselection.</p>
 <dl class="docutils">
-<dt>DC = BfactorDensityCreator(psf, pdb, delta=&lt;delta&gt;, atomselection=&lt;MDAnalysis selection&gt;,</dt>
+<dt>DC = BfactorDensityCreator(pdb, delta=&lt;delta&gt;, atomselection=&lt;MDAnalysis selection&gt;,</dt>
 <dd>metadata=&lt;dict&gt;, padding=2, sigma=None)</dd>
 </dl>
 <p>density = DC.Density()</p>
@@ -462,11 +521,7 @@ acceptable if one only runs this once)</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><blockquote class="first">
-<dl class="docutils">
-<dt>psf     </dt>
-<dd><p class="first last">Charmm psf topology file</p>
-</dd>
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt>pdb</dt>
 <dd><p class="first last">PDB file</p>
 </dd>
@@ -481,9 +536,6 @@ of delta.)</p>
 <dt>metadata</dt>
 <dd><p class="first last">dictionary of additional data to be saved with the object</p>
 </dd>
-</dl>
-</blockquote>
-<dl class="last docutils">
 <dt>padding </dt>
 <dd><p class="first last">increase histogram dimensions by padding (on top of initial box size)</p>
 </dd>
@@ -502,6 +554,92 @@ that can be easily matched to a broader density distribution.</p>
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.BfactorDensityCreator.Density">
 <tt class="descname">Density</tt><big>(</big><em>threshold=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator.Density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Density object.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">Bfactor2RMSF</tt><big>(</big><em>B</em><big>)</big></dt>
+<dd><p>Atomic root mean square fluctuation (in Angstrom) from the crystallographic B-factor</p>
+<p>B = [(8*PI**2)/3] * (RMSF)**2</p>
+<p>Willis &amp; Pryor, Thermal vibrations in crystallography, Cambridge
+Univ. Press, 1975</p>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">BfactorDensityCreator</tt><big>(</big><em>pdb</em>, <em>delta=1.0</em>, <em>atomselection='resname HOH and name O'</em>, <em>metadata=None</em>, <em>padding=1.0</em>, <em>sigma=None</em><big>)</big></dt>
+<dd><p>Create a density grid from a pdb file using MDAnalysis.</p>
+<blockquote>
+dens = BfactorDensityCreator(pdb,...).Density()</blockquote>
+<p>The main purpose of this function is to convert crystal waters in
+an X-ray structure into a density so that one can compare the
+experimental density with the one from molecular dynamics
+trajectories. Because a pdb is a single snapshot, the density is
+estimated by placing Gaussians of width sigma at the position of
+all selected atoms.</p>
+<p>Sigma can be fixed or taken from the B-factor field, in which case
+sigma is taken as sqrt(3.*B/8.)/pi (see <tt class="xref py py-func docutils literal"><span class="pre">BFactor2RMSF()</span></tt>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Todo :</th><td class="field-body"><ul class="first last simple">
+<li>Make Gaussian convolution more efficient (at least for same
+sigma) because right now it is <em>very</em> slow (which may be
+acceptable if one only runs this once)</li>
+<li>Using a temporary Creator class with the
+<a class="reference internal" href="#MDAnalysis.analysis.density.BfactorDensityCreator.Density" title="MDAnalysis.analysis.density.BfactorDensityCreator.Density"><tt class="xref py py-meth docutils literal"><span class="pre">BfactorDensityCreator.Density()</span></tt></a> helper method is clumsy.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Construct the density from psf and pdb and the atomselection.</p>
+<dl class="docutils">
+<dt>DC = BfactorDensityCreator(pdb, delta=&lt;delta&gt;, atomselection=&lt;MDAnalysis selection&gt;,</dt>
+<dd>metadata=&lt;dict&gt;, padding=2, sigma=None)</dd>
+</dl>
+<p>density = DC.Density()</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt>pdb</dt>
+<dd><p class="first last">PDB file</p>
+</dd>
+<dt>atomselection</dt>
+<dd><p class="first last">selection string (MDAnalysis syntax) for the species to be analyzed</p>
+</dd>
+<dt>delta</dt>
+<dd><p class="first last">approximate bin size for the density grid (same in x,y,z)
+(It is slightly adjusted when the box length is not an integer multiple
+of delta.)</p>
+</dd>
+<dt>metadata</dt>
+<dd><p class="first last">dictionary of additional data to be saved with the object</p>
+</dd>
+<dt>padding </dt>
+<dd><p class="first last">increase histogram dimensions by padding (on top of initial box size)</p>
+</dd>
+<dt>sigma</dt>
+<dd><p class="first last">width (in Angstrom) of the gaussians that are used to build up the
+density; if None then uses B-factors from pdb</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>For assigning X-ray waters to MD densities one might have to use a sigma
+of about 0.5 A to obtain a well-defined and resolved x-ray water density
+that can be easily matched to a broader density distribution.</p>
+<dl class="method">
+<dt>
+<tt class="descname">Density</tt><big>(</big><em>threshold=None</em><big>)</big></dt>
 <dd><p>Returns a Density object.</p>
 </dd></dl>
 
@@ -706,6 +844,65 @@ make_density().</p>
 
 <dl class="function">
 <dt>
+<tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">density_from_PDB</tt><big>(</big><em>pdb</em>, <em>**kwargs</em><big>)</big></dt>
+<dd><p>Create a density from a single frame PDB.</p>
+<p>Typical use is to make a density from the crystal water
+molecules. The density is created from isotropic gaussians
+centered at each selected atoms. If B-factors are present in the
+file then they are used to calculate the width of the gaussian.</p>
+<p>Using the <cite>sigma</cite> keyword, one can override this choice and
+prescribe a gaussian width for all atoms (in Angstrom), which is calculated as</p>
+<blockquote>
+B = [(8*PI**2)/3] * (RMSF)**2</blockquote>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">func:<cite>Bfactor2RMSF</cite> and <a class="reference internal" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="MDAnalysis.analysis.density.BfactorDensityCreator"><tt class="xref py py-class docutils literal"><span class="pre">BfactorDensityCreator</span></tt></a>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>pdb</em></dt>
+<dd><p class="first last">PDB file (should have the temperatureFactor set); ANISO
+records are currently <em>not</em> processed</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<dt><em>atomselection</em></dt>
+<dd><p class="first last">selection string (MDAnalysis syntax) for the species to be analyzed
+[&#8216;resname HOH and name O&#8217;]</p>
+</dd>
+<dt><em>delta</em></dt>
+<dd><p class="first last">approximate bin size for the density grid (same in x,y,z)
+(It is slightly adjusted when the box length is not an integer multiple
+of delta.) [1.0]</p>
+</dd>
+<dt><em>metadata</em></dt>
+<dd><p class="first last">dictionary of additional data to be saved with the object [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+<dt><em>padding</em></dt>
+<dd><p class="first last">increase histogram dimensions by padding (on top of initial box size) [1.0]</p>
+</dd>
+<dt><em>sigma</em></dt>
+<dd><p class="first last">width (in Angstrom) of the gaussians that are used to build up the
+density; if <tt class="xref docutils literal"><span class="pre">None</span></tt> then uses B-factors from <em>pdb</em> [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a> object with a density measured relative to the
+water density at standard conditions</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
 <tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">density_from_Universe</tt><big>(</big><em>universe</em>, <em>delta=1.0</em>, <em>atomselection='name OH2'</em>, <em>metadata=None</em>, <em>padding=2.0</em>, <em>cutoff=0</em>, <em>soluteselection=None</em>, <em>use_kdtree=True</em>, <em>**kwargs</em><big>)</big></dt>
 <dd><p>Create a density grid from a MDAnalysis.Universe object.</p>
 <blockquote>
@@ -884,7 +1081,7 @@ would lead to counts in the wrong region.</li>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="distances.html"
-                        title="previous chapter">3.3. Distance analysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
+                        title="previous chapter">3.3. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="leaflet.html"
                         title="next chapter">3.5. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
@@ -926,7 +1123,7 @@ would lead to counts in the wrong region.</li>
           <a href="distances.html" title="3.3. Distance analysis — MDAnalysis.distances"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
-          <li><a href="../analysis_modules.html" >3. Specific analysis modules</a> &raquo;</li> 
+          <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

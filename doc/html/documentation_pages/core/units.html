@@ -127,14 +127,14 @@ Conversions follow <cite>L/x = L/Angstrom * lengthUnit_factor[x]</cite>.
 <dl class="data">
 <dt id="MDAnalysis.core.units.N_Avogadro">
 <tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">N_Avogadro</tt><a class="headerlink" href="#MDAnalysis.core.units.N_Avogadro" title="Permalink to this definition">¶</a></dt>
-<dd><p>Avogadro&#8217;s constant in mol**-1, from <a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?na">http://physics.nist.gov/cgi-bin/cuu/Value?na</a></p>
+<dd><p><a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?na">Avogadro&#8217;s constant</a> in mol**-1,</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.core.units.water">
 <tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">water</tt><a class="headerlink" href="#MDAnalysis.core.units.water" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
-<dt>water density values: Jorgensen &amp; Jenson, JCompChem 19 (1998), 1179: T=298K, P=1atm</dt>
+<dt>water density values ay 1179: T=298K, P=1atm <a class="reference internal" href="#jorgensen1998">[Jorgensen1998]</a></dt>
 <dd><table border="1" class="first last docutils">
 <colgroup>
 <col width="47%" />
@@ -178,8 +178,14 @@ hence a number of values are pre-stored in <a class="reference internal" href="#
 <dt id="MDAnalysis.core.units.timeUnit_factor">
 <tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">timeUnit_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.timeUnit_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>For <em>time</em>, the basic unit is ps; in particular CHARMM&#8217;s
-1 <a href="#id1"><span class="problematic" id="id2">AKMA_</span></a> time unit = 4.888821E-14 sec is supported.
-.. _AKMA: <a class="reference external" href="http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA">http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA</a></p>
+1 <a class="reference external" href="http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA">AKMA</a> time unit = 4.888821E-14 sec is supported.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.core.units.chargeUnit_factor">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">chargeUnit_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.chargeUnit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Charge</em> is measured in multiples of the <a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?e">electron charge</a>
+<em>e</em> =  1.602176487 x 10**(-19) C.</p>
 </dd></dl>
 
 <dl class="data">
@@ -193,114 +199,23 @@ the <tt class="xref py py-attr docutils literal"><span class="pre">unit</span></
 <dl class="data">
 <dt id="MDAnalysis.core.units.unit_types">
 <tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">unit_types</tt><a class="headerlink" href="#MDAnalysis.core.units.unit_types" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generated lookup table (dict): returns the type of unit for a known input unit.</p>
+<dd><p>Generated lookup table (dict): returns the type of unit for a known input unit.
+Note: Any unit must be <em>unique</em> because this dict is used to guess the
+unit type.</p>
 </dd></dl>
 
-<dl class="data">
-<dt>
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">N_Avogadro</tt></dt>
-<dd><p>Avogadro&#8217;s constant in mol**-1, from <a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?na">http://physics.nist.gov/cgi-bin/cuu/Value?na</a></p>
-</dd></dl>
-
-<dl class="data">
-<dt id="MDAnalysis.core.units.chargeUnit_factor">
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">chargeUnit_factor</tt><a class="headerlink" href="#MDAnalysis.core.units.chargeUnit_factor" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Charge</em> is measured in multiples of the <a href="#id3"><span class="problematic" id="id4">`electron charge`_</span></a>
-<em>e</em> =  1.602176487 x 10**(-19) C.
-.. _electron charge: <a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?e">http://physics.nist.gov/cgi-bin/cuu/Value?e</a></p>
-</dd></dl>
-
-<dl class="data">
-<dt>
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">conversion_factor</tt></dt>
-<dd><p><a class="reference internal" href="#MDAnalysis.core.units.conversion_factor" title="MDAnalysis.core.units.conversion_factor"><tt class="xref py py-data docutils literal"><span class="pre">conversion_factor</span></tt></a> is used by <a class="reference internal" href="#MDAnalysis.core.units.get_conversion_factor" title="MDAnalysis.core.units.get_conversion_factor"><tt class="xref py py-func docutils literal"><span class="pre">get_conversion_factor()</span></tt></a>:
-Note: any observable with a unit (i.e. one with an entry in
-the <tt class="xref py py-attr docutils literal"><span class="pre">unit</span></tt> attribute) needs an entry in <a class="reference internal" href="#MDAnalysis.core.units.conversion_factor" title="MDAnalysis.core.units.conversion_factor"><tt class="xref py py-data docutils literal"><span class="pre">conversion_factor</span></tt></a></p>
-</dd></dl>
-
-<dl class="function">
-<dt>
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">convert</tt><big>(</big><em>x</em>, <em>u1</em>, <em>u2</em><big>)</big></dt>
-<dd><p>Convert value in unit <em>u1</em> to <em>u2</em>.</p>
-</dd></dl>
-
-<dl class="data">
-<dt>
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">densityUnit_factor</tt></dt>
-<dd><p>The basic unit for <em>densities</em> is Angstroem**(-3), i.e.
-the volume per molecule in A**3. Especially for water
-it can be convenient to measure the density relative to bulk, and
-hence a number of values are pre-stored in <a class="reference internal" href="#MDAnalysis.core.units.water" title="MDAnalysis.core.units.water"><tt class="xref py py-data docutils literal"><span class="pre">water</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="function">
-<dt>
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">get_conversion_factor</tt><big>(</big><em>unit_type</em>, <em>u1</em>, <em>u2</em><big>)</big></dt>
-<dd><p>generate the conversion factor u1 -&gt; u2 by using the base unit as an intermediate</p>
-<p>f[u1 -&gt; u2] = factor[u2]/factor[u1]</p>
-<p>Conversion of X (in u1) to X&#8217; (in u2):</p>
-<blockquote>
-X&#8217; = conversion_factor * X</blockquote>
-</dd></dl>
-
-<dl class="data">
-<dt>
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">lengthUnit_factor</tt></dt>
-<dd><p>The basic unit of <em>length</em> in MDAnalysis is the Angstrom.
-Conversion factors between the base unit and other lengthUnits <em>x</em> are stored.
-Conversions follow <cite>L/x = L/Angstrom * lengthUnit_factor[x]</cite>.
-<em>x</em> can be <em>nm</em>/<em>nanometer</em> or <em>fm</em>.</p>
-</dd></dl>
-
-<dl class="data">
-<dt>
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">timeUnit_factor</tt></dt>
-<dd><p>For <em>time</em>, the basic unit is ps; in particular CHARMM&#8217;s
-1 <a href="#id5"><span class="problematic" id="id6">AKMA_</span></a> time unit = 4.888821E-14 sec is supported.
-.. _AKMA: <a class="reference external" href="http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA">http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA</a></p>
-</dd></dl>
-
-<dl class="data">
-<dt>
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">unit_types</tt></dt>
-<dd><p>Generated lookup table (dict): returns the type of unit for a known input unit.</p>
-</dd></dl>
-
-<dl class="data">
-<dt>
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">water</tt></dt>
-<dd><dl class="docutils">
-<dt>water density values: Jorgensen &amp; Jenson, JCompChem 19 (1998), 1179: T=298K, P=1atm</dt>
-<dd><table border="1" class="first last docutils">
-<colgroup>
-<col width="47%" />
-<col width="53%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">model</th>
-<th class="head">g cm**-3</th>
-</tr>
-</thead>
+</div>
+<div class="section" id="references">
+<h2>5.8.4. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<table class="docutils citation" frame="void" id="jorgensen1998" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td>SPC</td>
-<td>0.985(1)</td>
-</tr>
-<tr><td>TIP3P</td>
-<td>1.002(1)</td>
-</tr>
-<tr><td>TIP4P</td>
-<td>1.001(1)</td>
-</tr>
-<tr><td>exp</td>
-<td>0.997</td>
-</tr>
+<tr><td class="label"><a class="fn-backref" href="#id1">[Jorgensen1998]</a></td><td><ol class="first last upperalpha simple" start="23">
+<li>Jorgensen, C. Jenson, J Comp Chem 19 (1998), 1179-1186</li>
+</ol>
+</td></tr>
 </tbody>
 </table>
-</dd>
-</dl>
-<p>and molar mass 18.016 g mol**-1.</p>
-</dd></dl>
-
 </div>
 </div>
 
@@ -316,16 +231,17 @@ Conversions follow <cite>L/x = L/Angstrom * lengthUnit_factor[x]</cite>.
 <li><a class="reference internal" href="#conversions">5.8.1. Conversions</a></li>
 <li><a class="reference internal" href="#functions">5.8.2. Functions</a></li>
 <li><a class="reference internal" href="#data">5.8.3. Data</a></li>
+<li><a class="reference internal" href="#references">5.8.4. References</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="qcprot.html"
-                        title="previous chapter">5.7. Fast QCP RMSD structure alignment &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></tt></a></p>
+                        title="previous chapter">5.7. Fast QCP RMSD structure alignment &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="util.html"
-                        title="next chapter">5.9. Helper functions &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a></p>
+                        title="next chapter">5.9. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/units.txt"
