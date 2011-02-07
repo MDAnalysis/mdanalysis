@@ -1,6 +1,6 @@
 # MDAnalysis -- density analysis
-# Copyright (c) 2007-2010 Oliver Beckstein <orbeckst@gmail.com>
-# (based on Hop --- a framework to analyze solvation dynamics from MD simulations)
+# Copyright (c) 2007-2011 Oliver Beckstein <orbeckst@gmail.com>
+# (based on code from Hop --- a framework to analyze solvation dynamics from MD simulations)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -65,13 +65,10 @@ Classes and Functions
    :members:
 .. autofunction:: density_from_Universe
 .. autofunction:: density_from_trajectory
-
-.. The following are untested at the moment and hence not officially documented.
-.. Add them back when we now that they do what they used to... [orbeckst 2011-01-28]
-.. .. autoclass:: BfactorDensityCreator
-..    :members:
-.. 
-.. .. autofunction:: Bfactor2RMSF
+.. autofunction:: density_from_PDB
+.. autofunction:: Bfactor2RMSF
+.. autoclass:: BfactorDensityCreator
+   :members:
 
 """
 import numpy  # need v >= 1.0.3
@@ -285,7 +282,7 @@ class Density(Grid):
             shape[i] = len(dedges[i])
             self.grid /= dedges[i].reshape(shape)
         self.parameters['isDensity'] = True
-        self.units['density'] = self.units['length']
+        self.units['density'] = self.units['length'] + "^{-3}"  # see core.units.densityUnit_factor
         
     def convert_length(self,unit='Angstrom'):
         """Convert Grid object to the new *unit*.
@@ -596,11 +593,51 @@ def Bfactor2RMSF(B):
     """
     return numpy.sqrt(3.*B/8.)/numpy.pi
 
+def density_from_PDB(pdb, **kwargs):
+    """Create a density from a single frame PDB.
+
+    Typical use is to make a density from the crystal water
+    molecules. The density is created from isotropic gaussians
+    centered at each selected atoms. If B-factors are present in the
+    file then they are used to calculate the width of the gaussian.
+
+    Using the `sigma` keyword, one can override this choice and
+    prescribe a gaussian width for all atoms (in Angstrom), which is calculated as 
+
+      B = [(8*PI**2)/3] * (RMSF)**2
+
+    .. SeeAlso:: func:`Bfactor2RMSF` and :class:`BfactorDensityCreator`.
+
+    :Arguments:
+       *pdb*
+          PDB file (should have the temperatureFactor set); ANISO
+          records are currently *not* processed
+
+    :Keywords:
+       *atomselection*
+          selection string (MDAnalysis syntax) for the species to be analyzed
+          ['resname HOH and name O']
+       *delta*
+          approximate bin size for the density grid (same in x,y,z)
+          (It is slightly adjusted when the box length is not an integer multiple
+          of delta.) [1.0]
+       *metadata*
+          dictionary of additional data to be saved with the object [``None``]
+       *padding*
+          increase histogram dimensions by padding (on top of initial box size) [1.0]
+       *sigma*
+          width (in Angstrom) of the gaussians that are used to build up the
+          density; if ``None`` then uses B-factors from *pdb* [``None``]
+
+    :Returns: a :class:`Density` object with a density measured relative to the
+              water density at standard conditions
+    """    
+    return BfactorDensityCreator(pdb,**kwargs).Density()
 
 class BfactorDensityCreator(object):
     """Create a density grid from a pdb file using MDAnalysis.
 
-      dens = BfactorDensityCreator(psf,pdb,...).Density()
+      dens = BfactorDensityCreator(pdb,...).Density()
 
     The main purpose of this function is to convert crystal waters in
     an X-ray structure into a density so that one can compare the
@@ -619,17 +656,15 @@ class BfactorDensityCreator(object):
        * Using a temporary Creator class with the
          :meth:`BfactorDensityCreator.Density` helper method is clumsy.
     """
-    def __init__(self, psf,pdb,delta=1.0,atomselection='name OH2',
-                metadata=None,padding=4.0, sigma=None):
+    def __init__(self,pdb,delta=1.0,atomselection='resname HOH and name O',
+                metadata=None,padding=1.0, sigma=None):
         """Construct the density from psf and pdb and the atomselection.
 
-        DC = BfactorDensityCreator(psf, pdb, delta=<delta>, atomselection=<MDAnalysis selection>,
+        DC = BfactorDensityCreator(pdb, delta=<delta>, atomselection=<MDAnalysis selection>,
                                   metadata=<dict>, padding=2, sigma=None)
         density = DC.Density()                        
 
         :Arguments:
-          psf     
-            Charmm psf topology file
           pdb
             PDB file
           atomselection
@@ -640,9 +675,9 @@ class BfactorDensityCreator(object):
             of delta.)
           metadata
             dictionary of additional data to be saved with the object
-         padding 
+          padding 
             increase histogram dimensions by padding (on top of initial box size)
-         sigma
+          sigma
             width (in Angstrom) of the gaussians that are used to build up the
             density; if None then uses B-factors from pdb
 
@@ -652,7 +687,7 @@ class BfactorDensityCreator(object):
 
         """
         from MDAnalysis import Universe
-        u = Universe(psf,pdb, permissive=False)  # use the Bio.PDB reader for B-factors!
+        u = Universe(pdb, permissive=False)  # use the Bio.PDB reader for B-factors!
         group = u.selectAtoms(atomselection)
         coord = group.coordinates()
         logger.info("Selected %d atoms (%s) out of %d total." %
@@ -690,10 +725,9 @@ class BfactorDensityCreator(object):
             self.g = self._smear_sigma(grid,sigma)
 
         try:
-            metadata['psf'] = psf
+            metadata['pdb'] = pdb
         except TypeError:
-            metadata = dict(psf=psf)
-        metadata['pdb'] = pdb
+            metadata = {'pdb': pdb}
         metadata['atomselection'] = atomselection
         metadata['numframes'] = numframes
         metadata['sigma'] = sigma

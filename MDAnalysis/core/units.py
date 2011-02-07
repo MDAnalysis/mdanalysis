@@ -158,9 +158,12 @@ conversion_factor = {'length': lengthUnit_factor,
                      }
 
 #: Generated lookup table (dict): returns the type of unit for a known input unit.
+#: .. Note:: Any unit must be *unique* because this dict is used to guess the
+#:           unit type.
 unit_types = {}
 for utype,ufactor in conversion_factor.items():
     for unit in ufactor.keys():
+        assert not unit in unit_types  # see comment!
         unit_types[unit] = utype
 
 
