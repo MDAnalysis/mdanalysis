@@ -82,8 +82,19 @@ Data
 .. autodata:: water
 .. autodata:: densityUnit_factor
 .. autodata:: timeUnit_factor
+.. autodata:: chargeUnit_factor
 .. autodata:: conversion_factor
 .. autodata:: unit_types
+
+
+References
+----------
+
+.. [Jorgensen1998]  W. Jorgensen, C. Jenson, J Comp Chem 19 (1998), 1179-1186
+
+.. _AKMA: http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA
+.. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
+.. _`Avogadro's constant`: http://physics.nist.gov/cgi-bin/cuu/Value?na
 
 """
 
@@ -97,11 +108,10 @@ lengthUnit_factor = {'Angstrom': 1.0, 'A': 1.0, 'Å': 1.0,
                      }
 
 
-#: Avogadro's constant in mol**-1, from http://physics.nist.gov/cgi-bin/cuu/Value?na
+#: `Avogadro's constant`_ in mol**-1,
 N_Avogadro = 6.02214179e+23  # mol**-1   
 
-
-#: water density values: Jorgensen & Jenson, JCompChem 19 (1998), 1179: T=298K, P=1atm
+#: water density values ay 1179: T=298K, P=1atm [Jorgensen1998]_
 #:  ======== =========
 #:  model    g cm**-3
 #:  ======== =========
@@ -132,7 +142,6 @@ densityUnit_factor = {
 
 #: For *time*, the basic unit is ps; in particular CHARMM's
 #: 1 AKMA_ time unit = 4.888821E-14 sec is supported.
-#: .. _AKMA: http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA
 timeUnit_factor = {'ps': 1/1.0,
                    'ns': 1/1e3,
                    'second': 1/1e12,
@@ -142,7 +151,6 @@ timeUnit_factor = {'ps': 1/1.0,
 
 #: *Charge* is measured in multiples of the `electron charge`_ 
 #: *e* =  1.602176487 x 10**(-19) C.
-#: .. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
 chargeUnit_factor = {'e': 1.0,
                      'Amber': 18.2223,  # http://ambermd.org/formats.html#parm
                      'C': 1.602176487e-19, 'As': 1.602176487e-19,
@@ -158,8 +166,8 @@ conversion_factor = {'length': lengthUnit_factor,
                      }
 
 #: Generated lookup table (dict): returns the type of unit for a known input unit.
-#: .. Note:: Any unit must be *unique* because this dict is used to guess the
-#:           unit type.
+#: Note: Any unit must be *unique* because this dict is used to guess the
+#: unit type.
 unit_types = {}
 for utype,ufactor in conversion_factor.items():
     for unit in ufactor.keys():
