@@ -12,6 +12,8 @@ The rules for this file:
 ??/??/11 orbeckst
         * 0.7.2 development
 	* loading from a PDB sets segid to the chain id if it exists
+	* fixed bug in (experimental) phi and psi selections
+	* aliased segment.name to segment.id
 
 02/08/11 orbeckst, denniej0, jandom, tyler.je.reddy, Joshua Adelman
         * 0.7.1 release

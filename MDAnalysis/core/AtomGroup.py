@@ -782,7 +782,7 @@ class Residue(AtomGroup):
                   method returns ``None``.
         """
         try:
-            return self.universe.selectAtoms('resid %d and name C' % (self.id - 1)) \
+            return self.universe.selectAtoms('segid %s and resid %d and name C' % (self.segment.id, self.id - 1)) \
                 + self.N + self.CA + self.C
         except (SelectionError, NoDataError):
             return None
@@ -796,7 +796,7 @@ class Residue(AtomGroup):
         """
         try:
             return self.N + self.CA + self.C + \
-                self.universe.selectAtoms('resid %d and name N' % (self.id + 1))
+                self.universe.selectAtoms('segid %s and resid %d and name N' % (self.segment.id, self.id + 1))
         except (SelectionError, NoDataError):
             return None
 
@@ -899,6 +899,15 @@ class Segment(ResidueGroup):
             res.segment = self
             for atom in res:
                 atom.segment = self
+    def id():
+        doc = """Segment id (alias for :attr:`Segment.name`)"""
+        def fget(self):
+            return self.name
+        def fset(self,x):
+            self.name = x
+        return locals()
+    id = property(**id())
+        
     def __getattr__(self, attr):
         if attr[0] == 'r':
             resnum = int(attr[1:]) - 1   # 1-based for the user, 0-based internally
