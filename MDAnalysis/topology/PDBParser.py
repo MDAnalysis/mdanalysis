@@ -52,7 +52,7 @@ def __parseatoms_(pdb, structure):
         atomtype = guess_atom_type(atomname)
         resname = residue.resname
         resid = residue.id[1]
-        segid = residue.get_segid().strip() or "SYSTEM"  # no empty segids (or Universe throws IndexError)
+        segid = residue.get_segid().strip() or chain or "SYSTEM"  # no empty segids (or Universe throws IndexError)
         mass = guess_atom_mass(atomname)
         charge = guess_atom_charge(atomname)
 
