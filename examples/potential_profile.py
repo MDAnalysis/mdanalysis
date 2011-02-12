@@ -2,8 +2,10 @@ from math import *
 import numpy
 from MDAnalysis import *
  
-universe = Universe(...)
-xbox, ybox, zbox = universe.dcd.ts.dimensions[:3]
+# NOTE: set TOPOLOGY and TRAJECTORY to your data: should be a membrane
+#       system with the membrane normal parallel to the z-axis
+universe = Universe(TOPLOGY, TRAJECTORY)
+xbox, ybox, zbox = universe.trajectory.ts.dimensions[:3]
 
 # preparing 1D z-dimension distribution variables 
 zmin = int(floor(-zbox/2)) # Hopefully the system is centered at the origin
@@ -16,11 +18,11 @@ charge_dist = None
 charges = universe.atoms.charges()
 
 # setting the skip for the traj
-universe.dcd.skip = 10
+universe.trajectory.skip = 10
 
 # appending atomic charges to a particular z-dimension (z-bin)
 nframes = 0
-for ts in universe.dcd:
+for ts in universe.trajectory:
     print ts.frame
     nframes += 1
     # Recenter z coordinates
