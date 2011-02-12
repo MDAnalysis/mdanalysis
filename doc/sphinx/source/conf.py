@@ -43,9 +43,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-authors = u'Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose'
+authors = u'Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein'
 project = u'MDAnalysis'
-copyright = u'2005-2010, ' + authors
+copyright = u'2005-2011, ' + authors
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -53,7 +53,7 @@ copyright = u'2005-2010, ' + authors
 #
 # Dynamically calculate the version 
 ##packageversion = __import__('MDAnalysis').get_version()
-packageversion = '0.7.1'
+packageversion = '0.7.2'
 # The short X.Y version.
 version = '.'.join(packageversion.split('.')[:2])
 # The full version, including alpha/beta/rc tags.

@@ -60,14 +60,28 @@ the following exceptions (see AUTHORS and LICENSE for details):
 All licenses, including disclaimer, are available in the 'LICENSE'
 file.
 
+Citation
+=========
 
-Please acknowledge the use of this software in published work. For
-academic work an Acknowledgement or a citation such as the following
-may be appropriate:
+When using MDAnalysis in published work, please cite
 
-  "Analysis of data was performed with the MDAnalysis tools by Naveen
-  Michaud-Agrawal, Elizabeth J. Denning, Thomas B. Woolf, and Oliver
-  Beckstein, available from http://mdanalysis.googlecode.com/."
+    N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+    O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular
+    Dynamics Simulations. J. Comput. Chem. (2011), in
+    press. http://mdanalysis.googlecode.com
+
+If you use the RMSD alignment code that uses the QCProt module please also cite
+
+    Douglas L. Theobald. Rapid calculation of RMSD using a
+    quaternion-based characteristic polynomial. Acta Crystallographica
+    A 61 (2005), 478-480.
+
+    Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald. Fast
+    determination of the optimal rotational matrix for macromolecular
+    superpositions. J. Comput. Chem. 31 (2010), 1561-1563.
+
+Thanks! 
+
 
 
 Contact 
