@@ -8,7 +8,7 @@ MDAnalysis documentation
 ###############################
 
 
-:Release: |version|
+:Release: |release|
 :Date: |today|
 
 **MDAnalysis** is an object-oriented python toolkit to analyze molecular
@@ -18,11 +18,12 @@ trajectories; see :ref:`Supported coordinate formats` for the full list). It
 can write most of these formats, too, together with atom selections for use in
 Gromacs_, CHARMM_, VMD_ and PyMol_.
 
-It allows one to read molecular dynamics trajectories and access the atomic
-coordinates through NumPy_ arrays. This provides an extremely flexible and
-relatively fast framework for complex analysis tasks. Fairly complete atom
-:ref:`selection-commands-label` are implemented. Trajectories can also be
-manipulated (for instance, fit to a reference structure) and written out.
+It allows one to read molecular dynamics trajectories and access the
+atomic coordinates through NumPy_ arrays. This provides a flexible and
+relatively fast framework for complex analysis tasks. Fairly complete
+atom :ref:`selection-commands-label` are implemented. Trajectories can
+also be manipulated (for instance, fit to a reference structure) and
+written out.
 
 **Source code** is available from http://mdanalysis.googlecode.com under the
 `GNU Public Licence, version 2`_, together with some additional documentation.
@@ -46,6 +47,29 @@ list`_.
 .. _PDB: http://www.rcsb.org/pdb/static.do?p=file_formats/pdb/index.html
 .. _XYZ format: http://openbabel.org/wiki/XYZ_%28format%29
 
+
+Citation
+========
+
+When using MDAnalysis in published work, please cite
+
+*   N. Michaud-Agrawal, E. J. Denning, T. B. Woolf,
+    and O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular
+    Dynamics Simulations. *J. Comput. Chem.* (2011), in
+    press. http://mdanalysis.googlecode.com
+
+If you use the RMSD alignment code (:mod:`MDAnalysis.analysis.align`)
+that uses the :mod:`~MDAnalysis.core.qcprot` module please also cite
+
+*   Douglas L. Theobald. Rapid calculation of RMSD using a
+    quaternion-based characteristic polynomial. *Acta
+    Crystallographica A* **61** (2005), 478-480.
+
+*   Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald. Fast
+    determination of the optimal rotational matrix for macromolecular
+    superpositions. *J. Comput. Chem.* **31** (2010), 1561-1563.
+
+Thanks! 
 
 Contents
 ========

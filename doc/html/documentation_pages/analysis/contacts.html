@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.2. Native contacts analysis — MDAnalysis.analysis.contacts &mdash; MDAnalysis v0.7.1 documentation</title>
+    <title>3.2. Native contacts analysis — MDAnalysis.analysis.contacts &mdash; MDAnalysis v0.7.2 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.1',
+        VERSION:     '0.7.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,8 +22,8 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="MDAnalysis v0.7.1 documentation" href="../../index.html" />
-    <link rel="up" title="3. Specific analysis modules" href="../analysis_modules.html" />
+    <link rel="top" title="MDAnalysis v0.7.2 documentation" href="../../index.html" />
+    <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.3. Distance analysis — MDAnalysis.distances" href="distances.html" />
     <link rel="prev" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align" href="align.html" /> 
   </head>
@@ -43,8 +43,8 @@
         <li class="right" >
           <a href="align.html" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
-          <li><a href="../analysis_modules.html" accesskey="U">3. Specific analysis modules</a> &raquo;</li> 
+        <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
+          <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -406,303 +406,6 @@ data file.</p>
 
 </dd></dl>
 
-<dl class="class">
-<dt>
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.contacts.</tt><tt class="descname">ContactAnalysis</tt><big>(</big><em>topology</em>, <em>trajectory</em>, <em>ref1=None</em>, <em>ref2=None</em>, <em>radius=8.0</em>, <em>targetdir='.'</em>, <em>infix=''</em>, <em>force=False</em><big>)</big></dt>
-<dd><p>Perform a native contact analysis (&#8220;q1-q2&#8221;).</p>
-<p>The analysis of the trajectory is performed with the
-<a class="reference internal" href="#MDAnalysis.analysis.contacts.ContactAnalysis.run" title="MDAnalysis.analysis.contacts.ContactAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">ContactAnalysis.run()</span></tt></a> method. The result is stored in
-<tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis.timeseries</span></tt>. It is a numpy array which
-contains the frame number at index 0, q1 and q2 at index 1 and 2,
-and the total number of contacts in 3 and 4.</p>
-<div class="highlight-python"><pre>frame  q1 q2  n1 n2</pre>
-</div>
-<p>The total number of contacts in the reference states 1 and 2 are
-stored in <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis.nref</span></tt> (index 0 and 1).</p>
-<p>Calculate native contacts from two reference structures.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>topology</em></dt>
-<dd><p class="first last">psf or pdb file</p>
-</dd>
-<dt><em>trajectory</em></dt>
-<dd><p class="first last">dcd or xtc/trr file</p>
-</dd>
-<dt><em>ref1</em></dt>
-<dd><p class="first last">structure of the reference conformation 1 (pdb); if <tt class="xref docutils literal"><span class="pre">None</span></tt> the <em>first</em>
-frame of the trajectory is chosen</p>
-</dd>
-<dt><em>ref2</em></dt>
-<dd><p class="first last">structure of the reference conformation 2 (pdb); if <tt class="xref docutils literal"><span class="pre">None</span></tt> the <em>last</em>
-frame of the trajectory is chosen</p>
-</dd>
-<dt><em>radius</em></dt>
-<dd><p class="first last">contacts are deemed any Ca within radius [8 A]</p>
-</dd>
-<dt><em>targetdir</em></dt>
-<dd><p class="first last">output files are saved there [.]</p>
-</dd>
-<dt><em>infix</em></dt>
-<dd><p class="first last">additional tag string that is inserted into the output filename of the
-data file [&#8220;&#8221;]</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<p>The function calculates the percentage of native contacts q1 and q2
-along a trajectory. &#8220;Contacts&#8221; are defined as the number of Ca atoms
-within <em>radius</em> of a primary Ca. <em>q1</em> is the fraction of contacts
-relative to the reference state 1 (typically the starting conformation
-of the trajectory) and <em>q2</em> is the fraction of contacts relative to the
-conformation 2.</p>
-<p>The timeseries is written to a bzip2-compressed file in <em>targetdir</em>
-named &#8220;basename(<em>trajectory</em>)*infix*_q1q2.dat.bz2&#8221; and is also
-accessible as the attribute <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis.timeseries</span></tt>.</p>
-<dl class="method">
-<dt>
-<tt class="descname">load</tt><big>(</big><em>filename</em><big>)</big></dt>
-<dd><p>Load the data file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<tt class="descname">output_exists</tt><big>(</big><em>force=False</em><big>)</big></dt>
-<dd><p>Return True if default output file already exists.</p>
-<p>Disable with force=True (will always return False)</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<tt class="descname">plot</tt><big>(</big><em>**kwargs</em><big>)</big></dt>
-<dd><p>Plot q1-q2.</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<tt class="descname">qN</tt><big>(</big><em>q</em>, <em>n</em>, <em>out=None</em><big>)</big></dt>
-<dd><p>Calculate native contacts relative to state n.</p>
-<p>If <em>out</em> is supplied as a pre-allocated array of the correct
-shape then it is filled instead of allocating a new one in
-order to increase performance.</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<tt class="descname">qarray</tt><big>(</big><em>d</em>, <em>out=None</em><big>)</big></dt>
-<dd><p>Return distance array with True for contacts.</p>
-<p>If <em>out</em> is supplied as a pre-allocated array of the correct
-shape then it is filled instead of allocating a new one in
-order to increase performance.</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<tt class="descname">run</tt><big>(</big><em>store=True</em>, <em>force=False</em><big>)</big></dt>
-<dd><p>Analyze trajectory and produce timeseries.</p>
-<p>Stores results in <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis.timeseries</span></tt> (if
-store=True) and writes them to a bzip2-compressed data file.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt>
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.contacts.</tt><tt class="descname">ContactAnalysis1</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big></dt>
-<dd><p>Perform a very flexible native contact analysis with respect to a single reference.</p>
-<p>This analysis class allows one to calculate the fraction of native contacts
-<em>q</em> between two arbitrary groups of atoms with respect to an arbitrary
-reference structure. For instance, as a reference one could take a crystal
-structure of a complex, and as the two groups atoms one selects two
-molecules A and B in the complex. Then the question to be answered by <em>q</em>
-is, is which percentage of the contacts between A and B persist during the simulation.</p>
-<p>First prepare <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> selections for
-the reference atoms; this example uses some arbitrary selections:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">ref</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s">&#39;crystal.pdb&#39;</span><span class="p">)</span>
-<span class="n">refA</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;name CA and segid A and resid 6:100&#39;</span><span class="p">)</span>
-<span class="n">refB</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;name CA and segid B and resid 1:40&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Load the trajectory:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>We then need two selection strings <em>selA</em> and <em>selB</em> that, when applied as
-<tt class="docutils literal"><span class="pre">u.selectAtoms(selA)</span></tt> produce a list of atoms that is equivalent to the
-reference (i.e. <tt class="docutils literal"><span class="pre">u.selectAtoms(selA)</span></tt> must select the same atoms as
-<tt class="docutils literal"><span class="pre">refA</span></tt> in this example):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">selA</span> <span class="o">=</span> <span class="s">&#39;name CA and resid 1:95&#39;</span>     <span class="c"># corresponds to refA</span>
-<span class="n">selB</span> <span class="o">=</span> <span class="s">&#39;name CA and resid 150:189&#39;</span>  <span class="c"># corresponds to refB</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">It is the user&#8217;s responsibility to provide a reference group (or
-groups) that describe equivalent atoms to the ones selected by
-<em>selection</em>.</p>
-</div>
-<p>Now we are ready to set up the analysis:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">CA1</span> <span class="o">=</span> <span class="n">ContactAnalysis1</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="p">(</span><span class="n">selA</span><span class="p">,</span><span class="n">selB</span><span class="p">),</span> <span class="n">refgroup</span><span class="o">=</span><span class="p">(</span><span class="n">refA</span><span class="p">,</span><span class="n">refB</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="s">&quot;q.dat&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>If the groups do not match in length then a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> is raised.</p>
-<p>The analysis across the whole trajectory is performed with</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">CA1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>Results are saved to <em>outfile</em> (framenumber q N) and can also be plotted
-with</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">CA1</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>        <span class="c"># plots the time series q(t)</span>
-<span class="n">CA1</span><span class="o">.</span><span class="n">plot_qavg</span><span class="p">()</span>   <span class="c"># plots the matrix of average contacts &lt;q&gt;</span>
-</pre></div>
-</div>
-<p><strong>Description of computed values</strong></p>
-<dl class="docutils">
-<dt><em>N</em></dt>
-<dd>number of native contacts</dd>
-<dt><em>q</em></dt>
-<dd>fraction of native contacts relative to the reference</dd>
-</dl>
-<p>Calculate native contacts within a group or between two groups.</p>
-<dl class="class">
-<dt>
-<tt class="descname">ContactAnalysis1(topology, trajectory[,selection[,refgroup[,radius[,outfile]]]]) --&gt; obj</tt></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt>
-<tt class="descname">ContactAnalysis1(universe[,selection[,refgroup[,radius[,outfile]]]]) --&gt; obj</tt></dt>
-<dd></dd></dl>
-
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt><em>topology</em></dt>
-<dd><p class="first last">psf or pdb file</p>
-</dd>
-<dt><em>trajectory</em></dt>
-<dd><p class="first last">dcd or xtc/trr file</p>
-</dd>
-<dt><em>universe</em></dt>
-<dd><p class="first last">instead of a topology/trajectory combination, one can also supply
-a <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt></p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>selection</em></dt>
-<dd><p class="first last">selection string that determines which distances are calculated; if this
-is a tuple or list with two entries then distances are calculated between
-these two different groups [&#8220;name CA or name B*&#8221;]</p>
-</dd>
-<dt><em>refgroup</em></dt>
-<dd><p class="first last">reference group, either a single <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>
-(if there is only a single <em>selection</em>) or a list of two such groups.
-The reference contacts are directly computed from <em>refgroup</em> and hence
-the atoms in the reference group(s) must be equivalent to the ones produced
-by the <em>selection</em> on the input trajectory.</p>
-</dd>
-<dt><em>radius</em></dt>
-<dd><p class="first last">contacts are deemed any atoms within radius [8.0 A]</p>
-</dd>
-<dt><em>outfile</em></dt>
-<dd><p class="first last">name of the output file; with the gz or bz2 suffix, a compressed
-file is written. The average &lt;q&gt; is written to a second, gzipped
-file that has the same name with &#8216;array&#8217; included. E.g. for the
-default name &#8220;q1.dat.gz&#8221; the &lt;q&gt; file will be &#8220;q1.array.gz&#8221;. The
-format is the matrix in column-row format, i.e. selection 1
-residues are the columns and selection 2 residues are rows. The
-file can be read with <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.loadtxt.html#numpy.loadtxt" title="(in NumPy v2.0.dev-cdac120)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.loadtxt()</span></tt></a>.  [&#8220;q1.dat.gz&#8221;]</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<p>The function calculates the percentage of native contacts q1
-along a trajectory. &#8220;Contacts&#8221; are defined as the number of atoms
-within <em>radius</em> of a given other atom. <em>q1</em> is the fraction of contacts
-relative to the reference state 1 (typically the starting conformation
-of the trajectory).</p>
-<p>The timeseries is written to a file <em>outfile</em> and is also accessible as
-the attribute <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis1.timeseries</span></tt>.</p>
-<dl class="method">
-<dt>
-<tt class="descname">load</tt><big>(</big><em>filename</em><big>)</big></dt>
-<dd><p>Load the data file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<tt class="descname">output_exists</tt><big>(</big><em>force=False</em><big>)</big></dt>
-<dd><p>Return True if default output file already exists.</p>
-<p>Disable with force=True (will always return False)</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<tt class="descname">plot</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big></dt>
-<dd><p>Plot q(t).</p>
-<dl class="function">
-<dt>
-<tt class="descname">plot</tt><big>(</big><span class="optional">[</span><em>filename</em>, <em>...</em><span class="optional">]</span><big>)</big></dt>
-<dd></dd></dl>
-
-<p>If <em>filename</em> is supplied then the figure is also written to file (the
-suffix determines the file type, e.g. pdf, png, eps, ...). All other
-keyword arguments are passed on to <tt class="xref py py-func docutils literal"><span class="pre">pylab.plot()</span></tt>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<tt class="descname">plot_qavg</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big></dt>
-<dd><p>Plot <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis1.qavg</span></tt>, the matrix of average native contacts.</p>
-<dl class="function">
-<dt>
-<tt class="descname">plot_qavg</tt><big>(</big><span class="optional">[</span><em>filename</em>, <em>...</em><span class="optional">]</span><big>)</big></dt>
-<dd></dd></dl>
-
-<p>If <em>filename</em> is supplied then the figure is also written to file (the
-suffix determines the file type, e.g. pdf, png, eps, ...). All other
-keyword arguments are passed on to <tt class="xref py py-func docutils literal"><span class="pre">pylab.imshow()</span></tt>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<tt class="descname">qN</tt><big>(</big><em>q</em>, <em>out=None</em><big>)</big></dt>
-<dd><p>Calculate native contacts relative to reference state.</p>
-<p>If <em>out</em> is supplied as a pre-allocated array of the correct
-shape then it is filled instead of allocating a new one in
-order to increase performance.</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<tt class="descname">qarray</tt><big>(</big><em>d</em>, <em>out=None</em><big>)</big></dt>
-<dd><p>Return distance array with True for contacts.</p>
-<p>If <em>out</em> is supplied as a pre-allocated array of the correct
-shape then it is filled instead of allocating a new one in
-order to increase performance.</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<tt class="descname">run</tt><big>(</big><em>store=True</em>, <em>force=False</em><big>)</big></dt>
-<dd><p>Analyze trajectory and produce timeseries.</p>
-<p>Stores results in <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis1.timeseries</span></tt> (if store=True)
-and writes them to a data file. The average q is written to a second
-data file.</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 </div>
 
@@ -764,12 +467,12 @@ data file.</p>
         <li class="right" >
           <a href="align.html" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.1 documentation</a> &raquo;</li>
-          <li><a href="../analysis_modules.html" >3. Specific analysis modules</a> &raquo;</li> 
+        <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
+          <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2010, Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose.
+        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
