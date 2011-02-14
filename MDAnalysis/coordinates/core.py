@@ -189,11 +189,17 @@ def triclinic_box(x,y,z):
     """Convert the three triclinic box vectors to [A,B,C,alpha,beta,gamma].
 
     Angles are in degrees.
+    
+    * alpha  = angle(y,z)
+    * beta   = angle(x,z)
+    * gamma  = angle(x,y)
+
+    .. SeeAlso:: Definition of angles: http://en.wikipedia.org/wiki/Lattice_constant
     """
     A, B, C = [_veclength(v) for v in x,y,z]
-    alpha =  _angle(x,y)
+    alpha =  _angle(y,z) 
     beta  =  _angle(x,z)
-    gamma =  _angle(y,z)
+    gamma =  _angle(x,y)
     return numpy.array([A,B,C,alpha,beta,gamma], dtype=numpy.float32)
 
 def triclinic_vectors(dimensions):

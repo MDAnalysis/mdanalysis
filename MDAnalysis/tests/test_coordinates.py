@@ -1,6 +1,7 @@
 import MDAnalysis
 import MDAnalysis as mda
 import MDAnalysis.coordinates
+import MDAnalysis.coordinates.core
 
 import numpy as np
 from numpy.testing import *
@@ -54,7 +55,8 @@ class RefAdK(object):
     ref_E151HA2_index = 2314
     ref_numatoms = 47681
     ref_Na_sel_size = 4
-    ref_unitcell = np.array([ 80.017,  80.017,  80.017,  90., 60., 60.], dtype=np.float32)
+    # CRYST1 80.017   80.017   80.017  60.00  60.00  90.00
+    ref_unitcell = np.array([ 80.017,  80.017,  80.017,  60., 60., 90.], dtype=np.float32)
 
 class Ref2r9r(object):
     """Mixin class to provide comparison numbers.
@@ -453,6 +455,11 @@ class TestPDBReaderBig(TestCase, RefAdK):
         na = self.universe.selectAtoms('resname NA+')
         assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
 
+    @dec.slow
+    @attr('issue')
+    def test_unitcell(self):
+        assert_array_almost_equal(self.universe.coord.dimensions, self.ref_unitcell, self.prec, 
+                                  err_msg="unit cell dimensions (rhombic dodecahedron), issue 60")
 
 @attr('issue')
 def TestDCD_Issue32():
@@ -696,6 +703,7 @@ class TestChainedReader(TestCase):
 class _GromacsReader(TestCase):
     # This base class assumes same lengths and dt for XTC and TRR test cases!
     filename = None
+    ref_unitcell = np.array([ 80.017,  80.017,  80.017,  60., 60., 90.], dtype=np.float32)
     def setUp(self):
         # default flag--just make sure!... but can lead to race conditions
         # use explicit convert_units argument to specify behaviour
@@ -765,8 +773,7 @@ class _GromacsReader(TestCase):
         """Test that xtc/trr unitcell is read correctly (Issue 34)"""
         self.universe.trajectory.rewind()
         uc = self.ts.dimensions
-        ref_uc = np.array([ 80.017,  80.017,  80.017,  90., 60., 60.], dtype=np.float32)
-        assert_array_almost_equal(uc, ref_uc, self.prec, err_msg="unit cell dimensions (rhombic dodecahedron)")
+        assert_array_almost_equal(uc, self.ref_unitcell, self.prec, err_msg="unit cell dimensions (rhombic dodecahedron)")
 
     @dec.slow
     def test_dt(self):
@@ -862,3 +869,12 @@ class TestXTCWriter(_GromacsWriter):
 
 class TestTRRWriter(_GromacsWriter):
     infilename = TRR
+
+@attr('issue')
+def test_triclinic_box():
+    """Test coordinates.core.triclinic_box() (Issue 61)"""
+    unitcell = np.array([80.017,   55,   100.11,  60.00,  30.50,  90.00])
+    box = MDAnalysis.coordinates.core.triclinic_vectors(unitcell)
+    new_unitcell = MDAnalysis.coordinates.core.triclinic_box(box[0],box[1],box[2])
+    assert_array_almost_equal(new_unitcell, unitcell, 3,
+                              err_msg="unitcell round-trip connversion failed (Issue 61)")

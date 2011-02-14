@@ -79,7 +79,7 @@ class Timestep(base.Timestep):
 
 		.. Note:: The Amber trajectory only contains box lengths
  		           `A,B,C`; we assume an orthorhombic box and set all
- 		           angles to 90ยบ.
+ 		           angles to 90บ.
 		"""
 		# Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
 		return self._unitcell
