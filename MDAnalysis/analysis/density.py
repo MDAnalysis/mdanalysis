@@ -606,7 +606,9 @@ def density_from_PDB(pdb, **kwargs):
 
       B = [(8*PI**2)/3] * (RMSF)**2
 
-    .. SeeAlso:: func:`Bfactor2RMSF` and :class:`BfactorDensityCreator`.
+    .. Note:: The current implementation is *painfully* slow.
+
+    .. SeeAlso:: :func:`Bfactor2RMSF` and :class:`BfactorDensityCreator`.
 
     :Arguments:
        *pdb*
@@ -630,7 +632,7 @@ def density_from_PDB(pdb, **kwargs):
           density; if ``None`` then uses B-factors from *pdb* [``None``]
 
     :Returns: a :class:`Density` object with a density measured relative to the
-              water density at standard conditions
+              water density at standard conditions              
     """    
     return BfactorDensityCreator(pdb,**kwargs).Density()
 
@@ -666,7 +668,11 @@ class BfactorDensityCreator(object):
 
         :Arguments:
           pdb
-            PDB file
+            PDB file or :class:`MDAnalysis.Universe`; a PDB is read with the 
+            simpl PDB reader. If the Bio.PDB reader is required, either set
+            the *permissive_pdb_reader* flag to ``False`` in
+            :data:`MDAnalysis.core.flags` or supply a Universe
+            that was created with the `permissive` = ``False`` keyword.
           atomselection
             selection string (MDAnalysis syntax) for the species to be analyzed
           delta
@@ -686,8 +692,8 @@ class BfactorDensityCreator(object):
         that can be easily matched to a broader density distribution.
 
         """
-        from MDAnalysis import Universe
-        u = Universe(pdb, permissive=False)  # use the Bio.PDB reader for B-factors!
+        from MDAnalysis import asUniverse
+        u = asUniverse(pdb)
         group = u.selectAtoms(atomselection)
         coord = group.coordinates()
         logger.info("Selected %d atoms (%s) out of %d total." %
@@ -758,7 +764,7 @@ class BfactorDensityCreator(object):
             g += grid[p] * \
                 numpy.fromfunction(self._gaussian,grid.shape,dtype=numpy.int,
                                    p=p,sigma=sigma)
-            print "Smearing out water position %4d/%5d with RMSF %4.2f A\r" %  \
+            print "Smearing out atom position %4d/%5d with RMSF %4.2f A\r" %  \
                     (iwat+1,len(pos[0]),sigma),
         return g
         
@@ -770,7 +776,7 @@ class BfactorDensityCreator(object):
         for iwat,coord in enumerate(coordinates):
             g += numpy.fromfunction(self._gaussian_cartesian,grid.shape,dtype=numpy.int,
                                     c=coord,sigma=rmsf[iwat])
-            print "Smearing out water position %4d/%5d with RMSF %4.2f A\r" %  \
+            print "Smearing out atom position %4d/%5d with RMSF %4.2f A\r" %  \
                     (iwat+1,N,rmsf[iwat]),
         return g
 
