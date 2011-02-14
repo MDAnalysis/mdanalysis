@@ -154,7 +154,7 @@ class Density(Grid):
 
          D = Density("counts.dx", parameters={'isDensity': False}, units={'length': 'nm'})
          D.make_density()
-         D.convert_length('Angstrom')
+         D.convert_length('Angstrom^{-3}')
          D.convert_density('water')
 
        After the final step, ``D`` will contain a density on a grid measured in
@@ -199,7 +199,7 @@ class Density(Grid):
 
             - *length*:  physical unit of grid edges (Angstrom or nm) [Angstrom]
             - *density*: unit of the density if ``isDensity == True`` or ``None``
-              otherwise; the default is "Angstrom" for densities (meaning A^-3).
+              otherwise; the default is "Angstrom^{-3}" for densities (meaning A^-3).
 
             (Actually, the default unit is the value of
             :attr:`MDAnalysis.core.flags['length_unit']`; in most cases this is "Angstrom".)
@@ -311,17 +311,17 @@ class Density(Grid):
 
         <unit> can be one of the following:
 
-        ===========  ===============================================================
-        name         description of the unit
-        ===========  ===============================================================
-        Angstrom     particles/A**3
-        nm           particles/nm**3
-        SPC          density of SPC water at standard conditions
-        TIP3P        ... see :data:`MDAnalysis.core.units.water`
-        TIP4P        ... see :data:`MDAnalysis.core.units.water`
-        water        density of real water at standard conditions (0.997 g/cm**3)
-        Molar        mol/l
-        ===========  ===============================================================
+        =============  ===============================================================
+        name           description of the unit
+        =============  ===============================================================
+        Angstrom^{-3}  particles/A**3
+        nm^{-3}        particles/nm**3
+        SPC            density of SPC water at standard conditions
+        TIP3P          ... see :data:`MDAnalysis.core.units.water`
+        TIP4P          ... see :data:`MDAnalysis.core.units.water`
+        water          density of real water at standard conditions (0.997 g/cm**3)
+        Molar          mol/l
+        =============  ===============================================================
 
         Note: 
 
@@ -337,7 +337,11 @@ class Density(Grid):
             raise RuntimeError(errmsg)
         if unit == self.units['density']:
             return
-        self.grid *= MDAnalysis.core.units.get_conversion_factor('density',self.units['density'],unit)
+        try:
+            self.grid *= MDAnalysis.core.units.get_conversion_factor('density',self.units['density'],unit)
+        except KeyError:
+            raise ValueError("The name of the unit (%r supplied) must be one of:\n%r" % 
+                             (unit, MDAnalysis.core.units.conversion_factor['density'].keys()))
         self.units['density'] = unit
 
     def __repr__(self):
@@ -717,7 +721,7 @@ class BfactorDensityCreator(object):
             # histogram individually, and smear out at the same time
             # with the appropriate B-factor
             if numpy.any(group.bfactors == 0.0):
-                wmsg = "Some B-factors are Zero."
+                wmsg = "Some B-factors are Zero (will be skipped)."
                 logger.warn(wmsg)
                 warnings.warn(wmsg,category=MissingDataWarning)
             rmsf = Bfactor2RMSF(group.bfactors)
@@ -774,6 +778,8 @@ class BfactorDensityCreator(object):
         g = numpy.zeros(grid.shape)   # holds the smeared out density
         N,D = coordinates.shape
         for iwat,coord in enumerate(coordinates):
+            if rmsf[iwat] == 0:
+                continue
             g += numpy.fromfunction(self._gaussian_cartesian,grid.shape,dtype=numpy.int,
                                     c=coord,sigma=rmsf[iwat])
             print "Smearing out atom position %4d/%5d with RMSF %4.2f A\r" %  \
