@@ -76,9 +76,13 @@ class Atom(object):
         residue
            :class:`Residue` object containing the atoms
         name
+           string, short name
         type
+           string or number (from force field)
         mass
+           float, in atomic units
         charge
+           float, in electron charges
         :attr:`~Atom.pos`
            The current position (as a numpy array) of this atom
     """
@@ -385,6 +389,19 @@ class AtomGroup(object):
         Ixz = Izx = -1*reduce(lambda t,a: t+a[0]*a[1][0]*a[1][2], values, 0.)
         Iyz = Izy = -1*reduce(lambda t,a: t+a[0]*a[1][1]*a[1][2], values, 0.)
         return numpy.array([[Ixx, Ixy, Ixz],[Iyx, Iyy, Iyz],[Izx, Izy, Izz]])
+
+    def bbox(self):
+        """Return the bounding box of the selection.
+
+        The lengths A,B,C of the orthorhombic enclosing box are ::
+
+          L = AtomGroup.bbox()
+          A,B,C = L[1] - L[0]
+
+        :Returns: [[xmin, ymin, zmin], [xmax, ymax, zmax]]
+        """
+        x = u.A.coordinates()
+        return numpy.array([x.min(axis=0), x.max(axis=0)])
 
     def dihedral(self):
         """Calculate the dihedral angle.
