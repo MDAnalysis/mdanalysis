@@ -12,6 +12,7 @@ The rules for this file:
 ??/??/11 orbeckst
         * 0.7.2 development
 	* loading from a PDB sets segid to the chain id if it exists
+	* PrimitivePDBWriter uses first letter of segid as PDB chain id
 	* fixed bug in (experimental) phi and psi selections
 	* aliased segment.name to segment.id
 	* fixed bugs in reading of unit cells (Issue 60, Issue 61, Issue 34)

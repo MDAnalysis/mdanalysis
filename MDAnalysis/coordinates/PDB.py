@@ -350,8 +350,14 @@ class PrimitivePDBWriter(base.Writer):
 
         write(selection,frame=FRAME)
 
-        selection         MDAnalysis AtomGroup
-        frame             optionally move to frame FRAME
+        :Arguments:
+          *selection*
+            a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+          *frame*
+            optionally move to frame *FRAME*
+
+        .. Note:: The first letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid` 
+                  is used as the PDB chainID.
         """
         u = selection.universe
         if frame is not None:            
@@ -368,6 +374,7 @@ class PrimitivePDBWriter(base.Writer):
         coor = atoms.coordinates() # can write from selection == Universe (Issue 49)
         for i, atom in enumerate(atoms):
             self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
+                      chainID=atom.segid.strip(),
                       x=coor[i,0], y=coor[i,1], z=coor[i,2])
         # get bfactor, too?
         self.close()
@@ -420,7 +427,7 @@ class PrimitivePDBWriter(base.Writer):
         altLoc= altLoc[:1]
         resName = resName[:3]
         chainID = chainID or ""   # or should we provide a chainID such as 'A'?
-        chainId = chainID[:1]
+        chainID = chainID[:1]
         resSeq = int(str(resSeq)[-4:]) # check for overflow here?
         iCode = iCode or ""
         iCode = iCode[:1]
