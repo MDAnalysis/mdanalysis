@@ -23,7 +23,7 @@ Amber trajectories are recognised by the suffix '.trj' or '.mdcrd'
 Units
 -----
 
-* lengths in Angstrom
+* lengths in Angstrom (Å)
 * time in ps (but see below)
 
 
@@ -79,7 +79,7 @@ class Timestep(base.Timestep):
 
 		.. Note:: The Amber trajectory only contains box lengths
  		           `A,B,C`; we assume an orthorhombic box and set all
- 		           angles to 90�.
+ 		           angles to 90º.
 		"""
 		# Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
 		return self._unitcell
