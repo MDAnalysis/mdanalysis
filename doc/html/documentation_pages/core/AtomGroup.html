@@ -478,6 +478,25 @@ i.e. <em>axis</em> = 0) with the z-axis:</p>
 <dd><p>AtomGroup of all atoms in this group</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.bbox">
+<tt class="descname">bbox</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the bounding box of the selection.</p>
+<p>The lengths A,B,C of the orthorhombic enclosing box are</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">L</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span>
+<span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">C</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body">[[xmin, ymin, zmin], [xmax, ymax, zmax]]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.bfactors">
 <tt class="descname">bfactors</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bfactors" title="Permalink to this definition">¶</a></dt>
@@ -792,7 +811,7 @@ placeholders; the extension is set according to the <em>format</em>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Data :</th><td class="field-body"><dl class="first docutils">
+<tr class="field"><th class="field-name">Data :</th><td class="field-body"><dl class="first last docutils">
 <dt>number</dt>
 <dd><p class="first last">atom number</p>
 </dd>
@@ -808,15 +827,22 @@ placeholders; the extension is set according to the <em>format</em>
 <dt>residue</dt>
 <dd><p class="first last"><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> object containing the atoms</p>
 </dd>
+<dt>name</dt>
+<dd><p class="first last">string, short name</p>
+</dd>
+<dt>type</dt>
+<dd><p class="first last">string or number (from force field)</p>
+</dd>
+<dt>mass</dt>
+<dd><p class="first last">float, in atomic units</p>
+</dd>
+<dt>charge</dt>
+<dd><p class="first last">float, in electron charges</p>
+</dd>
+<dt><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom.pos" title="MDAnalysis.core.AtomGroup.Atom.pos"><tt class="xref py py-attr docutils literal"><span class="pre">pos</span></tt></a></dt>
+<dd><p class="first last">The current position (as a numpy array) of this atom</p>
+</dd>
 </dl>
-<p>name
-type
-mass
-charge
-<a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom.pos" title="MDAnalysis.core.AtomGroup.Atom.pos"><tt class="xref py py-attr docutils literal"><span class="pre">pos</span></tt></a></p>
-<blockquote class="last">
-<p>The current position (as a numpy array) of this atom</p>
-</blockquote>
 </td>
 </tr>
 </tbody>
@@ -1099,7 +1125,7 @@ asUniverse(<a href="#id13"><span class="problematic" id="id14">*</span></a>args,
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

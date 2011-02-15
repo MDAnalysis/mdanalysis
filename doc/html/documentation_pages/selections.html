@@ -137,11 +137,11 @@ that belong to a protein, but are not in a lysine or alanine residue</dd>
 <dd>selects all atoms a certain cutoff away from another selection,
 e.g. <tt class="docutils literal"><span class="pre">around</span> <span class="pre">3.5</span> <span class="pre">protein</span></tt> selects all atoms not belonging to protein
 that are within 3.5 Angstroms from the protein</dd>
-<dt>point <em>distance</em>  <em>x</em> <em>y</em> <em>z</em></dt>
+<dt>point <em>x</em> <em>y</em> <em>z</em>  <em>distance</em></dt>
 <dd>selects all atoms within a cutoff of a point in space, make sure
-coordinate is separated by spaces, e.g. <tt class="docutils literal"><span class="pre">point</span> <span class="pre">3.5</span>&nbsp; <span class="pre">5.0</span> <span class="pre">5.0</span> <span class="pre">5.0</span></tt> selects
+coordinate is separated by spaces, e.g. <tt class="docutils literal"><span class="pre">point</span> <span class="pre">5.0</span> <span class="pre">5.0</span> <span class="pre">5.0</span>&nbsp; <span class="pre">3.5</span></tt> selects
 all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0, 5.0)</dd>
-<dt>prop <em>property</em>  <em>operator</em>  <em>value</em></dt>
+<dt>prop [abs] <em>property</em>  <em>operator</em>  <em>value</em></dt>
 <dd>selects atoms based on position, using <em>property</em>  <strong>x</strong>, <strong>y</strong>, or
 <strong>z</strong> coordinate. Supports the <strong>abs</strong> keyword (for absolute value) and
 the following <em>operators</em>: <strong>&lt;, &gt;, &lt;=, &gt;=, ==, !=</strong>. For example, <tt class="docutils literal"><span class="pre">prop</span> <span class="pre">z</span> <span class="pre">&gt;=</span> <span class="pre">5.0</span></tt>
@@ -407,7 +407,7 @@ might expect:</p>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

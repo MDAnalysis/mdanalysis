@@ -147,7 +147,7 @@ at ambient conditions:</p>
 <em>parameters</em> keyword) where the lengths are in nm:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">D</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="s">&quot;counts.dx&quot;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;isDensity&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">},</span> <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;nm&#39;</span><span class="p">})</span>
 <span class="n">D</span><span class="o">.</span><span class="n">make_density</span><span class="p">()</span>
-<span class="n">D</span><span class="o">.</span><span class="n">convert_length</span><span class="p">(</span><span class="s">&#39;Angstrom&#39;</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">convert_length</span><span class="p">(</span><span class="s">&#39;Angstrom^{-3}&#39;</span><span class="p">)</span>
 <span class="n">D</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s">&#39;water&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -202,7 +202,7 @@ the class. Meaning of the values are listed:</p>
 <ul class="simple">
 <li><em>length</em>:  physical unit of grid edges (Angstrom or nm) [Angstrom]</li>
 <li><em>density</em>: unit of the density if <tt class="docutils literal"><span class="pre">isDensity</span> <span class="pre">==</span> <span class="pre">True</span></tt> or <tt class="xref docutils literal"><span class="pre">None</span></tt>
-otherwise; the default is &#8220;Angstrom&#8221; for densities (meaning A^-3).</li>
+otherwise; the default is &#8220;Angstrom^{-3}&#8221; for densities (meaning A^-3).</li>
 </ul>
 <p class="last">(Actually, the default unit is the value of
 <tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.flags['length_unit']</span></tt>; in most cases this is &#8220;Angstrom&#8221;.)</p>
@@ -225,8 +225,8 @@ associated with the density; the class does not touch
 <p>&lt;unit&gt; can be one of the following:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="15%" />
-<col width="85%" />
+<col width="17%" />
+<col width="83%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">name</th>
@@ -234,10 +234,10 @@ associated with the density; the class does not touch
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>Angstrom</td>
+<tr><td>Angstrom^{-3}</td>
 <td>particles/A**3</td>
 </tr>
-<tr><td>nm</td>
+<tr><td>nm^{-3}</td>
 <td>particles/nm**3</td>
 </tr>
 <tr><td>SPC</td>
@@ -426,9 +426,13 @@ file then they are used to calculate the width of the gaussian.</p>
 prescribe a gaussian width for all atoms (in Angstrom), which is calculated as</p>
 <blockquote>
 B = [(8*PI**2)/3] * (RMSF)**2</blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The current implementation is <em>painfully</em> slow.</p>
+</div>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last">func:<cite>Bfactor2RMSF</cite> and <a class="reference internal" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="MDAnalysis.analysis.density.BfactorDensityCreator"><tt class="xref py py-class docutils literal"><span class="pre">BfactorDensityCreator</span></tt></a>.</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.density.Bfactor2RMSF" title="MDAnalysis.analysis.density.Bfactor2RMSF"><tt class="xref py py-func docutils literal"><span class="pre">Bfactor2RMSF()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="MDAnalysis.analysis.density.BfactorDensityCreator"><tt class="xref py py-class docutils literal"><span class="pre">BfactorDensityCreator</span></tt></a>.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -523,7 +527,11 @@ acceptable if one only runs this once)</li>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt>pdb</dt>
-<dd><p class="first last">PDB file</p>
+<dd><p class="first last">PDB file or <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>; a PDB is read with the 
+simpl PDB reader. If the Bio.PDB reader is required, either set
+the <em>permissive_pdb_reader</em> flag to <tt class="xref docutils literal"><span class="pre">False</span></tt> in
+<tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> or supply a Universe
+that was created with the <cite>permissive</cite> = <tt class="xref docutils literal"><span class="pre">False</span></tt> keyword.</p>
 </dd>
 <dt>atomselection</dt>
 <dd><p class="first last">selection string (MDAnalysis syntax) for the species to be analyzed</p>
@@ -626,7 +634,7 @@ that can be easily matched to a broader density distribution.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

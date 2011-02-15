@@ -326,8 +326,27 @@ are chopped.</p>
 <tt class="descname">write</tt><big>(</big><em>selection</em>, <em>frame=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write selection at current trajectory frame to file.</p>
 <p>write(selection,frame=FRAME)</p>
-<p>selection         MDAnalysis AtomGroup
-frame             optionally move to frame FRAME</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>selection</em></dt>
+<dd><p class="first last">a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a></p>
+</dd>
+<dt><em>frame</em></dt>
+<dd><p class="first last">optionally move to frame <em>FRAME</em></p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The first letter of the <tt class="xref py py-attr docutils literal"><span class="pre">segid</span></tt> 
+is used as the PDB chainID.</p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -389,7 +408,7 @@ frame             optionally move to frame FRAME</p>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

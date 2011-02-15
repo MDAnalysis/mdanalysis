@@ -88,11 +88,11 @@ Geometric
         selects all atoms a certain cutoff away from another selection,
         e.g. ``around 3.5 protein`` selects all atoms not belonging to protein
         that are within 3.5 Angstroms from the protein 
-    point *distance*  *x* *y* *z*
+    point *x* *y* *z*  *distance* 
         selects all atoms within a cutoff of a point in space, make sure
-        coordinate is separated by spaces, e.g. ``point 3.5  5.0 5.0 5.0`` selects
+        coordinate is separated by spaces, e.g. ``point 5.0 5.0 5.0  3.5`` selects
         all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0, 5.0) 
-    prop *property*  *operator*  *value*
+    prop [abs] *property*  *operator*  *value*
         selects atoms based on position, using *property*  **x**, **y**, or
         **z** coordinate. Supports the **abs** keyword (for absolute value) and
         the following *operators*: **<, >, <=, >=, ==, !=**. For example, ``prop z >= 5.0``
