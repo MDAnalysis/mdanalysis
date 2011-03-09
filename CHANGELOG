@@ -16,6 +16,8 @@ The rules for this file:
 	* fixed bug in (experimental) phi and psi selections
 	* aliased segment.name to segment.id
 	* fixed bugs in reading of unit cells (Issue 60, Issue 61, Issue 34)
+	* universe.trajectory.delta returns the full precision dt value
+	  (Issue 64)
 
 02/08/11 orbeckst, denniej0, jandom, tyler.je.reddy, Joshua Adelman
         * 0.7.1 release

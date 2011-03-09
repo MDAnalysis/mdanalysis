@@ -192,8 +192,8 @@ class Reader(IObase):
 
     @property
     def dt(self):
-        """Time between two trajectory frames in picoseconds, rounded to 4 decimals."""
-        return round(self.skip_timestep * self.convert_time_from_native(self.delta), 4)
+        """Time between two trajectory frames in picoseconds."""
+        return self.skip_timestep * self.convert_time_from_native(self.delta)
 
     @property
     def totaltime(self):
