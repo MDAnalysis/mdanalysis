@@ -37,7 +37,7 @@ def __parseatoms_(pdb, structure):
     # translate list of atoms to MDAnalysis Atom.
     for iatom,atom in enumerate(pdb._atoms):
         atomname = atom.name
-        atomtype = guess_atom_type(atomname)
+        atomtype = atom.element or guess_atom_type(atomname)
         resname = atom.resName
         resid = atom.resSeq
         chain = atom.chainID.strip()

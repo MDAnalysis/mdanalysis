@@ -107,10 +107,38 @@ def guess_format(filename):
 def guess_atom_type(atomname):
     """Guess atom type from the name.
 
-    Not implemented; simply returns 0.
+    Looks in dict to see if element is found, otherwise it uses the first character in the atomname.
+    The table comes from CHARMM and AMBER atom types, where the first character is not sufficient to
+    determine the atom type.
+    This will probably result in some mistakes, but it still better than nothing!
     """
-    # TODO: do something slightly smarter, at least use name/element
-    return 0
+    types = {   'CAL': 'CA',
+                'C0': 'CA',
+                'CES': 'CS',
+                'CLA': 'CL',
+                'CLAL': 'CL',
+                'FE': 'FE',
+                'LIT': 'LI',
+                'MG': 'MG',
+                'HE': 'HE',
+                'NE': 'NE',
+                'POT': 'K',
+                'SOD': 'NA',
+                'ZN': 'ZN',
+                'MG': 'MG',
+                'CU': 'CU',
+                'QK': 'K',
+                'QC': 'CE',
+                'QL': 'LI',
+                'QN': 'NA',
+                'QR': 'RB',
+                'BC': 'C',
+                'AC': 'C',
+            }
+    if atomname in types:
+        return types[atomname]
+    else:
+        return atomname[0]
 
 def guess_atom_mass(atomname):
     """Guess a mass based on the atom name.

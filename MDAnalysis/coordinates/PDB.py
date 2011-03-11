@@ -210,7 +210,7 @@ class PrimitivePDBReader(base.Reader):
     7 - 11         Integer       serial       Atom  serial number.
     13 - 16        Atom          name         Atom name.
     17             Character     altLoc       Alternate location indicator. IGNORED
-    18 - 20        Residue name  resName      Residue name.
+    18 - 21        Residue name  resName      Residue name.
     22             Character     chainID      Chain identifier.
     23 - 26        Integer       resSeq       Residue sequence number.
     27             AChar         iCode        Code for insertion of residues. IGNORED
@@ -255,15 +255,16 @@ class PrimitivePDBReader(base.Reader):
                     # directly use COLUMNS from PDB spec
                     serial = _c(7,11,int)
                     name = _c(13,16,str).strip()
-                    resName = _c(18,20,str).strip()
+                    resName = _c(18,21,str).strip()
                     chainID = _c(22,22,str)  # empty chainID is a single space ' '!
                     resSeq = _c(23,26,int)
                     x,y,z = _c(31,38), _c(39,46), _c(47,54)
                     occupancy = _c(55,60)
                     tempFactor = _c(61,66)
                     segID = _c(67,76, str).strip()
+                    element = _c(77,78, str).strip()
                     coords.append((x,y,z))
-                    atoms.append((serial, name, resName, chainID, resSeq, occupancy, tempFactor, segID))
+                    atoms.append((serial, name, resName, chainID, resSeq, occupancy, tempFactor, segID, element))
         self.numatoms = len(coords)
         self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
         self.ts._unitcell[:] = unitcell
@@ -277,7 +278,7 @@ class PrimitivePDBReader(base.Reader):
         self.delta = 0
         self.skip_timestep = 1
         # hack for PrimitivePDBParser:
-        self._atoms = numpy.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,segID")
+        self._atoms = numpy.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,segID,element")
 
     def _col(self, line, start, stop, typeclass=float):
         """Pick out and convert the columns start-stop.
@@ -330,7 +331,10 @@ class PrimitivePDBWriter(base.Writer):
     # ATOM  %5d %-4s%1s%-3s %1s%4d%1s   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s%2d
     # ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d
 
-    fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
+    # Strict PDB format:
+    #fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
+    # PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc ignored
+    fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(segID)-4s%(element)2s%(charge)2d\n",
            'REMARK': "REMARK     %s\n",
            'TITLE':  "TITLE    %s\n",
            'CRYST1': "CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %-11s%4d\n",
@@ -374,7 +378,7 @@ class PrimitivePDBWriter(base.Writer):
         coor = atoms.coordinates() # can write from selection == Universe (Issue 49)
         for i, atom in enumerate(atoms):
             self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
-                      chainID=atom.segid.strip(),
+                      chainID=atom.segid.strip(), segID=atom.segid.strip(), element=atom.type.strip(),
                       x=coor[i,0], y=coor[i,1], z=coor[i,2])
         # get bfactor, too?
         self.close()
@@ -403,7 +407,7 @@ class PrimitivePDBWriter(base.Writer):
 
     def ATOM(self,serial=None,name=None,altLoc=None,resName=None,chainID=None,
              resSeq=None,iCode=None,x=None,y=None,z=None,occupancy=1.0,tempFactor=0.0,
-             element=None,charge=0):
+             segID=None,element=None,charge=0):
         """Write ATOM record. 
         http://www.wwpdb.org/documentation/format32/sect9.html
         Only some keword args are optional (altLoc, iCode, chainID), for some defaults are set.
@@ -425,14 +429,16 @@ class PrimitivePDBWriter(base.Writer):
             name = " "+name   # customary to start in column 14
         altLoc = altLoc or " "
         altLoc= altLoc[:1]
-        resName = resName[:3]
+        resName = resName[:4]
         chainID = chainID or ""   # or should we provide a chainID such as 'A'?
-        chainID = chainID[:1]
+        chainID = chainID.strip()[-1:] # take the last character
         resSeq = int(str(resSeq)[-4:]) # check for overflow here?
         iCode = iCode or ""
         iCode = iCode[:1]
         element = element or name.strip()[0]  # could have a proper dict here...
         element = element[:2]
+        segID = segID or chainID
+        segID = segID[:4]
         self.pdb.write(self.fmt['ATOM'] % vars())        
         
     def __del__(self):

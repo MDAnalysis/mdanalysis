@@ -9,7 +9,7 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/11 orbeckst
+??/??/11 orbeckst, dcaplan
         * 0.7.2 development
 	* loading from a PDB sets segid to the chain id if it exists
 	* PrimitivePDBWriter uses first letter of segid as PDB chain id
@@ -18,6 +18,10 @@ The rules for this file:
 	* fixed bugs in reading of unit cells (Issue 60, Issue 61, Issue 34)
 	* universe.trajectory.delta returns the full precision dt value
 	  (Issue 64)
+        * Support for PDBs with 4 character resnames and segID output when
+	  writing (Issue 63) --- makes the (default) PrimitivePDBReader/Writer
+	  more suitable for NAMD/CHARMM but breaks strict PDB standard. If
+	  you need full PDB reading capabilities, use the strict PDB reader.
 
 02/08/11 orbeckst, denniej0, jandom, tyler.je.reddy, Joshua Adelman
         * 0.7.1 release
