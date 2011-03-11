@@ -13,15 +13,18 @@ The rules for this file:
         * 0.7.2 development
 	* loading from a PDB sets segid to the chain id if it exists
 	* PrimitivePDBWriter uses first letter of segid as PDB chain id
+        * Support for PDBs with 4 character resnames and segID output when
+	  writing (Issue 63) --- makes the (default) PrimitivePDBReader/Writer
+	  more suitable for NAMD/CHARMM but breaks strict PDB standard. If
+	  you need full PDB reading capabilities, use the strict PDB reader.
 	* fixed bug in (experimental) phi and psi selections
 	* aliased segment.name to segment.id
 	* fixed bugs in reading of unit cells (Issue 60, Issue 61, Issue 34)
 	* universe.trajectory.delta returns the full precision dt value
 	  (Issue 64)
-        * Support for PDBs with 4 character resnames and segID output when
-	  writing (Issue 63) --- makes the (default) PrimitivePDBReader/Writer
-	  more suitable for NAMD/CHARMM but breaks strict PDB standard. If
-	  you need full PDB reading capabilities, use the strict PDB reader.
+        * new method AtomGroup.bbox() that returns the orthorhombic bounding box
+	* enhancements of the analysis.density module (build density from B-factors) 
+	* doc improvements 
 
 02/08/11 orbeckst, denniej0, jandom, tyler.je.reddy, Joshua Adelman
         * 0.7.1 release
