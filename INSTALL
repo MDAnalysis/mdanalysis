@@ -8,8 +8,8 @@ Requirements
 Currently MDAnalysis is only distributed in source form. In order to
 build the library some C and C++ code needs to be compiled. Thus you will need
 
-    * python (>=2.4)
-    * a C and a C++ compiler (e.g. gcc or Intel icc),
+    * python (>=2.5)
+    * a C and a C++ compiler (e.g. GNU gcc),
     * the python header files (typically in a package python-dev),
     * numpy and cython to compile the DCD reader and numerical extensions,
     * a LAPACK library (standard LAPACK/BLAS, ATLAS, or the Intel Math
