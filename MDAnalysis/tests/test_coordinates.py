@@ -514,7 +514,10 @@ class TestDCDReader(_TestDCD):
                             err_msg="wrong timestep dt")
 
     def test_totaltime(self):
-        assert_almost_equal(self.universe.trajectory.totaltime, 98.0, 4,
+        # test_totaltime(): need to reduce precision because dt is only precise
+        # to ~4 decimals and accumulating the inaccuracy leads to even lower
+        # precision in the totaltime (consequence of fixing Issue 64)
+        assert_almost_equal(self.universe.trajectory.totaltime, 98.0, 3,
                             err_msg="wrong total length of AdK trajectory")
 
 class TestDCDWriter(TestCase):
@@ -779,11 +782,16 @@ class _GromacsReader(TestCase):
 
     @dec.slow
     def test_dt(self):
-        assert_equal(self.universe.trajectory.dt, 100.0, "wrong timestep dt")
+        assert_almost_equal(self.universe.trajectory.dt, 100.0, 4,
+                            err_msg="wrong timestep dt")
 
     @dec.slow
     def test_totaltime(self):
-        assert_equal(self.universe.trajectory.totaltime, 1000.0, "wrong total length of trajectory")
+        # test_totaltime(): need to reduce precision because dt is only precise
+        # to ~4 decimals and accumulating the inaccuracy leads to even lower
+        # precision in the totaltime (consequence of fixing Issue 64)
+        assert_almost_equal(self.universe.trajectory.totaltime, 1000.0, 3,
+                            err_msg="wrong total length of trajectory")
 
 
 class TestXTCReader(_GromacsReader):
