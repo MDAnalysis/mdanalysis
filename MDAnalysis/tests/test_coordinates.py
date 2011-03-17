@@ -510,10 +510,12 @@ class TestDCDReader(_TestDCD):
         assert_equal(self.universe.trajectory.numframes, 98, "wrong number of frames in dcd")
 
     def test_dt(self):
-        assert_equal(self.universe.trajectory.dt, 1.0, "wrong timestep dt")
+        assert_almost_equal(self.universe.trajectory.dt, 1.0, 4,
+                            err_msg="wrong timestep dt")
 
     def test_totaltime(self):
-        assert_equal(self.universe.trajectory.totaltime, 98.0, "wrong total length of AdK trajectory")
+        assert_almost_equal(self.universe.trajectory.totaltime, 98.0, 4,
+                            err_msg="wrong total length of AdK trajectory")
 
 class TestDCDWriter(TestCase):
     def setUp(self):
