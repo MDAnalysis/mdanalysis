@@ -1,51 +1,41 @@
 # $Id$
-"""Setuptools-based setup script for MDAnalysis.
+"""Setuptools based setup script for MDAnalysis (for developers)
+
+This uses setuptools <http://pypi.python.org/pypi/setuptools> and
+Cython <http://cython.org> to build all files from primary sources.
 
 A working installation of NumPy <http://numpy.scipy.org> is required.
 
-For a basic installation just type the command::
+For the easiest installation just type the command:
 
   python setup.py install
+
+The details of such an "EasyInstall" installation procedure are shown on
+
+  http://peak.telecommunity.com/DevCenter/EasyInstall
 
 For more in-depth instructions, see the installation section at the
 MDAnalysis Wiki:
 
   http://code.google.com/p/mdanalysis/wiki/Install
 
-Also free to ask on the MDAnalysis mailing list for help:
+Or, if all else fails, feel free to ask on the MDAnalysis mailing list
+for help:
 
   http://groups.google.com/group/mdnalysis-discussion
 
 (Note that the group really is called `mdnalysis-discussion' because
 Google groups forbids any name that contains the string `anal'.)
-
-By default we use setuptools <http://pypi.python.org/pypi/setuptools>.  The
-details of such an "EasyInstall" installation procedure are shown on
-
-  http://peak.telecommunity.com/DevCenter/EasyInstall
-
-By changing the code below you can also switch to a standard distutils
-installation.
 """
-
-#------------------------------------------------------------
-# selection of the installation system
-#------------------------------------------------------------
-#
-# Standard distutils-based installation:
-#
-##from distutils.core import setup, Extension
-
-# setuptools ("EasyInstall") installation:
-#
-# If you want EasyInstall features then enable the next three lines and comment
-# out the preceding line 'from distutils.core import ...'
-#
+# EasyInstall installation:
 from ez_setup import use_setuptools
 use_setuptools()
 from setuptools import setup, Extension
-#
-#------------------------------------------------------------
+
+# If you don't require EasyInstall features you can also comment out
+# the previous three lines and use the following standard distutils-based
+# installation:
+###from distutils.core import setup, Extension
 
 import sys, os
 import glob
@@ -61,8 +51,9 @@ try:
     # Obtain the numpy include directory.  This logic works across numpy versions.
     import numpy
 except ImportError:
+    # TODO: somehow fix this so that easy_install could get numpy if needed
     print "*** package 'numpy' not found ***"
-    print "MDAnalysis requires a version of NumPy (>=1.0.3), even for setup."
+    print "MDAnalysis requires a version of NumPy, even for setup."
     print "Please get it from http://numpy.scipy.org/ or install it through your package manager."
     sys.exit(-1)
 
@@ -71,6 +62,13 @@ try:
 except AttributeError:
     numpy_include = numpy.get_numpy_include()
 
+try:
+    from Cython.Distutils import build_ext
+except ImportError:
+    print "*** package 'Cython' not found ***"
+    print "MDAnalysis requires Cython at the setup and build stage."
+    print "Please get it from http://cython.org/ or install it through your package manager."
+    sys.exit(-1)
 
 import ConfigParser
 
@@ -122,22 +120,22 @@ if __name__ == '__main__':
                             include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('coordinates.dcdtimeseries', ['src/dcd/dcdtimeseries.c'],
+                  Extension('coordinates.dcdtimeseries', ['src/dcd/dcdtimeseries.pyx'],
                             include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('core.distances', ['src/numtools/distances.c'],
+                  Extension('core.distances', ['src/numtools/distances.pyx'],
                             include_dirs = include_dirs+['src/numtools'],
                             libraries = ['m'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('core.rms_fitting', ['src/numtools/rms_fitting.c'],
+                  Extension('core.rms_fitting', ['src/numtools/rms_fitting.pyx'],
                             libraries = ['m'],
                             define_macros=define_macros,
                             include_dirs = include_dirs+fast_numeric_include,
                             extra_link_args=fast_numeric_link,
                             extra_compile_args=extra_compile_args),
-                  Extension('core.qcprot', ['src/pyqcprot/pyqcprot.c'],
+                  Extension('core.qcprot', ['src/pyqcprot/pyqcprot.pyx'],
                             include_dirs=include_dirs,
                             extra_compile_args=["-O3","-ffast-math"]),
                   Extension('core._transformations', ['src/transformations/transformations.c'],
@@ -145,6 +143,12 @@ if __name__ == '__main__':
                             define_macros=define_macros,
                             include_dirs = include_dirs+fast_numeric_include,
                             extra_compile_args=extra_compile_args),
+                  #Extension('util.delaunay', ['src/delaunay/delaunay.pyx', 'src/delaunay/blas.c', 'src/delaunay/tess.c'],
+                  #          libraries = ['m'],
+                  #          define_macros=define_macros,
+                  #          include_dirs = include_dirs+fast_numeric_include+['src/delaunay'],
+                  #          extra_link_args=fast_numeric_link,
+                  #          extra_compile_args=extra_compile_args),
                   Extension('KDTree._CKDTree', 
                             ["src/KDTree/KDTree.cpp",
                              "src/KDTree/KDTree.swig.cpp"],
@@ -187,6 +191,7 @@ if __name__ == '__main__':
           ext_modules       = extensions,
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
+          cmdclass = {'build_ext': build_ext},
           install_requires = ['numpy>=1.0.3',  # currently not useful because without numpy we don't get here
                               'biopython',   # required for standard PDB reader
                               ],

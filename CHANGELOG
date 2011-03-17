@@ -12,6 +12,8 @@ The rules for this file:
 ??/??/11 orbeckst, dcaplan
         * 0.7.2 development
 	* NOTE: minimum Python version required is 2.5 (since 0.6.3)
+	* installation: removed dependency on Cython; developer should
+	  use setup_developer.py instead of setup.py (Issue 66)	  
 	* loading from a PDB sets segid to the chain id if it exists
 	* PrimitivePDBWriter uses first letter of segid as PDB chain id
         * Support for PDBs with 4 character resnames and segID output when
