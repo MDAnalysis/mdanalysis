@@ -109,21 +109,30 @@ def guess_atom_type(atomname):
 
     Looks in dict to see if element is found, otherwise it uses the first character in the atomname.
     The table comes from CHARMM and AMBER atom types, where the first character is not sufficient to
-    determine the atom type.
-    This will probably result in some mistakes, but it still better than nothing!
+    determine the atom type. Some GROMOS ions have also been added.
+
+    .. Warning: The translation table is incomplete. This will probably result
+                in some mistakes, but it still better than nothing!
     """
     types = {   'CAL': 'CA',
                 'C0': 'CA',
+                'CA2+': 'CA',
                 'CES': 'CS',
                 'CLA': 'CL',
                 'CLAL': 'CL',
+                'CL': 'CL',
+                'CL-': 'CL',
                 'FE': 'FE',
                 'LIT': 'LI',
                 'MG': 'MG',
+                'MG2+': 'MG',
                 'HE': 'HE',
                 'NE': 'NE',
                 'POT': 'K',
+                'K+': 'K',
                 'SOD': 'NA',
+                'NA': 'NA',
+                'NA+': 'NA',
                 'ZN': 'ZN',
                 'MG': 'MG',
                 'CU': 'CU',
