@@ -16,6 +16,7 @@
 """
 import os.path
 import MDAnalysis.topology
+import tables
 
 def build_segments(atoms):
     from MDAnalysis.core.AtomGroup import Residue, Segment
@@ -114,42 +115,13 @@ def guess_atom_type(atomname):
     .. Warning: The translation table is incomplete. This will probably result
                 in some mistakes, but it still better than nothing!
     """
-    types = {   'CAL': 'CA',
-                'C0': 'CA',
-                'CA2+': 'CA',
-                'CES': 'CS',
-                'CLA': 'CL',
-                'CLAL': 'CL',
-                'CL': 'CL',
-                'CL-': 'CL',
-                'FE': 'FE',
-                'LIT': 'LI',
-                'MG': 'MG',
-                'MG2+': 'MG',
-                'HE': 'HE',
-                'NE': 'NE',
-                'POT': 'K',
-                'K+': 'K',
-                'SOD': 'NA',
-                'NA': 'NA',
-                'NA+': 'NA',
-                'ZN': 'ZN',
-                'MG': 'MG',
-                'CU': 'CU',
-                'QK': 'K',
-                'QC': 'CE',
-                'QL': 'LI',
-                'QN': 'NA',
-                'QR': 'RB',
-                'BC': 'C',
-                'AC': 'C',
-            }
-    if atomname in types:
-        return types[atomname]
-    if atomname.startswith(('1', '2', '3', '4', '5', '6', '7', '8', '9')):
-        # catch 1HH etc
-        return atomname[1]
-    return atomname[0]
+    try:
+        return tables.atomtypes[atomname]
+    except KeyError:
+        if atomname.startswith(('1', '2', '3', '4', '5', '6', '7', '8', '9')):
+            # catch 1HH etc
+            return atomname[1]
+        return atomname[0]
 
 def guess_atom_element(atomname):
     """Guess the element of the atom from the name.
@@ -158,42 +130,27 @@ def guess_atom_element(atomname):
     """
     return guess_atom_type(atomname)
 
+def get_atom_mass(element):
+    """Return the atomic mass in u for *element*.
+
+    Masses are looked up in :data:`MDAnalysis.topology.tables.masses`.
+
+    .. Warning:: Unknown masses are set to 0.
+    """
+    try:
+        return tables.masses[element]
+    except KeyError:
+    	return 0.000
+
 def guess_atom_mass(atomname):
     """Guess a mass based on the atom name.
 
-    Masses are hard-coded here and some simple heuristics are used to
-    distinguish e.g. CL from C or NA from N. Generally, the first
-    letter of the atom name is used to decide.
+    :func:`guess_atom_element` is used to determine the kind of atom.
 
     .. warning:: Anything not recognized is simply set to 0; if you rely on the
                  masses you might want to double check.
     """
-    # TODO: do something slightly smarter, at least use name/element & dict
-    if atomname[0] == 'N':
-    	if atomname[:1] != 'NA':
-    		return 14.007
-    elif atomname[0] == 'C':
-    	if atomname[:2] not in ['CAL','CL ','CLA']:
-    		return 12.010
-    elif atomname[0] == 'O':
-    	return 15.999
-    elif atomname[0] == 'S':
-    	if atomname[:2] != 'SOD':
-		return 32.065
-    elif atomname[0] == 'P':
-    	return 30.974
-    elif atomname[0] == 'H' or (atomname[0] in ('1','2','3','4') and atomname[1] == 'H'):
-    	return 1.008 
-    elif atomname[:1] == 'MG':
-    	return 24.305
-    elif atomname[:2] in ['K  ','POT']:
-    	return 39.102
-    elif atomname[:1] == 'CL':
-    	return 35.450
-    elif atomname[:2] in ['NA ','SOD']:
-    	return 22.989 
-    else:
-    	return 0.000
+    return get_atom_mass(guess_atom_element(atomname))
 
 def guess_atom_charge(atomname):
     """Guess atom charge from the name.
