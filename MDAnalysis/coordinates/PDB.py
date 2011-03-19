@@ -36,6 +36,8 @@ import base
 import base
 import pdb.extensions
 
+from MDAnalysis.topology.core import guess_atom_element
+
 class Timestep(base.Timestep):
 	@property
 	def dimensions(self):
@@ -376,11 +378,12 @@ class PrimitivePDBWriter(base.Writer):
         self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
         atoms = selection.atoms    # make sure to use atoms (Issue 46)
         coor = atoms.coordinates() # can write from selection == Universe (Issue 49)
-        for i, atom in enumerate(atoms):
+        for i, atom in enumerate(atoms):            
             self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
-                      chainID=atom.segid.strip(), segID=atom.segid.strip(), element=atom.type.strip(),
+                      chainID=atom.segid.strip(), segID=atom.segid.strip(),
                       x=coor[i,0], y=coor[i,1], z=coor[i,2])
-        # get bfactor, too?
+            # get bfactor, too, and add to output?
+            # 'element' is auto-guessed from atom.name in ATOM()
         self.close()
 
 
@@ -435,8 +438,8 @@ class PrimitivePDBWriter(base.Writer):
         resSeq = int(str(resSeq)[-4:]) # check for overflow here?
         iCode = iCode or ""
         iCode = iCode[:1]
-        element = element or name.strip()[0]  # could have a proper dict here...
-        element = element[:2]
+        element = element or guess_atom_element(name)  # element == 0|False|None will be guessed
+        element = str(element)[:2]            # make sure that is a string for user input
         segID = segID or chainID
         segID = segID[:4]
         self.pdb.write(self.fmt['ATOM'] % vars())        

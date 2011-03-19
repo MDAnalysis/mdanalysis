@@ -137,8 +137,17 @@ def guess_atom_type(atomname):
             }
     if atomname in types:
         return types[atomname]
-    else:
-        return atomname[0]
+    if atomname.startswith(('1', '2', '3', '4', '5', '6', '7', '8', '9')):
+        # catch 1HH etc
+        return atomname[1]
+    return atomname[0]
+
+def guess_atom_element(atomname):
+    """Guess the element of the atom from the name.
+
+    At the moment, this simply returns the atom *type*.
+    """
+    return guess_atom_type(atomname)
 
 def guess_atom_mass(atomname):
     """Guess a mass based on the atom name.
