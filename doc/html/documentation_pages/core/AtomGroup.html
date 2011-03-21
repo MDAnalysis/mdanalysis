@@ -368,11 +368,12 @@ selects atoms 5 through 10 inclusive</dd>
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">AtomGroup</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>A group of atoms.</p>
-<p>ag = universe.selectAtoms(atom-list)</p>
+<blockquote>
+ag = universe.selectAtoms(atom-list)</blockquote>
 <p>The AtomGroup contains a list of atoms; typically, a AtomGroup is generated
 from a selection. It is build from any list-like collection of
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
-<p>An AtomGroup can be indexed and sliced like a list</p>
+<p>An AtomGroup can be indexed and sliced like a list:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">ag</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ag</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>   
 </pre></div>
 </div>
@@ -500,7 +501,7 @@ i.e. <em>axis</em> = 0) with the z-axis:</p>
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.bfactors">
 <tt class="descname">bfactors</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bfactors" title="Permalink to this definition">¶</a></dt>
-<dd><p>B-factors of the AtomGroup</p>
+<dd><p>Crystallographic B-factors (from PDB) in A**2</p>
 </dd></dl>
 
 <dl class="method">
@@ -584,6 +585,12 @@ and <tt class="docutils literal"><span class="pre">v[2]</span></tt> as third eig
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.radii">
+<tt class="descname">radii</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.radii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of atomic radii (as defined in the PQR file)</p>
 </dd></dl>
 
 <dl class="method">
@@ -804,9 +811,10 @@ placeholders; the extension is set according to the <em>format</em>
 
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.Atom">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Atom</tt><big>(</big><em>number</em>, <em>name</em>, <em>type</em>, <em>resname</em>, <em>resid</em>, <em>segid</em>, <em>mass</em>, <em>charge</em>, <em>residue=None</em>, <em>segment=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Atom</tt><big>(</big><em>number</em>, <em>name</em>, <em>type</em>, <em>resname</em>, <em>resid</em>, <em>segid</em>, <em>mass</em>, <em>charge</em>, <em>residue=None</em>, <em>segment=None</em>, <em>radius=None</em>, <em>bfactor=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom" title="Permalink to this definition">¶</a></dt>
 <dd><p>A single atom definition</p>
-<p>a = Atom()</p>
+<blockquote>
+a = Atom()</blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -842,17 +850,18 @@ placeholders; the extension is set according to the <em>format</em>
 <dt><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom.pos" title="MDAnalysis.core.AtomGroup.Atom.pos"><tt class="xref py py-attr docutils literal"><span class="pre">pos</span></tt></a></dt>
 <dd><p class="first last">The current position (as a numpy array) of this atom</p>
 </dd>
+<dt>radius</dt>
+<dd><p class="first last">Born-radius for electrostatic calculations. (Only if read from a PQR
+file with the <a class="reference internal" href="../coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader" title="MDAnalysis.coordinates.PQR.PQRReader"><tt class="xref py py-class docutils literal"><span class="pre">PQRReader</span></tt></a>.)</p>
+</dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">bfactor</span></tt></dt>
+<dd><p class="first last">temperature factor. (Only if loaded from a PDB.)</p>
+</dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="attribute">
-<dt id="MDAnalysis.core.AtomGroup.Atom.bfactor">
-<tt class="descname">bfactor</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.bfactor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Crystallographic B-factor (if universe was built from a pdb) or None</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.Atom.centroid">
 <tt class="descname">centroid</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.centroid" title="Permalink to this definition">¶</a></dt>

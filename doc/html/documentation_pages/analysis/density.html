@@ -221,8 +221,9 @@ associated with the density; the class does not touch
 <dt id="MDAnalysis.analysis.density.Density.convert_density">
 <tt class="descname">convert_density</tt><big>(</big><em>unit='Angstrom'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.convert_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the density to the physical units given by <em>unit</em>.</p>
-<p>Grid.convert_to(&lt;unit&gt;)</p>
-<p>&lt;unit&gt; can be one of the following:</p>
+<blockquote>
+Grid.convert_to(unit)</blockquote>
+<p><em>unit</em> can be one of the following:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="17%" />
@@ -265,27 +266,41 @@ associated with the density; the class does not touch
 and floating point artifacts for multiple conversions.</li>
 </ol>
 </blockquote>
-<p>There may be some undesirable cross-interactions with convert_length...</p>
+<p>There may be some undesirable cross-interactions with <a class="reference internal" href="#MDAnalysis.analysis.density.Density.convert_length" title="MDAnalysis.analysis.density.Density.convert_length"><tt class="xref py py-meth docutils literal"><span class="pre">convert_length()</span></tt></a>...</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.Density.convert_length">
 <tt class="descname">convert_length</tt><big>(</big><em>unit='Angstrom'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.convert_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert Grid object to the new <em>unit</em>.</p>
-<p>Grid.convert_length(&lt;unit&gt;)</p>
-<p>unit       Angstrom, nm</p>
+<blockquote>
+Grid.convert_length(&lt;unit&gt;)</blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>unit</em></dt>
+<dd><p class="first last">Angstrom, nm</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <p>This changes the edges but will not change the density; it is
 the user&#8217;s responsibility to supply the appropriate unit if
 the Grid object is constructed from a density. It is suggested
 to start from a histogram and a length unit and use
-make_density().</p>
+<a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><tt class="xref py py-meth docutils literal"><span class="pre">make_density()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.Density.make_density">
 <tt class="descname">make_density</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.make_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the grid (a histogram, counts in a cell) to a density (counts/volume).</p>
-<p>make_density()</p>
+<blockquote>
+make_density()</blockquote>
 <ol class="arabic simple">
 <li>This changes the grid irrevocably.</li>
 <li>For a probability density, manually divide by grid.sum().</li>
@@ -500,21 +515,16 @@ estimated by placing Gaussians of width sigma at the position of
 all selected atoms.</p>
 <p>Sigma can be fixed or taken from the B-factor field, in which case
 sigma is taken as sqrt(3.*B/8.)/pi (see <tt class="xref py py-func docutils literal"><span class="pre">BFactor2RMSF()</span></tt>).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Todo :</th><td class="field-body"><ul class="first last simple">
+<p><strong>TODO</strong></p>
+<blockquote>
+<ul class="simple">
 <li>Make Gaussian convolution more efficient (at least for same
 sigma) because right now it is <em>very</em> slow (which may be
 acceptable if one only runs this once)</li>
 <li>Using a temporary Creator class with the
 <a class="reference internal" href="#MDAnalysis.analysis.density.BfactorDensityCreator.Density" title="MDAnalysis.analysis.density.BfactorDensityCreator.Density"><tt class="xref py py-meth docutils literal"><span class="pre">BfactorDensityCreator.Density()</span></tt></a> helper method is clumsy.</li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</blockquote>
 <p>Construct the density from psf and pdb and the atomselection.</p>
 <dl class="docutils">
 <dt>DC = BfactorDensityCreator(pdb, delta=&lt;delta&gt;, atomselection=&lt;MDAnalysis selection&gt;,</dt>
@@ -587,7 +597,7 @@ that can be easily matched to a broader density distribution.</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="distances.html"
-                        title="previous chapter">3.3. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
+                        title="previous chapter">3.3. Distance analysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="leaflet.html"
                         title="next chapter">3.5. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>

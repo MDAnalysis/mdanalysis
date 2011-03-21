@@ -65,11 +65,10 @@ connectivity is deduced.</p>
 <dt id="MDAnalysis.topology.PQRParser.parse">
 <tt class="descclassname">MDAnalysis.topology.PQRParser.</tt><tt class="descname">parse</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.PQRParser.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse atom information from PQR file <em>filename</em>.</p>
-<p>Only reads the list of atoms. Reads the charges from the PQR file and
-populates the <tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.charge</span></tt> attribute. The
-array of all radii can be accessed through the method
-<a class="reference internal" href="../coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader.get_radii" title="MDAnalysis.coordinates.PQR.PQRReader.get_radii"><tt class="xref py py-meth docutils literal"><span class="pre">get_radii()</span></tt></a> of the
-<a class="reference internal" href="../coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader" title="MDAnalysis.coordinates.PQR.PQRReader"><tt class="xref py py-class docutils literal"><span class="pre">PQRReader</span></tt></a>.</p>
+<p>Only reads the list of atoms. Reads the charges and radii from the
+PQR file and populates the
+<tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.charge</span></tt> and
+<tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.radius</span></tt> attribute.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

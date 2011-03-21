@@ -114,8 +114,9 @@ option are guaranteed to conform to the above format:</p>
 <p>The <a class="reference internal" href="../topology/PQRParser.html#module-MDAnalysis.topology.PQRParser" title="MDAnalysis.topology.PQRParser"><tt class="xref py py-mod docutils literal"><span class="pre">PQRParser</span></tt></a> takes charges from the
 PQR file in order to populate the
 <tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.charge</span></tt> attribute. Radii are
-currently only accessible through the <a class="reference internal" href="#MDAnalysis.coordinates.PQR.PQRReader.get_radii" title="MDAnalysis.coordinates.PQR.PQRReader.get_radii"><tt class="xref py py-meth docutils literal"><span class="pre">get_radii()</span></tt></a> method of
-the reader.</p>
+accessible through the <a class="reference internal" href="#MDAnalysis.coordinates.PQR.PQRReader.get_radii" title="MDAnalysis.coordinates.PQR.PQRReader.get_radii"><tt class="xref py py-meth docutils literal"><span class="pre">get_radii()</span></tt></a> method of the reader, the
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.radii" title="MDAnalysis.core.AtomGroup.AtomGroup.radii"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.radii()</span></tt></a> method and the
+<tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.radius</span></tt> attribute.</p>
 <p>Read coordinates from <em>filename</em>.</p>
 <p><em>filename</em> can be a gzipped or bzip2ed compressed <a class="reference external" href="http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr">PQR</a> file.</p>
 <dl class="method">
@@ -142,7 +143,7 @@ the reader.</p>
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="PDB.html"
-                        title="previous chapter">5.7. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></p>
+                        title="previous chapter">5.7. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="TRJ.html"
                         title="next chapter">5.9. TRJ/MDCRD file format (Amber) &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></p>
