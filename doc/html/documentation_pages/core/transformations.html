@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations &mdash; MDAnalysis v0.7.2 documentation</title>
+    <title>6.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations &mdash; MDAnalysis v0.7.2 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.2 documentation" href="../../index.html" />
-    <link rel="up" title="5. Core modules" href="../core_modules.html" />
-    <link rel="next" title="5.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot" href="qcprot.html" />
-    <link rel="prev" title="5.5. MDAnalysis.core.distances — fast distance array computation" href="distances.html" /> 
+    <link rel="up" title="6. Core modules" href="../core_modules.html" />
+    <link rel="next" title="6.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot" href="qcprot.html" />
+    <link rel="prev" title="6.5. MDAnalysis.core.distances — fast distance array computation" href="distances.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,13 +38,13 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="qcprot.html" title="5.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot"
+          <a href="qcprot.html" title="6.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="distances.html" title="5.5. MDAnalysis.core.distances — fast distance array computation"
+          <a href="distances.html" title="6.5. MDAnalysis.core.distances — fast distance array computation"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" accesskey="U">5. Core modules</a> &raquo;</li> 
+          <li><a href="../core_modules.html" accesskey="U">6. Core modules</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,7 +54,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.core.transformations"></span><div class="section" id="homogeneous-transformation-matrices-and-quaternions-mdanalysis-core-transformations">
-<h1>5.6. Homogeneous Transformation Matrices and Quaternions &#8212; <a class="reference internal" href="#module-MDAnalysis.core.transformations" title="MDAnalysis.core.transformations"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.transformations</span></tt></a><a class="headerlink" href="#homogeneous-transformation-matrices-and-quaternions-mdanalysis-core-transformations" title="Permalink to this headline">¶</a></h1>
+<h1>6.6. Homogeneous Transformation Matrices and Quaternions &#8212; <a class="reference internal" href="#module-MDAnalysis.core.transformations" title="MDAnalysis.core.transformations"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.transformations</span></tt></a><a class="headerlink" href="#homogeneous-transformation-matrices-and-quaternions-mdanalysis-core-transformations" title="Permalink to this headline">¶</a></h1>
 <p>A library for calculating 4x4 matrices for translating, rotating, reflecting,
 scaling, shearing, projecting, orthogonalizing, and superimposing arrays of
 3D homogeneous coordinates as well as for converting between rotation matrices,
@@ -72,7 +72,7 @@ Laboratory for Fluorescence Dynamics, University of California, Irvine</td>
 </tbody>
 </table>
 <div class="section" id="requirements">
-<h2>5.6.1. Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<h2>6.6.1. Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="http://www.python.org">Python 2.6 or 3.1</a></li>
 <li><a class="reference external" href="http://numpy.scipy.org">Numpy 1.4</a></li>
@@ -81,7 +81,7 @@ Laboratory for Fluorescence Dynamics, University of California, Irvine</td>
 </ul>
 </div>
 <div class="section" id="notes">
-<h2>5.6.2. Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<h2>6.6.2. Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
 <p>The API is not stable yet and is expected to change between revisions.</p>
 <p>This Python code is not optimized for speed. Refer to the transformations.c
 module for a faster implementation of some functions.</p>
@@ -116,7 +116,7 @@ by &#8216;z&#8217;, or &#8216;z&#8217; is followed by &#8216;x&#8217;. Otherwise
 </blockquote>
 </div>
 <div class="section" id="references">
-<h2>5.6.3. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<h2>6.6.3. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li>Matrices and transformations. Ronald Goldman.
 In &#8220;Graphics Gems I&#8221;, pp 472-475. Morgan Kaufmann, 1990.</li>
@@ -149,7 +149,7 @@ Itzhack Y Bar-Itzhack, J Guid Contr Dynam. 2000. 23(6): 1085-1087.</li>
 </ol>
 </div>
 <div class="section" id="examples">
-<h2>5.6.4. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<h2>6.6.4. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.123</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.234</span><span class="p">,</span> <span class="mf">2.345</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">origin</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">,</span> <span class="n">zaxis</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">I</span> <span class="o">=</span> <span class="n">identity_matrix</span><span class="p">()</span>
@@ -195,7 +195,7 @@ Itzhack Y Bar-Itzhack, J Guid Contr Dynam. 2000. 23(6): 1085-1087.</li>
 </div>
 </div>
 <div class="section" id="functions">
-<h2>5.6.5. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<h2>6.6.5. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.transformations.Arcball">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">Arcball</tt><big>(</big><em>initial=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball" title="Permalink to this definition">¶</a></dt>
@@ -526,22 +526,22 @@ point, normal, direction, perspective, and pseudo.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.6. Homogeneous Transformation Matrices and Quaternions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.transformations</span></tt></a><ul>
-<li><a class="reference internal" href="#requirements">5.6.1. Requirements</a></li>
-<li><a class="reference internal" href="#notes">5.6.2. Notes</a></li>
-<li><a class="reference internal" href="#references">5.6.3. References</a></li>
-<li><a class="reference internal" href="#examples">5.6.4. Examples</a></li>
-<li><a class="reference internal" href="#functions">5.6.5. Functions</a></li>
+<li><a class="reference internal" href="#">6.6. Homogeneous Transformation Matrices and Quaternions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.transformations</span></tt></a><ul>
+<li><a class="reference internal" href="#requirements">6.6.1. Requirements</a></li>
+<li><a class="reference internal" href="#notes">6.6.2. Notes</a></li>
+<li><a class="reference internal" href="#references">6.6.3. References</a></li>
+<li><a class="reference internal" href="#examples">6.6.4. Examples</a></li>
+<li><a class="reference internal" href="#functions">6.6.5. Functions</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="distances.html"
-                        title="previous chapter">5.5. <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.distances</span></tt> &#8212; fast distance array computation</a></p>
+                        title="previous chapter">6.5. <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.distances</span></tt> &#8212; fast distance array computation</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="qcprot.html"
-                        title="next chapter">5.7. Fast QCP RMSD structure alignment &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></tt></a></p>
+                        title="next chapter">6.7. Fast QCP RMSD structure alignment &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/transformations.txt"
@@ -574,18 +574,18 @@ point, normal, direction, perspective, and pseudo.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="qcprot.html" title="5.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot"
+          <a href="qcprot.html" title="6.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot"
              >next</a> |</li>
         <li class="right" >
-          <a href="distances.html" title="5.5. MDAnalysis.core.distances — fast distance array computation"
+          <a href="distances.html" title="6.5. MDAnalysis.core.distances — fast distance array computation"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" >5. Core modules</a> &raquo;</li> 
+          <li><a href="../core_modules.html" >6. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
 </html>

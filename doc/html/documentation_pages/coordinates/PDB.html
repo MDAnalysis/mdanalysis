@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.7. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB &mdash; MDAnalysis v0.7.2 documentation</title>
+    <title>5.7. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB &mdash; MDAnalysis v0.7.2 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.2 documentation" href="../../index.html" />
-    <link rel="up" title="4. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="4.8. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" />
-    <link rel="prev" title="4.6. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" /> 
+    <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
+    <link rel="next" title="5.8. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" />
+    <link rel="prev" title="5.6. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,13 +38,13 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="PQR.html" title="4.8. PQR file format — MDAnalysis.coordinates.PQR"
+          <a href="PQR.html" title="5.8. PQR file format — MDAnalysis.coordinates.PQR"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="GRO.html" title="4.6. GRO file format — MDAnalysis.coordinates.GRO"
+          <a href="GRO.html" title="5.6. GRO file format — MDAnalysis.coordinates.GRO"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
-          <li><a href="../coordinates_modules.html" accesskey="U">4. Coordinates modules</a> &raquo;</li> 
+          <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,7 +54,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.PDB"></span><div class="section" id="pdb-structure-files-in-mdanalysis-mdanalysis-coordinates-pdb">
-<h1>4.7. PDB structure files in MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a><a class="headerlink" href="#pdb-structure-files-in-mdanalysis-mdanalysis-coordinates-pdb" title="Permalink to this headline">¶</a></h1>
+<h1>5.7. PDB structure files in MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a><a class="headerlink" href="#pdb-structure-files-in-mdanalysis-mdanalysis-coordinates-pdb" title="Permalink to this headline">¶</a></h1>
 <p>MDAnalysis reads coordinates from PDB files and additional optional
 data such as B-factors. It is also possible to substitute a PDB file
 instead of PSF file in order to define the list of atoms (but no
@@ -203,7 +203,7 @@ True: write all frames to multiple pdb files</blockquote>
 <td>altLoc</td>
 <td>Alternate location indicator. IGNORED</td>
 </tr>
-<tr><td>18 - 20</td>
+<tr><td>18 - 21</td>
 <td>Residue name</td>
 <td>resName</td>
 <td>Residue name.</td>
@@ -288,7 +288,7 @@ True: write all frames to multiple pdb files</blockquote>
 <a class="reference external" href="http://www.wwpdb.org/documentation/format32/v3.2.html">http://www.wwpdb.org/documentation/format32/v3.2.html</a></p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM">
-<tt class="descname">ATOM</tt><big>(</big><em>serial=None</em>, <em>name=None</em>, <em>altLoc=None</em>, <em>resName=None</em>, <em>chainID=None</em>, <em>resSeq=None</em>, <em>iCode=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em>, <em>occupancy=1.0</em>, <em>tempFactor=0.0</em>, <em>element=None</em>, <em>charge=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">ATOM</tt><big>(</big><em>serial=None</em>, <em>name=None</em>, <em>altLoc=None</em>, <em>resName=None</em>, <em>chainID=None</em>, <em>resSeq=None</em>, <em>iCode=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em>, <em>occupancy=1.0</em>, <em>tempFactor=0.0</em>, <em>segID=None</em>, <em>element=None</em>, <em>charge=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write ATOM record. 
 <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html">http://www.wwpdb.org/documentation/format32/sect9.html</a>
 Only some keword args are optional (altLoc, iCode, chainID), for some defaults are set.</p>
@@ -361,10 +361,10 @@ is used as the PDB chainID.</p>
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="GRO.html"
-                        title="previous chapter">4.6. GRO file format &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
+                        title="previous chapter">5.6. GRO file format &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="PQR.html"
-                        title="next chapter">4.8. PQR file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></p>
+                        title="next chapter">5.8. PQR file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/PDB.txt"
@@ -397,18 +397,18 @@ is used as the PDB chainID.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="PQR.html" title="4.8. PQR file format — MDAnalysis.coordinates.PQR"
+          <a href="PQR.html" title="5.8. PQR file format — MDAnalysis.coordinates.PQR"
              >next</a> |</li>
         <li class="right" >
-          <a href="GRO.html" title="4.6. GRO file format — MDAnalysis.coordinates.GRO"
+          <a href="GRO.html" title="5.6. GRO file format — MDAnalysis.coordinates.GRO"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
-          <li><a href="../coordinates_modules.html" >4. Coordinates modules</a> &raquo;</li> 
+          <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
 </html>

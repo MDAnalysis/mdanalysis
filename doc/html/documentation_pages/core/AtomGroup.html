@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.2 documentation</title>
+    <title>6.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.2 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.2 documentation" href="../../index.html" />
-    <link rel="up" title="5. Core modules" href="../core_modules.html" />
-    <link rel="next" title="5.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
-    <link rel="prev" title="5.1. Core functions of MDAnalysis" href="init.html" /> 
+    <link rel="up" title="6. Core modules" href="../core_modules.html" />
+    <link rel="next" title="6.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
+    <link rel="prev" title="6.1. Core functions of MDAnalysis" href="init.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,13 +38,13 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Selection.html" title="5.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
+          <a href="Selection.html" title="6.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="init.html" title="5.1. Core functions of MDAnalysis"
+          <a href="init.html" title="6.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" accesskey="U">5. Core modules</a> &raquo;</li> 
+          <li><a href="../core_modules.html" accesskey="U">6. Core modules</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,7 +54,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.core.AtomGroup"></span><div class="section" id="fundamental-building-blocks-mdanalysis-core-atomgroup">
-<h1>5.2. Fundamental building blocks &#8212; <a class="reference internal" href="#module-MDAnalysis.core.AtomGroup" title="MDAnalysis.core.AtomGroup"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><a class="headerlink" href="#fundamental-building-blocks-mdanalysis-core-atomgroup" title="Permalink to this headline">¶</a></h1>
+<h1>6.2. Fundamental building blocks &#8212; <a class="reference internal" href="#module-MDAnalysis.core.AtomGroup" title="MDAnalysis.core.AtomGroup"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><a class="headerlink" href="#fundamental-building-blocks-mdanalysis-core-atomgroup" title="Permalink to this headline">¶</a></h1>
 <p>The most important data structure in MDAnalysis is the
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>, which contains <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
 <p>A <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> is the user-visible entry point and collects all
@@ -65,7 +65,7 @@ molecule, ion, or ligand. A <a class="reference internal" href="#MDAnalysis.core
 residues such as a whole protein or a chain in a protein or all the
 water in the system.</p>
 <div class="section" id="class-hierarchy">
-<h2>5.2.1. Class Hierarchy<a class="headerlink" href="#class-hierarchy" title="Permalink to this headline">¶</a></h2>
+<h2>6.2.1. Class Hierarchy<a class="headerlink" href="#class-hierarchy" title="Permalink to this headline">¶</a></h2>
 <p>A <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> contains Segments, which contain Residues, which
 contain Atoms; all containers are derived from <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>, and
 thus one can always analyze them as a collection of atoms, independent
@@ -82,7 +82,7 @@ belongs. Each object provides three attributes (<tt class="xref py py-attr docut
 that the object belongs to.</p>
 </div>
 <div class="section" id="classes-and-functions">
-<h2>5.2.2. Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
+<h2>6.2.2. Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.Universe">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Universe</tt><big>(</big><em>topologyfile</em>, <em>coordinatefile=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe" title="Permalink to this definition">¶</a></dt>
@@ -382,7 +382,7 @@ whereas the slice</p>
 ag[0:6:2]</blockquote>
 <p>returns every second element, corresponding to indices 0, 2, and 4.</p>
 <p>It also supports &#8220;advanced slicing&#8221; when the argument is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-cdac120)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-ac3cba3)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aslice</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">ag</span><span class="p">[</span><span class="n">aslice</span><span class="p">]</span>
 </pre></div>
@@ -1069,19 +1069,19 @@ asUniverse(<a href="#id13"><span class="problematic" id="id14">*</span></a>args,
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.2. Fundamental building blocks &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><ul>
-<li><a class="reference internal" href="#class-hierarchy">5.2.1. Class Hierarchy</a></li>
-<li><a class="reference internal" href="#classes-and-functions">5.2.2. Classes and functions</a></li>
+<li><a class="reference internal" href="#">6.2. Fundamental building blocks &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><ul>
+<li><a class="reference internal" href="#class-hierarchy">6.2.1. Class Hierarchy</a></li>
+<li><a class="reference internal" href="#classes-and-functions">6.2.2. Classes and functions</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="init.html"
-                        title="previous chapter">5.1. Core functions of MDAnalysis</a></p>
+                        title="previous chapter">6.1. Core functions of MDAnalysis</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="Selection.html"
-                        title="next chapter">5.3. Atom selection Hierarchy &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.Selection</span></tt></a></p>
+                        title="next chapter">6.3. Atom selection Hierarchy &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.Selection</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/AtomGroup.txt"
@@ -1114,18 +1114,18 @@ asUniverse(<a href="#id13"><span class="problematic" id="id14">*</span></a>args,
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Selection.html" title="5.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
+          <a href="Selection.html" title="6.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
              >next</a> |</li>
         <li class="right" >
-          <a href="init.html" title="5.1. Core functions of MDAnalysis"
+          <a href="init.html" title="6.1. Core functions of MDAnalysis"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" >5. Core modules</a> &raquo;</li> 
+          <li><a href="../core_modules.html" >6. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
 </html>

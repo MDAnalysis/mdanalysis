@@ -1,0 +1,138 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4. Topology modules &mdash; MDAnalysis v0.7.2 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.7.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.2 documentation" href="../index.html" />
+    <link rel="next" title="4.1. MDAnalysis.topology – topology readers" href="topology/init.html" />
+    <link rel="prev" title="3.5. Leaflet identification — MDAnalysis.analysis.leaflet" href="analysis/leaflet.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topology/init.html" title="4.1. MDAnalysis.topology – topology readers"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="analysis/leaflet.html" title="3.5. Leaflet identification — MDAnalysis.analysis.leaflet"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="topology-modules">
+<h1>4. Topology modules<a class="headerlink" href="#topology-modules" title="Permalink to this headline">¶</a></h1>
+<p>The topology module contains the functions to read topology
+files. MDAnalysis uses topology files to identify atoms and bonds
+between the atoms. It can use topology files from MD packages such as
+CHARMM&#8217;s and NAMD&#8217;s PSF format or Amber&#8217;s PRMTOP files. In addition,
+it can also glean atom information from single frame coordinate files
+such the PDB, CRD, or PQR formats.</p>
+<p>Typically, MDAnalysis recognizes formats by the file extension
+and hence most users probably do not need to concern themselves with
+classes and functions described here.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="topology/init.html">4.1. <tt class="docutils literal"><span class="pre">MDAnalysis.topology</span></tt> &#8211; topology readers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/core.html">4.2. <tt class="docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt> &#8212; Common functions for topology building</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/tables.html">4.3. MDAnalysis topology tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PSFParser.html">4.4. PSF topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/TOPParser.html">4.5. Amber PRMTOP topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/CRDParser.html">4.6. CRD topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/GROParser.html">4.7. GRO topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PDBParser.html">4.8. PDB topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PrimitivePDBParser.html">4.9. Primitive PDB topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PQRParser.html">4.10. PQR topology parser</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="analysis/leaflet.html"
+                        title="previous chapter">3.5. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="topology/init.html"
+                        title="next chapter">4.1. <tt class="docutils literal"><span class="pre">MDAnalysis.topology</span></tt> &#8211; topology readers</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/documentation_pages/topology_modules.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topology/init.html" title="4.1. MDAnalysis.topology – topology readers"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="analysis/leaflet.html" title="3.5. Leaflet identification — MDAnalysis.analysis.leaflet"
+             >previous</a> |</li>
+        <li><a href="../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>

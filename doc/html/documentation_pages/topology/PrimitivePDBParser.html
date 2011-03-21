@@ -1,0 +1,152 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.9. Primitive PDB topology parser &mdash; MDAnalysis v0.7.2 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.2 documentation" href="../../index.html" />
+    <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
+    <link rel="next" title="4.10. PQR topology parser" href="PQRParser.html" />
+    <link rel="prev" title="4.8. PDB topology parser" href="PDBParser.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="PQRParser.html" title="4.10. PQR topology parser"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="PDBParser.html" title="4.8. PDB topology parser"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
+          <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.topology.PrimitivePDBParser"></span><div class="section" id="primitive-pdb-topology-parser">
+<h1>4.9. Primitive PDB topology parser<a class="headerlink" href="#primitive-pdb-topology-parser" title="Permalink to this headline">¶</a></h1>
+<p>Use a PDB file to build a minimum internal structure representation (list of atoms).</p>
+<p>Reads a PDB file line by line and is not fuzzy about numbering.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Only cares for atoms and their names; neither
+connectivity nor (partial) charges are deduced. Masses
+are guessed and set to 0 if unknown.</p>
+</div>
+<dl class="exception">
+<dt id="MDAnalysis.topology.PrimitivePDBParser.PDBParseError">
+<em class="property">exception </em><tt class="descclassname">MDAnalysis.topology.PrimitivePDBParser.</tt><tt class="descname">PDBParseError</tt><a class="headerlink" href="#MDAnalysis.topology.PrimitivePDBParser.PDBParseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signifies an error during parsing a PDB file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.PrimitivePDBParser.parse">
+<tt class="descclassname">MDAnalysis.topology.PrimitivePDBParser.</tt><tt class="descname">parse</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.PrimitivePDBParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse atom information from PDB file <em>filename</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body">MDAnalysis internal <em>structure</em> dict</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <em>structure</em> dict is defined in
+<a class="reference internal" href="PSFParser.html#MDAnalysis.topology.PSFParser.parse" title="MDAnalysis.topology.PSFParser.parse"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.PSFParser.parse()</span></tt></a> and the file is read with 
+<a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.PDB.PrimitivePDBReader</span></tt></a>.</p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="PDBParser.html"
+                        title="previous chapter">4.8. PDB topology parser</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="PQRParser.html"
+                        title="next chapter">4.10. PQR topology parser</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/topology/PrimitivePDBParser.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="PQRParser.html" title="4.10. PQR topology parser"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="PDBParser.html" title="4.8. PDB topology parser"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
+          <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+    </div>
+  </body>
+</html>
