@@ -57,17 +57,20 @@ def __parseatoms_(pdb, structure):
     # translate Bio.PDB atom objects to MDAnalysis Atom.
     for iatom,atom in enumerate(pdb.get_atoms()):
         residue = atom.parent
-        chain = residue.parent
+        chain_id = residue.parent.id
 
         atomname = atom.name
         atomtype = guess_atom_type(atomname)
         resname = residue.resname
         resid = residue.id[1]
-        segid = residue.get_segid().strip() or chain or "SYSTEM"  # no empty segids (or Universe throws IndexError)
+        segid = residue.get_segid().strip() or chain_id or "SYSTEM"  # no empty segids (or Universe throws IndexError)
         mass = guess_atom_mass(atomname)
         charge = guess_atom_charge(atomname)
+        bfactor = atom.bfactor
+        occupancy = atom.occupancy
 
-        atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge)))
+        atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),
+                          bfactor=bfactor))
 
     structure[attr] = atoms
 

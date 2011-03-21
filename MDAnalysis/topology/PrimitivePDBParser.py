@@ -50,7 +50,10 @@ def __parseatoms_(pdb, structure):
         segid = atom.segID.strip() or chain or "SYSTEM"  # no empty segids (or Universe throws IndexError)
         mass = guess_atom_mass(atomname)
         charge = guess_atom_charge(atomname)
+        bfactor = atom.tempFactor
+        occupancy = atom.occupancy
 
-        atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge)))
+        atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),
+                          bfactor=bfactor))
 
     structure[attr] = atoms

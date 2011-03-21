@@ -85,12 +85,19 @@ class Atom(object):
            float, in electron charges
         :attr:`~Atom.pos`
            The current position (as a numpy array) of this atom
+        radius
+           Born-radius for electrostatic calculations. (Only if read from a PQR
+           file with the :class:`~MDAnalysis.coordinates.PQR.PQRReader`.)
+        :attr:`~Atom.bfactor`
+           temperature factor. (Only if loaded from a PDB.)
+           
     """
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", 
-                 "mass", "charge", "residue", "segment", "bonds", "__universe",)
+                 "mass", "charge", "residue", "segment", "bonds", "__universe",
+                 "radius", "bfactor")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
-                 residue=None, segment=None):
+                 residue=None, segment=None, radius=None, bfactor=None):
         self.number = number
         self.name = name
         self.type = type
@@ -101,6 +108,8 @@ class Atom(object):
         self.segment = segment  # typically patched in later
         self.mass = mass
         self.charge = charge
+        self.radius = radius
+        self.bfactor = bfactor
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
                repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'
@@ -125,22 +134,6 @@ class Atom(object):
         """The centroid of an atom is its position, :attr:`Atom.pos`."""
         # centroid exists for compatibility with AtomGroup
         return self.pos
-
-    def bfactor():
-        doc = "Crystallographic B-factor (if universe was built from a pdb) or None"
-        def fget(self):
-            try:
-                return self.universe.bfactors[self.number] # PDB numbering starts at 0
-            except AttributeError:
-                return None
-        def fset(self,value):
-            try:
-                self.universe.bfactors[self.number] = value
-            except AttributeError:
-                self.universe.bfactors = numpy.zeros(self.universe.atoms.numberOfAtoms())
-                self.universe.bfactors[self.number] = value
-        return locals()
-    bfactor = property(**bfactor())
 
     def universe():
         doc = "a pointer back to the Universe"
@@ -356,6 +349,16 @@ class AtomGroup(object):
     def totalCharge(self):
         """Sum of all partial charges (must be defined in topology)."""
         return numpy.sum(self.charges(), axis=0)
+    def radii(self):
+        """Array of atomic radii (as defined in the PQR file)"""
+        return numpy.array([atom.radius for atom in self._atoms])
+    # TODO release 0.8: make this a method again (in MDAnalysis 0.8)
+    @property
+    def bfactors(self):
+        """Crystallographic B-factors (from PDB) in A**2"""
+        warnings.warn("AtomGroup.bfactors will become AtomGroup.bfactors() in MDAnalysis 0.8",
+                      DeprecationWarning)
+        return numpy.array([atom.bfactor for atom in self._atoms])
     def centerOfGeometry(self):
         """Center of geometry (also known as centroid) of the selection."""
         return numpy.sum(self.coordinates(), axis=0)/self.numberOfAtoms()
@@ -729,14 +732,6 @@ class AtomGroup(object):
             return self.universe.dimensions
         else:
             raise AttributeError("This AtomGroup does not belong to a Universe with a dimension.")
-
-    @property
-    def bfactors(self):
-        """B-factors of the AtomGroup"""
-        if self.universe is not None:
-            return self.universe.bfactors[self.indices()]
-        else:
-            raise AttributeError("This AtomGroup does not belong to a Universe.")
 
     @property
     def ts(self):
@@ -1151,11 +1146,6 @@ class Universe(object):
         self.trajectory = TRJReader(filename, **kwargs)    # unified trajectory API
         if self.trajectory.numatoms != self.atoms.numberOfAtoms():
             raise ValueError("The topology and %s trajectory files don't have the same number of atoms!" % self.trajectory.format)
-        # hack for PDB
-        if self.trajectory.format == "PDB":
-            # add B-factor to atoms
-            for a, bfactor in izip(self.atoms, self.trajectory.get_bfactors()):
-                a.bfactor = bfactor  ## does this work with mmLib??
         return filename, self.trajectory.format
             
     def selectAtoms(self, sel, *othersel):

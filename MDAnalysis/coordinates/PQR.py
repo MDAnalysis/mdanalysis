@@ -82,8 +82,9 @@ class PQRReader(base.Reader):
     The :mod:`~MDAnalysis.topology.PQRParser` takes charges from the
     PQR file in order to populate the
     :attr:`MDAnalysis.core.AtomGroup.Atom.charge` attribute. Radii are
-    currently only accessible through the :meth:`get_radii` method of
-    the reader.
+    accessible through the :meth:`get_radii` method of the reader, the
+    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.radii` method and the
+    :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.
     """
     format = 'PQR'
     units = {'time': None, 'length': 'Angstrom'}

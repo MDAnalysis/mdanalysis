@@ -38,6 +38,8 @@ import pdb.extensions
 
 from MDAnalysis.topology.core import guess_atom_element
 
+import warnings
+
 class Timestep(base.Timestep):
 	@property
 	def dimensions(self):
@@ -87,6 +89,9 @@ class PDBReader(base.Reader):
             
     def get_bfactors(self):
         """Return an array of bfactors (tempFactor) in atom order."""
+        warnings.warn("get_bfactors() will be removed in MDAnalysis 0.8; "
+                      "use AtomGroup.bfactors [which will become AtomGroup.bfactors()]", 
+                      DeprecationWarning)
         return numpy.array([a.get_bfactor() for a in self.pdb.get_atoms()])
 
     def __len__(self):
@@ -299,6 +304,9 @@ class PrimitivePDBReader(base.Reader):
 
     def get_bfactors(self):
         """Return an array of bfactors (tempFactor) in atom order."""
+        warnings.warn("get_bfactors() will be removed in MDAnalysis 0.8; "
+                      "use AtomGroup.bfactors [which will become AtomGroup.bfactors()]", 
+                      DeprecationWarning)
         return self._atoms.tempFactor
 
     def get_occupancy(self):

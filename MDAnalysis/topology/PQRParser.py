@@ -24,11 +24,10 @@ class PQRParseError(Exception):
 def parse(filename):
     """Parse atom information from PQR file *filename*.
 
-    Only reads the list of atoms. Reads the charges from the PQR file and
-    populates the :attr:`MDAnalysis.core.AtomGroup.Atom.charge` attribute. The
-    array of all radii can be accessed through the method
-    :meth:`~MDAnalysis.coordinates.PQR.PQRReader.get_radii` of the
-    :class:`~MDAnalysis.coordinates.PQR.PQRReader`.
+    Only reads the list of atoms. Reads the charges and radii from the
+    PQR file and populates the
+    :attr:`MDAnalysis.core.AtomGroup.Atom.charge` and
+    :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.
 
     :Returns: MDAnalysis internal *structure* dict
 
@@ -60,7 +59,9 @@ def __parseatoms_(pqr, structure):
         segid = atom.segID.strip() or "SYSTEM"  # no empty segids (or Universe throws IndexError)
         mass = guess_atom_mass(atomname)
         charge = atom.charge
-
-        atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge)))
+        radius = atom.radius
+        
+        atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),
+                          radius=radius))
 
     structure[attr] = atoms
