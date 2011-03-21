@@ -62,7 +62,7 @@ from MDAnalysis import SelectionError, NoDataError, SelectionWarning
 class Atom(object):
     """A single atom definition
 
-    a = Atom()
+      a = Atom()
 
     :Data: 
         number
@@ -148,13 +148,13 @@ class Atom(object):
 class AtomGroup(object):
     """A group of atoms.
 
-    ag = universe.selectAtoms(atom-list)
+      ag = universe.selectAtoms(atom-list)
 
     The AtomGroup contains a list of atoms; typically, a AtomGroup is generated
     from a selection. It is build from any list-like collection of
     :class:`Atom` instances.
 
-    An AtomGroup can be indexed and sliced like a list ::
+    An AtomGroup can be indexed and sliced like a list::
 
        ag[0], ag[-1]   
 

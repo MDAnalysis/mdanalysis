@@ -232,7 +232,7 @@ class Density(Grid):
         self.units = units
 
     def _check_set_unit(self,u):
-        """Check that all bindings {unit_type : value, ...} in the dict u are valid and set the object's units attribute.
+        """Check that all bindings ``{unit_type : value, ...}`` in the dict `u` are valid and set the object's units attribute.
         """
         # all this unit crap should be a class...
         try:
@@ -259,7 +259,7 @@ class Density(Grid):
     def make_density(self):
         """Convert the grid (a histogram, counts in a cell) to a density (counts/volume).
 
-        make_density()
+          make_density()
 
         (1) This changes the grid irrevocably.
         (2) For a probability density, manually divide by grid.sum().
@@ -287,15 +287,17 @@ class Density(Grid):
     def convert_length(self,unit='Angstrom'):
         """Convert Grid object to the new *unit*.
 
-        Grid.convert_length(<unit>)
+          Grid.convert_length(<unit>)
 
-        unit       Angstrom, nm
+        :Keywords:
+          *unit*
+              Angstrom, nm
 
         This changes the edges but will not change the density; it is
         the user's responsibility to supply the appropriate unit if
         the Grid object is constructed from a density. It is suggested
         to start from a histogram and a length unit and use
-        make_density().
+        :meth:`make_density`.
         """
         if unit == self.units['length']:
             return
@@ -307,9 +309,9 @@ class Density(Grid):
     def convert_density(self,unit='Angstrom'):
         """Convert the density to the physical units given by *unit*.
 
-        Grid.convert_to(<unit>)
+          Grid.convert_to(unit)
 
-        <unit> can be one of the following:
+        *unit* can be one of the following:
 
         =============  ===============================================================
         name           description of the unit
@@ -323,13 +325,13 @@ class Density(Grid):
         Molar          mol/l
         =============  ===============================================================
 
-        Note: 
+        Note:
 
           (1) This only works if the initial length unit is provided.
           (2) Conversions always go back to unity so there can be rounding
               and floating point artifacts for multiple conversions.
 
-        There may be some undesirable cross-interactions with convert_length...
+        There may be some undesirable cross-interactions with :meth:`convert_length`...
         """
         if not self.parameters['isDensity']:
             errmsg = 'The grid is not a density so converty_density() makes no sense.'
@@ -356,11 +358,11 @@ class Density(Grid):
 def density_from_trajectory(*args,**kwargs):
     """Create a density grid from a trajectory.
 
-       density_from_trajectory(PSF, DCD, delta=1.0, atomselection='name OH2', ...) --> density
+         density_from_trajectory(PSF, DCD, delta=1.0, atomselection='name OH2', ...) --> density
 
     or
 
-       density_from_trajectory(PDB, XTC, delta=1.0, atomselection='name OH2', ...) --> density
+         density_from_trajectory(PDB, XTC, delta=1.0, atomselection='name OH2', ...) --> density
 
     :Arguments:
       psf/pdb/gro     
@@ -540,6 +542,7 @@ def notwithin_coordinates_factory(universe,sel1, sel2, cutoff, not_within=True, 
           not being applied to remap the coordinates themselves, and hence it
           would lead to counts in the wrong region.
         * The selections are static and do not change with time steps.
+
     """
     # Benchmark of FABP system (solvent 3400 OH2, protein 2100 atoms) on G4 powerbook, 500 frames
     #                    cpu/s    relative   speedup       use_kdtree
@@ -655,12 +658,14 @@ class BfactorDensityCreator(object):
     Sigma can be fixed or taken from the B-factor field, in which case
     sigma is taken as sqrt(3.*B/8.)/pi (see :func:`BFactor2RMSF`).
 
-    :TODO:   
+    **TODO**
+
        * Make Gaussian convolution more efficient (at least for same
          sigma) because right now it is *very* slow (which may be
          acceptable if one only runs this once)
        * Using a temporary Creator class with the
          :meth:`BfactorDensityCreator.Density` helper method is clumsy.
+
     """
     def __init__(self,pdb,delta=1.0,atomselection='resname HOH and name O',
                 metadata=None,padding=1.0, sigma=None):
