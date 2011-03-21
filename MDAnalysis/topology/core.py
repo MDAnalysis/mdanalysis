@@ -2,16 +2,12 @@
 :mod:`MDAnalysis.topology.core` --- Common functions for topology building
 ==========================================================================
 
-.. function:: build_segments
-.. function:: build_bondlist
-.. class:: Bond
+The various topology parsers make use of functions and classes in this
+module. They are mostly of use to developers.
 
-.. function:: get_parser_for
-.. function:: guess_format
-
-.. function:: guess_atom_type
-.. function:: guess_atom_mass
-.. function:: guess_atom_charge
+.. SeeAlso:: :mod:`MDAnalysis.topology.tables` for some hard-coded atom
+   information that is used by functions such as :func:`guess_atom_type` and
+   :func:`guess_atom_mass`.
 
 """
 import os.path
@@ -19,6 +15,11 @@ import MDAnalysis.topology
 import tables
 
 def build_segments(atoms):
+    """Create all :class:`~MDAnalysis.core.AtomGroup.Segment` instancess from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
+
+    The function also builds the :class:`~MDAnalysis.core.AtomGroup.Residue`
+    instances by tracking residue numbers.
+    """
     from MDAnalysis.core.AtomGroup import Residue, Segment
     struc = {}
     residues = []
@@ -51,6 +52,7 @@ def build_segments(atoms):
     return struc
 
 class Bond(object):
+    """A bond between two :class:`~MDAnalysis.core.AtomGroup.Atom` instances."""
     def __init__(self, a1, a2):
         self.atom1 = a1
         self.atom2 = a2
@@ -59,11 +61,18 @@ class Bond(object):
             return self.atom2
         else: return self.atom1
     def length(self):
+        """Length of the bond."""
         bond = self.atom1.pos - self.atom2.pos
         import math
         return math.sqrt((bond[0]**2)+(bond[1]**2)+(bond[2]**2))
 
 def build_bondlists(atoms, bonds):
+    """Construct the bond list of each :class:`~MDAnalysis.core.AtomGroup.Atom`.
+
+    The bond list is stored in the attribute
+    :attr:`MDAnalysis.core.AtomGroup.Atom.bonds` and consists of a list of
+    :class:`Bond` instances.
+    """
     for a in atoms:
         a.bonds = []
     for a1, a2 in bonds:
@@ -155,7 +164,7 @@ def guess_atom_mass(atomname):
 def guess_atom_charge(atomname):
     """Guess atom charge from the name.
 
-    Not implemented; simply returns 0.
+    .. Warning:: Not implemented; simply returns 0.
     """
     # TODO: do something slightly smarter, at least use name/element
     return 0.0

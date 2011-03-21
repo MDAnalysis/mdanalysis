@@ -1,4 +1,8 @@
-"""Use a PDB file to build a minimum internal structure representation.
+"""
+Primitive PDB topology parser
+=============================
+
+Use a PDB file to build a minimum internal structure representation (list of atoms).
 
 Reads a PDB file line by line and is not fuzzy about numbering.
 
@@ -11,18 +15,20 @@ import MDAnalysis.coordinates.PDB
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
 
 class PDBParseError(Exception):
+    """Signifies an error during parsing a PDB file."""
     pass
 
-def parse(pdbfile):
-    """Parse atom information from PDB file *pdbfile*.
+def parse(filename):
+    """Parse atom information from PDB file *filename*.
 
     :Returns: MDAnalysis internal *structure* dict
 
     .. SeeAlso:: The *structure* dict is defined in
-                 :func:`MDAnalysis.topology.PSFParser.parse`.
+                 :func:`MDAnalysis.topology.PSFParser.parse` and the file is read with 
+                 :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
     """
     structure = {}
-    pdb =  MDAnalysis.coordinates.PDB.PrimitivePDBReader(pdbfile)
+    pdb =  MDAnalysis.coordinates.PDB.PrimitivePDBReader(filename)
 
     __parseatoms_(pdb, structure)
     # TODO: reconstruct bonds from CONECT or guess from distance search

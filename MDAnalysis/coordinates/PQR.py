@@ -77,6 +77,14 @@ from base import Timestep
 import pdb.extensions
 
 class PQRReader(base.Reader):
+    """Read a PQR_ file into MDAnalysis.
+
+    The :mod:`~MDAnalysis.topology.PQRParser` takes charges from the
+    PQR file in order to populate the
+    :attr:`MDAnalysis.core.AtomGroup.Atom.charge` attribute. Radii are
+    currently only accessible through the :meth:`get_radii` method of
+    the reader.
+    """
     format = 'PQR'
     units = {'time': None, 'length': 'Angstrom'}
     _Timestep = Timestep

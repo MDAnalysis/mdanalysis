@@ -1,7 +1,10 @@
 # $Id: TOPParser.py 325 2011-01-22 14:58:19Z Elizabeth Denning $
 """
-TOPParser - reads a Amber top file to build the system
-======================================================
+Amber PRMTOP topology parser 
+============================
+
+Reads a Amber top file to build the system. It uses atom types,
+partial charges and masses from the PRMTOP file.
 
 The format is defined in `PARM parameter/topology file specification`_.
 
@@ -18,12 +21,17 @@ import MDAnalysis.core.units
 from MDAnalysis.core import util
 
 class TOPParseError(Exception):
+    """Signifies an error during parsing of a Amber PRMTOP file."""
     pass
 
-def parse(topfilename):
+def parse(filename):
+    """Parse Amber PRMTOP topology file *filename*.
+
+    :Returns: MDAnalysis internal *structure* dict.
+    """
     # Open and check top validity
     ######  Reading header info POINTERS  #################
-    topfile = open(topfilename,'r')
+    topfile = open(filename,'r')
     next_line = skip_line = topfile.next
     header = next_line()
     if header[:3] != "%VE":

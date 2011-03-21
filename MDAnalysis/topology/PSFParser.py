@@ -1,13 +1,28 @@
 # $Id$
-""" PSFParser - reads a psf file to build the system
+"""
+PSF topology parser
+===================
+
+Reads a CHARMM/NAMD/XPLOR PSF_ file to build the system. Currently uses
+the list of atoms (including atom types, which can be either integers
+or strings, masses and partial charges) and the bond connectivity.
+
+It reads both standard and extended ("EXT") PSF formats.
+
+.. _PSF: http://www.charmm.org/documentation/c35b1/struct.html
 """
 
 class PSFParseError(Exception):
+    """Signifies an error during parsing of a CHARMM PSF file."""
     pass
 
-def parse(psffilename):
+def parse(filename):
+    """Parse CHARMM/NAMD/XPLOR PSF_ file *filename*.
+
+    :Returns: MDAnalysis internal *structure* dict as defined here.
+    """
     # Open and check psf validity
-    psffile = open(psffilename,'r')
+    psffile = open(filename,'r')
     next_line = skip_line = psffile.next
     header = next_line()
     if header[:3] != "PSF":

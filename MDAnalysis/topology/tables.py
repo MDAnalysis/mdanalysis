@@ -4,22 +4,37 @@
 MDAnalysis topology tables
 ==========================
 
-The module contains static lookup tables for atom typing etc. 
+The module contains static lookup tables for atom typing etc. The
+tables are dictionaries that are indexed by the element.
 
 .. autodata:: atomtypes
 .. autodata:: masses
 
+The original raw data are stored as multi-line strings that are
+translated into dictionaries with :func:`kv2dict`. In the future,
+these tables might be moved into external data files; see
+:func:`kv2dict` for explanation of the file format.
+
+.. autofunction:: kv2dict
 """
 
 def kv2dict(s, convertor=str):
     """Primitive ad-hoc parser of a key-value record list.
 
-    The string s should contain each key-value pair on a separate
-    line. The first white space after the key separates key and value.
+    * The string *s* should contain each key-value pair on a separate
+      line (separated by newline). The first white space after the key
+      separates key and value.
 
-    Empty lines are allowed.
+    * Empty lines are allowed.
 
-    Comment lines (starting with #) are allowed.
+    * Comment lines (starting with #) are allowed.
+
+    * Leading whitespace is ignored.    
+
+    The *convertor* is a function that converts its single argument to
+    a valid Python type. The default is :func:`str` but other
+    possibilities are :func:`int` (for integers) or :func:`float` for
+    floating point numbers.
     """
     d = {}
     lines = s.splitlines()

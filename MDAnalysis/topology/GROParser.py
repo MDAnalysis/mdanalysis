@@ -1,38 +1,58 @@
 # GRO parser
 # Danny
+"""
+GRO topology parser
+===================
+
+Read a list of atoms from a GROMOS/Gromacs GRO coordinate file to build a basic topology.
+
+Atom types and masses are guessed.
+"""
+
 
 from MDAnalysis.core.AtomGroup import Atom
+from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
 import numpy
 
 class GROParseError(Exception):
 	pass
 
-def parse(grofilename):
+def parse(filename):
+	"""Parse GRO file *filename* and return the dict `structure`.
+
+	Only reads the list of atoms.
+
+	:Returns: MDAnalysis internal *structure* dict
+
+	.. SeeAlso:: The *structure* dict is defined in
+	             :func:`MDAnalysis.topology.PSFParser.parse`.
+
+	"""
 	### General checks on validity of file
 	# Check file ends in .gro
-	if grofilename[-4:] != ".gro":
-		raise GROParseError("%(grofilename)s file does not end in .gro")
+	if filename[-4:] != ".gro":
+		raise GROParseError("%(filename)s file does not end in .gro")
 
 	### Read through .gro file
 	atom_iter = 0
 	atoms = []
-	grofile = open(grofilename , "r")
+	grofile = open(filename , "r")
 	for linenum,line in enumerate(grofile):
 		query_atm_line = False
 		try:
 			# Store the various parameters
 			# Not attempting to read velocities
-			# resid, resname, name, number = int(line[0:5]) , (line[5:15].split())[0] , (line[5:15].split())[1] , int(line[15:20])  Generate number automatically from an iter
 			resid, resname, name, number = int(line[0:5]) , (line[5:15].split())[0] , (line[5:15].split())[1] , int(line[15:20])
-			# Not attempting to read type, segid, mass or charge
-			type , segid , mass , charge = (0 , "SYSTEM" , 12.0 , 0)
-			# Or coords, as they can be read by coordinates.GRO
-			# Do these work with >= 4 decimal points??
-			#coords = numpy.array( [ float(line[20:28]) , float(line[28:36]) , float(line[36:44]) ] )
+			# guess based on atom name
+			type = guess_atom_type(name)
+			mass = guess_atom_mass(name)
+			charge = guess_atom_charge(name)
+			segid = "SYSTEM"
+			# ignore coords, as they can be read by coordinates.GRO
 			query_atm_line = True
 
 		# Not currently doing anything with other lines
-		except (ValueError, IndexError, SyntaxError):
+		except (ValueError, IndexError):
 			if linenum == 0:
 				# Header comment
 				#hdr_cmt = line
@@ -58,8 +78,6 @@ def parse(grofilename):
 			# And add it to the list of atoms
 			atoms.append(atom_desc)
 			atom_iter += 1
-
-
 	grofile.close()
 	structure = {}
 	structure["_atoms"] = atoms

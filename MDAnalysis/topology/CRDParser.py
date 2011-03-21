@@ -1,14 +1,33 @@
 # Primitive CRD parser
+"""
+CRD topology parser
+===================
+
+Read a list of atoms from a CHARMM CARD coordinate file (CRD) to build a basic topology.
+
+Atom types and masses are guessed.
+"""
+
 from __future__ import with_statement
 
 from MDAnalysis.core.AtomGroup import Atom
 from MDAnalysis.core.util import FORTRANReader
-import core
+from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
+
 
 extformat = FORTRANReader('2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
 stdformat = FORTRANReader('2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5')
 
 def parse(filename):
+    """Parse CRD file *filename* and return the dict `structure`.
+
+    Only reads the list of atoms.
+
+    :Returns: MDAnalysis internal *structure* dict
+
+    .. SeeAlso:: The *structure* dict is defined in
+                 :func:`MDAnalysis.topology.PSFParser.parse`.
+    """
     atoms = []
     atom_serial = 0
     with open(filename) as crd:
@@ -34,9 +53,9 @@ def parse(filename):
                 print "Check CRD format at line %d: %s" % (linenum, line.rstrip())
                 raise #IOError("Check CRD format at line %d: %s" % (linenum, line.rstrip()))
 
-            atomtype = core.guess_atom_type(name)
-            mass =  core.guess_atom_mass(name)
-            charge = core.guess_atom_charge(name)
+            atomtype = guess_atom_type(name)
+            mass =  guess_atom_mass(name)
+            charge = guess_atom_charge(name)
             atom_desc = Atom(atom_serial,name,atomtype,resName,TotRes,chainID,mass,charge)
             atoms.append(atom_desc)
             atom_serial += 1

@@ -5,32 +5,36 @@
 
 This submodule contains topology readers.
 
-A rudimentary PDB parser obtains the list of atoms from a PDB file but
-it lacks bond information, charges, and masses at the moment.
-
-Supporte topologies; formats marked with ans asterisk * also hold coordinates.
+Supported topologies; formats marked with ans asterisk * also hold coordinates.
 
 =============  ==========  =====================================================
 Name           extension   remarks
 =============  ==========  =====================================================
 CHARMM/XPLOR   psf         reads either format, but only atoms and bonds 
-                           information is used at the moment
+                           information is used at the moment; 
+                           :mod:`MDAnalysis.topology.PSFParser`
 
 CHARMM*        crd         "CARD" coordinate output from CHARMM; deals with
-                           either standard or EXTended format
+                           either standard or EXTended format;
+                           :mod:`MDAnalysis.topology.CRDParser`
 
 Brookhaven*    pdb         a simplified PDB format (as used in MD simulations)
                            is read by default; the full format can be read by
                            supplying the `permissive=False` flag to 
-                           :class:`MDAnalysis.Universe`
+                           :class:`MDAnalysis.Universe`;
+                           :mod:`MDAnalysis.topology.PrimitivePDBParser` and
+                           :mod:`MDAnalysis.topology.PDBParser`
 
-PQR            pqr         PDB-like but whitespace-separated files with charge
-                           and radius information
+PQR*           pqr         PDB-like but whitespace-separated files with charge
+                           and radius information;
+                           :mod:`MDAnalysis.topology.PQRParser`
 
-GROMOS96*      gro         
+GROMOS96*      gro         GROMOS96 coordinate file;
+                           :mod:`MDAnalysis.topology.GROParser`
 
 Amber          top         simple Amber format read (only supports a subset of 
-               prmtop      flags)
+               prmtop      flags);
+                           :mod:`MDAnalysis.topology.TOPParser`
 =============  ==========  =====================================================
 """
 

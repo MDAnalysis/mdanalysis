@@ -1,4 +1,9 @@
-"""Use a PDB file to build a minimum internal structure representation.
+# $Id$
+"""
+PDB topology parser
+===================
+
+Use a PDB file to build a minimum internal structure representation.
 
 .. Warning:: Only cares for atoms and their names; neither
              connectivity nor (partial) charges are deduced. Masses
@@ -16,10 +21,16 @@ import MDAnalysis.coordinates.pdb.extensions
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
 
 class PDBParseError(Exception):
+    """Signifies an error while reading a PDB file."""
     pass
 
 def parse(pdbfile):
     """Parse atom information from PDB file *pdbfile*.
+
+    Only reads the list of atoms.
+
+    This functions uses the :class:`Bio.PDB.PDBParser` as used by
+    :func:`MDAnalysis.coordinates.pdb.extensions.get_structure`.
 
     :Returns: MDAnalysis internal *structure* dict
 

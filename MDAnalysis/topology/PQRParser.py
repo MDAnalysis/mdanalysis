@@ -1,8 +1,8 @@
 # Primitive PQR parser
 # -*- coding: utf-8 -*-
 """
-PQR parser
-==========
+PQR topology parser
+===================
 
 Read atoms with charges from a PQR_ file (as written by PDB2PQR_). No
 connectivity is deduced.
@@ -21,16 +21,24 @@ from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass
 class PQRParseError(Exception):
     pass
 
-def parse(pqrfile):
-    """Parse atom information from PQR file *pqrfile*.
+def parse(filename):
+    """Parse atom information from PQR file *filename*.
+
+    Only reads the list of atoms. Reads the charges from the PQR file and
+    populates the :attr:`MDAnalysis.core.AtomGroup.Atom.charge` attribute. The
+    array of all radii can be accessed through the method
+    :meth:`~MDAnalysis.coordinates.PQR.PQRReader.get_radii` of the
+    :class:`~MDAnalysis.coordinates.PQR.PQRReader`.
 
     :Returns: MDAnalysis internal *structure* dict
 
     .. SeeAlso:: The *structure* dict is defined in
-                 :func:`MDAnalysis.topology.PSFParser.parse`.
+                 :func:`MDAnalysis.topology.PSFParser.parse` and
+                 :class:`~MDAnalysis.coordinates.PQR.PQRReader` is used to read
+                 the PQR file.
     """
     structure = {}
-    pqr =  MDAnalysis.coordinates.PQR.PQRReader(pqrfile)
+    pqr =  MDAnalysis.coordinates.PQR.PQRReader(filename)
 
     __parseatoms_(pqr, structure)
     # TODO: reconstruct bonds from CONECT or guess from distance search
