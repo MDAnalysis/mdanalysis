@@ -505,6 +505,10 @@ class AtomGroup(object):
         The matrix *M* must be a 4x4 matrix, with the rotation in
         ``M[:3,:3]`` and the translation in ``M[:3,3]``.
 
+        The rotation is applied before the translation:
+
+           x' = R.x + t
+
         .. SeeAlso: :mod:`MDAnalysis.core.transformations`
         """
         R = M[:3,:3]

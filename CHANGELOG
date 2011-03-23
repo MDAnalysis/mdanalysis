@@ -34,6 +34,7 @@ The rules for this file:
 	  radii as a NumPy array; internally B-factor has also become an
 	  attribute of each Atom. 
         * recognise many more OPLS/AA and Amber residue names as "protein"
+	* analysis.align: convenience functions rotation_matrix() and alignto()
 	* doc improvements 
 
 02/08/11 orbeckst, denniej0, jandom, tyler.je.reddy, Joshua Adelman
