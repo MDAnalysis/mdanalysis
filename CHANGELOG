@@ -33,6 +33,7 @@ The rules for this file:
 	* PQR radius is now an attribute of Atom; AtomGroup.radii() returns the
 	  radii as a NumPy array; internally B-factor has also become an
 	  attribute of each Atom. 
+        * recognise many more OPLS/AA and Amber residue names as "protein"
 	* doc improvements 
 
 02/08/11 orbeckst, denniej0, jandom, tyler.je.reddy, Joshua Adelman

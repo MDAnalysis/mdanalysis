@@ -306,19 +306,38 @@ class ByNumSelection(Selection):
 
 class ProteinSelection(Selection):
     """A protein selection consists of all residues with  recognized residue names.
-    Recognized residue names:
-    * from the Charmm force field
+
+    Recognized residue names in :attr:`ProteinSelection.prot_res`.
+
+      * from the CHARMM force field::
          awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_lipid.rtf
-    * manually added:
-         - CHO EAM (special in CHARMM)
-         - HIS (Gromacs etc)
-         - HIE ACE NME (Amber)
+
+      * manually added special CHARMM, OPLS/AA and Amber residue names.
+
+      * still missing: Amber N- and C-terminal residue names
+      
     """
-    prot_res = dict([(x,None) for x in ['ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'HSD',
-                                        'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
-                                        'TRP', 'TYR', 'VAL', 'ALAD',
-                                        'HIE', 'ACE', 'NME',
-                                        'CHO', 'EAM']])
+    #: Dictionary of recognized residue names (3- or 4-letter).
+    prot_res = dict([(x,None) for x in [
+                # CHARMM top_all27_prot_lipid.rtf
+                'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HSD',
+                'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
+                'TRP', 'TYR', 'VAL', 'ALAD',
+                'CHO', 'EAM', 
+                # PDB
+                'HIS', 'MSE',
+                # from Gromacs 4.5.3 oplsaa.ff/aminoacids.rtp
+                'ARGN', 'ASPH', 'CYS2', 'CYSH', 'QLN', 'PGLU', 'GLUH', 'HIS1', 'HISD',
+                'HISE', 'HISH', 'LYSH',
+                # from Gromacs 4.5.3 gromos53a6.ff/aminoacids.rtp
+                'ASN1', 'CYS1', 'HISA', 'HISB', 'HIS2', 
+                # from Gromacs 4.5.3 amber03.ff/aminoacids.rtp
+                # Amber: there are also the C-term aas: 'CALA', 'CGLY', 'CSER', ...
+                # Amber: there are also the B-term aas: 'NALA', 'NGLY', 'NSER', ...
+                'HID', 'HIE', 'HIP', 'ORN', 'DAB', 'LYN', 'HYP', 'CYM', 'CYX', 'ASH', 
+                'GLH',   
+                'ACE', 'NME',
+                ]])
     def _apply(self, group):
         return set([a for a in group.atoms if a.resname in self.prot_res])
     def __repr__(self):
