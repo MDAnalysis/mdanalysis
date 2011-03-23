@@ -126,19 +126,24 @@ def rotation_matrix(a,b, weights=None):
     return numpy.matrix(rot.reshape(3,3)), rmsd
 
 def alignto(mobile, ref, select="backbone", mass_weighted=False):
-    """Align *mobile* to *target* by doing a RMSD fit on *selection*.
+    """Spatially align *mobile* to *ref* by doing a RMSD fit on *select*.
+
+    The superposition is done in the following way:
 
     1. A rotation matrix is computed that minimizes the RMSD between the
-       coordinates of `mobile.selectAtoms(sel1)` and `ref.selectAtoms(sel2)`
-       (and shifts the centres of mass to compute the pure rotation)
-    2. All atoms in the **Universe** that contains *mobile* are shifted 
-       and rotated.
+       coordinates of `mobile.selectAtoms(sel1)` and `ref.selectAtoms(sel2)`;
+       before the rotation, *mobile* is translated so that its center of
+       geometry (or center of mass) coincides with the one of *ref*
+    2. All atoms in :class:`~MDAnalysis.core.AtomGroup.Universe` that 
+       contains *mobile* are shifted and rotated.
     
     :Arguments:
       *mobile*
-         structure to be aligned, a :class:`~MDAnalysis.AtomGroup.AtomGroup` 
+         structure to be aligned, a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` 
+         or a whole :class:`~MDAnalysis.core.AtomGroup.Universe` 
       *ref*
-         reference structure, a :class:`~MDAnalysis.AtomGroup.AtomGroup` 
+         reference structure, a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` 
+         or a whole :class:`~MDAnalysis.core.AtomGroup.Universe` 
       *select*
          - any valid selection string for
            :meth:`MDAnalysis.AtomGroup.selectAtoms` that produces identical
@@ -147,8 +152,14 @@ def alignto(mobile, ref, select="backbone", mass_weighted=False):
            The :func:`fasta2select` function returns such a
            dictionary based on a ClustalW_ or STAMP_ sequence alignment.
          - tuple ``(sel1, sel2)``
+      *mass_weighted* : boolean
+         ``True`` uses the masses :meth:`ref.masses` as weights for the
+         RMSD fit.
 
     :Returns: RMSD before and after spatial alignment.
+
+    .. SeeAlso:: For RMSD-fitting trajectories it is more efficient to
+                 use :func:`rms_fit_trj`.
     """
     if type(select) is str:
         select = {'reference':select,'target':select}
