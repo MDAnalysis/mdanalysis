@@ -181,8 +181,14 @@ def _veclength(v):
     return numpy.sqrt(numpy.dot(v,v))
 
 def _angle(a,b):
-    """Angle between two vectors *a* and *b* in degrees."""
+    """Angle between two vectors *a* and *b* in degrees.
+
+    If one of the lengths is 0 then the angle is returned as 0
+    (instead of `nan`).
+    """
     angle = numpy.arccos(numpy.dot(a,b) / (_veclength(a)*_veclength(b)))
+    if numpy.isnan(angle):
+        return 0.0
     return rad2deg(angle)
 
 def triclinic_box(x,y,z):
