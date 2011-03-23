@@ -146,8 +146,8 @@ def alignto(mobile, ref, select="backbone", mass_weighted=False):
          or a whole :class:`~MDAnalysis.core.AtomGroup.Universe` 
       *select*
          - any valid selection string for
-           :meth:`MDAnalysis.AtomGroup.selectAtoms` that produces identical
-           selections in *traj* and *ref*; or 
+           :meth:`MDAnalysis.core.AtomGroup.selectAtoms` that produces identical
+           selections in *mobile* and *ref*; or 
          - dictionary ``{'target':sel1, 'reference':sel2}``.  
            The :func:`fasta2select` function returns such a
            dictionary based on a ClustalW_ or STAMP_ sequence alignment.
