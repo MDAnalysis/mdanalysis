@@ -551,6 +551,45 @@ class TestDCDWriter(TestCase):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
 
+class TestDCDWriter_Issue59(TestCase):
+    def setUp(self):
+        """Generate input xtc."""
+        self.u = MDAnalysis.Universe(PSF,DCD)
+        fd, self.xtc = tempfile.mkstemp(suffix='.xtc')
+        wXTC = MDAnalysis.Writer(self.xtc, self.u.atoms.numberOfAtoms())
+        for ts in self.u.trajectory: 
+            wXTC.write(ts);
+        wXTC.close()
+
+    def tearDown(self):
+        try:
+            os.unlink(self.xtc)
+        except OSError:
+            pass
+        try:
+            os.unlink(self.dcd)
+        except OSError:
+            pass
+        del self.u
+
+    @attr('issue')
+    def test_issue59(self):
+        """Test writing of XTC to DCD (Issue 59)"""
+        xtc = MDAnalysis.Universe(PSF, self.xtc)
+        fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
+        wDCD = MDAnalysis.Writer(self.dcd, xtc.atoms.numberOfAtoms())
+        for ts in xtc.trajectory: 
+            wDCD.write(ts);
+        wDCD.close()
+        
+        dcd = MDAnalysis.Universe(PSF, self.dcd)
+        
+        xtc.trajectory.rewind()
+        dcd.trajectory.rewind()
+
+        assert_array_almost_equal(xtc.atoms.coordinates(), dcd.atoms.coordinates(), 4,
+                                  err_msg="XTC -> DCD: DCD coordinates are messed up (Issue 59)")
+
         
 class TestDCDCorrel(_TestDCD):
     def setUp(self):
@@ -888,3 +927,5 @@ def test_triclinic_box():
     new_unitcell = MDAnalysis.coordinates.core.triclinic_box(box[0],box[1],box[2])
     assert_array_almost_equal(new_unitcell, unitcell, 3,
                               err_msg="unitcell round-trip connversion failed (Issue 61)")
+
+

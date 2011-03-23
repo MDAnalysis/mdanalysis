@@ -114,6 +114,8 @@ class DCDWriter(base.Writer):
         if self.convert_units:
             self.convert_pos_to_native(ts._pos)             # in-place !
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
+        if not ts._pos.flags.f_contiguous:  # Not in fortran format
+            ts = Timestep(ts)               # wrap in a new fortran formatted Timestep
         self._write_next_frame(ts._x, ts._y, ts._z, unitcell)
         self.frames_written += 1
     def close_trajectory(self):

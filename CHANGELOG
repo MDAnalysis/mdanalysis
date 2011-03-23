@@ -9,7 +9,7 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format).
 
 ------------------------------------------------------------------------------
-??/??/11 orbeckst, dcaplan
+??/??/11 orbeckst, dcaplan, naveen.michaudagrawal
         * 0.7.2 development
 	* NOTE: minimum Python version required is 2.5 (since 0.6.3)
 	* installation: removed dependency on Cython; developer should
@@ -27,6 +27,7 @@ The rules for this file:
 	* fixed bugs in reading of unit cells (Issue 60, Issue 61, Issue 34)
 	* universe.trajectory.delta returns the full precision dt value
 	  (Issue 64)
+	* fixed bug in DCDWriter (XTC->DCD was broken, Issue 59)
         * new method AtomGroup.bbox() that returns the orthorhombic bounding box
 	* enhancements of the analysis.density module (build density
 	  from B-factors) 
