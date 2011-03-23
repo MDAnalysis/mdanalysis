@@ -709,6 +709,9 @@ and the translation vectort M[:3,3].</p>
 <dd><p>Apply homogenous transformation matrix <em>M</em> to the coordinates.</p>
 <p>The matrix <em>M</em> must be a 4x4 matrix, with the rotation in
 <tt class="docutils literal"><span class="pre">M[:3,:3]</span></tt> and the translation in <tt class="docutils literal"><span class="pre">M[:3,3]</span></tt>.</p>
+<p>The rotation is applied before the translation:</p>
+<blockquote>
+x&#8217; = R.x + t</blockquote>
 </dd></dl>
 
 <dl class="method">

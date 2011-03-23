@@ -128,23 +128,28 @@ x, y, z, radius, mass,</p>
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.ProteinSelection">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">ProteinSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.ProteinSelection" title="Permalink to this definition">¶</a></dt>
-<dd><p>A protein selection consists of all residues with  recognized residue names.
-Recognized residue names:
-* from the Charmm force field</p>
+<dd><p>A protein selection consists of all residues with  recognized residue names.</p>
+<p>Recognized residue names in <a class="reference internal" href="#MDAnalysis.core.Selection.ProteinSelection.prot_res" title="MDAnalysis.core.Selection.ProteinSelection.prot_res"><tt class="xref py py-attr docutils literal"><span class="pre">ProteinSelection.prot_res</span></tt></a>.</p>
 <blockquote>
-awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_lipid.rtf</blockquote>
 <ul>
 <li><dl class="first docutils">
-<dt>manually added:</dt>
-<dd><ul class="first last simple">
-<li>CHO EAM (special in CHARMM)</li>
-<li>HIS (Gromacs etc)</li>
-<li>HIE ACE NME (Amber)</li>
-</ul>
+<dt>from the CHARMM force field::</dt>
+<dd><p class="first last">awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_lipid.rtf</p>
 </dd>
 </dl>
 </li>
+<li><p class="first">manually added special CHARMM, OPLS/AA and Amber residue names.</p>
+</li>
+<li><p class="first">still missing: Amber N- and C-terminal residue names</p>
+</li>
 </ul>
+</blockquote>
+<dl class="attribute">
+<dt id="MDAnalysis.core.Selection.ProteinSelection.prot_res">
+<tt class="descname">prot_res</tt><a class="headerlink" href="#MDAnalysis.core.Selection.ProteinSelection.prot_res" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary of recognized residue names (3- or 4-letter).</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
