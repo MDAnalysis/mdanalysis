@@ -102,13 +102,15 @@ function and then feed the resulting dictionary to <a class="reference internal"
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.alignto">
 <tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">alignto</tt><big>(</big><em>mobile</em>, <em>ref</em>, <em>select='backbone'</em>, <em>mass_weighted=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.alignto" title="Permalink to this definition">¶</a></dt>
-<dd><p>Align <em>mobile</em> to <em>target</em> by doing a RMSD fit on <em>selection</em>.</p>
+<dd><p>Spatially align <em>mobile</em> to <em>ref</em> by doing a RMSD fit on <em>select</em>.</p>
+<p>The superposition is done in the following way:</p>
 <ol class="arabic simple">
 <li>A rotation matrix is computed that minimizes the RMSD between the
-coordinates of <cite>mobile.selectAtoms(sel1)</cite> and <cite>ref.selectAtoms(sel2)</cite>
-(and shifts the centres of mass to compute the pure rotation)</li>
-<li>All atoms in the <strong>Universe</strong> that contains <em>mobile</em> are shifted 
-and rotated.</li>
+coordinates of <cite>mobile.selectAtoms(sel1)</cite> and <cite>ref.selectAtoms(sel2)</cite>;
+before the rotation, <em>mobile</em> is translated so that its center of
+geometry (or center of mass) coincides with the one of <em>ref</em></li>
+<li>All atoms in <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> that 
+contains <em>mobile</em> are shifted and rotated.</li>
 </ol>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -116,10 +118,12 @@ and rotated.</li>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>mobile</em></dt>
-<dd><p class="first last">structure to be aligned, a <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></p>
+<dd><p class="first last">structure to be aligned, a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> 
+or a whole <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a></p>
 </dd>
 <dt><em>ref</em></dt>
-<dd><p class="first last">reference structure, a <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></p>
+<dd><p class="first last">reference structure, a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> 
+or a whole <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a></p>
 </dd>
 <dt><em>select</em></dt>
 <dd><ul class="first last simple">
@@ -132,6 +136,10 @@ dictionary based on a <a class="reference external" href="http://www.clustal.org
 <li>tuple <tt class="docutils literal"><span class="pre">(sel1,</span> <span class="pre">sel2)</span></tt></li>
 </ul>
 </dd>
+<dt><em>mass_weighted</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> uses the masses <tt class="xref py py-meth docutils literal"><span class="pre">ref.masses()</span></tt> as weights for the
+RMSD fit.</p>
+</dd>
 </dl>
 </td>
 </tr>
@@ -140,6 +148,11 @@ dictionary based on a <a class="reference external" href="http://www.clustal.org
 </tr>
 </tbody>
 </table>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">For RMSD-fitting trajectories it is more efficient to
+use <a class="reference internal" href="#MDAnalysis.analysis.align.rms_fit_trj" title="MDAnalysis.analysis.align.rms_fit_trj"><tt class="xref py py-func docutils literal"><span class="pre">rms_fit_trj()</span></tt></a>.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
