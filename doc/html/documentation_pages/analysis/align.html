@@ -166,15 +166,18 @@ function and then feed the resulting dictionary to <a class="reference internal"
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.alignto">
 <tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">alignto</tt><big>(</big><em>mobile</em>, <em>ref</em>, <em>select='backbone'</em>, <em>mass_weighted=False</em>, <em>subselection=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.alignto" title="Permalink to this definition">¶</a></dt>
-<dd><p>Spatially align <em>mobile</em> to <em>ref</em> by doing a RMSD fit on <em>select</em>.</p>
+<dd><p>Spatially align <em>mobile</em> to <em>ref</em> by doing a RMSD fit on <em>select</em> atoms.</p>
 <p>The superposition is done in the following way:</p>
 <ol class="arabic simple">
-<li>A rotation matrix is computed that minimizes the RMSD between the
-coordinates of <cite>mobile.selectAtoms(sel1)</cite> and <cite>ref.selectAtoms(sel2)</cite>;
-before the rotation, <em>mobile</em> is translated so that its center of
-geometry (or center of mass) coincides with the one of <em>ref</em></li>
-<li>All atoms in <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> that 
-contains <em>mobile</em> are shifted and rotated.</li>
+<li>A rotation matrix is computed that minimizes the RMSD between
+the coordinates of <cite>mobile.selectAtoms(sel1)</cite> and
+<cite>ref.selectAtoms(sel2)</cite>; before the rotation, <em>mobile</em> is
+translated so that its center of geometry (or center of mass)
+coincides with the one of <em>ref</em>. (See below for explanation of
+how <em>sel1</em> and <em>sel2</em> are derived from <em>select</em>.)</li>
+<li>All atoms in <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> that
+contains <em>mobile</em> are shifted and rotated. (See below for how
+to change this behavior through the <em>subselection</em> keyword.)</li>
 </ol>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -192,7 +195,7 @@ or a whole <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis
 <dt><em>select</em></dt>
 <dd><ul class="first last simple">
 <li>any valid selection string for
-<tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.selectAtoms()</span></tt> that produces identical
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms" title="MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms"><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt></a> that produces identical
 selections in <em>mobile</em> and <em>ref</em>; or</li>
 <li>dictionary <tt class="docutils literal"><span class="pre">{'target':sel1,</span> <span class="pre">'reference':sel2}</span></tt>.  
 The <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
@@ -244,10 +247,11 @@ use <a class="reference internal" href="#MDAnalysis.analysis.align.rms_fit_trj" 
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.fasta2select">
 <tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">fasta2select</tt><big>(</big><em>fastafilename</em>, <em>is_aligned=False</em>, <em>ref_resids=None</em>, <em>target_resids=None</em>, <em>ref_offset=0</em>, <em>target_offset=0</em>, <em>verbosity=3</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.fasta2select" title="Permalink to this definition">¶</a></dt>
-<dd><p>Align two sequences from a FASTA file and construct a MDAnalysis
-selection string of the common atoms.</p>
-<blockquote>
-fasta2select(fastafilename) -&gt; selection_dict</blockquote>
+<dd><p>Return selection strings that will select equivalent residues.</p>
+<p>The function aligns two sequences provided in a FASTA file and
+constructs MDAnalysis selection strings of the common atoms. When
+these two strings are applied to the two different proteins they
+will generate AtomGroups of the aligned residues.</p>
 <p><em>fastafilename</em> contains the two un-aligned sequences in FASTA
 format. The reference is assumed to be the first sequence, the
 target the second. <a class="reference external" href="http://www.clustal.org/">ClustalW</a> produces a pairwise
@@ -311,8 +315,6 @@ that can be used immediately in <a class="reference internal" href="#MDAnalysis.
 <dt id="MDAnalysis.analysis.align.rms_fit_trj">
 <tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">rms_fit_trj</tt><big>(</big><em>traj</em>, <em>ref</em>, <em>select='backbone'</em>, <em>filename=None</em>, <em>rmsdfile=None</em>, <em>prefix='rmsfit_'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.10000000000000001</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.rms_fit_trj" title="Permalink to this definition">¶</a></dt>
 <dd><p>RMS-fit trajectory to a reference structure using a selection.</p>
-<blockquote>
-rms_fit_trj(traj, ref, &#8216;backbone or name CB or name OT*&#8217;)</blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -328,7 +330,7 @@ rms_fit_trj(traj, ref, &#8216;backbone or name CB or name OT*&#8217;)</blockquot
 <dt><em>select</em></dt>
 <dd><ul class="first last simple">
 <li>any valid selection string for
-<tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.AtomGroup.selectAtoms()</span></tt> that produces identical
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms" title="MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms"><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt></a> that produces identical
 selections in <em>traj</em> and <em>ref</em>; or</li>
 <li>dictionary <tt class="docutils literal"><span class="pre">{'reference':sel1,</span> <span class="pre">'target':sel2}</span></tt>.  
 The <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
@@ -397,20 +399,10 @@ for a weighted RMSD calculation.</p>
 <dt id="MDAnalysis.analysis.align.rotation_matrix">
 <tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">rotation_matrix</tt><big>(</big><em>a</em>, <em>b</em>, <em>weights=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.rotation_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the 3x3 rotation matrix for RMSD fitting coordinate sets <em>a</em> and <em>b</em>.</p>
-<p>The rotation matrix transforms <em>a</em> to overlap with <em>b</em> (i.e. <em>b</em> is the
+<p>The rotation matrix <em>R</em> transforms <em>a</em> to overlap with <em>b</em> (i.e. <em>b</em> is the
 reference structure):</p>
 <blockquote>
-b = R.a</blockquote>
-<p><em>R</em> can be used as an argument for
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.rotate" title="MDAnalysis.core.AtomGroup.AtomGroup.rotate"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.rotate()</span></tt></a> to generate a rotated
-selection, e.g.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;backbone&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">B</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;backbone&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">coordinates</span><span class="p">())</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;rotated.pdb&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Note that the function does <em>not</em> shift the centers of mass or geometry;
-this needs to be done by the user.</p>
+<em>b</em> = <em>R</em> . <em>a</em></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -437,6 +429,16 @@ masses of the atoms)</p>
 </tr>
 </tbody>
 </table>
+<p><em>R</em> can be used as an argument for
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.rotate" title="MDAnalysis.core.AtomGroup.AtomGroup.rotate"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.rotate()</span></tt></a> to generate a rotated
+selection, e.g.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;backbone&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">B</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;backbone&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">coordinates</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;rotated.pdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the function does <em>not</em> shift the centers of mass or geometry;
+this needs to be done by the user.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.analysis.align.rmsd" title="MDAnalysis.analysis.align.rmsd"><tt class="xref py py-func docutils literal"><span class="pre">rmsd()</span></tt></a> calculates the RMSD between <em>a</em> and <em>b</em>; for
