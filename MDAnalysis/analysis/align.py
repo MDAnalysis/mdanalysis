@@ -154,28 +154,16 @@ def rmsd(a,b, weights=None):
      >>> rmsd(A,B)
      6.8342494129169804
     """
-    #return numpy.sqrt(numpy.sum(numpy.power(a-b,2))/a.shape[0])
     return qcp.CalcRMSDRotationalMatrix(a.T.astype(numpy.float64),b.T.astype(numpy.float64), 
                                         a.shape[0], None, weights)
 
 def rotation_matrix(a,b, weights=None):
     """Returns the 3x3 rotation matrix for RMSD fitting coordinate sets *a* and *b*.
 
-    The rotation matrix transforms *a* to overlap with *b* (i.e. *b* is the
+    The rotation matrix *R* transforms *a* to overlap with *b* (i.e. *b* is the
     reference structure):
  
-       b = R.a
-
-    *R* can be used as an argument for
-    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.rotate` to generate a rotated
-    selection, e.g. ::
-
-      >>> R = rotation_matrix(A.selectAtoms('backbone').coordinates(), B.selectAtoms('backbone').coordinates())
-      >>> A.atoms.rotate(R)
-      >>> A.atoms.write("rotated.pdb")
-
-    Note that the function does *not* shift the centers of mass or geometry;
-    this needs to be done by the user.
+       *b* = *R* . *a*
 
     :Arguments:
        *a*  
@@ -191,6 +179,18 @@ def rotation_matrix(a,b, weights=None):
 
     :Returns: ``(R, rmsd)`` rmsd and rotation matrix *R*    
 
+
+    *R* can be used as an argument for
+    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.rotate` to generate a rotated
+    selection, e.g. ::
+
+      >>> R = rotation_matrix(A.selectAtoms('backbone').coordinates(), B.selectAtoms('backbone').coordinates())
+      >>> A.atoms.rotate(R)
+      >>> A.atoms.write("rotated.pdb")
+
+    Note that the function does *not* shift the centers of mass or geometry;
+    this needs to be done by the user.
+
     .. SeeAlso:: :func:`rmsd` calculates the RMSD between *a* and *b*; for
                  fitting a whole trajectory it is more efficient to use
                  :func:`rms_fit_trj`. A complete fit of two structures can be
@@ -203,16 +203,20 @@ def rotation_matrix(a,b, weights=None):
 
 def alignto(mobile, ref, select="backbone", mass_weighted=False,
             subselection=None):
-    """Spatially align *mobile* to *ref* by doing a RMSD fit on *select*.
+    """Spatially align *mobile* to *ref* by doing a RMSD fit on *select* atoms.
 
     The superposition is done in the following way:
 
-    1. A rotation matrix is computed that minimizes the RMSD between the
-       coordinates of `mobile.selectAtoms(sel1)` and `ref.selectAtoms(sel2)`;
-       before the rotation, *mobile* is translated so that its center of
-       geometry (or center of mass) coincides with the one of *ref*
-    2. All atoms in :class:`~MDAnalysis.core.AtomGroup.Universe` that 
-       contains *mobile* are shifted and rotated.
+    1. A rotation matrix is computed that minimizes the RMSD between
+       the coordinates of `mobile.selectAtoms(sel1)` and
+       `ref.selectAtoms(sel2)`; before the rotation, *mobile* is
+       translated so that its center of geometry (or center of mass)
+       coincides with the one of *ref*. (See below for explanation of
+       how *sel1* and *sel2* are derived from *select*.)
+
+    2. All atoms in :class:`~MDAnalysis.core.AtomGroup.Universe` that
+       contains *mobile* are shifted and rotated. (See below for how
+       to change this behavior through the *subselection* keyword.)
     
     :Arguments:
       *mobile*
@@ -223,7 +227,7 @@ def alignto(mobile, ref, select="backbone", mass_weighted=False,
          or a whole :class:`~MDAnalysis.core.AtomGroup.Universe` 
       *select*
          - any valid selection string for
-           :meth:`MDAnalysis.core.AtomGroup.selectAtoms` that produces identical
+           :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
            selections in *mobile* and *ref*; or 
          - dictionary ``{'target':sel1, 'reference':sel2}``.  
            The :func:`fasta2select` function returns such a
@@ -292,8 +296,6 @@ def rms_fit_trj(traj, ref, select='backbone', filename=None, rmsdfile=None, pref
                 mass_weighted=False, tol_mass=0.1):
     """RMS-fit trajectory to a reference structure using a selection.
 
-      rms_fit_trj(traj, ref, 'backbone or name CB or name OT*')
-
     :Arguments:
       *traj*
          trajectory, :class:`MDAnalysis.Universe` object
@@ -302,7 +304,7 @@ def rms_fit_trj(traj, ref, select='backbone', filename=None, rmsdfile=None, pref
          (uses the current time step of the object)
       *select*
          - any valid selection string for
-           :meth:`MDAnalysis.AtomGroup.selectAtoms` that produces identical
+           :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
            selections in *traj* and *ref*; or 
          - dictionary ``{'reference':sel1, 'target':sel2}``.  
            The :func:`fasta2select` function returns such a
@@ -466,10 +468,12 @@ def rms_fit_trj(traj, ref, select='backbone', filename=None, rmsdfile=None, pref
 def fasta2select(fastafilename,is_aligned=False,
                  ref_resids=None, target_resids=None,
                  ref_offset=0,target_offset=0,verbosity=3):
-    """Align two sequences from a FASTA file and construct a MDAnalysis
-    selection string of the common atoms.
+    """Return selection strings that will select equivalent residues.
 
-      fasta2select(fastafilename) -> selection_dict
+    The function aligns two sequences provided in a FASTA file and
+    constructs MDAnalysis selection strings of the common atoms. When
+    these two strings are applied to the two different proteins they
+    will generate AtomGroups of the aligned residues.
 
     *fastafilename* contains the two un-aligned sequences in FASTA
     format. The reference is assumed to be the first sequence, the
