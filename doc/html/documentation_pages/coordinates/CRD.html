@@ -55,15 +55,34 @@
             
   <span class="target" id="module-MDAnalysis.coordinates.CRD"></span><div class="section" id="crd-structure-files-in-mdanalysis-mdanalysis-coordinates-crd">
 <h1>5.4. CRD structure files in MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.CRD" title="MDAnalysis.coordinates.CRD"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a><a class="headerlink" href="#crd-structure-files-in-mdanalysis-mdanalysis-coordinates-crd" title="Permalink to this headline">¶</a></h1>
-<p>Only coordinates are written at the moment.</p>
-<p>VERY Primative CRD generator (may still have to be debugged!)</p>
-<blockquote>
-It may need some debugging (i.e.-it might not work for large systems
-as they usually need the extended version of crd writing).</blockquote>
+<p>Read and write coordinates in CHARMM CARD coordinate format (suffix
+&#8220;crd&#8221;). The CHARMM &#8220;extended format&#8221; is handled automatically.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.CRD.CRDReader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.CRD.</tt><tt class="descname">CRDReader</tt><big>(</big><em>crdfilename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.CRD.CRDReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>CRD reader that implements the standard and extended CRD coordinate formats</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.CRD.CRDReader.Writer">
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.CRD.CRDReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a CRDWriter for <em>filename</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">filename of the output CRD file</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.CRD.CRDWriter" title="MDAnalysis.coordinates.CRD.CRDWriter"><tt class="xref py py-class docutils literal"><span class="pre">CRDWriter</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">

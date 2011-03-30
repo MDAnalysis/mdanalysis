@@ -77,6 +77,34 @@ simulations.</p>
 into a Timestep object; attributes are set so that the PDBReader
 object superficially resembles the DCDReader object.</p>
 <dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PDBReader.Writer">
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a strict PDBWriter for <em>filename</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">filename of the output PDB file</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PDBWriter</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PDBWriter</span></tt></a> &#8216;s <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter.write" title="MDAnalysis.coordinates.PDB.PDBWriter.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method always requires a 
+<tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt> as an argument (it is not optional anymore when the Writer
+is obtained through this method of <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><tt class="xref py py-class docutils literal"><span class="pre">PDBReader</span></tt></a>.)</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBReader.get_bfactors">
 <tt class="descname">get_bfactors</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader.get_bfactors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of bfactors (tempFactor) in atom order.</p>
@@ -102,7 +130,7 @@ which happens automatically when the
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.write" title="MDAnalysis.core.AtomGroup.AtomGroup.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method of a 
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> instance is used.</p>
 </div>
-<p>pdbwriter = PDBWriter(&lt;pdbfilename&gt;,PDBstructure==universe.pdb.pdb,**kwargs)
+<p>pdbwriter = PDBWriter(&lt;pdbfilename&gt;,universe=universe,**kwargs)
 :Arguments:
 pdbfilename     filename; if multi=True, embed a %%d formatstring</p>
 <blockquote>
@@ -268,6 +296,28 @@ True: write all frames to multiple pdb files</blockquote>
 <p>Read coordinates from <em>filename</em>.</p>
 <p><em>filename</em> can be a gzipped or bzip2ed compressed PDB file.</p>
 <dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.Writer">
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a permissive (simple) PDBWriter for <em>filename</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">filename of the output PDB file</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_bfactors">
 <tt class="descname">get_bfactors</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_bfactors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of bfactors (tempFactor) in atom order.</p>
@@ -276,7 +326,7 @@ True: write all frames to multiple pdb files</blockquote>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_occupancy">
 <tt class="descname">get_occupancy</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_occupancy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return an array of occupancies atom order.</p>
+<dd><p>Return an array of occupancies in atom order.</p>
 </dd></dl>
 
 </dd></dl>

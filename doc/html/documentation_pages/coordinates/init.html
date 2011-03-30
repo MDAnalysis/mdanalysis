@@ -193,6 +193,7 @@ I/O code can be written in C or python or a mixture thereof.</p>
 <li>2010-10-19 use close() instead of close_trajectory() [orbeckst]</li>
 <li>2010-10-30 clarified Writer write() methods (see also <a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=49">Issue 49</a>)</li>
 <li>2011-02-01 extended call signatur of Reader class</li>
+<li>2011-03-30 optional Writer() method for Readers</li>
 </ul>
 </div>
 <div class="section" id="registry">
@@ -230,7 +231,7 @@ different ways:</p>
 <dd>empty Timestep for <em>arg</em> atoms (allocate arrays etc)</dd>
 <dt><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></dt>
 <dd>makes a deep copy of the <em>arg</em></dd>
-<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-ac3cba3)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
+<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-a388970)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
 <dd>update the Timesteps positions array with the contents of <em>arg</em></dd>
 </dl>
 </blockquote>
@@ -340,7 +341,7 @@ trajectory:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">314</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>would load frame 314 in the current <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt>.</p>
+<p>would load frame 314 into the current <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt>.</p>
 <p>Using slices allows iteration over parts of a trajectory</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">1000</span><span class="p">:</span><span class="mi">2000</span><span class="p">]:</span>
     <span class="n">process_frame</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>   <span class="c"># do something</span>
@@ -357,6 +358,15 @@ reads every 100th frame until the end.</p>
 trajectory reader and if it can implement random access to frames. In many
 cases this is not easily (or reliably) implementable and thus one is
 restricted to sequential iteration.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">Writer(filename,</span> <span class="pre">**kwargs)</span></tt></dt>
+<dd><p class="first">returns a <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Writer" title="MDAnalysis.coordinates.base.Writer"><tt class="xref py py-class docutils literal"><span class="pre">Writer</span></tt></a> which is set up with
+the same parameters as the trajectory that is being read (e.g. time step, 
+length etc), which facilitates copying and simple on-the-fly manipulation.</p>
+<p>If no Writer is defined then a <tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt> is raised.</p>
+<p class="last">The <em>kwargs</em> can be used to customize the Writer as they are typically
+passed through to the init method of the Writer, with sensible defaults
+filled in; the actual keyword arguments depend on the Writer.</p>
 </dd>
 <dt><tt class="docutils literal"><span class="pre">timeseries(atomGroup,</span> <span class="pre">[start[,stop[,skip[,format]]]])</span></tt></dt>
 <dd>returns a subset of coordinate data</dd>
@@ -626,7 +636,7 @@ Signature:</p>
                         title="previous chapter">5. Coordinates modules</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="base.html"
-                        title="next chapter">5.2. Base classes &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></p>
+                        title="next chapter">5.2. Base classes &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/init.txt"

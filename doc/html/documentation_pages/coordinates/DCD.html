@@ -104,6 +104,54 @@ containing coordinates of current frame</p>
 </tbody>
 </table>
 <dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader.Writer">
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a DCDWriter for <em>filename</em> with the same parameters as this DCD.</p>
+<p>All values can be changed through keyword arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">filename of the output DCD trajectory</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<dt><em>numatoms</em></dt>
+<dd><p class="first last">number of atoms</p>
+</dd>
+<dt><em>start</em></dt>
+<dd><p class="first last">number of the first recorded MD step</p>
+</dd>
+<dt><em>step</em></dt>
+<dd><p class="first last">indicate that <em>step</em> MD steps (!) make up one trajectory frame</p>
+</dd>
+<dt><em>delta</em></dt>
+<dd><p class="first last">MD integrator time step (!), in AKMA units</p>
+</dd>
+<dt><em>remarks</em></dt>
+<dd><p class="first last">string that is stored in the DCD header [XXX &#8211; max length?]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="MDAnalysis.coordinates.DCD.DCDWriter"><tt class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The keyword arguments set the low-level attributes of the DCD
+according to the CHARMM format. The time between two frames
+would be <em>delta</em> * <em>step</em> !</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDReader.correl">
 <tt class="descname">correl</tt><big>(</big><em>timeseries</em>, <em>start=0</em>, <em>stop=-1</em>, <em>skip=1</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.correl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Populate a TimeseriesCollection object with timeseries computed from the trajectory</p>
@@ -220,7 +268,7 @@ the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="CRD.html"
-                        title="previous chapter">5.4. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></p>
+                        title="previous chapter">5.4. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="GRO.html"
                         title="next chapter">5.6. GRO file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
