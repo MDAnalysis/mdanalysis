@@ -326,11 +326,6 @@ def rms_fit_trj(traj, ref, select='backbone', filename=None, rmsdfile=None, pref
     instances. If they contain a trajectory then it is used. The
     output file format is the same as the input *traj*.
 
-    .. Note:: This function is flexible but slow. In order to fit a long
-       trajectory it is suggested to only align one frame and then use
-       that frame with a more efficient program (that otherwise could
-       not easily deal with aligning different molecules).
-
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
     """
