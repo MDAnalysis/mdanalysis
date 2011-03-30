@@ -200,6 +200,10 @@ class Reader(IObase):
         """Total length of the trajectory numframes * dt."""
         return self.numframes * self.dt 
 
+    def Writer(self, filename, **kwargs):
+        """Returns a trajectory writer with the same properties as this trajectory."""
+        raise NotImplementedError("Sorry, there is no Writer for this format in MDAnalysis. Please file an enhancement request at http://code.google.com/p/mdanalysis/issues/")
+
     def _read_next_timestep(self, ts=None):
         # Example from DCDReader:
         #     if ts is None: ts = self.ts

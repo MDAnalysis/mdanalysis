@@ -2,14 +2,11 @@
 """CRD structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.CRD`
 ===========================================================================
 
-Only coordinates are written at the moment.
-
-VERY Primative CRD generator (may still have to be debugged!)
-
- It may need some debugging (i.e.-it might not work for large systems
- as they usually need the extended version of crd writing).
+Read and write coordinates in CHARMM CARD coordinate format (suffix
+"crd"). The CHARMM "extended format" is handled automatically.
 
 """
+from __future__ import with_statement
 
 import MDAnalysis
 import MDAnalysis.core.util as util
@@ -60,6 +57,18 @@ class CRDReader(base.Reader):
         self.delta = 0
         self.skip_timestep = 1
         self.ts = self._Timestep(coords_list)
+
+    def Writer(self, filename, **kwargs):
+        """Returns a CRDWriter for *filename*.
+
+        :Arguments:
+          *filename*
+              filename of the output CRD file
+
+        :Returns: :class:`CRDWriter`
+
+        """
+        return CRDWriter(filename, **kwargs)
 
     def __len__(self):
         return self.numframes
@@ -120,8 +129,7 @@ class CRDWriter(base.Writer):
        
         atoms = selection.atoms     # make sure to use atoms (Issue 46)
         coor = atoms.coordinates()  # can write from selection == Universe (Issue 49)
-        self.crd = open(self.filename,'w')
-        try:
+        with open(self.filename,'w') as crd:
             self._TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
             self._TITLE("")
             self._NUMATOMS(len(atoms))
@@ -133,8 +141,6 @@ class CRDWriter(base.Writer):
                 self._ATOM(serial=i+1, resSeq=atom.resid, resName=atom.resname, name=atom.name,
                           x=coor[i,0], y=coor[i,1], z=coor[i,2], chainID=atom.segid,tempFactor=0.0,TotRes=current_resid,numatoms=len(atoms))
                 # get bfactor, too?
-        finally:
-            self.crd.close()
 
     def _TITLE(self,*title):
         """Write TITLE record.

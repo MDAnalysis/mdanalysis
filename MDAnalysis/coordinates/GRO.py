@@ -10,6 +10,7 @@ Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 .. _GRO: http://manual.gromacs.org/current/online/gro.html
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
 """
+from __future__ import with_statement
 
 import numpy
 
@@ -58,8 +59,7 @@ class GROReader(base.Reader):
 
 		coords_list = []
 
-		grofile = open(grofilename , 'r')
-		try:
+		with open(grofilename , 'r') as grofile:
 			# Read first two lines to get number of atoms
 			grofile.readline()
 			total_atnums = int(grofile.readline())
@@ -71,8 +71,6 @@ class GROReader(base.Reader):
 				# Unit cell footer
 				elif linenum == total_atnums+2:
 					unitcell = numpy.array( map( float , line.split() ) )
-		finally:
-			grofile.close()
 
 		self.numatoms = len(coords_list)
 		coords_list = numpy.array(coords_list)
@@ -99,6 +97,18 @@ class GROReader(base.Reader):
 		self.periodic = False
 		self.delta = 0
 		self.skip_timestep = 1
+
+	def Writer(self, filename, **kwargs):
+		"""Returns a CRDWriter for *filename*.
+		
+		:Arguments:
+  		  *filename*
+		    filename of the output GRO file
+
+		:Returns: :class:`GROWriter`
+
+		"""
+		return GROWriter(filename, **kwargs)
 
 	def __len__(self):
 		return self.numframes

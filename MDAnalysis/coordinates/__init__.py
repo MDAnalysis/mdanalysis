@@ -52,7 +52,7 @@ are also recognized when they are compressed with :program:`gzip` or
 |               |           |       | processed at the moment. Module                      |
 |               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |
 +---------------+-----------+-------+------------------------------------------------------+
-| XYZ           |  xyz      |   r   | Generic white-space separate XYZ format; can be      |
+| XYZ           |  xyz      |  r    | Generic white-space separate XYZ format; can be      |
 |               |           |       | compressed. Module                                   |
 |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
 +---------------+-----------+-------+------------------------------------------------------+
@@ -110,6 +110,7 @@ History
 - 2010-10-19 use close() instead of close_trajectory() [orbeckst]
 - 2010-10-30 clarified Writer write() methods (see also `Issue 49`_)
 - 2011-02-01 extended call signatur of Reader class
+- 2011-03-30 optional Writer() method for Readers
 
 .. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
 
@@ -247,6 +248,7 @@ deal with missing methods gracefully.
 
  ``__len__()``
      number of frames in trajectory
+
  ``__getitem__(arg)``
      advance to time step `arg` = `frame` and return :class:`Timestep`; or if `arg` is a
      slice, then return an iterator over that part of the trajectory. 
@@ -256,7 +258,7 @@ deal with missing methods gracefully.
 
        universe.trajectory[314]
 
-     would load frame 314 in the current :class:`Timestep`. 
+     would load frame 314 into the current :class:`Timestep`. 
 
      Using slices allows iteration over parts of a trajectory ::
 
@@ -276,11 +278,24 @@ deal with missing methods gracefully.
      cases this is not easily (or reliably) implementable and thus one is
      restricted to sequential iteration.
 
+ ``Writer(filename, **kwargs)``
+     returns a :class:`~MDAnalysis.coordinates.base.Writer` which is set up with
+     the same parameters as the trajectory that is being read (e.g. time step, 
+     length etc), which facilitates copying and simple on-the-fly manipulation.
+
+     If no Writer is defined then a :exc:`NotImplementedError` is raised.
+
+     The *kwargs* can be used to customize the Writer as they are typically
+     passed through to the init method of the Writer, with sensible defaults
+     filled in; the actual keyword arguments depend on the Writer.
+
  ``timeseries(atomGroup, [start[,stop[,skip[,format]]]])``
      returns a subset of coordinate data
+
  ``correl(timeseriesCollection[,start[,stop[,skip]]])``
      populate a :class:`MDAnalysis.core.Timeseries.TimeseriesCollection` object
      with observable timeseries computed from the trajectory
+
 
 Attributes
 ..........

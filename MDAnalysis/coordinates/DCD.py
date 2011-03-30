@@ -289,6 +289,38 @@ class DCDReader(base.Reader):
         self._finish_dcd_read()
         self.dcdfile.close()
         self.dcdfile = None
+    def Writer(self, filename, **kwargs):
+        """Returns a DCDWriter for *filename* with the same parameters as this DCD.
+
+        All values can be changed through keyword arguments.
+
+        :Arguments:
+          *filename*
+              filename of the output DCD trajectory
+        :Keywords:
+          *numatoms*
+              number of atoms
+          *start*
+              number of the first recorded MD step
+          *step*
+              indicate that *step* MD steps (!) make up one trajectory frame
+          *delta*
+              MD integrator time step (!), in AKMA units
+          *remarks*
+              string that is stored in the DCD header [XXX -- max length?]
+
+        :Returns: :class:`DCDWriter`
+
+        .. Note:: The keyword arguments set the low-level attributes of the DCD
+                  according to the CHARMM format. The time between two frames
+                  would be *delta* * *step* !
+        """
+        numatoms = kwargs.pop('numatoms', self.numatoms)
+        kwargs.setdefault('start', self.start_timestep)
+        kwargs.setdefault('step', self.skip_timestep)
+        kwargs.setdefault('delta', self.delta)
+        kwargs.setdefault('remarks', self.remarks)
+        return DCDWriter(filename, numatoms, **kwargs)
     def __del__(self):
         if not self.dcdfile is None:
             self.close_trajectory()

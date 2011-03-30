@@ -94,6 +94,27 @@ class PDBReader(base.Reader):
                       DeprecationWarning)
         return numpy.array([a.get_bfactor() for a in self.pdb.get_atoms()])
 
+    def Writer(self, filename, **kwargs):
+        """Returns a strict PDBWriter for *filename*.
+
+        :Arguments:
+          *filename*
+              filename of the output PDB file
+
+        :Returns: :class:`PDBWriter`
+
+        .. Note:: This :class:`PDBWriter` 's :meth:`~PDBWriter.write` method always requires a 
+                  :class:`Timestep` as an argument (it is not optional anymore when the Writer
+                  is obtained through this method of :class:`PDBReader`.)
+        """
+        # This is messy; we cannot get a universe from the Reader, which would be
+        # also needed to be fed to the PDBWriter (which is a total mess...).
+        # Hence we ignore the problem and document it in the doc string... --- the
+        # limitation is simply that PDBWriter.write() must always be called with an argument.
+        kwargs['BioPDBstructure'] = self.pdb   # make sure that this Writer is 
+        kwargs.pop('universe', None)           # always linked to this reader, don't bother with Universe
+        return PDBWriter(filename, **kwargs)
+
     def __len__(self):
         return self.numframes
     def __iter__(self):
@@ -134,7 +155,7 @@ class PDBWriter(base.Writer):
     # optional keyword argument even though it really is required.
     
     def __init__(self,pdbfilename,universe=None,multi=False,**kwargs):
-        """pdbwriter = PDBWriter(<pdbfilename>,PDBstructure==universe.pdb.pdb,**kwargs)
+        """pdbwriter = PDBWriter(<pdbfilename>,universe=universe,**kwargs)
         :Arguments:
         pdbfilename     filename; if multi=True, embed a %%d formatstring
                         so that write_next_timestep() can insert the frame number
@@ -144,17 +165,19 @@ class PDBWriter(base.Writer):
         """
         import Bio.PDB.Structure
         self.universe = universe
-        try:
-            self.PDBstructure = universe.pdb.pdb
-        except AttributeError:
-            self.PDBstructure = None
+        self.PDBstructure = kwargs.pop('BioPDBstructure', None)  # hack for PDBReader.Writer()
+        if not self.PDBstructure:
+            try:
+                self.PDBstructure = universe.trajectory.pdb
+            except AttributeError:
+                pass
         self.filename = pdbfilename
         self.multi = multi
         if self.multi:
             raise NotImplementedError('Sorry, multi=True does not work yet.')
         if self.PDBstructure is not None and not isinstance(self.PDBstructure,Bio.PDB.Structure.Structure):
             raise TypeError('If defined, PDBstructure must be a Bio.PDB.Structure.Structure, eg '
-                            'Universe.pdb.pdb.')
+                            'Universe.trajectory.pdb.')
     def write_next_timestep(self,ts=None):
         self.write(ts)
     def write(self,ts=None):
@@ -164,7 +187,7 @@ class PDBWriter(base.Writer):
         """        
         if self.PDBstructure is None:
             if self.universe is None:
-                warnings.warn("PDBWriter: Not writing frame as no universe supplied.")
+                warnings.warn("PDBWriter: Not writing frame as neither Timestep nor Universe supplied.")
                 return            
             # primitive PDB writing (ignores timestep argument)
             ppw = PrimitivePDBWriter(self.filename)
@@ -310,8 +333,20 @@ class PrimitivePDBReader(base.Reader):
         return self._atoms.tempFactor
 
     def get_occupancy(self):
-        """Return an array of occupancies atom order."""
+        """Return an array of occupancies in atom order."""
         return self._atoms.occupancy
+
+    def Writer(self, filename, **kwargs):
+        """Returns a permissive (simple) PDBWriter for *filename*.
+
+        :Arguments:
+          *filename*
+              filename of the output PDB file
+
+        :Returns: :class:`PrimitivePDBWriter`
+
+        """
+        return PrimitivePDBWriter(filename, **kwargs)
 
     def __len__(self):
         return self.numframes
@@ -324,9 +359,6 @@ class PrimitivePDBReader(base.Reader):
         return self.ts
     def _read_next_timestep(self):
         raise IndexError("PrimitivePDBReader can only read a single frame")
-
-
-        
 
 class PrimitivePDBWriter(base.Writer):
     """PDB writer that implements a subset of the PDB 3.2 standard.
@@ -393,7 +425,6 @@ class PrimitivePDBWriter(base.Writer):
             # get bfactor, too, and add to output?
             # 'element' is auto-guessed from atom.name in ATOM()
         self.close()
-
 
     def TITLE(self,*title):
         """Write TITLE record.

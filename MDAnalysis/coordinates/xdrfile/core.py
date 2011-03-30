@@ -213,6 +213,39 @@ class TrjReader(base.Reader):
         libxdrfile.xdrfile_close(self.xdrfile)
         self.xdrfile = None  # guard against  crashing with a double-free pointer
 
+    def Writer(self, filename, **kwargs):
+        """Returns a Gromacs TrjWriter for *filename* with the same parameters as this trajectory.
+
+        All values can be changed through keyword arguments.
+
+        :Arguments:
+          *filename*
+              filename of the output trajectory
+        :Keywords:
+          *numatoms*
+              number of atoms
+          *start*
+              number of the first recorded MD step
+          *step*
+              indicate that *step* MD steps (!) make up one trajectory frame
+          *delta*
+              MD integrator time step (!), in AKMA units
+          *precision*
+              accuracy for lossy XTC format
+
+        :Returns: :class:`DCDWriter`
+
+        .. Note:: The keyword arguments set the low-level attributes of the DCD
+                  according to the CHARMM format. The time between two frames
+                  would be *delta* * *step* !
+        """
+        numatoms = kwargs.pop('numatoms', self.numatoms)
+        kwargs.setdefault('start', self.start_timestep)
+        kwargs.setdefault('step', self.skip_timestep)
+        kwargs.setdefault('delta', self.delta)
+        kwargs.setdefault('precision', self.precision)
+        return TrjWriter(filename, numatoms, **kwargs)
+
     def __iter__(self):
         self.ts.frame = 0  # start at 0 so that the first frame becomes 1
         self._reopen()

@@ -21,12 +21,13 @@ The rules for this file:
         * Support for PDBs with 4 character resnames and segID output when
 	  writing (Issue 63) --- makes the (default) PrimitivePDBReader/Writer
 	  more suitable for NAMD/CHARMM but breaks strict PDB standard. If
-	  you need full PDB reading capabilities, use the strict PDB reader.
+	  you need full PDB reading capabilities, use the strict PDB reader
+	  [i.e. use Universe(..., permissive=False)]
 	* fixed bug in (experimental) phi and psi selections
 	* aliased segment.name to segment.id
 	* fixed bugs in reading of unit cells (Issue 60, Issue 61, Issue 34)
 	* universe.trajectory.delta returns the full precision dt value
-	  (Issue 64)
+	  instead of a value rounded to 4 decimals (Issue 64)
 	* fixed bug in DCDWriter (XTC->DCD was broken, Issue 59)
         * new method AtomGroup.bbox() that returns the orthorhombic bounding box
 	* enhancements of the analysis.density module (build density
@@ -36,6 +37,10 @@ The rules for this file:
 	  attribute of each Atom. 
         * recognise many more OPLS/AA and Amber residue names as "protein"
 	* analysis.align: convenience functions rotation_matrix() and alignto()
+	* TrajectoryReader gained Writer() method which returns an appropriate
+	  TrajectoryWriter instance that can be used for processing this
+	  trajectory (enhancement of the Trajectory API); if no Writer is known
+	  then a NotImplementedError is raised	  
 	* doc improvements 
 
 02/08/11 orbeckst, denniej0, jandom, tyler.je.reddy, Joshua Adelman
