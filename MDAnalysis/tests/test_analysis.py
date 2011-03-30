@@ -54,9 +54,8 @@ class TestContactMatrix(TestCase):
 class TestAlign(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
-        self.target = MDAnalysis.Universe(PSF, DCD)
-        # outfile MUST be same type as input at the moment
-        fd, self.outfile = tempfile.mkstemp(suffix='.dcd')
+        self.reference = MDAnalysis.Universe(PSF, DCD)
+        fd, self.outfile = tempfile.mkstemp(suffix=".dcd")  # output is always same as input (=DCD)
 
     def tearDown(self):
         try:
@@ -64,24 +63,39 @@ class TestAlign(TestCase):
         except OSError:
             pass
         del self.universe
-        del self.target
+        del self.reference
+
+    def test_rmsd(self):
+        self.universe.trajectory[0]      # ensure first frame
+        bb = self.universe.selectAtoms('backbone')
+        A = bb.coordinates(copy=True)     # coordinates of first frame (copy=True just in case)
+        self.universe.trajectory[-1]      # forward to last frame
+        B = bb.coordinates()              # coordinates of last frame
+        rmsd = MDAnalysis.analysis.align.rmsd(A,B)
+        assert_almost_equal(MDAnalysis.analysis.align.rmsd(A,A), 0.0, 5,
+                            err_msg="error: rmsd(X,X) should be 0") 
+        assert_equal(MDAnalysis.analysis.align.rmsd(B,A), rmsd, "error: rmsd() is not symmetric")
+        assert_almost_equal(rmsd, 6.8342494129169804, 5, 
+                            err_msg="RMSD calculation between 1st and last AdK frame gave wrong answer")
 
     @dec.slow
     @attr('issue')
     def test_rms_fit_trj(self):
-        """Testing align.rms_fit_trj() (Issue 58)"""
+        """Testing align.rms_fit_trj() for all atoms (Issue 58)"""
         # align to *last frame* in target... just for the heck of it
-        self.target.trajectory[-1]
-        MDAnalysis.analysis.align.rms_fit_trj(self.universe, self.target, 
+        self.reference.trajectory[-1]
+        MDAnalysis.analysis.align.rms_fit_trj(self.universe, self.reference, select="all",
                                               filename=self.outfile)
         fitted = MDAnalysis.Universe(PSF, self.outfile)
-        self._assert_rmsd(fitted, 0,  6.9381810858039268)
+        # RMSD against the reference frame
+        # calculated on Mac OS X x86 with MDA 0.7.2 r689
+        # VMD: 6.9378711
+        self._assert_rmsd(fitted, 0, 6.92913674516568)
         self._assert_rmsd(fitted, -1, 0.0)
 
     def _assert_rmsd(self, fitted, frame, desired):
         fitted.trajectory[frame]
-        rmsd = MDAnalysis.analysis.align.rmsd(self.universe.atoms.coordinates(), fitted.atoms.coordinates())
-        assert_almost_equal(rmsd, desired, decimal=3, 
+        rmsd = MDAnalysis.analysis.align.rmsd(self.reference.atoms.coordinates(), fitted.atoms.coordinates())
+        assert_almost_equal(rmsd, desired, decimal=5, 
                             err_msg="frame %d of fit does not have expected RMSD" % frame)
-
 

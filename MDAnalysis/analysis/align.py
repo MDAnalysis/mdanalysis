@@ -201,17 +201,59 @@ def rotation_matrix(a,b, weights=None):
                                         b.shape[0], rot, weights)
     return numpy.matrix(rot.reshape(3,3)), rmsd
 
-def alignto(mobile, ref, select="backbone", mass_weighted=False,
+def _process_selection(select):
+    """Return a canonical selection dictionary.
+
+    :Arguments:
+      *select*
+         - any valid selection string for
+           :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
+           selections in *mobile* and *reference*; or 
+         - dictionary ``{'mobile':sel1, 'reference':sel2}``.  
+           The :func:`fasta2select` function returns such a
+           dictionary based on a ClustalW_ or STAMP_ sequence alignment.
+         - tuple ``(sel1, sel2)``
+    
+    :Returns: dict with keys `reference` and `mobile`
+    """
+    if type(select) is str:
+        select = {'reference':select,'mobile':select}
+    elif type(select) is tuple:
+        try:
+            select = {'reference':select[0],'mobile':select[1]}
+        except IndexError:
+            raise IndexError("select must contain two selection strings "
+                             "(reference, mobile)")
+    elif type(select) is dict:
+        # compatability hack to use new nomenclature
+        try:
+            select['mobile'] = select['target']
+            warnings.warn("use key 'mobile' instead of deprecated 'target'; "
+                          "'target' will be removed in 0.8",
+                          DeprecationWarning)
+        except KeyError:
+            pass
+        try:
+            select['mobile']
+            select['reference']
+        except KeyError:
+            raise KeyError("select dictionary must contain entries for keys "
+                           "'mobile' and 'reference'.")
+    else:
+        raise TypeError("'select' must be either a string, 2-tuple, or dict")
+    return select
+
+def alignto(mobile, reference, select="backbone", mass_weighted=False,
             subselection=None):
-    """Spatially align *mobile* to *ref* by doing a RMSD fit on *select* atoms.
+    """Spatially align *mobile* to *reference* by doing a RMSD fit on *select* atoms.
 
     The superposition is done in the following way:
 
     1. A rotation matrix is computed that minimizes the RMSD between
        the coordinates of `mobile.selectAtoms(sel1)` and
-       `ref.selectAtoms(sel2)`; before the rotation, *mobile* is
+       `reference.selectAtoms(sel2)`; before the rotation, *mobile* is
        translated so that its center of geometry (or center of mass)
-       coincides with the one of *ref*. (See below for explanation of
+       coincides with the one of *reference*. (See below for explanation of
        how *sel1* and *sel2* are derived from *select*.)
 
     2. All atoms in :class:`~MDAnalysis.core.AtomGroup.Universe` that
@@ -222,19 +264,19 @@ def alignto(mobile, ref, select="backbone", mass_weighted=False,
       *mobile*
          structure to be aligned, a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` 
          or a whole :class:`~MDAnalysis.core.AtomGroup.Universe` 
-      *ref*
+      *reference*
          reference structure, a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` 
          or a whole :class:`~MDAnalysis.core.AtomGroup.Universe` 
       *select*
          - any valid selection string for
            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
-           selections in *mobile* and *ref*; or 
-         - dictionary ``{'target':sel1, 'reference':sel2}``.  
+           selections in *mobile* and *reference*; or 
+         - dictionary ``{'mobile':sel1, 'reference':sel2}``.  
            The :func:`fasta2select` function returns such a
            dictionary based on a ClustalW_ or STAMP_ sequence alignment.
          - tuple ``(sel1, sel2)``
       *mass_weighted* : boolean
-         ``True`` uses the masses :meth:`ref.masses` as weights for the
+         ``True`` uses the masses :meth:`reference.masses` as weights for the
          RMSD fit.
       *subselection*
          Apply the transformation only to this selection.
@@ -253,12 +295,9 @@ def alignto(mobile, ref, select="backbone", mass_weighted=False,
     .. SeeAlso:: For RMSD-fitting trajectories it is more efficient to
                  use :func:`rms_fit_trj`.
     """
-    if type(select) is str:
-        select = {'reference':select,'target':select}
-    elif type(select) is tuple:
-        select = {'reference':select[0],'target':select[1]}
+    select = _process_selection(select)
     mobile_atoms = mobile.selectAtoms(select['target'])
-    ref_atoms = ref.selectAtoms(select['reference'])
+    ref_atoms = reference.selectAtoms(select['reference'])
     if mass_weighted:
         masses = ref_atoms.masses()
         ref_com = ref_atoms.centerOfMass()
@@ -292,21 +331,21 @@ def alignto(mobile, ref, select="backbone", mass_weighted=False,
     return old_rmsd, new_rmsd
     
 
-def rms_fit_trj(traj, ref, select='backbone', filename=None, rmsdfile=None, prefix='rmsfit_',
+def rms_fit_trj(traj, reference, select='backbone', filename=None, rmsdfile=None, prefix='rmsfit_',
                 mass_weighted=False, tol_mass=0.1):
     """RMS-fit trajectory to a reference structure using a selection.
 
     :Arguments:
       *traj*
          trajectory, :class:`MDAnalysis.Universe` object
-      *ref*
+      *reference*
          reference coordinates; :class:`MDAnalysis.Universe` object
          (uses the current time step of the object)
       *select*
          - any valid selection string for
            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
-           selections in *traj* and *ref*; or 
-         - dictionary ``{'reference':sel1, 'target':sel2}``.  
+           selections in *traj* and *reference*; or 
+         - dictionary ``{'reference':sel1, 'mobile':sel2}``.  
            The :func:`fasta2select` function returns such a
            dictionary based on a ClustalW_ or STAMP_ sequence alignment.
       *filename*
@@ -335,46 +374,13 @@ def rms_fit_trj(traj, ref, select='backbone', filename=None, rmsdfile=None, pref
     if filename is None:
         path,fn = os.path.split(frames.filename)
         filename = os.path.join(path,prefix+fn)
-    if type(select) is str:
-        select = {'reference':select,'target':select}
 
-    # TODO: dealing with different formats is not nice; this should be
-    # rewritten with the trajectory API in mind...
-    # A trajectory Reader should be able to return the native Writer! [OB]
-    if isinstance(frames,MDAnalysis.coordinates.DCD.DCDReader):
-        writer = MDAnalysis.coordinates.DCD.DCDWriter(
-            filename,frames.numatoms,
-            frames.start_timestep,
-            frames.skip_timestep,
-            frames.delta,
-            remarks='RMS fitted trajectory to ref')
-    elif isinstance(frames,MDAnalysis.coordinates.XTC.XTCReader):
-        writer = MDAnalysis.coordinates.XTC.XTCWriter(  # untested!
-            filename,frames.numatoms,
-            frames.start_timestep,
-            frames.skip_timestep,
-            frames.delta,
-            remarks='RMS fitted trajectory to ref')
-    elif isinstance(frames,MDAnalysis.coordinates.TRR.TRRReader):
-        writer = MDAnalysis.coordinates.TRR.TRRWriter(  # untested!
-            filename,frames.numatoms,
-            frames.start_timestep,
-            frames.skip_timestep,
-            frames.delta,
-            remarks='RMS fitted trajectory to ref')
-    elif isinstance(frames,MDAnalysis.coordinates.PDB.PDBReader):
-        writer = MDAnalysis.coordinates.PDB.PDBWriter( # still working like this?
-            filename, universe=traj,
-            remarks='RMS fitted pdb frame to ref')
-    elif isinstance(frames,MDAnalysis.coordinates.PDB.PrimitivePDBReader):
-        writer = MDAnalysis.coordinates.PDB.PrimitivePDBWriter( # still working like this?
-            filename, universe=traj,
-            remarks='RMS fitted pdb frame to ref')
-    else:
-        raise TypeError('traj must contain a DCD, XTC, TRR, or a PDB.')
+    select = _process_selection(select)
 
-    ref_atoms = ref.selectAtoms(select['reference'])
-    traj_atoms = traj.selectAtoms(select['target'])
+    writer = frames.Writer(filename, remarks='RMS fitted trajectory to reference')
+
+    ref_atoms = reference.selectAtoms(select['reference'])
+    traj_atoms = traj.selectAtoms(select['mobile'])
     natoms = traj_atoms.numberOfAtoms()
     if len(ref_atoms) != len(traj_atoms):
         raise SelectionError("Reference and trajectory atom selections do not contain "+
@@ -509,7 +515,7 @@ def fasta2select(fastafilename,is_aligned=False,
  
     :Returns:
       *select_dict*      
-          dictionary with 'reference' and 'target' selection string
+          dictionary with 'reference' and 'mobile' selection string
           that can be used immediately in :func:`rms_fit_trj` as
           ``select=select_dict``.
     """
@@ -624,5 +630,5 @@ def fasta2select(fastafilename,is_aligned=False,
 
     ref_selection =  " or ".join(sel[0])
     target_selection =  " or ".join(sel[1])
-    return {'reference':ref_selection, 'target':target_selection}
+    return {'reference':ref_selection, 'mobile':target_selection}
 
