@@ -53,7 +53,7 @@ copyright = u'2005-2011, ' + authors
 #
 # Dynamically calculate the version 
 ##packageversion = __import__('MDAnalysis').get_version()
-packageversion = '0.7.2'
+packageversion = '0.7.3'
 # The short X.Y version.
 version = '.'.join(packageversion.split('.')[:2])
 # The full version, including alpha/beta/rc tags.
