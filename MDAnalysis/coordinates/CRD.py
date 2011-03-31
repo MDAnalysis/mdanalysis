@@ -129,7 +129,7 @@ class CRDWriter(base.Writer):
        
         atoms = selection.atoms     # make sure to use atoms (Issue 46)
         coor = atoms.coordinates()  # can write from selection == Universe (Issue 49)
-        with open(self.filename,'w') as crd:
+        with open(self.filename,'w') as self.crd:
             self._TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
             self._TITLE("")
             self._NUMATOMS(len(atoms))
@@ -139,8 +139,8 @@ class CRDWriter(base.Writer):
                     # note that this compares first and LAST atom on first iteration... but it works
                     current_resid += 1
                 self._ATOM(serial=i+1, resSeq=atom.resid, resName=atom.resname, name=atom.name,
-                          x=coor[i,0], y=coor[i,1], z=coor[i,2], chainID=atom.segid,tempFactor=0.0,TotRes=current_resid,numatoms=len(atoms))
-                # get bfactor, too?
+                           x=coor[i,0], y=coor[i,1], z=coor[i,2], chainID=atom.segid,
+                           tempFactor=atom.bfactor,TotRes=current_resid,numatoms=len(atoms))
 
     def _TITLE(self,*title):
         """Write TITLE record.
@@ -167,8 +167,10 @@ class CRDWriter(base.Writer):
         serial and reSeq wrap); for strings the trailing characters
         are chopped.
 
-        Note: Floats are not checked and can potentially screw up the format.
+        .. Warning:: Floats are not checked and can potentially screw up the format.
         """
+        if tempFactor is None:
+            tempFactor = 0.0     # atom.bfactor is None by default
         for arg in ('serial','name','resName','resSeq','x','y','z','tempFactor'):
             if locals()[arg] is None:
                 raise ValueError('parameter '+arg+' must be defined.')
