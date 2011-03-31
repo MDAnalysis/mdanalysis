@@ -66,18 +66,21 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"></td>
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em></dt>
+<dd><p class="first last">filename; extension is replaced unless keep=True</p>
+</dd>
+<dt><em>ext</em></dt>
+<dd><p class="first last">extension</p>
+</dd>
+<dt><em>keep</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt>: replace existing extension; <tt class="xref docutils literal"><span class="pre">True</span></tt>: keep if exists</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt><em>name</em></dt>
-<dd>filename; extension is replaced unless keep=True</dd>
-<dt><em>ext</em></dt>
-<dd>extension</dd>
-<dt><em>keep</em></dt>
-<dd><tt class="xref docutils literal"><span class="pre">False</span></tt>: replace existing extension; <tt class="xref docutils literal"><span class="pre">True</span></tt>: keep if exists</dd>
-</dl>
 </dd></dl>
 
 <dl class="function">
@@ -143,14 +146,65 @@
     <span class="n">serial</span><span class="p">,</span><span class="n">TotRes</span><span class="p">,</span><span class="n">resName</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">chainID</span><span class="p">,</span><span class="n">resSeq</span><span class="p">,</span><span class="n">tempFactor</span> <span class="o">=</span> <span class="n">atomformat</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Fortran format edit descriptors: See
-<a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html</a>
-for the syntax.</p>
+<p>Fortran format edit descriptors; see <a class="reference external" href="http://www.webcitation.org/5xbaWMV2x">Fortran Formats</a> for the syntax.</p>
 <p>Only simple one-character specifiers supported here: <em>I F E A X</em> (see
 <a class="reference internal" href="#MDAnalysis.core.util.FORTRAN_format_regex" title="MDAnalysis.core.util.FORTRAN_format_regex"><tt class="xref py py-data docutils literal"><span class="pre">FORTRAN_format_regex</span></tt></a>).</p>
 <p>Strings are stripped of leading and trailing white space.</p>
 <p>Set up the reader with the FORTRAN format string.</p>
 <p>The string <em>fmt</em> should look like &#8216;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#8217;.</p>
+<dl class="method">
+<dt id="MDAnalysis.core.util.FORTRANReader.number_of_matches">
+<tt class="descname">number_of_matches</tt><big>(</big><em>line</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader.number_of_matches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return how many format entries could be populated with legal values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.util.FORTRANReader.parse_FORTRAN_format">
+<tt class="descname">parse_FORTRAN_format</tt><big>(</big><em>edit_descriptor</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader.parse_FORTRAN_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the descriptor.</p>
+<blockquote>
+parse_FORTRAN_format(edit_descriptor) &#8211;&gt; dict</blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body">dict with totallength (in chars), repeat, length,
+format, decimals; if the specifier could not be parsed,
+an empty dict is returned.</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if the <em>edit_descriptor</em> is not recognized.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Specifiers: <em>L ES EN T TL TR / r S SP SS BN BZ</em> are <em>not</em>
+supported, and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.util.FORTRANReader.read">
+<tt class="descname">read</tt><big>(</big><em>line</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse <em>line</em> according to the format string and return list of values.</p>
+<p>Values are converted to Python types according to the format specifier.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body">list of entries with appropriate types</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if any of the conversions cannot be made 
+(e.g. space for an int)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.core.util.FORTRANReader.number_of_matches" title="MDAnalysis.core.util.FORTRANReader.number_of_matches"><tt class="xref py py-meth docutils literal"><span class="pre">FORTRANReader.number_of_matches()</span></tt></a></p>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="data">
@@ -242,7 +296,7 @@ for the syntax.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
 </html>

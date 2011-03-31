@@ -57,28 +57,70 @@
 <h1>6.10. Setting up logging &#8212; <a class="reference internal" href="#module-MDAnalysis.core.log" title="MDAnalysis.core.log"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a><a class="headerlink" href="#setting-up-logging-mdanalysis-core-log" title="Permalink to this headline">¶</a></h1>
 <p>Configure logging for MDAnalysis. Import this module if logging is
 desired in application code.</p>
-<p>Logging to a file and the console.</p>
-<p>See <a class="reference external" href="http://docs.python.org/library/logging.html">http://docs.python.org/library/logging.html</a>?#logging-to-multiple-destinations</p>
-<p>The top level logger of the library is named &#8216;MDAnalysis&#8217;.  Note that we
-are configuring this logger with console output. If the root logger
-also does this then we will get two output lines to the console. We&#8217;ll
-live with this because this is a simple convenience library and most
-people will not bother with a logger (I think...)</p>
-<dl class="docutils">
-<dt>In modules that use loggers get a logger like so::</dt>
-<dd>import logging
-logger = logging.getLogger(&#8216;MDAnalysis.MODULENAME&#8217;)</dd>
-</dl>
+<p>Logging to a file and the console is set up by default as described
+under <a class="reference external" href="http://docs.python.org/library/logging.html?#logging-to-multiple-destinations">logging to multiple destinations</a>.</p>
+<p>The top level logger of the library is named <em>MDAnalysis</em> by
+convention; a simple logger that writes to the console and logfile can
+be created with the <a class="reference internal" href="#MDAnalysis.core.log.create" title="MDAnalysis.core.log.create"><tt class="xref py py-func docutils literal"><span class="pre">create()</span></tt></a> function. This only has to be done
+<em>once</em>. For convenience, the default MDAnalysis logger can be created
+with <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.start_logger()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="n">MDAnalysis</span><span class="o">.</span><span class="n">start_logger</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Once this has been done, MDAnalysis will write messages to the logfile
+(named <cite>MDAnalysis.log</cite> by default but this can be changed with the
+optional argument to <tt class="xref py py-func docutils literal"><span class="pre">start_logger()</span></tt>).</p>
+<p>Any code can log to the MDAnalysis logger by using</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;MDAnalysis.MODULENAME&#39;</span><span class="p">)</span>
+
+<span class="c"># use the logger, for example at info level:</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Starting task ...&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The important point is that the name of the logger begins with
+&#8220;MDAnalysis.&#8221;.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference external" href="http://docs.python.org/library/logging.html#module-logging" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">logging</span></tt></a> module in the standard library contains
+in depth documentation about using logging.</p>
+</div>
+<div class="section" id="convenience-functions">
+<h2>6.10.1. Convenience functions<a class="headerlink" href="#convenience-functions" title="Permalink to this headline">¶</a></h2>
+<p>Two convenience functions at the top level make it easy to start and
+stop the default <em>MDAnalysis</em> logger.</p>
+<dl class="function">
+<dt id="MDAnalysis.start_logging">
+<tt class="descclassname">MDAnalysis.</tt><tt class="descname">start_logging</tt><big>(</big><em>logfile='MDAnalysis.log'</em><big>)</big><a class="headerlink" href="#MDAnalysis.start_logging" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start logging of messages to file and console.</p>
+<p>The default logfile is named <cite>MDAnalysis.log</cite> and messages are
+logged with the tag <em>MDAnalysis</em>.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#module-MDAnalysis.core.log" title="MDAnalysis.core.log"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.stop_logging">
+<tt class="descclassname">MDAnalysis.</tt><tt class="descname">stop_logging</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.stop_logging" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop logging to logfile and console.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="functions-and-classes">
+<h2>6.10.2. Functions and classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.log.NullHandler">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">NullHandler</tt><big>(</big><em>level=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.NullHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Silent Handler.</p>
-<dl class="docutils">
-<dt>Useful as a default::</dt>
-<dd>h = NullHandler()
-logging.getLogger(&#8220;gromacs&#8221;).addHandler(h)
-del h</dd>
-</dl>
+<p>Useful as a default:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">h</span> <span class="o">=</span> <span class="n">NullHandler</span><span class="p">()</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;MDAnalysis&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">h</span>
+</pre></div>
+</div>
 <p>Initializes the instance - basically setting the formatter to None
 and the filter list to empty.</p>
 </dd></dl>
@@ -92,21 +134,21 @@ and the filter list to empty.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.log.create">
-<tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">create</tt><big>(</big><em>logger_name</em>, <em>logfile='MDAnalysis.log'</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.create" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">create</tt><big>(</big><em>logger_name='MDAnalysis'</em>, <em>logfile='MDAnalysis.log'</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a top level logger.</p>
 <ul class="simple">
 <li>The file logger logs everything (including DEBUG).</li>
 <li>The console logger only logs INFO and above.</li>
 </ul>
-<p>Logging to a file and the console.</p>
-<p>See <a class="reference external" href="http://docs.python.org/library/logging.html">http://docs.python.org/library/logging.html</a>?#logging-to-multiple-destinations</p>
-<p>The top level logger of the library is named &#8216;MDAnalysis&#8217;.  Note
-that we are configuring this logger with console output. If the
-root logger also does this then we will get two output lines to
-the console. We&#8217;ll live with this because this is a simple
-convenience library...</p>
+<p>Logging to a file and the console as described under <a class="reference external" href="http://docs.python.org/library/logging.html?#logging-to-multiple-destinations">logging to
+multiple destinations</a>.</p>
+<p>The top level logger of MDAnalysis is named <em>MDAnalysis</em>.  Note
+that we are configuring this logger with console output. If a root
+logger also does this then we will get two output lines to the
+console.</p>
 </dd></dl>
 
+</div>
 </div>
 
 
@@ -115,6 +157,15 @@ convenience library...</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.10. Setting up logging &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a><ul>
+<li><a class="reference internal" href="#convenience-functions">6.10.1. Convenience functions</a></li>
+<li><a class="reference internal" href="#functions-and-classes">6.10.2. Functions and classes</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="util.html"
                         title="previous chapter">6.9. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a></p>
@@ -164,7 +215,7 @@ convenience library...</p>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
 </html>
