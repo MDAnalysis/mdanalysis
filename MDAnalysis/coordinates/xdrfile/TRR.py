@@ -1,4 +1,25 @@
-"""Reading of Gromacs trr trajectories."""
+"""Reading of `Gromacs TRR trajectories`_.
+
+.. _Gromacs TRR trajectories: http://www.gromacs.org/Documentation/File_Formats/.trr_File
+.. _Gromacs: http://www.gromacs.org
+
+
+.. SeeAlso:: :mod:`MDAnalysis.coordinates.xdrfile.libxdrfile` for low-level
+   bindings to the Gromacs trajectory file formats
+
+Classes
+-------
+
+.. autoclass:: Timestep
+   :members:
+   :inherited-members:
+.. autoclass:: TRRReader
+   :members:
+   :inherited-members:
+.. autoclass:: TRRWriter
+   :members:
+   :inherited-members:
+"""
 
 import numpy
 
@@ -63,12 +84,12 @@ class Timestep(core.Timestep):
 
 
 class TRRReader(core.TrjReader):
-    """Read a `Gromacs <www.gromacs.org>` TRR trajectory."""
+    """Read a Gromacs_ TRR trajectory."""
     format = "TRR"
     _Timestep = Timestep
     units = {'time': 'ps', 'length':'nm', 'velocity':'nm/ps', 'force':'kJ/(mol*nm)'}
 
 class TRRWriter(core.TrjWriter):
-    """Write a `Gromacs <www.gromacs.org>` TRR trajectory."""
+    """Write a Gromacs_ TRR trajectory."""
     format = "TRR"
     units = {'time': 'ps', 'length':'nm', 'velocity':'nm/ps', 'force':'kJ/(mol*nm)'}

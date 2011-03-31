@@ -1,4 +1,34 @@
-"""Reading of Gromacs trajectories."""
+"""
+Common high-level functionality for accessing Gromacs trajectories
+==================================================================
+
+The :mod:`MDAnalysis.coordinates.xdrfile.core` module contains generic
+classes to access Gromacs_ XDR-encoded trajectory formats such as TRR
+and XTC.
+
+A generic Gromacs_ trajectory is simply called "trj" within this
+module.
+
+.. SeeAlso:: :mod:`MDAnalysis.coordinates.base` for the generic MDAnalysis base
+             classes and :mod:`MDAnalysis.coordinates.xdrfile.libxdrfile` for
+             the low-level bindings to the XDR trajectories.
+
+.. _Gromacs: http://www.gromacs.org
+
+Generic xdr trj classes
+-----------------------
+
+The generic classes are subclassed to generate the specific classes
+for the XTC and TRR format.
+
+.. autoclass:: Timestep
+   :members:
+.. autoclass:: TrjReader
+   :members:
+.. autoclass:: TrjWriter
+   :members:
+
+"""
 
 import os.path
 import errno
@@ -221,27 +251,21 @@ class TrjReader(base.Reader):
         :Arguments:
           *filename*
               filename of the output trajectory
+
         :Keywords:
           *numatoms*
               number of atoms
-          *start*
-              number of the first recorded MD step
-          *step*
-              indicate that *step* MD steps (!) make up one trajectory frame
           *delta*
-              MD integrator time step (!), in AKMA units
+              Time interval between frames in ps.
           *precision*
-              accuracy for lossy XTC format
+              accuracy for lossy XTC format as a power of 10 (ignored
+              for TRR) [1000.0]
 
-        :Returns: :class:`DCDWriter`
-
-        .. Note:: The keyword arguments set the low-level attributes of the DCD
-                  according to the CHARMM format. The time between two frames
-                  would be *delta* * *step* !
+        :Returns: :class:`TrjWriter`
         """
         numatoms = kwargs.pop('numatoms', self.numatoms)
-        kwargs.setdefault('start', self.start_timestep)
-        kwargs.setdefault('step', self.skip_timestep)
+        kwargs.pop('start')                  # ignored by TrjWriter
+        kwargs['step'] = self.skip_timestep  # ignored/fixed to 1
         kwargs.setdefault('delta', self.delta)
         kwargs.setdefault('precision', self.precision)
         return TrjWriter(filename, numatoms, **kwargs)
@@ -370,14 +394,25 @@ class TrjWriter(base.Writer):
     def __init__(self, filename, numatoms, start=0, step=1, delta=1.0, precision=1000.0, remarks=None,
                   convert_units=None):
         ''' Create a new TrjWriter
-        filename - name of output file
-        numatoms - number of atoms in trajectory file
-        start - starting timestep
-        step  - skip between subsequent timesteps
-        delta - timestep
-        precision - accuracy for lossy XTC format [1000]
-        convert_units - units are converted to the MDAnalysis base format; ``None`` selects
-                        the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
+
+        :Arguments:
+          *filename*
+             name of output file
+          *numatoms*
+             number of atoms in trajectory file
+
+        :Keywords:
+          *start*
+             starting timestep
+          *step*
+             skip between subsequent timesteps
+          *delta*
+             timestep
+          *precision*
+             accuracy for lossy XTC format [1000]
+          *convert_units* 
+             ``True``: units are converted to the MDAnalysis base format; ``None`` selects
+             the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
         '''
         assert self.format in ('XTC', 'TRR')
 
@@ -401,7 +436,9 @@ class TrjWriter(base.Writer):
 
     def write_next_timestep(self, ts=None):
         ''' write a new timestep to the trj file
-            ts - timestep object containing coordinates to be written to dcd file
+
+        *ts* is a :class:`Timestep` instance containing coordinates to
+        be written to trajectory file
         '''
         if self.xdrfile is None:
             raise IOError("Attempted to write to closed file %r", self.filename)
