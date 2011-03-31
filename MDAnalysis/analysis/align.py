@@ -296,7 +296,7 @@ def alignto(mobile, reference, select="backbone", mass_weighted=False,
                  use :func:`rms_fit_trj`.
     """
     select = _process_selection(select)
-    mobile_atoms = mobile.selectAtoms(select['target'])
+    mobile_atoms = mobile.selectAtoms(select['mobile'])
     ref_atoms = reference.selectAtoms(select['reference'])
     if mass_weighted:
         masses = ref_atoms.masses()
