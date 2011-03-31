@@ -30,12 +30,12 @@ File parsing
 ------------
 
 .. autoclass:: FORTRANReader
+   :members:
 .. autodata:: FORTRAN_format_regex
 
 
 Data manipulation and handling
 ------------------------------
-
 
 .. autofunction:: fixedwidth_bins
 
@@ -53,12 +53,12 @@ def filename(name,ext=None,keep=False):
     """Return a new name that has suffix attached; replaces other extensions.
 
     :Arguments:
-    *name*
-         filename; extension is replaced unless keep=True
-    *ext*
-         extension
-    *keep*
-         ``False``: replace existing extension; ``True``: keep if exists
+      *name*
+           filename; extension is replaced unless keep=True
+      *ext*
+           extension
+      *keep*
+           ``False``: replace existing extension; ``True``: keep if exists
     """ 
     name = str(name)
     if ext is None:
@@ -182,7 +182,7 @@ FORTRAN_format_regex = "(?P<repeat>\d+?)(?P<format>[IFEAX])(?P<numfmt>(?P<length
 _FORTRAN_format_pattern = re.compile(FORTRAN_format_regex)
 
 def strip(s):
-    """Convert *s* to a string and return it whit-space stripped."""
+    """Convert *s* to a string and return it white-space stripped."""
     return str(s).strip()
 
 class FixedcolumnEntry(object):
@@ -231,14 +231,16 @@ class FORTRANReader(object):
        for line in open('coordinates.crd'):
            serial,TotRes,resName,name,x,y,z,chainID,resSeq,tempFactor = atomformat.read(line)
 
-    Fortran format edit descriptors: See
-    http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html
-    for the syntax.
+    Fortran format edit descriptors; see `Fortran Formats`_ for the syntax.
 
     Only simple one-character specifiers supported here: *I F E A X* (see
     :data:`FORTRAN_format_regex`).
 
     Strings are stripped of leading and trailing white space.
+
+    .. _`Fortran Formats`: http://www.webcitation.org/5xbaWMV2x
+    .. _`Fortran Formats (URL)`:     
+       http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html
     """
 
     def __init__(self, fmt):

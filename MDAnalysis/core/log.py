@@ -10,59 +10,92 @@ Setting up logging --- :mod:`MDAnalysis.core.log`
 Configure logging for MDAnalysis. Import this module if logging is
 desired in application code.
 
+Logging to a file and the console is set up by default as described
+under `logging to multiple destinations`_.
 
-Logging to a file and the console.
+The top level logger of the library is named *MDAnalysis* by
+convention; a simple logger that writes to the console and logfile can
+be created with the :func:`create` function. This only has to be done
+*once*. For convenience, the default MDAnalysis logger can be created
+with :func:`MDAnalysis.start_logger`::
 
-See http://docs.python.org/library/logging.html?#logging-to-multiple-destinations
+ import MDAnalysis
+ MDAnalysis.start_logger()
 
-The top level logger of the library is named 'MDAnalysis'.  Note that we
-are configuring this logger with console output. If the root logger
-also does this then we will get two output lines to the console. We'll
-live with this because this is a simple convenience library and most
-people will not bother with a logger (I think...)
+Once this has been done, MDAnalysis will write messages to the logfile
+(named `MDAnalysis.log` by default but this can be changed with the
+optional argument to :func:`~MDAnalysis.start_logger`).
 
-In modules that use loggers get a logger like so::
-     import logging
-     logger = logging.getLogger('MDAnalysis.MODULENAME')
+Any code can log to the MDAnalysis logger by using ::
+
+ import logging
+ logger = logging.getLogger('MDAnalysis.MODULENAME')
+
+ # use the logger, for example at info level:
+ logger.info("Starting task ...")
+
+The important point is that the name of the logger begins with
+"MDAnalysis.".
+
+.. _logging to multiple destinations:
+   http://docs.python.org/library/logging.html?#logging-to-multiple-destinations
+
+.. SeeAlso:: The :mod:`logging` module in the standard library contains
+             in depth documentation about using logging.
+
+
+Convenience functions
+---------------------
+
+Two convenience functions at the top level make it easy to start and
+stop the default *MDAnalysis* logger.
+
+.. autofunction:: MDAnalysis.start_logging
+.. autofunction:: MDAnalysis.stop_logging
+
+
+Functions and classes
+---------------------
 
 """
 
 import logging
 
-def create(logger_name, logfile='MDAnalysis.log'):
+def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
     """Create a top level logger.
 
     - The file logger logs everything (including DEBUG).
     - The console logger only logs INFO and above.
 
-    Logging to a file and the console.
+    Logging to a file and the console as described under `logging to
+    multiple destinations`_.
     
-    See http://docs.python.org/library/logging.html?#logging-to-multiple-destinations
-    
-    The top level logger of the library is named 'MDAnalysis'.  Note
-    that we are configuring this logger with console output. If the
-    root logger also does this then we will get two output lines to
-    the console. We'll live with this because this is a simple
-    convenience library...
+    The top level logger of MDAnalysis is named *MDAnalysis*.  Note
+    that we are configuring this logger with console output. If a root
+    logger also does this then we will get two output lines to the
+    console.
+
+    .. _logging to multiple destinations: 
+       http://docs.python.org/library/logging.html?#logging-to-multiple-destinations    
     """
 
     logger = logging.getLogger(logger_name)
 
     logger.setLevel(logging.DEBUG)
 
-    logfile = logging.FileHandler(logfile)
+    # handler that writes to logfile
+    logfile_handler = logging.FileHandler(logfile)
     logfile_formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
-    logfile.setFormatter(logfile_formatter)
-    logger.addHandler(logfile)
+    logfile_handler.setFormatter(logfile_formatter)
+    logger.addHandler(logfile_handler)
 
     # define a Handler which writes INFO messages or higher to the sys.stderr
-    console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
     # set a format which is simpler for console use
     formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
-    console.setFormatter(formatter)
-
-    logger.addHandler(console)
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
 
     return logger
 
@@ -78,9 +111,11 @@ class NullHandler(logging.Handler):
     """Silent Handler.
 
     Useful as a default::
+
       h = NullHandler()
-      logging.getLogger("gromacs").addHandler(h)
+      logging.getLogger("MDAnalysis").addHandler(h)
       del h
+
     """
     def emit(self, record):
         pass

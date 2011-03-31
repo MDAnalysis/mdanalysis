@@ -149,16 +149,19 @@ logging.getLogger("MDAnalysis").addHandler(h)
 del h
 
 def start_logging(logfile="MDAnalysis.log"):
-    """Start logging of messages to file and console."""
+    """Start logging of messages to file and console.
+
+    The default logfile is named `MDAnalysis.log` and messages are
+    logged with the tag *MDAnalysis*.
+    """
     import core.log
     core.log.create("MDAnalysis", logfile=logfile)
     logging.getLogger("MDAnalysis").info("MDAnalysis STARTED logging to %r", logfile)
 
 def stop_logging():
-    """Stop logging to logfile."""
+    """Stop logging to logfile and console."""
     import core.log
-    logger = logging.getLogger("MDAnalysis")
-    logger.info("MDAnalysis STOPPED logging")
+    logging.getLogger("MDAnalysis").info("MDAnalysis STOPPED logging")
     core.log.clear_handlers(logger)  # this _should_ do the job...
 
 # custom exceptions and warnings
