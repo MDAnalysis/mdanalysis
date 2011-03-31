@@ -243,7 +243,7 @@ def _process_selection(select):
         raise TypeError("'select' must be either a string, 2-tuple, or dict")
     return select
 
-def alignto(mobile, reference, select="backbone", mass_weighted=False,
+def alignto(mobile, reference, select="all", mass_weighted=False,
             subselection=None):
     """Spatially align *mobile* to *reference* by doing a RMSD fit on *select* atoms.
 
@@ -331,7 +331,7 @@ def alignto(mobile, reference, select="backbone", mass_weighted=False,
     return old_rmsd, new_rmsd
     
 
-def rms_fit_trj(traj, reference, select='backbone', filename=None, rmsdfile=None, prefix='rmsfit_',
+def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, prefix='rmsfit_',
                 mass_weighted=False, tol_mass=0.1):
     """RMS-fit trajectory to a reference structure using a selection.
 
