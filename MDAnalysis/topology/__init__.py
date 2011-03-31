@@ -1,11 +1,16 @@
 # $Id$
 """
-:mod:`MDAnalysis.topology` -- topology readers
-==============================================
+Topology readers --- :mod:`MDAnalysis.topology`
+===============================================
 
-This submodule contains topology readers.
+This submodule contains the topology readers. A topology file supplies the list
+of atoms in the system, their connectivity and possibly additional information
+such as B-factors, partial charges, etc. The details depend on the file format
+and not every topology file provides all (or even any) additional data. As a
+minimum, a topology file has to contain the names of atoms in the order of the
+coordinate file and their residue names and numbers.
 
-Supported topologies; formats marked with ans asterisk * also hold coordinates.
+The following table lists the currently supported topology formats.
 
 =============  ==========  =====================================================
 Name           extension   remarks
@@ -36,6 +41,12 @@ Amber          top         simple Amber format read (only supports a subset of
                prmtop      flags);
                            :mod:`MDAnalysis.topology.TOPParser`
 =============  ==========  =====================================================
+
+Formats marked with ans asterisk * also hold coordinates and thus can
+be used as the sole argument to :class:`MDAnalysis.Universe` to set up
+a system.
+
+.. SeeAlso:: :ref:`Coordinates`
 """
 
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser', 'CRDParser','TOPParser']

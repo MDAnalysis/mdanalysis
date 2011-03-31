@@ -93,7 +93,7 @@ else:
     fast_numeric_link = ["-llapack"]
 
 if __name__ == '__main__':
-    RELEASE = "0.7.2-devel"
+    RELEASE = "0.7.3-devel"
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 """

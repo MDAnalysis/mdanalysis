@@ -1,6 +1,6 @@
 # $Id$
 """
-:mod:`MDAnalysis.core.distances` --- fast distance array computation
+Fast distance array computation --- :mod:`MDAnalysis.core.distances`
 ====================================================================
 
 Fast C-routines to calculate distance arrays from coordinate arrays.

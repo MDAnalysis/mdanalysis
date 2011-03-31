@@ -1,5 +1,5 @@
 """
-:mod:`MDAnalysis.topology.core` --- Common functions for topology building
+Common functions for topology building --- :mod:`MDAnalysis.topology.core`
 ==========================================================================
 
 The various topology parsers make use of functions and classes in this

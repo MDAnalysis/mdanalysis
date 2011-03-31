@@ -1,7 +1,7 @@
 # $Id$
 """
-:mod:`MDAnalysis.coordinates` --- reading and writing coordinates
-=================================================================
+Coordinate/Trajectory Readers and Writers  --- :mod:`MDAnalysis.coordinates`
+============================================================================
 
 The coordinates submodule contains code to read coordinates, either
 single frames (e.g. the PDB module) or trajectories (such as the DCD
@@ -13,14 +13,26 @@ entry point attribute
 
   :attr:`Universe.trajectory`
 
-that points to the actual :class:`Reader` object; all Readers are supposed to
-be accessible through this entry point in the same manner (`duck typing`_)
+that points to the actual :class:`~MDAnalysis.coordinates.base.Reader`
+object; all Readers are supposed to be accessible through this entry
+point in the same manner (`duck typing`_)
 
-In order to write coordinates, a factory function is provided
+In order to **write coordinates**, a factory function is provided
 (:func:`MDAnalysis.coordinates.core.writer`) which is made available
 as :func:`MDAnalysis.Writer`) that returns a *Writer* appropriate for
-the desired file format. Similarly, there is also a
-:func:`MDAnalysis.coordinates.core.reader` function available.
+the desired file format (as indicated by the filename
+suffix). Furthermore, a trajectory
+:class:`~MDAnalysis.coordinates.base.Reader` can also have a method
+:meth:`~MDAnalysis.coordinates.base.Reader.Writer` that returns an
+appropriate :class:`~MDAnalysis.coordinates.base.Writer` for the file
+format of the trajectory.
+
+In analogy to :func:`MDAnalysis.coordinates.core.writer`, there is
+also a :func:`MDAnalysis.coordinates.core.reader` function available
+to return a trajectory :class:`~MDAnalysis.coordinates.base.Reader`
+instance although this is often not needed because the
+:class:`~MDAnalysis.core.AtomGroup.Universe` class can choose an
+appropriate reader automatically.
 
 .. _duck typing: http://c2.com/cgi/wiki?DuckTyping
 
