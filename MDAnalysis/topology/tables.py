@@ -7,7 +7,7 @@ MDAnalysis topology tables
 The module contains static lookup tables for atom typing etc. The
 tables are dictionaries that are indexed by the element.
 
-.. autodata:: atomtypes
+.. autodata:: atomelements
 .. autodata:: masses
 
 The original raw data are stored as multi-line strings that are
@@ -16,6 +16,11 @@ these tables might be moved into external data files; see
 :func:`kv2dict` for explanation of the file format.
 
 .. autofunction:: kv2dict
+
+The raw tables are stored in the strings
+
+.. autodata:: TABLE_ATOMELEMENTS
+.. autodata:: TABLE_MASSES
 """
 
 def kv2dict(s, convertor=str):
@@ -47,8 +52,8 @@ def kv2dict(s, convertor=str):
     return d
 
 #: Table with hard-coded special atom names, used for guessing atom types
-#: with :func:`MDAnalysis.topology.core.guess_atom_type`.
-TABLE_ATOMTYPES = """
+#: with :func:`MDAnalysis.topology.core.guess_atom_element`.
+TABLE_ATOMELEMENTS = """
 # translation of atomnames to types/element
 # based on CHARMM and AMBER usage with a little bit of GROMOS
 # NOTE: CL might be ambiguous and is interpreted as chloride!
@@ -122,16 +127,16 @@ BC           C
 AC           C
 
 # other types are guessed from the name; see 
-# topology.core.guess_atom_type()
+# topology.core.guess_atom_elements()
 """
 
 #: Dictionary with hard-coded special atom names, used for guessing atom types
 #: with :func:`MDAnalysis.topology.core.guess_atom_type`.
-atomtypes = kv2dict(TABLE_ATOMTYPES)
+atomelements = kv2dict(TABLE_ATOMELEMENTS)
 
 #: Plain-text table with atomic masses in u.
 TABLE_MASSES = """
-# masses for elements/atomtypes in atomic units (u)
+# masses for elements in atomic units (u)
 # (taken from CHARMM and Gromacs atommass.dat)
 
 #------------ -----------
@@ -161,6 +166,6 @@ BR             79.90400
 I             126.90450    
 """
 
-#: Dictionary table with atomic masses in u, indexed by the atom types from
-#: :data:`atomtypes`.
+#: Dictionary table with atomic masses in u, indexed by the element from
+#: :data:`atomelements`.
 masses = kv2dict(TABLE_MASSES, convertor=float)

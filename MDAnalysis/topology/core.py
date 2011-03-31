@@ -117,27 +117,33 @@ def guess_format(filename):
 def guess_atom_type(atomname):
     """Guess atom type from the name.
 
+    At the moment, this function simply returns the element, as
+    guessed by :func:`guess_atom_element`.
+
+    .. SeeAlso:: :func:`guess_atom_element` and :mod:`MDAnalysis.topology.tables`
+    """
+    return guess_atom_element(atomname)
+
+def guess_atom_element(atomname):
+    """Guess the element of the atom from the name.
+
     Looks in dict to see if element is found, otherwise it uses the first character in the atomname.
     The table comes from CHARMM and AMBER atom types, where the first character is not sufficient to
     determine the atom type. Some GROMOS ions have also been added.
 
     .. Warning: The translation table is incomplete. This will probably result
                 in some mistakes, but it still better than nothing!
+
+    .. SeeAlso:: :func:`guess_atom_type` and
+                 :mod:`MDAnalysis.topology.tables` (where the data are stored)
     """
     try:
-        return tables.atomtypes[atomname]
+        return tables.atomelements[atomname]
     except KeyError:
         if atomname.startswith(('1', '2', '3', '4', '5', '6', '7', '8', '9')):
             # catch 1HH etc
             return atomname[1]
         return atomname[0]
-
-def guess_atom_element(atomname):
-    """Guess the element of the atom from the name.
-
-    At the moment, this simply returns the atom *type*.
-    """
-    return guess_atom_type(atomname)
 
 def get_atom_mass(element):
     """Return the atomic mass in u for *element*.
