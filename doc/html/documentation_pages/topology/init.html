@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.1. MDAnalysis.topology – topology readers &mdash; MDAnalysis v0.7.2 documentation</title>
+    <title>4.1. Topology readers — MDAnalysis.topology &mdash; MDAnalysis v0.7.2 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.2 documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
-    <link rel="next" title="4.2. MDAnalysis.topology.core — Common functions for topology building" href="core.html" />
+    <link rel="next" title="4.2. Common functions for topology building — MDAnalysis.topology.core" href="core.html" />
     <link rel="prev" title="4. Topology modules" href="../topology_modules.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="core.html" title="4.2. MDAnalysis.topology.core — Common functions for topology building"
+          <a href="core.html" title="4.2. Common functions for topology building — MDAnalysis.topology.core"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="../topology_modules.html" title="4. Topology modules"
@@ -53,10 +53,15 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <span class="target" id="module-MDAnalysis.topology.__init__"></span><div class="section" id="mdanalysis-topology-topology-readers">
-<h1>4.1. <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology</span></tt> &#8211; topology readers<a class="headerlink" href="#mdanalysis-topology-topology-readers" title="Permalink to this headline">¶</a></h1>
-<p>This submodule contains topology readers.</p>
-<p>Supported topologies; formats marked with ans asterisk * also hold coordinates.</p>
+  <span class="target" id="module-MDAnalysis.topology.__init__"></span><div class="section" id="topology-readers-mdanalysis-topology">
+<h1>4.1. Topology readers &#8212; <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology</span></tt><a class="headerlink" href="#topology-readers-mdanalysis-topology" title="Permalink to this headline">¶</a></h1>
+<p>This submodule contains the topology readers. A topology file supplies the list
+of atoms in the system, their connectivity and possibly additional information
+such as B-factors, partial charges, etc. The details depend on the file format
+and not every topology file provides all (or even any) additional data. As a
+minimum, a topology file has to contain the names of atoms in the order of the
+coordinate file and their residue names and numbers.</p>
+<p>The following table lists the currently supported topology formats.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="17%" />
@@ -111,6 +116,13 @@ flags);
 </tr>
 </tbody>
 </table>
+<p>Formats marked with ans asterisk * also hold coordinates and thus can
+be used as the sole argument to <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> to set up
+a system.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../coordinates_modules.html#coordinates"><em>Coordinates modules</em></a></p>
+</div>
 </div>
 
 
@@ -124,7 +136,7 @@ flags);
                         title="previous chapter">4. Topology modules</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="core.html"
-                        title="next chapter">4.2. <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt> &#8212; Common functions for topology building</a></p>
+                        title="next chapter">4.2. Common functions for topology building &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/topology/init.txt"
@@ -157,7 +169,7 @@ flags);
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="core.html" title="4.2. MDAnalysis.topology.core — Common functions for topology building"
+          <a href="core.html" title="4.2. Common functions for topology building — MDAnalysis.topology.core"
              >next</a> |</li>
         <li class="right" >
           <a href="../topology_modules.html" title="4. Topology modules"
@@ -168,7 +180,7 @@ flags);
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

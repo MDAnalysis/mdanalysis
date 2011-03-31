@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.2. MDAnalysis.topology.core — Common functions for topology building &mdash; MDAnalysis v0.7.2 documentation</title>
+    <title>4.2. Common functions for topology building — MDAnalysis.topology.core &mdash; MDAnalysis v0.7.2 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -25,7 +25,7 @@
     <link rel="top" title="MDAnalysis v0.7.2 documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.3. MDAnalysis topology tables" href="tables.html" />
-    <link rel="prev" title="4.1. MDAnalysis.topology – topology readers" href="init.html" /> 
+    <link rel="prev" title="4.1. Topology readers — MDAnalysis.topology" href="init.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,7 +41,7 @@
           <a href="tables.html" title="4.3. MDAnalysis topology tables"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="init.html" title="4.1. MDAnalysis.topology – topology readers"
+          <a href="init.html" title="4.1. Topology readers — MDAnalysis.topology"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
@@ -53,8 +53,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <span class="target" id="module-MDAnalysis.topology.core"></span><div class="section" id="mdanalysis-topology-core-common-functions-for-topology-building">
-<h1>4.2. <a class="reference internal" href="#module-MDAnalysis.topology.core" title="MDAnalysis.topology.core"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt></a> &#8212; Common functions for topology building<a class="headerlink" href="#mdanalysis-topology-core-common-functions-for-topology-building" title="Permalink to this headline">¶</a></h1>
+  <span class="target" id="module-MDAnalysis.topology.core"></span><div class="section" id="common-functions-for-topology-building-mdanalysis-topology-core">
+<h1>4.2. Common functions for topology building &#8212; <a class="reference internal" href="#module-MDAnalysis.topology.core" title="MDAnalysis.topology.core"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt></a><a class="headerlink" href="#common-functions-for-topology-building-mdanalysis-topology-core" title="Permalink to this headline">¶</a></h1>
 <p>The various topology parsers make use of functions and classes in this
 module. They are mostly of use to developers.</p>
 <div class="admonition-see-also admonition seealso">
@@ -123,7 +123,14 @@ instances by tracking residue numbers.</p>
 <dt id="MDAnalysis.topology.core.guess_atom_element">
 <tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_element</tt><big>(</big><em>atomname</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess the element of the atom from the name.</p>
-<p>At the moment, this simply returns the atom <em>type</em>.</p>
+<p>Looks in dict to see if element is found, otherwise it uses the first character in the atomname.
+The table comes from CHARMM and AMBER atom types, where the first character is not sufficient to
+determine the atom type. Some GROMOS ions have also been added.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_type" title="MDAnalysis.topology.core.guess_atom_type"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_type()</span></tt></a> and
+<a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></tt></a> (where the data are stored)</p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -142,9 +149,12 @@ masses you might want to double check.</p>
 <dt id="MDAnalysis.topology.core.guess_atom_type">
 <tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_type</tt><big>(</big><em>atomname</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess atom type from the name.</p>
-<p>Looks in dict to see if element is found, otherwise it uses the first character in the atomname.
-The table comes from CHARMM and AMBER atom types, where the first character is not sufficient to
-determine the atom type. Some GROMOS ions have also been added.</p>
+<p>At the moment, this function simply returns the element, as
+guessed by <a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></tt></a>.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></tt></a> and <a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></tt></a></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -166,7 +176,7 @@ individual packages (e.g. as static methods).</p>
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="init.html"
-                        title="previous chapter">4.1. <tt class="docutils literal"><span class="pre">MDAnalysis.topology</span></tt> &#8211; topology readers</a></p>
+                        title="previous chapter">4.1. Topology readers &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.topology</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="tables.html"
                         title="next chapter">4.3. MDAnalysis topology tables</a></p>
@@ -205,7 +215,7 @@ individual packages (e.g. as static methods).</p>
           <a href="tables.html" title="4.3. MDAnalysis topology tables"
              >next</a> |</li>
         <li class="right" >
-          <a href="init.html" title="4.1. MDAnalysis.topology – topology readers"
+          <a href="init.html" title="4.1. Topology readers — MDAnalysis.topology"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
@@ -213,7 +223,7 @@ individual packages (e.g. as static methods).</p>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

@@ -25,7 +25,7 @@
     <link rel="top" title="MDAnalysis v0.7.2 documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.4. PSF topology parser" href="PSFParser.html" />
-    <link rel="prev" title="4.2. MDAnalysis.topology.core — Common functions for topology building" href="core.html" /> 
+    <link rel="prev" title="4.2. Common functions for topology building — MDAnalysis.topology.core" href="core.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,7 +41,7 @@
           <a href="PSFParser.html" title="4.4. PSF topology parser"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="core.html" title="4.2. MDAnalysis.topology.core — Common functions for topology building"
+          <a href="core.html" title="4.2. Common functions for topology building — MDAnalysis.topology.core"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
@@ -58,8 +58,8 @@
 <p>The module contains static lookup tables for atom typing etc. The
 tables are dictionaries that are indexed by the element.</p>
 <dl class="data">
-<dt id="MDAnalysis.topology.tables.atomtypes">
-<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">atomtypes</tt><a class="headerlink" href="#MDAnalysis.topology.tables.atomtypes" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.topology.tables.atomelements">
+<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">atomelements</tt><a class="headerlink" href="#MDAnalysis.topology.tables.atomelements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with hard-coded special atom names, used for guessing atom types
 with <a class="reference internal" href="core.html#MDAnalysis.topology.core.guess_atom_type" title="MDAnalysis.topology.core.guess_atom_type"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.core.guess_atom_type()</span></tt></a>.</p>
 </dd></dl>
@@ -67,8 +67,8 @@ with <a class="reference internal" href="core.html#MDAnalysis.topology.core.gues
 <dl class="data">
 <dt id="MDAnalysis.topology.tables.masses">
 <tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">masses</tt><a class="headerlink" href="#MDAnalysis.topology.tables.masses" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary table with atomic masses in u, indexed by the atom types from
-<a class="reference internal" href="#MDAnalysis.topology.tables.atomtypes" title="MDAnalysis.topology.tables.atomtypes"><tt class="xref py py-data docutils literal"><span class="pre">atomtypes</span></tt></a>.</p>
+<dd><p>Dictionary table with atomic masses in u, indexed by the element from
+<a class="reference internal" href="#MDAnalysis.topology.tables.atomelements" title="MDAnalysis.topology.tables.atomelements"><tt class="xref py py-data docutils literal"><span class="pre">atomelements</span></tt></a>.</p>
 </dd></dl>
 
 <p>The original raw data are stored as multi-line strings that are
@@ -93,6 +93,20 @@ possibilities are <a class="reference external" href="http://docs.python.org/lib
 floating point numbers.</p>
 </dd></dl>
 
+<p>The raw tables are stored in the strings</p>
+<dl class="data">
+<dt id="MDAnalysis.topology.tables.TABLE_ATOMELEMENTS">
+<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">TABLE_ATOMELEMENTS</tt><a class="headerlink" href="#MDAnalysis.topology.tables.TABLE_ATOMELEMENTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table with hard-coded special atom names, used for guessing atom types
+with <a class="reference internal" href="core.html#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.core.guess_atom_element()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tables.TABLE_MASSES">
+<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">TABLE_MASSES</tt><a class="headerlink" href="#MDAnalysis.topology.tables.TABLE_MASSES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plain-text table with atomic masses in u.</p>
+</dd></dl>
+
 </div>
 
 
@@ -103,7 +117,7 @@ floating point numbers.</p>
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="core.html"
-                        title="previous chapter">4.2. <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt> &#8212; Common functions for topology building</a></p>
+                        title="previous chapter">4.2. Common functions for topology building &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="PSFParser.html"
                         title="next chapter">4.4. PSF topology parser</a></p>
@@ -142,7 +156,7 @@ floating point numbers.</p>
           <a href="PSFParser.html" title="4.4. PSF topology parser"
              >next</a> |</li>
         <li class="right" >
-          <a href="core.html" title="4.2. MDAnalysis.topology.core — Common functions for topology building"
+          <a href="core.html" title="4.2. Common functions for topology building — MDAnalysis.topology.core"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.2 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
@@ -150,7 +164,7 @@ floating point numbers.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>
