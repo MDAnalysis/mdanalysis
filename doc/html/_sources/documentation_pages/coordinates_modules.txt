@@ -25,4 +25,7 @@ Programmers and anyone trying to implement new functionality should read the
    coordinates/PDB	
    coordinates/PQR
    coordinates/TRJ
+   coordinates/TRR
+   coordinates/XTC
    coordinates/XYZ
+   coordinates/libxdrfile

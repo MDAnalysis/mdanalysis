@@ -1,0 +1,454 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.10. Gromacs TRR file IO — MDAnalysis.coordinates.TRR &mdash; MDAnalysis v0.7.3 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../../index.html" />
+    <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
+    <link rel="next" title="5.11. Gromacs XTC file IO — MDAnalysis.coordinates.XTC" href="XTC.html" />
+    <link rel="prev" title="5.9. TRJ/MDCRD file format (Amber) — MDAnalysis.coordinates.TRJ" href="TRJ.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="XTC.html" title="5.11. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="TRJ.html" title="5.9. TRJ/MDCRD file format (Amber) — MDAnalysis.coordinates.TRJ"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.TRR"></span><div class="section" id="module-MDAnalysis.coordinates.xdrfile.TRR">
+<span id="gromacs-trr-file-io-mdanalysis-coordinates-trr"></span><h1>5.10. Gromacs TRR file IO &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.TRR" title="MDAnalysis.coordinates.TRR"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a><a class="headerlink" href="#module-MDAnalysis.coordinates.xdrfile.TRR" title="Permalink to this headline">¶</a></h1>
+<p>Reading of <a class="reference external" href="http://www.gromacs.org/Documentation/File_Formats/.trr_File">Gromacs TRR trajectories</a>.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="libxdrfile.html#module-MDAnalysis.coordinates.xdrfile.libxdrfile" title="MDAnalysis.coordinates.xdrfile.libxdrfile"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.libxdrfile</span></tt></a> for low-level
+bindings to the Gromacs trajectory file formats</p>
+</div>
+<div class="section" id="classes">
+<h2>5.10.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.Timestep">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timestep for a Gromacs TRR trajectory.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.Timestep.dimensions">
+<tt class="descname">dimensions</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>unitcell dimensions (A, B, C, alpha, beta, gamma)</p>
+<ul class="simple">
+<li>A, B, C are the lengths of the primitive cell vectors e1, e2, e3</li>
+<li>alpha = angle(e1, e2)</li>
+<li>beta = angle(e1, e3)</li>
+<li>gamma = angle(e2, e3)</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">TRRReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.Writer">
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Gromacs TrjWriter for <em>filename</em> with the same parameters as this trajectory.</p>
+<p>All values can be changed through keyword arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">filename of the output trajectory</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<dt><em>numatoms</em></dt>
+<dd><p class="first last">number of atoms</p>
+</dd>
+<dt><em>delta</em></dt>
+<dd><p class="first last">Time interval between frames in ps.</p>
+</dd>
+<dt><em>precision</em></dt>
+<dd><p class="first last">accuracy for lossy XTC format as a power of 10 (ignored
+for TRR) [1000.0]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">TrjWriter</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the trajectory file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.close_trajectory">
+<tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.close_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close xdr trajectory file if it was open.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_from_native">
+<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array x from native units to base units.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_to_native">
+<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array x from base units to native units.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_from_native">
+<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from native units to base units.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_to_native">
+<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from base units to native units.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.delta">
+<tt class="descname">delta</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time step length in ps.</p>
+<p>The result is computed from the trajectory and cached. If for
+any reason the trajectory cannot be read then 0 is returned.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.dt">
+<tt class="descname">dt</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time between two trajectory frames in picoseconds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.next">
+<tt class="descname">next</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward one step to next frame.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.numatoms">
+<tt class="descname">numatoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.numatoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the number of atoms from the trajectory.</p>
+<p>The result is cached. If for any reason the trajectory cannot
+be read then 0 is returned.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.numframes">
+<tt class="descname">numframes</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.numframes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the number of frames from the trajectory.</p>
+<p>The result is cached. If for any reason the trajectory cannot
+be read then 0 is returned.</p>
+<p>This  takes a  long time  because  the frames  are counted  by
+iterating through the whole trajectory.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.open_trajectory">
+<tt class="descname">open_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.open_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open xdr trajectory file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body">pointer to XDRFILE (and sets self.xdrfile)</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> with code EALREADY if file was already opened or 
+ENOENT if the file cannot be found</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.rewind">
+<tt class="descname">rewind</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.rewind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Position at beginning of trajectory</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.totaltime">
+<tt class="descname">totaltime</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.totaltime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total length of the trajectory numframes * dt.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">TRRWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=1.0</em>, <em>precision=1000.0</em>, <em>remarks=None</em>, <em>convert_units=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
+<p>Create a new TrjWriter</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">name of output file</p>
+</dd>
+<dt><em>numatoms</em></dt>
+<dd><p class="first last">number of atoms in trajectory file</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>start</em></dt>
+<dd><p class="first last">starting timestep</p>
+</dd>
+<dt><em>step</em></dt>
+<dd><p class="first last">skip between subsequent timesteps</p>
+</dd>
+<dt><em>delta</em></dt>
+<dd><p class="first last">timestep</p>
+</dd>
+<dt><em>precision</em></dt>
+<dd><p class="first last">accuracy for lossy XTC format [1000]</p>
+</dd>
+<dt><em>convert_units</em> </dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: units are converted to the MDAnalysis base format; <tt class="xref docutils literal"><span class="pre">None</span></tt> selects
+the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a>MDAnalysis.core.flags`[&#8216;convert_gromacs_lengths&#8217;]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the trajectory file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_dimensions_to_unitcell">
+<tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read dimensions from timestep <em>ts</em> and return Gromacs box vectors</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_from_native">
+<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array x from native units to base units.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_to_native">
+<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array x from base units to native units.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_from_native">
+<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from native units to base units.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_to_native">
+<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from base units to native units.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write">
+<tt class="descname">write</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write current timestep, using the supplied <em>obj</em>.</p>
+<p>The argument should be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or 
+a <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> or a <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The size of the <em>obj</em> must be the same as the number
+of atom provided when setting up the trajectory.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write_next_timestep">
+<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>write a new timestep to the trj file</p>
+<p><em>ts</em> is a <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance containing coordinates to
+be written to trajectory file</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">TRRReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big></dt>
+<dd><p>Read a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">TRRWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=1.0</em>, <em>precision=1000.0</em>, <em>remarks=None</em>, <em>convert_units=None</em><big>)</big></dt>
+<dd><p>Write a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
+<p>Create a new TrjWriter</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">name of output file</p>
+</dd>
+<dt><em>numatoms</em></dt>
+<dd><p class="first last">number of atoms in trajectory file</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>start</em></dt>
+<dd><p class="first last">starting timestep</p>
+</dd>
+<dt><em>step</em></dt>
+<dd><p class="first last">skip between subsequent timesteps</p>
+</dd>
+<dt><em>delta</em></dt>
+<dd><p class="first last">timestep</p>
+</dd>
+<dt><em>precision</em></dt>
+<dd><p class="first last">accuracy for lossy XTC format [1000]</p>
+</dd>
+<dt><em>convert_units</em> </dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: units are converted to the MDAnalysis base format; <tt class="xref docutils literal"><span class="pre">None</span></tt> selects
+the value of :data:<a href="#id3"><span class="problematic" id="id4">`</span></a>MDAnalysis.core.flags`[&#8216;convert_gromacs_lengths&#8217;]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big></dt>
+<dd><p>Timestep for a Gromacs TRR trajectory.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.10. Gromacs TRR file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a><ul>
+<li><a class="reference internal" href="#classes">5.10.1. Classes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="TRJ.html"
+                        title="previous chapter">5.9. TRJ/MDCRD file format (Amber) &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="XTC.html"
+                        title="next chapter">5.11. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/coordinates/TRR.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="XTC.html" title="5.11. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="TRJ.html" title="5.9. TRJ/MDCRD file format (Amber) — MDAnalysis.coordinates.TRJ"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>
