@@ -4,54 +4,55 @@
 
 The rules for this file:
   * entries are sorted newest-first.
-  * summarize sets of changes - dont reproduce every subversion log comment here.
+  * summarize sets of changes - don't reproduce every subversion log comment here.
   * don't ever delete anything.
-  * keep the format consistent (79 char width, M/D/Y date format).
+  * keep the format consistent (79 char width, M/D/Y date format) and do not
+    use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
 ??/??/11 orbeckst, dcaplan, naveen.michaudagrawal
   * 0.7.2 development
-	* NOTE: minimum Python version required is 2.5 (since 0.6.3)
+  * NOTE: minimum Python version required is 2.5 (since 0.6.3)
 
   Enhancements
  
   * loading from a PDB sets segid to the chain id if it exists
-	* PrimitivePDBWriter uses first letter of segid as PDB chain id
-	* aliased segment.name to segment.id
+  * PrimitivePDBWriter uses first letter of segid as PDB chain id
+  * aliased segment.name to segment.id
   * new method AtomGroup.bbox() that returns the orthorhombic bounding box
-	* enhancements of the analysis.density module (build density
-	  from B-factors)
-	* PQR radius is now an attribute of Atom; AtomGroup.radii() returns the
-	  radii as a NumPy array; internally B-factor has also become an
-	  attribute of each Atom.
+  * enhancements of the analysis.density module (build density
+    from B-factors)
+  * PQR radius is now an attribute of Atom; AtomGroup.radii() returns the
+    radii as a NumPy array; internally B-factor has also become an
+    attribute of each Atom.
   * recognise many more OPLS/AA and Amber residue names as "protein"
   * recognise more atom masses (taken from CHARMM27 and Gromacs) and 
     atom types (from CHARMM, Amber, OPLS, GROMOS) and moved
     masses and types into new module topology.tables; the type recognition
     is still incomplete but can be easily enhanced in tables
-	* analysis.align: convenience functions rotation_matrix() and alignto()
-	* TrajectoryReader gained Writer() method which returns an appropriate
-	  TrajectoryWriter instance that can be used for processing this
-	  trajectory (enhancement of the Trajectory API); if no Writer is known
-	  then a NotImplementedError is raised	  
-	* doc improvements   
+  * analysis.align: convenience functions rotation_matrix() and alignto()
+  * TrajectoryReader gained Writer() method which returns an appropriate
+    TrajectoryWriter instance that can be used for processing this
+    trajectory (enhancement of the Trajectory API); if no Writer is known
+    then a NotImplementedError is raised    
+  * doc improvements   
    
   Fixes
   
-	* installation: removed dependency on Cython; developer should
-	  use setup_developer.py instead of setup.py (Issue 66)	  
-	* Fixed a problem with the strict PDBReader: raised exception when the
-	  pdb did not contain a segid
+  * installation: removed dependency on Cython; developer should
+    use setup_developer.py instead of setup.py (Issue 66)   
+  * Fixed a problem with the strict PDBReader: raised exception when the
+    pdb did not contain a segid
   * Support for PDBs with 4 character resnames and segID output when
-	  writing (Issue 63) --- makes the (default) PrimitivePDBReader/Writer
-	  more suitable for NAMD/CHARMM but breaks strict PDB standard. If
-	  you need full PDB reading capabilities, use the strict PDB reader
-	  [i.e. use Universe(..., permissive=False)]
-	* fixed bug in (experimental) phi and psi selections
-	* fixed bugs in reading of unit cells (Issue 60, Issue 61, Issue 34)
-	* universe.trajectory.delta returns the full precision dt value
-	  instead of a value rounded to 4 decimals (Issue 64)
-	* fixed bug in DCDWriter (XTC->DCD was broken, Issue 59)
+    writing (Issue 63) --- makes the (default) PrimitivePDBReader/Writer
+    more suitable for NAMD/CHARMM but breaks strict PDB standard. If
+    you need full PDB reading capabilities, use the strict PDB reader
+    [i.e. use Universe(..., permissive=False)]
+  * fixed bug in (experimental) phi and psi selections
+  * fixed bugs in reading of unit cells (Issue 60, Issue 61, Issue 34)
+  * universe.trajectory.delta returns the full precision dt value
+    instead of a value rounded to 4 decimals (Issue 64)
+  * fixed bug in DCDWriter (XTC->DCD was broken, Issue 59)
 
 02/08/11 orbeckst, denniej0, jandom, tyler.je.reddy, Joshua Adelman
   * 0.7.1 release
@@ -59,17 +60,16 @@ The rules for this file:
   * AMBER topology and trj capabilities (netcdf not yet available)
   * PQR file reading support
   * new analysis.contacts.ContactAnalysis1 class that supports a
-	  native contact analysis between arbitrary groups     
+    native contact analysis between arbitrary groups     
   * new examples (e.g. peptide helix clustering in a membrane)
-	* fixed Issue 58 (align.rms_fit_trj; fix reported by Joshua
-	  Adelman)
-	* new analysis module 'density': creation and analysis of volume data
+  * fixed Issue 58 (align.rms_fit_trj; fix reported by Joshua Adelman)
+  * new analysis module 'density': creation and analysis of volume data
   * fast RMSD aligner based on Douglas Theobald's QCP method for
-	  calculating the minimum RMSD between two structures and
-	  determining the optimal least-squares rotation matrix;
-	  replaces the slower previous code (implemented by Joshua Adelman from
-	  his pyqcprot package https://github.com/synapticarbors/pyqcprot);
-	  deprecated core.rms_fitting.rms_rotation_matrix() and scheduled for
+    calculating the minimum RMSD between two structures and
+    determining the optimal least-squares rotation matrix;
+    replaces the slower previous code (implemented by Joshua Adelman from
+    his pyqcprot package https://github.com/synapticarbors/pyqcprot);
+    deprecated core.rms_fitting.rms_rotation_matrix() and scheduled for
     removal in 0.8
   * uses cython instead of pyrex
 
@@ -77,212 +77,208 @@ The rules for this file:
   * major release 0.7.0
     (includes changes that can BREAK BACKWARDS COMPATIBILITY)
   * Removed ALL DEPRECATED code:
-	  - AtomGroup.principleAxes (Issue 33)
-	  - DCD.DCDReader.dcd_header() and DCD.DCDWriter.dcd_header()
-	    (use _dcd_header())
+    - AtomGroup.principleAxes (Issue 33)
+    - DCD.DCDReader.dcd_header() and DCD.DCDWriter.dcd_header()
+      (use _dcd_header())
     - Universe.dcd (and Universe.xtc, Universe.trr...) --- from
-	    now on only Universe.trajectory is supported. 
-	    WILL BREAK LEGACY CODE!
+      now on only Universe.trajectory is supported. 
+      WILL BREAK LEGACY CODE!
     - removed the following packages from top-level MDAnalysis
-	    name space:
-    - AtomGroup, Selection: import them from MDAnalysis.core if
-	    really needed (e.g. 'import MDAnalysis.core.AtomGroup')
-	  - distances, rms_fitting: 'import MDAnalysis.analysis.distances'
-      or 'import MDAnalysis.analysis.align.rms_fitting' (the
-	    actual modules still live in MDAnalysis.core but they
-	    might get moved in the future and bundled with
-	    transformations)
-    - 'from MDAnalysis import *' will only get ['Timeseries',
-	    'Universe', 'asUniverse', 'Writer', 'collection']
-    - removed copy flag from distance_array and self_distance_array:
-      setting it to False would always give wrong results so there was
-      no good reason keeping it around 
-	* whitespace is no longer required around parentheses for 
-	  selectAtoms strings but the old syntax with white space
-	  still works (Issue 43)
-	* improved trajectory writing
+      name space:
+          - AtomGroup, Selection: import them from MDAnalysis.core if
+            really needed (e.g. 'import MDAnalysis.core.AtomGroup')
+          - distances, rms_fitting: 'import MDAnalysis.analysis.distances'
+            or 'import MDAnalysis.analysis.align.rms_fitting' (the
+            actual modules still live in MDAnalysis.core but they
+            might get moved in the future and bundled with
+            transformations)
+          - 'from MDAnalysis import *' will only get ['Timeseries',
+            'Universe', 'asUniverse', 'Writer', 'collection']
+          - removed copy flag from distance_array and self_distance_array:
+            setting it to False would always give wrong results so there was
+            no good reason keeping it around 
+  * whitespace is no longer required around parentheses for 
+    selectAtoms strings but the old syntax with white space
+    still works (Issue 43)
+  * improved trajectory writing
     - MDAnalysis.Writer() factory function that provides an
       appropriate writer for the desired file format
-	  - Writer.write() accepts a Timestep, a Universe, or a 
-	    arbitrary AtomGroup (e.g. from a selection); this is much
-	    more flexible than Writer.write_next_timestep()
+    - Writer.write() accepts a Timestep, a Universe, or a 
+      arbitrary AtomGroup (e.g. from a selection); this is much
+      more flexible than Writer.write_next_timestep()
   * New attributes for trajectory readers: dt (time between
     frames) and totaltime (length of the trajectory)
   * Changes to AtomGroup
     - Indexing is made consistent with the way lists behave:
        1. indexing with integers returns a single Atom
-	     2. slicing always returns a new AtomGroup
-	     3. advanced slicing with a list or array returns a new
-	        AtomGroup (NEW, fixes Issue 36) 
-	  - AtomGroup coordinates can be manipulated (translate(),
+       2. slicing always returns a new AtomGroup
+       3. advanced slicing with a list or array returns a new
+          AtomGroup (NEW, fixes Issue 36) 
+    - AtomGroup coordinates can be manipulated (translate(),
       rotate() and rotateby() methods; when appropriate, these methods
-	    can take AtomGroups or arrays to determine coordinates)
-	  - new attributes 'residues' and 'segments' for AtomGroup to give 
-	    access to the list of residue/segment objects of the group 
-	  - new exception 'NoDataError'; raised when creation of an empty
-	    AtomGroup is attempted (see also Issue 12)
+      can take AtomGroups or arrays to determine coordinates)
+    - new attributes 'residues' and 'segments' for AtomGroup to give 
+      access to the list of residue/segment objects of the group 
+    - new exception 'NoDataError'; raised when creation of an empty
+      AtomGroup is attempted (see also Issue 12)
     - consistent representation of the Segment > Residue > Atom
-	    hierarchy: all classes related to AtomGroup have the
-	    attributes 'atoms', 'residues', 'segments' which provide
-	    access to groups of the corresponding objects
-	* improvements to Residue, ResidueGroup and Segment classes 
-	  - documented accessing residues from Segment as
-	    Segment.r<resid>; resid is 1-based -- BREAKS OLD CODE 
-	    that relied on this being 0-based
+      hierarchy: all classes related to AtomGroup have the
+      attributes 'atoms', 'residues', 'segments' which provide
+      access to groups of the corresponding objects
+  * improvements to Residue, ResidueGroup and Segment classes 
+    - documented accessing residues from Segment as
+      Segment.r<resid>; resid is 1-based -- BREAKS OLD CODE 
+      that relied on this being 0-based
     - added SegmentGroup class
-	  - can write from Residue, ResidueGroup and Segment (Issue 46)
-	  - residue name attribute of a Segment now consistently
-	    returns a ResidueGroup (Issue 47) -- MIGHT BREAK OLD CODE
-	  - added documentation and examples in the doc strings
-	  - new special dihedral angle selections defined for Residue
-	    class to simplify analysis of backbone torsions (experimental)
-	* new contact_matrix method for calculating contacts 
-	  (Issue 30); for large (N > ~10000) coordinate arrays
-	  automatically switches to a method using a sparse matrix
-	  (slower)
+          - can write from Residue, ResidueGroup and Segment (Issue 46)
+          - residue name attribute of a Segment now consistently
+            returns a ResidueGroup (Issue 47) -- MIGHT BREAK OLD CODE
+          - added documentation and examples in the doc strings
+          - new special dihedral angle selections defined for Residue
+            class to simplify analysis of backbone torsions (experimental)
+  * new contact_matrix method for calculating contacts 
+    (Issue 30); for large (N > ~10000) coordinate arrays
+    automatically switches to a method using a sparse matrix (slower)
   * more example scripts (e.g. for membrane analysis, trajectory writing,
-	  coordinate transformations)
-	* CRDReader added (fixes  Issue 40 ) ... it will work for both
-	  standard and extended formats: NO special flags needed. 
+    coordinate transformations)
+  * CRDReader added (fixes  Issue 40 ) ... it will work for both
+    standard and extended formats: NO special flags needed. 
   * CRDWriter will now write extended crd files: NO special flags needed.  
   * By default, PDB files are read with the PrimitivePDBReader and not
-	  the Bio.PDB reader anymore because the latter can drop atoms when
-	  they have the same name in a residue (which happens for systems
-	  generated from MD simulations) The PrimitivePDBReader copes just fine
-	  with those cases (but does not handle esoteric PDB features such as
-	  alternative atoms and insertion codes that are not needed for
-	  handling MD simulation data).  
-	   - The default behaviour of MDAnalysis  can be set through the flag
-	     MDAnalysis.core.flag['permissive_pdb_reader'] 
-       The default is True.  
-     - One can always manually select the PDB reader by providing the
-	     permissive keyword to Universe; e.g. Universe(...,permissive=False)
-	     will read the input file with the Bio.PDB reader. This might be
-	     useful when processing true Protein Databank PDB files.
+    the Bio.PDB reader anymore because the latter can drop atoms when
+    they have the same name in a residue (which happens for systems
+    generated from MD simulations) The PrimitivePDBReader copes just fine
+    with those cases (but does not handle esoteric PDB features such as
+    alternative atoms and insertion codes that are not needed for
+    handling MD simulation data).  
+      - The default behaviour of MDAnalysis  can be set through the flag
+	MDAnalysis.core.flag['permissive_pdb_reader']. The default is True.  
+      - One can always manually select the PDB reader by providing the
+        permissive keyword to Universe; e.g. Universe(...,permissive=False)
+        will read the input file with the Bio.PDB reader. This might be
+        useful when processing true Protein Databank PDB files.
   * fixed Issue 51 (distance_array() did not properly check its
     input and wrong results could be returned if the input was a
     float64 and a float32 array)
 
 09/19/10 orbeckst
-	* quick-fix release 0.6.4.1
-	* fixed import issue with python 2.5 (Issue 41)
+  * quick-fix release 0.6.4.1
+  * fixed import issue with python 2.5 (Issue 41)
 
 09/16/10 orbeckst, danny.parton
-	* release 0.6.4
-	* GRO writer added
-	* fixed XTC writer (Issue 38)
-	* convert box representations (Issue 37)
-	* primitive PDB parser added (slightly faster and ignores
-	  correctness of resids, atomnames etc but reads CRYST1 into unitcell)
-	* Universe gained the 'permissive' flag to switch on the
-	  primitive PDB parser/reader
-	* Simple 'chained reader' which enables a Universe to
-	  transparently read a list of trajectory files (Issue 39).
-  * Additional methods for AtomGroup: numberOfResidues(),
-	  resids(), resnames()
+  * release 0.6.4
+  * GRO writer added
+  * fixed XTC writer (Issue 38)
+  * convert box representations (Issue 37)
+  * primitive PDB parser added (slightly faster and ignores
+    correctness of resids, atomnames etc but reads CRYST1 into unitcell)
+  * Universe gained the 'permissive' flag to switch on the
+    primitive PDB parser/reader
+  * Simple 'chained reader' which enables a Universe to
+    transparently read a list of trajectory files (Issue 39).
+  * Additional methods for AtomGroup: numberOfResidues(), resids(), resnames()
   * new bilayer analysis script for membrane composition on a
-	  per-leaflet basis (examples/membrane-composition.py); also
-	  renamed examples/leaflet.py to membrane-leaflets.py
+    per-leaflet basis (examples/membrane-composition.py); also
+    renamed examples/leaflet.py to membrane-leaflets.py
 
 07/08/10 orbeckst, denniej0, danny.parton, philipwfowler
-	* 0.6.3 release
+  * 0.6.3 release
   * minimum requirement is python 2.4 (using with_statement in the
     analysis module and we have not tested on 2.3 in a while)
   * analysis modules (MDAnalysis.analysis):
      - lipid bilayer leaflet detection
      - native contact analysis ("q1-q2")
-	   - rms-fitting based on sequence alignment
-  * write selections for other codes from AtomGroups (VMD, pymol, CHARMM,
+     - rms-fitting based on sequence alignment
+  * write selections for other codes from AtomGroups (VMD, pymol, CHARMM, 
     Gromacs ndx)
   * gro reader (Issue 31)
-	* better API for loading a topology and a coordinate file in Universe()
+  * better API for loading a topology and a coordinate file in Universe()
   * trajectory reader: DCDReader can reverse trajectory with negative
     step increment; XTC/TRRReader can do simple (forward) slices by doing
     (slow!) sequential iteration
   * deprecated principleAxes() and introduced principalAxes() with less
     confusing return values (Issue 33).
-	* fixed wrong unitcell dimensions for XTC/TRR (Issue 34)
-	* added basic XYZ reader with compression support (Issue 35)
-	* PDB reader guesses masses (unknown elements are set to 0)
-	* installation requires Biopython (www.biopython.org)
+  * fixed wrong unitcell dimensions for XTC/TRR (Issue 34)
+  * added basic XYZ reader with compression support (Issue 35)
+  * PDB reader guesses masses (unknown elements are set to 0)
+  * installation requires Biopython (www.biopython.org)
  
 05/28/10 orbeckst, denniej0
   * 0.6.2 release
-	* removed a number of imports from the top level (such as rms_fitting);
-	  this might break some scripts that still rely on the layout that was
-	  used for 0.5.x (which is now officially declared deprecated)
+  * removed a number of imports from the top level (such as rms_fitting);
+    this might break some scripts that still rely on the layout that was
+    used for 0.5.x (which is now officially declared deprecated)
   * defined trajectory API
   * deprecated DCD.dcd_header --> DCD._dcd_header
-	* XTC and TRR compute numframes by iterating through trajectory (slow!)
-	* introduced units: base units are ps (time) and Angstrom (length); see core.flags
-	* XTC and TRR automatically convert between native Gromacs units (ps, nm) and 
+  * XTC and TRR compute numframes by iterating through trajectory (slow!)
+  * introduced units: base units are ps (time) and Angstrom (length); see core.flags
+  * XTC and TRR automatically convert between native Gromacs units (ps, nm) and 
     base units (uses core.flags['convert_gromacs_lengths'] = True)
-	* more test cases
+  * more test cases
   * *really* FIXED Issue 16 (can easy_install from tar file)
-	* FIXED a bug in AtomGroup.principalAxes()
-	* added dependency information to setup.py (numpy and
-	  biopython by default; nose for tests)
+  * FIXED a bug in AtomGroup.principalAxes()
+  * added dependency information to setup.py (numpy and
+    biopython by default; nose for tests)
 
 04/30/10 orbeckst
 
   * 0.6.1 release
-	* can build a simple Universe from a PDB file (FIXES Issue 11)
+  * can build a simple Universe from a PDB file (FIXES Issue 11)
   * can read Gromacs XTC and TRR files (FIXES Issue 1) but no
-	  Timeseries or Collections yet for those formats
-	* removed Universe.load_new_dcd() and Universe.load_new_pdb()
-	  --- use the generic Universe.load_new() (MIGHT BREAK OLD CODE)
+    Timeseries or Collections yet for those formats
+  * removed Universe.load_new_dcd() and Universe.load_new_pdb()
+    --- use the generic Universe.load_new() (MIGHT BREAK OLD CODE)
   * removed deprecated Universe._dcd attribute (MIGHT BREAK OLD CODE)
   * FIXED bug in PDB.PDBWriter and CRD.CRDWriter
   * use SloppyPDB in order to cope with large PDB files
-	* core.distances.self_distance_array() is now behaving the
-	  same way as distance_array()
+  * core.distances.self_distance_array() is now behaving the
+    same way as distance_array()
   * defined Trajectory API (see MDAnalysis/coordinates/__init__.py)
-	* renamed _dcdtest to dcdtimeseries (will not affect old code)
-	* unit tests added (still need more test cases)
+  * renamed _dcdtest to dcdtimeseries (will not affect old code)
+  * unit tests added (still need more test cases)
 
 03/31/10 orbeckst, denniej0 
   * 0.6.0 release
   * added KDTree and Neighbour searching code from Biopython for
     faster distance selections: used for AROUND selections;
-	  POINT is using distance matrix by default as this is
-	  faster. This can be configured with core.flags
-	* core.flags infrastructure to tweak behaviour at run time
+    POINT is using distance matrix by default as this is
+    faster. This can be configured with core.flags
+  * core.flags infrastructure to tweak behaviour at run time
   * updated LICENSE file with Biopython License
-	* some selections for nucleic acids
+  * some selections for nucleic acids
   * completely reorganized directory structure to make
     enhancements easier to incorporate
-	* FIXED (partial): Issue 18 (Timeseries from a universe.segID
+  * FIXED (partial): Issue 18 (Timeseries from a universe.segID
     selection, reported by lordnapi)
   * FIXED: Issue 19 (Timeseries collections were broken,
     reported by Jiyong)
   * can write single frames as pdb or crd (AtomGroup gained the
     write() method)
-	* some selections for nucleic acids
+  * some selections for nucleic acids
   * completely reorganized directory structure to make
     enhancements easier to incorporate
   * FIXED: Issue 19 (Timeseries collections were broken)
   * improved installation
      - EasyInstall (setuptools) support (FIXED Issue 16)
-	   - better instructions in INSTALL
+     - better instructions in INSTALL
      - slightly better handling of the configuration of the fast
        linear algebra libs via the setup.cfg file
 
-
 08/23/08 naveen, orbeckst
   * 0.5.1 release
-	* primitive PDB writer (only works if coordinates were read from a pdb)
+  * primitive PDB writer (only works if coordinates were read from a pdb)
   * B-factor property (detailed implementation subject to change)
   * periodic flag for PointSelection
-	* new correl series: orientation vector for 3-site molecules
-	  (to calculate the water dipole moment of SPC or TIP3P)
-	* distance.distance_array() bug fixed (see doc string)
+  * new correl series: orientation vector for 3-site molecules
+    (to calculate the water dipole moment of SPC or TIP3P)
+  * distance.distance_array() bug fixed (see doc string)
   * updated LICENSE file UIUC Open Source License
 
 01/29/08 orbeckst
-	* prepared 0.5.0 release. Includes previously disabled
-	  distance code, PDB reader, incomplete XTC reader (code by
-	  Benjamin Hall), and marginally updated documentation &
-	  licenses
+  * prepared 0.5.0 release. Includes previously disabled
+    distance code, PDB reader, incomplete XTC reader (code by
+    Benjamin Hall), and marginally updated documentation &
+    licenses
 
 11/12/07 naveen
   * prepared for release outside lab
