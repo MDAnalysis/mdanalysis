@@ -10,8 +10,22 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
+??/??/11 orbeckst, jandom
+  * 0.7.3 development
+
+  Change of behaviour
+
+  * alignto() and rms_fit_trj(): changed keyword 'select' default from
+    'backbone' to 'all'
+
+  Fixes
+
+  * fixed alignto() (raised KeyError)
+  * fixed Issue 57 (check for illegal coordinates when writing PDB)
+
+
 03/31/11 orbeckst, dcaplan, naveen.michaudagrawal
-  * 0.7.2 development
+  * 0.7.2
   * NOTE: minimum Python version required is 2.5 (since 0.6.3)
 
   Enhancements
