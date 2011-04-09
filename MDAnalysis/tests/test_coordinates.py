@@ -264,13 +264,6 @@ class TestPDBReader(_SingleFrameReader):
         # can lead to race conditions when testing in parallel
         self.universe = mda.Universe(PDB_small, permissive=False) 
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
-    #def tearDown(self):
-    #    mda.core.flags['permissive_pdb_reader'] = True  # MDAnalysis default 
-
-    #def test_flag_permissive_pdb_reader(self):
-    #    """test_flag_permissive_pdb_reader: permissive_pdb_reader==False enables Bio.PDB"""
-    #    assert_equal(mda.core.flags['permissive_pdb_reader'], False,
-    #                 "'permissive_pdb_reader' flag must be False for Bio.PDB reader testing")
 
 class TestPSF_CRDReader(_SingleFrameReader):
     def setUp(self):
@@ -292,6 +285,49 @@ class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True) 
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+
+class TestPrimitivePDBWriter(TestCase):
+    def setUp(self):
+        self.universe = mda.Universe(PSF, PDB_small, permissive=True) 
+        self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+        ext = ".pdb"
+        fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
+        
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        try:
+            os.unlink(self.outfile2)
+        except OSError:
+            pass
+        del self.universe
+    
+    def test_writer(self):
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(PSF, self.outfile, permissive=True)
+        assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec,
+                            err_msg="Writing PDB file with PrimitivePDBWriter does not reproduce original coordinates")
+
+    @attr('issue')
+    def test_check_coordinate_limits_min(self):
+        """Test that illegal PDB coordinates (x <= -999.994) are caught with ValueError (Issue 57)"""
+        # modify coordinates so we need our own copy or we could mess up parallel tests
+        u = mda.Universe(PSF, PDB_small, permissive=True)
+        u.atoms[2000].pos[1] = -1000.0
+        assert_raises(ValueError, u.atoms.write, self.outfile2)
+        del u
+
+    @attr('issue')
+    def test_check_coordinate_limits_max(self):
+        """Test that illegal PDB coordinates (x >= 9999.994) are caught with ValueError (Issue 57)"""
+        # modify coordinates so we need our own copy or we could mess up parallel tests
+        u = mda.Universe(PSF, PDB_small, permissive=True)
+        u.atoms[1000].pos[1] = 10000.0
+        assert_raises(ValueError, u.atoms.write, self.outfile2)
+        del u
 
 class TestPQRReader(_SingleFrameReader):
     def setUp(self):
