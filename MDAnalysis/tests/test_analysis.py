@@ -74,7 +74,10 @@ class TestAlign(TestCase):
         rmsd = MDAnalysis.analysis.align.rmsd(A,B)
         assert_almost_equal(MDAnalysis.analysis.align.rmsd(A,A), 0.0, 5,
                             err_msg="error: rmsd(X,X) should be 0") 
-        assert_equal(MDAnalysis.analysis.align.rmsd(B,A), rmsd, "error: rmsd() is not symmetric")
+        # rmsd(A,B) = rmsd(B,A)  should be exact but spurious failures in the 9th decimal have been
+        # observed (see Issue 57 comment #1) so we relax the test to 6 decimals.
+        assert_almost_equal(MDAnalysis.analysis.align.rmsd(B,A), rmsd, 6,
+                            err_msg="error: rmsd() is not symmetric")
         assert_almost_equal(rmsd, 6.8342494129169804, 5, 
                             err_msg="RMSD calculation between 1st and last AdK frame gave wrong answer")
 
