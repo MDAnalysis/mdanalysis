@@ -178,6 +178,7 @@ def check_compressed_format(root, ext):
 
 def _veclength(v):
     """Length of vector *v*."""
+    # note: this is 3 times faster than numpy.linalg.norm
     return numpy.sqrt(numpy.dot(v,v))
 
 def _angle(a,b):
