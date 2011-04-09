@@ -383,6 +383,7 @@ class PrimitivePDBWriter(base.Writer):
            }
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
+    pdb_coor_limits = {"min":-999.994, "max":9999.994}
 
     def __init__(self,filename,**kwargs):
         self.filename = util.filename(filename,ext='pdb')
@@ -418,13 +419,29 @@ class PrimitivePDBWriter(base.Writer):
         self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
         atoms = selection.atoms    # make sure to use atoms (Issue 46)
         coor = atoms.coordinates() # can write from selection == Universe (Issue 49)
-        for i, atom in enumerate(atoms):            
+        
+        for i, atom in enumerate(atoms):
+            if not self.has_valid_coordinates(coor[i]):
+                raise ValueError("PDB files can have maximum coordinate values of 9999.994/-999.994. Problem with particle/atom %d" % (i+1))
+                break
             self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
                       chainID=atom.segid.strip(), segID=atom.segid.strip(),
                       x=coor[i,0], y=coor[i,1], z=coor[i,2])
             # get bfactor, too, and add to output?
             # 'element' is auto-guessed from atom.name in ATOM()
         self.close()
+
+    def has_valid_coordinates(self, coor_list):
+        """
+        @Input: numpy array of 3 (x, y, z) coordinates for a particle/atom
+        @Output: boolean True or False, True 
+        True, if all values are within 9999.994/-999.994, as required for PDBs.
+        """
+        for coor in coor_list:
+            # this expression could be performance-poor
+            if not self.pdb_coor_limits["min"] < coor < self.pdb_coor_limits["max"]:
+                return False        
+        return True
 
     def TITLE(self,*title):
         """Write TITLE record.
