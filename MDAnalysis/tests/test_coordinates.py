@@ -313,19 +313,19 @@ class TestPrimitivePDBWriter(TestCase):
 
     @attr('issue')
     def test_check_coordinate_limits_min(self):
-        """Test that illegal PDB coordinates (x <= -999.994) are caught with ValueError (Issue 57)"""
+        """Test that illegal PDB coordinates (x <= -999.994 A) are caught with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up parallel tests
         u = mda.Universe(PSF, PDB_small, permissive=True)
-        u.atoms[2000].pos[1] = -1000.0
+        u.atoms[2000].pos[1] = -999.994
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
     @attr('issue')
     def test_check_coordinate_limits_max(self):
-        """Test that illegal PDB coordinates (x >= 9999.994) are caught with ValueError (Issue 57)"""
+        """Test that illegal PDB coordinates (x >= 9999.994 A) are caught with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up parallel tests
         u = mda.Universe(PSF, PDB_small, permissive=True)
-        u.atoms[1000].pos[1] = 10000.0
+        u.atoms[1000].pos[1] = 9999.994
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
@@ -442,6 +442,52 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
         # angles should not have changed
         assert_array_almost_equal(self.ts.dimensions[3:], self.ref_unitcell[3:], self.prec, 
                                   err_msg="unit cell alpha,beta,gamma (rhombic dodecahedron)")
+
+class TestGROWriter(TestCase):
+    def setUp(self):
+        self.universe = mda.Universe(GRO) 
+        self.prec = 2  # 3 decimals in file in nm but MDAnalysis is in A
+        ext = ".gro"
+        fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
+        
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        try:
+            os.unlink(self.outfile2)
+        except OSError:
+            pass
+        del self.universe
+
+    @dec.slow
+    def test_writer(self):
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec,
+                            err_msg="Writing GRO file with GROWriter does not reproduce original coordinates")
+
+    @dec.slow
+    @attr('issue')
+    def test_check_coordinate_limits_min(self):
+        """Test that illegal GRO coordinates (x <= -999.994 nm) are caught with ValueError (Issue 57)"""
+        # modify coordinates so we need our own copy or we could mess up parallel tests
+        u = mda.Universe(GRO)
+        u.atoms[2000].pos[1] = -999.994 * 10  # nm -> A
+        assert_raises(ValueError, u.atoms.write, self.outfile2)
+        del u
+
+    @dec.slow
+    @attr('issue')
+    def test_check_coordinate_limits_max(self):
+        """Test that illegal GRO coordinates (x >= 9999.994 nm) are caught with ValueError (Issue 57)"""
+        # modify coordinates so we need our own copy or we could mess up parallel tests
+        u = mda.Universe(GRO)
+        u.atoms[1000].pos[1] = 9999.994 * 10  # nm -> A
+        assert_raises(ValueError, u.atoms.write, self.outfile2)
+        del u
         
 
 class TestPDBReaderBig(TestCase, RefAdK):

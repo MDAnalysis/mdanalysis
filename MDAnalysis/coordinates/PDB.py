@@ -420,8 +420,8 @@ class PrimitivePDBWriter(base.Writer):
         self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
         atoms = selection.atoms    # make sure to use atoms (Issue 46)
         coor = atoms.coordinates() # can write from selection == Universe (Issue 49)
-
-        # check if any coordinates are illegal
+        
+        # check if any coordinates are illegal (coordinates are already in Angstroem per package default)
         if not self.has_valid_coordinates(self.pdb_coor_limits, coor):
             self.close()
             try:
@@ -429,7 +429,8 @@ class PrimitivePDBWriter(base.Writer):
             except OSError, err:
                 if err.errno == errno.ENOENT:
                     pass
-            raise ValueError("PDB files must have coordinate values between %.3f and %.3f: No file was written." % (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
+            raise ValueError("PDB files must have coordinate values between %.3f and %.3f Angstroem: No file was written." % 
+                             (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
         
         for i, atom in enumerate(atoms):
             self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,

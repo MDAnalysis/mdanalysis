@@ -21,7 +21,7 @@ The rules for this file:
   Fixes
 
   * fixed alignto() (raised KeyError)
-  * fixed Issue 57 (check for illegal coordinates when writing PDB)
+  * fixed Issue 57 (check for illegal coordinates when writing PDB and GRO)
 
 
 03/31/11 orbeckst, dcaplan, naveen.michaudagrawal
