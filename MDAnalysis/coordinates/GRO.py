@@ -131,7 +131,7 @@ class GROWriter(base.Writer):
 	
         format = 'GRO'
         units = {'time': None, 'length': 'nm'}
-        gro_coor_limits = {'min': -999.994, 'max': 9999.994}
+        gro_coor_limits = {'min': -999.9995, 'max': 9999.9995}
 
 	#: format strings for the GRO file (all include newline); precision
 	#: of 3 decimal places is hard-coded here.

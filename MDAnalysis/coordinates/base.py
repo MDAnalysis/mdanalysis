@@ -430,12 +430,20 @@ class Writer(IObase):
             return "< %s %r >" % (self.__class__.__name__, self.filename)
 
     def has_valid_coordinates(self, criteria, x):
-        """Returns ``True`` if all values are within limit values of their formats, eg. 9999.994/-999.994 for PDB
-        :Arguments: *criteria* dictionary containing the max and min values,
-         *numpy array* of (x, y, z) coordinates of atoms selected to be written out.
+        """Returns ``True`` if all values are within limit values of their formats.
+
+        Due to rounding, the test is asymmetric (and *min* is supposed to be negative):
+
+           min < x <= max
+
+        :Arguments: 
+            *criteria* 
+               dictionary containing the *max* and *min* values in native units
+            *x*
+               :class:`numpy.ndarray` of ``(x, y, z)`` coordinates of atoms selected to be written out.
         :Returns: boolean
         """
         x = numpy.ravel(x)
-        return numpy.all(criteria["min"] < x) and numpy.all(x < criteria["max"])
+        return numpy.all(criteria["min"] < x) and numpy.all(x <= criteria["max"])
         
     # def write_next_timestep(self, ts=None)

@@ -384,7 +384,7 @@ class PrimitivePDBWriter(base.Writer):
            }
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
-    pdb_coor_limits = {"min":-999.994, "max":9999.994}
+    pdb_coor_limits = {"min":-999.9995, "max":9999.9995}
 
     def __init__(self,filename,**kwargs):
         self.filename = util.filename(filename,ext='pdb')

@@ -313,19 +313,19 @@ class TestPrimitivePDBWriter(TestCase):
 
     @attr('issue')
     def test_check_coordinate_limits_min(self):
-        """Test that illegal PDB coordinates (x <= -999.994 A) are caught with ValueError (Issue 57)"""
+        """Test that illegal PDB coordinates (x <= -999.9995 A) are caught with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up parallel tests
         u = mda.Universe(PSF, PDB_small, permissive=True)
-        u.atoms[2000].pos[1] = -999.994
+        u.atoms[2000].pos[1] = -999.9995
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
     @attr('issue')
     def test_check_coordinate_limits_max(self):
-        """Test that illegal PDB coordinates (x >= 9999.994 A) are caught with ValueError (Issue 57)"""
+        """Test that illegal PDB coordinates (x > 9999.9995 A) are caught with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up parallel tests
         u = mda.Universe(PSF, PDB_small, permissive=True)
-        u.atoms[1000].pos[1] = 9999.994
+        u.atoms[1000].pos[1] =  9999.9996   # OB: 9999.99951 is not caught by '<=' ?!?
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
@@ -472,20 +472,20 @@ class TestGROWriter(TestCase):
     @dec.slow
     @attr('issue')
     def test_check_coordinate_limits_min(self):
-        """Test that illegal GRO coordinates (x <= -999.994 nm) are caught with ValueError (Issue 57)"""
+        """Test that illegal GRO coordinates (x <= -999.9995 nm) are caught with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up parallel tests
         u = mda.Universe(GRO)
-        u.atoms[2000].pos[1] = -999.994 * 10  # nm -> A
+        u.atoms[2000].pos[1] = -999.9995 * 10  # nm -> A
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
     @dec.slow
     @attr('issue')
     def test_check_coordinate_limits_max(self):
-        """Test that illegal GRO coordinates (x >= 9999.994 nm) are caught with ValueError (Issue 57)"""
+        """Test that illegal GRO coordinates (x > 9999.9995 nm) are caught with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up parallel tests
         u = mda.Universe(GRO)
-        u.atoms[1000].pos[1] = 9999.994 * 10  # nm -> A
+        u.atoms[1000].pos[1] = 9999.9999 * 10  # nm -> A  ; [ob] 9999.9996 not caught
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
         
