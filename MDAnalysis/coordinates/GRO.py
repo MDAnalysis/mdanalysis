@@ -12,6 +12,7 @@ Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 """
 from __future__ import with_statement
 
+import os, errno
 import numpy
 
 import MDAnalysis
@@ -130,6 +131,7 @@ class GROWriter(base.Writer):
 	
         format = 'GRO'
         units = {'time': None, 'length': 'nm'}
+        gro_coor_limits = {'min': -999.999, 'max': 9999.999}
 
 	#: format strings for the GRO file (all include newline); precision
 	#: of 3 decimal places is hard-coded here.
@@ -182,13 +184,21 @@ class GROWriter(base.Writer):
 
 		atoms = selection.atoms           # make sure to use atoms (Issue 46)
 		coordinates = atoms.coordinates() # can write from selection == Universe (Issue 49)
-		self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, in-place !
-                output_gro = open(self.filename , 'w')
+		self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, in-place ! 
+		output_gro = open(self.filename , 'w')
 		try:
 			# Header
 			output_gro.write('Written by MDAnalysis\n')
 			output_gro.write(self.fmt['numatoms'] % len(atoms))
-
+			# check if any coordinates are illegal
+			if not self.has_valid_coordinates(self.gro_coor_limits, coordinates):
+				output_gro.close()
+				try:
+					os.remove(self.filename)
+				except OSError, err:
+					if err.errno == errno.ENOENT:
+						pass
+				raise ValueError("GRO files must have coordinate values between %.3f and %.3f: No file was written." % (self.gro_coor_limits["min"], self.gro_coor_limits["max"]))
 			# Atom descriptions and coords		
 			for atom_index,atom in enumerate(atoms):
 				c = coordinates[atom_index]

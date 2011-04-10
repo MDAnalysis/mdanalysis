@@ -422,14 +422,14 @@ class PrimitivePDBWriter(base.Writer):
         coor = atoms.coordinates() # can write from selection == Universe (Issue 49)
 
         # check if any coordinates are illegal
-        if not self.has_valid_coordinates(coor):
+        if not self.has_valid_coordinates(self.pdb_coor_limits, coor):
             self.close()
             try:
                 os.remove(self.filename)
             except OSError, err:
                 if err.errno == errno.ENOENT:
                     pass
-            raise ValueError("PDB files must have coordinate values between -999.994 and 9999.994: No file was written.")
+            raise ValueError("PDB files must have coordinate values between %.3f and %.3f: No file was written." % (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
         
         for i, atom in enumerate(atoms):
             self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
@@ -438,14 +438,6 @@ class PrimitivePDBWriter(base.Writer):
             # get bfactor, too, and add to output?
             # 'element' is auto-guessed from atom.name in ATOM()
         self.close()
-
-    def has_valid_coordinates(self, x):
-        """Returns ``True`` if all values are within 9999.994/-999.994, as required for PDBs.
-        :Input: numpy array of 3 (x, y, z) coordinates for a particle/atom
-        :Returns: boolean True or False, True 
-        """
-        x = numpy.ravel(x)
-        return numpy.all(self.pdb_coor_limits["min"] < x) and numpy.all(x < self.pdb_coor_limits["max"])
 
     def TITLE(self,*title):
         """Write TITLE record.
