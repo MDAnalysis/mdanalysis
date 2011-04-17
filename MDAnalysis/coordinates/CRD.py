@@ -36,43 +36,62 @@ class CRDReader(base.Reader):
     """CRD reader that implements the standard and extended CRD coordinate formats
     """
     format = 'CRD'
-    units = {'time': None, 'length': 'nm'}
+    units = {'time': None, 'length': 'Angstrom'}
     _Timestep = Timestep
 
     def __init__(self, crdfilename, convert_units=None, **kwargs):
+        # EXT:
+        #      (i10,2x,a)  natoms,'EXT'
+        #      (2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10)
+        #      iatom,ires,resn,typr,x,y,z,segid,rid,wmain
+        # standard:
+        #      (i5) natoms
+        #      (2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5)
+        #      iatom,ires,resn,typr,x,y,z,segid,orig_resid,wmain
+
         self.crdfilename = crdfilename
         self.filename = self.crdfilename
         if convert_units is None:
+            # Note: not used at the moment in CRDReader/Writer
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
         self.convert_units = convert_units  # convert length and time to base units
-
         coords_list = []
-        crdfile = open(crdfilename , 'r').readlines()
-
-        for linenum,line in enumerate(crdfile):
-           if line.split()[0] == '*':
-               continue
-               #print line.split()[0]
-           elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) == True:
-               extended = 'yes'
-           elif line.split()[0] == line.split()[-1] and line.split()[0] != '*':
-               extended = 'no'
-           elif extended == 'yes':
-               coords_list.append( numpy.array( map( float , line[45:100].split()[0:3] ) ) )
-           elif extended == 'no':
-               coords_list.append( numpy.array( map( float , line[20:50].split()[0:3] ) ) )
-           else:
-               raise FormatError("Check CRD format at line %d: %s" % (linenum, line.rstrip()))
+        with open(crdfilename , 'r') as crdfile:
+            extended = False
+            natoms = 0
+            for linenum,line in enumerate(crdfile):
+                if line.strip().startswith('*') or line.strip() == "":
+                    continue       # ignore TITLE and empty lines
+                fields = line.split()
+                if len(fields) <= 2:
+                    # should be the natoms line
+                    natoms = int(fields[0])
+                    extended = (fields[-1] == 'EXT')
+                    continue
+                # process coordinates
+                try:
+                    if extended:
+                        coords_list.append(numpy.array(map(float, line[45:100].split()[0:3])))
+                    else:
+                        coords_list.append(numpy.array(map(float, line[20:50].split()[0:3])))
+                except:
+                    raise FormatError("Check CRD format at line %d: %s" % (linenum, line.rstrip()))
 
         self.numatoms = len(coords_list)
-        coords_list = numpy.array(coords_list)
         self.numframes = 1
-        self.fixed = 0          # parse B field for fixed atoms?
+        self.fixed = 0          # parse wmain field for fixed atoms?
         self.skip = 1
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1
-        self.ts = self._Timestep(coords_list)
+        self.ts = self._Timestep(numpy.array(coords_list))
+        # if self.convert_units:
+        #    self.convert_pos_from_native(self.ts._pos)             # in-place !
+
+        # sanity check
+        if self.numatoms != natoms:
+            raise FormatError("Found %d coordinates in %r but the header claims that there "
+                              "should be %d coordinates." % (self.numatoms, self.filename, natoms))
 
     def Writer(self, filename, **kwargs):
         """Returns a CRDWriter for *filename*.
