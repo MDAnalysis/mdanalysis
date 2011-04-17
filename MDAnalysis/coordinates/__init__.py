@@ -1,4 +1,20 @@
-# $Id$
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     in press.
+#
+
 """
 Coordinate/Trajectory Readers and Writers  --- :mod:`MDAnalysis.coordinates`
 ============================================================================
@@ -263,20 +279,20 @@ deal with missing methods gracefully.
 
  ``__getitem__(arg)``
      advance to time step `arg` = `frame` and return :class:`Timestep`; or if `arg` is a
-     slice, then return an iterator over that part of the trajectory. 
+     slice, then return an iterator over that part of the trajectory.
 
      The first functionality allows one to randomly access frames in the
      trajectory::
 
        universe.trajectory[314]
 
-     would load frame 314 into the current :class:`Timestep`. 
+     would load frame 314 into the current :class:`Timestep`.
 
      Using slices allows iteration over parts of a trajectory ::
 
        for ts in universe.trajectory[1000:2000]:
            process_frame(ts)   # do something
-  
+
      or skipping frames ::
 
        for ts in universe.trajectory[1000::100]:
@@ -292,7 +308,7 @@ deal with missing methods gracefully.
 
  ``Writer(filename, **kwargs)``
      returns a :class:`~MDAnalysis.coordinates.base.Writer` which is set up with
-     the same parameters as the trajectory that is being read (e.g. time step, 
+     the same parameters as the trajectory that is being read (e.g. time step,
      length etc), which facilitates copying and simple on-the-fly manipulation.
 
      If no Writer is defined then a :exc:`NotImplementedError` is raised.

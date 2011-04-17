@@ -1,4 +1,7 @@
-# $Id$
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+
 # Based on Biopython's KDTree module and used under the Biopython license:
 # Copyright (C) 2002, Thomas Hamelryck (thamelry@binf.ku.dk)
 # This code is part of the Biopython distribution and governed by its

@@ -1,5 +1,22 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     in press.
+#
+
 """
-Common functions for coordinate reading --- :mod:`MDAnalysis.coordinates.core`  
+Common functions for coordinate reading --- :mod:`MDAnalysis.coordinates.core`
 ==============================================================================
 
 Important base classes are collected in :mod:`MDAnalysis.coordinates.base`.
@@ -24,9 +41,9 @@ from numpy import sin, cos, sqrt
 try:
     from numpy import rad2deg, deg2rad   # numpy 1.3+
 except ImportError:
-    def rad2deg(x):             # no need for the numpy out=[] argument 
+    def rad2deg(x):             # no need for the numpy out=[] argument
         return 180.0*x/numpy.pi
-    def deg2rad(x):             # no need for the numpy out=[] argument 
+    def deg2rad(x):             # no need for the numpy out=[] argument
         return x*numpy.pi/180.0
 
 
@@ -39,7 +56,7 @@ def get_reader_for(filename, permissive=False):
 
 def reader(filename, **kwargs):
     """Provide a trajectory reader instance for *filename*.
-    
+
     This function guesses the file format from the extension of *filename* and
     it will throw a :exc:`TypeError` if the extension is not recognized.
 
@@ -70,13 +87,13 @@ def reader(filename, **kwargs):
 
 def get_writer_for(filename=None, format='DCD'):
     """Return an appropriate trajectory or frame writer class for *filename*.
-    
+
     The format is determined by the *format* argument or the extension
     of *filename*. The default is to return a dcd writer (*format* = 'dcd').
 
     :Arguments:
       *filename*
-         The filename for the trajectory is examined for its extension and 
+         The filename for the trajectory is examined for its extension and
          the Writer is chosen accordingly.
       *format*
          If no *filename* is supplied then the format can be explicitly set;
@@ -98,10 +115,10 @@ def writer(filename, numatoms=None, **kwargs):
 
     :Arguments:
        *filename*
-           Output filename of the trajectory; the extension determines the 
+           Output filename of the trajectory; the extension determines the
            format.
        *numatoms*
-            The number of atoms in the output trajectory; can be ommitted 
+            The number of atoms in the output trajectory; can be ommitted
             for single-frame writers.
        *kwargs*
             Keyword arguments for the writer; all trajectory Writers accept
@@ -155,24 +172,24 @@ def guess_format(filename):
         except:
             raise TypeError("Cannot determine coordinate format for %r" % filename)
         format = ext.upper()
-        format = check_compressed_format(root, ext)    
+        format = check_compressed_format(root, ext)
         if not format in MDAnalysis.coordinates._trajectory_readers:
-            raise TypeError("Unknown coordinate trajectory extension %r from %r; only %r are implemented in MDAnalysis." % 
+            raise TypeError("Unknown coordinate trajectory extension %r from %r; only %r are implemented in MDAnalysis." %
                             (ext, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
     return format
-    
+
 def check_compressed_format(root, ext):
     """Check if this is a supported gzipped/bzip2ed file format and return format."""
     filename = root + '.' + ext  # only needed for diagnostics
     # XYZReader is setup to handle both plain and compressed (bzip2, gz) files
-    # ..so if the first file extension is bzip2 or gz, look at the one to the left of it 
+    # ..so if the first file extension is bzip2 or gz, look at the one to the left of it
     if ext.lower() in ("bz2","gz"):
         try:
-            root, ext = get_ext(root) 
+            root, ext = get_ext(root)
         except:
             raise TypeError("Cannot determine coordinate format for %r" % filename)
-        if not ext.upper() in MDAnalysis.coordinates._compressed_formats: 
-            # only bzipped xyz files can be parsed right now (might be useful to parse foo.pdb.bz2 ?) 
+        if not ext.upper() in MDAnalysis.coordinates._compressed_formats:
+            # only bzipped xyz files can be parsed right now (might be useful to parse foo.pdb.bz2 ?)
             raise TypeError("Cannot handle %r in compressed format" % filename)
     return ext.upper()
 
@@ -196,7 +213,7 @@ def triclinic_box(x,y,z):
     """Convert the three triclinic box vectors to [A,B,C,alpha,beta,gamma].
 
     Angles are in degrees.
-    
+
     * alpha  = angle(y,z)
     * beta   = angle(x,z)
     * gamma  = angle(x,y)
@@ -204,7 +221,7 @@ def triclinic_box(x,y,z):
     .. SeeAlso:: Definition of angles: http://en.wikipedia.org/wiki/Lattice_constant
     """
     A, B, C = [_veclength(v) for v in x,y,z]
-    alpha =  _angle(y,z) 
+    alpha =  _angle(y,z)
     beta  =  _angle(x,z)
     gamma =  _angle(x,y)
     return numpy.array([A,B,C,alpha,beta,gamma], dtype=numpy.float32)

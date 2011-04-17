@@ -1,4 +1,20 @@
-# $Id: XYZ.py 330 2010-06-25 01:52:07Z orbeckst $
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     in press.
+#
+
 """XYZ trajectory reader --- :mod:`MDAnalysis.coordinates.XYZ`
 ==============================================================
 
@@ -6,7 +22,7 @@ Resources: the XYZ format was taken from
 http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html and
 is therefore compatible with VMD (you need a PDB or PSF file to define
 the topology, just as here)
-    
+
 * comments are not allowed in the XYZ file
 * the atom name (first column) is ignored
 * the coordinates are assumed to be space-delimited rather than fixed width (this may cause issues - see below)
@@ -14,7 +30,7 @@ the topology, just as here)
 * it is assumed that the number following "frame" is the time in picoseconds
 * it is assumed that the coordinates are in Angstroms
 * the unitcell information is all zeros since this is not recorded in the XYZ format
-    
+
 There appears to be no rigid format definition so it is likely users
 will need to tweak this Class.
 """
@@ -40,7 +56,7 @@ class XYZReader(base.Reader):
           return number of frames in xyz
         ``for ts in xyz:``
           iterate through trajectory
-    
+
     .. Note: this can read both compressed (foo.xyz) and compressed
           (foo.xyz.bz2 or foo.xyz.gz) files; uncompression is handled
           on the fly
@@ -56,32 +72,32 @@ class XYZReader(base.Reader):
 
     # this will be overidden when an instance is created and the file extension checked
     format = "XYZ"
-    
+
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
     def __init__(self, xyzfilename, **kwargs):
         self.filename = xyzfilename
-        
+
         # the filename has been parsed to be either be foo.xyz or foo.xyz.bz2 by coordinates::core.py
-        # so the last file extension will tell us if it is bzipped or not 
+        # so the last file extension will tell us if it is bzipped or not
         root, ext = os.path.splitext(self.filename)
         if ext[1:] == "bz2":
             self.compression = "bz2"
             self.xyzfile = bz2.BZ2File(self.filename, 'rb')
         elif ext[1:] == "gz":
             self.compression = "gz"
-            self.xyzfile = gzip.open(self.filename, 'rb')            
+            self.xyzfile = gzip.open(self.filename, 'rb')
         elif ext[1:] == "xyz":
             self.compression = None
             self.xyzfile = file(self.filename, 'r')
-               
-        # note that, like for xtc and trr files, __numatoms and __numframes are used quasi-private variables 
+
+        # note that, like for xtc and trr files, __numatoms and __numframes are used quasi-private variables
         # to prevent the properties being recalculated
         # this is because there is no indexing so the way it measures the number of frames is to read the whole file!
         self.__numatoms = None
         self.__numframes = None
-        
+
         self.fixed = 0
         self.skip = 1
         self.periodic = False
@@ -102,19 +118,19 @@ class XYZReader(base.Reader):
             return 0
         else:
             return self.__numatoms
-        
+
     def _read_xyz_natoms(self,filename):
 
         # this assumes that this is only called once at startup and that the filestream is already open
-           
+
         # read the first line
         n = self.xyzfile.readline()
-        
+
         self.close_trajectory()
-        
+
         # need to check type of n
         return int(n)
-        
+
     @property
     def numframes(self):
         if not self.__numframes is None:   # return cached value
@@ -125,26 +141,26 @@ class XYZReader(base.Reader):
             return 0
         else:
             return self.__numframes
-        
+
     def _read_xyz_numframes(self, filename):
         self._reopen()
-    
-        # the number of lines in the XYZ file will be 2 greater than the number of atoms 
+
+        # the number of lines in the XYZ file will be 2 greater than the number of atoms
         linesPerFrame = self.numatoms+2
-        
+
         counter = 0
         # step through the file (assuming xyzfile has an iterator)
         for i in self.xyzfile:
             counter = counter + 1
 
         self.close_trajectory()
-        
+
         # need to check this is an integer!
         numframes = int(counter/linesPerFrame)
-        
+
         return numframes
-        
-                
+
+
     def __iter__(self):
         self.ts.frame = 0  # start at 0 so that the first frame becomes 1
         self._reopen()
@@ -157,7 +173,7 @@ class XYZReader(base.Reader):
 
     def _read_next_timestep(self, ts=None):
         # check that the timestep object exists
-        if ts is None: 
+        if ts is None:
             ts = self.ts
         # check that the xyzfile object exists; if not reopen the trajectory
         if self.xyzfile is None:
@@ -177,8 +193,8 @@ class XYZReader(base.Reader):
 
                 # assume the XYZ file is space delimited rather than being fixed format
                 # (this could lead to problems where there is no gap e.g 9.768-23.4567)
-                words = line.split() 
-           
+                words = line.split()
+
                 x.append(float(words[1]))
                 y.append(float(words[2]))
                 z.append(float(words[3]))
@@ -189,11 +205,11 @@ class XYZReader(base.Reader):
                 ts._x[:] = x # more efficient to do it this way to avoid re-creating the numpy arrays
                 ts._y[:] = y
                 ts._z[:] = z
-                ts.frame += 1 
+                ts.frame += 1
                 return ts
 
         raise EOFError
-                            
+
     def rewind(self):
         """reposition on first frame"""
         self._reopen()
@@ -202,7 +218,7 @@ class XYZReader(base.Reader):
 
     def _reopen(self):
         self.close_trajectory()
-        self.open_trajectory()                
+        self.open_trajectory()
 
     def open_trajectory(self):
         if not self.xyzfile is None:
@@ -217,7 +233,7 @@ class XYZReader(base.Reader):
             self.xyzfile = gzip.open(self.filename, 'rb')
         elif self.compression == None:
             self.xyzfile = file(self.filename, 'r')
-            
+
         # reset ts
         ts = self.ts
         ts.status = 1
@@ -231,8 +247,8 @@ class XYZReader(base.Reader):
         if self.xyzfile is None:
             return
         self.xyzfile.close()
-        self.xyzfile = None 
-        
+        self.xyzfile = None
+
     def __del__(self):
         if not self.xyzfile is None:
             self.close_trajectory()

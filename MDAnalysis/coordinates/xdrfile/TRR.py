@@ -1,4 +1,22 @@
-"""Reading of `Gromacs TRR trajectories`_.
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     in press.
+#
+
+"""
+Reading of `Gromacs TRR trajectories`_.
 
 .. _Gromacs TRR trajectories: http://www.gromacs.org/Documentation/File_Formats/.trr_File
 .. _Gromacs: http://www.gromacs.org
@@ -34,9 +52,9 @@ class Timestep(core.Timestep):
             self.frame = 0
             self.numatoms = arg
             # C floats and C-order for arrays (see libxdrfile.i)
-            self._pos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')            
-            self._velocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')            
-            self._forces = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')            
+            self._pos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
+            self._velocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
+            self._forces = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
             # additional data for xtc
             self.status = libxdrfile.exdrOK
@@ -60,9 +78,9 @@ class Timestep(core.Timestep):
             if len(arg.shape) != 2: raise ValueError("packed numpy array (x,v,f) can only have 2 dimensions")
             self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
             self.frame = 0
-            if arg.shape[0] == 3*DIM: 
+            if arg.shape[0] == 3*DIM:
                 self.numatoms = arg.shape[1]    # C-order
-            elif arg.shape[1] == 3*DIM: 
+            elif arg.shape[1] == 3*DIM:
                 self.numatoms = arg.shape[0]    # C-order
             else:
                 raise ValueError("TRR timestep is to be initialized from (natoms, 3*3) array")
@@ -76,7 +94,7 @@ class Timestep(core.Timestep):
             self.step = 0
             self.time = 0
             self.lmbda = 0
-        else: 
+        else:
             raise ValueError("Cannot create an empty Timestep")
         self._x = self._pos[:,0]
         self._y = self._pos[:,1]

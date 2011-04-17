@@ -1,4 +1,20 @@
-# $Id$
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     in press.
+#
+
 """DCD trajectory I/O  --- :mod:`MDAnalysis.coordinates.DCD`
 ============================================================
 
@@ -26,7 +42,7 @@ class DCDWriter(base.Writer):
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
-    def __init__(self, filename, numatoms, start=0, step=1, delta=1.0, 
+    def __init__(self, filename, numatoms, start=0, step=1, delta=1.0,
                  remarks="Created by DCDWriter", convert_units=None):
         """Create a new DCDWriter
 
@@ -53,7 +69,7 @@ class DCDWriter(base.Writer):
             # probably called from MDAnalysis.Writer() so need to give user a gentle heads up...
             raise ValueError("DCDWriter: REQUIRES the number of atoms in the 'numatoms' keyword\n"+\
                                  " "*len("ValueError: ") +\
-                                 "For example: numatoms=universe.atoms.numberOfAtoms()")            
+                                 "For example: numatoms=universe.atoms.numberOfAtoms()")
         self.filename = filename
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
@@ -68,7 +84,7 @@ class DCDWriter(base.Writer):
         self.remarks = remarks
         self._write_dcd_header(numatoms, start, step, delta, remarks)
     def _dcd_header(self):
-        """Returns contents of the DCD header C structure:: 
+        """Returns contents of the DCD header C structure::
              typedef struct {
                fio_fd fd;                 // FILE *
                fio_size_t header_size;    // size_t == sizeof(int)
@@ -160,10 +176,10 @@ class DCDReader(base.Reader):
         self.dcdfile = None  # set right away because __del__ checks
 
         # Issue #32: segfault if dcd is 0-size
-        # Hack : test here... (but should be fixed in dcd.c)        
+        # Hack : test here... (but should be fixed in dcd.c)
         stats = os.stat(self.dcdfilename)
         if stats.st_size == 0:
-            raise IOError(errno.ENODATA,"DCD file is zero size",dcdfilename) 
+            raise IOError(errno.ENODATA,"DCD file is zero size",dcdfilename)
 
         self.dcdfile = file(dcdfilename, 'rb')
         self.numatoms = 0
@@ -171,13 +187,13 @@ class DCDReader(base.Reader):
         self.fixed = 0
         self.skip = 1
         self.periodic = False
-        
+
         self._read_dcd_header()
         self.ts = Timestep(self.numatoms)
         # Read in the first timestep
         self._read_next_timestep()
     def _dcd_header(self):
-        """Returns contents of the DCD header C structure:: 
+        """Returns contents of the DCD header C structure::
              typedef struct {
                fio_fd fd;                 // FILE *
                fio_size_t header_size;    // size_t == sizeof(int)
@@ -212,7 +228,7 @@ class DCDReader(base.Reader):
         # usage is "from ts in dcd:" where dcd does not have indexes
         self._reset_dcd_read()
         def iterDCD():
-            for i in xrange(0, self.numframes, self.skip):  # FIXME: skip is not working!!! 
+            for i in xrange(0, self.numframes, self.skip):  # FIXME: skip is not working!!!
                 try: yield self._read_next_timestep()
                 except IOError: raise StopIteration
         return iterDCD()

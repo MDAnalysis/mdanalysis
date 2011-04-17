@@ -1,4 +1,20 @@
-# $Id: CRD.py 101 2009-08-11 13:19:06Z denniej0 $
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     in press.
+#
+
 """CRD structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.CRD`
 ===========================================================================
 
@@ -22,7 +38,7 @@ class CRDReader(base.Reader):
     format = 'CRD'
     units = {'time': None, 'length': 'nm'}
     _Timestep = Timestep
- 
+
     def __init__(self, crdfilename, convert_units=None, **kwargs):
         self.crdfilename = crdfilename
         self.filename = self.crdfilename
@@ -32,15 +48,15 @@ class CRDReader(base.Reader):
 
         coords_list = []
         crdfile = open(crdfilename , 'r').readlines()
-        
+
         for linenum,line in enumerate(crdfile):
            if line.split()[0] == '*':
-               continue 
+               continue
                #print line.split()[0]
-           elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) == True: 
+           elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) == True:
                extended = 'yes'
            elif line.split()[0] == line.split()[-1] and line.split()[0] != '*':
-               extended = 'no' 
+               extended = 'no'
            elif extended == 'yes':
                coords_list.append( numpy.array( map( float , line[45:100].split()[0:3] ) ) )
            elif extended == 'no':
@@ -119,14 +135,14 @@ class CRDWriter(base.Writer):
         frame             optionally move to frame FRAME
         """
         u = selection.universe
-        if frame is not None:            
+        if frame is not None:
             u.trajectory[frame]  # advance to frame
         else:
             try:
                 frame = u.trajectory.ts.frame
             except AttributeError:
                 frame = 1   # should catch cases when we are analyzing a single PDB (?)
-       
+
         atoms = selection.atoms     # make sure to use atoms (Issue 46)
         coor = atoms.coordinates()  # can write from selection == Universe (Issue 49)
         with open(self.filename,'w') as self.crd:
@@ -144,7 +160,7 @@ class CRDWriter(base.Writer):
 
     def _TITLE(self,*title):
         """Write TITLE record.
-        """        
+        """
         line = " ".join(title)    # should do continuation automatically
         line = line.strip()
         if len(line) > 0:
@@ -155,12 +171,12 @@ class CRDWriter(base.Writer):
         """Write generic total number of atoms in system)
         """
         if numatoms > 99999:
-            self.crd.write(self.fmt['NUMATOMS_EXT'] % numatoms) 
-        else: 
+            self.crd.write(self.fmt['NUMATOMS_EXT'] % numatoms)
+        else:
             self.crd.write(self.fmt['NUMATOMS'] % numatoms)
-    
+
     def _ATOM(self,serial=None,resSeq=None,resName=None,name=None,x=None,y=None,z=None,chainID=None,tempFactor=0.0,TotRes=None,numatoms=None):
-        """Write ATOM record. 
+        """Write ATOM record.
 
         All inputs are cut to the maximum allowed length. For integer
         numbers the highest-value digits are chopped (so that the

@@ -1,5 +1,20 @@
-# $Id: TRJ.py 101 2011-01-22 13:19:06Z Elizabeth Denning $
-# -*- coding: utf-8 -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     in press.
+#
+
 """
 TRJ/MDCRD file format (Amber) --- :mod:`MDAnalysis.coordinates.TRJ`
 ===================================================================
@@ -23,7 +38,7 @@ Amber trajectories are recognised by the suffix '.trj' or '.mdcrd'
 Units
 -----
 
-* lengths in Angstrom (Å)
+* lengths in Angstrom (Ã…)
 * time in ps (but see below)
 
 
@@ -79,7 +94,7 @@ class Timestep(base.Timestep):
 
                 .. Note:: The Amber trajectory only contains box lengths
                            `A,B,C`; we assume an orthorhombic box and set all
-                           angles to 90º.
+                           angles to 90Âº.
                 """
                 # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
                 return self._unitcell
@@ -113,14 +128,14 @@ class TRJReader(base.Reader):
         #       - compute seek offset & go
         #       - check that this works for files >2GB
 
-        def __init__(self, trjfilename, numatoms=None, **kwargs): 
+        def __init__(self, trjfilename, numatoms=None, **kwargs):
                 # amber trj REQUIRES the number of atoms from the topology
                 if numatoms is None:
                         raise ValueError("Amber TRJ reader REQUIRES the numatoms keyword")
                 self.filename = trjfilename
                 self.__numatoms = numatoms
                 self.__numframes = None
-                
+
                 self.trjfile = None  # have _read_next_timestep() open it properly!
                 self.fixed = 0
                 self.skip = 1
@@ -131,7 +146,7 @@ class TRJReader(base.Reader):
                 # FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)
                 self.default_line_parser = util.FORTRANReader("10F8.3")
                 self.lines_per_frame = int(numpy.ceil(3.0 * self.numatoms / len(self.default_line_parser)))
-                # The last line per frame might have fewer than 10 
+                # The last line per frame might have fewer than 10
                 # We determine right away what parser we need for the last
                 # line because it will be the same for all frames.
                 last_per_line = 3 * self.numatoms % len(self.default_line_parser)
@@ -220,7 +235,7 @@ class TRJReader(base.Reader):
                 # TODO: what do we do with 1-frame trajectories? Try..except EOFError?
                 line = self.trjfile.next()
                 nentries = self.default_line_parser.number_of_matches(line)
-                if nentries == 3:                       
+                if nentries == 3:
                         self.periodic = True
                         ts._unitcell[:3] = self.box_line_parser.read(line)
                         ts._unitcell[3:] = [90.,90.,90.]  # assumed
@@ -230,7 +245,7 @@ class TRJReader(base.Reader):
                 self.close()
                 return self.periodic
 
-                
+
         @property
         def numframes(self):
                 """Number of frames (obtained from reading the whole trajectory)."""
@@ -242,14 +257,14 @@ class TRJReader(base.Reader):
                         return 0
                 else:
                         return self.__numframes
-        
+
         def _read_trj_numatoms(self, filename):
                 raise NotImplementedError("It is not possible to relaibly deduce NATOMS from Amber trj files")
-        
+
         def _read_trj_numframes(self, filename):
                 self._reopen()
-                # the number of lines in the XYZ file will be 2 greater than the number of atoms 
-                linesPerFrame = self.numatoms * 3. / 10. 
+                # the number of lines in the XYZ file will be 2 greater than the number of atoms
+                linesPerFrame = self.numatoms * 3. / 10.
 
                 counter = 0
                 # step through the file (assuming xyzfile has an iterator)
@@ -311,7 +326,7 @@ class TRJReader(base.Reader):
                 self._reopen()
                 self.next()
 
-        
+
         def __iter__(self):
                 self._reopen()
                 #yield self.ts

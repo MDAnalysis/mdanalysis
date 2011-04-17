@@ -22,6 +22,8 @@ The rules for this file:
 
   * fixed alignto() (raised KeyError)
   * fixed Issue 57 (check for illegal coordinates when writing PDB and GRO)
+  * use spaces everywhere and no TABs and tell emacs and vim to keep it that
+    way (Issue 69)
 
 
 03/31/11 orbeckst, dcaplan, naveen.michaudagrawal

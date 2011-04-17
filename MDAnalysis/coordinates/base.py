@@ -1,5 +1,22 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     in press.
+#
+
 """
-Base classes --- :mod:`MDAnalysis.coordinates.base`  
+Base classes --- :mod:`MDAnalysis.coordinates.base`
 ====================================================
 
 Derive other Reader and Writer classes from the classes in this
@@ -54,7 +71,7 @@ class Timestep(object):
          system box dimensions (A, B, C, alpha, beta, gamma); lengths
          are in the MDAnalysis length unit, and angles are in degrees.
 
-    :Methods:  
+    :Methods:
       ``t = Timestep(numatoms)``
          create a timestep object with space for numatoms (done automatically)
       ``t[i]``
@@ -77,7 +94,7 @@ class Timestep(object):
             self._pos = numpy.array(arg._pos, order='F')
         elif isinstance(arg, numpy.ndarray):
             if len(arg.shape) != 2: raise ValueError("numpy array can only have 2 dimensions")
-            self._unitcell = numpy.zeros((6), numpy.float32) 
+            self._unitcell = numpy.zeros((6), numpy.float32)
             self.frame = 0
             #if arg.shape[0] == 3: self.numatoms = arg.shape[0]  # ??? is this correct ??? [OB]  # Nope, not sure what the aim was so i've left the lines in as comments [DP]
             #else: self.numatoms = arg.shape[-1]                 # ??? reverse ??? [OB]
@@ -124,12 +141,12 @@ class Timestep(object):
 
 
 class IObase(object):
-    """Base class bundling common functionality for trajectory I/O.    
+    """Base class bundling common functionality for trajectory I/O.
     """
     #: override to define trajectory format of the reader/writer (DCD, XTC, ...)
     format = None
 
-    #: dict with units of of *time* and *length* (and *velocity*, *force*, 
+    #: dict with units of of *time* and *length* (and *velocity*, *force*,
     #: ... for formats that support it)
     units = {'time': None, 'length': None}
 
@@ -163,7 +180,7 @@ class IObase(object):
 
     def close_trajectory(self):
         """Specific implementation of trajectory closing."""
-        # close_trajectory() was the pre-0.7.0 way of closing a 
+        # close_trajectory() was the pre-0.7.0 way of closing a
         # trajectory; it is being kept around but user code should
         # use close() and not rely on close_trajectory()
         pass
@@ -175,7 +192,7 @@ class Reader(IObase):
     the required attributes and methods.
     """
 
-    #: supply the appropriate Timestep class, e.g. 
+    #: supply the appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC
     _Timestep = Timestep
 
@@ -198,7 +215,7 @@ class Reader(IObase):
     @property
     def totaltime(self):
         """Total length of the trajectory numframes * dt."""
-        return self.numframes * self.dt 
+        return self.numframes * self.dt
 
     def Writer(self, filename, **kwargs):
         """Returns a trajectory writer with the same properties as this trajectory."""
@@ -224,7 +241,7 @@ class Reader(IObase):
         if (start < 0): start += len(self)
         if (stop < 0): stop += len(self)
         elif (stop > len(self)): stop = len(self)
-        if skip > 0 and stop <= start: 
+        if skip > 0 and stop <= start:
             raise IndexError("Stop frame is lower than start frame")
         if ((start < 0) or (start >= len(self)) or (stop < 0) or (stop > len(self))):
             raise IndexError("Frame start/stop outside of the range of the trajectory.")
@@ -243,7 +260,7 @@ class ChainReader(Reader):
       the first trajectory in the list; :attr:`ChainReader.numframes`,
       :attr:`ChainReader.numatoms`, and :attr:`ChainReader.fixed` are
       properly set, though
-    """    
+    """
     format = 'CHAIN'
 
     def __init__(self, filenames, **kwargs):
@@ -318,7 +335,7 @@ class ChainReader(Reader):
 
     def _get(self, attr):
         """Execute *method* with *kwargs* for all readers."""
-        return [reader.__getattribute__(attr) for reader in self.readers]    
+        return [reader.__getattribute__(attr) for reader in self.readers]
 
     def _get_same(self, attr):
         """Verify that *attr* has the same value for all readers and return value.
@@ -349,7 +366,7 @@ class ChainReader(Reader):
             ts.frame = frame+1  # fake continuous frames, 1-based
             self.ts = ts
             yield ts
-            
+
     def _read_next_timestep(self, ts=None):
         self.ts = self.__chained_trajectories_iter.next()
         return self.ts
@@ -377,8 +394,8 @@ class ChainReader(Reader):
 
     def __repr__(self):
         return "< %s %r with %d frames of %d atoms (%d fixed) >" % \
-            (self.__class__.__name__, 
-             [os.path.basename(fn) for fn in self.filenames], 
+            (self.__class__.__name__,
+             [os.path.basename(fn) for fn in self.filenames],
              self.numframes, self.numatoms, self.fixed)
 
 
@@ -400,7 +417,7 @@ class Writer(IObase):
     def write(self, obj):
         """Write current timestep, using the supplied *obj*.
 
-        The argument should be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or 
+        The argument should be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or
         a :class:`~MDAnalysis.Universe` or a :class:`Timestep` instance.
 
         .. Note:: The size of the *obj* must be the same as the number
@@ -436,8 +453,8 @@ class Writer(IObase):
 
            min < x <= max
 
-        :Arguments: 
-            *criteria* 
+        :Arguments:
+            *criteria*
                dictionary containing the *max* and *min* values in native units
             *x*
                :class:`numpy.ndarray` of ``(x, y, z)`` coordinates of atoms selected to be written out.
@@ -445,5 +462,5 @@ class Writer(IObase):
         """
         x = numpy.ravel(x)
         return numpy.all(criteria["min"] < x) and numpy.all(x <= criteria["max"])
-        
+
     # def write_next_timestep(self, ts=None)

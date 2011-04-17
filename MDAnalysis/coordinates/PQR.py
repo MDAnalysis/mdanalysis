@@ -1,5 +1,20 @@
-# Primitive PQR parser
-# -*- coding: utf-8 -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     in press.
+#
+
 """
 PQR file format --- :mod:`MDAnalysis.coordinates.PQR`
 =====================================================
@@ -10,7 +25,7 @@ following is adopted from the description of the PQR_ format as used by APBS_:
 *MDAnalysis* reads very loosely-formatted PQR files: all fields are
 **whitespace-delimited** rather than the strict column formatting mandated
 by the PDB_ format. This more liberal formatting allows coordinates
-which are larger/smaller than ±999 Å.
+which are larger/smaller than Â±999 Ã….
 
 MDAnalysis reads data on a per-line basis from PQR files using the following format::
 
@@ -31,7 +46,7 @@ are:
     HETATM.
 *serial*
     An integer which provides the atom index (but note that MDAnalysis renumbers
-    atoms so one cannot rely on the *serial*) 
+    atoms so one cannot rely on the *serial*)
 *atomName*
     A string which provides the atom name.
 *residueName*
@@ -45,7 +60,7 @@ are:
 *charge*
     A float which provides the atomic charge (in electrons).
 *radius*
-    A float which provides the atomic radius (in Å).
+    A float which provides the atomic radius (in Ã…).
 
 Clearly, this format can deviate wildly from PDB_ due to the use of whitespaces
 rather than specific column widths and alignments. This deviation can be
@@ -65,7 +80,7 @@ option are guaranteed to conform to the above format::
 .. _APBS:    http://www.poissonboltzmann.org/apbs
 .. _PDB2PQR: http://www.poissonboltzmann.org/pdb2pqr
 .. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards
-""" 
+"""
 
 from __future__ import with_statement
 import numpy

@@ -1,3 +1,20 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     in press.
+#
+
 """
 Common high-level functionality for accessing Gromacs trajectories
 ==================================================================
@@ -48,7 +65,7 @@ class Timestep(base.Timestep):
             self.frame = 0
             self.numatoms = arg
             # C floats and C-order for arrays (see libxdrfile.i)
-            self._pos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')            
+            self._pos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
             # additional data for xtc
             self.status = libxdrfile.exdrOK
@@ -70,7 +87,7 @@ class Timestep(base.Timestep):
             self.frame = 0
             if arg.shape[0] == DIM:    ## wrong order
                 self.numatoms = arg.shape[-1]
-            else: 
+            else:
                 self.numatoms = arg.shape[0]
             self._pos = arg.copy('C')  ## C-order ! (?) -- does this work or do I have to transpose?
             # additional data for xtc
@@ -78,7 +95,7 @@ class Timestep(base.Timestep):
             self.step = 0
             self.time = 0
             self.prec = 0
-        else: 
+        else:
             raise Exception("Cannot create an empty Timestep")
         self._x = self._pos[:,0]
         self._y = self._pos[:,1]
@@ -114,7 +131,7 @@ class TrjReader(base.Reader):
     units = {'time': 'ps', 'length': 'nm'}
     #: override to define trajectory format of the reader (XTC or TRR)
     format = None
-    #: supply the appropriate Timestep class, e.g. 
+    #: supply the appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC
     _Timestep = Timestep
 
@@ -215,7 +232,7 @@ class TrjReader(base.Reader):
         """Open xdr trajectory file.
 
         :Returns: pointer to XDRFILE (and sets self.xdrfile)
-        :Raises:  :exc:`IOError` with code EALREADY if file was already opened or 
+        :Raises:  :exc:`IOError` with code EALREADY if file was already opened or
                   ENOENT if the file cannot be found
         """
         if not self.xdrfile is None:
@@ -290,7 +307,7 @@ class TrjReader(base.Reader):
 
     def _read_next_timestep(self, ts=None):
         """Generic ts reader with minimum intelligence. Override if necessary."""
-        if ts is None: 
+        if ts is None:
             ts = self.ts
         if self.xdrfile is None:
             self.open_trajectory()
@@ -305,10 +322,10 @@ class TrjReader(base.Reader):
         if (ts.status == libxdrfile.exdrENDOFFILE) or \
                 (ts.status == libxdrfile.exdrINT and self.format == 'TRR'):
             # seems that trr files can get a exdrINT when reaching EOF (??)
-            raise IOError(errno.ENODATA, "End of file reached for %s file" % self.format, 
+            raise IOError(errno.ENODATA, "End of file reached for %s file" % self.format,
                           self.filename)
         elif not ts.status == libxdrfile.exdrOK:
-            raise IOError(errno.EFAULT, "Problem with %s file, status %s" % 
+            raise IOError(errno.EFAULT, "Problem with %s file, status %s" %
                           (self.format, statno.errorcode[ts.status]), self.filename)
         if self.convert_units:
             self.convert_pos_from_native(ts._pos)             # in-place !
@@ -324,7 +341,7 @@ class TrjReader(base.Reader):
 
     def _reopen(self):
         self.close_trajectory()
-        self.open_trajectory()        
+        self.open_trajectory()
 
     def _forward_to_frame(self, frameindex):
         """Slow implementation: must read sequentially.
@@ -379,11 +396,11 @@ class TrjReader(base.Reader):
 
     def __del__(self):
         self.close_trajectory()
-        
+
 
 class TrjWriter(base.Writer):
     """Writes to a Gromacs trajectory file
-    
+
     (Base class)
     """
     #: units of time (ps) and length (nm) in Gromacs
@@ -410,7 +427,7 @@ class TrjWriter(base.Writer):
              timestep
           *precision*
              accuracy for lossy XTC format [1000]
-          *convert_units* 
+          *convert_units*
              ``True``: units are converted to the MDAnalysis base format; ``None`` selects
              the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
         '''
@@ -478,7 +495,7 @@ class TrjWriter(base.Writer):
                 ts._velocities = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
             if not hasattr(ts, '_forces'):
                 ts._forces = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
-            status = libxdrfile.write_trr(self.xdrfile, ts.step, ts.time, ts.lmbda, unitcell, 
+            status = libxdrfile.write_trr(self.xdrfile, ts.step, ts.time, ts.lmbda, unitcell,
                                            ts._pos, ts._velocities, ts._forces)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)

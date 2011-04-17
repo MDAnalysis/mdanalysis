@@ -1,4 +1,20 @@
-# $Id: PDB.py 101 2008-05-18 13:19:06Z orbeckst $
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     in press.
+#
+
 """
 PDB structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.PDB`
 ========================================================================
@@ -10,7 +26,7 @@ connectivity information will be  available in this case).
 
 The :mod:`PDB` module makes heavy use of Biopython's :mod:`Bio.PDB`:
 
-  Hamelryck, T., Manderick, B. (2003) PDB parser and structure class 
+  Hamelryck, T., Manderick, B. (2003) PDB parser and structure class
   implemented in Python. Bioinformatics, 19, 2308-2310.
 
   http://biopython.org
@@ -53,7 +69,7 @@ class Timestep(base.Timestep):
                 """
                 # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
                 return self._unitcell
-    
+
 class PDBReader(base.Reader):
     """Read a pdb file into a BioPython pdb structure.
 
@@ -87,11 +103,11 @@ class PDBReader(base.Reader):
         del pos
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)             # in-place !
-            
+
     def get_bfactors(self):
         """Return an array of bfactors (tempFactor) in atom order."""
         warnings.warn("get_bfactors() will be removed in MDAnalysis 0.8; "
-                      "use AtomGroup.bfactors [which will become AtomGroup.bfactors()]", 
+                      "use AtomGroup.bfactors [which will become AtomGroup.bfactors()]",
                       DeprecationWarning)
         return numpy.array([a.get_bfactor() for a in self.pdb.get_atoms()])
 
@@ -104,7 +120,7 @@ class PDBReader(base.Reader):
 
         :Returns: :class:`PDBWriter`
 
-        .. Note:: This :class:`PDBWriter` 's :meth:`~PDBWriter.write` method always requires a 
+        .. Note:: This :class:`PDBWriter` 's :meth:`~PDBWriter.write` method always requires a
                   :class:`Timestep` as an argument (it is not optional anymore when the Writer
                   is obtained through this method of :class:`PDBReader`.)
         """
@@ -112,7 +128,7 @@ class PDBReader(base.Reader):
         # also needed to be fed to the PDBWriter (which is a total mess...).
         # Hence we ignore the problem and document it in the doc string... --- the
         # limitation is simply that PDBWriter.write() must always be called with an argument.
-        kwargs['BioPDBstructure'] = self.pdb   # make sure that this Writer is 
+        kwargs['BioPDBstructure'] = self.pdb   # make sure that this Writer is
         kwargs.pop('universe', None)           # always linked to this reader, don't bother with Universe
         return PDBWriter(filename, **kwargs)
 
@@ -139,10 +155,10 @@ class PDBWriter(base.Writer):
     used) or if this is really only an atom selection (then a less
     sophistiocated writer is employed).
 
-    .. Note:: The standard PDBWriter can only write the *whole system*. 
-      In order to write a selection, use the :class:`PrimitivePDBWriter`, 
+    .. Note:: The standard PDBWriter can only write the *whole system*.
+      In order to write a selection, use the :class:`PrimitivePDBWriter`,
       which happens automatically when the
-      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of a 
+      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of a
       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance is used.
     """
     format = 'PDB'
@@ -154,7 +170,7 @@ class PDBWriter(base.Writer):
     # universe. In order to present a unified (and backwards
     # compatible) interface we must keep the universe argument an
     # optional keyword argument even though it really is required.
-    
+
     def __init__(self,pdbfilename,universe=None,multi=False,**kwargs):
         """pdbwriter = PDBWriter(<pdbfilename>,universe=universe,**kwargs)
         :Arguments:
@@ -185,11 +201,11 @@ class PDBWriter(base.Writer):
         """Write timestep as a pdb file.
 
         If ts=None then we try to get the current one from the universe.
-        """        
+        """
         if self.PDBstructure is None:
             if self.universe is None:
                 warnings.warn("PDBWriter: Not writing frame as neither Timestep nor Universe supplied.")
-                return            
+                return
             # primitive PDB writing (ignores timestep argument)
             ppw = PrimitivePDBWriter(self.filename)
             ppw.write(self.universe.selectAtoms('all'))
@@ -329,7 +345,7 @@ class PrimitivePDBReader(base.Reader):
     def get_bfactors(self):
         """Return an array of bfactors (tempFactor) in atom order."""
         warnings.warn("get_bfactors() will be removed in MDAnalysis 0.8; "
-                      "use AtomGroup.bfactors [which will become AtomGroup.bfactors()]", 
+                      "use AtomGroup.bfactors [which will become AtomGroup.bfactors()]",
                       DeprecationWarning)
         return self._atoms.tempFactor
 
@@ -404,23 +420,23 @@ class PrimitivePDBWriter(base.Writer):
           *frame*
             optionally move to frame *FRAME*
 
-        .. Note:: The first letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid` 
+        .. Note:: The first letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid`
                   is used as the PDB chainID.
         """
         u = selection.universe
-        if frame is not None:            
+        if frame is not None:
             u.trajectory[frame]  # advance to frame
         else:
             try:
                 frame = u.trajectory.ts.frame
             except AttributeError:
                 frame = 1   # should catch cases when we are analyzing a single PDB (?)
-        
+
         self.TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
         self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
         atoms = selection.atoms    # make sure to use atoms (Issue 46)
         coor = atoms.coordinates() # can write from selection == Universe (Issue 49)
-        
+
         # check if any coordinates are illegal (coordinates are already in Angstroem per package default)
         if not self.has_valid_coordinates(self.pdb_coor_limits, coor):
             self.close()
@@ -429,9 +445,9 @@ class PrimitivePDBWriter(base.Writer):
             except OSError, err:
                 if err.errno == errno.ENOENT:
                     pass
-            raise ValueError("PDB files must have coordinate values between %.3f and %.3f Angstroem: No file was written." % 
+            raise ValueError("PDB files must have coordinate values between %.3f and %.3f Angstroem: No file was written." %
                              (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
-        
+
         for i, atom in enumerate(atoms):
             self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
                       chainID=atom.segid.strip(), segID=atom.segid.strip(),
@@ -443,7 +459,7 @@ class PrimitivePDBWriter(base.Writer):
     def TITLE(self,*title):
         """Write TITLE record.
         http://www.wwpdb.org/documentation/format32/sect2.html
-        """        
+        """
         line = " ".join(title)    # should do continuation automatically
         self.pdb.write(self.fmt['TITLE'] % line)
 
@@ -464,7 +480,7 @@ class PrimitivePDBWriter(base.Writer):
     def ATOM(self,serial=None,name=None,altLoc=None,resName=None,chainID=None,
              resSeq=None,iCode=None,x=None,y=None,z=None,occupancy=1.0,tempFactor=0.0,
              segID=None,element=None,charge=0):
-        """Write ATOM record. 
+        """Write ATOM record.
         http://www.wwpdb.org/documentation/format32/sect9.html
         Only some keword args are optional (altLoc, iCode, chainID), for some defaults are set.
 
@@ -495,7 +511,7 @@ class PrimitivePDBWriter(base.Writer):
         element = str(element)[:2]            # make sure that is a string for user input
         segID = segID or chainID
         segID = segID[:4]
-        self.pdb.write(self.fmt['ATOM'] % vars())        
-        
+        self.pdb.write(self.fmt['ATOM'] % vars())
+
     def __del__(self):
         self.close()

@@ -1,4 +1,20 @@
-# $Id: GRO.py 101 2010-07-22 13:19:06Z Danny.Parton $
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     in press.
+#
+
 """
 GRO file format --- :mod:`MDAnalysis.coordinates.GRO`
 ======================================================
@@ -31,8 +47,8 @@ class Timestep(base.Timestep):
                 8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085
 
                 PDB:
-                CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1  
-        
+                CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1
+
                 XTC: c.trajectory.ts._unitcell
                 array([[ 80.00515747,   0.        ,   0.        ],
                        [  0.        ,  80.00515747,   0.        ],
@@ -78,14 +94,14 @@ class GROReader(base.Reader):
                 self.ts = self._Timestep(coords_list)
                 # ts._unitcell layout is format dependent; Timestep.dimensions does the conversion
                 # behind the scene
-                self.ts._unitcell = numpy.zeros(9, dtype=numpy.float32)   # GRO has 9 entries 
+                self.ts._unitcell = numpy.zeros(9, dtype=numpy.float32)   # GRO has 9 entries
                 if len(unitcell) == 3:
                         # special case: a b c --> (a 0 0) (b 0 0) (c 0 0)
                         # see Timestep.dimensions() above for format (!)
                         self.ts._unitcell[:3] = unitcell
                 elif len(unitcell) == 9:
                         self.ts._unitcell[:] = unitcell   # fill all
-                else:   # or maybe raise an error for wrong format??                    
+                else:   # or maybe raise an error for wrong format??
                         import warnings
                         warnings.warn("GRO unitcell has neither 3 nor 9 entries --- might be wrong.")
                         self.ts._unitcell[:len(unitcell)] = unitcell   # fill linearly ... not sure about this
@@ -101,7 +117,7 @@ class GROReader(base.Reader):
 
         def Writer(self, filename, **kwargs):
                 """Returns a CRDWriter for *filename*.
-                
+
                 :Arguments:
                   *filename*
                     filename of the output GRO file
@@ -128,7 +144,7 @@ class GROWriter(base.Writer):
 
         .. Note:: The precision is hard coded to three decimal places.
         """
-        
+
         format = 'GRO'
         units = {'time': None, 'length': 'nm'}
         gro_coor_limits = {'min': -999.9995, 'max': 9999.9995}
@@ -148,7 +164,7 @@ class GROWriter(base.Writer):
                 """Set up a GROWriter with a precision of 3 decimal places.
 
                 :Arguments:
-                   *filename* 
+                   *filename*
                       output filename
                 """
                 self.filename = util.filename(filename,ext='gro')
@@ -159,13 +175,13 @@ class GROWriter(base.Writer):
 
         def write(self, selection, frame=None):
                 """Write selection at current trajectory frame to file.
-                
+
                 :Arguments:
                   selection
                       MDAnalysis AtomGroup (selection or Universe.atoms)
                       or also Universe
                 :Keywords:
-                  frame             
+                  frame
                       optionally move to frame number *frame*
 
                 The GRO format only allows 5 digits for resid and atom
@@ -174,7 +190,7 @@ class GROWriter(base.Writer):
                 """
                 # write() method that complies with the Trajectory API
                 u = selection.universe
-                if frame is not None:            
+                if frame is not None:
                         u.trajectory[frame]  # advance to frame
                 else:
                         try:
@@ -184,7 +200,7 @@ class GROWriter(base.Writer):
 
                 atoms = selection.atoms           # make sure to use atoms (Issue 46)
                 coordinates = atoms.coordinates() # can write from selection == Universe (Issue 49)
-                self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, in-place ! 
+                self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, in-place !
                 # check if any coordinates are illegal (checks the coordinates in native nm!)
                 if not self.has_valid_coordinates(self.gro_coor_limits, coordinates):
                         raise ValueError("GRO files must have coordinate values between %.3f and %.3f nm: No file was written." %
@@ -194,7 +210,7 @@ class GROWriter(base.Writer):
                         # Header
                         output_gro.write('Written by MDAnalysis\n')
                         output_gro.write(self.fmt['numatoms'] % len(atoms))
-                        # Atom descriptions and coords          
+                        # Atom descriptions and coords
                         for atom_index,atom in enumerate(atoms):
                                 c = coordinates[atom_index]
                                 output_line = self.fmt['xyz'] % \
@@ -213,7 +229,7 @@ class GROWriter(base.Writer):
                                 output_gro.write(self.fmt['box_orthorhombic'] % (box[0,0],box[1,1],box[2,2]))
                         else:
                                 # full output
-                                output_gro.write(self.fmt['box_triclinic'] % 
+                                output_gro.write(self.fmt['box_triclinic'] %
                                                  (box[0,0],box[1,1],box[2,2],
                                                   box[0,1],box[0,2],
                                                   box[1,0],box[1,2],
