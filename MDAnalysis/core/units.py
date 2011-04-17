@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
@@ -102,7 +102,7 @@ References
 #: Conversion factors between the base unit and other lengthUnits *x* are stored.
 #: Conversions follow `L/x = L/Angstrom * lengthUnit_factor[x]`.
 #: *x* can be *nm*/*nanometer* or *fm*.
-lengthUnit_factor = {'Angstrom': 1.0, 'A': 1.0, 'Å': 1.0,
+lengthUnit_factor = {'Angstrom': 1.0, 'A': 1.0, 'Ã…': 1.0,
                      'nm': 1.0/10, 'nanometer': 1.0/10,
                      'fm': 1.0/1000, 'femtometer': 1.0/1000,
                      }
@@ -130,7 +130,7 @@ water = {'exp':0.997, 'SPC':0.985, 'TIP3P':1.002, 'TIP4P':1.001,  # in g cm**-3
 #: it can be convenient to measure the density relative to bulk, and
 #: hence a number of values are pre-stored in :data:`water`.
 densityUnit_factor = {
-    'Angstrom^{-3}': 1/1.0, 'A^{-3}': 1/1.0, 'Å^{-3}': 1/1.0,
+    'Angstrom^{-3}': 1/1.0, 'A^{-3}': 1/1.0, 'Ã…^{-3}': 1/1.0,
     'nm^{-3}': 1/1e-3, 'nanometer^{-3}': 1/1e-3,
     'Molar': 1/(1e-27*N_Avogadro),
     'SPC':   1/(1e-24*N_Avogadro*water['SPC']  / water['MolarMass']),
