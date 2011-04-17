@@ -46,7 +46,7 @@ def conv_float(l):
     """
     Function to be passed into map or a list comprehension. If the argument is a float it is converted,
     otherwise the original string is passed back
-    """ 
+    """
     try:
         n = float(l)
     except ValueError:
@@ -68,7 +68,7 @@ class LAMMPSData(object):
             # Parse headers
             headers = self.headers
             for l in file_iter:
-                line = l.strip() 
+                line = l.strip()
                 if len(line) == 0: continue
                 found = False
                 for keyword in header_keywords:
@@ -130,23 +130,23 @@ class LAMMPSData(object):
             file.close()
     def writePSF(self, filename, names=None):
         import string
-	# Naveen formatted -- works with MDAnalysis verison 52
+        # Naveen formatted -- works with MDAnalysis verison 52
         #psf_atom_format = "   %5d %-4s %-4d %-4s %-4s %-4s %10.6f      %7.4f            %1d\n"
-	# Liz formatted -- works with MDAnalysis verison 59
-	#psf_atom_format = "%8d %4.4s %-4.4s %-4.4s %-4.4s %-4.4s %16.8e %1s %-7.4f %7.7s %s\n"
-	# Oli formatted -- works with MDAnalysis verison 81
-	psf_atom_format = "%8d %4s %-4s %4s %-4s% 4s %-14.6f%-14.6f%8s\n"
+        # Liz formatted -- works with MDAnalysis verison 59
+        #psf_atom_format = "%8d %4.4s %-4.4s %-4.4s %-4.4s %-4.4s %16.8e %1s %-7.4f %7.7s %s\n"
+        # Oli formatted -- works with MDAnalysis verison 81
+        psf_atom_format = "%8d %4s %-4s %4s %-4s% 4s %-14.6f%-14.6f%8s\n"
         file = open(filename, 'w')
         file.write("PSF\n\n")
         file.write(string.rjust('0', 8) + ' !NTITLE\n\n')
         file.write(string.rjust(str(len(self.sections["Atoms"])), 8) + ' !NATOM\n')
-	#print self.sections["Masses"]
+        #print self.sections["Masses"]
         for i, atom in enumerate(self.sections["Atoms"]):
             if names != None: resname, atomname = names[i]
             else: resname, atomname = 'TEMP', 'XXXX'
             for j, liz in enumerate(self.sections["Masses"]):
                     liz = liz[0]
-                    #print j+1, atom.type, liz 
+                    #print j+1, atom.type, liz
                     if j+1 == atom.type: line = [i+1, 'TEMP', str(atom.chainid), resname, atomname, str(atom.type+1), atom.charge, float(liz), 0.]
                     else: continue
             #print line

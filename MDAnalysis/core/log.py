@@ -69,14 +69,14 @@ def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
 
     Logging to a file and the console as described under `logging to
     multiple destinations`_.
-    
+
     The top level logger of MDAnalysis is named *MDAnalysis*.  Note
     that we are configuring this logger with console output. If a root
     logger also does this then we will get two output lines to the
     console.
 
-    .. _logging to multiple destinations: 
-       http://docs.python.org/library/logging.html?#logging-to-multiple-destinations    
+    .. _logging to multiple destinations:
+       http://docs.python.org/library/logging.html?#logging-to-multiple-destinations
     """
 
     logger = logging.getLogger(logger_name)
@@ -100,7 +100,7 @@ def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
     return logger
 
 def clear_handlers(logger):
-    """clean out handlers in the library top level logger 
+    """clean out handlers in the library top level logger
 
     (only important for reload/debug cycles...)
     """

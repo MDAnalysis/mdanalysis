@@ -269,7 +269,7 @@ class PrincipleAxis(Timeseries):
 
            t = principleAxis(atoms)
 
-	atoms can be a list of Atom objects, or an AtomGroup
+        atoms can be a list of Atom objects, or an AtomGroup
     '''
     def __init__(self, atoms):
         Timeseries.__init__(self, 'm', atoms, 3)
@@ -282,8 +282,8 @@ class WaterDipole(Timeseries):
            t = WaterDipole(atoms)
 
         atoms must contain 3 Atoms, either as a list or an AtomGroup; the first one MUST be
-        the oxygen, the other two are the hydrogens. The vector is calculated as 
-        
+        the oxygen, the other two are the hydrogens. The vector is calculated as
+
            d = xO + (xH1 - xH2)/2
     '''
     def __init__(self, atoms):

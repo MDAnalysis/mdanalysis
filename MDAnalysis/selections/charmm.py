@@ -35,4 +35,4 @@ class SelectionWriter(base.SelectionWriter):
     def _write_tail(self, out, **kwargs):
         out.write("END")
 
-        
+

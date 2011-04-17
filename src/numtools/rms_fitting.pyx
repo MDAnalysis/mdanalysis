@@ -1,4 +1,3 @@
-
 cimport c_numpy
 
 cdef extern from "clapack.h":

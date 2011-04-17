@@ -126,7 +126,7 @@ def __read_timeseries(object self, object atoms, int skip):
     dcd = <dcdhandle*>PyCObject_AsVoidPtr(self._dcd_C_ptr)
     cdef int numframes
     numframes = dcd.nsets / skip
-    cdef int numatoms 
+    cdef int numatoms
     numatoms = len(atoms)
     if numatoms==0:
         raise Exception("No atoms passed into __read_timeseries function")

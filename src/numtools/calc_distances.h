@@ -1,4 +1,3 @@
-
 #ifndef __DISTANCES_H
 #define __DISTANCES_H
 

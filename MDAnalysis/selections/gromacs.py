@@ -27,4 +27,4 @@ class SelectionWriter(base.SelectionWriter):
     def _write_head(self, out, **kwargs):
         out.write("[ %(name)s ]\n" % kwargs)
 
-        
+

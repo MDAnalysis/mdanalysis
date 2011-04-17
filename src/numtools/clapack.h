@@ -1,4 +1,3 @@
-
 #ifndef __CLAPACK_H
 #define __CLAPACK_H
 

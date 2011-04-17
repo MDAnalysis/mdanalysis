@@ -34,13 +34,13 @@ def parse(filename):
         for linenum,line in enumerate(crd):
             # reading header
             if line.split()[0] == '*':
-                continue 
-            elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) == True: 
+                continue
+            elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) == True:
                 extended = True
-                continue 
+                continue
             elif line.split()[0] == line.split()[-1] and line.split()[0] != '*':
-                extended = False 
-                continue 
+                extended = False
+                continue
             # anything else should be an atom
             try:
                 if extended:
@@ -60,11 +60,11 @@ def parse(filename):
             atoms.append(atom_desc)
             atom_serial += 1
 
-	structure = {}
-	structure["_atoms"] = atoms
-	# Other attributes are not read since they are not included in .crd files
-	other_attrs = ["_bonds" , "_angles" , "_dihe" , "_impr" , "_donors" , "_acceptors"]
-	for attr in other_attrs:
-		structure[attr] = []
-	return structure
+        structure = {}
+        structure["_atoms"] = atoms
+        # Other attributes are not read since they are not included in .crd files
+        other_attrs = ["_bonds" , "_angles" , "_dihe" , "_impr" , "_donors" , "_acceptors"]
+        for attr in other_attrs:
+                structure[attr] = []
+        return structure
 

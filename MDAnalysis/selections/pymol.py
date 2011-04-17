@@ -32,4 +32,4 @@ class SelectionWriter(base.SelectionWriter):
         out.write(self.comment("MDAnalysis PyMol selection"))
         out.write("select %(name)s, " % kwargs + self.continuation + '\n')
 
-        
+

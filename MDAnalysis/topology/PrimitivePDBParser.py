@@ -24,7 +24,7 @@ def parse(filename):
     :Returns: MDAnalysis internal *structure* dict
 
     .. SeeAlso:: The *structure* dict is defined in
-                 :func:`MDAnalysis.topology.PSFParser.parse` and the file is read with 
+                 :func:`MDAnalysis.topology.PSFParser.parse` and the file is read with
                  :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
     """
     structure = {}

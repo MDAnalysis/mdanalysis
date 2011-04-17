@@ -38,7 +38,7 @@ class TestAtom(TestCase):
     def tearDown(self):
         del self.universe
         del self.atom
-    
+
     def test_attributes(self):
         u = self.universe
         a = self.atom
@@ -79,18 +79,18 @@ class TestAtomGroup(TestCase):
         assert_equal(len(self.ag), self.ag.numberOfAtoms(), "len and numberOfAtoms() disagree")
 
     def test_centerOfGeometry(self):
-        assert_array_almost_equal(self.ag.centerOfGeometry(), 
+        assert_array_almost_equal(self.ag.centerOfGeometry(),
                                   array([-0.04223963,  0.0141824 , -0.03505163], dtype=float32))
     def test_centerOfMass(self):
-        assert_array_almost_equal(self.ag.centerOfMass(), 
+        assert_array_almost_equal(self.ag.centerOfMass(),
                                   array([-0.01094035,  0.05727601, -0.12885778]))
 
     def test_charges(self):
-        assert_array_almost_equal(self.ag.charges()[1000:2000:200], 
+        assert_array_almost_equal(self.ag.charges()[1000:2000:200],
                                   array([-0.09,  0.09, -0.47,  0.51,  0.09]))
-        
+
     def test_coordinates(self):
-        assert_array_almost_equal(self.ag.coordinates()[1000:2000:200], 
+        assert_array_almost_equal(self.ag.coordinates()[1000:2000:200],
                                   array([[  3.94543672, -12.4060812 ,  -7.26820087],
                                          [ 13.21632767,   5.879035  , -14.67914867],
                                          [ 12.07735443,  -9.00604534,   4.09301519],
@@ -114,14 +114,14 @@ class TestAtomGroup(TestCase):
 
     def test_residues(self):
         u = self.universe
-        assert_equal(u.residues[100]._atoms,  
+        assert_equal(u.residues[100]._atoms,
                      u.selectAtoms('resname ILE and resid 101')._atoms,
                      "Direct selection from residue group does not match expected I101.")
 
     def test_segments(self):
         u = self.universe
-        assert_equal(u.segments.s4AKE._atoms, 
-                     u.selectAtoms('segid 4AKE')._atoms, 
+        assert_equal(u.segments.s4AKE._atoms,
+                     u.selectAtoms('segid 4AKE')._atoms,
                      "Direct selection of segment 4AKE from segments failed.")
 
     def test_index_integer(self):
@@ -141,15 +141,15 @@ class TestAtomGroup(TestCase):
         # at the moment, empty AtomGroups are not allowed but
         # we need to check that this is trying to make a AG
         assert_raises(MDAnalysis.NoDataError, do_empty_selection)
-                      
+
     def test_index_advancedslice(self):
         u = self.universe
         aslice = [0, 10, 20, -1, 10]
         ag = u.atoms[aslice]
-        assert_(isinstance(ag, AtomGroup), 
+        assert_(isinstance(ag, AtomGroup),
                 "advanced slicing does not produce a AtomGroup")
         assert_equal(ag[1], ag[-1], "advanced slicing does not preserve order")
-        
+
 
 class _WriteAtoms(TestCase):
     """Set up the standard AdK system in implicit solvent."""
@@ -250,7 +250,7 @@ def test_generated_residueselection():
     universe = MDAnalysis.Universe(PSF, DCD)
     # only a single Cys in AdK
     cys = universe.s4AKE.CYS
-    assert_(isinstance(cys, MDAnalysis.core.AtomGroup.ResidueGroup), 
+    assert_(isinstance(cys, MDAnalysis.core.AtomGroup.ResidueGroup),
             "Single Cys77 is NOT returned as a ResidueGroup with a single Residue (Issue 47)")
 
     # multiple Met

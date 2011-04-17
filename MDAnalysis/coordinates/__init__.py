@@ -485,9 +485,9 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'GRO': GRO.GROReader,
                        'TRJ':TRJ.TRJReader,     # Amber text
                        'MDCRD':TRJ.TRJReader,   # Amber text
-		       #'NETCDF':NETCDFReader,  # Amber netcdf
+                       #'NETCDF':NETCDFReader,  # Amber netcdf
                        'PQR': PQR.PQRReader,
-		       'CHAIN': base.ChainReader,
+                       'CHAIN': base.ChainReader,
                        }
 
 #: formats of readers that can also handle gzip or bzip2 compressed files

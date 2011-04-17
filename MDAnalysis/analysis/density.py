@@ -31,8 +31,8 @@ Generating a density from a MD trajectory
 
 As an input a trajectory is required that
 
-1. Has been centered on the protein of interest.  
-2. Has all molecules made whole that have been broken across periodic 
+1. Has been centered on the protein of interest.
+2. Has all molecules made whole that have been broken across periodic
    boundaries.
 3. Has the solvent molecules remapped so that they are closest to the
    solute (this is important when using funky unit cells such as
@@ -78,13 +78,13 @@ import cPickle
 import warnings
 
 try:
-    from gridData import Grid    # http://github.com/orbeckst/GridDataFormats 
+    from gridData import Grid    # http://github.com/orbeckst/GridDataFormats
 except ImportError:
     print """ERROR --- The GridDataFormats package can not be found!
 
 The 'gridData' module from GridDataFormats could not be
 imported. Please install it first.  You can try installing with
-setuptools directly from the internet: 
+setuptools directly from the internet:
 
     easy_install GridDataFormats
 
@@ -183,7 +183,7 @@ class Density(Grid):
             histogram or density and ...
           edges
             list of arrays, the lower and upper bin edges along the axes
-          parameters 
+          parameters
             dictionary of class parameters; saved with
             :meth:`Density.save`. The following keys are meaningful to
             the class. Meaning of the values are listed:
@@ -195,7 +195,7 @@ class Density(Grid):
 
                 Applying :meth:`Density.make_density`` sets it to ``True``.
           units
-            A dict with the keys 
+            A dict with the keys
 
             - *length*:  physical unit of grid edges (Angstrom or nm) [Angstrom]
             - *density*: unit of the density if ``isDensity == True`` or ``None``
@@ -204,7 +204,7 @@ class Density(Grid):
             (Actually, the default unit is the value of
             :attr:`MDAnalysis.core.flags['length_unit']`; in most cases this is "Angstrom".)
 
-          metadata   
+          metadata
                 a user defined dictionary of arbitrary values
                 associated with the density; the class does not touch
                 :attr:`Density.metadata` but stores it with :meth:`Density.save`
@@ -274,7 +274,7 @@ class Density(Grid):
             logger.warn(msg)
             warnings.warn(msg)
             return
-        
+
         dedges = map(numpy.diff,self.edges)
         D = len(self.edges)
         for i in xrange(D):
@@ -283,7 +283,7 @@ class Density(Grid):
             self.grid /= dedges[i].reshape(shape)
         self.parameters['isDensity'] = True
         self.units['density'] = self.units['length'] + "^{-3}"  # see core.units.densityUnit_factor
-        
+
     def convert_length(self,unit='Angstrom'):
         """Convert Grid object to the new *unit*.
 
@@ -342,7 +342,7 @@ class Density(Grid):
         try:
             self.grid *= MDAnalysis.core.units.get_conversion_factor('density',self.units['density'],unit)
         except KeyError:
-            raise ValueError("The name of the unit (%r supplied) must be one of:\n%r" % 
+            raise ValueError("The name of the unit (%r supplied) must be one of:\n%r" %
                              (unit, MDAnalysis.core.units.conversion_factor['density'].keys()))
         self.units['density'] = unit
 
@@ -354,7 +354,7 @@ class Density(Grid):
         return '<Density '+grid_type+' with '+str(self.grid.shape)+' bins>'
 
 
-                
+
 def density_from_trajectory(*args,**kwargs):
     """Create a density grid from a trajectory.
 
@@ -365,8 +365,8 @@ def density_from_trajectory(*args,**kwargs):
          density_from_trajectory(PDB, XTC, delta=1.0, atomselection='name OH2', ...) --> density
 
     :Arguments:
-      psf/pdb/gro     
-            topology file 
+      psf/pdb/gro
+            topology file
       dcd/xtc/trr/pdb
             trajectory; if reading a single PDB file it is sufficient to just provide it
             once as a single argument
@@ -381,15 +381,15 @@ def density_from_trajectory(*args,**kwargs):
             of delta.) [1.0]
       metadata
             dictionary of additional data to be saved with the object
-      padding 
+      padding
             increase histogram dimensions by padding (on top of initial box size)
             in Angstroem [2.0]
       soluteselection
             MDAnalysis selection for the solute, e.g. "protein" [``None``]
-      cutoff  
+      cutoff
             With *cutoff*, select '<atomsel> NOT WITHIN <cutoff> OF <soluteselection>'
             (Special routines that are faster than the standard AROUND selection) [0]
-    
+
     :Returns: :class:`Density`
 
     .. SeeAlso:: docs for :func:`density_from_Universe` (defaults for kwargs are defined there).
@@ -402,10 +402,10 @@ def density_from_Universe(universe,delta=1.0,atomselection='name OH2',
     """Create a density grid from a MDAnalysis.Universe object.
 
       density_from_Universe(universe, delta=1.0, atomselection='name OH2', ...) --> density
-   
+
     :Arguments:
       universe
-            :class:`MDAnalysis.Universe` object with a trajectory   
+            :class:`MDAnalysis.Universe` object with a trajectory
 
     :Keywords:
       atomselection
@@ -417,19 +417,19 @@ def density_from_Universe(universe,delta=1.0,atomselection='name OH2',
             of delta.) [1.0]
       metadata
             dictionary of additional data to be saved with the object
-      padding 
+      padding
             increase histogram dimensions by padding (on top of initial box size)
             in Angstroem [2.0]
       soluteselection
             MDAnalysis selection for the solute, e.g. "protein" [``None``]
-      cutoff  
+      cutoff
             With *cutoff*, select '<atomsel> NOT WITHIN <cutoff> OF <soluteselection>'
             (Special routines that are faster than the standard AROUND selection) [0]
-      parameters  
-            dict with some special parameters for :class:`Density` (see doc)          
-      kwargs  
+      parameters
+            dict with some special parameters for :class:`Density` (see doc)
+      kwargs
             metadata, parameters are modified and passed on to :class:`Density`
-    
+
     :Returns: :class:`Density`
 
     """
@@ -448,14 +448,14 @@ def density_from_Universe(universe,delta=1.0,atomselection='name OH2',
         group = u.selectAtoms(atomselection)
         def current_coordinates():
             return group.coordinates()
-    
+
     coord = current_coordinates()
     logger.info("Selected %d atoms out of %d atoms (%s) from %d total." %
         (coord.shape[0],len(u.selectAtoms(atomselection)),atomselection,len(u.atoms)))
 
     # mild warning; typically this is run on RMS-fitted trajectories and
     # so the box information is rather meaningless
-    box,angles = u.trajectory.ts.dimensions[:3], u.trajectory.ts.dimensions[3:]    
+    box,angles = u.trajectory.ts.dimensions[:3], u.trajectory.ts.dimensions[3:]
     if tuple(angles) <> (90.,90.,90.):
         msg = "Non-orthorhombic unit-cell --- make sure that it has been remapped properly!"
         warnings.warn(msg)
@@ -471,7 +471,7 @@ def density_from_Universe(universe,delta=1.0,atomselection='name OH2',
     smin = numpy.min(coord,axis=0) - padding
     smax = numpy.max(coord,axis=0) + padding
 
-    BINS = fixedwidth_bins(delta, smin, smax)    
+    BINS = fixedwidth_bins(delta, smin, smax)
     arange = zip(BINS['min'],BINS['max'])
     bins = BINS['Nbins']
 
@@ -515,7 +515,7 @@ def density_from_Universe(universe,delta=1.0,atomselection='name OH2',
                 parameters=parameters,metadata=metadata)
     g.make_density()
     logger.info("Density completed (initial density in Angstrom**-3)")
-    
+
     return g
 
 
@@ -569,7 +569,7 @@ def notwithin_coordinates_factory(universe,sel1, sel2, cutoff, not_within=True, 
                 # must update every time step
                 ns_w = NS.AtomNeighborSearch(solvent)  # build kd-tree on solvent (N_w > N_protein)
                 group = ns_w.search_list(protein,cutoff)  # solvent within CUTOFF of protein
-                return group.coordinates()            
+                return group.coordinates()
     else:
         # slower distance matrix based (calculate all with all distances first)
         import MDAnalysis.analysis.distances
@@ -609,7 +609,7 @@ def density_from_PDB(pdb, **kwargs):
     file then they are used to calculate the width of the gaussian.
 
     Using the `sigma` keyword, one can override this choice and
-    prescribe a gaussian width for all atoms (in Angstrom), which is calculated as 
+    prescribe a gaussian width for all atoms (in Angstrom), which is calculated as
 
       B = [(8*PI**2)/3] * (RMSF)**2
 
@@ -639,8 +639,8 @@ def density_from_PDB(pdb, **kwargs):
           density; if ``None`` then uses B-factors from *pdb* [``None``]
 
     :Returns: a :class:`Density` object with a density measured relative to the
-              water density at standard conditions              
-    """    
+              water density at standard conditions
+    """
     return BfactorDensityCreator(pdb,**kwargs).Density()
 
 class BfactorDensityCreator(object):
@@ -654,7 +654,7 @@ class BfactorDensityCreator(object):
     trajectories. Because a pdb is a single snapshot, the density is
     estimated by placing Gaussians of width sigma at the position of
     all selected atoms.
-    
+
     Sigma can be fixed or taken from the B-factor field, in which case
     sigma is taken as sqrt(3.*B/8.)/pi (see :func:`BFactor2RMSF`).
 
@@ -673,11 +673,11 @@ class BfactorDensityCreator(object):
 
         DC = BfactorDensityCreator(pdb, delta=<delta>, atomselection=<MDAnalysis selection>,
                                   metadata=<dict>, padding=2, sigma=None)
-        density = DC.Density()                        
+        density = DC.Density()
 
         :Arguments:
           pdb
-            PDB file or :class:`MDAnalysis.Universe`; a PDB is read with the 
+            PDB file or :class:`MDAnalysis.Universe`; a PDB is read with the
             simpl PDB reader. If the Bio.PDB reader is required, either set
             the *permissive_pdb_reader* flag to ``False`` in
             :data:`MDAnalysis.core.flags` or supply a Universe
@@ -690,7 +690,7 @@ class BfactorDensityCreator(object):
             of delta.)
           metadata
             dictionary of additional data to be saved with the object
-          padding 
+          padding
             increase histogram dimensions by padding (on top of initial box size)
           sigma
             width (in Angstrom) of the gaussians that are used to build up the
@@ -710,12 +710,12 @@ class BfactorDensityCreator(object):
         smin = numpy.min(coord,axis=0) - padding
         smax = numpy.max(coord,axis=0) + padding
 
-        BINS = fixedwidth_bins(delta, smin, smax)    
+        BINS = fixedwidth_bins(delta, smin, smax)
         arange = zip(BINS['min'],BINS['max'])
         bins = BINS['Nbins']
-        
+
         # get edges by doing a fake run
-        grid,self.edges = numpy.histogramdd(numpy.zeros((1,3)), 
+        grid,self.edges = numpy.histogramdd(numpy.zeros((1,3)),
                                             bins=bins,range=arange,normed=False)
         self.delta = numpy.diag(map(lambda e: (e[-1] - e[0])/(len(e)-1), self.edges))
         self.midpoints = map(lambda e: 0.5 * (e[:-1] + e[1:]), self.edges)
@@ -776,7 +776,7 @@ class BfactorDensityCreator(object):
             print "Smearing out atom position %4d/%5d with RMSF %4.2f A\r" %  \
                     (iwat+1,len(pos[0]),sigma),
         return g
-        
+
     def _smear_rmsf(self,coordinates,grid,edges,rmsf):
         # smear out each water with its individual Gaussian
         # (slower than smear_sigma)
@@ -797,7 +797,7 @@ class BfactorDensityCreator(object):
         # p is center of gaussian as grid index, sigma its width (in A)
         x = self.delta[0,0]*(i - p[0])  # in Angstrom
         y = self.delta[1,1]*(j - p[1])
-        z = self.delta[2,2]*(k - p[2])            
+        z = self.delta[2,2]*(k - p[2])
         return (2*numpy.pi*sigma)**(-1.5) * numpy.exp(-(x*x+y*y+z*z)/(2*sigma*sigma))
 
     def _gaussian_cartesian(self,i,j,k,c,sigma):

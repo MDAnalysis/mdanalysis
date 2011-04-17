@@ -297,7 +297,7 @@ class ByNumSelection(Selection):
         self.upper = upper
     def _apply(self, group):
         if self.upper != None:
-            # In this case we'll use 1 indexing since that's what the user will be 
+            # In this case we'll use 1 indexing since that's what the user will be
             # familiar with
             return set(group.atoms[self.lower-1:self.upper])
         else: return set(group.atoms[self.lower-1:self.lower])
@@ -315,7 +315,7 @@ class ProteinSelection(Selection):
       * manually added special CHARMM, OPLS/AA and Amber residue names.
 
       * still missing: Amber N- and C-terminal residue names
-      
+
     """
     #: Dictionary of recognized residue names (3- or 4-letter).
     prot_res = dict([(x,None) for x in [
@@ -323,19 +323,19 @@ class ProteinSelection(Selection):
                 'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HSD',
                 'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
                 'TRP', 'TYR', 'VAL', 'ALAD',
-                'CHO', 'EAM', 
+                'CHO', 'EAM',
                 # PDB
                 'HIS', 'MSE',
                 # from Gromacs 4.5.3 oplsaa.ff/aminoacids.rtp
                 'ARGN', 'ASPH', 'CYS2', 'CYSH', 'QLN', 'PGLU', 'GLUH', 'HIS1', 'HISD',
                 'HISE', 'HISH', 'LYSH',
                 # from Gromacs 4.5.3 gromos53a6.ff/aminoacids.rtp
-                'ASN1', 'CYS1', 'HISA', 'HISB', 'HIS2', 
+                'ASN1', 'CYS1', 'HISA', 'HISB', 'HIS2',
                 # from Gromacs 4.5.3 amber03.ff/aminoacids.rtp
                 # Amber: there are also the C-term aas: 'CALA', 'CGLY', 'CSER', ...
                 # Amber: there are also the B-term aas: 'NALA', 'NGLY', 'NSER', ...
-                'HID', 'HIE', 'HIP', 'ORN', 'DAB', 'LYN', 'HYP', 'CYM', 'CYX', 'ASH', 
-                'GLH',   
+                'HID', 'HIE', 'HIP', 'ORN', 'DAB', 'LYN', 'HYP', 'CYM', 'CYX', 'ASH',
+                'GLH',
                 'ACE', 'NME',
                 ]])
     def _apply(self, group):
@@ -371,7 +371,7 @@ class NucleicXstalSelection(Selection):
 
 class BackboneSelection(ProteinSelection):
     """A BackboneSelection contains all atoms with name 'N', 'CA', 'C', 'O'.
-  
+
     This excludes OT* on C-termini (which are included by, eg VMD's backbone selection).
     """
     bb_atoms = dict([(x,None) for x in ['N', 'CA', 'C', 'O']])
@@ -391,9 +391,9 @@ class NucleicBackboneSelection(NucleicSelection):
 
 class BaseSelection(NucleicSelection):
     """Selection of atoms in nucleobases.
-    
+
     Recognized atom names (from CHARMM):
-    
+
      'N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
      'O6','N2','N6', 'O2','N4','O4','C5M'
     """
@@ -535,10 +535,10 @@ class SelectionParser:
                       (TYPE, AtomTypeSelection), (BYRES, ByResSelection),
                       (BYNUM, ByNumSelection), (PROP, PropertySelection),
                       (AROUND, AroundSelection), (POINT, PointSelection),
-                      (NUCLEIC, NucleicSelection), (PROTEIN, ProteinSelection), 
+                      (NUCLEIC, NucleicSelection), (PROTEIN, ProteinSelection),
                       (BB, BackboneSelection), (NBB, NucleicBackboneSelection),
-		      (BASE, BaseSelection), (SUGAR, NucleicSugarSelection),
-		      (NUCLEICXSTAL, NucleicXstalSelection),
+                      (BASE, BaseSelection), (SUGAR, NucleicSugarSelection),
+                      (NUCLEICXSTAL, NucleicXstalSelection),
                       #(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists
                       (ATOM, AtomSelection)])
     associativity = dict([(AND, "left"), (OR, "left")])
@@ -615,20 +615,20 @@ class SelectionParser:
             return self.classdict[op](data)
         elif op == self.PROTEIN:
             return self.classdict[op]()
-	elif op == self.NUCLEIC:
-	    return self.classdict[op]()
-	elif op == self.NUCLEICXSTAL:
-	    return self.classdict[op]()
+        elif op == self.NUCLEIC:
+            return self.classdict[op]()
+        elif op == self.NUCLEICXSTAL:
+            return self.classdict[op]()
         elif op == self.ALL:
             return self.classdict[op]()
         elif op == self.BB:
             return self.classdict[op]()
         elif op == self.NBB:
             return self.classdict[op]()
-	elif op == self.BASE:
-	    return self.classdict[op]()
-	elif op == self.SUGAR:
-	    return self.classdict[op]()
+        elif op == self.BASE:
+            return self.classdict[op]()
+        elif op == self.SUGAR:
+            return self.classdict[op]()
         elif op == self.RESID:
             data = self.__consume_token()
             try:
@@ -653,13 +653,13 @@ class SelectionParser:
             return self.classdict[op](lower,upper)
         elif op == self.PROP:
             prop = self.__consume_token()
-            if prop == "abs": 
+            if prop == "abs":
                 abs = True
                 prop = self.__consume_token()
             else: abs = False
             oper = self.__consume_token()
             value = float(self.__consume_token())
-            ops = dict([(self.GT, numpy.greater), (self.LT, numpy.less), 
+            ops = dict([(self.GT, numpy.greater), (self.LT, numpy.less),
                         (self.GE, numpy.greater_equal), (self.LE, numpy.less_equal),
                         (self.EQ, numpy.equal), (self.NE, numpy.not_equal)])
             if oper in ops.keys():

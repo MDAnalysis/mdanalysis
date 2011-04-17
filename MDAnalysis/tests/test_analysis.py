@@ -73,12 +73,12 @@ class TestAlign(TestCase):
         B = bb.coordinates()              # coordinates of last frame
         rmsd = MDAnalysis.analysis.align.rmsd(A,B)
         assert_almost_equal(MDAnalysis.analysis.align.rmsd(A,A), 0.0, 5,
-                            err_msg="error: rmsd(X,X) should be 0") 
+                            err_msg="error: rmsd(X,X) should be 0")
         # rmsd(A,B) = rmsd(B,A)  should be exact but spurious failures in the 9th decimal have been
         # observed (see Issue 57 comment #1) so we relax the test to 6 decimals.
         assert_almost_equal(MDAnalysis.analysis.align.rmsd(B,A), rmsd, 6,
                             err_msg="error: rmsd() is not symmetric")
-        assert_almost_equal(rmsd, 6.8342494129169804, 5, 
+        assert_almost_equal(rmsd, 6.8342494129169804, 5,
                             err_msg="RMSD calculation between 1st and last AdK frame gave wrong answer")
 
     @dec.slow
@@ -99,6 +99,6 @@ class TestAlign(TestCase):
     def _assert_rmsd(self, fitted, frame, desired):
         fitted.trajectory[frame]
         rmsd = MDAnalysis.analysis.align.rmsd(self.reference.atoms.coordinates(), fitted.atoms.coordinates())
-        assert_almost_equal(rmsd, desired, decimal=5, 
+        assert_almost_equal(rmsd, desired, decimal=5,
                             err_msg="frame %d of fit does not have expected RMSD" % frame)
 

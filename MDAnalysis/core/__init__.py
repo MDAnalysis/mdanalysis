@@ -129,7 +129,7 @@ class FlagsDynamicDocs(Flags):
     def __doc__(self):
         # generate dynamic docs on all flags
         return self.doc()
-    
+
 
 class IdentityMapping(dict):
     def __getitem__(self,key):
@@ -148,8 +148,8 @@ class Flag(object):
          *default*
             default value
          *mapping*
-            dict that maps allowed input values to canonical values; 
-            if ``None`` then no argument checking will be performed and 
+            dict that maps allowed input values to canonical values;
+            if ``None`` then no argument checking will be performed and
             all values are directly set.
          *doc*
             doc string; may contain string interpolation mappings for::
@@ -214,7 +214,7 @@ _flags = [
           False:'never','never':'never'},  # never, only use (slower) alternatives
          """
             Determines which KDTree routines are used for distance selections
-    
+
             >>> flags['%(name)s'] = value
 
             Values for flag:
@@ -294,7 +294,7 @@ _flags = [
           },
          """
             Select the default reader for PDB Brookhaven databank files.
-           
+
             >>> flags['%(name)s'] = value
 
             The Bio.PDB reader (value=``False``) can deal with 'proper' PDB

@@ -4,7 +4,7 @@
 # Released under the GNU Public Licence, v2
 
 """
-Leaflet identification --- :mod:`MDAnalysis.analysis.leaflet`  
+Leaflet identification --- :mod:`MDAnalysis.analysis.leaflet`
 ==============================================================
 
 :Author: Oliver Beckstein
@@ -106,7 +106,7 @@ class LeafletFinder(object):
             box = self.universe.trajectory.ts.dimensions
         else:
             box = None
-        coord = self.selection.coordinates()        
+        coord = self.selection.coordinates()
         # this works for small systems
         try:
             adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="numpy",box=box)
@@ -115,7 +115,7 @@ class LeafletFinder(object):
             warnings.warn('N x N matrix too big - switching to sparse matrix method (works fine, but is currently rather slow)' , category=UserWarning , stacklevel=2)
             adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="sparse",box=box)
         return NX.Graph(adj)
-        
+
     def _get_components(self):
         """Return connected components (as sorted numpy arrays), sorted by size."""
         return [numpy.sort(component) for component in NX.connected_components(self.graph)]
@@ -134,14 +134,14 @@ class LeafletFinder(object):
         """Return a :class:`MDAnalysis.core.AtomGroup.AtomGroup` for *component_index*.
 
         If no argument is supplied, then a list of all leaflet groups is returned.
-        
+
         .. SeeAlso:: :meth:`LeafletFinder.group` and meth:`LeafletFinder.groups_iter`
         """
         if component_index is None:
             return list(self.groups_iter())
         else:
             return self.group(component_index)
-    
+
     def group(self, component_index):
         """Return a :class:`MDAnalysis.core.AtomGroup.AtomGroup` for *component_index*."""
         # maybe cache this?
@@ -151,7 +151,7 @@ class LeafletFinder(object):
     def atoms(self, component_index):
         """Return a :class:`MDAnalysis.core.AtomGroup.AtomGroup` for *component_index*.
 
-        .. warning:: **Deprecated**. Will be removed for 0.7.0. 
+        .. warning:: **Deprecated**. Will be removed for 0.7.0.
                      Use :meth:`LeafletFinder.groups` instead.
         """
         warnings.warn("LeafletFinder.atoms() is deprecated and will be removed in 0.7.0."
@@ -171,11 +171,11 @@ class LeafletFinder(object):
         See :class:`MDAnalysis.selections.base.SelectionWriter` for all
         options.
         """
-        import MDAnalysis.selections        
+        import MDAnalysis.selections
         SelectionWriter = MDAnalysis.selections.get_writer(filename, kwargs.pop('format',None))
         writer = SelectionWriter(
-            filename, mode=kwargs.pop('mode', 'wa'), 
-            preamble="leaflets based on selection=%(selectionstring)r cutoff=%(cutoff)f\n" % vars(self), 
+            filename, mode=kwargs.pop('mode', 'wa'),
+            preamble="leaflets based on selection=%(selectionstring)r cutoff=%(cutoff)f\n" % vars(self),
             **kwargs)
         for i, ag in enumerate(self.groups_iter()):
             name = "leaflet_%d" % (i+1)
@@ -187,7 +187,7 @@ class LeafletFinder(object):
              len(self.components))
 
 
-def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5, 
+def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
                     max_imbalance=0.2, **kwargs):
     """Find cutoff that minimizes number of disconnected groups.
 
@@ -198,7 +198,7 @@ def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
 
               `|N0 - N1|/|N0 + N1| > *max_imbalance*`
 
-       Ni = number of lipids in group i. This heuristic picks groups with 
+       Ni = number of lipids in group i. This heuristic picks groups with
        balanced numbers of lipids.
 
     :Arguments:
@@ -214,7 +214,7 @@ def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
           other arguments for  :class:`LeafletFinder`
 
     :Returns: ``(cutoff,N)`` optimum cutoff and number of groups found
-    :Raises: can die in various ways if really no appropriate number of groups 
+    :Raises: can die in various ways if really no appropriate number of groups
              can be found; needs to be made more robust
     """
     kwargs.pop('cutoff', None)  # not used, so we filter it

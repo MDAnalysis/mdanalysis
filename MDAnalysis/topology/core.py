@@ -106,9 +106,9 @@ def guess_format(filename):
         format = ext.upper()
     except:
         raise TypeError("Cannot determine topology type for %r" % filename)
-    
+
     if not format in MDAnalysis.topology._topology_parsers:
-        raise TypeError("Unknown topology extension %r from %r; only %r are implemented in MDAnalysis." % 
+        raise TypeError("Unknown topology extension %r from %r; only %r are implemented in MDAnalysis." %
                         (format, filename, MDAnalysis.topology._topology_parsers.keys()))
     return format
 
@@ -155,7 +155,7 @@ def get_atom_mass(element):
     try:
         return tables.masses[element]
     except KeyError:
-    	return 0.000
+        return 0.000
 
 def guess_atom_mass(atomname):
     """Guess a mass based on the atom name.

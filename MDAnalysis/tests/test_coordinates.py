@@ -61,7 +61,7 @@ class RefAdK(object):
 class Ref2r9r(object):
     """Mixin class to provide comparison numbers.
 
-    Based on S6 helices of chimeric Kv channel 
+    Based on S6 helices of chimeric Kv channel
 
     .. Note:: All distances must be in ANGSTROEM as this is the
        MDAnalysis default unit. All readers must return Angstroem by
@@ -82,7 +82,7 @@ class TestXYZReader(TestCase, Ref2r9r):
     def test_load_xyz(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from PSF and XYZ")
-   
+
     def test_numatoms(self):
         assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
 
@@ -91,11 +91,11 @@ class TestXYZReader(TestCase, Ref2r9r):
 
     def test_sum_centres_of_geometry(self):
         centreOfGeometry=0
-        
+
         for i in self.universe.trajectory:
-            sel = self.universe.selectAtoms("all")      
-            centreOfGeometry+=sum(sel.centerOfGeometry())  
-        
+            sel = self.universe.selectAtoms("all")
+            centreOfGeometry+=sum(sel.centerOfGeometry())
+
         assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
 
@@ -111,7 +111,7 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
     def test_load_xyz(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from PSF and XYZ")
-   
+
     def test_numatoms(self):
         assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
 
@@ -120,11 +120,11 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
 
     def test_sum_centres_of_geometry(self):
         centreOfGeometry=0
-        
+
         for i in self.universe.trajectory:
-            sel = self.universe.selectAtoms("all")      
-            centreOfGeometry+=sum(sel.centerOfGeometry())  
-        
+            sel = self.universe.selectAtoms("all")
+            centreOfGeometry+=sum(sel.centerOfGeometry())
+
         assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
 
@@ -137,7 +137,7 @@ class RefACHE(object):
     # COM check in VMD::
 
         set p [atomselect top "not water"]
-        set total {0 0 0}; 
+        set total {0 0 0};
         for {set i 0} {$i < 11} {incr i} {
            $p frame $i; set total [vecadd $total [measure center $p]]}
 
@@ -159,7 +159,7 @@ class RefCappedAla(object):
     # COM check in VMD (load trajectory as *AMBER with periodic box*!)::
 
         set p [atomselect top "not water"]
-        set total {0 0 0}; 
+        set total {0 0 0};
         for {set i 0} {$i < 11} {incr i} {
            $p frame $i; set total [vecadd $total [measure center $p]]}
 
@@ -182,7 +182,7 @@ class _TRJReaderTest(TestCase):
     def test_load_prm(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from PRM and TRJ")
-   
+
     def test_numatoms(self):
         assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
 
@@ -232,7 +232,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_load_file(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from file %s" % U.trajectory.filename)
-        assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0], 
+        assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0],
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
     def test_numatoms(self):
@@ -249,7 +249,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         # restrict accuracy to maximum in PDB files (3 decimals)
         assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], 3,
                             err_msg="wrong coordinates for A10:CA")
-        
+
     def test_distances(self):
         NTERM = self.universe.atoms.N[0]
         CTERM = self.universe.atoms.C[-1]
@@ -262,7 +262,7 @@ class TestPDBReader(_SingleFrameReader):
         ##mda.core.flags['permissive_pdb_reader'] = False # enable Bio.PDB reader!!
         # use permissive=False instead of changing the global flag as this
         # can lead to race conditions when testing in parallel
-        self.universe = mda.Universe(PDB_small, permissive=False) 
+        self.universe = mda.Universe(PDB_small, permissive=False)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
 class TestPSF_CRDReader(_SingleFrameReader):
@@ -278,22 +278,22 @@ class TestPSF_PDBReader(TestPDBReader):
 
 class TestPrimitivePDBReader(_SingleFrameReader):
     def setUp(self):
-        self.universe = mda.Universe(PDB_small, permissive=True) 
+        self.universe = mda.Universe(PDB_small, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
 class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
     def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small, permissive=True) 
+        self.universe = mda.Universe(PSF, PDB_small, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
 class TestPrimitivePDBWriter(TestCase):
     def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small, permissive=True) 
+        self.universe = mda.Universe(PSF, PDB_small, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         ext = ".pdb"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
         fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
-        
+
     def tearDown(self):
         try:
             os.unlink(self.outfile)
@@ -304,7 +304,7 @@ class TestPrimitivePDBWriter(TestCase):
         except OSError:
             pass
         del self.universe
-    
+
     def test_writer(self):
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(PSF, self.outfile, permissive=True)
@@ -331,9 +331,9 @@ class TestPrimitivePDBWriter(TestCase):
 
 class TestPQRReader(_SingleFrameReader):
     def setUp(self):
-        self.universe = mda.Universe(PQR) 
+        self.universe = mda.Universe(PQR)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
-    
+
     def test_totalCharge(self):
         assert_almost_equal(self.universe.atoms.totalCharge(), self.ref_charmm_totalcharge, 3,
                             "Total charge (in CHARMM) does not match expected value.")
@@ -351,11 +351,11 @@ class TestPQRReader(_SingleFrameReader):
     def test_ProNCharges(self):
         assert_almost_equal(self.universe.SYSTEM.PRO.N.charges(), self.ref_charmm_ProNcharges, 3,
                             "Charges for N atoms in Pro residues do not match.")
-                     
-                            
+
+
 class TestGROReader(TestCase, RefAdK):
     def setUp(self):
-	self.universe = mda.Universe(GRO)
+        self.universe = mda.Universe(GRO)
         self.ts = self.universe.trajectory.ts
         self.prec = 2  # lower prec in gro!! (3 decimals nm -> 2 decimals in Angstroem)
 
@@ -370,7 +370,7 @@ class TestGROReader(TestCase, RefAdK):
     def test_load_gro(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from small GRO")
-        assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0], 
+        assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0],
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
     def test_numatoms(self):
@@ -383,14 +383,14 @@ class TestGROReader(TestCase, RefAdK):
         A10CA = self.universe.SYSTEM.CA[10]
         assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], self.prec,
                             err_msg="wrong coordinates for A10:CA")
-        
+
     def test_distances(self):
         # NOTE that the prec is only 1 decimal: subtracting two low precision coordinates
         #      low prec: 9.3455122920041109; high prec (from pdb): 9.3513174
         NTERM = self.universe.SYSTEM.N[0]
         CTERM = self.universe.SYSTEM.C[-1]
         d = atom_distance(NTERM, CTERM)
-        assert_almost_equal(d, self.ref_distances['endtoend'], self.prec - 1,  # note low prec!! 
+        assert_almost_equal(d, self.ref_distances['endtoend'], self.prec - 1,  # note low prec!!
                             err_msg="distance between M1:N and G214:C")
 
     def test_selection(self):
@@ -398,7 +398,7 @@ class TestGROReader(TestCase, RefAdK):
         assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
 
     def test_unitcell(self):
-        assert_array_almost_equal(self.ts.dimensions, self.ref_unitcell, self.prec, 
+        assert_array_almost_equal(self.ts.dimensions, self.ref_unitcell, self.prec,
                                   err_msg="unit cell dimensions (rhombic dodecahedron)")
 
 class TestGROReaderNoConversion(TestCase, RefAdK):
@@ -417,40 +417,40 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
         # note: these are the native coordinates in nm; for the test to succeed
         # we loaded with convert_units=False
         A10CA = self.universe.SYSTEM.CA[10]
-        assert_almost_equal(A10CA.pos, RefAdK.ref_coordinates['A10CA']/10.0,  # coordinates in nm 
+        assert_almost_equal(A10CA.pos, RefAdK.ref_coordinates['A10CA']/10.0,  # coordinates in nm
                             self.prec,
                             err_msg="wrong native coordinates (in nm) for A10:CA")
-        
+
     def test_distances(self):
         # 3 decimals on nm in gro but we compare to the distance
         # computed from the pdb file, so the effective precision is 2 again.
-        # (Otherwise the distance test fails: 
+        # (Otherwise the distance test fails:
         #  Arrays are not almost equal distance between M1:N and G214:C
         #    ACTUAL: 0.93455122920041123
         #    DESIRED: 0.93513173999999988
         NTERM = self.universe.SYSTEM.N[0]
         CTERM = self.universe.SYSTEM.C[-1]
         d = atom_distance(NTERM, CTERM)
-        assert_almost_equal(d, RefAdK.ref_distances['endtoend']/10.0,  # coordinates in nm 
+        assert_almost_equal(d, RefAdK.ref_distances['endtoend']/10.0,  # coordinates in nm
                             self.prec - 1,
                             err_msg="distance between M1:N and G214:C")
 
     def test_unitcell(self):
         # lengths in A : convert to nm
-        assert_array_almost_equal(self.ts.dimensions[:3], self.ref_unitcell[:3]/10.0, self.prec, 
+        assert_array_almost_equal(self.ts.dimensions[:3], self.ref_unitcell[:3]/10.0, self.prec,
                                   err_msg="unit cell A,B,C (rhombic dodecahedron)")
         # angles should not have changed
-        assert_array_almost_equal(self.ts.dimensions[3:], self.ref_unitcell[3:], self.prec, 
+        assert_array_almost_equal(self.ts.dimensions[3:], self.ref_unitcell[3:], self.prec,
                                   err_msg="unit cell alpha,beta,gamma (rhombic dodecahedron)")
 
 class TestGROWriter(TestCase):
     def setUp(self):
-        self.universe = mda.Universe(GRO) 
+        self.universe = mda.Universe(GRO)
         self.prec = 2  # 3 decimals in file in nm but MDAnalysis is in A
         ext = ".gro"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
         fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
-        
+
     def tearDown(self):
         try:
             os.unlink(self.outfile)
@@ -488,7 +488,7 @@ class TestGROWriter(TestCase):
         u.atoms[1000].pos[1] = 9999.9999 * 10  # nm -> A  ; [ob] 9999.9996 not caught
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
-        
+
 
 class TestPDBReaderBig(TestCase, RefAdK):
     def setUp(self):
@@ -502,7 +502,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
     def test_load_pdb(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from big PDB")
-        assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0], 
+        assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0],
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
     @dec.slow
@@ -524,7 +524,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
         assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], self.prec,
                             err_msg="wrong coordinates for A10:CA")
 
-    @dec.slow        
+    @dec.slow
     def test_distances(self):
         NTERM = self.universe.SYSTEM.N[0]
         CTERM = self.universe.SYSTEM.C[-1]
@@ -540,7 +540,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
     @dec.slow
     @attr('issue')
     def test_unitcell(self):
-        assert_array_almost_equal(self.universe.coord.dimensions, self.ref_unitcell, self.prec, 
+        assert_array_almost_equal(self.universe.coord.dimensions, self.ref_unitcell, self.prec,
                                   err_msg="unit cell dimensions (rhombic dodecahedron), issue 60")
 
 @attr('issue')
@@ -575,7 +575,7 @@ class TestDCDReader(_TestDCD):
 
     def test_jump_lastframe_dcd(self):
         self.dcd[-1]
-        assert_equal(self.ts.frame, 98, "indexing last frame with dcd[-1]") 
+        assert_equal(self.ts.frame, 98, "indexing last frame with dcd[-1]")
 
     def test_slice_dcd(self):
         frames = [ts.frame for ts in self.dcd[5:17:3]]
@@ -583,7 +583,7 @@ class TestDCDReader(_TestDCD):
 
     def test_reverse_dcd(self):
         frames = [ts.frame for ts in self.dcd[20:5:-1]]
-        assert_equal(frames, range(21,6,-1), "reversing dcd [20:5:-1]")        
+        assert_equal(frames, range(21,6,-1), "reversing dcd [20:5:-1]")
 
     def test_numatoms(self):
         assert_equal(self.universe.trajectory.numatoms, 3341, "wrong number of atoms")
@@ -617,7 +617,7 @@ class TestDCDWriter(TestCase):
         del self.universe
         del self.Writer
 
-    @attr('issue')    
+    @attr('issue')
     def test_write_trajectory(self):
         """Test writing DCD trajectories (Issue 50)"""
         t = self.universe.trajectory
@@ -639,7 +639,7 @@ class TestDCDWriter_Issue59(TestCase):
         self.u = MDAnalysis.Universe(PSF,DCD)
         fd, self.xtc = tempfile.mkstemp(suffix='.xtc')
         wXTC = MDAnalysis.Writer(self.xtc, self.u.atoms.numberOfAtoms())
-        for ts in self.u.trajectory: 
+        for ts in self.u.trajectory:
             wXTC.write(ts);
         wXTC.close()
 
@@ -660,19 +660,19 @@ class TestDCDWriter_Issue59(TestCase):
         xtc = MDAnalysis.Universe(PSF, self.xtc)
         fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
         wDCD = MDAnalysis.Writer(self.dcd, xtc.atoms.numberOfAtoms())
-        for ts in xtc.trajectory: 
+        for ts in xtc.trajectory:
             wDCD.write(ts);
         wDCD.close()
-        
+
         dcd = MDAnalysis.Universe(PSF, self.dcd)
-        
+
         xtc.trajectory.rewind()
         dcd.trajectory.rewind()
 
         assert_array_almost_equal(xtc.atoms.coordinates(), dcd.atoms.coordinates(), 4,
                                   err_msg="XTC -> DCD: DCD coordinates are messed up (Issue 59)")
 
-        
+
 class TestDCDCorrel(_TestDCD):
     def setUp(self):
         # Note: setUp is executed for *every* test !
@@ -706,12 +706,12 @@ class TestDCDCorrel(_TestDCD):
         assert_equal(len(self.collection), 10, "Correl: len(collection)")
 
     def test_Atom(self):
-        assert_equal(self.collection[0].shape, (2, 3, 98), 
+        assert_equal(self.collection[0].shape, (2, 3, 98),
                      "Correl: Atom positions")
 
     def test_Bonds(self):
         C = self.collection
-        assert_array_equal(C[1].__data__, C[2].__data__, 
+        assert_array_equal(C[1].__data__, C[2].__data__,
                            "Correl: Bonds with lists and AtomGroup")
 
     def test_Angle(self):
@@ -719,15 +719,15 @@ class TestDCDCorrel(_TestDCD):
         avg_angle = 1.9111695972912988
         assert_almost_equal(C[3].__data__.mean(), avg_angle,
                             err_msg="Correl: average Angle")
-        
+
     def test_Dihedral(self):
         C = self.collection
-        avg_phi151 = 0.0088003870749735619        
+        avg_phi151 = 0.0088003870749735619
         assert_almost_equal(C[4].__data__.mean(), avg_phi151,
                             err_msg="Correl: average Dihedral")
 
     def test_scalarDistance(self):
-        C = self.collection        
+        C = self.collection
         avg_dist = 9.7960210987736236
         assert_almost_equal(C[5].__data__.mean(), avg_dist,
                             err_msg="Correl: average scalar Distance")
@@ -742,7 +742,7 @@ class TestDCDCorrel(_TestDCD):
                             err_msg="Correl: average all CenterOfMass")
 
     def test_CenterOfGeometry(self):
-        C = self.collection        
+        C = self.collection
         avg_cog_all = np.array([-0.13554797, -0.20521885, 0.2118998])
         assert_almost_equal(C[9].__data__.mean(axis=1), avg_cog_all,
                             err_msg="Correl: average all CenterOfGeometry")
@@ -756,7 +756,7 @@ class TestDCDCorrel(_TestDCD):
         C = self.collection
         C.clear()
         assert_equal(len(C), 0, "Correl: clear()")
-   
+
 # notes:
 def compute_correl_references():
     universe = MDAnalysis.Universe(PSF,DCD)
@@ -785,7 +785,7 @@ def compute_correl_references():
     results = {"avg_angle": C[3].__data__.mean(),
                "avg_phi151": C[4].__data__.mean(),
                "avg_dist": C[5].__data__.mean(),
-               "avg_com_ca": C[6].__data__.mean(axis=1), 
+               "avg_com_ca": C[6].__data__.mean(axis=1),
                "avg_com_all": C[8].__data__.mean(axis=1),
                "avg_cog_all": C[9].__data__.mean(axis=1),
                }
@@ -812,14 +812,14 @@ class TestChainedReader(TestCase):
     def test_iteration(self):
         for ts in self.dcd:
             pass # just forward to last frame
-        assert_equal(self.dcd.numframes, ts.frame, 
+        assert_equal(self.dcd.numframes, ts.frame,
                      "iteration yielded wrong number of frames (%d), should be %d" \
                          % (ts.frame, self.dcd.numframes))
 
     @dec.knownfailureif(True, "indexing not implemented for chained reader")
     def test_jump_lastframe_dcd(self):
         self.dcd[-1]
-        assert_equal(self.ts.frame, self.dcd.numframes, "indexing last frame with dcd[-1]") 
+        assert_equal(self.ts.frame, self.dcd.numframes, "indexing last frame with dcd[-1]")
 
     @dec.knownfailureif(True, "slicing not implemented for chained reader")
     def test_slice_dcd(self):
@@ -844,7 +844,7 @@ class _GromacsReader(TestCase):
     def test_flag_convert_gromacs_lengths(self):
         assert_equal(mda.core.flags['convert_gromacs_lengths'], True,
                      "MDAnalysis.core.flags['convert_gromacs_lengths'] should be True by default")
-    
+
     @dec.slow
     def test_rewind_xdrtrj(self):
         self.trajectory.rewind()
@@ -864,7 +864,7 @@ class _GromacsReader(TestCase):
     @dec.slow
     def test_jump_lastframe_xdrtrj(self):
         self.trajectory[-1]
-        assert_equal(self.ts.frame, 10, "indexing last frame with trajectory[-1]") 
+        assert_equal(self.ts.frame, 10, "indexing last frame with trajectory[-1]")
 
     @dec.slow
     def test_slice_xdrtrj(self):
@@ -875,7 +875,7 @@ class _GromacsReader(TestCase):
     @dec.knownfailureif(True, "XTC/TRR reverse slicing not implemented for performance reasons")
     def test_reverse_xdrtrj(self):
         frames = [ts.frame for ts in self.trajectory[::-1]]
-        assert_equal(frames, range(10,0,-1), "slicing xdrtrj [::-1]")        
+        assert_equal(frames, range(10,0,-1), "slicing xdrtrj [::-1]")
 
     @dec.slow
     def test_coordinates(self):
@@ -937,7 +937,7 @@ class _XDRNoConversion(TestCase):
     @dec.slow
     def test_coordinates(self):
         # note: these are the native coordinates in nm; for the test to succeed:
-        ##assert_equal(mda.core.flags['convert_gromacs_lengths'], False, 
+        ##assert_equal(mda.core.flags['convert_gromacs_lengths'], False,
         ##             "oops, mda.core.flags['convert_gromacs_lengths'] should be False for this test")
         ca_nm = np.array([[ 6.043369675,  7.385184479,  1.381425762]], dtype=np.float32)
         U = self.universe
@@ -945,7 +945,7 @@ class _XDRNoConversion(TestCase):
         T.rewind()
         T.next()
         T.next()
-        assert_equal(self.ts.frame, 3, "failed to step to frame 3")        
+        assert_equal(self.ts.frame, 3, "failed to step to frame 3")
         ca = U.selectAtoms('name CA and resid 122')
         # low precision match because we also look at the trr: only 3 decimals in nm in xtc!
         assert_array_almost_equal(ca.coordinates(), ca_nm, 3,
@@ -979,7 +979,7 @@ class _GromacsWriter(TestCase):
         del self.Writer
 
     @dec.slow
-    @attr('issue')    
+    @attr('issue')
     def test_write_trajectory(self):
         """Test writing Gromacs trajectories (Issue 38)"""
         t = self.universe.trajectory
@@ -994,7 +994,7 @@ class _GromacsWriter(TestCase):
         for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
-        
+
 class TestXTCWriter(_GromacsWriter):
     infilename = XTC
 

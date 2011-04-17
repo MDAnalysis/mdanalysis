@@ -81,8 +81,8 @@ class Timestep(object):
             self.frame = 0
             #if arg.shape[0] == 3: self.numatoms = arg.shape[0]  # ??? is this correct ??? [OB]  # Nope, not sure what the aim was so i've left the lines in as comments [DP]
             #else: self.numatoms = arg.shape[-1]                 # ??? reverse ??? [OB]
-	    if arg.shape[1] == 3: self.numatoms = arg.shape[0]
-	    else: self.numatoms = arg.shape[0]   # Or should an exception be raised if coordinate structure is not 3-dimensional? Maybe velocities could be read one day... [DP]
+            if arg.shape[1] == 3: self.numatoms = arg.shape[0]
+            else: self.numatoms = arg.shape[0]   # Or should an exception be raised if coordinate structure is not 3-dimensional? Maybe velocities could be read one day... [DP]
 
             self._pos = arg.copy('Fortran')
         else: raise ValueError("Cannot create an empty Timestep")

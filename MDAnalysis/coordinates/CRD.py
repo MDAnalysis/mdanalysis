@@ -30,26 +30,26 @@ class CRDReader(base.Reader):
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
-	coords_list = []
+        coords_list = []
         crdfile = open(crdfilename , 'r').readlines()
         
         for linenum,line in enumerate(crdfile):
-	   if line.split()[0] == '*':
+           if line.split()[0] == '*':
                continue 
                #print line.split()[0]
-	   elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) == True: 
-	       extended = 'yes'
+           elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) == True: 
+               extended = 'yes'
            elif line.split()[0] == line.split()[-1] and line.split()[0] != '*':
-	       extended = 'no' 
-	   elif extended == 'yes':
+               extended = 'no' 
+           elif extended == 'yes':
                coords_list.append( numpy.array( map( float , line[45:100].split()[0:3] ) ) )
-	   elif extended == 'no':
+           elif extended == 'no':
                coords_list.append( numpy.array( map( float , line[20:50].split()[0:3] ) ) )
            else:
                raise FormatError("Check CRD format at line %d: %s" % (linenum, line.rstrip()))
 
-	self.numatoms = len(coords_list)
-	coords_list = numpy.array(coords_list)
+        self.numatoms = len(coords_list)
+        coords_list = numpy.array(coords_list)
         self.numframes = 1
         self.fixed = 0          # parse B field for fixed atoms?
         self.skip = 1
@@ -152,10 +152,10 @@ class CRDWriter(base.Writer):
         self.crd.write(self.fmt['TITLE'] % line)
 
     def _NUMATOMS(self,numatoms):
-	"""Write generic total number of atoms in system)
-	"""
+        """Write generic total number of atoms in system)
+        """
         if numatoms > 99999:
-	    self.crd.write(self.fmt['NUMATOMS_EXT'] % numatoms) 
+            self.crd.write(self.fmt['NUMATOMS_EXT'] % numatoms) 
         else: 
             self.crd.write(self.fmt['NUMATOMS'] % numatoms)
     
@@ -183,7 +183,7 @@ class CRDWriter(base.Writer):
             chainID = chainID[:8]
             resSeq = int(str(resSeq)[-8:]) # check for overflow here?
             TotRes = int(str(TotRes)[-10:])
-	    self.crd.write(self.fmt['ATOM_EXT'] % vars())
+            self.crd.write(self.fmt['ATOM_EXT'] % vars())
         else:
             serial = int(str(serial)[-5:])  # check for overflow here?
             name = name[:4]
@@ -191,5 +191,5 @@ class CRDWriter(base.Writer):
             chainID = chainID[:4]
             resSeq = int(str(resSeq)[-4:]) # check for overflow here?
             TotRes = int(str(TotRes)[-5:])
-	    self.crd.write(self.fmt['ATOM'] % vars())
+            self.crd.write(self.fmt['ATOM'] % vars())
 

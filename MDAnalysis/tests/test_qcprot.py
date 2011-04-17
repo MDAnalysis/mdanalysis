@@ -1,5 +1,5 @@
 """
-:Author:   Joshua L. Adelman, University of Pittsburgh 
+:Author:   Joshua L. Adelman, University of Pittsburgh
 :Contact:  jla65@pitt.edu
 
 Sample code to use the routine for fast RMSD & rotational matrix calculation.
@@ -11,12 +11,12 @@ For the example provided below, the minimum least-squares RMSD for the two
     [[ 0.72216358 -0.52038257 -0.45572112]
      [ 0.69118937  0.51700833  0.50493528]
      [-0.0271479  -0.67963547  0.73304748]]
-    
+
 """
 
 import numpy
 
-import MDAnalysis.core.qcprot as qcp 
+import MDAnalysis.core.qcprot as qcp
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -77,11 +77,11 @@ def test_CalcRMSDRotationalMatrix():
     frag_b[2][6] =  17.996
 
     # Allocate rotation array
-    rot = numpy.zeros((9,),dtype=numpy.float64) 
+    rot = numpy.zeros((9,),dtype=numpy.float64)
 
     # Calculate center of geometry
     comA = numpy.sum(frag_a,axis=1)/N
-    comB = numpy.sum(frag_b,axis=1)/N 
+    comB = numpy.sum(frag_b,axis=1)/N
 
     # Center each fragment
     frag_a = frag_a - comA.reshape(3,1)
@@ -93,14 +93,14 @@ def test_CalcRMSDRotationalMatrix():
     #print 'qcp rmsd = ',rmsd
     #print 'rotation matrix:'
     #print rot.reshape((3,3))
-    
+
     # rotate frag_b to obtain optimal alignment
-    frag_br = frag_b.T*numpy.matrix(rot.reshape((3,3)))  
+    frag_br = frag_b.T*numpy.matrix(rot.reshape((3,3)))
     aligned_rmsd = rmsd(frag_br.T,frag_a)
     #print 'rmsd after applying rotation: ',rmsd
 
     assert_almost_equal(aligned_rmsd, 0.719106, 6, "RMSD between fragments A and B does not match excpected value.")
-    
+
     expected_rot = numpy.array([[ 0.72216358, -0.52038257, -0.45572112],
                                 [ 0.69118937,  0.51700833,  0.50493528],
                                 [-0.0271479,  -0.67963547,  0.73304748]])

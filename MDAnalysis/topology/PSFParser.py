@@ -30,7 +30,7 @@ def parse(filename):
     skip_line()
     title = next_line().split()
     if not (title[1] == "!NTITLE"):
-        raise PSFParseError("%s is not a valid PSF file" % psffile) 
+        raise PSFParseError("%s is not a valid PSF file" % psffile)
     psfremarks = [next_line() for i in range(int(title[0]))]
 
     structure = {}
@@ -81,7 +81,7 @@ def __parseatoms_(lines, atoms_per, attr, structure, numlines):
         Currently the only supported PSF format is the standard format
         (which does NOT include the EXT keyword in the header. CHEQ is
         supported in the sense that CHEQ data is simply ignored.
-        
+
         ------ notes ------
 
         Format from source/psffres.src
@@ -95,7 +95,7 @@ def __parseatoms_(lines, atoms_per, attr, structure, numlines):
         expanded format EXT:
           (I10,1X,A8,1X,A8,1X,A8,1X,A8,1X,I4,1X,2G14.6,I8,2G14.6)
           (I10,1X,A8,1X,A8,1X,A8,1X,A8,1X,A4,1X,2G14.6,I8,2G14.6) XPLOR
-        
+
         no CHEQ:
         II,LSEGID,LRESID,LRES,TYPE(I),IAC(I),CG(I),AMASS(I),IMOVE(I)
 
@@ -122,22 +122,22 @@ def __parseatoms_(lines, atoms_per, attr, structure, numlines):
 
     for i in xrange(numlines):
         l = lines()
-	try:
-		# CHEQ Format
-		# 0     1      2      3        4         5       6       7      8
-        	iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove =  l[:8], l[9:13].strip(), l[14:18], l[19:23].strip(), l[24:28].strip(), l[29:33].strip(), l[34:48], l[48:62], l[62:70]   #  l[70:84], l[84:98] ignore ECH and EHA
-        	# Atom(atomno, atomname, type, resname, resid, segid, mass, charge)
-        	# We want zero-indexing for atom numbers to make it easy
-        	atom_desc = Atom(int(iatom)-1,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge))
-        	atoms[i] = atom_desc
-	except:
-		#  EXT CHEQ Format
-		# 0     1      2      3        4         5       6       7      8
-		iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove =  l[:10], l[11:19].strip(), l[20:28], l[29:37].strip(), l[38:46].strip(), l[47:51].strip(), l[52:66], l[66:70], l[70:78]   #  l[78:84], l[84:98] ignore ECH and EHA
-		# Atom(atomno, atomname, type, resname, resid, segid, mass, charge)
-		# We want zero-indexing for atom numbers to make it easy
-		atom_desc = Atom(int(iatom)-1,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge))
-		atoms[i] = atom_desc
+        try:
+                # CHEQ Format
+                # 0     1      2      3        4         5       6       7      8
+                iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove =  l[:8], l[9:13].strip(), l[14:18], l[19:23].strip(), l[24:28].strip(), l[29:33].strip(), l[34:48], l[48:62], l[62:70]   #  l[70:84], l[84:98] ignore ECH and EHA
+                # Atom(atomno, atomname, type, resname, resid, segid, mass, charge)
+                # We want zero-indexing for atom numbers to make it easy
+                atom_desc = Atom(int(iatom)-1,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge))
+                atoms[i] = atom_desc
+        except:
+                #  EXT CHEQ Format
+                # 0     1      2      3        4         5       6       7      8
+                iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove =  l[:10], l[11:19].strip(), l[20:28], l[29:37].strip(), l[38:46].strip(), l[47:51].strip(), l[52:66], l[66:70], l[70:78]   #  l[78:84], l[84:98] ignore ECH and EHA
+                # Atom(atomno, atomname, type, resname, resid, segid, mass, charge)
+                # We want zero-indexing for atom numbers to make it easy
+                atom_desc = Atom(int(iatom)-1,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge))
+                atoms[i] = atom_desc
 
     structure[attr] = atoms
 

@@ -30,5 +30,5 @@ from base import get_writer
 _selection_writers = {'vmd': vmd.SelectionWriter,
                       'charmm': charmm.SelectionWriter, 'str': charmm.SelectionWriter,
                       'pymol': pymol.SelectionWriter, 'pml': pymol.SelectionWriter,
-                      'gromacs': gromacs.SelectionWriter, 'ndx': gromacs.SelectionWriter, 
+                      'gromacs': gromacs.SelectionWriter, 'ndx': gromacs.SelectionWriter,
                       }

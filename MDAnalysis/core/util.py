@@ -59,7 +59,7 @@ def filename(name,ext=None,keep=False):
            extension
       *keep*
            ``False``: replace existing extension; ``True``: keep if exists
-    """ 
+    """
     name = str(name)
     if ext is None:
         return name
@@ -94,7 +94,7 @@ def anyopen(datasource, mode='r'):
     #       - need to add binary 'b' to mode for compressed files?
 
     handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': file}
-    
+
     if mode.startswith('r'):
         if hasattr(datasource,'next') or hasattr(datasource,'readline'):
             stream = datasource
@@ -162,10 +162,10 @@ def iterable(obj):
         return False    # avoid iterating over characters of a string
 
     if hasattr(obj, 'next'):
-        return True    # any iterator will do 
-    try: 
+        return True    # any iterator will do
+    try:
         len(obj)       # anything else that might work
-    except TypeError: 
+    except TypeError:
         return False
     return True
 
@@ -213,7 +213,7 @@ class FixedcolumnEntry(object):
         """Read the entry from *line* and convert to appropriate type."""
         try:
             return self.convertor(line[self.start:self.stop])
-        except ValueError:            
+        except ValueError:
             raise ValueError("%r: Failed to read&convert %r",
                              self, line[self.start:self.stop])
     def __len__(self):
@@ -239,7 +239,7 @@ class FORTRANReader(object):
     Strings are stripped of leading and trailing white space.
 
     .. _`Fortran Formats`: http://www.webcitation.org/5xbaWMV2x
-    .. _`Fortran Formats (URL)`:     
+    .. _`Fortran Formats (URL)`:
        http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html
     """
 
@@ -267,7 +267,7 @@ class FORTRANReader(object):
         Values are converted to Python types according to the format specifier.
 
         :Returns: list of entries with appropriate types
-        :Raises: :exc:`ValueError` if any of the conversions cannot be made 
+        :Raises: :exc:`ValueError` if any of the conversions cannot be made
                  (e.g. space for an int)
 
         .. SeeAlso:: :meth:`FORTRANReader.number_of_matches`
@@ -300,12 +300,12 @@ class FORTRANReader(object):
            supported, and neither are the scientific notation *Ew.dEe* forms.
         """
 
-	m = _FORTRAN_format_pattern.match(edit_descriptor.upper())
-	if m is None:
+        m = _FORTRAN_format_pattern.match(edit_descriptor.upper())
+        if m is None:
             try:
-	    	m = _FORTRAN_format_pattern.match("1"+edit_descriptor.upper())
-	    except:
-	    	raise ValueError("unrecognized FORTRAN format %r" % edit_descriptor)
+                m = _FORTRAN_format_pattern.match("1"+edit_descriptor.upper())
+            except:
+                raise ValueError("unrecognized FORTRAN format %r" % edit_descriptor)
         d = m.groupdict()
         if d['repeat'] == '':
             d['repeat'] = 1

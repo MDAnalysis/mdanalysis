@@ -34,7 +34,7 @@ Available analysis modules
     Find lipids in the upper and lower (or inner and outer) leaflet of
     a bilayer; the algorithm can deal with any deformations as long as
     the two leaflets are topologically distinct.
-  
+
 :mod:`~MDAnalysis.analysis.contacts`
     Analyse the number of native contacts relative to a reference
     state, also known as a "q1-q2" analysis.

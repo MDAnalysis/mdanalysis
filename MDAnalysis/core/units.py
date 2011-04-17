@@ -109,7 +109,7 @@ lengthUnit_factor = {'Angstrom': 1.0, 'A': 1.0, 'Å': 1.0,
 
 
 #: `Avogadro's constant`_ in mol**-1,
-N_Avogadro = 6.02214179e+23  # mol**-1   
+N_Avogadro = 6.02214179e+23  # mol**-1
 
 #: water density values ay 1179: T=298K, P=1atm [Jorgensen1998]_
 #:  ======== =========
@@ -125,12 +125,12 @@ water = {'exp':0.997, 'SPC':0.985, 'TIP3P':1.002, 'TIP4P':1.001,  # in g cm**-3
          'MolarMass': 18.016,                                     # in g mol**-1
          }
 
-#: The basic unit for *densities* is Angstroem**(-3), i.e. 
+#: The basic unit for *densities* is Angstroem**(-3), i.e.
 #: the volume per molecule in A**3. Especially for water
 #: it can be convenient to measure the density relative to bulk, and
 #: hence a number of values are pre-stored in :data:`water`.
 densityUnit_factor = {
-    'Angstrom^{-3}': 1/1.0, 'A^{-3}': 1/1.0, 'Å^{-3}': 1/1.0, 
+    'Angstrom^{-3}': 1/1.0, 'A^{-3}': 1/1.0, 'Å^{-3}': 1/1.0,
     'nm^{-3}': 1/1e-3, 'nanometer^{-3}': 1/1e-3,
     'Molar': 1/(1e-27*N_Avogadro),
     'SPC':   1/(1e-24*N_Avogadro*water['SPC']  / water['MolarMass']),
@@ -149,7 +149,7 @@ timeUnit_factor = {'ps': 1/1.0,
                    }
 # getting the factor f:  1200ps * f = 1.2 ns  ==> f = 1/1000 ns/ps
 
-#: *Charge* is measured in multiples of the `electron charge`_ 
+#: *Charge* is measured in multiples of the `electron charge`_
 #: *e* =  1.602176487 x 10**(-19) C.
 chargeUnit_factor = {'e': 1.0,
                      'Amber': 18.2223,  # http://ambermd.org/formats.html#parm
@@ -195,11 +195,11 @@ def convert(x, u1, u2):
         ut1 = unit_types[u1]
         ut2 = unit_types[u2]
     except KeyError:
-        raise ValueError("units must be one of %r, not %r or %r" % 
+        raise ValueError("units must be one of %r, not %r or %r" %
                          (unit_types.keys(), u1, u2))
     if ut1 != ut2:
         raise ValueError("Cannot convert between unit types %(ut1)s --> %(ut2)s" %
                          vars())
     return x * get_conversion_factor(ut1, u1, u2)
- 
-    
+
+

@@ -26,7 +26,7 @@ import MDAnalysis.selections
 
 def join(seq, string="", func=None):
     """Create a list from sequence.
-    
+
     *string* is appended to each element but the last.
 
     *func* is applied to every element before appending *string*.
@@ -44,7 +44,7 @@ def get_writer(filename, defaultformat):
     try:
         return MDAnalysis.selections._selection_writers[format]
     except KeyError:
-        raise NotImplementedError("Writing as %r is not implemented; only %r will work." 
+        raise NotImplementedError("Writing as %r is not implemented; only %r will work."
                                   % (format, MDAnalysis.selections._selection_writers.keys()))
 
 
@@ -126,13 +126,13 @@ class SelectionWriter(object):
                when appending) [``None``]
            *name*
                selection will be named *name* (instead of numbered)
-               [``None``]        
+               [``None``]
            *frame*
                write selection of this frame (or the current one if
                ``None`` [``None``]
         """
         u = selection.universe
-        if frame is not None:            
+        if frame is not None:
             u.trajectory[frame]  # advance to frame
         else:
             try:
@@ -187,5 +187,5 @@ class SelectionWriter(object):
         """Last output to open file object *out*."""
         pass
 
-    
-    
+
+

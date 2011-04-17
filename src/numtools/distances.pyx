@@ -55,18 +55,18 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
     d = distance_array(ref,conf,box[,result=d])
 
     :Arguments:
-		*ref*
-			reference coordinate array
-		*conf*
-		   	configuration coordinate array
-		*box*
-		  	orthorhombic unit cell dimensions (minimum image convention is applied) or None [None]
-		*result*
-			optional preallocated result array which must have the shape (len(ref),len(conf)) and dtype=numpy.float64. Avoids creating the              array which saves time when the function is called repeatedly. [None]
+                *ref*
+                        reference coordinate array
+                *conf*
+                        configuration coordinate array
+                *box*
+                        orthorhombic unit cell dimensions (minimum image convention is applied) or None [None]
+                *result*
+                        optional preallocated result array which must have the shape (len(ref),len(conf)) and dtype=numpy.float64. Avoids creating the              array which saves time when the function is called repeatedly. [None]
 
     :Returns:
-		*d* 
-			(len(ref),len(conf)) numpy array with the distances d[i,j] between ref coordinates i and conf coordinates j
+                *d*
+                        (len(ref),len(conf)) numpy array with the distances d[i,j] between ref coordinates i and conf coordinates j
 
     .. Note:: This method is slower than it could be because internally we need to
           make copies of the ref and conf arrays.
@@ -119,25 +119,25 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
     d = self_distance_array(ref,box[,result=d])
 
     :Arguments:
-		*ref*
-			reference coordinate array with N=len(ref) coordinates
-		*box*
-			orthorhombic unit cell dimensions (minimum image convention
-		           is applied) or None [None]
-		*result*
-			optional preallocated result array which must have the shape
-		           (N*(N-1)/2,) and dtype ``numpy.float64``. Avoids creating 
-		           the array which saves time when the function is called repeatedly. [None]
+                *ref*
+                        reference coordinate array with N=len(ref) coordinates
+                *box*
+                        orthorhombic unit cell dimensions (minimum image convention
+                           is applied) or None [None]
+                *result*
+                        optional preallocated result array which must have the shape
+                           (N*(N-1)/2,) and dtype ``numpy.float64``. Avoids creating
+                           the array which saves time when the function is called repeatedly. [None]
 
     :Returns:
-		*d*
-			N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
-		           coordinates i and j at position d[k]. Loop through d::
+                *d*
+                        N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
+                           coordinates i and j at position d[k]. Loop through d::
 
-		             for i in xrange(N):
-		                for j in xrange(i+1, N):
-		                    k += 1
-		                    dist[i,j] = d[k]
+                             for i in xrange(N):
+                                for j in xrange(i+1, N):
+                                    k += 1
+                                    dist[i,j] = d[k]
 
     .. Note:: This method is slower than it could be because internally we need to
           make copies of the coordinate arrays.
@@ -178,6 +178,6 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
     if with_PBC:
         calc_self_distance_array(<coordinate*>ref.data,refnum,<float*>box.data,<double*>distances.data, distnum)
     else:
-        calc_self_distance_array_noPBC(<coordinate*>ref.data,refnum,<double*>distances.data,distnum)        
-        
+        calc_self_distance_array_noPBC(<coordinate*>ref.data,refnum,<double*>distances.data,distnum)
+
     return distances

@@ -18,12 +18,12 @@ class TestSelections(TestCase):
     def test_segid(self):
         sel = self.universe.selectAtoms('segid 4AKE')
         assert_equal(sel.numberOfAtoms(), 3341, "failed to select segment 4AKE")
-        assert_equal(sel._atoms, self.universe.s4AKE._atoms, 
+        assert_equal(sel._atoms, self.universe.s4AKE._atoms,
                      "selected segment 4AKE is not the same as auto-generated segment s4AKE")
     def test_protein(self):
         sel = self.universe.selectAtoms('protein')
         assert_equal(sel.numberOfAtoms(), 3341, "failed to select protein")
-        assert_equal(sel._atoms, self.universe.s4AKE._atoms, 
+        assert_equal(sel._atoms, self.universe.s4AKE._atoms,
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
     def test_backbone(self):
@@ -33,12 +33,12 @@ class TestSelections(TestCase):
     def test_resid_single(self):
         sel = self.universe.selectAtoms('resid 100')
         assert_equal(sel.numberOfAtoms(), 7)
-        assert_equal(sel.resnames(), ['GLY'])        
+        assert_equal(sel.resnames(), ['GLY'])
 
     def test_resid_range(self):
         sel = self.universe.selectAtoms('resid 100:105')
         assert_equal(sel.numberOfAtoms(), 89)
-        assert_equal(sel.resnames(),  ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])        
+        assert_equal(sel.resnames(),  ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
 
     def test_resname(self):
         sel = self.universe.selectAtoms('resname LEU')
@@ -55,7 +55,7 @@ class TestSelections(TestCase):
         sel = self.universe.selectAtoms('atom 4AKE 100 CA')
         assert_equal(len(sel), 1)
         assert_equal(sel.resnames(), ['GLY'])
-        assert_array_almost_equal(sel.coordinates(), 
+        assert_array_almost_equal(sel.coordinates(),
                                   array([[ 20.38685226,  -3.44224262,  -5.92158318]], dtype=float32))
 
     def test_and(self):
@@ -73,7 +73,7 @@ class TestSelections(TestCase):
 
     # TODO:
     # add more test cases for around, point, prop, byres, bynum
-    # and also for selection keywords such as 'nucleic' 
+    # and also for selection keywords such as 'nucleic'
 
     def test_empty_selection(self):
         """Test empty selection: raises Excption but might be subject to change (see Issue 12)"""
@@ -98,4 +98,4 @@ class TestSelections(TestCase):
         # note that this is not quite phi... HN should be C of prec. residue
         phi151 = E151.selectAtoms('name HN', 'name N', 'name CA', 'name CB')
         assert_equal(len(phi151), 4)
-        assert_equal(phi151[0].name, 'HN', "wrong ordering in selection, should be HN-N-CA-CB") 
+        assert_equal(phi151[0].name, 'HN', "wrong ordering in selection, should be HN-N-CA-CB")

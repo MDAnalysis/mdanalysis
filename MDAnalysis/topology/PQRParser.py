@@ -13,7 +13,7 @@ connectivity is deduced.
 .. _APBS:    http://www.poissonboltzmann.org/apbs
 .. _PDB2PQR: http://www.poissonboltzmann.org/pdb2pqr
 .. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards
-""" 
+"""
 
 import MDAnalysis.coordinates.PQR
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass
@@ -60,7 +60,7 @@ def __parseatoms_(pqr, structure):
         mass = guess_atom_mass(atomname)
         charge = atom.charge
         radius = atom.radius
-        
+
         atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),
                           radius=radius))
 

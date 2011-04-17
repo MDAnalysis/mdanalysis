@@ -1,5 +1,5 @@
 # MDAnalysis
-# 
+#
 """
 MDAnalysis topology tables
 ==========================
@@ -34,7 +34,7 @@ def kv2dict(s, convertor=str):
 
     * Comment lines (starting with #) are allowed.
 
-    * Leading whitespace is ignored.    
+    * Leading whitespace is ignored.
 
     The *convertor* is a function that converts its single argument to
     a valid Python type. The default is :func:`str` but other
@@ -126,7 +126,7 @@ QR           RB
 BC           C
 AC           C
 
-# other types are guessed from the name; see 
+# other types are guessed from the name; see
 # topology.core.guess_atom_elements()
 """
 
@@ -153,7 +153,7 @@ NE             20.17970
 FE             55.84700
 NA             22.98977
 K              39.10200
-RB             85.46780  
+RB             85.46780
 CS            132.90000
 MG             24.30500
 CA             40.08000
@@ -163,7 +163,7 @@ Ce            140.11600
 F              18.99800
 CL             35.45000
 BR             79.90400
-I             126.90450    
+I             126.90450
 """
 
 #: Dictionary table with atomic masses in u, indexed by the element from

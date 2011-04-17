@@ -1,5 +1,5 @@
 # $Id$
-# KDTree.py was originally written by Thomas Hamelryck as part of 
+# KDTree.py was originally written by Thomas Hamelryck as part of
 # the Biopython package:
 # Copyright (C) 2002, Thomas Hamelryck (thamelry@binf.ku.dk)
 # This code is part of the Biopython distribution and governed by its
@@ -21,13 +21,13 @@ KDTree --- :mod:`MDAnalysis.KDTree.KDTree`
 The KD tree data structure can be used for all kinds of searches that
 involve N-dimensional vectors, e.g.  neighbor searches (find all points
 within a radius of a given point) or finding all point pairs in a set
-that are within a certain radius of each other. See "Computational Geometry: 
-Algorithms and Applications" (Mark de Berg, Marc van Kreveld, Mark Overmars, 
+that are within a certain radius of each other. See "Computational Geometry:
+Algorithms and Applications" (Mark de Berg, Marc van Kreveld, Mark Overmars,
 Otfried Schwarzkopf). Author: Thomas Hamelryck.
 """
 
 import numpy
-import CKDTree 
+import CKDTree
 
 class KDTree:
     """
@@ -44,13 +44,13 @@ class KDTree:
     Second Edition
     Mark de Berg, Marc van Kreveld, Mark Overmars, Otfried Schwarzkopf
     published by Springer-Verlag
-    2nd rev. ed. 2000. 
+    2nd rev. ed. 2000.
     ISBN: 3-540-65620-0
 
-    The KD tree data structure is described in chapter 5, pg. 99. 
+    The KD tree data structure is described in chapter 5, pg. 99.
 
-    The following article made clear to me that the nodes should 
-    contain more than one point (this leads to dramatic speed 
+    The following article made clear to me that the nodes should
+    contain more than one point (this leads to dramatic speed
     improvements for the "all fixed radius neighbor search", see
     below):
 
@@ -75,17 +75,17 @@ class KDTree:
         self.kdt=CKDTree.KDTree(dim, bucket_size)
         self.built=False
         self.__list_indices = None  # data from list_search()
-        self.__list_radii = None    # 
+        self.__list_radii = None    #
 
     # Set data
 
     def set_coords(self, coords):
         """Add the coordinates of the points.
 
-        o coords - two dimensional numpy array. E.g. if the 
-        points have dimensionality D and there are N points, the coords 
-        array should be NxD dimensional. 
-        
+        o coords - two dimensional numpy array. E.g. if the
+        points have dimensionality D and there are N points, the coords
+        array should be NxD dimensional.
+
         The coords array is always cast to a numpy.float32 array.
         """
         coords = numpy.asarray(coords, dtype=numpy.float32, order='C')  # required for C++ code
@@ -101,7 +101,7 @@ class KDTree:
     def search(self, center, radius):
         """Search all points within radius of center.
 
-        o center - one dimensional numpy array. E.g. if the 
+        o center - one dimensional numpy array. E.g. if the
         points have dimensionality D, the center array should have length D.
         o radius - float>0
 
@@ -115,7 +115,7 @@ class KDTree:
         if center.shape!=(self.dim,):
             raise ValueError("Expected a %i-dimensional Numeric array" % self.dim)
         self.kdt.search_center_radius(center, radius)
-        
+
     def get_radii(self):
         """Return radii.
 
@@ -125,7 +125,7 @@ class KDTree:
         if a is None:
             return []
         return a
-    
+
     def get_indices(self):
         """Return the list of indices.
 
@@ -133,7 +133,7 @@ class KDTree:
         refer to the original coords numpy array. The coordinates with
         these indices were within radius of center.
 
-        For an index pair, the first index<second index. 
+        For an index pair, the first index<second index.
         """
         a=self.kdt.get_indices()
         if a is None:
@@ -163,7 +163,7 @@ class KDTree:
         """
         a=self.kdt.neighbor_get_indices()
         if a is None:
-            return [] 
+            return []
         # return as Nx2 dim Numeric array, where N
         # is number of neighbor pairs.
         return a.reshape((-1, 2))
@@ -176,7 +176,7 @@ class KDTree:
         """
         a=self.kdt.neighbor_get_radii()
         if a is None:
-            return [] 
+            return []
         return a
 
     # Search another list of centers against the tree
@@ -201,7 +201,7 @@ class KDTree:
 
     def list_get_indices(self):
         return self.__list_indices
-    
+
     def list_get_radii(self):
         raise NotImplementedError
 
@@ -213,13 +213,13 @@ def _dist(p, q):
 def _neighbor_test(nr_points, dim, bucket_size, radius):
     """ Test all fixed radius neighbor search.
 
-    Test all fixed radius neighbor search using the 
+    Test all fixed radius neighbor search using the
     KD tree C module.
 
     o nr_points - number of points used in test
     o dim - dimension of coords
     o bucket_size - nr of points per tree node
-    o radius - radius of search (typically 0.05 or so) 
+    o radius - radius of search (typically 0.05 or so)
     """
     # KD tree search
     kdt=CKDTree.KDTree(dim, bucket_size)
@@ -251,7 +251,7 @@ def _test(nr_points, dim, bucket_size, radius):
     o nr_points - number of points used in test
     o dim - dimension of coords
     o bucket_size - nr of points per tree node
-    o radius - radius of search (typically 0.05 or so) 
+    o radius - radius of search (typically 0.05 or so)
     """
     # kd tree search
     kdt=CKDTree.KDTree(dim, bucket_size)
@@ -284,7 +284,7 @@ if __name__=="__main__":
         query_radius=10
 
         coords=200*numpy.random.random((nr_points, dim)).astype(numpy.float32)
-        
+
         kdtree=KDTree(dim, bucket_size)
 
         # enter coords
@@ -296,10 +296,10 @@ if __name__=="__main__":
 
         # get indices & radii of points
 
-        # indices is a list of tuples. Each tuple contains the 
-        # two indices of a point pair within query_radius of 
+        # indices is a list of tuples. Each tuple contains the
+        # two indices of a point pair within query_radius of
         # each other.
-        indices=kdtree.all_get_indices() 
+        indices=kdtree.all_get_indices()
         radii=kdtree.all_get_radii()
 
         print "Found %i point pairs within radius %f." % (len(indices), query_radius)

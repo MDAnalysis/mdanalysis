@@ -91,7 +91,7 @@ class ContactAnalysis(object):
     The total number of contacts in the reference states 1 and 2 are
     stored in :attr:`ContactAnalysis.nref` (index 0 and 1).
     """
-    def __init__(self, topology, trajectory, ref1=None, ref2=None, radius=8.0, 
+    def __init__(self, topology, trajectory, ref1=None, ref2=None, radius=8.0,
                  targetdir=os.path.curdir, infix="", force=False):
         """Calculate native contacts from two reference structures.
 
@@ -133,9 +133,9 @@ class ContactAnalysis(object):
         self.force = force
 
         trajectorybase = os.path.splitext(os.path.basename(trajectory))[0]
-	output = trajectorybase + infix + '_q1q2.dat'
-	self.output = os.path.join(self.targetdir, output)
-	self.output_bz2 = self.output + '.bz2'    
+        output = trajectorybase + infix + '_q1q2.dat'
+        self.output = os.path.join(self.targetdir, output)
+        self.output_bz2 = self.output + '.bz2'
 
         self.timeseries = None  # final result
 
@@ -169,13 +169,13 @@ class ContactAnalysis(object):
 
         r1 = MDAnalysis.Universe(topology, self.ref1)
         r2 = MDAnalysis.Universe(topology, self.ref2)
-    
+
         self.ca = self.u.selectAtoms('name CA')
         ca1 = r1.selectAtoms('name CA')
         ca2 = r2.selectAtoms('name CA')
 
-        # NOTE: self_distance_array() produces a 1D array; this works here 
-        #       but is not the same as the 2D output from distance_array()!        
+        # NOTE: self_distance_array() produces a 1D array; this works here
+        #       but is not the same as the 2D output from distance_array()!
         #       See the docs for self_distance_array().
         dref =  [self_distance_array(ca1.coordinates()), self_distance_array(ca2.coordinates())]
         self.qref = [self.qarray(dref[0]), self.qarray(dref[1])]
@@ -205,12 +205,12 @@ class ContactAnalysis(object):
             try:
                 self.load(self.output)
             except IOError:
-                self.load(self.output_bz2)                
+                self.load(self.output_bz2)
             return None
-        
+
         outbz2 = bz2.BZ2File(self.output_bz2, mode='w', buffering=8192)
         try:
-            outbz2.write("# q1-q2 analysis\n# nref1 = %d\n# nref2 = %d\n" 
+            outbz2.write("# q1-q2 analysis\n# nref1 = %d\n# nref2 = %d\n"
                          % (self.nref[0], self.nref[1]))
             outbz2.write("# frame  q1  q2   n1  n2\n")
             records = []
@@ -272,7 +272,7 @@ class ContactAnalysis(object):
     def plot(self, **kwargs):
         """Plot q1-q2."""
         from pylab import plot, xlabel, ylabel
-        kwargs.setdefault('color', 'black')        
+        kwargs.setdefault('color', 'black')
         if self.timeseries is None:
             raise ValueError("No timeseries data; do 'ContactAnalysis.run(store=True)' first.")
         t = self.timeseries
@@ -344,7 +344,7 @@ class ContactAnalysis1(object):
 
     *q*
          fraction of native contacts relative to the reference
-    
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -441,7 +441,7 @@ class ContactAnalysis1(object):
         self._qtmp = numpy.zeros_like(self.q)  # pre-allocated array
 
         self.qavg = numpy.zeros(shape=self.q.shape, dtype=numpy.float64)
-        
+
     def _return_tuple2(self, x, name):
         if not isinstance(x, (tuple, list, numpy.ndarray)):
             t = (x,)
@@ -472,11 +472,11 @@ class ContactAnalysis1(object):
         if self.output_exists(force=force):
             import warnings
             warnings.warn("File %r already exists, loading it INSTEAD of trajectory %r. "
-                          "Use force=True to overwrite the output file. " % 
+                          "Use force=True to overwrite the output file. " %
                           (self.output, self.universe.trajectory.filename))
             self.load(self.output)
             return None
-        
+
         with openany(self.output, 'w') as out:
             out.write("# q1 analysis\n# nref = %d\n" % (self.nref))
             out.write("# frame  q1  n1\n")
@@ -570,12 +570,12 @@ class ContactAnalysis1(object):
 
         x,y = self.selections[0].resids(), self.selections[1].resids()
         X,Y = meshgrid(x,y)
-        
+
         pcolor(X,Y,self.qavg.T, **kwargs)
         gca().set_aspect('equal')
 
         xlim(min(x),max(x))
-        ylim(min(y),max(y))             
+        ylim(min(y),max(y))
 
         xlabel("residues")
         ylabel("residues")
@@ -605,13 +605,13 @@ class ContactAnalysis1(object):
         kwargs.setdefault('vmin', 0)
         kwargs.setdefault('vmax', 1)
         kwargs.setdefault('cmap', cm.hot)
-        kwargs.setdefault('extent', (min(x), max(x), min(y), max(y)))        
+        kwargs.setdefault('extent', (min(x), max(x), min(y), max(y)))
 
         clf()
         imshow(self.qavg.T, **kwargs)
 
         xlim(min(x),max(x))
-        ylim(min(y),max(y))             
+        ylim(min(y),max(y))
 
         xlabel("residue from %r" % self.selection_strings[0])
         ylabel("residue from %r" % self.selection_strings[1])

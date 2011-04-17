@@ -25,7 +25,7 @@ class TestDistanceArrayDCD(TestCase):
         del self.trajectory
         del self.ca
 
-    @attr('issue')    
+    @attr('issue')
     def test_simple(self):
         U = self.universe
         self.trajectory.rewind()
@@ -34,7 +34,7 @@ class TestDistanceArrayDCD(TestCase):
         x1 = U.atoms.coordinates(copy=True)
         d = MDAnalysis.core.distances.distance_array(x0, x1)
         assert_equal(d.shape, (3341, 3341), "wrong shape (should be (Natoms,Natoms))")
-        assert_almost_equal(d.min(), 0.11981228170520701, self.prec, 
+        assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value")
         assert_almost_equal(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value")
@@ -49,9 +49,9 @@ class TestDistanceArrayDCD(TestCase):
         d = np.zeros((natoms, natoms), np.float64)
         MDAnalysis.core.distances.distance_array(x0, x1, result=d)
         assert_equal(d.shape, (natoms, natoms), "wrong shape, shoud be  (Natoms,Natoms) entries")
-        assert_almost_equal(d.min(), 0.11981228170520701, self.prec, 
+        assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value")
-        assert_almost_equal(d.max(), 53.572192429459619, self.prec, 
+        assert_almost_equal(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value")
 
     def test_periodic(self):
@@ -63,12 +63,12 @@ class TestDistanceArrayDCD(TestCase):
         x1 = U.atoms.coordinates(copy=True)
         d = MDAnalysis.core.distances.distance_array(x0, x1, box=U.coord.dimensions)
         assert_equal(d.shape, (3341, 3341), "should be square matrix with Natoms entries")
-        assert_almost_equal(d.min(), 0.11981228170520701, self.prec, 
+        assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value with PBC")
         assert_almost_equal(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value with PBC")
 
-        
+
 class TestSelfDistanceArrayDCD(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
@@ -122,4 +122,4 @@ class TestSelfDistanceArrayDCD(TestCase):
         assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value with PBC")
 
-        
+

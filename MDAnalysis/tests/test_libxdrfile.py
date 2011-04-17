@@ -5,7 +5,7 @@ from MDAnalysis.tests.datafiles import XTC,TRR
 import MDAnalysis.coordinates.xdrfile.libxdrfile as xdr
 
 # FIXES: test_xdropen: error because assert_ not found in numpy < 1.3
-# maybe move this into separate module together with 
+# maybe move this into separate module together with
 # from numpy.testing import * ?
 try:
     from numpy.testing import assert_
@@ -13,12 +13,12 @@ except ImportError:
     def assert_(val, msg='') :
         """
         Assert that works in release mode.
-        
+
         The Python built-in ``assert`` does not work when executing code in
         optimized mode (the ``-O`` flag) - no byte-code is generated for it.
 
         For documentation on usage, refer to the Python documentation.
-        
+
         (Code taken from numpy.testing 1.4)
         """
         if not val :
@@ -33,7 +33,7 @@ class TestLib(TestCase):
         XDR = xdr.xdrfile_open(XTC, 'r')
         assert_(XDR != None, "Failed top open xtc file")
         rc = xdr.xdrfile_close(XDR)
-        assert_equal(rc, 0, "Failed to close xtc file")  # this can segfault 
+        assert_equal(rc, 0, "Failed to close xtc file")  # this can segfault
 
 
 class TestXTC(TestCase):

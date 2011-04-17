@@ -10,11 +10,11 @@ class _TestGuessAtomType(object):
     atype = None
     testnames = []
     mass = None
-    def test_guess_atom_type(self):        
+    def test_guess_atom_type(self):
         for aname in self.testnames:
             yield check_atom_type, self.atype, aname
 
-    def test_guess_atom_mass(self):        
+    def test_guess_atom_mass(self):
         assert_equal(get_atom_mass(self.atype), self.mass)
 
 
@@ -66,7 +66,7 @@ class TestOxygen(_TestGuessAtomType):
 class TestCalcium(_TestGuessAtomType):
     atype = 'CA'
     mass = 40.080000
-    testnames = ['CAL','CA2+', 'C0'] 
+    testnames = ['CAL','CA2+', 'C0']
 
 class TestMagnesium(_TestGuessAtomType):
     atype = 'MG'

@@ -1,5 +1,5 @@
 # $Id$
-# Neighbour searching in MDAnalysis. 
+# Neighbour searching in MDAnalysis.
 # Based on Biopython's Bio/PDB/NeighborSearch.py
 # [Copyright (C) 2002, Thomas Hamelryck (thamelry@binf.ku.dk)]
 # under the terms of the Biopython license.
@@ -23,7 +23,7 @@ Example::
   u = Universe(psf,dcd)
   water = u.selectAtoms('name OH2')
   protein = u.selectAtoms('protein')
-   
+
   # when analyzing a trajectory, carry out the next two steps
   # for every frame
   ns_w = NS.AtomNeighborSearch(water)
@@ -46,10 +46,10 @@ class CoordinateNeighborSearch(object):
     """
     This class can be used for two related purposes:
 
-    1. To find all indices of a coordinate list within radius 
-    of a given query position. 
+    1. To find all indices of a coordinate list within radius
+    of a given query position.
 
-    2. To find all indices of a coordinate list that are within 
+    2. To find all indices of a coordinate list that are within
     a fixed radius of each other.
 
     CoordinateNeighborSearch makes use of the KDTree C++ module, so it's fast.
@@ -73,7 +73,7 @@ class CoordinateNeighborSearch(object):
         assert(self.coords.shape[1]==3)
         self.kdt=KDTree(3, bucket_size)
         self.kdt.set_coords(self.coords)
-    
+
     def search(self, center, radius, distances=False):
         """Neighbor search.
 
@@ -82,10 +82,10 @@ class CoordinateNeighborSearch(object):
 
         :Arguments:
           * center
-              numpy array 
+              numpy array
           * radius
               float
-          * distances 
+          * distances
               bool  ``True``: return (indices,distances); ``False``: return indices only
         """
         self.kdt.search(center, radius)
@@ -110,7 +110,7 @@ class CoordinateNeighborSearch(object):
         """
         self.kdt.list_search(centers, radius)
         return self.kdt.list_get_indices()
-            
+
     def search_all(self, radius, distances=False):
         """All neighbor search.
 
@@ -141,10 +141,10 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
     """
     This class can be used for two related purposes:
 
-    1. To find all atoms/residues/segments within radius 
-    of a given query position. 
+    1. To find all atoms/residues/segments within radius
+    of a given query position.
 
-    2. To find all atoms/residues/segments that are within 
+    2. To find all atoms/residues/segments that are within
     a fixed radius of each other.
 
     AtomNeighborSearch makes use of the KDTree C++ module, so it's fast.
@@ -153,18 +153,18 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
         """
         :Arguments:
           *atom_list*
-            list of atoms (:class:`~MDAnalysis.core.AtomGroup.Atom`) or a 
+            list of atoms (:class:`~MDAnalysis.core.AtomGroup.Atom`) or a
             :class:`~MDAnalysis.core.AtomGroup.AtomGroup`.
             This list is used in the queries. It can contain atoms from different structures.
           *bucket_size*
-            bucket size of KD tree. You can play around with this to optimize speed if you feel like it. 
+            bucket size of KD tree. You can play around with this to optimize speed if you feel like it.
         """
         self.atom_list=atom_list
         if not hasattr(atom_list,'coordinates'):
             raise TypeError('atom_list must have a coordinates() method '
                             '(eg a AtomGroup resulting from a Selection)')
         CoordinateNeighborSearch.__init__(self,atom_list.coordinates(),bucket_size=bucket_size)
-    
+
     def search(self, center, radius, level="A"):
         """Neighbor search.
 
@@ -214,7 +214,7 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
         self.kdt.list_search(other.coordinates(), radius)
         indices=self.kdt.list_get_indices()
         return self._index2level(indices,level)
-        
+
     def _index2level(self,indices,level):
         if not level in entity_levels:
             raise ValueError("%s: Unknown level" % level)
@@ -232,12 +232,12 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
             return list(segments)
         else:
             raise NotImplementedError("level=%s not implemented" % level)
-            
+
     def search_all(self, radius, level="A"):
         """All neighbor search.
 
         Search all entities that have atoms pairs within
-        *radius*. 
+        *radius*.
 
         :Arguments:
           *radius*
@@ -273,7 +273,7 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
         unique_pairs = set([
                 sets.ImmutableSet((a1.__getattribute__(entity),
                                    a2.__getattribute__(entity)))
-                for a1,a2 in atom_pair_list 
+                for a1,a2 in atom_pair_list
                 if a1.__getattribute__(entity) != a2.__getattribute__(entity)])
         return [tuple(s) for s in unique_pairs]  # return as list of 2-tuples
 
@@ -313,7 +313,7 @@ if __name__=="__main__":
         print "Found ", len(ns.search_all(5.0))
 
 
-            
 
-                
-        
+
+
+

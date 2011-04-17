@@ -70,11 +70,11 @@ The `SciPy testing guidelines`_ are a good howto for writing test cases,
 especially as we are directly using this framework (imported from numpy).
 
 
-.. _nose: 
+.. _nose:
    http://somethingaboutorange.com/mrl/projects/nose/0.11.3/index.html
 .. _nose commandline options:
    http://somethingaboutorange.com/mrl/projects/nose/0.11.3/usage.html#extended-usage
-.. _SciPy testing guidelines: 
+.. _SciPy testing guidelines:
    http://projects.scipy.org/numpy/wiki/TestingGuidelines#id11
 .. _Charmm: http://www.charmm.org
 .. _Gromacs: http://www.gromacs.org

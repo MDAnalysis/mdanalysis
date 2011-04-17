@@ -42,17 +42,17 @@ from MDAnalysis.topology.core import guess_atom_element
 import warnings
 
 class Timestep(base.Timestep):
-	@property
-	def dimensions(self):
-	        """unitcell dimensions (`A, B, C, alpha, beta, gamma`)
+        @property
+        def dimensions(self):
+                """unitcell dimensions (`A, B, C, alpha, beta, gamma`)
 
-		- `A, B, C` are the lengths of the primitive cell vectors `e1, e2, e3`
-		- `alpha` = angle(`e1, e2`)
-		- `beta` = angle(`e1, e3`)
-		- `gamma` = angle(`e2, e3`)
-		"""
-		# Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
-		return self._unitcell
+                - `A, B, C` are the lengths of the primitive cell vectors `e1, e2, e3`
+                - `alpha` = angle(`e1, e2`)
+                - `beta` = angle(`e1, e3`)
+                - `gamma` = angle(`e2, e3`)
+                """
+                # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
+                return self._unitcell
     
 class PDBReader(base.Reader):
     """Read a pdb file into a BioPython pdb structure.
@@ -82,9 +82,9 @@ class PDBReader(base.Reader):
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1
-	#self.ts._unitcell[:] = ??? , from CRYST1?
-	self.ts = self._Timestep(pos)
-	del pos
+        #self.ts._unitcell[:] = ??? , from CRYST1?
+        self.ts = self._Timestep(pos)
+        del pos
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)             # in-place !
             

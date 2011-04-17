@@ -15,8 +15,8 @@ The following table lists the currently supported topology formats.
 =============  ==========  =====================================================
 Name           extension   remarks
 =============  ==========  =====================================================
-CHARMM/XPLOR   psf         reads either format, but only atoms and bonds 
-                           information is used at the moment; 
+CHARMM/XPLOR   psf         reads either format, but only atoms and bonds
+                           information is used at the moment;
                            :mod:`MDAnalysis.topology.PSFParser`
 
 CHARMM*        crd         "CARD" coordinate output from CHARMM; deals with
@@ -25,7 +25,7 @@ CHARMM*        crd         "CARD" coordinate output from CHARMM; deals with
 
 Brookhaven*    pdb         a simplified PDB format (as used in MD simulations)
                            is read by default; the full format can be read by
-                           supplying the `permissive=False` flag to 
+                           supplying the `permissive=False` flag to
                            :class:`MDAnalysis.Universe`;
                            :mod:`MDAnalysis.topology.PrimitivePDBParser` and
                            :mod:`MDAnalysis.topology.PDBParser`
@@ -37,7 +37,7 @@ PQR*           pqr         PDB-like but whitespace-separated files with charge
 GROMOS96*      gro         GROMOS96 coordinate file;
                            :mod:`MDAnalysis.topology.GROParser`
 
-Amber          top         simple Amber format read (only supports a subset of 
+Amber          top         simple Amber format read (only supports a subset of
                prmtop      flags);
                            :mod:`MDAnalysis.topology.TOPParser`
 =============  ==========  =====================================================
@@ -66,6 +66,6 @@ _topology_parsers = {'PSF': PSFParser.parse,
                      'CRD': CRDParser.parse,
                      'TOP': TOPParser.parse,
                      'PRMTOP': TOPParser.parse,
-		     }
+                     }
 _topology_parsers_permissive = _topology_parsers.copy()
 _topology_parsers_permissive['PDB'] = PrimitivePDBParser.parse
