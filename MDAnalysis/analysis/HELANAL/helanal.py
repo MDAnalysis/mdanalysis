@@ -10,7 +10,66 @@ Rewritten for clarity.
 
 from __future__ import with_statement
 
-from CartesianToolkit import *
+#from CartesianToolkit import *
+import numpy
+
+# replace CartesianToolkit with NumPy
+# - vecscale(v,a) --> a*c
+# - vecadd(a,b) --> a+b
+# - vecsub(a,b) --> a-b
+try:
+	from numpy import rad2deg, deg2rad   # numpy 1.3+
+except ImportError:
+	def rad2deg(x):             # no need for the numpy out=[] argument 
+		return 180.0*x/numpy.pi
+	def deg2rad(x):             # no need for the numpy out=[] argument 
+		return x*numpy.pi/180.0
+
+def center(coordinates):
+	"""Return the geometric center (centroid) of the coordinates.
+
+	Coordinates must be "list of cartesians", i.e. a Nx3 array.
+	"""
+	return numpy.mean(coordinates, axis=0)
+
+def veclength(v):
+	"""Length of vector *v*."""
+	# note: this is 3 times faster than numpy.linalg.norm
+	return numpy.sqrt(numpy.dot(v,v))
+
+vecscaler = numpy.dot
+
+def vecnorm(a):
+	"""Return a/|a|"""
+	return a/veclength(a)
+
+def vecangle(a,b):
+	"""Angle between two vectors *a* and *b* in degrees.
+	
+	If one of the lengths is 0 then the angle is returned as 0
+	(instead of `nan`).
+	"""
+	angle = numpy.arccos(numpy.dot(a,b) / (veclength(a)*veclength(b)))
+	if numpy.isnan(angle):
+		return 0.0
+	return rad2deg(angle)
+
+def vecdist(a,b):
+	"""Return |a-b|"""
+	return veclength(a-b)
+
+veccross = numpy.cross
+
+def wrapangle(angle):
+	"""Wrap angle (in radians) to be within -pi < angle =< pi"""
+	if angle > numpy.pi:
+		angle -= 2*numpy.pi
+	elif angle =< -numpy.pi:
+		angle += 2*numpy.pi
+	return angle
+	
+	
+
 #import math, numpy, sys
 import math,sys,os
 try:
@@ -18,7 +77,7 @@ try:
 except:
 	import xtcio
 import ndxio
-import numpy
+
 
 try:
 	import psyco
@@ -357,12 +416,12 @@ def main_loop(positions):
 	local_helix_axes = []
 	location_rotation_vectors = []
 	for i in range(len(positions)-3):
-		vec12 = vecsub(positions[i+1],positions[i])
-		vec23 = vecsub(positions[i+2],positions[i+1])
-		vec34 = vecsub(positions[i+3],positions[i+2])
+		vec12 = positions[i+1]- positions[i]
+		vec23 = positions[i+2] -positions[i+1]
+		vec34 = positions[i+3] -positions[i+2]
 		
-		dv13 = vecsub(vec12,vec23)
-		dv24 = vecsub(vec23,vec34)
+		dv13 = vec12 - vec23
+		dv24 = vec23 - vec34
 		
 		#direction of the local helix axis
 		current_uloc = vecnorm(veccross(dv13,dv24))
@@ -466,13 +525,14 @@ def rotation_angle(helix_vector,axis_vector,rotation_vector):
 	return screw_angle
 
 def vector_of_best_fit(origins):
+	origins = numpy.asarray(origins)
 	centroids = center(origins)
-	M = numpy.matrix([vecsub(item,centroids) for item in origins])
+	M = numpy.matrix(origins - centroids)
 	A = M.transpose() * M
 	u,s,vh=numpy.linalg.linalg.svd(A)
 	vector = vh[0].tolist()[0]
 	#Correct vector to face towards first residues
-	rough_helix = vecsub(origins[0],centroids)
+	rough_helix = origins[0] - centroids
 	agreement = vecangle(rough_helix,vector)
 	if agreement < math.pi/2 and agreement > -math.pi/2:
 		pass
@@ -519,12 +579,13 @@ def fit(origins):
 def index_cartesians(index_list,frame):
 	return [frame[item] for item in index_list]	
 
-def mean(some_list):
-	return sum(some_list)/len(some_list)
-def sample_sd(some_list,mean):
-	return (sum([(item - mean)**2 for item in some_list])/(len(some_list)-1))**0.5
-def mean_abs_dev(some_list,mean):
-	return sum([math.fabs(item - mean) for item in some_list])/len(some_list)
+from numpy import mean
+def sample_sd(a, dummy):
+	return numpy.std(a, ddof=1)
+def mean_abs_dev(a,mean_a=None):
+	if mean_a is None:
+		mean_a = mean(a)
+	return mean(numpy.fabs(a - mean_a))
 		
 def get_backbone_positions(pdbdata):
 	positions = []

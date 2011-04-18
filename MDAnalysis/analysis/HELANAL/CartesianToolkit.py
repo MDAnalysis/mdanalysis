@@ -7,32 +7,40 @@ def center(list_of_coordinates):
 	return [sum(cart)/float(len(cart)) for  cart in transposed_list]
 	
 def vecsub(cart_list_a, cart_list_b):
+	"""a - b"""
 	zipped_carts = zip(cart_list_a, cart_list_b)
 	return [(cart[0] - cart[1]) for cart in zipped_carts]
 
 def vecadd(cart_list_a, cart_list_b):
+	"""a + b"""
 	zipped_carts = zip(cart_list_a, cart_list_b)
 	return [(cart[0] + cart[1]) for cart in zipped_carts]
 
 def veclength(cart_list):
+	"""|a|"""
 	squares = [cart ** 2 for cart in cart_list]
 	return float(sum(squares))**0.5
 	
 def vecnorm(cart_list):
+	"""a/|a|"""
 	length = veclength(cart_list)
 	return [cart/length for cart in cart_list]
 	
 def vecscaler(cart_list_a,cart_list_b):
+	"""a.b"""
 	return sum([cart[0] * cart[1] for cart in zip(cart_list_a,cart_list_b)])
 	
 def vecscale(cart_list,value):
+	"""value * a"""
 	return [(item * value) for item in cart_list]
 
 def vecangle(cart_list_a,cart_list_b):
+	"""angle(a,b)"""
 	length_product = veclength(cart_list_a) * veclength(cart_list_b)
 	return math.acos(round(vecscaler(cart_list_a,cart_list_b)/length_product,8))
 
 def vecdist(cart_list_a,cart_list_b):
+	"""|a-b|"""
 	relating_vector = vecsub(cart_list_a, cart_list_b)
 	return veclength(relating_vector)
 	
