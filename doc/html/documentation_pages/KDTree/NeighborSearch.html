@@ -64,7 +64,7 @@ selections.</p>
 <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span><span class="n">dcd</span><span class="p">)</span>
 <span class="n">water</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;name OH2&#39;</span><span class="p">)</span>
 <span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;protein&#39;</span><span class="p">)</span>
- 
+
 <span class="c"># when analyzing a trajectory, carry out the next two steps</span>
 <span class="c"># for every frame</span>
 <span class="n">ns_w</span> <span class="o">=</span> <span class="n">NS</span><span class="o">.</span><span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="n">water</span><span class="p">)</span>
@@ -75,9 +75,9 @@ selections.</p>
 <dt id="MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.KDTree.NeighborSearch.</tt><tt class="descname">AtomNeighborSearch</tt><big>(</big><em>atom_list</em>, <em>bucket_size=10</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class can be used for two related purposes:</p>
-<p>1. To find all atoms/residues/segments within radius 
+<p>1. To find all atoms/residues/segments within radius
 of a given query position.</p>
-<p>2. To find all atoms/residues/segments that are within 
+<p>2. To find all atoms/residues/segments that are within
 a fixed radius of each other.</p>
 <p>AtomNeighborSearch makes use of the KDTree C++ module, so it&#8217;s fast.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -86,7 +86,7 @@ a fixed radius of each other.</p>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>atom_list</em></dt>
-<dd><p class="first last">list of atoms (<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>) or a 
+<dd><p class="first last">list of atoms (<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>) or a
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>.
 This list is used in the queries. It can contain atoms from different structures.</p>
 </dd>
@@ -196,9 +196,9 @@ R=residues, S=Segments).</p>
 <dt id="MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.KDTree.NeighborSearch.</tt><tt class="descname">CoordinateNeighborSearch</tt><big>(</big><em>coordinates</em>, <em>bucket_size=10</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class can be used for two related purposes:</p>
-<p>1. To find all indices of a coordinate list within radius 
+<p>1. To find all indices of a coordinate list within radius
 of a given query position.</p>
-<p>2. To find all indices of a coordinate list that are within 
+<p>2. To find all indices of a coordinate list that are within
 a fixed radius of each other.</p>
 <p>CoordinateNeighborSearch makes use of the KDTree C++ module, so it&#8217;s fast.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -242,7 +242,7 @@ one atom within <em>radius</em> of <em>center</em>.</p>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>distances </dt>
+<dt>distances</dt>
 <dd><p class="first last">bool  <tt class="xref docutils literal"><span class="pre">True</span></tt>: return (indices,distances); <tt class="xref docutils literal"><span class="pre">False</span></tt>: return indices only</p>
 </dd>
 </dl>

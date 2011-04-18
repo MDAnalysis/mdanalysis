@@ -185,11 +185,11 @@ to change this behavior through the <em>subselection</em> keyword.)</li>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>mobile</em></dt>
-<dd><p class="first last">structure to be aligned, a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> 
+<dd><p class="first last">structure to be aligned, a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>
 or a whole <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a></p>
 </dd>
 <dt><em>reference</em></dt>
-<dd><p class="first last">reference structure, a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> 
+<dd><p class="first last">reference structure, a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>
 or a whole <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a></p>
 </dd>
 <dt><em>select</em></dt>
@@ -197,7 +197,7 @@ or a whole <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis
 <li>any valid selection string for
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms" title="MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms"><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt></a> that produces identical
 selections in <em>mobile</em> and <em>reference</em>; or</li>
-<li>dictionary <tt class="docutils literal"><span class="pre">{'mobile':sel1,</span> <span class="pre">'reference':sel2}</span></tt>.  
+<li>dictionary <tt class="docutils literal"><span class="pre">{'mobile':sel1,</span> <span class="pre">'reference':sel2}</span></tt>.
 The <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
 dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment.</li>
 <li>tuple <tt class="docutils literal"><span class="pre">(sel1,</span> <span class="pre">sel2)</span></tt></li>
@@ -212,7 +212,7 @@ RMSD fit.</p>
 <dl class="last docutils">
 <dt><tt class="xref docutils literal"><span class="pre">None</span></tt> [default]</dt>
 <dd><p class="first last">Apply to <cite>mobile.universe.atoms</cite> (i.e. all atoms in the
-context of the selection from <em>mobile</em> such as the rest of a 
+context of the selection from <em>mobile</em> such as the rest of a
 protein, ligands and the surrounding water)</p>
 </dd>
 <dt><em>selection-string</em></dt>
@@ -274,7 +274,7 @@ sequence of resids as they appear in the psf in <em>ref_resids</em> or
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt><em>fastafilename</em>    </dt>
+<dt><em>fastafilename</em></dt>
 <dd><p class="first last">FASTA file with first sequence as reference and
 second the one to be aligned (ORDER IS IMPORTANT!)</p>
 </dd>
@@ -299,7 +299,7 @@ to get the original residue number</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>select_dict</em>      </dt>
+<dt><em>select_dict</em></dt>
 <dd><p class="first last">dictionary with &#8216;reference&#8217; and &#8216;mobile&#8217; selection string
 that can be used immediately in <a class="reference internal" href="#MDAnalysis.analysis.align.rms_fit_trj" title="MDAnalysis.analysis.align.rms_fit_trj"><tt class="xref py py-func docutils literal"><span class="pre">rms_fit_trj()</span></tt></a> as
 <tt class="docutils literal"><span class="pre">select=select_dict</span></tt>.</p>
@@ -332,13 +332,13 @@ that can be used immediately in <a class="reference internal" href="#MDAnalysis.
 <li>any valid selection string for
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms" title="MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms"><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt></a> that produces identical
 selections in <em>traj</em> and <em>reference</em>; or</li>
-<li>dictionary <tt class="docutils literal"><span class="pre">{'reference':sel1,</span> <span class="pre">'mobile':sel2}</span></tt>.  
+<li>dictionary <tt class="docutils literal"><span class="pre">{'reference':sel1,</span> <span class="pre">'mobile':sel2}</span></tt>.
 The <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
 dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment.</li>
 </ul>
 </dd>
 <dt><em>filename</em></dt>
-<dd><p class="first last">file name for the RMS-fitted trajectory or pdb; defaults to the 
+<dd><p class="first last">file name for the RMS-fitted trajectory or pdb; defaults to the
 original trajectory filename (from <em>traj</em>) with <em>prefix</em> prepended</p>
 </dd>
 <dt><em>rmsdfile</em></dt>
@@ -401,7 +401,7 @@ reference structure):</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt><em>a</em>  </dt>
+<dt><em>a</em></dt>
 <dd><p class="first last">coordinates that are to be rotated (&#8220;mobile set&#8221;); array of N atoms
 of shape N*3 as generated by, e.g.,
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.coordinates" title="MDAnalysis.core.AtomGroup.AtomGroup.coordinates"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.coordinates()</span></tt></a>.</p>

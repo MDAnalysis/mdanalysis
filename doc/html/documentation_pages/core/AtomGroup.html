@@ -107,7 +107,7 @@ file unless a trajectory is supplied.</p>
 <dd>u = Universe(topology, trajectory)          # read system from file(s)
 u = Universe(pdbfile)                       # read atoms and coordinates from PDB or GRO
 u = Universe(topology, [traj1, traj2, ...]) # read from a list of trajectories</dd>
-<dt>Load new data into a universe (replaces old trajectory and does <em>not</em> append): </dt>
+<dt>Load new data into a universe (replaces old trajectory and does <em>not</em> append):</dt>
 <dd>u.load_new(trajectory)                      # read from a new trajectory file</dd>
 </dl>
 <p>Select atoms, with syntax similar to CHARMM (see</p>
@@ -117,11 +117,11 @@ u = Universe(topology, [traj1, traj2, ...]) # read from a list of trajectories</
 <dd><blockquote class="first">
 u.selectAtoms(...)</blockquote>
 <dl class="docutils">
-<dt>Attributes: </dt>
+<dt>Attributes:</dt>
 <dd><ul class="first last simple">
-<li><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.trajectory" title="MDAnalysis.core.AtomGroup.Universe.trajectory"><tt class="xref py py-attr docutils literal"><span class="pre">Universe.trajectory</span></tt></a>: currently loaded trajectory reader; 
+<li><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.trajectory" title="MDAnalysis.core.AtomGroup.Universe.trajectory"><tt class="xref py py-attr docutils literal"><span class="pre">Universe.trajectory</span></tt></a>: currently loaded trajectory reader;
 <tt class="xref py py-attr docutils literal"><span class="pre">Universe.trajectory.ts</span></tt> is the current time step</li>
-<li><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.dimensions" title="MDAnalysis.core.AtomGroup.Universe.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Universe.dimensions</span></tt></a>: current system dimensions (simulation unit cell, if 
+<li><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.dimensions" title="MDAnalysis.core.AtomGroup.Universe.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Universe.dimensions</span></tt></a>: current system dimensions (simulation unit cell, if
 set in the trajectory)</li>
 <li>bonds, angles, dihedrals, impropers (low level access through <tt class="xref py py-attr docutils literal"><span class="pre">Universe._psf</span></tt>)</li>
 </ul>
@@ -131,7 +131,7 @@ set in the trajectory)</li>
 <p class="first admonition-title">Note</p>
 <p class="last">Only a single-frame PDB file is supported; use DCDs or XTC/TRR for
 trajectories or supply a list of PDB files as the trajectory argument.
-If a PDB is used instead of a PSF then charges are not correct, masses 
+If a PDB is used instead of a PSF then charges are not correct, masses
 are guessed, and bonds are not available.</p>
 </div>
 </dd>
@@ -159,7 +159,7 @@ formats.</p>
 <dt><em>permissive</em></dt>
 <dd><p class="first last">currently only relevant for PDB files: Set to <tt class="xref docutils literal"><span class="pre">True</span></tt> in order to ignore most errors
 and read typical MD simulation PDB files; set to <tt class="xref docutils literal"><span class="pre">False</span></tt> to read with the Bio.PDB reader,
-which can be useful for real Protein Databank PDB files. <tt class="xref docutils literal"><span class="pre">None</span></tt>  selects the 
+which can be useful for real Protein Databank PDB files. <tt class="xref docutils literal"><span class="pre">None</span></tt>  selects the
 MDAnalysis default (which is set in <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt>) [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
@@ -168,10 +168,10 @@ MDAnalysis default (which is set in <tt class="xref py py-class docutils literal
 </tbody>
 </table>
 <dl class="docutils">
-<dt>This routine tries to do the right thing: </dt>
+<dt>This routine tries to do the right thing:</dt>
 <dd><ol class="first last arabic">
 <li><p class="first">If a pdb/gro file is provided instead of a psf and no <em>coordinatefile</em>
-then the coordinates are taken from the first file. Thus you can load 
+then the coordinates are taken from the first file. Thus you can load
 a functional universe with</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s">&#39;1ake.pdb&#39;</span><span class="p">)</span>
 </pre></div>
@@ -220,14 +220,14 @@ all coordinates of the Universe as a numpy array:
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt><em>filename</em> </dt>
+<dt><em>filename</em></dt>
 <dd><p class="first last">the coordinate file (single frame or trajectory) OR a list of
 filenames, which are read one after another</p>
 </dd>
 <dt><em>permissive</em></dt>
 <dd><p class="first last">currently only relevant for PDB files: Set to <tt class="xref docutils literal"><span class="pre">True</span></tt> in order to ignore most errors
 and read typical MD simulation PDB files; set to <tt class="xref docutils literal"><span class="pre">False</span></tt> to read with the Bio.PDB reader,
-which can be useful for real Protein Databank PDB files. <tt class="xref docutils literal"><span class="pre">None</span></tt>  selects the 
+which can be useful for real Protein Databank PDB files. <tt class="xref docutils literal"><span class="pre">None</span></tt>  selects the
 MDAnalysis default (which is set in <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt>) [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -280,7 +280,7 @@ not work for esoteric residues</dd>
 <dd>single argument describing selection, resid can take a range of
 numbers separated by a colon (inclusive) ie &#8220;segid DMPC&#8221;, &#8220;resname
 LYS&#8221;, &#8220;name CA&#8221;, &#8220;resid 1:5&#8221;</dd>
-<dt>atom </dt>
+<dt>atom</dt>
 <dd>a selector for a single atom consisting of segid resid atomname ie
 &#8220;DMPC 1 C2&#8221; selects the C2 carbon of the first residue of the DMPC
 segment</dd>
@@ -374,7 +374,7 @@ ag = universe.selectAtoms(atom-list)</blockquote>
 from a selection. It is build from any list-like collection of
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
 <p>An AtomGroup can be indexed and sliced like a list:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">ag</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ag</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>   
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ag</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ag</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>will return the first and the last <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> in the group
@@ -383,7 +383,7 @@ whereas the slice</p>
 ag[0:6:2]</blockquote>
 <p>returns every second element, corresponding to indices 0, 2, and 4.</p>
 <p>It also supports &#8220;advanced slicing&#8221; when the argument is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-7134a93)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-fe3852f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aslice</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">ag</span><span class="p">[</span><span class="n">aslice</span><span class="p">]</span>
 </pre></div>
@@ -418,7 +418,7 @@ scripts but is much better for interactive work.</p>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Data :</th><td class="field-body"><dl class="first last docutils">
 <dt>atoms</dt>
-<dd><p class="first last">The AtomGroup itself; provided for unified access across the hierarchy. 
+<dd><p class="first last">The AtomGroup itself; provided for unified access across the hierarchy.
 Use <tt class="xref py py-attr docutils literal"><span class="pre">_atoms</span></tt> if you really only need a list.</p>
 </dd>
 <dt>_atoms</dt>
@@ -764,10 +764,10 @@ these modifications will be present until the frame number changes
 <dd><p class="first last"><tt class="xref docutils literal"><span class="pre">None</span></tt>: create TRJNAME_FRAME.FORMAT from filenamefmt [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>format</em></dt>
-<dd><p class="first last">PDB, CRD, GRO; case-insensitive and can also be supplied as 
+<dd><p class="first last">PDB, CRD, GRO; case-insensitive and can also be supplied as
 the filename extension [PDB]</p>
 </dd>
-<dt><em>filenamefmt</em>   </dt>
+<dt><em>filenamefmt</em></dt>
 <dd><p class="first last">format string for default filename; use substitution tokens
 &#8216;trjname&#8217; and &#8216;frame&#8217; [&#8220;%(trjname)s_%(frame)d&#8221;]</p>
 </dd>
@@ -961,7 +961,7 @@ file with the <a class="reference internal" href="../coordinates/PQR.html#MDAnal
 <dl class="docutils">
 <dt>Pythonic access to residues:</dt>
 <dd><ul class="first last">
-<li><p class="first">The attribute rN returns the N-th residue <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> of the 
+<li><p class="first">The attribute rN returns the N-th residue <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> of the
 segment (numbering starts at N=1). Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
@@ -1004,7 +1004,7 @@ chain identifier when loaded from a PDB</td>
 <dt>Pythonic access to segments:</dt>
 <dd><ul class="first">
 <li><p class="first">Using a segid as attribute returns the segment. Because
-of python language rule, any segid starting with a non-letter 
+of python language rule, any segid starting with a non-letter
 character is prefixed with &#8216;s&#8217;, thus &#8216;4AKE&#8217; &#8211;&gt; &#8216;s4AKE&#8217;.
 Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span>

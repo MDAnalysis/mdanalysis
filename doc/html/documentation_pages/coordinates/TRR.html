@@ -172,6 +172,13 @@ any reason the trajectory cannot be read then 0 is returned.</p>
 <dd><p>Time between two trajectory frames in picoseconds.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.frame">
+<tt class="descname">frame</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frame number of the current time step.</p>
+<p>This is a simple short cut to <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.frame</span></tt>.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.next">
 <tt class="descname">next</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.next" title="Permalink to this definition">¶</a></dt>
@@ -206,7 +213,7 @@ iterating through the whole trajectory.</p>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Returns :</th><td class="field-body">pointer to XDRFILE (and sets self.xdrfile)</td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> with code EALREADY if file was already opened or 
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> with code EALREADY if file was already opened or
 ENOENT if the file cannot be found</td>
 </tr>
 </tbody>
@@ -217,6 +224,13 @@ ENOENT if the file cannot be found</td>
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.rewind">
 <tt class="descname">rewind</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.rewind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Position at beginning of trajectory</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.time">
+<tt class="descname">time</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time of the current frame in MDAnalysis time units (typically ps).</p>
+<p>time = <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.frame</span></tt> * <tt class="xref py py-attr docutils literal"><span class="pre">Reader.dt</span></tt></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -259,7 +273,7 @@ ENOENT if the file cannot be found</td>
 <dt><em>precision</em></dt>
 <dd><p class="first last">accuracy for lossy XTC format [1000]</p>
 </dd>
-<dt><em>convert_units</em> </dt>
+<dt><em>convert_units</em></dt>
 <dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: units are converted to the MDAnalysis base format; <tt class="xref docutils literal"><span class="pre">None</span></tt> selects
 the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a>MDAnalysis.core.flags`[&#8216;convert_gromacs_lengths&#8217;]</p>
 </dd>
@@ -305,10 +319,38 @@ the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.has_valid_coordinates">
+<tt class="descname">has_valid_coordinates</tt><big>(</big><em>criteria</em>, <em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.has_valid_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if all values are within limit values of their formats.</p>
+<p>Due to rounding, the test is asymmetric (and <em>min</em> is supposed to be negative):</p>
+<blockquote>
+min &lt; x &lt;= max</blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>criteria</em></dt>
+<dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
+</dd>
+<dt><em>x</em></dt>
+<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-fe3852f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write">
 <tt class="descname">write</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write current timestep, using the supplied <em>obj</em>.</p>
-<p>The argument should be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or 
+<p>The argument should be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or
 a <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> or a <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -365,7 +407,7 @@ be written to trajectory file</p>
 <dt><em>precision</em></dt>
 <dd><p class="first last">accuracy for lossy XTC format [1000]</p>
 </dd>
-<dt><em>convert_units</em> </dt>
+<dt><em>convert_units</em></dt>
 <dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: units are converted to the MDAnalysis base format; <tt class="xref docutils literal"><span class="pre">None</span></tt> selects
 the value of :data:<a href="#id3"><span class="problematic" id="id4">`</span></a>MDAnalysis.core.flags`[&#8216;convert_gromacs_lengths&#8217;]</p>
 </dd>

@@ -205,6 +205,7 @@ I/O code can be written in C or python or a mixture thereof.</p>
 <li>2010-10-30 clarified Writer write() methods (see also <a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=49">Issue 49</a>)</li>
 <li>2011-02-01 extended call signatur of Reader class</li>
 <li>2011-03-30 optional Writer() method for Readers</li>
+<li>2011-04-18 added time and frame managed attributes to Reader</li>
 </ul>
 </div>
 <div class="section" id="registry">
@@ -242,7 +243,7 @@ different ways:</p>
 <dd>empty Timestep for <em>arg</em> atoms (allocate arrays etc)</dd>
 <dt><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></dt>
 <dd>makes a deep copy of the <em>arg</em></dd>
-<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-7134a93)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
+<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-fe3852f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
 <dd>update the Timesteps positions array with the contents of <em>arg</em></dd>
 </dl>
 </blockquote>
@@ -372,7 +373,7 @@ restricted to sequential iteration.</p>
 </dd>
 <dt><tt class="docutils literal"><span class="pre">Writer(filename,</span> <span class="pre">**kwargs)</span></tt></dt>
 <dd><p class="first">returns a <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Writer" title="MDAnalysis.coordinates.base.Writer"><tt class="xref py py-class docutils literal"><span class="pre">Writer</span></tt></a> which is set up with
-the same parameters as the trajectory that is being read (e.g. time step, 
+the same parameters as the trajectory that is being read (e.g. time step,
 length etc), which facilitates copying and simple on-the-fly manipulation.</p>
 <p>If no Writer is defined then a <tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt> is raised.</p>
 <p class="last">The <em>kwargs</em> can be used to customize the Writer as they are typically
@@ -425,6 +426,10 @@ on the fly <tt class="docutils literal"><span class="pre">skip_timestep</span> <
 unit for time (pico seconds by default)</dd>
 <dt><tt class="docutils literal"><span class="pre">totaltime</span></tt></dt>
 <dd>total length of the trajectory = <tt class="docutils literal"><span class="pre">numframes</span> <span class="pre">*</span> <span class="pre">dt</span></tt></dd>
+<dt><tt class="docutils literal"><span class="pre">time</span></tt></dt>
+<dd>time of the current time step, in MDAnalysis time units (ps)</dd>
+<dt><tt class="docutils literal"><span class="pre">frame</span></tt></dt>
+<dd>frame number of the current time step</dd>
 </dl>
 </blockquote>
 <p><strong>Optional attributes</strong></p>

@@ -60,7 +60,7 @@ following is adopted from the description of the <a class="reference external" h
 <p><em>MDAnalysis</em> reads very loosely-formatted PQR files: all fields are
 <strong>whitespace-delimited</strong> rather than the strict column formatting mandated
 by the <a class="reference external" href="http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards">PDB</a> format. This more liberal formatting allows coordinates
-which are larger/smaller than ±999 Å.</p>
+which are larger/smaller than Â±999 Ã….</p>
 <p>MDAnalysis reads data on a per-line basis from PQR files using the following format:</p>
 <div class="highlight-python"><pre>recordName serial atomName residueName chainID residueNumber X Y Z charge radius</pre>
 </div>
@@ -91,7 +91,7 @@ atoms so one cannot rely on the <em>serial</em>)</dd>
 <dt><em>charge</em></dt>
 <dd>A float which provides the atomic charge (in electrons).</dd>
 <dt><em>radius</em></dt>
-<dd>A float which provides the atomic radius (in Å).</dd>
+<dd>A float which provides the atomic radius (in Ã…).</dd>
 </dl>
 <p>Clearly, this format can deviate wildly from <a class="reference external" href="http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards">PDB</a> due to the use of whitespaces
 rather than specific column widths and alignments. This deviation can be

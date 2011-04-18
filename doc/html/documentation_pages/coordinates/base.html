@@ -74,7 +74,7 @@ module. The derived classes must follow the Trajectory API in
 <dd><p class="first last">frame number</p>
 </dd>
 <dt><tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt></dt>
-<dd><p class="first">coordinates as a (<em>numatoms</em>,3) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-7134a93)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype
+<dd><p class="first">coordinates as a (<em>numatoms</em>,3) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-fe3852f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype
 <tt class="xref py py-data docutils literal"><span class="pre">float32</span></tt>.</p>
 <div class="last admonition note">
 <p class="first admonition-title">Note</p>
@@ -179,8 +179,8 @@ are in the MDAnalysis length unit, and angles are in degrees.</p>
 <dt id="MDAnalysis.coordinates.base.Reader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">Reader</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for trajectory readers.</p>
-<p>See Trajectory API definition in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for
-the required attributes and methods.</p>
+<p>See the <a class="reference internal" href="init.html#trajectory-api"><em>Trajectory API</em></a> definition in
+<a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for the required attributes and methods.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Reader.Writer">
 <tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader.Writer" title="Permalink to this definition">¶</a></dt>
@@ -193,6 +193,13 @@ the required attributes and methods.</p>
 <dd><p>Time between two trajectory frames in picoseconds.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Reader.frame">
+<tt class="descname">frame</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader.frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frame number of the current time step.</p>
+<p>This is a simple short cut to <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.frame</span></tt>.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Reader.next">
 <tt class="descname">next</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader.next" title="Permalink to this definition">¶</a></dt>
@@ -203,6 +210,13 @@ the required attributes and methods.</p>
 <dt id="MDAnalysis.coordinates.base.Reader.rewind">
 <tt class="descname">rewind</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader.rewind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Position at beginning of trajectory</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Reader.time">
+<tt class="descname">time</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time of the current frame in MDAnalysis time units (typically ps).</p>
+<p>time = <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.frame</span></tt> * <a class="reference internal" href="#MDAnalysis.coordinates.base.Reader.dt" title="MDAnalysis.coordinates.base.Reader.dt"><tt class="xref py py-attr docutils literal"><span class="pre">Reader.dt</span></tt></a></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -226,10 +240,38 @@ the required attributes and methods.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.coordinates.base.Writer.has_valid_coordinates">
+<tt class="descname">has_valid_coordinates</tt><big>(</big><em>criteria</em>, <em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.has_valid_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if all values are within limit values of their formats.</p>
+<p>Due to rounding, the test is asymmetric (and <em>min</em> is supposed to be negative):</p>
+<blockquote>
+min &lt; x &lt;= max</blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>criteria</em></dt>
+<dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
+</dd>
+<dt><em>x</em></dt>
+<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-fe3852f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.coordinates.base.Writer.write">
 <tt class="descname">write</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write current timestep, using the supplied <em>obj</em>.</p>
-<p>The argument should be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or 
+<p>The argument should be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or
 a <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> or a <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>

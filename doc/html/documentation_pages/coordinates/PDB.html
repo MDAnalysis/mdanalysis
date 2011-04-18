@@ -61,7 +61,7 @@ instead of PSF file in order to define the list of atoms (but no
 connectivity information will be  available in this case).</p>
 <p>The <tt class="xref py py-mod docutils literal"><span class="pre">PDB</span></tt> module makes heavy use of Biopython&#8217;s <tt class="xref py py-mod docutils literal"><span class="pre">Bio.PDB</span></tt>:</p>
 <blockquote>
-<p>Hamelryck, T., Manderick, B. (2003) PDB parser and structure class 
+<p>Hamelryck, T., Manderick, B. (2003) PDB parser and structure class
 implemented in Python. Bioinformatics, 19, 2308-2310.</p>
 <p><a class="reference external" href="http://biopython.org">http://biopython.org</a></p>
 </blockquote>
@@ -98,7 +98,7 @@ object superficially resembles the DCDReader object.</p>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PDBWriter</span></tt></a> &#8216;s <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter.write" title="MDAnalysis.coordinates.PDB.PDBWriter.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method always requires a 
+<p class="last">This <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PDBWriter</span></tt></a> &#8216;s <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter.write" title="MDAnalysis.coordinates.PDB.PDBWriter.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method always requires a
 <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt> as an argument (it is not optional anymore when the Writer
 is obtained through this method of <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><tt class="xref py py-class docutils literal"><span class="pre">PDBReader</span></tt></a>.)</p>
 </div>
@@ -124,10 +124,10 @@ used) or if this is really only an atom selection (then a less
 sophistiocated writer is employed).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The standard PDBWriter can only write the <em>whole system</em>. 
-In order to write a selection, use the <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a>, 
+<p class="last">The standard PDBWriter can only write the <em>whole system</em>.
+In order to write a selection, use the <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a>,
 which happens automatically when the
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.write" title="MDAnalysis.core.AtomGroup.AtomGroup.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method of a 
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.write" title="MDAnalysis.core.AtomGroup.AtomGroup.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method of a
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> instance is used.</p>
 </div>
 <p>pdbwriter = PDBWriter(&lt;pdbfilename&gt;,universe=universe,**kwargs)
@@ -339,7 +339,7 @@ True: write all frames to multiple pdb files</blockquote>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM">
 <tt class="descname">ATOM</tt><big>(</big><em>serial=None</em>, <em>name=None</em>, <em>altLoc=None</em>, <em>resName=None</em>, <em>chainID=None</em>, <em>resSeq=None</em>, <em>iCode=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em>, <em>occupancy=1.0</em>, <em>tempFactor=0.0</em>, <em>segID=None</em>, <em>element=None</em>, <em>charge=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write ATOM record. 
+<dd><p>Write ATOM record.
 <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html">http://www.wwpdb.org/documentation/format32/sect9.html</a>
 Only some keword args are optional (altLoc, iCode, chainID), for some defaults are set.</p>
 <p>All inputs are cut to the maximum allowed length. For integer
@@ -394,7 +394,7 @@ are chopped.</p>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The first letter of the <tt class="xref py py-attr docutils literal"><span class="pre">segid</span></tt> 
+<p class="last">The first letter of the <tt class="xref py py-attr docutils literal"><span class="pre">segid</span></tt>
 is used as the PDB chainID.</p>
 </div>
 </dd></dl>

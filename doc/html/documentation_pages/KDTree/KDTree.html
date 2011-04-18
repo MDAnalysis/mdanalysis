@@ -58,8 +58,8 @@
 <p>The KD tree data structure can be used for all kinds of searches that
 involve N-dimensional vectors, e.g.  neighbor searches (find all points
 within a radius of a given point) or finding all point pairs in a set
-that are within a certain radius of each other. See &#8220;Computational Geometry: 
-Algorithms and Applications&#8221; (Mark de Berg, Marc van Kreveld, Mark Overmars, 
+that are within a certain radius of each other. See &#8220;Computational Geometry:
+Algorithms and Applications&#8221; (Mark de Berg, Marc van Kreveld, Mark Overmars,
 Otfried Schwarzkopf). Author: Thomas Hamelryck.</p>
 <dl class="class">
 <dt id="MDAnalysis.KDTree.KDTree.KDTree">
@@ -74,11 +74,11 @@ that are within a certain radius of each other.</p>
 Second Edition
 Mark de Berg, Marc van Kreveld, Mark Overmars, Otfried Schwarzkopf
 published by Springer-Verlag
-2nd rev. ed. 2000. 
+2nd rev. ed. 2000.
 ISBN: 3-540-65620-0</p>
 <p>The KD tree data structure is described in chapter 5, pg. 99.</p>
-<p>The following article made clear to me that the nodes should 
-contain more than one point (this leads to dramatic speed 
+<p>The following article made clear to me that the nodes should
+contain more than one point (this leads to dramatic speed
 improvements for the &#8220;all fixed radius neighbor search&#8221;, see
 below):</p>
 <p>JL Bentley, &#8220;Kd trees for semidynamic point sets,&#8221; in Sixth Annual ACM
@@ -142,7 +142,7 @@ these indices were within radius of center.</p>
 <dt id="MDAnalysis.KDTree.KDTree.KDTree.search">
 <tt class="descname">search</tt><big>(</big><em>center</em>, <em>radius</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search all points within radius of center.</p>
-<p>o center - one dimensional numpy array. E.g. if the 
+<p>o center - one dimensional numpy array. E.g. if the
 points have dimensionality D, the center array should have length D.
 o radius - float&gt;0</p>
 <p>center is always cast to numpy.float32</p>
@@ -152,8 +152,8 @@ o radius - float&gt;0</p>
 <dt id="MDAnalysis.KDTree.KDTree.KDTree.set_coords">
 <tt class="descname">set_coords</tt><big>(</big><em>coords</em><big>)</big><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.set_coords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add the coordinates of the points.</p>
-<p>o coords - two dimensional numpy array. E.g. if the 
-points have dimensionality D and there are N points, the coords 
+<p>o coords - two dimensional numpy array. E.g. if the
+points have dimensionality D and there are N points, the coords
 array should be NxD dimensional.</p>
 <p>The coords array is always cast to a numpy.float32 array.</p>
 </dd></dl>

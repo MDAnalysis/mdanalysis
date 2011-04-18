@@ -73,7 +73,7 @@
 method for calculating the minimum RMSD between two structures
 <a class="reference internal" href="#theobald2005">[Theobald2005]</a> and determining the optimal least-squares rotation
 matrix <a class="reference internal" href="#liu2010">[Liu2010]</a>.</p>
-<p>A full description of the method, along with the original C implementation can 
+<p>A full description of the method, along with the original C implementation can
 be found at <a class="reference external" href="http://theobald.brandeis.edu/qcp/">http://theobald.brandeis.edu/qcp/</a></p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -179,8 +179,8 @@ J. Comput. Chem. 31, 1561-1563.</td></tr>
 <ol class="last arabic">
 <li><p class="first">You MUST center the structures, coords1 and coords2, before calling this function.</p>
 </li>
-<li><p class="first">Please note how the structure coordinates are stored as 3xN arrays, 
-not Nx3 arrays as is also commonly used. The difference is 
+<li><p class="first">Please note how the structure coordinates are stored as 3xN arrays,
+not Nx3 arrays as is also commonly used. The difference is
 something like this for storage of a structure with 8 atoms:</p>
 <div class="highlight-python"><pre>Nx3: xyzxyzxyzxyzxyzxyzxyzxyz
 3xN: xxxxxxxxyyyyyyyyzzzzzzzz</pre>
