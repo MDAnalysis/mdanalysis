@@ -38,7 +38,10 @@ module. The derived classes must follow the Trajectory API in
 
 import itertools
 import os.path
+import warnings
+
 import numpy
+
 import MDAnalysis.core
 from MDAnalysis.core import units, flags
 from MDAnalysis.core.util import iterable, asiterable
@@ -183,17 +186,19 @@ class IObase(object):
         # close_trajectory() was the pre-0.7.0 way of closing a
         # trajectory; it is being kept around but user code should
         # use close() and not rely on close_trajectory()
+        warnings.warn("close_trajectory() will be removed in MDAnalysis 0.8. "
+                      "Use close() instead.", DeprecationWarning)
         pass
 
 class Reader(IObase):
     """Base class for trajectory readers.
 
-    See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
-    the required attributes and methods.
+    See the :ref:`Trajectory API` definition in
+    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and methods.
     """
 
-    #: supply the appropriate Timestep class, e.g.
-    #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC
+    #: The appropriate Timestep class, e.g.
+    #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.
     _Timestep = Timestep
 
     def __len__(self):
@@ -217,9 +222,32 @@ class Reader(IObase):
         """Total length of the trajectory numframes * dt."""
         return self.numframes * self.dt
 
+    @property
+    def frame(self):
+        """Frame number of the current time step.
+
+        This is a simple short cut to :attr:`Timestep.frame`.
+        """
+        return self.ts.frame
+
+    @property
+    def time(self):
+        """Time of the current frame in MDAnalysis time units (typically ps).
+
+        time = :attr:`Timestep.frame` * :attr:`Reader.dt`
+        """
+        try:
+            return self.ts.frame * self.dt
+        except KeyError:
+            # single frame formats fail with KeyError because they do not define
+            # a unit for time so we just always return 0 because time is a required
+            # attribute of the Reader
+            return 0.0
+
     def Writer(self, filename, **kwargs):
         """Returns a trajectory writer with the same properties as this trajectory."""
-        raise NotImplementedError("Sorry, there is no Writer for this format in MDAnalysis. Please file an enhancement request at http://code.google.com/p/mdanalysis/issues/")
+        raise NotImplementedError("Sorry, there is no Writer for this format in MDAnalysis. "
+                                  "Please file an enhancement request at http://code.google.com/p/mdanalysis/issues/")
 
     def _read_next_timestep(self, ts=None):
         # Example from DCDReader:
@@ -254,12 +282,16 @@ class Reader(IObase):
 class ChainReader(Reader):
     """Reader that concatenates multiple trajectories on the fly.
 
+    **Known issues**
+
     - indexing not implemented yet
 
     - Trajectory API attributes exist but most of them only reflect
       the first trajectory in the list; :attr:`ChainReader.numframes`,
       :attr:`ChainReader.numatoms`, and :attr:`ChainReader.fixed` are
       properly set, though
+
+    - Similarly, :attr:`time` and :attr:`frame` not implemented yet
     """
     format = 'CHAIN'
 
@@ -328,6 +360,15 @@ class ChainReader(Reader):
         except AttributeError:
             return None
 
+    # TODO: bookkeeping/accumulation
+    @property
+    def frame(self):
+        """Cumulative frame number of the current time step."""
+        raise NotImplementedError
+    @property
+    def time(self):
+        """Cumulative time of the current frame in MDAnalysis time units (typically ps)."""
+        raise NotImplementedError
 
     def _apply(self, method, **kwargs):
         """Execute *method* with *kwargs* for all readers."""

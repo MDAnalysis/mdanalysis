@@ -139,6 +139,7 @@ History
 - 2010-10-30 clarified Writer write() methods (see also `Issue 49`_)
 - 2011-02-01 extended call signatur of Reader class
 - 2011-03-30 optional Writer() method for Readers
+- 2011-04-18 added time and frame managed attributes to Reader
 
 .. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
 
@@ -362,6 +363,10 @@ Attributes
      unit for time (pico seconds by default)
  ``totaltime``
      total length of the trajectory = ``numframes * dt``
+ ``time``
+     time of the current time step, in MDAnalysis time units (ps)
+ ``frame``
+     frame number of the current time step
 
 **Optional attributes**
 

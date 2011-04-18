@@ -13,6 +13,12 @@ The rules for this file:
 ??/??/11 orbeckst, jandom
   * 0.7.3 development
 
+  Enhancements
+ 
+  * new attributes universe.trajectory.frame and universe.trajectory.frame:
+    report the current frame number and time (e.g. in ps) of the current frame
+    of the trajectory
+
   Change of behaviour
 
   * alignto() and rms_fit_trj(): changed keyword 'select' default from

@@ -261,6 +261,16 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_numframes(self):
         assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames in pdb")
 
+    def test_time(self):
+        assert_equal(self.universe.trajectory.time, 0.0, "wrong time of the frame")
+
+    def test_frame(self):
+        assert_equal(self.universe.trajectory.frame, 0, "wrong frame number")
+
+    def test_dt(self):
+        """testing that accessing universe.trajectory.dt raises a KeyError for single frame readers"""
+        assert_raises(KeyError, self.universe.trajectory.__getattribute__, "dt")
+
     def test_coordinates(self):
         A10CA = self.universe.atoms.CA[10]
         # restrict accuracy to maximum in PDB files (3 decimals)
@@ -395,6 +405,16 @@ class TestGROReader(TestCase, RefAdK):
 
     def test_numframes(self):
         assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames")
+
+    def test_time(self):
+        assert_equal(self.universe.trajectory.time, 0.0, "wrong time of the frame")
+
+    def test_frame(self):
+        assert_equal(self.universe.trajectory.frame, 0, "wrong frame number")
+
+    def test_dt(self):
+        """testing that accessing universe.trajectory.dt raises a KeyError for single frame readers"""
+        assert_raises(KeyError, self.universe.trajectory.__getattribute__, "dt")
 
     def test_coordinates(self):
         A10CA = self.universe.SYSTEM.CA[10]
@@ -536,6 +556,19 @@ class TestPDBReaderBig(TestCase, RefAdK):
         assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames")
 
     @dec.slow
+    def test_time(self):
+        assert_equal(self.universe.trajectory.time, 0.0, "wrong time of the frame")
+
+    @dec.slow
+    def test_frame(self):
+        assert_equal(self.universe.trajectory.frame, 0, "wrong frame number")
+
+    @dec.slow
+    def test_dt(self):
+        """testing that accessing universe.trajectory.dt raises a KeyError for single frame readers"""
+        assert_raises(KeyError, self.universe.trajectory.__getattribute__, "dt")
+
+    @dec.slow
     def test_coordinates(self):
         A10CA = self.universe.SYSTEM.CA[10]
         assert_almost_equal(A10CA.pos, self.ref_coordinates['A10CA'], self.prec,
@@ -618,6 +651,16 @@ class TestDCDReader(_TestDCD):
         # precision in the totaltime (consequence of fixing Issue 64)
         assert_almost_equal(self.universe.trajectory.totaltime, 98.0, 3,
                             err_msg="wrong total length of AdK trajectory")
+
+    def test_frame(self):
+        self.dcd[15]  # index is 0-based but frames are 1-based
+        assert_equal(self.universe.trajectory.frame, 16, "wrong frame number")
+
+    def test_time(self):
+        self.dcd[15]  # index is 0-based but frames are 1-based
+        assert_almost_equal(self.universe.trajectory.time, 16.0, 5,
+                            err_msg="wrong time of frame")
+
 
 class TestDCDWriter(TestCase):
     def setUp(self):
@@ -843,6 +886,18 @@ class TestChainedReader(TestCase):
         frames = [ts.frame for ts in self.dcd[5:17:3]]
         assert_equal(frames, [6, 9, 12, 15], "slicing dcd [5:17:3]")
 
+    @dec.knownfailureif(True, "frame attribute not implemented for chained reader")
+    def test_frame(self):
+        self.dcd[30]  # index is 0-based but frames are 1-based
+        assert_equal(self.universe.trajectory.frame, 31, "wrong frame number")
+
+    @dec.knownfailureif(True, "time attribute not implemented for chained reader")
+    def test_time(self):
+        self.dcd[30]  # index is 0-based but frames are 1-based
+        assert_almost_equal(self.universe.trajectory.time, 31.0, 5,
+                            err_msg="wrong time of frame")
+
+
 class _GromacsReader(TestCase):
     # This base class assumes same lengths and dt for XTC and TRR test cases!
     filename = None
@@ -930,6 +985,17 @@ class _GromacsReader(TestCase):
         # precision in the totaltime (consequence of fixing Issue 64)
         assert_almost_equal(self.universe.trajectory.totaltime, 1000.0, 3,
                             err_msg="wrong total length of trajectory")
+
+    @dec.slow
+    def test_frame(self):
+        self.trajectory[4]  # index is 0-based but frames are 1-based
+        assert_equal(self.universe.trajectory.frame, 5, "wrong frame number")
+
+    @dec.slow
+    def test_time(self):
+        self.trajectory[4]  # index is 0-based but frames are 1-based
+        assert_almost_equal(self.universe.trajectory.time, 500.0, 5,
+                            err_msg="wrong time of frame")
 
 
 class TestXTCReader(_GromacsReader):
