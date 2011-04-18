@@ -33,12 +33,13 @@ HELANAL --- analysis of protein helices
 :License: GNU General Public License v2 (or higher)
 
 The :mod:`MDAnalysis.analysis.helanal` module is a Python implementation of the
-HELANAL_ algorithm [Bansal 2000]_ in `helanal.f`_, which is also available
+HELANAL_ algorithm [Bansal2000]_ in `helanal.f`_, which is also available
 through the `HELANAL webserver`_.
 
-Please cite the paper [Bansal 2000]_ (and possibly [Kumar 1996]_ and [Kumar
-1998]_) in published work when using
-:mod:`~MDAnalysis.analysis.helanal.helanal_trajectory`.
+Please cite the paper [Bansal2000]_ (and possibly [Kumar1996]_ and
+[Kumar1998]_) in published work when using
+:mod:`~MDAnalysis.analysis.helanal.helanal_trajectory` or
+:mod:`~MDAnalysis.analysis.helanal.helanal_main`.
 
 HELANAL_ quantifies the geometry of helices in proteins on the basis of their Cα
 atoms alone. It can extract the helices from the structure files and then
@@ -66,7 +67,7 @@ From the HELANAL_ home page:
 HELANAL_ can be used to characterize the geometry of helices with a minimum 9
 residues. The geometry of an alpha helix is characterized by computing local
 helix axes and local helix origins for four contiguous C-Alpha atoms, using the
-procedure of Sugeta and Miyazawa [Sugeta 1967]_ and sliding this window over
+procedure of Sugeta and Miyazawa [Sugeta1967]_ and sliding this window over
 the length of the helix in steps of one C-Alpha atom.
 
 The angles between successive local helix axes can identify *local bends* or
@@ -87,19 +88,19 @@ angle in the middle of the helix is greater than 20 degrees.
 References
 ----------
 
-.. [Sugeta 1967] Sugeta, H. and Miyazawa, T. 1967. General method for
+.. [Sugeta1967] Sugeta, H. and Miyazawa, T. 1967. General method for
    calculating helical parameters of polymer chains from bond lengths, bond
    angles and internal rotation angles. *Biopolymers* 5 673 - 679
 
-.. [Kumar 1996] Kumar, S. and Bansal, M. 1996. Structural and sequence
+.. [Kumar1996] Kumar, S. and Bansal, M. 1996. Structural and sequence
    characteristics of long alpha-helices in globular proteins. *Biophysical
    Journal* 71(3):1574-1586.
 
-.. [Kumar 1998] Kumar, S. and Bansal, M. 1998. Geometrical and sequence
+.. [Kumar1998] Kumar, S. and Bansal, M. 1998. Geometrical and sequence
    characteristics of alpha helices in globular proteins. *Biophysical Journal*
    75(4):1935-1944.
 
-.. [Bansal 2000] Bansal M, Kumar S, Velavan R. 2000. HELANAL - A program to
+.. [Bansal2000] Bansal M, Kumar S, Velavan R. 2000. HELANAL - A program to
    characterise helix geometry in proteins. *J Biomol Struct Dyn.*  17(5):811-9.
    http://www.jbsdonline.com/c3003/c4003/HELANAL-A-Program-to-Characterize-Helix-Geometry-in-Proteins-p-811-820-p10020.html
 
@@ -227,7 +228,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
               ["local_tilt.xvg"]
            *prefix*
               Prefix to add to all output file names; set to ``None`` to disable
-              ["helanal_"]
+              ["helanal__"]
            *ref_axis*
               Calculate tilt angle relative to the axis; if ``None`` then [0,0,1]
               is chosen [``None``]
