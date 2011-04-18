@@ -27,6 +27,8 @@ Chronological list of authors
   - Tyler Reddy
   - Joseph Goose
   - Jan Domanski
+2011
+  - Benjamin Hall
 
 
 External code
@@ -54,3 +56,8 @@ transformations
 pyqcprot
   - Joshua L. Adelman, University of Pittsburgh <jla65@pitt.edu>
   - https://github.com/synapticarbors/pyqcprot
+
+helanal
+  - Benjamin Hall, University of Oxford <benjamin.hall@bioch.ox.ac.uk>
+  - based on HELANAL from
+    http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html

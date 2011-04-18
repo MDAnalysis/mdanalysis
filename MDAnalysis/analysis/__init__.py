@@ -42,6 +42,9 @@ Available analysis modules
     molecules around a protein. Makes use of the external
     GridDataFormats_ package.
 
+:mod:`~MDAnalysis.analysis.helanal`
+    Analysis of helices with the HELANAL_ algorithm.
+
 :mod:`~MDAnalysis.analysis.leaflet`
     Find lipids in the upper and lower (or inner and outer) leaflet of
     a bilayer; the algorithm can deal with any deformations as long as
@@ -52,6 +55,7 @@ Available analysis modules
     state, also known as a "q1-q2" analysis.
 
 .. _GridDataFormats: https://github.com/orbeckst/GridDataFormats
+.. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 """
 
 __all__ = ['leaflet', 'contacts', 'align', 'distances', 'density']
