@@ -16,8 +16,8 @@
 #
 
 """
-Selections
-==========
+Selection exporters
+===================
 
 Functions to write a :class:`MDAnalysis.AtomGroup.AtomGroup` selection
 to a file so that it can be used in another programme.

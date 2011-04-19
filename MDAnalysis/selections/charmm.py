@@ -19,12 +19,18 @@
 CHARMM selections
 =================
 
-Write :class:`MDAnalysis.AtomGroup.AtomGroup` selection to a str file
-that defines a CHARMM selection. To be used in CHARMM like this::
+Write :class:`MDAnalysis.core.AtomGroup.AtomGroup` selection to a `str` file
+that defines a `CHARMM selection`_. To be used in CHARMM_ like this::
 
   stream macro.str
 
-The selection is name *mdanalysis001*.
+The selection is named *mdanalysis001*.
+
+.. autoclass:: SelectionWriter
+   :inherited-members:
+
+.. _CHARMM: http://www.charmm.org
+.. _CHARMM selection: http://www.charmm.org/documentation/c34b1/select.html
 """
 import base
 

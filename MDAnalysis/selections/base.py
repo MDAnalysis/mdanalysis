@@ -49,7 +49,7 @@ def join(seq, string="", func=None):
     return [func(x) + string for x in seq[:-1]] + [func(seq[-1])]
 
 def get_writer(filename, defaultformat):
-    """Return a SelectioNWriter for *filename* or a *defaultformat*."""
+    """Return a :class:`SelectionWriter` for *filename* or a *defaultformat*."""
     if filename:
         format = os.path.splitext(filename)[1][1:]  # strip initial dot!
     format = format or defaultformat                # use default if no fmt from fn
@@ -62,6 +62,17 @@ def get_writer(filename, defaultformat):
 
 
 class SelectionWriter(object):
+    """Export a selection in MDAnalysis to a format usable in an external package.
+
+    The :class:`SelectionWriter` writes a selection string to a file
+    that can be used in another package such as `VMD`_, `PyMOL`_,
+    `Gromacs`_ or `CHARMM`_. In this way, analysis and visualization
+    can be done with the best or most convenient tools at hand.
+
+    :class:`SelectionWriter` is a base class and child classes are
+    derived with the appropriate customizations for the package file
+    format.
+    """
     #: Name of the format.
     format = None
     #: Extension of output files.
@@ -73,7 +84,7 @@ class SelectionWriter(object):
     default_numterms = 8
 
     def __init__(self, filename, mode="wa", numterms=None, preamble=None, **kwargs):
-        """Set up SelectionWriter to write to *filename*.
+        """Set up for writing to *filename*.
 
         :Arguments:
            *filename*
@@ -121,6 +132,7 @@ class SelectionWriter(object):
         return self.commentfmt % s + '\n'
 
     def write_preamble(self):
+        """Write a header, depending on the file format."""
         if self.preamble is None:
            return
         with open(self.filename, self._current_mode) as out:
@@ -132,7 +144,7 @@ class SelectionWriter(object):
 
         :Arguments:
            *selection*
-               a :class:`MDAnalysis.AtomGroup.AtomGroup`
+               a :class:`MDAnalysis.core.AtomGroup.AtomGroup`
            *number*
                selection will be named "mdanalysis<number>"
                (``None`` auto increments between writes; useful

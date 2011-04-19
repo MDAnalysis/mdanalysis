@@ -11,7 +11,7 @@ similar to `CHARMM's atom selection syntax`_)::
 
 .. _`CHARMM's atom selection syntax`: http://www.charmm.org/html/documentation/c35b1/select.html
 
-:meth:`MDAnalysis.Universe.selectAtoms` returns a
+:meth:`MDAnalysis.core.Universe.selectAtoms` returns a
 :class:`MDAnalysis.core.AtomGroup.AtomGroup`, so you can use all the methods
 defined for AtomGroups on them. Selections always return an AtomGroup with
 atoms sorted according to their index in the topology (this is to ensure that
@@ -23,6 +23,9 @@ One can group subselections using parentheses::
  <AtomGroup with 3420 atoms>
 
 Almost all the basic CHARMM selections work.
+
+It is also possible to export selections for external software
+packages with the help of :ref:`Selection exporters`.
 
 
 Selection Keywords

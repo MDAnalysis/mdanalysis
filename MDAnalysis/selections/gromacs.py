@@ -19,12 +19,18 @@
 Gromacs selections
 ==================
 
-Write :class:`MDAnalysis.AtomGroup.AtomGroup` selection to a ndx file
-that defines a Gromacs index group. To be used in Gromacs like this::
+Write :class:`MDAnalysis.core.AtomGroup.AtomGroup` selection to a `ndx`_ file
+that defines a Gromacs_ index group. To be used in Gromacs like this::
 
   <GROMACS_COMMAND> -n macro.ndx
 
 The index groups are named *mdanalysis001*, *mdanalysis002*, etc.
+
+.. _Gromacs: http://www.gromacs.org
+.. _ndx: http://www.gromacs.org/Documentation/File_Formats/Index_File
+
+.. autoclass:: SelectionWriter
+   :inherited-members:
 """
 import base
 

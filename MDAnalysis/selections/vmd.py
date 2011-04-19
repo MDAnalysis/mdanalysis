@@ -19,12 +19,17 @@
 VMD selections
 ==============
 
-Write :class:`MDAnalysis.AtomGroup.AtomGroup` selection to a tcl file
-that defines VMD atomselect macros. To be used in VMD like this::
+Write :class:`MDAnalysis.core.AtomGroup.AtomGroup` selection to a VMD_ `tcl` file
+that defines `atomselect macros`_. To be used in VMD like this::
 
   source macros.vmd
   set sel [atomselect top mdanalysis001]  # use macro 001
 
+.. _VMD: http://www.ks.uiuc.edu/Research/vmd/
+.. _atomselect macros: http://www.ks.uiuc.edu/Research/vmd/current/ug/node120.html
+
+.. autoclass:: SelectionWriter
+   :inherited-members:
 """
 import base
 

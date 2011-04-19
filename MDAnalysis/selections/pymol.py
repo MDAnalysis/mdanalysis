@@ -16,16 +16,24 @@
 #
 
 """
-PyMol selections
+PyMOL selections
 =================
 
-Write :class:`MDAnalysis.AtomGroup.AtomGroup` selection to a pml file
-that defines PyMol atomselect macros. To be used in PyMol like this::
+Write :class:`MDAnalysis.core.AtomGroup.AtomGroup` selection to a
+script `pml`_ file that defines PyMOL_ atomselect macros. To be used
+in PyMOL like this::
 
   @macros.pml
 
-The selection appears.
+The selections should appear in the user interface.
+
+.. _PyMOL: http://www.pymol.org
+.. _pml: http://pymol.sourceforge.net/newman/user/S0210start_cmds.html#6_5_1
+
+.. autoclass:: SelectionWriter
+   :inherited-members:
 """
+
 import base
 
 class SelectionWriter(base.SelectionWriter):
