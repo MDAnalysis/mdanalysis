@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.1. Core functions of MDAnalysis &mdash; MDAnalysis v0.7.3 documentation</title>
+    <title>7.1. Core functions of MDAnalysis &mdash; MDAnalysis v0.7.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../../index.html" />
-    <link rel="up" title="6. Core modules" href="../core_modules.html" />
-    <link rel="next" title="6.2. Fundamental building blocks — MDAnalysis.core.AtomGroup" href="AtomGroup.html" />
-    <link rel="prev" title="6. Core modules" href="../core_modules.html" /> 
+    <link rel="up" title="7. Core modules" href="../core_modules.html" />
+    <link rel="next" title="7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup" href="AtomGroup.html" />
+    <link rel="prev" title="7. Core modules" href="../core_modules.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,13 +38,13 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="AtomGroup.html" title="6.2. Fundamental building blocks — MDAnalysis.core.AtomGroup"
+          <a href="AtomGroup.html" title="7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../core_modules.html" title="6. Core modules"
+          <a href="../core_modules.html" title="7. Core modules"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" accesskey="U">6. Core modules</a> &raquo;</li> 
+          <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,7 +54,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.core.__init__"></span><div class="section" id="core-functions-of-mdanalysis">
-<h1>6.1. Core functions of MDAnalysis<a class="headerlink" href="#core-functions-of-mdanalysis" title="Permalink to this headline">¶</a></h1>
+<h1>7.1. Core functions of MDAnalysis<a class="headerlink" href="#core-functions-of-mdanalysis" title="Permalink to this headline">¶</a></h1>
 <p>The basic class is an <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>;
 the whole simulation is called the
 <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>. Selections are computed
@@ -79,7 +79,7 @@ obtain the coordinates as a numpy array</p>
 </div>
 <p>and write your own Python code.</p>
 <div class="section" id="flags">
-<h2>6.1.1. Flags<a class="headerlink" href="#flags" title="Permalink to this headline">¶</a></h2>
+<h2>7.1.1. Flags<a class="headerlink" href="#flags" title="Permalink to this headline">¶</a></h2>
 <p>(This is an advanced topic and can probably be skipped by most people.)</p>
 <p>There are a number flags that influence how MDAnalysis behaves. They are accessible
 through the pseudo-dictionary <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt>.</p>
@@ -89,13 +89,13 @@ raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError
 </pre></div>
 </div>
 <div class="section" id="list-of-mdanalysis-flags-with-default-values">
-<h3>6.1.1.1. List of MDAnalysis flags with default values<a class="headerlink" href="#list-of-mdanalysis-flags-with-default-values" title="Permalink to this headline">¶</a></h3>
+<h3>7.1.1.1. List of MDAnalysis flags with default values<a class="headerlink" href="#list-of-mdanalysis-flags-with-default-values" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="MDAnalysis.core.__init__.flagsDocs">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.__init__.</tt><tt class="descname">flagsDocs</tt><a class="headerlink" href="#MDAnalysis.core.__init__.flagsDocs" title="Permalink to this definition">¶</a></dt>
 <dd><p><strong>use_periodic_selections</strong> = <em>True</em></p>
 <blockquote>
-<p>Determines if distance selections (AROUND, POINT) respect periodicity.</p>
+<div><p>Determines if distance selections (AROUND, POINT) respect periodicity.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_periodic_selections&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
@@ -110,10 +110,10 @@ raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError
 <p>The MDAnalysis preset of this flag is True.</p>
 <p>Note that KD-tree based distance selections always ignore this flag. (For
 details see the docs for the &#8216;use_KDTree_routines&#8217; flag.)</p>
-</blockquote>
+</div></blockquote>
 <p><strong>use_KDTree_routines</strong> = <em>&#8216;fast&#8217;</em></p>
 <blockquote>
-<p>Determines which KDTree routines are used for distance selections</p>
+<div><p>Determines which KDTree routines are used for distance selections</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_KDTree_routines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
@@ -132,10 +132,10 @@ periodicity; if periodicity is crucial, disable KDTree routines with</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_KDTree_routines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
 </pre></div>
 </div>
-</blockquote>
+</div></blockquote>
 <p><strong>length_unit</strong> = <em>&#8216;Angstrom&#8217;</em></p>
 <blockquote>
-<p>Base unit for lengths (in particular coordinates in trajectories)</p>
+<div><p>Base unit for lengths (in particular coordinates in trajectories)</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;length_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
@@ -143,10 +143,10 @@ periodicity; if periodicity is crucial, disable KDTree routines with</p>
 <p class="first admonition-title">Warning</p>
 <p class="last">Do not change, only Angstrom fully supported.</p>
 </div>
-</blockquote>
+</div></blockquote>
 <p><strong>permissive_pdb_reader</strong> = <em>True</em></p>
 <blockquote>
-<p>Select the default reader for PDB Brookhaven databank files.</p>
+<div><p>Select the default reader for PDB Brookhaven databank files.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;permissive_pdb_reader&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
@@ -164,11 +164,11 @@ essentially just reads ATOM and HETATM lines and puts atoms in a
 list.</p>
 <p>One can manually switch between the two by providing the <em>permissive</em>
 keyword to <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>.</p>
-</blockquote>
+</div></blockquote>
 <p>A Flag, essentially a variable that knows its default and legal values.</p>
 <p><strong>convert_gromacs_lengths</strong> = <em>True</em></p>
 <blockquote>
-<p>Determine if the XTC and TRR trajectory reader and writer convert units.</p>
+<div><p>Determine if the XTC and TRR trajectory reader and writer convert units.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_gromacs_lengths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
@@ -176,13 +176,13 @@ keyword to <tt class="xref py py-class docutils literal"><span class="pre">MDAna
 <tt class="xref docutils literal"><span class="pre">True</span></tt> then coordinates are automatically converted, with
 <tt class="xref docutils literal"><span class="pre">False</span></tt> the coordinate values are presented as read from the
 trajectories.</p>
-</blockquote>
+</div></blockquote>
 <p>A Flag, essentially a variable that knows its default and legal values.</p>
 </dd></dl>
 
 </div>
 <div class="section" id="classes">
-<h3>6.1.1.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<h3>7.1.1.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
 <dl class="data">
 <dt id="MDAnalysis.core.__init__.flags">
 <tt class="descclassname">MDAnalysis.core.__init__.</tt><tt class="descname">flags</tt><a class="headerlink" href="#MDAnalysis.core.__init__.flags" title="Permalink to this definition">¶</a></dt>
@@ -195,7 +195,7 @@ trajectories.</p>
 <p>There are a number flags defined that influence how MDAnalysis behaves. They are
 accessible through the pseudo-dictionary</p>
 <blockquote>
-<tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt></blockquote>
+<div><tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt></div></blockquote>
 <p>The entries appear as &#8216;name&#8217;-&#8216;value&#8217; pairs. Flags check values and illegal ones
 raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>. Documentation on all flags can be obtained with</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">__doc__</span>
@@ -230,7 +230,7 @@ instance as an argument.</p>
 <dd><p>A Flag, essentially a variable that knows its default and legal values.</p>
 <p>Create a new flag which will be registered with FLags.</p>
 <blockquote>
-newflag = Flag(name,default,mapping,doc)</blockquote>
+<div>newflag = Flag(name,default,mapping,doc)</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -281,10 +281,10 @@ all values are directly set.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">6.1. Core functions of MDAnalysis</a><ul>
-<li><a class="reference internal" href="#flags">6.1.1. Flags</a><ul>
-<li><a class="reference internal" href="#list-of-mdanalysis-flags-with-default-values">6.1.1.1. List of MDAnalysis flags with default values</a></li>
-<li><a class="reference internal" href="#classes">6.1.1.2. Classes</a></li>
+<li><a class="reference internal" href="#">7.1. Core functions of MDAnalysis</a><ul>
+<li><a class="reference internal" href="#flags">7.1.1. Flags</a><ul>
+<li><a class="reference internal" href="#list-of-mdanalysis-flags-with-default-values">7.1.1.1. List of MDAnalysis flags with default values</a></li>
+<li><a class="reference internal" href="#classes">7.1.1.2. Classes</a></li>
 </ul>
 </li>
 </ul>
@@ -293,10 +293,10 @@ all values are directly set.</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="../core_modules.html"
-                        title="previous chapter">6. Core modules</a></p>
+                        title="previous chapter">7. Core modules</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="AtomGroup.html"
-                        title="next chapter">6.2. Fundamental building blocks &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a></p>
+                        title="next chapter">7.2. Fundamental building blocks &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/init.txt"
@@ -329,18 +329,18 @@ all values are directly set.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="AtomGroup.html" title="6.2. Fundamental building blocks — MDAnalysis.core.AtomGroup"
+          <a href="AtomGroup.html" title="7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup"
              >next</a> |</li>
         <li class="right" >
-          <a href="../core_modules.html" title="6. Core modules"
+          <a href="../core_modules.html" title="7. Core modules"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" >6. Core modules</a> &raquo;</li> 
+          <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

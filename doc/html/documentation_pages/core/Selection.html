@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3. Atom selection Hierarchy — MDAnalysis.core.Selection &mdash; MDAnalysis v0.7.3 documentation</title>
+    <title>7.3. Atom selection Hierarchy — MDAnalysis.core.Selection &mdash; MDAnalysis v0.7.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../../index.html" />
-    <link rel="up" title="6. Core modules" href="../core_modules.html" />
-    <link rel="next" title="6.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries" href="Timeseries.html" />
-    <link rel="prev" title="6.2. Fundamental building blocks — MDAnalysis.core.AtomGroup" href="AtomGroup.html" /> 
+    <link rel="up" title="7. Core modules" href="../core_modules.html" />
+    <link rel="next" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries" href="Timeseries.html" />
+    <link rel="prev" title="7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup" href="AtomGroup.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,13 +38,13 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Timeseries.html" title="6.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
+          <a href="Timeseries.html" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="AtomGroup.html" title="6.2. Fundamental building blocks — MDAnalysis.core.AtomGroup"
+          <a href="AtomGroup.html" title="7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" accesskey="U">6. Core modules</a> &raquo;</li> 
+          <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,7 +54,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.core.Selection"></span><div class="section" id="atom-selection-hierarchy-mdanalysis-core-selection">
-<h1>6.3. Atom selection Hierarchy &#8212; <a class="reference internal" href="#module-MDAnalysis.core.Selection" title="MDAnalysis.core.Selection"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.Selection</span></tt></a><a class="headerlink" href="#atom-selection-hierarchy-mdanalysis-core-selection" title="Permalink to this headline">¶</a></h1>
+<h1>7.3. Atom selection Hierarchy &#8212; <a class="reference internal" href="#module-MDAnalysis.core.Selection" title="MDAnalysis.core.Selection"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.Selection</span></tt></a><a class="headerlink" href="#atom-selection-hierarchy-mdanalysis-core-selection" title="Permalink to this headline">¶</a></h1>
 <p>These objects are constructed and applied to the group</p>
 <p>Currently all atom arrays are handled internally as sets, but returned as AtomGroups</p>
 <dl class="class">
@@ -70,8 +70,8 @@
 <dd><p>Selection of atoms in nucleobases.</p>
 <p>Recognized atom names (from CHARMM):</p>
 <blockquote>
-&#8216;N9&#8217;, &#8216;N7&#8217;, &#8216;C8&#8217;, &#8216;C5&#8217;, &#8216;C4&#8217;, &#8216;N3&#8217;, &#8216;C2&#8217;, &#8216;N1&#8217;, &#8216;C6&#8217;,
-&#8216;O6&#8217;,&#8217;N2&#8217;,&#8217;N6&#8217;, &#8216;O2&#8217;,&#8217;N4&#8217;,&#8217;O4&#8217;,&#8217;C5M&#8217;</blockquote>
+<div>&#8216;N9&#8217;, &#8216;N7&#8217;, &#8216;C8&#8217;, &#8216;C5&#8217;, &#8216;C4&#8217;, &#8216;N3&#8217;, &#8216;C2&#8217;, &#8216;N1&#8217;, &#8216;C6&#8217;,
+&#8216;O6&#8217;,&#8217;N2&#8217;,&#8217;N6&#8217;, &#8216;O2&#8217;,&#8217;N4&#8217;,&#8217;O4&#8217;,&#8217;C5M&#8217;</div></blockquote>
 </dd></dl>
 
 <dl class="class">
@@ -93,7 +93,7 @@
 Recognized residue names:
 * from the Charmm force field</p>
 <blockquote>
-awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</blockquote>
+<div>awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</div></blockquote>
 <ul class="simple">
 <li>recognized: &#8216;ADE&#8217;, &#8216;URA&#8217;, &#8216;CYT&#8217;, &#8216;GUA&#8217;, &#8216;THY&#8217;</li>
 </ul>
@@ -112,7 +112,7 @@ awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8
 Recognized residue names:
 * from the Charmm force field:</p>
 <blockquote>
-awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</blockquote>
+<div>awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</div></blockquote>
 <ul class="simple">
 <li>recognized: &#8216;A&#8217;, &#8216;U&#8217;, &#8216;C&#8217;, &#8216;G&#8217;, &#8216;DT&#8217;,&#8217;DA&#8217;,&#8217;DC&#8217;,&#8217;DG&#8217;</li>
 </ul>
@@ -131,7 +131,7 @@ x, y, z, radius, mass,</p>
 <dd><p>A protein selection consists of all residues with  recognized residue names.</p>
 <p>Recognized residue names in <a class="reference internal" href="#MDAnalysis.core.Selection.ProteinSelection.prot_res" title="MDAnalysis.core.Selection.ProteinSelection.prot_res"><tt class="xref py py-attr docutils literal"><span class="pre">ProteinSelection.prot_res</span></tt></a>.</p>
 <blockquote>
-<ul>
+<div><ul>
 <li><dl class="first docutils">
 <dt>from the CHARMM force field::</dt>
 <dd><p class="first last">awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_lipid.rtf</p>
@@ -143,7 +143,7 @@ x, y, z, radius, mass,</p>
 <li><p class="first">still missing: Amber N- and C-terminal residue names</p>
 </li>
 </ul>
-</blockquote>
+</div></blockquote>
 <dl class="attribute">
 <dt id="MDAnalysis.core.Selection.ProteinSelection.prot_res">
 <tt class="descname">prot_res</tt><a class="headerlink" href="#MDAnalysis.core.Selection.ProteinSelection.prot_res" title="Permalink to this definition">¶</a></dt>
@@ -167,13 +167,13 @@ B(inary) &#8211;&gt;    &#8220;and&#8221; | &#8220;or&#8221;
 U(nary) &#8211;&gt;     &#8220;not&#8221;
 T(erms) &#8211;&gt;     segid [value]</p>
 <blockquote>
-<div class="line-block">
+<div><div class="line-block">
 <div class="line">resname [value]</div>
 <div class="line">resid [value]</div>
 <div class="line">name [value]</div>
 <div class="line">type [value]</div>
 </div>
-</blockquote>
+</div></blockquote>
 </dd></dl>
 
 </div>
@@ -186,10 +186,10 @@ T(erms) &#8211;&gt;     segid [value]</p>
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="AtomGroup.html"
-                        title="previous chapter">6.2. Fundamental building blocks &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a></p>
+                        title="previous chapter">7.2. Fundamental building blocks &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="Timeseries.html"
-                        title="next chapter">6.4. Compute observable timeseries from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.Timeseries</span></tt></a></p>
+                        title="next chapter">7.4. Compute observable timeseries from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.Timeseries</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/Selection.txt"
@@ -222,18 +222,18 @@ T(erms) &#8211;&gt;     segid [value]</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Timeseries.html" title="6.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
+          <a href="Timeseries.html" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
              >next</a> |</li>
         <li class="right" >
-          <a href="AtomGroup.html" title="6.2. Fundamental building blocks — MDAnalysis.core.AtomGroup"
+          <a href="AtomGroup.html" title="7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" >6. Core modules</a> &raquo;</li> 
+          <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

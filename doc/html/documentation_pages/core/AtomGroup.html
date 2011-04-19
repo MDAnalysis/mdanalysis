@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.3 documentation</title>
+    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../../index.html" />
-    <link rel="up" title="6. Core modules" href="../core_modules.html" />
-    <link rel="next" title="6.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
-    <link rel="prev" title="6.1. Core functions of MDAnalysis" href="init.html" /> 
+    <link rel="up" title="7. Core modules" href="../core_modules.html" />
+    <link rel="next" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
+    <link rel="prev" title="7.1. Core functions of MDAnalysis" href="init.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,13 +38,13 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Selection.html" title="6.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
+          <a href="Selection.html" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="init.html" title="6.1. Core functions of MDAnalysis"
+          <a href="init.html" title="7.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" accesskey="U">6. Core modules</a> &raquo;</li> 
+          <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,7 +54,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.core.AtomGroup"></span><div class="section" id="fundamental-building-blocks-mdanalysis-core-atomgroup">
-<h1>6.2. Fundamental building blocks &#8212; <a class="reference internal" href="#module-MDAnalysis.core.AtomGroup" title="MDAnalysis.core.AtomGroup"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><a class="headerlink" href="#fundamental-building-blocks-mdanalysis-core-atomgroup" title="Permalink to this headline">¶</a></h1>
+<h1>7.2. Fundamental building blocks &#8212; <a class="reference internal" href="#module-MDAnalysis.core.AtomGroup" title="MDAnalysis.core.AtomGroup"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><a class="headerlink" href="#fundamental-building-blocks-mdanalysis-core-atomgroup" title="Permalink to this headline">¶</a></h1>
 <p>The most important data structure in MDAnalysis is the
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>, which contains <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
 <p>A <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> is the user-visible entry point and collects all
@@ -65,13 +65,13 @@ molecule, ion, or ligand. A <a class="reference internal" href="#MDAnalysis.core
 residues such as a whole protein or a chain in a protein or all the
 water in the system.</p>
 <div class="section" id="class-hierarchy">
-<h2>6.2.1. Class Hierarchy<a class="headerlink" href="#class-hierarchy" title="Permalink to this headline">¶</a></h2>
+<h2>7.2.1. Class Hierarchy<a class="headerlink" href="#class-hierarchy" title="Permalink to this headline">¶</a></h2>
 <p>A <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> contains Segments, which contain Residues, which
 contain Atoms; all containers are derived from <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>, and
 thus one can always analyze them as a collection of atoms, independent
 of the hierarchical level.</p>
 <blockquote>
-Segment &gt; Residue &gt; Atom</blockquote>
+<div>Segment &gt; Residue &gt; Atom</div></blockquote>
 <p>Depending on the use case, it can be more convenient to access data
 on, for instance, the basis of residues than atoms, or to write out
 individual chains (segments) of a protein. MDAnalysis simply provides
@@ -82,14 +82,14 @@ belongs. Each object provides three attributes (<tt class="xref py py-attr docut
 that the object belongs to.</p>
 </div>
 <div class="section" id="classes-and-functions">
-<h2>6.2.2. Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
+<h2>7.2.2. Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.Universe">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Universe</tt><big>(</big><em>topologyfile</em>, <em>coordinatefile=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>The MDAnalysis Universe contains all the information describing the system.</p>
 <blockquote>
-<blockquote>
-Universe(topology[,trajectory[,permissive]]) &#8211;&gt; universe</blockquote>
+<div><blockquote>
+<div>Universe(topology[,trajectory[,permissive]]) &#8211;&gt; universe</div></blockquote>
 <p>The system always requires a <em>topology</em> file &#8212; in the simplest
 case just a list of atoms. This can be a CHARMM/NAMD PSF file or a
 simple coordinate file with atom informations such as PDB, Gromacs
@@ -111,11 +111,11 @@ u = Universe(topology, [traj1, traj2, ...]) # read from a list of trajectories</
 <dd>u.load_new(trajectory)                      # read from a new trajectory file</dd>
 </dl>
 <p>Select atoms, with syntax similar to CHARMM (see</p>
-</blockquote>
+</div></blockquote>
 <dl class="docutils">
 <dt><a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms" title="MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup.selectAtoms</span></tt></a> for details)::</dt>
 <dd><blockquote class="first">
-u.selectAtoms(...)</blockquote>
+<div>u.selectAtoms(...)</div></blockquote>
 <dl class="docutils">
 <dt>Attributes:</dt>
 <dd><ul class="first last simple">
@@ -272,7 +272,7 @@ the way the parser is implemented.</p>
 <p><strong>Simple selections</strong>
 .. &#8212;&#8212;&#8212;&#8212;&#8212;&#8212;</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>protein, backbone, nucleic, nucleicbackbone</dt>
 <dd>selects all atoms that belong to a standard set of residues, may
 not work for esoteric residues</dd>
@@ -285,11 +285,11 @@ LYS&#8221;, &#8220;name CA&#8221;, &#8220;resid 1:5&#8221;</dd>
 &#8220;DMPC 1 C2&#8221; selects the C2 carbon of the first residue of the DMPC
 segment</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 <p><strong>Boolean</strong>
 .. &#8212;&#8212;&#8211;</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>not</dt>
 <dd>all atoms not in the selection; ie &#8220;not protein&#8221; selects all atoms
 that aren&#8217;t part of a protein</dd>
@@ -299,11 +299,11 @@ that aren&#8217;t part of a protein</dd>
 that belong to a protein, but are not in a lysine or alanine
 residue</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 <p><strong>Geometric</strong>
 .. &#8212;&#8212;&#8212;-</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>around</dt>
 <dd><p class="first">selects all atoms a certain cutoff away from another selection; ie
 &#8220;around 3.5 protein&#8221; selects all atoms not belonging to protein
@@ -334,26 +334,26 @@ these flags:</p>
 <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_KDTree_routines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
 </pre></div>
 </div>
-</blockquote>
+</div></blockquote>
 <p><strong>Connectivity</strong>
 .. &#8212;&#8212;&#8212;&#8212;-</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>byres</dt>
 <dd>selects all atoms that are in the same segment and residue as
 selection ie specify the subselection after the byres keyword</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 <p><strong>Index</strong>
 .. &#8212;&#8212;</p>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>bynum</dt>
 <dd>selects all atoms within a range of (1-based) inclusive indices ie
 &#8220;bynum 1&#8221; selects the first atom in the universe &#8220;bynum 5:10&#8221;
 selects atoms 5 through 10 inclusive</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </dd></dl>
 
 <dl class="attribute">
@@ -369,7 +369,7 @@ selects atoms 5 through 10 inclusive</dd>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">AtomGroup</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>A group of atoms.</p>
 <blockquote>
-ag = universe.selectAtoms(atom-list)</blockquote>
+<div>ag = universe.selectAtoms(atom-list)</div></blockquote>
 <p>The AtomGroup contains a list of atoms; typically, a AtomGroup is generated
 from a selection. It is build from any list-like collection of
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
@@ -380,10 +380,10 @@ from a selection. It is build from any list-like collection of
 <p>will return the first and the last <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> in the group
 whereas the slice</p>
 <blockquote>
-ag[0:6:2]</blockquote>
+<div>ag[0:6:2]</div></blockquote>
 <p>returns every second element, corresponding to indices 0, 2, and 4.</p>
 <p>It also supports &#8220;advanced slicing&#8221; when the argument is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-fe3852f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-f98ffb5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aslice</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">ag</span><span class="p">[</span><span class="n">aslice</span><span class="p">]</span>
 </pre></div>
@@ -624,7 +624,7 @@ and <tt class="docutils literal"><span class="pre">v[2]</span></tt> as third eig
 <p>AtomGroup.rotate(R)</p>
 <p><em>R</em> is a 3x3 orthogonal matrix that transforms x &#8211;&gt; x&#8217;:</p>
 <blockquote>
-x&#8217; = R.x</blockquote>
+<div>x&#8217; = R.x</div></blockquote>
 </dd></dl>
 
 <dl class="method">
@@ -634,7 +634,7 @@ x&#8217; = R.x</blockquote>
 <p>AtomGroup.rotateby(angle,axis[,point])</p>
 <p>The transformation from current coordinates x to new coordinates x&#8217; is</p>
 <blockquote>
-x&#8217; = R.(x-p) + p</blockquote>
+<div>x&#8217; = R.(x-p) + p</div></blockquote>
 <p>where R is the rotation by <em>angle</em> around the <em>axis</em> going through
 <em>point</em> p.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -711,7 +711,7 @@ and the translation vectort M[:3,3].</p>
 <tt class="docutils literal"><span class="pre">M[:3,:3]</span></tt> and the translation in <tt class="docutils literal"><span class="pre">M[:3,3]</span></tt>.</p>
 <p>The rotation is applied before the translation:</p>
 <blockquote>
-x&#8217; = R.x + t</blockquote>
+<div>x&#8217; = R.x + t</div></blockquote>
 </dd></dl>
 
 <dl class="method">
@@ -723,7 +723,7 @@ x&#8217; = R.x + t</blockquote>
 <p>The method applies a translation to the AtomGroup from current
 coordinates x to new coordinates x&#8217;:</p>
 <blockquote>
-x&#8217; = x + t</blockquote>
+<div>x&#8217; = x + t</div></blockquote>
 <p>The translation can also be given as a tuple of two MDAnalysis objects
 such as two selections (selA, selB), i.e. two :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>AtomGroup`s, or
 two :class:<a href="#id3"><span class="problematic" id="id4">`</span></a>Atom`s. The translation vector is computed as the
@@ -801,7 +801,7 @@ placeholders; the extension is set according to the <em>format</em>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">additional keywords are passed on to the appropriate
-<tt class="xref py py-class docutils literal"><span class="pre">SelectionWriter</span></tt></p>
+<a class="reference internal" href="../selections/base.html#MDAnalysis.selections.base.SelectionWriter" title="MDAnalysis.selections.base.SelectionWriter"><tt class="xref py py-class docutils literal"><span class="pre">SelectionWriter</span></tt></a></p>
 </dd>
 </dl>
 </td>
@@ -817,7 +817,7 @@ placeholders; the extension is set according to the <em>format</em>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Atom</tt><big>(</big><em>number</em>, <em>name</em>, <em>type</em>, <em>resname</em>, <em>resid</em>, <em>segid</em>, <em>mass</em>, <em>charge</em>, <em>residue=None</em>, <em>segment=None</em>, <em>radius=None</em>, <em>bfactor=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom" title="Permalink to this definition">¶</a></dt>
 <dd><p>A single atom definition</p>
 <blockquote>
-a = Atom()</blockquote>
+<div>a = Atom()</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1016,10 +1016,10 @@ Example:</p>
 </li>
 </ul>
 <blockquote class="last">
-<ul class="simple">
+<div><ul class="simple">
 <li>Indexing the group returns the appropriate segment.</li>
 </ul>
-</blockquote>
+</div></blockquote>
 </dd>
 </dl>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1081,19 +1081,19 @@ asUniverse(<a href="#id13"><span class="problematic" id="id14">*</span></a>args,
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">6.2. Fundamental building blocks &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><ul>
-<li><a class="reference internal" href="#class-hierarchy">6.2.1. Class Hierarchy</a></li>
-<li><a class="reference internal" href="#classes-and-functions">6.2.2. Classes and functions</a></li>
+<li><a class="reference internal" href="#">7.2. Fundamental building blocks &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><ul>
+<li><a class="reference internal" href="#class-hierarchy">7.2.1. Class Hierarchy</a></li>
+<li><a class="reference internal" href="#classes-and-functions">7.2.2. Classes and functions</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="init.html"
-                        title="previous chapter">6.1. Core functions of MDAnalysis</a></p>
+                        title="previous chapter">7.1. Core functions of MDAnalysis</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="Selection.html"
-                        title="next chapter">6.3. Atom selection Hierarchy &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.Selection</span></tt></a></p>
+                        title="next chapter">7.3. Atom selection Hierarchy &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.Selection</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/AtomGroup.txt"
@@ -1126,18 +1126,18 @@ asUniverse(<a href="#id13"><span class="problematic" id="id14">*</span></a>args,
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Selection.html" title="6.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
+          <a href="Selection.html" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
              >next</a> |</li>
         <li class="right" >
-          <a href="init.html" title="6.1. Core functions of MDAnalysis"
+          <a href="init.html" title="7.1. Core functions of MDAnalysis"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" >6. Core modules</a> &raquo;</li> 
+          <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

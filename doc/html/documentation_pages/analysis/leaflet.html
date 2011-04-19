@@ -76,10 +76,15 @@
 </ol>
 </dd>
 </dl>
-<p>You could identify the upper and lower leaflet of a planar membrane by
-comparing the median of the centres of masses, or for a vesicle by
-comparing distances from the centre of geometry, but neither is
-implemented at the moment.</p>
+<p>One can use this information to identify</p>
+<ul class="simple">
+<li>the upper and lower leaflet of a <em>planar membrane</em> by comparing the
+the <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry" title="MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry"><tt class="xref py py-meth docutils literal"><span class="pre">centerOfGeometry()</span></tt></a> of
+the leaflet groups, or</li>
+<li>the outer and inner leaflet of a <em>vesicle</em> by comparing histograms
+of distances from the centre of geometry (or possibly simply the
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.radiusOfGyration" title="MDAnalysis.core.AtomGroup.AtomGroup.radiusOfGyration"><tt class="xref py py-meth docutils literal"><span class="pre">radiusOfGyration()</span></tt></a>).</li>
+</ul>
 <p>See example scripts in the <tt class="docutils literal"><span class="pre">examples/</span></tt> directory on how to use
 <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><tt class="xref py py-class docutils literal"><span class="pre">LeafletFinder</span></tt></a>. The function <a class="reference internal" href="#MDAnalysis.analysis.leaflet.optimize_cutoff" title="MDAnalysis.analysis.leaflet.optimize_cutoff"><tt class="xref py py-func docutils literal"><span class="pre">optimize_cutoff()</span></tt></a> implements a
 (slow) heuristic method to find the best cut off for the LeafletFinder
@@ -138,17 +143,6 @@ for orthorhombic boxes) [<tt class="xref docutils literal"><span class="pre">Fal
 </tbody>
 </table>
 <dl class="method">
-<dt id="MDAnalysis.analysis.leaflet.LeafletFinder.atoms">
-<tt class="descname">atoms</tt><big>(</big><em>component_index</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.atoms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a> for <em>component_index</em>.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last"><strong>Deprecated</strong>. Will be removed for 0.7.0.
-Use <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups"><tt class="xref py py-meth docutils literal"><span class="pre">LeafletFinder.groups()</span></tt></a> instead.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.group">
 <tt class="descname">group</tt><big>(</big><em>component_index</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a> for <em>component_index</em>.</p>
@@ -161,8 +155,14 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFind
 <p>If no argument is supplied, then a list of all leaflet groups is returned.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.group" title="MDAnalysis.analysis.leaflet.LeafletFinder.group"><tt class="xref py py-meth docutils literal"><span class="pre">LeafletFinder.group()</span></tt></a> and meth:<cite>LeafletFinder.groups_iter</cite></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.group" title="MDAnalysis.analysis.leaflet.LeafletFinder.group"><tt class="xref py py-meth docutils literal"><span class="pre">LeafletFinder.group()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter"><tt class="xref py py-meth docutils literal"><span class="pre">LeafletFinder.groups_iter()</span></tt></a></p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter">
+<tt class="descname">groups_iter</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over all leaflet <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups"><tt class="xref py py-meth docutils literal"><span class="pre">groups()</span></tt></a></p>
 </dd></dl>
 
 <dl class="method">
@@ -199,8 +199,8 @@ options.</p>
 </li>
 <li><p class="first">reject any solutions for which:</p>
 <blockquote>
-<p><cite>|N0 - N1|/|N0 + N1| &gt; *max_imbalance*</cite></p>
-</blockquote>
+<div><p><cite>|N0 - N1|/|N0 + N1| &gt; *max_imbalance*</cite></p>
+</div></blockquote>
 <p>Ni = number of lipids in group i. This heuristic picks groups with
 balanced numbers of lipids.</p>
 </li>
@@ -296,7 +296,7 @@ can be found; needs to be made more robust</p>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

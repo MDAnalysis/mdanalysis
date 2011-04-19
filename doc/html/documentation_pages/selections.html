@@ -58,7 +58,7 @@ similar to <a class="reference external" href="http://www.charmm.org/html/docume
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">kalp</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid KALP&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.Universe.selectAtoms()</span></tt> returns a
+<p><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.Universe.selectAtoms()</span></tt> returns a
 <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a>, so you can use all the methods
 defined for AtomGroups on them. Selections always return an AtomGroup with
 atoms sorted according to their index in the topology (this is to ensure that
@@ -69,6 +69,8 @@ there aren&#8217;t any duplicates, which can happen with complicated selections)
 </pre></div>
 </div>
 <p>Almost all the basic CHARMM selections work.</p>
+<p>It is also possible to export selections for external software
+packages with the help of <a class="reference internal" href="selections_modules.html#selection-exporters"><em>Selection exporters</em></a>.</p>
 <div class="section" id="selection-keywords">
 <h2>2.1. Selection Keywords<a class="headerlink" href="#selection-keywords" title="Permalink to this headline">¶</a></h2>
 <p>The following describes all selection keywords currently understood by the
@@ -87,7 +89,7 @@ all strings that start with &#8220;GL&#8221; such as &#8220;GLU&#8221;, &#8220;G
 <div class="section" id="simple-selections">
 <h3>2.1.1. Simple selections<a class="headerlink" href="#simple-selections" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>protein, backbone, nucleic, nucleicbackbone</dt>
 <dd>selects all atoms that belong to a standard set of residues; a protein
 is identfied by a hard-coded set of residue names so it  may not
@@ -114,12 +116,12 @@ PDB or GRO file is used as a topology.</dd>
 e.g. <tt class="docutils literal"><span class="pre">DMPC</span> <span class="pre">1</span> <span class="pre">C2</span></tt> selects the C2 carbon of the first residue of the DMPC
 segment</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="boolean">
 <h3>2.1.2. Boolean<a class="headerlink" href="#boolean" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>not</dt>
 <dd>all atoms not in the selection, e.g. <tt class="docutils literal"><span class="pre">not</span> <span class="pre">protein</span></tt> selects all atoms that aren&#8217;t part of a protein</dd>
 <dt>and, or</dt>
@@ -127,12 +129,12 @@ segment</dd>
 e.g. <tt class="docutils literal"><span class="pre">protein</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">(resname</span> <span class="pre">ALA</span> <span class="pre">or</span> <span class="pre">resname</span> <span class="pre">LYS)</span></tt> selects all atoms
 that belong to a protein, but are not in a lysine or alanine residue</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="geometric">
 <h3>2.1.3. Geometric<a class="headerlink" href="#geometric" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>around <em>distance</em>  <em>selection</em></dt>
 <dd>selects all atoms a certain cutoff away from another selection,
 e.g. <tt class="docutils literal"><span class="pre">around</span> <span class="pre">3.5</span> <span class="pre">protein</span></tt> selects all atoms not belonging to protein
@@ -148,7 +150,7 @@ the following <em>operators</em>: <strong>&lt;, &gt;, &lt;=, &gt;=, ==, !=</stro
 selects all atoms with z coordinate greater than 5.0; <tt class="docutils literal"><span class="pre">prop</span> <span class="pre">abs</span> <span class="pre">z</span> <span class="pre">&lt;=</span> <span class="pre">5.0</span></tt>
 selects all atoms within -5.0 &lt;= z &lt;= 5.0.</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 <p>From version 0.6 onwards, geometric selections can use a k-d tree based, fast
 search algorithm (about three times faster than the previous version). However,
 it does not take periodicity into account. The fast algorithm is the default
@@ -158,17 +160,17 @@ default algorithm.</p>
 <div class="section" id="connectivity">
 <h3>2.1.4. Connectivity<a class="headerlink" href="#connectivity" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>byres <em>selection</em></dt>
 <dd>selects all atoms that are in the same segment and residue as
 selection, e.g. specify the subselection after the byres keyword</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="index">
 <h3>2.1.5. Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<dl class="docutils">
+<div><dl class="docutils">
 <dt>bynum <em>index-range</em></dt>
 <dd>selects all atoms within a range of (1-based) inclusive indices,
 e.g. <tt class="docutils literal"><span class="pre">bynum</span> <span class="pre">1</span></tt> selects the first atom in the universe; <tt class="docutils literal"><span class="pre">bynum</span> <span class="pre">5:10</span></tt>
@@ -176,7 +178,7 @@ selects atoms 5 through 10 inclusive. All atoms in the
 <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> are consecutively numbered, and the index
 runs from 1 up to the total number of atoms.</dd>
 </dl>
-</blockquote>
+</div></blockquote>
 </div>
 </div>
 <div class="section" id="instant-selectors">
@@ -407,7 +409,7 @@ might expect:</p>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

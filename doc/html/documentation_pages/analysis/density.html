@@ -114,7 +114,7 @@ the rest should work for an array of any dimension.</p>
 <p>If the input histogram consists of counts per cell then the
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><tt class="xref py py-meth docutils literal"><span class="pre">Density.make_density()</span></tt></a> method converts the grid to a physical density. For
 a probability density, divide it by <tt class="xref py py-meth docutils literal"><span class="pre">Density.grid.sum()</span></tt> or use <tt class="docutils literal"><span class="pre">normed=True</span></tt>
-right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.0.dev-fe3852f)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
+right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.0.dev-f98ffb5)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
 <p>The user <em>should</em> set the <em>parameters</em> keyword (see docs for the
 constructor); in particular, if the data are already a density, one must
 set <em>isDensity</em> == <tt class="xref docutils literal"><span class="pre">True</span></tt> because there is no reliable way to detect if
@@ -187,15 +187,15 @@ place to make sure that units, metadata, etc are compatible!</p>
 <tt class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></tt>. The following keys are meaningful to
 the class. Meaning of the values are listed:</p>
 <blockquote class="last">
-<p><em>isDensity</em></p>
+<div><p><em>isDensity</em></p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li><tt class="xref docutils literal"><span class="pre">False</span></tt>: grid is a histogram with counts [default]</li>
 <li><tt class="xref docutils literal"><span class="pre">True</span></tt>: a density</li>
 </ul>
 <p>Applying <tt class="xref py py-meth docutils literal"><span class="pre">Density.make_density`()</span></tt> sets it to <tt class="xref docutils literal"><span class="pre">True</span></tt>.</p>
-</blockquote>
-</blockquote>
+</div></blockquote>
+</div></blockquote>
 </dd>
 <dt>units</dt>
 <dd><p class="first">A dict with the keys</p>
@@ -222,7 +222,7 @@ associated with the density; the class does not touch
 <tt class="descname">convert_density</tt><big>(</big><em>unit='Angstrom'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.convert_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the density to the physical units given by <em>unit</em>.</p>
 <blockquote>
-Grid.convert_to(unit)</blockquote>
+<div>Grid.convert_to(unit)</div></blockquote>
 <p><em>unit</em> can be one of the following:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -260,12 +260,12 @@ Grid.convert_to(unit)</blockquote>
 </table>
 <p>Note:</p>
 <blockquote>
-<ol class="arabic simple">
+<div><ol class="arabic simple">
 <li>This only works if the initial length unit is provided.</li>
 <li>Conversions always go back to unity so there can be rounding
 and floating point artifacts for multiple conversions.</li>
 </ol>
-</blockquote>
+</div></blockquote>
 <p>There may be some undesirable cross-interactions with <a class="reference internal" href="#MDAnalysis.analysis.density.Density.convert_length" title="MDAnalysis.analysis.density.Density.convert_length"><tt class="xref py py-meth docutils literal"><span class="pre">convert_length()</span></tt></a>...</p>
 </dd></dl>
 
@@ -274,7 +274,7 @@ and floating point artifacts for multiple conversions.</li>
 <tt class="descname">convert_length</tt><big>(</big><em>unit='Angstrom'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.convert_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert Grid object to the new <em>unit</em>.</p>
 <blockquote>
-Grid.convert_length(&lt;unit&gt;)</blockquote>
+<div>Grid.convert_length(&lt;unit&gt;)</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -300,7 +300,7 @@ to start from a histogram and a length unit and use
 <tt class="descname">make_density</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.make_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the grid (a histogram, counts in a cell) to a density (counts/volume).</p>
 <blockquote>
-make_density()</blockquote>
+<div>make_density()</div></blockquote>
 <ol class="arabic simple">
 <li>This changes the grid irrevocably.</li>
 <li>For a probability density, manually divide by grid.sum().</li>
@@ -315,7 +315,7 @@ make_density()</blockquote>
 <tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">density_from_Universe</tt><big>(</big><em>universe</em>, <em>delta=1.0</em>, <em>atomselection='name OH2'</em>, <em>metadata=None</em>, <em>padding=2.0</em>, <em>cutoff=0</em>, <em>soluteselection=None</em>, <em>use_kdtree=True</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_Universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density grid from a MDAnalysis.Universe object.</p>
 <blockquote>
-density_from_Universe(universe, delta=1.0, atomselection=&#8217;name OH2&#8217;, ...) &#8211;&gt; density</blockquote>
+<div>density_from_Universe(universe, delta=1.0, atomselection=&#8217;name OH2&#8217;, ...) &#8211;&gt; density</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -372,10 +372,10 @@ in Angstroem [2.0]</p>
 <tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">density_from_trajectory</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density grid from a trajectory.</p>
 <blockquote>
-density_from_trajectory(PSF, DCD, delta=1.0, atomselection=&#8217;name OH2&#8217;, ...) &#8211;&gt; density</blockquote>
+<div>density_from_trajectory(PSF, DCD, delta=1.0, atomselection=&#8217;name OH2&#8217;, ...) &#8211;&gt; density</div></blockquote>
 <p>or</p>
 <blockquote>
-density_from_trajectory(PDB, XTC, delta=1.0, atomselection=&#8217;name OH2&#8217;, ...) &#8211;&gt; density</blockquote>
+<div>density_from_trajectory(PDB, XTC, delta=1.0, atomselection=&#8217;name OH2&#8217;, ...) &#8211;&gt; density</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -440,7 +440,7 @@ file then they are used to calculate the width of the gaussian.</p>
 <p>Using the <cite>sigma</cite> keyword, one can override this choice and
 prescribe a gaussian width for all atoms (in Angstrom), which is calculated as</p>
 <blockquote>
-B = [(8*PI**2)/3] * (RMSF)**2</blockquote>
+<div>B = [(8*PI**2)/3] * (RMSF)**2</div></blockquote>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The current implementation is <em>painfully</em> slow.</p>
@@ -506,7 +506,7 @@ Univ. Press, 1975</p>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">BfactorDensityCreator</tt><big>(</big><em>pdb</em>, <em>delta=1.0</em>, <em>atomselection='resname HOH and name O'</em>, <em>metadata=None</em>, <em>padding=1.0</em>, <em>sigma=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density grid from a pdb file using MDAnalysis.</p>
 <blockquote>
-dens = BfactorDensityCreator(pdb,...).Density()</blockquote>
+<div>dens = BfactorDensityCreator(pdb,...).Density()</div></blockquote>
 <p>The main purpose of this function is to convert crystal waters in
 an X-ray structure into a density so that one can compare the
 experimental density with the one from molecular dynamics
@@ -517,14 +517,14 @@ all selected atoms.</p>
 sigma is taken as sqrt(3.*B/8.)/pi (see <tt class="xref py py-func docutils literal"><span class="pre">BFactor2RMSF()</span></tt>).</p>
 <p><strong>TODO</strong></p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li>Make Gaussian convolution more efficient (at least for same
 sigma) because right now it is <em>very</em> slow (which may be
 acceptable if one only runs this once)</li>
 <li>Using a temporary Creator class with the
 <a class="reference internal" href="#MDAnalysis.analysis.density.BfactorDensityCreator.Density" title="MDAnalysis.analysis.density.BfactorDensityCreator.Density"><tt class="xref py py-meth docutils literal"><span class="pre">BfactorDensityCreator.Density()</span></tt></a> helper method is clumsy.</li>
 </ul>
-</blockquote>
+</div></blockquote>
 <p>Construct the density from psf and pdb and the atomselection.</p>
 <dl class="docutils">
 <dt>DC = BfactorDensityCreator(pdb, delta=&lt;delta&gt;, atomselection=&lt;MDAnalysis selection&gt;,</dt>
@@ -644,7 +644,7 @@ that can be easily matched to a broader density distribution.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

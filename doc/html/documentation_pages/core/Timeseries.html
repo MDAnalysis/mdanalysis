@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries &mdash; MDAnalysis v0.7.3 documentation</title>
+    <title>7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries &mdash; MDAnalysis v0.7.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../../index.html" />
-    <link rel="up" title="6. Core modules" href="../core_modules.html" />
-    <link rel="next" title="6.5. Fast distance array computation — MDAnalysis.core.distances" href="distances.html" />
-    <link rel="prev" title="6.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" /> 
+    <link rel="up" title="7. Core modules" href="../core_modules.html" />
+    <link rel="next" title="7.5. Fast distance array computation — MDAnalysis.core.distances" href="distances.html" />
+    <link rel="prev" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,13 +38,13 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="distances.html" title="6.5. Fast distance array computation — MDAnalysis.core.distances"
+          <a href="distances.html" title="7.5. Fast distance array computation — MDAnalysis.core.distances"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="Selection.html" title="6.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
+          <a href="Selection.html" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" accesskey="U">6. Core modules</a> &raquo;</li> 
+          <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,7 +54,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.core.Timeseries"></span><div class="section" id="compute-observable-timeseries-from-trajectories-mdanalysis-core-timeseries">
-<h1>6.4. Compute observable timeseries from trajectories &#8212; <a class="reference internal" href="#module-MDAnalysis.core.Timeseries" title="MDAnalysis.core.Timeseries"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.Timeseries</span></tt></a><a class="headerlink" href="#compute-observable-timeseries-from-trajectories-mdanalysis-core-timeseries" title="Permalink to this headline">¶</a></h1>
+<h1>7.4. Compute observable timeseries from trajectories &#8212; <a class="reference internal" href="#module-MDAnalysis.core.Timeseries" title="MDAnalysis.core.Timeseries"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.Timeseries</span></tt></a><a class="headerlink" href="#compute-observable-timeseries-from-trajectories-mdanalysis-core-timeseries" title="Permalink to this headline">¶</a></h1>
 <p>The collection of timeseries (such as <a class="reference internal" href="#MDAnalysis.core.Timeseries.Atom" title="MDAnalysis.core.Timeseries.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>, <a class="reference internal" href="#MDAnalysis.core.Timeseries.Bond" title="MDAnalysis.core.Timeseries.Bond"><tt class="xref py py-class docutils literal"><span class="pre">Bond</span></tt></a>,
 <a class="reference internal" href="#MDAnalysis.core.Timeseries.Dihedral" title="MDAnalysis.core.Timeseries.Dihedral"><tt class="xref py py-class docutils literal"><span class="pre">Dihedral</span></tt></a>...)  can be computed from a trajectory in one go, foregoing
 the need to iterate through the trajectory frame by frame in python. Inspired
@@ -63,7 +63,7 @@ by CHARMM&#8217;s correl command.</p>
 in C-code. Hence not all trajectory readers (see <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt>)
 support them.</p>
 <div class="section" id="basic-classes">
-<h2>6.4.1. Basic classes<a class="headerlink" href="#basic-classes" title="Permalink to this headline">¶</a></h2>
+<h2>7.4.1. Basic classes<a class="headerlink" href="#basic-classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.Timeseries.Timeseries">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Timeseries</tt><big>(</big><em>code</em>, <em>atoms</em>, <em>dsize</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.Timeseries" title="Permalink to this definition">¶</a></dt>
@@ -117,13 +117,13 @@ start and stop are inclusive</p>
 
 </div>
 <div class="section" id="timeseries-of-observables">
-<h2>6.4.2. Timeseries of observables<a class="headerlink" href="#timeseries-of-observables" title="Permalink to this headline">¶</a></h2>
+<h2>7.4.2. Timeseries of observables<a class="headerlink" href="#timeseries-of-observables" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.Timeseries.Atom">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Atom</tt><big>(</big><em>code</em>, <em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.Atom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns coordinate data for an atom or group of atoms</p>
 <blockquote>
-t = Atom(code, atoms)</blockquote>
+<div>t = Atom(code, atoms)</div></blockquote>
 <p>code is one of &#8216;x&#8217;, &#8216;y&#8217;, &#8216;z&#8217;, or &#8216;v&#8217; (&#8216;vector&#8217;, which returns all three dimensions)
 atoms can be a single Atom object, a list of Atom objects, or an AtomGroup</p>
 </dd></dl>
@@ -133,7 +133,7 @@ atoms can be a single Atom object, a list of Atom objects, or an AtomGroup</p>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Bond</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.Bond" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns a timeseries for a bond</p>
 <blockquote>
-t = Bond(atoms)</blockquote>
+<div>t = Bond(atoms)</div></blockquote>
 <p>atoms must contain 2 Atoms, either as a list or an AtomGroup</p>
 </dd></dl>
 
@@ -142,7 +142,7 @@ t = Bond(atoms)</blockquote>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Angle</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.Angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns a timeseries for an angle</p>
 <blockquote>
-t = Angle(atoms)</blockquote>
+<div>t = Angle(atoms)</div></blockquote>
 <p>atoms must contain 3 Atoms, either as a list or an AtomGroup</p>
 </dd></dl>
 
@@ -151,7 +151,7 @@ t = Angle(atoms)</blockquote>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Dihedral</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.Dihedral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns a timeseries for a dihedral angle</p>
 <blockquote>
-t = Dihedral(atoms)</blockquote>
+<div>t = Dihedral(atoms)</div></blockquote>
 <p>atoms must contain 4 Atoms, either as a list or an AtomGroup</p>
 </dd></dl>
 
@@ -160,7 +160,7 @@ t = Dihedral(atoms)</blockquote>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Distance</tt><big>(</big><em>code</em>, <em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.Distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns distances between 2 atoms</p>
 <blockquote>
-t = Distance(code, atoms)</blockquote>
+<div>t = Distance(code, atoms)</div></blockquote>
 <p>code is one of &#8216;d&#8217; (distance vector), or &#8216;r&#8217; (scalar distance)
 atoms must contain 2 Atoms, either as a list or an AtomGroup</p>
 </dd></dl>
@@ -170,7 +170,7 @@ atoms must contain 2 Atoms, either as a list or an AtomGroup</p>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">CenterOfGeometry</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.CenterOfGeometry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns the center of geometry of a group of atoms</p>
 <blockquote>
-t = CenterOfGeometry(atoms)</blockquote>
+<div>t = CenterOfGeometry(atoms)</div></blockquote>
 <p>atoms can be a list of Atom objects, or an AtomGroup</p>
 </dd></dl>
 
@@ -179,7 +179,7 @@ t = CenterOfGeometry(atoms)</blockquote>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">CenterOfMass</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.CenterOfMass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns the center of mass of a group of atoms</p>
 <blockquote>
-t = CenterOfMass(atoms)</blockquote>
+<div>t = CenterOfMass(atoms)</div></blockquote>
 <p>atoms can be a list of Atom objects, or an AtomGroup</p>
 </dd></dl>
 
@@ -188,7 +188,7 @@ t = CenterOfMass(atoms)</blockquote>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">PrincipleAxis</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.PrincipleAxis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns the principle axis for a group of atoms</p>
 <blockquote>
-t = principleAxis(atoms)</blockquote>
+<div>t = principleAxis(atoms)</div></blockquote>
 <p>atoms can be a list of Atom objects, or an AtomGroup</p>
 </dd></dl>
 
@@ -197,11 +197,11 @@ t = principleAxis(atoms)</blockquote>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">WaterDipole</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.WaterDipole" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Timeseries that returns a timeseries for the dipole vector of a 3-site water</p>
 <blockquote>
-t = WaterDipole(atoms)</blockquote>
+<div>t = WaterDipole(atoms)</div></blockquote>
 <p>atoms must contain 3 Atoms, either as a list or an AtomGroup; the first one MUST be
 the oxygen, the other two are the hydrogens. The vector is calculated as</p>
 <blockquote>
-d = xO + (xH1 - xH2)/2</blockquote>
+<div>d = xO + (xH1 - xH2)/2</div></blockquote>
 </dd></dl>
 
 </div>
@@ -215,19 +215,19 @@ d = xO + (xH1 - xH2)/2</blockquote>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">6.4. Compute observable timeseries from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.Timeseries</span></tt></a><ul>
-<li><a class="reference internal" href="#basic-classes">6.4.1. Basic classes</a></li>
-<li><a class="reference internal" href="#timeseries-of-observables">6.4.2. Timeseries of observables</a></li>
+<li><a class="reference internal" href="#">7.4. Compute observable timeseries from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.Timeseries</span></tt></a><ul>
+<li><a class="reference internal" href="#basic-classes">7.4.1. Basic classes</a></li>
+<li><a class="reference internal" href="#timeseries-of-observables">7.4.2. Timeseries of observables</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="Selection.html"
-                        title="previous chapter">6.3. Atom selection Hierarchy &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.Selection</span></tt></a></p>
+                        title="previous chapter">7.3. Atom selection Hierarchy &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.Selection</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="distances.html"
-                        title="next chapter">6.5. Fast distance array computation &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.distances</span></tt></a></p>
+                        title="next chapter">7.5. Fast distance array computation &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.distances</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/Timeseries.txt"
@@ -260,18 +260,18 @@ d = xO + (xH1 - xH2)/2</blockquote>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="distances.html" title="6.5. Fast distance array computation — MDAnalysis.core.distances"
+          <a href="distances.html" title="7.5. Fast distance array computation — MDAnalysis.core.distances"
              >next</a> |</li>
         <li class="right" >
-          <a href="Selection.html" title="6.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
+          <a href="Selection.html" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" >6. Core modules</a> &raquo;</li> 
+          <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

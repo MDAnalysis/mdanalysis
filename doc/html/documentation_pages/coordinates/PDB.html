@@ -61,10 +61,10 @@ instead of PSF file in order to define the list of atoms (but no
 connectivity information will be  available in this case).</p>
 <p>The <tt class="xref py py-mod docutils literal"><span class="pre">PDB</span></tt> module makes heavy use of Biopython&#8217;s <tt class="xref py py-mod docutils literal"><span class="pre">Bio.PDB</span></tt>:</p>
 <blockquote>
-<p>Hamelryck, T., Manderick, B. (2003) PDB parser and structure class
+<div><p>Hamelryck, T., Manderick, B. (2003) PDB parser and structure class
 implemented in Python. Bioinformatics, 19, 2308-2310.</p>
 <p><a class="reference external" href="http://biopython.org">http://biopython.org</a></p>
-</blockquote>
+</div></blockquote>
 <p>but replaces the standard PDB file parser with one that uses the
 <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder</span></tt>
 to cope with very large pdb files as commonly encountered in MD
@@ -134,11 +134,11 @@ which happens automatically when the
 :Arguments:
 pdbfilename     filename; if multi=True, embed a %%d formatstring</p>
 <blockquote>
-so that write_next_timestep() can insert the frame number</blockquote>
+<div>so that write_next_timestep() can insert the frame number</div></blockquote>
 <p>universe        supply a universe [really REQUIRED; optional only for compatibility]
 multi           False: write a single structure to a single pdb</p>
 <blockquote>
-True: write all frames to multiple pdb files</blockquote>
+<div>True: write all frames to multiple pdb files</div></blockquote>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter.write">
 <tt class="descname">write</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.write" title="Permalink to this definition">¶</a></dt>
@@ -458,7 +458,7 @@ is used as the PDB chainID.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>
