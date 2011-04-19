@@ -28,10 +28,15 @@ Algorithm:
   2. identify the largest connected subgraphs
   3. analyse first and second largest graph, which correspond to the leaflets
 
-You could identify the upper and lower leaflet of a planar membrane by
-comparing the median of the centres of masses, or for a vesicle by
-comparing distances from the centre of geometry, but neither is
-implemented at the moment.
+One can use this information to identify
+
+* the upper and lower leaflet of a *planar membrane* by comparing the
+  the :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry` of
+  the leaflet groups, or
+
+* the outer and inner leaflet of a *vesicle* by comparing histograms
+  of distances from the centre of geometry (or possibly simply the
+  :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.radiusOfGyration`).
 
 See example scripts in the ``examples/`` directory on how to use
 :class:`LeafletFinder`. The function :func:`optimize_cutoff` implements a
@@ -147,7 +152,7 @@ class LeafletFinder(object):
 
         If no argument is supplied, then a list of all leaflet groups is returned.
 
-        .. SeeAlso:: :meth:`LeafletFinder.group` and meth:`LeafletFinder.groups_iter`
+        .. SeeAlso:: :meth:`LeafletFinder.group` and :meth:`LeafletFinder.groups_iter`
         """
         if component_index is None:
             return list(self.groups_iter())
@@ -160,17 +165,8 @@ class LeafletFinder(object):
         return MDAnalysis.core.AtomGroup.AtomGroup(
             [self.selection[i] for i in self.components[component_index]])
 
-    def atoms(self, component_index):
-        """Return a :class:`MDAnalysis.core.AtomGroup.AtomGroup` for *component_index*.
-
-        .. warning:: **Deprecated**. Will be removed for 0.7.0.
-                     Use :meth:`LeafletFinder.groups` instead.
-        """
-        warnings.warn("LeafletFinder.atoms() is deprecated and will be removed in 0.7.0."
-                      "Use LeafletFinder.groups() instead.", category=DeprecationWarning)
-        return self.group(component_index)
-
     def groups_iter(self):
+        """Iterator over all leaflet :meth:`groups`"""
         for component_index in xrange(len(self.components)):
             yield self.group(component_index)
 
