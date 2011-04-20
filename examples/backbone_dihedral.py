@@ -17,7 +17,7 @@ from MDAnalysis.tests.datafiles import PSF, DCD
 try:
     import matplotlib
     matplotlib.use('agg')  # no interactive plotting, only save figures
-    from pylab import errorbar, legend, xlabel, ylabel, savefig
+    from pylab import errorbar, legend, xlabel, ylabel, savefig, clf, gca, draw
     have_matplotlib = True
 except ImportError:
     have_matplotlib = False
@@ -62,11 +62,27 @@ psi = numpy.array(psi)
 
 # plotting and saving the dihe for each resid
 if have_matplotlib:
+    clf()
     a = errorbar(res, phi[:,0], phi[:,1], fmt='ro', label=r"$\phi$")
     b = errorbar(res, psi[:,0], psi[:,1], fmt='bs', label=r"$\psi$")
     legend((a[0], b[0]), (r"$\phi$", r"$\psi$"))
     xlabel("residue number")
     ylabel(r"dihedral in degrees")
-    savefig("./figures/backbone_dihedrals.pdf")
-    savefig("./figures/backbone_dihedrals.png")
-    print "Figures saved as ./figures/backbone_dihedrals.{pdf,png}"
+    savefig("./figures/backbone_dihedrals_residue.pdf")
+    savefig("./figures/backbone_dihedrals_residue.png")
+    print "Figures saved as ./figures/backbone_dihedrals_residue.{pdf,png}"
+
+    # Ramachandran plot
+    clf()
+    errorbar(phi[:,0], psi[:,0], xerr=phi[:,1], yerr=psi[:,1], fmt="o")
+    xlabel(r"$\phi$")
+    ylabel(r"$\psi$")
+    ax = gca()
+    degreeFormatter = matplotlib.ticker.FormatStrFormatter(r'%d$^\circ$')
+    ax.xaxis.set_major_formatter(degreeFormatter)
+    ax.yaxis.set_major_formatter(degreeFormatter)
+    draw()
+
+    savefig("./figures/backbone_dihedrals_ramachandran.pdf")
+    savefig("./figures/backbone_dihedrals_ramachandran.png")
+    print "Figures saved as ./figures/backbone_dihedrals_ramachandran.{pdf,png}"

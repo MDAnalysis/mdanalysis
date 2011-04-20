@@ -41,7 +41,7 @@ from MDAnalysis.tests.datafiles import PSF, DCD  # AdK example trajectory
 try:
     import matplotlib
     matplotlib.use('agg')  # no interactive plotting, only save figures
-    from pylab import savefig
+    from pylab import savefig, clf
     have_matplotlib = True
 except ImportError:
     have_matplotlib = False
@@ -52,8 +52,9 @@ C.run()
 print "Data file was written to %r" % C.output_bz2
 
 if have_matplotlib:
-    matplotlib.rc('font', size=9)
+    matplotlib.rc('font', size=14)
     matplotlib.rc('figure', figsize=(3.4, 3.8))
+    clf()
     C.plot(linewidth=3)
 
     savefig("./figures/nativecontacts.pdf")

@@ -46,8 +46,11 @@ solvent = universe.selectAtoms("resname SOL and name OW")
 
 dmin, dmax = 0.0, 8.0
 nbins = 80
+
+# set up rdf
 rdf, edges = numpy.histogram([0], bins=nbins, range=(dmin, dmax))
 rdf *= 0
+rdf = rdf.astype(numpy.float64)  # avoid possible problems with '/' later on
 
 n = solvent.numberOfAtoms()
 dist = numpy.zeros((n*(n-1)/2,), dtype=numpy.float64)
@@ -75,15 +78,13 @@ boxvolume /= numframes    # average volume
 # Normalize RDF
 radii = 0.5*(edges[1:] + edges[:-1])
 vol = (4./3.)*numpy.pi*(numpy.power(edges[1:],3)-numpy.power(edges[:-1], 3))
-
 # normalization to the average density n/boxvolume in the simulation
-density = n/boxvolume
+density = n / boxvolume
 # This is inaccurate when solutes take up substantial amount
 # of space. In this case you might want to use
 ## import MDAnalysis.core.units
 ## density = MDAnalysis.core.units.convert(1.0, 'water', 'Angstrom^{-3}')
-norm = 1.0 / (density * rdf.sum() * numframes)
-rdf = rdf.astype(numpy.float64)  # rdf is dtype=int when using histogram()
+norm = density * (n-1)/2 * numframes
 rdf /= norm * vol
 
 
@@ -94,11 +95,12 @@ with open(outfile,'w') as output:
 print "g(r) data written to %(outfile)r" % vars()
 
 if have_matplotlib:
-    outfig = "./figures/rdf.pdf"
-    matplotlib.rc('font', size=9)
+    matplotlib.rc('font', size=14)
     matplotlib.rc('figure', figsize=(5, 4))
+    pylab.clf()
     pylab.plot(radii, rdf, linewidth=3)
     pylab.xlabel(r"distance $r$ in $\AA$")
     pylab.ylabel(r"radial distribution function $g(r)$")
-    pylab.savefig(outfig)
-    print "Figure written to %(outfig)r"
+    pylab.savefig("./figures/rdf.pdf")
+    pylab.savefig("./figures/rdf.png")
+    print "Figure written to ./figures/rdf.{pdf,png}"
