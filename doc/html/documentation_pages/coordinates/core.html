@@ -188,6 +188,78 @@ more complicated probes could be implemented here or in the
 individual packages (e.g. as static methods).</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="MDAnalysis.coordinates.core.triclinic_box">
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">triclinic_box</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.triclinic_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the three triclinic box vectors to [A,B,C,alpha,beta,gamma].</p>
+<p>Angles are in degrees.</p>
+<ul class="simple">
+<li>alpha  = angle(y,z)</li>
+<li>beta   = angle(x,z)</li>
+<li>gamma  = angle(x,y)</li>
+</ul>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Definition of angles: <a class="reference external" href="http://en.wikipedia.org/wiki/Lattice_constant">http://en.wikipedia.org/wiki/Lattice_constant</a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.coordinates.core.triclinic_vectors">
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">triclinic_vectors</tt><big>(</big><em>dimensions</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.triclinic_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert <cite>[A,B,C,alpha,beta,gamma]</cite> to a triclinic box representation.</p>
+<p>Original code by Tsjerk Wassenaar; see <a class="reference external" href="http://www.mail-archive.com/gmx-users&#64;gromacs.org/msg28032.html">http://www.mail-archive.com/gmx-users&#64;gromacs.org/msg28032.html</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>dimensions</em></dt>
+<dd><p class="first last">list of box lengths and angles (in degrees) such as
+[A,B,C,alpha,beta,gamma]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
+B[1] = second vector, B[2] third box vector.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The first vector is always pointing along the
+X-axis i.e. parallel to (1,0,0).</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.coordinates.core.box_volume">
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">box_volume</tt><big>(</big><em>dimensions</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.box_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the volume of the unitcell described by <em>dimensions</em>.</p>
+<p>The volume is computed as <cite>det(x1,x2,x2)</cite> where the xi are the
+triclinic box vectors from <a class="reference internal" href="#MDAnalysis.coordinates.core.triclinic_vectors" title="MDAnalysis.coordinates.core.triclinic_vectors"><tt class="xref py py-func docutils literal"><span class="pre">triclinic_vectors()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>dimensions</em></dt>
+<dd><p class="first last">list of box lengths and angles (in degrees) such as
+[A,B,C,alpha,beta,gamma]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
+B[1] = second vector, B[2] third box vector.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 
@@ -201,7 +273,7 @@ individual packages (e.g. as static methods).</p>
                         title="previous chapter">5.2. Base classes &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="CRD.html"
-                        title="next chapter">5.4. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></p>
+                        title="next chapter">5.4. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/core.txt"

@@ -206,6 +206,7 @@ I/O code can be written in C or python or a mixture thereof.</p>
 <li>2011-02-01 extended call signatur of Reader class</li>
 <li>2011-03-30 optional Writer() method for Readers</li>
 <li>2011-04-18 added time and frame managed attributes to Reader</li>
+<li>2011-04-20 added volume to Timestep</li>
 </ul>
 </div>
 <div class="section" id="registry">
@@ -274,6 +275,8 @@ coordinate array</dd>
 <dd>system box dimensions (<cite>x, y, z, alpha, beta, gamma</cite>)
 (typically implemented as a property because it needs to translate whatever is in the
 underlying <tt class="xref py py-attr docutils literal"><span class="pre">Timestep._unitcell</span></tt> attribute)</dd>
+<dt><tt class="docutils literal"><span class="pre">volume</span></tt></dt>
+<dd>system box volume (derived as the determinant of the box vectors of <tt class="docutils literal"><span class="pre">dimensions</span></tt>)</dd>
 </dl>
 </div></blockquote>
 </div>
