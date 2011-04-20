@@ -46,8 +46,7 @@ Installation from source
 ========================
 
 Currently MDAnalysis is only distributed in source form. You will need
-a C compiler and cython to compile the DCD reader and numerical
-extensions.
+a C compiler to compile the DCD and XTC reader and numerical extensions.
 
 In the top directory, you can customize the setup by copying the setup
 configuration template to setup.cfg and editing it.::
@@ -72,7 +71,8 @@ require administrative privileges.
 
 It is also possible to use --prefix, --home, or --user options for
 setup.py to install in a different (probably your private) python
-directory hierarchy.
+directory hierarchy. ``python setup.py install --help`` should show
+you your options.
 
 If you have problem at this stage then have a look at the operating
 system specific notes at the end of this file or look in the issue
@@ -191,7 +191,7 @@ In order to use the library in your own python code you will need at least
     * numpy of version 1.0.3 or greater (http://numpy.scipy.org/)
     * BioPython's Bio.PDB (http://biopython.org)
 
-Optional python packages:
+Optional python packages (used in MDAnalysis.analysis):
 
     * networkx (http://networkx.lanl.gov/) --- for analysis of lipid 
       leaflets via MDAnalysis.analysis.leaflet
@@ -211,7 +211,12 @@ Linux
   setup.cfg. This should work if you have no file named setup.cfg in
   your MDAnalysis directory. (If you want to use setup.cfg and use GNU
   gcc simply comment out the compiler=intel line in the template:
+
    # compiler=intel
+
+  (However, compiling with Intel compilers has not been tested for a
+  while. Send questions and feedback to the mailing list
+  http://groups.google.com/group/mdnalysis-discussion )
 
 * To compile with the Intel compilers, set in setup.cfg ::
 
@@ -288,3 +293,8 @@ OS specific notes
 
      port install  py26-numpy  py26-cython
      port install  py26-scipy  py26-matplotlib py26-biopython
+
+* NOTE: Use the Apple-provided gcc, not the fink provided
+  one. Apparently, only Apple's gcc has the -arch flag that appears to
+  be required for python setup.py install. (Thanks to Justin Lemkul
+  for pointing it out).
