@@ -24,16 +24,16 @@ Supported exporters and recognized file name extensions:
 +---------------+-----------+-------+--------------------------------------------+
 |Name           | extension |  IO   | remarks                                    |
 +===============+===========+=======+============================================+
-| VMD_          | tcl       | w     | VMD macros, available in Representations;  |
+| vmd           | tcl       | w     | VMD_ macros, available in Representations; |
 |               |           |       | module :mod:`MDAnalysis.selections.vmd`    |
 +---------------+-----------+-------+--------------------------------------------+
-| PyMOL_        | pml       | w     | simple selection string;                   |
+| pymol         | pml       | w     | simple PyMOL_ selection string;            |
 |               | 	    | 	    | module :mod:`MDAnalysis.selections.pymol`  |
 +---------------+-----------+-------+--------------------------------------------+
-| Gromacs_      | ndx       | w     | index file;                                |
+| gromacs       | ndx       | w     | Gromacs_ index file;                       |
 |               |           |       | module :mod:`MDAnalysis.selections.gromacs`|
 +---------------+-----------+-------+--------------------------------------------+
-| CHARMM_       | str       | w     | selection of individual atoms;             |
+| charmm        | str       | w     | CHARMM_ selection of individual atoms;     |
 |               |           |       | module :mod:`MDAnalysis.selections.charmm` |
 +---------------+-----------+-------+--------------------------------------------+
 
