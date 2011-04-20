@@ -794,7 +794,8 @@ class Residue(AtomGroup):
         Numeric (integer) resid, taken from the topology.
 
     """
-    __cache = {}
+    ## FIXME (see below, Issue 70)
+    ##__cache = {}
     def __init__(self, name, id, atoms):
         super(Residue, self).__init__(atoms)
         self.name = name
@@ -804,8 +805,10 @@ class Residue(AtomGroup):
             a.id = i
             a.residue = self
         # Should I cache the positions of atoms within a residue?
-        if not Residue.__cache.has_key(name):
-            Residue.__cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
+        # FIXME: breaks when termini are used to populate the cache; termini typically
+        #        have the SAME residue name but different atoms!!! Issue 70
+        ##if not Residue.__cache.has_key(name):
+        ##    Residue.__cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
     def phi_selection(self):
         """AtomGroup corresponding to the phi protein backbone dihedral C'-N-CA-C.
 
@@ -856,13 +859,18 @@ class Residue(AtomGroup):
         else: return self.__getattr__(item)
     def __getattr__(self, name):
         # There can only be one atom with a certain name
+         for atom in self.atoms:
+             if (name == atom.name):
+                 return atom
+         raise SelectionError("No atom in residue "+self.name+" with name "+name)
+
         # Use the cache
-        #for atom in self.atoms:
-        #    if (name == atom.name): return atom
-        try:
-            index = Residue.__cache[self.name][name]
-            return self._atoms[index]
-        except KeyError: raise SelectionError("No atom in residue "+self.name+" with name "+name)
+        ## FIXME (see above, __cache, Issue 70)
+        ##try:
+        ##    index = Residue.__cache[self.name][name]
+        ##    return self._atoms[index]
+        ##except KeyError:
+        ##    raise SelectionError("No atom in residue "+self.name+" with name "+name)
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self.name)+', '+repr(self.id)+'>'
 

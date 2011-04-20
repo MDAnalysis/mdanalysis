@@ -276,3 +276,11 @@ def test_generated_residueselection():
             "Met selection does not return a ResidueGroup")
 
     del universe
+
+@attr('issue')
+def test_instantselection_termini():
+    """Test that instant selections work, even for residues that are also termini (Issue 70)"""
+    universe = MDAnalysis.Universe(PSF, DCD)
+    assert_equal(universe.residues[20].CA.name, 'CA', "CA of MET21 is not selected correctly")
+    del universe
+
