@@ -253,7 +253,7 @@ class TrjReader(base.Reader):
         ts.lmbda = 0
         return self.xdrfile
 
-    def close_trajectory(self):
+    def close(self):
         """Close xdr trajectory file if it was open."""
         if self.xdrfile is None:
             return
@@ -297,10 +297,10 @@ class TrjReader(base.Reader):
                 if err.errno == errno.ENODATA:
                     break
                 else:
-                    self.close_trajectory()
+                    self.close()
                     raise
             except:
-                self.close_trajectory()
+                self.close()
                 raise
             else:
                 yield ts
@@ -340,7 +340,7 @@ class TrjReader(base.Reader):
         self.next()   # read first frame
 
     def _reopen(self):
-        self.close_trajectory()
+        self.close()
         self.open_trajectory()
 
     def _forward_to_frame(self, frameindex):
@@ -395,7 +395,7 @@ class TrjReader(base.Reader):
         raise NotImplementedError("correl not available for Gromacs trajectories")
 
     def __del__(self):
-        self.close_trajectory()
+        self.close()
 
 
 class TrjWriter(base.Writer):
@@ -501,7 +501,7 @@ class TrjWriter(base.Writer):
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return status
 
-    def close_trajectory(self):
+    def close(self):
         status = libxdrfile.exdrCLOSE
         if not self.xdrfile is None:
             status = libxdrfile.xdrfile_close(self.xdrfile)

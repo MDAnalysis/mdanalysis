@@ -270,7 +270,7 @@ class TRJReader(base.Reader):
                 # step through the file (assuming xyzfile has an iterator)
                 for i in self.trjfile:
                         counter = counter + 1
-                self.close_trajectory()
+                self.close()
                 # need to check this is an integer!
                 numframes = int(counter/linesPerFrame)
                 return numframes
@@ -288,13 +288,13 @@ class TRJReader(base.Reader):
 
         def __del__(self):
                 if not self.trjfile is None:
-                        self.close_trajectory()
+                        self.close()
 
         def __len__(self):
                 return self.numframes
 
         def _reopen(self):
-                self.close_trajectory()
+                self.close()
                 self.open_trajectory()
 
         def open_trajectory(self):
@@ -313,7 +313,7 @@ class TRJReader(base.Reader):
                 ts.time = 0
                 return self.trjfile
 
-        def close_trajectory(self):
+        def close(self):
                 """Close trj trajectory file if it was open."""
                 if self.trjfile is None:
                         return
@@ -336,5 +336,5 @@ class TRJReader(base.Reader):
                         try:
                                 yield self._read_next_timestep()
                         except EOFError:
-                                self.close_trajectory()
+                                self.close()
                                 raise StopIteration

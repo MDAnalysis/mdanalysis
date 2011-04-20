@@ -415,7 +415,7 @@ Methods
  ``close_trajectory()``
      close file and finish I/O
  ``__del__()``
-     ensures that close_trajectory() is called
+     ensures that close() is called
 
 Attributes
 ..........

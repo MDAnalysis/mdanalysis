@@ -229,9 +229,6 @@ class PDBWriter(base.Writer):
             io.set_structure(self.PDBstructure)
             io.save(self.filename)
 
-    def close_trajectory(self):
-        pass    # do nothing, keeps super classe's __del__ happy
-
 
 class PrimitivePDBReader(base.Reader):
     """PDBReader that reads a PDB-formatted file, no frills.

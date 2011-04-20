@@ -126,7 +126,7 @@ class XYZReader(base.Reader):
         # read the first line
         n = self.xyzfile.readline()
 
-        self.close_trajectory()
+        self.close()
 
         # need to check type of n
         return int(n)
@@ -153,7 +153,7 @@ class XYZReader(base.Reader):
         for i in self.xyzfile:
             counter = counter + 1
 
-        self.close_trajectory()
+        self.close()
 
         # need to check this is an integer!
         numframes = int(counter/linesPerFrame)
@@ -168,7 +168,7 @@ class XYZReader(base.Reader):
             try:
                 yield self._read_next_timestep()
             except EOFError:
-                self.close_trajectory()
+                self.close()
                 raise StopIteration
 
     def _read_next_timestep(self, ts=None):
@@ -217,7 +217,7 @@ class XYZReader(base.Reader):
         self.next()
 
     def _reopen(self):
-        self.close_trajectory()
+        self.close()
         self.open_trajectory()
 
     def open_trajectory(self):
@@ -242,7 +242,7 @@ class XYZReader(base.Reader):
         ts.time = 0
         return self.xyzfile
 
-    def close_trajectory(self):
+    def close(self):
         """Close xyz trajectory file if it was open."""
         if self.xyzfile is None:
             return
@@ -251,5 +251,5 @@ class XYZReader(base.Reader):
 
     def __del__(self):
         if not self.xyzfile is None:
-            self.close_trajectory()
+            self.close()
 

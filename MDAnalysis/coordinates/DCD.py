@@ -134,14 +134,14 @@ class DCDWriter(base.Writer):
             ts = Timestep(ts)               # wrap in a new fortran formatted Timestep
         self._write_next_frame(ts._x, ts._y, ts._z, unitcell)
         self.frames_written += 1
-    def close_trajectory(self):
+    def close(self):
         # Do i really need this?
         self._finish_dcd_write()
         self.dcdfile.close()
         self.dcdfile = None
     def __del__(self):
         if hasattr(self, 'dcdfile') and not self.dcdfile is None:
-            self.close_trajectory()
+            self.close()
 
 class DCDReader(base.Reader):
     """Reads from a DCD file
@@ -301,7 +301,7 @@ class DCDReader(base.Reader):
         atomcounts = timeseries._getAtomCounts()
         auxdata = timeseries._getAuxData()
         return self._read_timecorrel(atomlist, atomcounts, format, auxdata, sizedata, lowerb, upperb, start, stop, skip)
-    def close_trajectory(self):
+    def close(self):
         self._finish_dcd_read()
         self.dcdfile.close()
         self.dcdfile = None
@@ -339,7 +339,7 @@ class DCDReader(base.Reader):
         return DCDWriter(filename, numatoms, **kwargs)
     def __del__(self):
         if not self.dcdfile is None:
-            self.close_trajectory()
+            self.close()
 
 # Add the c functions to their respective classes so they act as class methods
 import _dcdmodule

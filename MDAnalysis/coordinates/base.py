@@ -184,7 +184,7 @@ class IObase(object):
 
     def close(self):
         """Close the trajectory file."""
-        self.close_trajectory()
+        pass
 
     def close_trajectory(self):
         """Specific implementation of trajectory closing."""
@@ -193,7 +193,7 @@ class IObase(object):
         # use close() and not rely on close_trajectory()
         warnings.warn("close_trajectory() will be removed in MDAnalysis 0.8. "
                       "Use close() instead.", DeprecationWarning)
-        pass
+        self.close()
 
 class Reader(IObase):
     """Base class for trajectory readers.
@@ -428,8 +428,8 @@ class ChainReader(Reader):
         self._apply('rewind')
         self.__active_reader_index = 0
 
-    def close_trajectory(self):
-        self._apply('close_trajectory')
+    def close(self):
+        self._apply('close')
 
     def __iter__(self):
         """Generator for all frames, starting at frame 1."""
@@ -483,7 +483,7 @@ class Writer(IObase):
         return self.write_next_timestep(ts)
 
     def __del__(self):
-        self.close_trajectory()
+        self.close()
 
     def __repr__(self):
         try:

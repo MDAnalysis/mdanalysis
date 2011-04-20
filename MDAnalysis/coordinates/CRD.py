@@ -142,9 +142,6 @@ class CRDWriter(base.Writer):
         self.filename = util.filename(filename,ext='crd')
         self.crd = None
 
-    def close_trajectory(self):
-        pass
-
     def write(self,selection,frame=None):
         """Write selection at current trajectory frame to file.
 
