@@ -55,6 +55,8 @@ class RefAdKSmall(object):
     ref_charmm_Hcharges = [0.33] + 203*[0.31]
     ref_charmm_ArgCAcharges = 13 * [0.07]
     ref_charmm_ProNcharges = 10 * [-0.29]
+    ref_unitcell = np.array([0,0,0, 0,0,0], dtype=np.float32)
+    ref_volume = 0.0
 
 class RefAdK(object):
     """Mixin class to provide comparison numbers.
@@ -74,6 +76,7 @@ class RefAdK(object):
     ref_Na_sel_size = 4
     # CRYST1 80.017   80.017   80.017  60.00  60.00  90.00
     ref_unitcell = np.array([ 80.017,  80.017,  80.017,  60., 60., 90.], dtype=np.float32)
+    ref_volume = 362270.0  # computed with Gromacs
 
 class Ref2r9r(object):
     """Mixin class to provide comparison numbers.
@@ -438,6 +441,11 @@ class TestGROReader(TestCase, RefAdK):
         assert_array_almost_equal(self.ts.dimensions, self.ref_unitcell, self.prec,
                                   err_msg="unit cell dimensions (rhombic dodecahedron)")
 
+    def test_volume(self):
+        # test_volume: reduce precision for Gromacs comparison to 0 decimals (A**3 <--> nm**3!)
+        assert_almost_equal(self.ts.volume, self.ref_volume, 0,
+                            err_msg="wrong volume for unitcell (rhombic dodecahedron)")
+
 class TestGROReaderNoConversion(TestCase, RefAdK):
     def setUp(self):
         ##mda.core.flags['convert_gromacs_lengths'] = False
@@ -479,6 +487,12 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
         # angles should not have changed
         assert_array_almost_equal(self.ts.dimensions[3:], self.ref_unitcell[3:], self.prec,
                                   err_msg="unit cell alpha,beta,gamma (rhombic dodecahedron)")
+
+    def test_volume(self):
+        # ref lengths in A (which was originally converted from nm)
+        assert_almost_equal(self.ts.volume, self.ref_volume/1000., 3,
+                            err_msg="wrong volume for unitcell (rhombic dodecahedron)")
+
 
 class TestGROWriter(TestCase):
     def setUp(self):
@@ -592,6 +606,12 @@ class TestPDBReaderBig(TestCase, RefAdK):
     def test_unitcell(self):
         assert_array_almost_equal(self.universe.coord.dimensions, self.ref_unitcell, self.prec,
                                   err_msg="unit cell dimensions (rhombic dodecahedron), issue 60")
+    @dec.slow
+    def test_volume(self):
+        assert_almost_equal(self.universe.coord.volume, self.ref_volume, 0,
+                            err_msg="wrong volume for unitcell (rhombic dodecahedron)")
+
+
 
 @attr('issue')
 def TestDCD_Issue32():
@@ -660,6 +680,10 @@ class TestDCDReader(_TestDCD):
         self.dcd[15]  # index is 0-based but frames are 1-based
         assert_almost_equal(self.universe.trajectory.time, 16.0, 5,
                             err_msg="wrong time of frame")
+
+    def test_volume(self):
+        assert_almost_equal(self.ts.volume, 0.0, 3,
+                            err_msg="wrong volume for unitcell (no unitcell in DCD so this should be 0)")
 
 
 class TestDCDWriter(TestCase):
@@ -902,6 +926,8 @@ class _GromacsReader(TestCase):
     # This base class assumes same lengths and dt for XTC and TRR test cases!
     filename = None
     ref_unitcell = np.array([ 80.017,  80.017,  80.017,  60., 60., 90.], dtype=np.float32)
+    ref_volume = 362270.0  # computed with Gromacs: 362.26999999999998 nm**3 * 1000 A**3/nm**3
+
     def setUp(self):
         # default flag--just make sure!... but can lead to race conditions
         # use explicit convert_units argument to specify behaviour
@@ -972,6 +998,13 @@ class _GromacsReader(TestCase):
         self.universe.trajectory.rewind()
         uc = self.ts.dimensions
         assert_array_almost_equal(uc, self.ref_unitcell, self.prec, err_msg="unit cell dimensions (rhombic dodecahedron)")
+
+    @dec.slow
+    def test_volume(self):
+        # need to reduce precision for test (nm**3 <--> A**3)
+        self.universe.trajectory.rewind()
+        vol = self.ts.volume
+        assert_array_almost_equal(vol, self.ref_volume, 0, err_msg="unit cell volume (rhombic dodecahedron)")
 
     @dec.slow
     def test_dt(self):

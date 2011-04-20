@@ -136,11 +136,16 @@ class Timestep(object):
 
     @property
     def dimensions(self):
-        """get unitcell dimensions (A, B, C, alpha, beta, gamma)"""
+        """unitcell dimensions (A, B, C, alpha, beta, gamma)"""
         # Layout of unitcell is [A, alpha, B, beta, gamma, C] --- (originally CHARMM DCD)
         # override for other formats; this strange ordering is kept for historical reasons
         # (the user should not need concern themselves with this)
         return numpy.take(self._unitcell, [0,2,5,1,3,4])
+
+    @property
+    def volume(self):
+        """volume of the unitcell"""
+        return core.box_volume(self.dimensions)
 
 
 class IObase(object):

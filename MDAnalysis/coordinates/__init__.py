@@ -140,6 +140,7 @@ History
 - 2011-02-01 extended call signatur of Reader class
 - 2011-03-30 optional Writer() method for Readers
 - 2011-04-18 added time and frame managed attributes to Reader
+- 2011-04-20 added volume to Timestep
 
 .. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
 
@@ -209,6 +210,8 @@ Attributes
       system box dimensions (`x, y, z, alpha, beta, gamma`)
       (typically implemented as a property because it needs to translate whatever is in the
       underlying :attr:`Timestep._unitcell` attribute)
+  ``volume``
+      system box volume (derived as the determinant of the box vectors of ``dimensions``)
 
 Private attributes
 ..................

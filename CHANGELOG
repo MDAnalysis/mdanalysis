@@ -18,6 +18,7 @@ The rules for this file:
   * new attributes universe.trajectory.frame and universe.trajectory.frame:
     report the current frame number and time (e.g. in ps) of the current frame
     of the trajectory
+  * new attribute Timestep.volume (unit cell volume)
   * HELANAL helix analysis in MDAnalysis.analysis.helanal; Python
     implementation of helanal.f from
     http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html (Benjamin
