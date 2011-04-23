@@ -12,7 +12,7 @@
 #     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
 #     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
 #     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
-#     in press.
+#     doi:10.1002/jcc.21787
 #
 
 """
@@ -72,6 +72,11 @@ class SelectionWriter(object):
     :class:`SelectionWriter` is a base class and child classes are
     derived with the appropriate customizations for the package file
     format.
+
+    .. _VMD: http://www.ks.uiuc.edu/Research/vmd/
+    .. _PyMol: http://www.pymol.org/
+    .. _CHARMM:  http://www.charmm.org/
+    .. _Gromacs: http://www.gromacs.org/
     """
     #: Name of the format.
     format = None

@@ -12,7 +12,7 @@
 #     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
 #     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
 #     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
-#     in press.
+#     doi:10.1002/jcc.21787
 #
 
 """
@@ -43,11 +43,15 @@ Citation
 When using MDAnalysis in published work, please cite
 
     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-    O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular
-    Dynamics Simulations. J. Comput. Chem. (2011), in
-    press. http://mdanalysis.googlecode.com
+    O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics
+    Simulations. J. Comput. Chem. (2011), doi:`10.1002/jcc.21787`_
+    http://mdanalysis.googlecode.com
 
-If you use the RMSD alignment code (MDAnalysis.analysis.align) that uses the qcprot module please also cite
+
+.. rubric:: Included algorithms
+
+If you use the RMSD alignment code (:mod:`MDAnalysis.analysis.align`) that
+uses the :mod:`~MDAnalysis.core.qcprot` module please also cite
 
     Douglas L. Theobald. Rapid calculation of RMSD using a
     quaternion-based characteristic polynomial. Acta Crystallographica
@@ -57,7 +61,16 @@ If you use the RMSD alignment code (MDAnalysis.analysis.align) that uses the qcp
     determination of the optimal rotational matrix for macromolecular
     superpositions. J. Comput. Chem. 31 (2010), 1561-1563.
 
+If you use the helix analysis algorithm HELANAL_ in
+:mod:`MDAnalysis.analysis.helanal` please cite
+
+    Bansal M, Kumar S, Velavan R. 2000. HELANAL - A program to characterise
+    helix geometry in proteins. J. Biomol. Struct. Dyn. 17, 811-819
+
 Thanks!
+
+.. _`10.1002/jcc.21787`: http://dx.doi.org/10.1002/jcc.21787
+.. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 
 Getting started
 ---------------

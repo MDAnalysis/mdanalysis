@@ -20,7 +20,7 @@
 #     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
 #     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
 #     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
-#     in press.
+#     doi:10.1002/jcc.21787
 #
 
 
@@ -55,7 +55,7 @@ characterise the helix start and end as well as other types of secondary
 structures.
 
 .. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
-.. _Helanal webserver: http://nucleix.mbu.iisc.ernet.in/helanal/background.html
+.. _Helanal webserver: http://nucleix.mbu.iisc.ernet.in/helanal/helanal.shtml
 .. _`helanal.f`: http://www.webcitation.org/5y1RpVJtF
 .. helanal.f: http://www.ccrnp.ncifcrf.gov/users/kumarsan//HELANAL/helanal.f
 

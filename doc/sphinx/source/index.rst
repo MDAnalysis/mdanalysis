@@ -1,3 +1,4 @@
+.. coding: utf-8 -*-
 .. MDAnalysis documentation master file, created by
 .. sphinx-quickstart on Mon Sep 27 09:39:55 2010.
 .. You can adapt this file completely to your liking, but it should at least
@@ -23,7 +24,7 @@ atomic coordinates through NumPy_ arrays. This provides a flexible and
 relatively fast framework for complex analysis tasks. Fairly complete
 atom :ref:`selection-commands-label` are implemented. Trajectories can
 also be manipulated (for instance, fit to a reference structure) and
-written out.
+written out in a range of formats.
 
 **Source code** is available from http://mdanalysis.googlecode.com under the
 `GNU Public Licence, version 2`_, together with some additional documentation.
@@ -55,8 +56,11 @@ When using MDAnalysis in published work, please cite
 
 *   N. Michaud-Agrawal, E. J. Denning, T. B. Woolf,
     and O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular
-    Dynamics Simulations. *J. Comput. Chem.* (2011), in
-    press. http://mdanalysis.googlecode.com
+    Dynamics Simulations. *J. Comput. Chem.* (2011), doi:`10.1002/jcc.21787`_
+    http://mdanalysis.googlecode.com
+
+
+.. rubric:: Included algorithms
 
 If you use the RMSD alignment code (:mod:`MDAnalysis.analysis.align`)
 that uses the :mod:`~MDAnalysis.core.qcprot` module please also cite
@@ -69,7 +73,17 @@ that uses the :mod:`~MDAnalysis.core.qcprot` module please also cite
     determination of the optimal rotational matrix for macromolecular
     superpositions. *J. Comput. Chem.* **31** (2010), 1561-1563.
 
+If you use the helix analysis algorithm HELANAL_ in
+:mod:`MDAnalysis.analysis.helanal` please cite
+
+*   Bansal M, Kumar S, Velavan R. 2000. HELANAL — A program to characterise
+    helix geometry in proteins. *J. Biomol. Struct. Dyn.* **17**, 811-819
+
 Thanks! 
+
+.. _`10.1002/jcc.21787`: http://dx.doi.org/10.1002/jcc.21787
+.. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
+
 
 Contents
 ========
