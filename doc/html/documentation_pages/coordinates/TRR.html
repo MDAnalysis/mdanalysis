@@ -79,6 +79,12 @@ bindings to the Gromacs trajectory file formats</p>
 </ul>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.Timestep.volume">
+<tt class="descname">volume</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>volume of the unitcell</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -125,13 +131,13 @@ for TRR) [1000.0]</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.close">
 <tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Close the trajectory file.</p>
+<dd><p>Close xdr trajectory file if it was open.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.close_trajectory">
 <tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.close_trajectory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Close xdr trajectory file if it was open.</p>
+<dd><p>Specific implementation of trajectory closing.</p>
 </dd></dl>
 
 <dl class="method">
@@ -283,9 +289,9 @@ the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a
 </tbody>
 </table>
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Close the trajectory file.</p>
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.close_trajectory">
+<tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.close_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specific implementation of trajectory closing.</p>
 </dd></dl>
 
 <dl class="method">
