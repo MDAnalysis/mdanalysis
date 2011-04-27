@@ -180,7 +180,7 @@ if __name__ == '__main__':
                                     'tests/data/*.gro', 'tests/data/*.xtc','tests/data/*.trr',
                                     'tests/data/*.crd', 'tests/data/*.xyz', 
                                     'tests/data/*.prmtop', 'tests/data/*.trj', 'tests/data/*.mdcrd',
-                                    'tests/data/*.pqr', 'tests/data/*.bz2',
+                                    'tests/data/*.pqr', 'tests/data/*.pdbqt', 'tests/data/*.bz2',
                                     ],
                                },
           ext_package       = 'MDAnalysis',

@@ -65,11 +65,12 @@ a system.
 .. SeeAlso:: :ref:`Coordinates`
 """
 
-__all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser', 'CRDParser','TOPParser']
+__all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser', 'CRDParser','TOPParser', 'PDBQTParser']
 
 import core
 import PSFParser, TOPParser, \
-    PDBParser, PrimitivePDBParser, PQRParser, GROParser, CRDParser
+    PDBParser, PrimitivePDBParser, PQRParser, GROParser, CRDParser, \
+    PDBQTParser
 
 # dictionary of known file formats and the corresponding file parser
 # (all parser should essentially do the same thing; the PSFParser is
@@ -82,6 +83,7 @@ _topology_parsers = {'PSF': PSFParser.parse,
                      'CRD': CRDParser.parse,
                      'TOP': TOPParser.parse,
                      'PRMTOP': TOPParser.parse,
+                     'PDBQT': PDBQTParser.parse
                      }
 _topology_parsers_permissive = _topology_parsers.copy()
 _topology_parsers_permissive['PDB'] = PrimitivePDBParser.parse

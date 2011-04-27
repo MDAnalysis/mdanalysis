@@ -110,10 +110,10 @@ class Atom(object):
     """
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
                  "mass", "charge", "residue", "segment", "bonds", "__universe",
-                 "radius", "bfactor")
+                 "radius", "bfactor", "partialCharge", "element") # Added 'partialCharge' and 'element' for PDBQT
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
-                 residue=None, segment=None, radius=None, bfactor=None):
+                 residue=None, segment=None, radius=None, bfactor=None, partialCharge=None, element=None):
         self.number = number
         self.name = name
         self.type = type
@@ -126,6 +126,8 @@ class Atom(object):
         self.charge = charge
         self.radius = radius
         self.bfactor = bfactor
+        self.partialCharge = partialCharge # To support PDBQT
+        self.element = element # To support PDBQT
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
                repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'

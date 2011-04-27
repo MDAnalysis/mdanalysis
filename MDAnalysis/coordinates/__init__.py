@@ -494,7 +494,7 @@ directly.
 
 __all__ = ['reader', 'writer']
 
-import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ  #, NETCDF
+import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT  #, NETCDF
 import base
 from core import reader, writer
 
@@ -505,6 +505,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'XYZ': XYZ.XYZReader,
                        'TRR': TRR.TRRReader,
                        'PDB': PDB.PDBReader,
+                       'PDBQT': PDBQT.PDBQTReader,
                        'CRD': CRD.CRDReader,
                        'GRO': GRO.GROReader,
                        'TRJ':TRJ.TRJReader,     # Amber text
@@ -521,6 +522,7 @@ _compressed_formats = ['XYZ', 'TRJ', 'MDCRD', 'PQR']
 #: (currently only the keys are used)
 _topology_coordinates_readers = {
                        'PDB': PDB.PrimitivePDBReader,
+                       'PDBQT': PDBQT.PDBQTReader,
                        'GRO': GRO.GROReader,
                        'CRD': CRD.CRDReader,
                        'PQR': PQR.PQRReader,
@@ -538,6 +540,7 @@ _trajectory_readers_permissive['PDB'] =  PDB.PrimitivePDBReader
 #:   W = FrameWriter(filename)
 #:   W.write(AtomGroup)
 _frame_writers = {'PDB': PDB.PrimitivePDBWriter,
+                  'PDBQT': PDBQT.PDBQTWriter,
                   'CRD': CRD.CRDWriter,
                   'GRO': GRO.GROWriter,
                  }
