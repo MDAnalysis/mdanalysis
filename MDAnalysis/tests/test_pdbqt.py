@@ -23,16 +23,23 @@ import MDAnalysis.KDTree.NeighborSearch as kdNS
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
+import os
+import tempfile
 
 class TestPDBQT(TestCase):
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PDBQT_input) # PDBQT
         self.query_universe = MDAnalysis.Universe(PDBQT_querypdb) # PDB file
+        fd, self.outfile = tempfile.mkstemp(suffix='.pdbqt')
 
     def tearDown(self):
         del self.universe
         del self.query_universe
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
 
     def test_segid(self):
         sel = self.universe.selectAtoms('segid A')
@@ -62,3 +69,10 @@ class TestPDBQT(TestCase):
         query_atoms = self.query_universe.atoms
         residue_neighbors = ns_protein.search_list(query_atoms, 4.0)
         assert_equal(len(residue_neighbors), 80)
+
+    def test_writer(self):
+        self.universe.A.write(self.outfile)
+        uA = MDAnalysis.Universe(self.outfile)
+        assert_equal(uA.atoms._atoms, self.universe.A.atoms._atoms,
+                     "Writing and reading of chain A does not recover same atoms")
+        del uA
