@@ -10,11 +10,12 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/11 orbeckst, jandom, Benjamin Hall
+??/??/11 orbeckst, jandom, Benjamin Hall, Paul Rigor
   * 0.7.3 development
 
   Enhancements
  
+  * PDBQT (autodock) format added (reading and writing of single frames)
   * new attributes universe.trajectory.frame and universe.trajectory.frame:
     report the current frame number and time (e.g. in ps) of the current frame
     of the trajectory

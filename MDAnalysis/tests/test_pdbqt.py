@@ -21,7 +21,6 @@ import MDAnalysis.KDTree.NeighborSearch as kdNS
 
 
 from numpy.testing import *
-from numpy import array, float32
 from nose.plugins.attrib import attr
 
 
@@ -40,11 +39,11 @@ class TestPDBQT(TestCase):
         assert_equal(sel.numberOfAtoms(), 909, "failed to select segment A")
         sel = self.universe.selectAtoms('segid B')
         assert_equal(sel.numberOfAtoms(), 896, "failed to select segment B")
-        
+
     def test_protein(self):
         sel = self.universe.selectAtoms('protein')
         assert_equal(sel.numberOfAtoms(), 1805, "failed to select protein")
-        assert_equal(sel._atoms, self.universe.atoms,
+        assert_equal(sel._atoms, self.universe.atoms._atoms,
                      "selected protein is not the same as auto-generated protein segment A+B")
 
     def test_backbone(self):
@@ -52,12 +51,14 @@ class TestPDBQT(TestCase):
         assert_equal(sel.numberOfAtoms(), 796)
 
     def test_neighborhood(self):
-        '''Creates a KDTree of the protein and 
-        uses the coordinates of the atoms in the query pdb
-        to create a list of protein residues within 4.0A of the query atoms.
+        '''test KDTree-based distance search around query atoms
+
+        Creates a KDTree of the protein and uses the coordinates of
+        the atoms in the query pdb to create a list of protein
+        residues within 4.0A of the query atoms.
         '''
         protein = self.universe.selectAtoms("protein")
         ns_protein = kdNS.AtomNeighborSearch(protein)
         query_atoms = self.query_universe.atoms
         residue_neighbors = ns_protein.search_list(query_atoms, 4.0)
-        assert_equal(residue_neighbors, 80)
+        assert_equal(len(residue_neighbors), 80)

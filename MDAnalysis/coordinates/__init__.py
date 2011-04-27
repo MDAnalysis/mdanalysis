@@ -94,9 +94,9 @@ are also recognized when they are compressed with :program:`gzip` or
 |               |           |       | :class:`MDAnalysis.Universe`. Module                 |
 |               |           |       | :mod:`MDAnalysis.coordinates.PDB`                    |
 +---------------+-----------+-------+------------------------------------------------------+
-| CHARMM [#a]_  | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
-|               |           |       | either standard or EXTended format. Module           |
-|               |           |       | :mod:`MDAnalysis.coordinates.CRD`                    |
+| PDBQT [#a]_   | pdbqt     | r/w   | file format used by AutoDock with atom types *t*     |
+|               |           |       | and partial charges *q*. Module:                     |
+|               |           |       | :mod:`MDAnalysis.coordinates.PQBQT`                  |
 +---------------+-----------+-------+------------------------------------------------------+
 | PQR [#a]_     | pqr       |  r    | PDB-like but whitespace-separated files with charge  |
 |               |           |       | and radius information. Module                       |
@@ -105,6 +105,11 @@ are also recognized when they are compressed with :program:`gzip` or
 | GROMOS96      | gro       |  r/w  | basic GROMOS96 format (without velocities). Module   |
 | [#a]_         |           |       | :mod:`MDAnalysis.coordinates.GRO`                    |
 +---------------+-----------+-------+------------------------------------------------------+
+| CHARMM [#a]_  | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
+|               |           |       | either standard or EXTended format. Module           |
+|               |           |       | :mod:`MDAnalysis.coordinates.CRD`                    |
++---------------+-----------+-------+------------------------------------------------------+
+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a

@@ -17,33 +17,20 @@
 
 """
 PDBQT structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.PDBQT`
-========================================================================
+===========================================================================
 
-MDAnalysis reads coordinates from PDBQT files and additional optional
-data such as B-factors, partial charge and AutoDock atom types. 
-It is also possible to substitute a PDB file
-instead of PSF file in order to define the list of atoms (but no
-connectivity information will be  available in this case).
+MDAnalysis reads coordinates from PDBQT_ files and additional optional
+data such as B-factors, partial charge and AutoDock_ atom types.  It
+is also possible to substitute a PDBQT file for a PSF file in order to
+define the list of atoms (but no connectivity information will be
+available in this case).
 
-The :mod:`PDB` module makes heavy use of Biopython's :mod:`Bio.PDB`:
-
-  Hamelryck, T., Manderick, B. (2003) PDB parser and structure class
-  implemented in Python. Bioinformatics, 19, 2308-2310.
-
-  http://biopython.org
-
-but replaces the standard PDB file parser with one that uses the
-:class:`MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder`
-to cope with very large pdb files as commonly encountered in MD
-simulations.
+.. _PDBQT:
+   http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
+.. _AutoDock:
+   http://autodock.scripps.edu/
 """
 from __future__ import with_statement
-
-try:
-    # BioPython is overkill but potentially extensible (altLoc etc)
-    import Bio.PDB
-except ImportError:
-    raise ImportError("No PDB I/O functionality. Install biopython.")
 
 import os, errno
 import numpy
@@ -51,11 +38,10 @@ import numpy
 import MDAnalysis.core
 import MDAnalysis.core.util as util
 import base
-import pdb.extensions
 
 from MDAnalysis.topology.core import guess_atom_element
 
-# PDBQTReader and Writer classes will subclass PrimitiveReader/Writer from PDB module 
+# PDBQTReader and Writer classes will subclass PrimitiveReader/Writer from PDB module
 #from MDAnalysis.coordinates.PDB import PrimitivePDBReader
 #from MDAnalysis.coordinates.PDB import PrimitivePDBWriter
 #from MDAnalysis.coordinates.PDB import Timestep
@@ -76,166 +62,6 @@ class Timestep(base.Timestep):
                 # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
                 return self._unitcell
 
-# class PDBReader(base.Reader):
-#     """Read a pdb file into a BioPython pdb structure.
-
-#     The coordinates are also supplied as one numpy array and wrapped
-#     into a Timestep object; attributes are set so that the PDBReader
-#     object superficially resembles the DCDReader object.
-#     """
-#     format = 'PDB'
-#     units = {'time': None, 'length': 'Angstrom'}
-#     _Timestep = Timestep
-
-#     def __init__(self, pdbfilename, convert_units=None, **kwargs):
-#         self.pdbfilename = pdbfilename
-#         self.filename = self.pdbfilename
-#         if convert_units is None:
-#             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
-#         self.convert_units = convert_units  # convert length and time to base units
-
-#         pdb_id = "0UNK"
-#         self.pdb = pdb.extensions.get_structure(pdbfilename, pdb_id)
-#         pos = numpy.array([atom.coord for atom in self.pdb.get_atoms()])
-#         self.numatoms = pos.shape[0]
-#         self.numframes = 1
-#         self.fixed = 0          # parse B field for fixed atoms?
-#         self.skip = 1
-#         self.periodic = False
-#         self.delta = 0
-#         self.skip_timestep = 1
-#         #self.ts._unitcell[:] = ??? , from CRYST1?
-#         self.ts = self._Timestep(pos)
-#         del pos
-#         if self.convert_units:
-#             self.convert_pos_from_native(self.ts._pos)             # in-place !
-
-#     def get_bfactors(self):
-#         """Return an array of bfactors (tempFactor) in atom order."""
-#         warnings.warn("get_bfactors() will be removed in MDAnalysis 0.8; "
-#                       "use AtomGroup.bfactors [which will become AtomGroup.bfactors()]",
-#                       DeprecationWarning)
-#         return numpy.array([a.get_bfactor() for a in self.pdb.get_atoms()])
-
-#     def Writer(self, filename, **kwargs):
-#         """Returns a strict PDBWriter for *filename*.
-
-#         :Arguments:
-#           *filename*
-#               filename of the output PDB file
-
-#         :Returns: :class:`PDBWriter`
-
-#         .. Note:: This :class:`PDBWriter` 's :meth:`~PDBWriter.write` method always requires a
-#                   :class:`Timestep` as an argument (it is not optional anymore when the Writer
-#                   is obtained through this method of :class:`PDBReader`.)
-#         """
-#         # This is messy; we cannot get a universe from the Reader, which would be
-#         # also needed to be fed to the PDBWriter (which is a total mess...).
-#         # Hence we ignore the problem and document it in the doc string... --- the
-#         # limitation is simply that PDBWriter.write() must always be called with an argument.
-#         kwargs['BioPDBstructure'] = self.pdb   # make sure that this Writer is
-#         kwargs.pop('universe', None)           # always linked to this reader, don't bother with Universe
-#         return PDBWriter(filename, **kwargs)
-
-#     def __len__(self):
-#         return self.numframes
-#     def __iter__(self):
-#         def iterPDB():
-#             yield self.ts   # just a single frame available
-#             raise StopIteration
-#         return iterPDB()
-#     def __getitem__(self, frame):
-#         if frame != 0:
-#             raise IndexError('PDBReader only contains a single frame at index 0')
-#         return self.ts
-
-
-# class PDBWriter(base.Writer):
-#     """Write out the current time step as a pdb file.
-
-#     This is not cleanly implemented at the moment. One must supply a
-#     universe, even though this is nominally an optional argument. The
-#     class behaves slightly differently depending on if the structure
-#     was loaded from a PDB (then the full-fledged :mod:`Bio.PDB` writer is
-#     used) or if this is really only an atom selection (then a less
-#     sophistiocated writer is employed).
-
-#     .. Note:: The standard PDBWriter can only write the *whole system*.
-#       In order to write a selection, use the :class:`PrimitivePDBWriter`,
-#       which happens automatically when the
-#       :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of a
-#       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance is used.
-#     """
-#     format = 'PDB'
-#     units = {'time': None, 'length': 'Angstrom'}
-
-#     # PDBWriter is a bit more complicated than the DCDWriter in the
-#     # sense that a DCD frame only contains coordinate information. The
-#     # PDB contains atom data as well and hence it MUST access the
-#     # universe. In order to present a unified (and backwards
-#     # compatible) interface we must keep the universe argument an
-#     # optional keyword argument even though it really is required.
-
-#     def __init__(self,pdbfilename,universe=None,multi=False,**kwargs):
-#         """pdbwriter = PDBWriter(<pdbfilename>,universe=universe,**kwargs)
-#         :Arguments:
-#         pdbfilename     filename; if multi=True, embed a %%d formatstring
-#                         so that write_next_timestep() can insert the frame number
-#         universe        supply a universe [really REQUIRED; optional only for compatibility]
-#         multi           False: write a single structure to a single pdb
-#                         True: write all frames to multiple pdb files
-#         """
-#         import Bio.PDB.Structure
-#         self.universe = universe
-#         self.PDBstructure = kwargs.pop('BioPDBstructure', None)  # hack for PDBReader.Writer()
-#         if not self.PDBstructure:
-#             try:
-#                 self.PDBstructure = universe.trajectory.pdb
-#             except AttributeError:
-#                 pass
-#         self.filename = pdbfilename
-#         self.multi = multi
-#         if self.multi:
-#             raise NotImplementedError('Sorry, multi=True does not work yet.')
-#         if self.PDBstructure is not None and not isinstance(self.PDBstructure,Bio.PDB.Structure.Structure):
-#             raise TypeError('If defined, PDBstructure must be a Bio.PDB.Structure.Structure, eg '
-#                             'Universe.trajectory.pdb.')
-#     def write_next_timestep(self,ts=None):
-#         self.write(ts)
-#     def write(self,ts=None):
-#         """Write timestep as a pdb file.
-
-#         If ts=None then we try to get the current one from the universe.
-#         """
-#         if self.PDBstructure is None:
-#             if self.universe is None:
-#                 warnings.warn("PDBWriter: Not writing frame as neither Timestep nor Universe supplied.")
-#                 return
-#             # primitive PDB writing (ignores timestep argument)
-#             ppw = PrimitivePDBWriter(self.filename)
-#             ppw.write(self.universe.selectAtoms('all'))
-#             ppw.close()
-#         else:
-#             # full fledged PDB writer
-#             # Let's cheat and use universe.pdb.pdb: modify coordinates
-#             # and save...
-#             if ts is None:
-#                 try:
-#                     ts = self.universe.trajectory.ts
-#                 except AttributeError:
-#                     warnings.warn("PDBWriter: Not writing frame as neither universe nor timestep supplied.")
-#                     return
-#             if not hasattr(ts, '_pos'):
-#                 raise TypeError("The PDBWriter can only process a Timestep as optional argument, not "
-#                                 "e.g. a selection. Use the PrimitivePDBWriter instead and see the docs.")
-#             for a,pos in zip(self.PDBstructure.get_atoms(), ts._pos):
-#                 a.set_coord(pos)
-#             io = pdb.extensions.SloppyPDBIO()
-#             io.set_structure(self.PDBstructure)
-#             io.save(self.filename)
-
-
 class PDBQTReader(base.Reader):
     """PDBQTReader that reads a PDBQT-formatted file, no frills.
 
@@ -243,9 +69,8 @@ class PDBQTReader(base.Reader):
      - CRYST1 for unitcell A,B,C, alpha,beta,gamm
      - ATOM. HETATM for x,y,z
 
-    Original PDB documentation: 
+    Original PDB documentation:
     http://www.wwpdb.org/documentation/format32/sect9.html
-
 
     =============  ============  ===========  =============================================
     COLUMNS        DATA  TYPE    FIELD        DEFINITION
@@ -280,14 +105,14 @@ class PDBQTReader(base.Reader):
     AutoDOCK extensions:
     http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
 
-    We ignore torion notation and just pull the partial charge and atom type columns.
+    We ignore torsion notation and just pull the partial charge and atom type columns::
 
          COMPND    NSC7810
          REMARK  3 active torsions:
          REMARK  status: ('A' for Active; 'I' for Inactive)
-         REMARK    1  A    between atoms: A7_7  and  C22_23 
-         REMARK    2  A    between atoms: A9_9  and  A11_11 
-         REMARK    3  A    between atoms: A17_17  and  C21_21 
+         REMARK    1  A    between atoms: A7_7  and  C22_23
+         REMARK    2  A    between atoms: A9_9  and  A11_11
+         REMARK    3  A    between atoms: A17_17  and  C21_21
          ROOT
          123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789. (column reference)
          ATOM      1  A1  INH I           1.054   3.021   1.101  0.00  0.00     0.002 A
@@ -301,7 +126,7 @@ class PDBQTReader(base.Reader):
          ATOM      9  A9  INH I          -1.339   2.986   0.801  0.00  0.00    -0.013 A
          ATOM     10  A10 INH I          -0.176   3.667   1.128  0.00  0.00     0.013 A
          ENDROOT
-         BRANCH   9  11  
+         BRANCH   9  11
          ATOM     11  A11 INH I          -2.644   3.682   0.827  0.00  0.00    -0.013 A
          ATOM     12  A16 INH I          -3.007   4.557  -0.220  0.00  0.00     0.002 A
          ATOM     13  A12 INH I          -3.522   3.485   1.882  0.00  0.00     0.013 A
@@ -312,20 +137,20 @@ class PDBQTReader(base.Reader):
          ATOM     18  A13 INH I          -4.749   4.135   1.912  0.00  0.00     0.002 A
          ATOM     19  A19 INH I          -3.777   6.285  -2.267  0.00  0.00     0.002 A
          ATOM     20  A18 INH I          -2.543   5.650  -2.328  0.00  0.00     0.019 A
-         BRANCH  15  21 
+         BRANCH  15  21
          ATOM     21  C21 INH I          -0.834   4.113  -1.388  0.00  0.00     0.210 C
          ATOM     22  O1  INH I          -0.774   2.915  -1.581  0.00  0.00    -0.644 OA
          ATOM     23  O3  INH I           0.298   4.828  -1.237  0.00  0.00    -0.644 OA
-         ENDBRANCH  15  21 
-         ENDBRANCH   9  11  
-         BRANCH   7  24  
+         ENDBRANCH  15  21
+         ENDBRANCH   9  11
+         BRANCH   7  24
          ATOM     24  C22 INH I          -3.749   1.535   0.125  0.00  0.00     0.210 C
          ATOM     25  O2  INH I          -4.019   2.378  -0.708  0.00  0.00    -0.644 OA
          ATOM     26  O4  INH I          -4.659   1.196   1.059  0.00  0.00    -0.644 OA
-         ENDBRANCH   7  24  
+         ENDBRANCH   7  24
          TORSDOF 3
          123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789. (column reference)
-         
+
 
     """
     format = 'PDBQT'
@@ -335,17 +160,16 @@ class PDBQTReader(base.Reader):
     def __init__(self, filename, convert_units=None, **kwargs):
         """Read coordinates from *filename*.
 
-        *filename* can be a gzipped or bzip2ed compressed PDB file.
+        *filename* can be a gzipped or bzip2ed compressed PDBQT file.
         """
         self.filename = filename
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
         self.convert_units = convert_units  # convert length and time to base units
-        
+
         # Ugly inner method: moved outside of for-loop below
         def _c(start,stop,typeclass=float):
             return self._col(line, start, stop, typeclass=typeclass)
-                
 
         coords = []
         atoms = []
@@ -441,10 +265,10 @@ class PDBQTReader(base.Reader):
         raise IndexError("PrimitivePDBReader can only read a single frame")
 
 class PDBQTWriter(base.Writer):
-    """PDBQT writer that implements a subset of the PDB 3.2 standard and the PDBQT spec.
+    """PDBQT writer that implements a subset of the PDB_ 3.2 standard and the PDBQT_ spec.
 
-    http://www.wwpdb.org/documentation/format32/v3.2.html
-    http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
+    .. _PDB: http://www.wwpdb.org/documentation/format32/v3.2.html
+    .. _PDBQT: http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
     """
     #          1         2         3         4         5         6         7         8
     # 123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.

@@ -17,17 +17,23 @@
 
 """
 PDBQT topology parser
-=============================
+=====================
 
-Use a PDBQT file to build a minimum internal structure representation (list of atoms).
+Use a PDBQT_ file to build a minimum internal structure representation (list of
+atoms), including AutoDock_ atom types (stored as :attr:`Atom.element`) and
+partial charges (:attr:`Atom.partialCharge`).
 
 Reads a PDBQT file line by line and is not fuzzy about numbering.
 
 This does not support multi-model PDBQT files (yet!)
 
-.. Warning:: Only cares for atoms and their names; neither
-             connectivity nor (partial) charges are deduced. Masses
-             are guessed and set to 0 if unknown.
+.. Warning:: Only cares for atoms and their names; connectivity is not
+             deduced. Masses are guessed and set to 0 if unknown.
+
+.. _PDBQT:
+   http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
+.. _AutoDock:
+   http://autodock.scripps.edu/
 """
 
 import MDAnalysis.coordinates.PDBQT

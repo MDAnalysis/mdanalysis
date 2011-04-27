@@ -50,6 +50,10 @@ PQR*           pqr         PDB-like but whitespace-separated files with charge
                            and radius information;
                            :mod:`MDAnalysis.topology.PQRParser`
 
+PDBQT*         pdbqt       file format used by AutoDock with atom types *t*
+                           and partial charges *q*. Module:
+                           :mod:`MDAnalysis.topology.PQBQTParser`
+
 GROMOS96*      gro         GROMOS96 coordinate file;
                            :mod:`MDAnalysis.topology.GROParser`
 
@@ -62,7 +66,7 @@ Formats marked with ans asterisk * also hold coordinates and thus can
 be used as the sole argument to :class:`MDAnalysis.Universe` to set up
 a system.
 
-.. SeeAlso:: :ref:`Coordinates`
+.. SeeAlso:: :ref:`Coordinates` with the :ref:`Supported coordinate formats`
 """
 
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser', 'CRDParser','TOPParser', 'PDBQTParser']

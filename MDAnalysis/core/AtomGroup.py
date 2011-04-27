@@ -106,11 +106,15 @@ class Atom(object):
            file with the :class:`~MDAnalysis.coordinates.PQR.PQRReader`.)
         :attr:`~Atom.bfactor`
            temperature factor. (Only if loaded from a PDB.)
+        partialCharge
+           partial charges as used in the PDBQT format (:mod:`~MDAnalysis.topology.PDBQTparser`)
+        element
+           element symbol or atom type (e.g. used in PDBQT)
 
     """
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
                  "mass", "charge", "residue", "segment", "bonds", "__universe",
-                 "radius", "bfactor", "partialCharge", "element") # Added 'partialCharge' and 'element' for PDBQT
+                 "radius", "bfactor", "partialCharge", "element")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
                  residue=None, segment=None, radius=None, bfactor=None, partialCharge=None, element=None):
