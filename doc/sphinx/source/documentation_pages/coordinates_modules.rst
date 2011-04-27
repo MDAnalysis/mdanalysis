@@ -22,7 +22,8 @@ Programmers and anyone trying to implement new functionality should read the
    coordinates/CRD
    coordinates/DCD
    coordinates/GRO
-   coordinates/PDB	
+   coordinates/PDB
+   coordinates/PDBQT	
    coordinates/PQR
    coordinates/TRJ
    coordinates/TRR

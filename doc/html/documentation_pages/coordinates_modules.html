@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../index.html" />
     <link rel="next" title="5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates" href="coordinates/init.html" />
-    <link rel="prev" title="4.10. PQR topology parser" href="topology/PQRParser.html" /> 
+    <link rel="prev" title="4.11. PQR topology parser" href="topology/PQRParser.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,7 +40,7 @@
           <a href="coordinates/init.html" title="5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="topology/PQRParser.html" title="4.10. PQR topology parser"
+          <a href="topology/PQRParser.html" title="4.11. PQR topology parser"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li> 
       </ul>
@@ -67,12 +67,13 @@ concern themselves with classes and functions described here.</p>
 <li class="toctree-l1"><a class="reference internal" href="coordinates/DCD.html">5.5. DCD trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates/GRO.html">5.6. GRO file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates/PDB.html">5.7. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/PQR.html">5.8. PQR file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/TRJ.html">5.9. TRJ/MDCRD file format (Amber) &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/TRR.html">5.10. Gromacs TRR file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/XTC.html">5.11. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/XYZ.html">5.12. XYZ trajectory reader &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/libxdrfile.html">5.13. The Gromacs xtc/trr library <tt class="docutils literal"><span class="pre">libxdrfile</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/PDBQT.html">5.8. PDBQT structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/PQR.html">5.9. PQR file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/TRJ.html">5.10. TRJ/MDCRD file format (Amber) &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/TRR.html">5.11. Gromacs TRR file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/XTC.html">5.12. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/XYZ.html">5.13. XYZ trajectory reader &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/libxdrfile.html">5.14. The Gromacs xtc/trr library <tt class="docutils literal"><span class="pre">libxdrfile</span></tt></a></li>
 </ul>
 </div>
 </div>
@@ -85,10 +86,10 @@ concern themselves with classes and functions described here.</p>
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="topology/PQRParser.html"
-                        title="previous chapter">4.10. PQR topology parser</a></p>
+                        title="previous chapter">4.11. PQR topology parser</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="coordinates/init.html"
-                        title="next chapter">5.1. Coordinate/Trajectory Readers and Writers  &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt></a></p>
+                        title="next chapter">5.1. Coordinate/Trajectory Readers and Writers  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/documentation_pages/coordinates_modules.txt"
@@ -124,7 +125,7 @@ concern themselves with classes and functions described here.</p>
           <a href="coordinates/init.html" title="5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates"
              >next</a> |</li>
         <li class="right" >
-          <a href="topology/PQRParser.html" title="4.10. PQR topology parser"
+          <a href="topology/PQRParser.html" title="4.11. PQR topology parser"
              >previous</a> |</li>
         <li><a href="../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li> 
       </ul>

@@ -27,5 +27,6 @@ classes and functions described here.
    topology/GROParser
    topology/PDBParser
    topology/PrimitivePDBParser
+   topology/PDBQTParser
    topology/PQRParser
 

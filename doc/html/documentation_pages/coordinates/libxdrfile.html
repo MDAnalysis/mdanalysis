@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.13. The Gromacs xtc/trr library libxdrfile &mdash; MDAnalysis v0.7.3 documentation</title>
+    <title>5.14. The Gromacs xtc/trr library libxdrfile &mdash; MDAnalysis v0.7.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="6. Core modules" href="../core_modules.html" />
-    <link rel="prev" title="5.12. XYZ trajectory reader — MDAnalysis.coordinates.XYZ" href="XYZ.html" /> 
+    <link rel="next" title="6. Selection exporters" href="../selections_modules.html" />
+    <link rel="prev" title="5.13. XYZ trajectory reader — MDAnalysis.coordinates.XYZ" href="XYZ.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,10 +38,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../core_modules.html" title="6. Core modules"
+          <a href="../selections_modules.html" title="6. Selection exporters"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="XYZ.html" title="5.12. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
+          <a href="XYZ.html" title="5.13. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
@@ -54,7 +54,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.xdrfile.libxdrfile"></span><div class="section" id="the-gromacs-xtc-trr-library-libxdrfile">
-<h1>5.13. The Gromacs xtc/trr library <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt><a class="headerlink" href="#the-gromacs-xtc-trr-library-libxdrfile" title="Permalink to this headline">¶</a></h1>
+<h1>5.14. The Gromacs xtc/trr library <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt><a class="headerlink" href="#the-gromacs-xtc-trr-library-libxdrfile" title="Permalink to this headline">¶</a></h1>
 <p><tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt> provides an interface to some high-level functions in the
 <a class="reference external" href="http://www.gromacs.org">Gromacs</a> <a class="reference external" href="http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library">XTC Library</a> version 1.1. Only functions required for reading and
 processing whole trajectories are exposed at the moment; low-level routines to
@@ -70,7 +70,7 @@ with <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.libxdrf
 these arrays themselves. Hence they need to be setup outside libxdrfile as
 numpy arrays.</p>
 <div class="section" id="example-reading-from-a-xtc">
-<h2>5.13.1. Example: Reading from a xtc<a class="headerlink" href="#example-reading-from-a-xtc" title="Permalink to this headline">¶</a></h2>
+<h2>5.14.1. Example: Reading from a xtc<a class="headerlink" href="#example-reading-from-a-xtc" title="Permalink to this headline">¶</a></h2>
 <p>In the example we read coordinate frames from an existing xtc trajectory:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">libxdrfile</span> <span class="kn">import</span> <span class="n">xdrfile_open</span><span class="p">,</span> <span class="n">xdrfile_close</span><span class="p">,</span> <span class="n">read_xtc_natoms</span><span class="p">,</span> <span class="n">read_xtc</span><span class="p">,</span> <span class="n">DIM</span><span class="p">,</span> <span class="n">exdrOK</span>
@@ -105,7 +105,7 @@ numpy arrays.</p>
 <em>box</em> change.</p>
 </div>
 <div class="section" id="functions-and-constants">
-<h2>5.13.2. Functions and constants<a class="headerlink" href="#functions-and-constants" title="Permalink to this headline">¶</a></h2>
+<h2>5.14.2. Functions and constants<a class="headerlink" href="#functions-and-constants" title="Permalink to this headline">¶</a></h2>
 <p>The module defines a number of constants such as <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.DIM" title="MDAnalysis.coordinates.xdrfile.libxdrfile.DIM"><tt class="xref py py-data docutils literal"><span class="pre">DIM</span></tt></a> or the
 <a class="reference internal" href="#status-symbols">Status symbols</a>.</p>
 <dl class="data">
@@ -116,7 +116,7 @@ was compiled; this is most certainly 3.</p>
 </dd></dl>
 
 <div class="section" id="status-symbols">
-<h3>5.13.2.1. Status symbols<a class="headerlink" href="#status-symbols" title="Permalink to this headline">¶</a></h3>
+<h3>5.14.2.1. Status symbols<a class="headerlink" href="#status-symbols" title="Permalink to this headline">¶</a></h3>
 <p>A number of symbols are exported; they all start with the letters
 <tt class="docutils literal"><span class="pre">exdr</span></tt>. Important ones are listed here:</p>
 <dl class="data">
@@ -146,7 +146,7 @@ was compiled; this is most certainly 3.</p>
 
 </div>
 <div class="section" id="opening-and-closing-of-xdr-files">
-<h3>5.13.2.2. Opening and closing of XDR files<a class="headerlink" href="#opening-and-closing-of-xdr-files" title="Permalink to this headline">¶</a></h3>
+<h3>5.14.2.2. Opening and closing of XDR files<a class="headerlink" href="#opening-and-closing-of-xdr-files" title="Permalink to this headline">¶</a></h3>
 <p>Two low-level functions are used to obtain a <em>XDRFILE</em> object (a file handle)
 to access xdr files such as xtc or trr trajectories.</p>
 <dl class="function">
@@ -188,7 +188,7 @@ crash with a double-free pointer error.</p>
 
 </div>
 <div class="section" id="xtc-functions">
-<h3>5.13.2.3. XTC functions<a class="headerlink" href="#xtc-functions" title="Permalink to this headline">¶</a></h3>
+<h3>5.14.2.3. XTC functions<a class="headerlink" href="#xtc-functions" title="Permalink to this headline">¶</a></h3>
 <p>The XTC trajectory format is a lossy compression format that only stores
 coordinates. Compression level is determined by the <em>precision</em> argument to the
 <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.write_xtc" title="MDAnalysis.coordinates.xdrfile.libxdrfile.write_xtc"><tt class="xref py py-func docutils literal"><span class="pre">write_xtc()</span></tt></a> function. Coordinates (<a class="reference external" href="http://www.gromacs.org">Gromacs</a> uses nm natively) are
@@ -333,7 +333,7 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
 
 </div>
 <div class="section" id="trr-functions">
-<h3>5.13.2.4. TRR functions<a class="headerlink" href="#trr-functions" title="Permalink to this headline">¶</a></h3>
+<h3>5.14.2.4. TRR functions<a class="headerlink" href="#trr-functions" title="Permalink to this headline">¶</a></h3>
 <p>TRR is the <a class="reference external" href="http://www.gromacs.org">Gromacs</a> native full-feature trajectory storage format. It can contain position 
 coordinates, velocities and forces, and the lambda value for free energy perturbation 
 calculations. Velocities and forces are optional in the sense that they can be all zero.</p>
@@ -500,13 +500,13 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.13. The Gromacs xtc/trr library <tt class="docutils literal"><span class="pre">libxdrfile</span></tt></a><ul>
-<li><a class="reference internal" href="#example-reading-from-a-xtc">5.13.1. Example: Reading from a xtc</a></li>
-<li><a class="reference internal" href="#functions-and-constants">5.13.2. Functions and constants</a><ul>
-<li><a class="reference internal" href="#status-symbols">5.13.2.1. Status symbols</a></li>
-<li><a class="reference internal" href="#opening-and-closing-of-xdr-files">5.13.2.2. Opening and closing of XDR files</a></li>
-<li><a class="reference internal" href="#xtc-functions">5.13.2.3. XTC functions</a></li>
-<li><a class="reference internal" href="#trr-functions">5.13.2.4. TRR functions</a></li>
+<li><a class="reference internal" href="#">5.14. The Gromacs xtc/trr library <tt class="docutils literal"><span class="pre">libxdrfile</span></tt></a><ul>
+<li><a class="reference internal" href="#example-reading-from-a-xtc">5.14.1. Example: Reading from a xtc</a></li>
+<li><a class="reference internal" href="#functions-and-constants">5.14.2. Functions and constants</a><ul>
+<li><a class="reference internal" href="#status-symbols">5.14.2.1. Status symbols</a></li>
+<li><a class="reference internal" href="#opening-and-closing-of-xdr-files">5.14.2.2. Opening and closing of XDR files</a></li>
+<li><a class="reference internal" href="#xtc-functions">5.14.2.3. XTC functions</a></li>
+<li><a class="reference internal" href="#trr-functions">5.14.2.4. TRR functions</a></li>
 </ul>
 </li>
 </ul>
@@ -515,10 +515,10 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="XYZ.html"
-                        title="previous chapter">5.12. XYZ trajectory reader &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></p>
+                        title="previous chapter">5.13. XYZ trajectory reader &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../core_modules.html"
-                        title="next chapter">6. Core modules</a></p>
+  <p class="topless"><a href="../selections_modules.html"
+                        title="next chapter">6. Selection exporters</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/libxdrfile.txt"
@@ -551,10 +551,10 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../core_modules.html" title="6. Core modules"
+          <a href="../selections_modules.html" title="6. Selection exporters"
              >next</a> |</li>
         <li class="right" >
-          <a href="XYZ.html" title="5.12. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
+          <a href="XYZ.html" title="5.13. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
