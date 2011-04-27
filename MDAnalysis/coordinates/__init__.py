@@ -521,7 +521,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        }
 
 #: formats of readers that can also handle gzip or bzip2 compressed files
-_compressed_formats = ['XYZ', 'TRJ', 'MDCRD', 'PQR']
+_compressed_formats = ['XYZ', 'TRJ', 'MDCRD', 'PQR', 'PDBQT']
 
 #: readers of files that contain both topology/atom data and coordinates
 #: (currently only the keys are used)

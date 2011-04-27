@@ -20,8 +20,8 @@ PDBQT topology parser
 =====================
 
 Use a PDBQT_ file to build a minimum internal structure representation (list of
-atoms), including AutoDock_ atom types (stored as :attr:`Atom.element`) and
-partial charges (:attr:`Atom.partialCharge`).
+atoms), including AutoDock_ atom types (stored as :attr:`Atom.type`) and
+partial charges (:attr:`Atom.charge`).
 
 Reads a PDBQT file line by line and is not fuzzy about numbering.
 
@@ -61,25 +61,23 @@ def parse(filename):
     return structure
 
 def __parseatoms_(pdb, structure):
-    from MDAnalysis.core.AtomGroup import Atom # Added partialCharge parameter to the Atom classes' constructor
+    from MDAnalysis.core.AtomGroup import Atom
     attr = "_atoms"  # name of the atoms section
     atoms = []       # list of Atom objects
 
     # translate list of atoms to MDAnalysis Atom.
     for iatom,atom in enumerate(pdb._atoms):
         atomname = atom.name
-        atomtype = atom.element or guess_atom_type(atomname)
+        atomtype = atom.type        # always set in PDBQT
         resname = atom.resName
         resid = atom.resSeq
         chain = atom.chainID.strip()
-        segid = chain or "SYSTEM"  # no empty segids (or Universe throws IndexError)
+        segid = chain or "SYSTEM"   # no empty segids (or Universe throws IndexError)
         mass = guess_atom_mass(atomname)
-        charge = guess_atom_charge(atomname)
+        charge = atom.partialCharge # always set in PDBQT
         bfactor = atom.tempFactor
         occupancy = atom.occupancy
-        partialCharge = atom.partialCharge
-        element = atom.element
         atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),
-                          bfactor=bfactor,partialCharge=partialCharge, element=element))
+                          bfactor=bfactor))
 
     structure[attr] = atoms

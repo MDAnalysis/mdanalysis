@@ -106,21 +106,16 @@ class Atom(object):
            file with the :class:`~MDAnalysis.coordinates.PQR.PQRReader`.)
         :attr:`~Atom.bfactor`
            temperature factor. (Only if loaded from a PDB.)
-        partialCharge
-           partial charges as used in the PDBQT format (:mod:`~MDAnalysis.topology.PDBQTparser`)
-        element
-           element symbol or atom type (e.g. used in PDBQT)
-
     """
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
                  "mass", "charge", "residue", "segment", "bonds", "__universe",
-                 "radius", "bfactor", "partialCharge", "element")
+                 "radius", "bfactor")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
-                 residue=None, segment=None, radius=None, bfactor=None, partialCharge=None, element=None):
+                 residue=None, segment=None, radius=None, bfactor=None):
         self.number = number
         self.name = name
-        self.type = type
+        self.type = type        # numeric or string
         self.resname = resname
         self.resid = resid
         self.residue = residue  # typically patched in later
@@ -130,8 +125,6 @@ class Atom(object):
         self.charge = charge
         self.radius = radius
         self.bfactor = bfactor
-        self.partialCharge = partialCharge # To support PDBQT
-        self.element = element # To support PDBQT
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
                repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'
@@ -150,7 +143,7 @@ class Atom(object):
     @property
     def pos(self):
         """Current cartesian coordinates of the atom."""
-        return self.universe.coord[self.number] # PDB numbering starts at 0
+        return self.universe.coord[self.number] # internal numbering starts at 0
 
     def centroid(self):
         """The centroid of an atom is its position, :attr:`Atom.pos`."""

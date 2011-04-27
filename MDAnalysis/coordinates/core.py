@@ -183,9 +183,9 @@ def guess_format(filename):
     return format
 
 def check_compressed_format(root, ext):
-    """Check if this is a supported gzipped/bzip2ed file format and return format."""
+    """Check if this is a supported gzipped/bzip2ed file format and return UPPERCASE format."""
     filename = root + '.' + ext  # only needed for diagnostics
-    # XYZReader is setup to handle both plain and compressed (bzip2, gz) files
+    # XYZReader&others are setup to handle both plain and compressed (bzip2, gz) files
     # ..so if the first file extension is bzip2 or gz, look at the one to the left of it
     if ext.lower() in ("bz2","gz"):
         try:
@@ -193,7 +193,6 @@ def check_compressed_format(root, ext):
         except:
             raise TypeError("Cannot determine coordinate format for %r" % filename)
         if not ext.upper() in MDAnalysis.coordinates._compressed_formats:
-            # only bzipped xyz files can be parsed right now (might be useful to parse foo.pdb.bz2 ?)
             raise TypeError("Cannot handle %r in compressed format" % filename)
     return ext.upper()
 

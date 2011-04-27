@@ -69,8 +69,13 @@ class PDBQTReader(base.Reader):
      - CRYST1 for unitcell A,B,C, alpha,beta,gamm
      - ATOM. HETATM for x,y,z
 
-    Original PDB documentation:
-    http://www.wwpdb.org/documentation/format32/sect9.html
+    Original `PDB format documentation`_    with  `AutoDOCK extensions`_
+
+
+    .. _PDB format documentation:
+       http://www.wwpdb.org/documentation/format32/sect9.html
+    .. _AutoDOCK extensions:
+       http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
 
     =============  ============  ===========  =============================================
     COLUMNS        DATA  TYPE    FIELD        DEFINITION
@@ -96,14 +101,9 @@ class PDBQTReader(base.Reader):
     47 - 54        Real(8.3)     z            Orthogonal coordinates for Z in Angstroms.
     55 - 60        Real(6.2)     occupancy    Occupancy.
     61 - 66        Real(6.2)     tempFactor   Temperature  factor.
-    67 - 76        String        segID        (unofficial CHARMM extension ?)
-    77 - 78        LString(2)    element      Element symbol, right-justified. IGNORED
-    79 - 80        LString(2)    charge       Charge  on the atom. IGNORED
+    67 - 76        Real(10.4)    partialChrg  Gasteiger PEOE partial charge *q*.
+    79 - 80        LString(2)    atomType     AutoDOCK atom type *t*.
     =============  ============  ===========  =============================================
-
-
-    AutoDOCK extensions:
-    http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
 
     We ignore torsion notation and just pull the partial charge and atom type columns::
 
@@ -184,7 +184,7 @@ class PDBQTReader(base.Reader):
                     alpha,beta,gamma = _c(34,40), _c(41,47), _c(48,54)
                     unitcell[:] = A,B,C, alpha,beta,gamma
                 if line[:6] in ('ATOM  ', 'HETATM'):
-                    # directly use COLUMNS from PDB spec
+                    # directly use COLUMNS from PDB/PDBQT spec
                     serial = _c(7,11,int)
                     name = _c(13,16,str).strip()
                     resName = _c(18,21,str).strip()
@@ -193,12 +193,10 @@ class PDBQTReader(base.Reader):
                     x,y,z = _c(31,38), _c(39,46), _c(47,54)
                     occupancy = _c(55,60)
                     tempFactor = _c(61,66)
-                    #segID = _c(67,76, str).strip() # ignored for PDBQT
-                    #element = _c(77,78, str).strip() # extended for PDBQT (see below)
-                    partialCharge = _c(67,76, str).strip()
-                    element = _c(77,80, str).strip()
+                    partialCharge = _c(67,76, str).strip()   # PDBQT partial charge
+                    atomtype = _c(77,80, str).strip() # PDBQT atom type
                     coords.append((x,y,z))
-                    atoms.append((serial, name, resName, chainID, resSeq, occupancy, tempFactor, partialCharge, element))
+                    atoms.append((serial, name, resName, chainID, resSeq, occupancy, tempFactor, partialCharge, atomtype))
         self.numatoms = len(coords)
         self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
         self.ts._unitcell[:] = unitcell
@@ -211,8 +209,8 @@ class PDBQTReader(base.Reader):
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1
-        # hack for PrimitivePDBParser:
-        self._atoms = numpy.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,partialCharge,element")
+        # hack for PDBQTParser:
+        self._atoms = numpy.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,partialCharge,type")
 
     def _col(self, line, start, stop, typeclass=float):
         """Pick out and convert the columns start-stop.
@@ -259,10 +257,10 @@ class PDBQTReader(base.Reader):
         raise StopIteration
     def __getitem__(self, frame):
         if frame != 0:
-            raise IndexError('PrimitivePDBReader can only read a single frame at index 0')
+            raise IndexError('PDBQTReader can only read a single frame at index 0')
         return self.ts
     def _read_next_timestep(self):
-        raise IndexError("PrimitivePDBReader can only read a single frame")
+        raise IndexError("PDBQTReader can only read a single frame")
 
 class PDBQTWriter(base.Writer):
     """PDBQT writer that implements a subset of the PDB_ 3.2 standard and the PDBQT_ spec.
@@ -283,7 +281,7 @@ class PDBQTWriter(base.Writer):
     #fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
     # PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc ignored
     fmt = {#'ATOM':   "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(segID)-4s%(element)2s%(charge)2d\n",
-           'ATOM':   "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(partialCharge)-1.4f %(element)-2s\n",
+           'ATOM':   "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(partialCharge)-1.4f %(atomtype)-2s\n",
            'REMARK': "REMARK     %s\n",
            'TITLE':  "TITLE    %s\n",
            'CRYST1': "CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %-11s%4d\n",
@@ -340,8 +338,8 @@ class PDBQTWriter(base.Writer):
 
         for i, atom in enumerate(atoms):
             self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
-                      chainID=atom.segid.strip(), partialCharge=atom.partialCharge.strip(), # replaced segID slot with partialCharge
-                      x=coor[i,0], y=coor[i,1], z=coor[i,2], element=atom.element)
+                      chainID=atom.segid.strip(), partialCharge=atom.charge,
+                      x=coor[i,0], y=coor[i,1], z=coor[i,2], atomtype=atom.type)
             # get bfactor, too, and add to output?
             # 'element' is auto-guessed from atom.name in ATOM()
         self.close()
@@ -369,10 +367,10 @@ class PDBQTWriter(base.Writer):
 
     def ATOM(self,serial=None,name=None,altLoc=None,resName=None,chainID=None,
              resSeq=None,iCode=None,x=None,y=None,z=None,occupancy=1.0,tempFactor=0.0,
-             segID=None,partialCharge=None,element=None,charge=0):
+             segID=None,partialCharge=None,atomtype=None):
         """Write ATOM record.
         http://www.wwpdb.org/documentation/format32/sect9.html
-        Only some keword args are optional (altLoc, iCode, chainID), for some defaults are set.
+        Only some keyword args are optional (altLoc, iCode, chainID), for some defaults are set.
 
         All inputs are cut to the maximum allowed length. For integer
         numbers the highest-value digits are chopped (so that the
@@ -382,9 +380,9 @@ class PDBQTWriter(base.Writer):
         Note: Floats are not checked and can potentially screw up the format.
         """
         for arg in ('serial','name','resName','resSeq','x','y','z',
-                    'occupancy','tempFactor','charge'):
+                    'occupancy','tempFactor','partialCharge','atomtype'):
             if locals()[arg] is None:
-                raise ValueError('parameter '+arg+' must be defined.')
+                raise ValueError('parameter '+arg+' must be defined for PDBQT.')
         serial = int(str(serial)[-5:])  # check for overflow here?
         name = name[:4]
         if len(name) < 4:
@@ -397,11 +395,8 @@ class PDBQTWriter(base.Writer):
         resSeq = int(str(resSeq)[-4:]) # check for overflow here?
         iCode = iCode or ""
         iCode = iCode[:1]
-        #element = element             # AtomType is always given
-        element = str(element)[:2]     # make sure that is a string for user input
-        #segID = segID or chainID      # Make use of chainID by default
-        #segID = segID[:4]             #
-        partialCharge=float(partialCharge) # Already pre-formatted when passed to this method
+        atomtype = str(atomtype)[:2]         # make sure that is a string for user input
+        partialCharge = float(partialCharge) # Already pre-formatted when passed to this method
         self.pdb.write(self.fmt['ATOM'] % vars())
 
     def __del__(self):
