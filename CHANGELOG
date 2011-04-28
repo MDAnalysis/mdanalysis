@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/11 orbeckst, jandom, Benjamin Hall, Paul Rigor
+??/??/11 orbeckst, jandom, Benjamin Hall, Paul Rigor, David Caplan
   * 0.7.3 development
 
   Enhancements
@@ -24,6 +24,7 @@ The rules for this file:
     implementation of helanal.f from
     http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html (Benjamin
     Hall, used under GPL v2+)
+  * hydrogen bonds analysis in MDAnalysis.analysis.hbonds
 
   Change of behaviour
 

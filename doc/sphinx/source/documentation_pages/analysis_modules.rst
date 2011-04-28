@@ -26,6 +26,7 @@ These modules are not imported by default; in order to use them one has to ::
    analysis/contacts
    analysis/distances
    analysis/density
+   analysis/hbonds
    analysis/helanal
    analysis/leaflet
 
