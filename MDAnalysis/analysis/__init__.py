@@ -54,8 +54,14 @@ Available analysis modules
     Analyse the number of native contacts relative to a reference
     state, also known as a "q1-q2" analysis.
 
+:mod:`~MDAnalysis.analysis.hbonds`
+    Analyze hydrogen bonds.
+
 .. _GridDataFormats: https://github.com/orbeckst/GridDataFormats
 .. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
-"""
 
-__all__ = ['leaflet', 'contacts', 'align', 'distances', 'density']
+"""
+__all__ = ['align', 'contacts', 'density', 'distances',
+           'helanal', 'hbonds', 'leaflet',
+           ]
+
