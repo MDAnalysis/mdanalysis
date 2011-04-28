@@ -55,7 +55,7 @@ from MDAnalysis.core.AtomGroup import AtomGroup
 import MDAnalysis.KDTree.NeighborSearch as NS
 
 import logging
-logger = logging.getLogger('hbonds')
+logger = logging.getLogger('MDAnalysis.analysis.hbonds')
 
 class HydrogenBondAnalysis(object):
     """Perform a hydrogen bond analysis
@@ -70,12 +70,12 @@ class HydrogenBondAnalysis(object):
 
 
     Donors: NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS NE2, SER OG, TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2, GLN NE2, LYS NZ, TRP NE1
-    Acceptors: CO main chain, water-OH2, ASN OD1, GLN OE1, MET SD, ASP OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH SG, HIS ND1, TYR OH.
+    Acceptors: CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1, MET SD, ASP OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH SG, HIS ND1, TYR OH.
 
     """
     
-    donors = ('NH', 'OH2', 'NE', 'ND2', 'NE2', 'OG', 'OH', 'NH1', 'SG', 'ND1', 'OG1', 'NH2', 'NE2', 'NZ', 'NE1', )
-    acceptors = ('CO', 'OH2', 'OD1', 'OE1', 'SD', 'OD1', 'OE1', 'OG', 'OD2', 'OE2', 'OG1', 'SG', 'ND1', 'OH', )
+    donors = ('NH', 'OH2', 'OW', 'NE', 'ND2', 'NE2', 'OG', 'OH', 'NH1', 'SG', 'ND1', 'OG1', 'NH2', 'NE2', 'NZ', 'NE1', )
+    acceptors = ('CO', 'OH2', 'OW', 'OD1', 'OE1', 'SD', 'OD1', 'OE1', 'OG', 'OD2', 'OE2', 'OG1', 'SG', 'ND1', 'OH', )
     
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
                 update_selection1=False, update_selection2=False, filter_first=True, distance=3.0, angle=120.0):
