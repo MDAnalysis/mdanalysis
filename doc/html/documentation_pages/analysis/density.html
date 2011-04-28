@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
-    <link rel="next" title="3.5. HELANAL — analysis of protein helices" href="helanal.html" />
+    <link rel="next" title="3.5. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds" href="hbonds.html" />
     <link rel="prev" title="3.3. Distance analysis — MDAnalysis.distances" href="distances.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="helanal.html" title="3.5. HELANAL — analysis of protein helices"
+          <a href="hbonds.html" title="3.5. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="distances.html" title="3.3. Distance analysis — MDAnalysis.distances"
@@ -114,7 +114,7 @@ the rest should work for an array of any dimension.</p>
 <p>If the input histogram consists of counts per cell then the
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><tt class="xref py py-meth docutils literal"><span class="pre">Density.make_density()</span></tt></a> method converts the grid to a physical density. For
 a probability density, divide it by <tt class="xref py py-meth docutils literal"><span class="pre">Density.grid.sum()</span></tt> or use <tt class="docutils literal"><span class="pre">normed=True</span></tt>
-right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.0.dev-f98ffb5)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
+right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.0.dev-433b02a)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
 <p>The user <em>should</em> set the <em>parameters</em> keyword (see docs for the
 constructor); in particular, if the data are already a density, one must
 set <em>isDensity</em> == <tt class="xref docutils literal"><span class="pre">True</span></tt> because there is no reliable way to detect if
@@ -599,8 +599,8 @@ that can be easily matched to a broader density distribution.</p>
   <p class="topless"><a href="distances.html"
                         title="previous chapter">3.3. Distance analysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="helanal.html"
-                        title="next chapter">3.5. HELANAL &#8212; analysis of protein helices</a></p>
+  <p class="topless"><a href="hbonds.html"
+                        title="next chapter">3.5. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/analysis/density.txt"
@@ -633,7 +633,7 @@ that can be easily matched to a broader density distribution.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="helanal.html" title="3.5. HELANAL — analysis of protein helices"
+          <a href="hbonds.html" title="3.5. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds"
              >next</a> |</li>
         <li class="right" >
           <a href="distances.html" title="3.3. Distance analysis — MDAnalysis.distances"
