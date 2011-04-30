@@ -25,6 +25,8 @@ The rules for this file:
     http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html (Benjamin
     Hall, used under GPL v2+)
   * hydrogen bonds analysis in MDAnalysis.analysis.hbonds
+  * MDAnalysis.analysis.distances.dist() for calculating distances between
+    matching atoms in two groups
 
   Change of behaviour
 

@@ -24,10 +24,13 @@ atoms or groups of atoms.
 
 """
 
-__all__ = ['distance_array', 'self_distance_array', 'contact_matrix']
+__all__ = ['distance_array', 'self_distance_array', 'contact_matrix', 'dist']
+
+import numpy
+from scipy import sparse
+
 from MDAnalysis.core.distances import distance_array, self_distance_array
 from MDAnalysis.analysis.util import progress_meter
-from scipy import sparse
 
 
 def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_meter_freq=100, suppress_progmet=False):
@@ -99,4 +102,42 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_me
                         sparse_contacts[i,j] = True
 
         return sparse_contacts
+
+def dist(A, B, offset=0):
+    """Return distance between atoms in two atom groups.
+
+    The distance is calculated atom-wise. The residue ids are also
+    returned because a typical use case is to look at CA distances
+    before and after an alignment. Using the *offset* keyword one can
+    also add a constant offset to the resids which facilitates
+    comparison with PDB numbering.
+
+    :Arguments:
+       *A*, *B*
+          :class:`~MDAnalysis.core.AtomGroup.AtomGroup` with the
+          same number of atoms
+
+    :Keywords:
+       *offset* : integer
+          The *offset* is added to *resids_A* and *resids_B* (see
+          below) in order to produce PDB numbers. The default is 0.
+
+       *offset* : tuple
+          *offset[0]* is added to *resids_A* and *offset[1]* to
+          *resids_B*.
+
+    :Returns: NumPy `array([resids_A, resids_B, distances])`
+
+    """
+    if A.atoms.numberOfAtoms() != B.atoms.numberOfAtoms():
+        raise ValueError("AtomGroups A and B do not have the same number of atoms")
+    try:
+        off_A, off_B = offset
+    except (TypeError, ValueError):
+        off_A = off_B = int(offset)
+    residues_A = numpy.array(A.resids()) + off_A
+    residues_B = numpy.array(B.resids()) + off_B
+    r = A.coordinates() - B.coordinates()
+    d = numpy.sqrt(numpy.sum(r*r, axis=1))
+    return numpy.array([residues_A, residues_B, d])
 
