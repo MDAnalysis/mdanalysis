@@ -421,6 +421,18 @@ class AtomGroup(object):
         x = self.coordinates()
         return numpy.array([x.min(axis=0), x.max(axis=0)])
 
+    def bsphere(self):
+        """Return the bounding sphere of the selection.
+
+        The sphere is calculated relative to the centre of geometry.
+
+        :Returns: `(R, [xcen,ycen,zcen])`
+        """
+        x = self.coordinates()
+        centroid = self.centerOfGeometry()
+        R = numpy.sqrt(numpy.max(numpy.sum(numpy.square(x-centroid), axis=1)))
+        return R, centroid
+
     def dihedral(self):
         """Calculate the dihedral angle.
 
