@@ -21,7 +21,7 @@ import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup
 
 from numpy.testing import *
-from numpy import array, float32
+from numpy import array, float32, rad2deg
 from nose.plugins.attrib import attr
 
 import os
@@ -167,6 +167,40 @@ class TestAtomGroup(TestCase):
                 "advanced slicing does not produce a AtomGroup")
         assert_equal(ag[1], ag[-1], "advanced slicing does not preserve order")
 
+    def test_phi_selection(self):
+        phisel = self.universe.s4AKE.r10.phi_selection()
+        assert_equal(phisel.names(), ['C', 'N', 'CA', 'C'])
+        assert_equal(phisel.resids(), [9, 10])
+        assert_equal(phisel.resnames(), ['PRO', 'GLY'])
+
+    def test_psi_selection(self):
+        psisel = self.universe.s4AKE.r10.psi_selection()
+        assert_equal(psisel.names(), ['N', 'CA', 'C', 'N'])
+        assert_equal(psisel.resids(), [10, 11])
+        assert_equal(psisel.resnames(), ['GLY', 'ALA'])
+
+    def test_omega_selection(self):
+        osel =  self.universe.s4AKE.r8.omega_selection()
+        assert_equal(osel.names(), ['CA', 'C', 'N', 'CA'])
+        assert_equal(osel.resids(), [8, 9])
+        assert_equal(osel.resnames(), ['ALA', 'PRO'])
+
+    def test_dihedral(self):
+        u = self.universe
+        u.trajectory.rewind()   # just to make sure...
+        phisel = u.s4AKE.r10.phi_selection()
+        psisel = u.s4AKE.r10.psi_selection()
+        osel =  u.s4AKE.r8.omega_selection()
+        assert_almost_equal(rad2deg(phisel.dihedral()), -168.57384, 3)
+        assert_almost_equal(rad2deg(psisel.dihedral()), -30.064838, 3)
+        assert_almost_equal(rad2deg(osel.dihedral()),  -179.93439, 3)
+
+    def test_dihedral_ValueError(self):
+        """test that AtomGroup.dihedral() raises ValueError if not exactly 4 atoms given"""
+        nodih = self.universe.selectAtoms("resid 3:10")
+        assert_raises(ValueError, nodih.dihedral)
+        nodih = self.universe.selectAtoms("resid 3:5")
+        assert_raises(ValueError, nodih.dihedral)
 
 class _WriteAtoms(TestCase):
     """Set up the standard AdK system in implicit solvent."""
