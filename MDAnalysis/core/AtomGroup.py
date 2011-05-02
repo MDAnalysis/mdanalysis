@@ -418,7 +418,7 @@ class AtomGroup(object):
 
         :Returns: [[xmin, ymin, zmin], [xmax, ymax, zmax]]
         """
-        x = u.A.coordinates()
+        x = self.coordinates()
         return numpy.array([x.min(axis=0), x.max(axis=0)])
 
     def dihedral(self):
