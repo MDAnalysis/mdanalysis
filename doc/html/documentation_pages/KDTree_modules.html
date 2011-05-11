@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>8. KDTree module &mdash; MDAnalysis v0.7.3 documentation</title>
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -22,6 +22,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis v0.7.3 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../index.html" />
     <link rel="next" title="8.1. KDTree — MDAnalysis.KDTree.KDTree" href="KDTree/KDTree.html" />
     <link rel="prev" title="7.10. Setting up logging — MDAnalysis.core.log" href="core/log.html" /> 
@@ -44,50 +48,12 @@
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li> 
       </ul>
-    </div>  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
-  <div class="section" id="kdtree-module">
-<h1>8. KDTree module<a class="headerlink" href="#kdtree-module" title="Permalink to this headline">¶</a></h1>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Author:</th><td class="field-body">Thomas Hamelryck</td>
-</tr>
-<tr class="field"><th class="field-name">Year:</th><td class="field-body">2002</td>
-</tr>
-<tr class="field"><th class="field-name">Licence:</th><td class="field-body">Biopython</td>
-</tr>
-</tbody>
-</table>
-<p>The KD tree data structure can be used for all kinds of searches that
-involve N-dimensional vectors. For example, neighbor searches (find all points
-within a radius of a given point) or finding all point pairs in a set
-that are within a certain radius of each other. See &#8220;Computational Geometry:
-Algorithms and Applications&#8221; (Mark de Berg, Marc van Kreveld, Mark Overmars,
-Otfried Schwarzkopf).</p>
-<p>MDAnalysis uses Biopython&#8217;s KDTree module for distance selections
-between atoms but the user is of course welcome to use the module for
-any purpose.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="KDTree/KDTree.html">8.1. KDTree &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="KDTree/NeighborSearch.html">8.2. Fast atom neighbor lookup using a KD tree (implemented in C++) &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.KDTree.NeighborSearch</span></tt></a></li>
-</ul>
-</div>
-</div>
-
-
-          </div>
-        </div>
-      </div>
+    </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="core/log.html"
                         title="previous chapter">7.10. Setting up logging &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
@@ -114,6 +80,69 @@ any purpose.</p>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="kdtree-module">
+<h1>8. KDTree module<a class="headerlink" href="#kdtree-module" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Author:</th><td class="field-body">Thomas Hamelryck</td>
+</tr>
+<tr class="field"><th class="field-name">Year:</th><td class="field-body">2002</td>
+</tr>
+<tr class="field"><th class="field-name">Licence:</th><td class="field-body">Biopython</td>
+</tr>
+</tbody>
+</table>
+<p>The KD tree data structure can be used for all kinds of searches that
+involve N-dimensional vectors. For example, neighbor searches (find all points
+within a radius of a given point) or finding all point pairs in a set
+that are within a certain radius of each other.</p>
+<p>MDAnalysis uses <a class="reference external" href="http://biopython.org">Biopython</a>&#8216;s KDTree module for distance selections
+between atoms but its use goes far beyond this narrow application.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The algorithms are based on <a class="reference internal" href="#deberg2000">[deBerg2000]</a> with improvements
+suggested by <a class="reference internal" href="#bentley1990">[Bentley1990]</a>. See the documentation of the
+individual classes for details.</p>
+</div>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="deberg2000" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[deBerg2000]</a></td><td>Mark de Berg, Marc van Kreveld, Mark Overmars,
+Otfried Schwarzkopf.
+<a class="reference external" href="http://books.google.co.uk/books?id=C8zaAWuOIOcC">Computational Geometry: Algorithms and Applications</a>.
+Springer, 2nd edition. 2000.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="bentley1990" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[Bentley1990]</a></td><td>J.L. Bentley, &#8220;Kd trees for semidynamic point sets,&#8221; in Sixth
+Annual ACM Symposium on Computational Geometry, vol. 91. San
+Francisco, 1990</td></tr>
+</tbody>
+</table>
+<p class="rubric">Contents</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="KDTree/KDTree.html">8.1. KDTree &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="KDTree/NeighborSearch.html">8.2. Fast atom neighbor lookup using a KD tree (implemented in C++) &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.KDTree.NeighborSearch</span></tt></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -135,7 +164,10 @@ any purpose.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
+        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
+    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
+    and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

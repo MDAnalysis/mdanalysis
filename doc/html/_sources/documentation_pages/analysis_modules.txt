@@ -4,20 +4,35 @@
 Analysis modules
 ****************
 
-These modules are located in the :mod:`MDAnalysis.analysis` module (and the
-code lives in the ``MDAnalysis/analysis/`` directory). They contain abstract
-functionality for specific analysis tasks (for example, bilayer
-:mod:`~MDAnalysis.analysis.leaflet` selection). In many cases it will be
-preferable to use these provided tools over manually-coded alternatives because
-some components may have already been written in C for time-critical routines.
+The :mod:`MDAnalysis.analysis` module contains code to carry out
+specific analysis functionality. It is based on the core functionality
+(i.e. trajectory I/O, selections etc). The analysis modules can be
+used as examples for how to use MDAnalysis but also as working code
+for research projects; typically all contributed code has been used by
+the authors in their own work.
 
-These modules are not imported by default; in order to use them one has to ::
+Please see the individual module documentation for additional
+references and citation information.
 
-  import MDAnalysis.analysis
+These modules are not imported by default; in order to use them one
+has to import them from :mod:`MDAnalysis.analysis`, for instance ::
+
+    import MDAnalysis.analysis.align
+
+.. Note:: Some of the modules require additional Python packages such as
+  :mod:`scipy` from the SciPy_ package or :mod:`networkx` from
+  NetworkX_. These package are *not automatically installed* (although one can
+  add the ``[analysis]`` requirement to the :program:`easy_install` command
+  line to force their installation.
+
+.. TODO: write a INSTALLATION page and link to it
 
 .. _scipy: http://www.scipy.org/
 .. _networkx: http://networkx.lanl.gov/
 
+
+
+.. rubric:: Contents
 
 .. toctree::
    :maxdepth: 1
@@ -30,13 +45,6 @@ These modules are not imported by default; in order to use them one has to ::
    analysis/helanal
    analysis/leaflet
 
-.. Note:: Some of the modules require additional Python packages such as
-  :mod:`scipy` from the SciPy_ package or :mod:`networkx` from
-  NetworkX_. These package are *not automatically installed* (although one can
-  add the ``[analysis]`` requirement to the :program:`easy_install` command
-  line to force their installation.
-
-.. TODO: write a INSTALLATION page and link to it
    
 
 

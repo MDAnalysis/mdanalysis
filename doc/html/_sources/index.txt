@@ -1,4 +1,4 @@
-.. coding: utf-8 -*-
+.. -*- coding: utf-8 -*-
 .. MDAnalysis documentation master file, created by
 .. sphinx-quickstart on Mon Sep 27 09:39:55 2010.
 .. You can adapt this file completely to your liking, but it should at least
@@ -57,8 +57,6 @@ When using MDAnalysis in published work, please cite
 *   N. Michaud-Agrawal, E. J. Denning, T. B. Woolf,
     and O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular
     Dynamics Simulations. *J. Comput. Chem.* (2011), doi:`10.1002/jcc.21787`_
-    http://mdanalysis.googlecode.com
-
 
 .. rubric:: Included algorithms
 
@@ -89,7 +87,7 @@ Contents
 ========
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :numbered:		
    
    ./documentation_pages/overview

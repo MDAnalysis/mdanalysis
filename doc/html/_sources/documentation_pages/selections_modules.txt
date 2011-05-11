@@ -38,6 +38,8 @@ Supported exporters and recognized file name extensions:
 +---------------+-----------+-------+--------------------------------------------+
 
 
+.. rubric:: Contents
+
 .. toctree::
    :maxdepth: 1
 

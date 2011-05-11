@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>3.5. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis v0.7.3 documentation</title>
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -22,6 +22,10 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis v0.7.3 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.6. HELANAL — analysis of protein helices" href="helanal.html" />
@@ -46,7 +50,47 @@
         <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3.5. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a><ul>
+<li><a class="reference internal" href="#example">3.5.1. Example</a></li>
+<li><a class="reference internal" href="#classes">3.5.2. Classes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="density.html"
+                        title="previous chapter">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="helanal.html"
+                        title="next chapter">3.6. HELANAL &#8212; analysis of protein helices</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/analysis/hbonds.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -67,11 +111,8 @@
 </tr>
 </tbody>
 </table>
-<p>Using <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">HydrogenBondAnalysis</span></tt></a> one can analyze the hydrogen bonds between
-two selections along a trajectory. The code is modeled after the VMD <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/hbonds/">HBONDS</a>
-plugin.</p>
-<p>Given a Universe (simulation trajectory with 1 or more frames) measure all
-hydrogen bonds for each frame between selections 1 and 2.</p>
+<p>This is modeled after the VMD HBONDS plugin (<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/hbonds/">http://www.ks.uiuc.edu/Research/vmd/plugins/hbonds/</a>)</p>
+<p>Given a Universe (simulation trajectory with 1 or more frames) measure all hydrogen bonds for each frame between selections 1 and 2.</p>
 <dl class="docutils">
 <dt>Options:</dt>
 <dd><ul class="first last simple">
@@ -81,20 +122,19 @@ hydrogen bonds for each frame between selections 1 and 2.</p>
 <li>Angle cutoff (degrees): 120.0</li>
 </ul>
 </dd>
-<dt>Returns hydrogen bond data per frame::</dt>
+<dt>Returns hydrogen bond data per frame:</dt>
 <dd>results[ [ &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt; ], [frame 1], [frame 2] ... ]</dd>
 </dl>
 <div class="section" id="example">
 <h2>3.5.1. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>Basic outline of how to use <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">HydrogenBondAnalysis</span></tt></a></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">import</span> <span class="nn">MDAnalysis.analysis.hbonds</span>
-
-<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">PDB</span><span class="p">,</span> <span class="n">permissive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">h</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">hbonds</span><span class="o">.</span><span class="n">HydrogenBondAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s">&#39;protein&#39;</span><span class="p">,</span> <span class="s">&#39;resname TIP3&#39;</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">)</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</pre></div>
-</div>
+<p>TODO</p>
+<blockquote>
+<div><p>import MDAnalysis
+import hbonds</p>
+<p>u = MDAnalysis.Universe(PSF, PDB, permissive=True)
+h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, &#8216;protein&#8217;, &#8216;resname TIP3&#8217;, distance=3.0, angle=120.0)
+results = h.run()</p>
+</div></blockquote>
 </div>
 <div class="section" id="classes">
 <h2>3.5.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
@@ -109,14 +149,8 @@ contains the frame number at index 0, selection1 and selection2,
 and the total number of hydrogen bonds</p>
 <div class="highlight-python"><pre>frame  selection1 selection2  num_hbonds</pre>
 </div>
-<dl class="docutils">
-<dt>Donors</dt>
-<dd>NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS NE2, SER OG, TYR
-OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2, GLN NE2, LYS NZ, TRP NE1</dd>
-<dt>Acceptors</dt>
-<dd>CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1, MET SD, ASP OD1,
-GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH SG, HIS ND1, TYR OH.</dd>
-</dl>
+<p>Donors: NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS NE2, SER OG, TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2, GLN NE2, LYS NZ, TRP NE1
+Acceptors: CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1, MET SD, ASP OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH SG, HIS ND1, TYR OH.</p>
 <p>Calculate hydrogen bonds between two selections in a universe.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -183,43 +217,6 @@ GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH SG, HIS ND1, TYR OH.</dd>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">3.5. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a><ul>
-<li><a class="reference internal" href="#example">3.5.1. Example</a></li>
-<li><a class="reference internal" href="#classes">3.5.2. Classes</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="density.html"
-                        title="previous chapter">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="helanal.html"
-                        title="next chapter">3.6. HELANAL &#8212; analysis of protein helices</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/documentation_pages/analysis/hbonds.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -242,7 +239,10 @@ GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH SG, HIS ND1, TYR OH.</dd>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
+        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
+    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
+    and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

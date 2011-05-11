@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>2. Selection Commands &mdash; MDAnalysis v0.7.3 documentation</title>
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -22,6 +22,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis v0.7.3 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../index.html" />
     <link rel="next" title="3. Analysis modules" href="analysis_modules.html" />
     <link rel="prev" title="1. Overview over MDAnalysis" href="overview.html" /> 
@@ -44,7 +48,61 @@
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">2. Selection Commands</a><ul>
+<li><a class="reference internal" href="#selection-keywords">2.1. Selection Keywords</a><ul>
+<li><a class="reference internal" href="#simple-selections">2.1.1. Simple selections</a></li>
+<li><a class="reference internal" href="#boolean">2.1.2. Boolean</a></li>
+<li><a class="reference internal" href="#geometric">2.1.3. Geometric</a></li>
+<li><a class="reference internal" href="#connectivity">2.1.4. Connectivity</a></li>
+<li><a class="reference internal" href="#index">2.1.5. Index</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#instant-selectors">2.2. Instant selectors</a><ul>
+<li><a class="reference internal" href="#segment-selector">2.2.1. Segment selector</a></li>
+<li><a class="reference internal" href="#resid-selector">2.2.2. Resid selector</a></li>
+<li><a class="reference internal" href="#residue-name-selector">2.2.3. Residue name selector</a></li>
+<li><a class="reference internal" href="#atom-name-selector">2.2.4. Atom name selector</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ordered-selections">2.3. Ordered selections</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="overview.html"
+                        title="previous chapter">1. Overview over MDAnalysis</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="analysis_modules.html"
+                        title="next chapter">3. Analysis modules</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/documentation_pages/selections.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -53,8 +111,8 @@
             
   <div class="section" id="selection-commands">
 <span id="selection-commands-label"></span><h1>2. Selection Commands<a class="headerlink" href="#selection-commands" title="Permalink to this headline">¶</a></h1>
-<p>Once you have the universe object, you can select atoms (using a syntax very
-similar to <a class="reference external" href="http://www.charmm.org/html/documentation/c35b1/select.html">CHARMM&#8217;s atom selection syntax</a>):</p>
+<p>Once you have the <tt class="xref py py-meth docutils literal"><span class="pre">Universe()</span></tt> object, you can select
+atoms (using a syntax very similar to <a class="reference external" href="http://www.charmm.org/html/documentation/c35b1/select.html">CHARMM&#8217;s atom selection syntax</a>):</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">kalp</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid KALP&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -336,57 +394,6 @@ might expect:</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">2. Selection Commands</a><ul>
-<li><a class="reference internal" href="#selection-keywords">2.1. Selection Keywords</a><ul>
-<li><a class="reference internal" href="#simple-selections">2.1.1. Simple selections</a></li>
-<li><a class="reference internal" href="#boolean">2.1.2. Boolean</a></li>
-<li><a class="reference internal" href="#geometric">2.1.3. Geometric</a></li>
-<li><a class="reference internal" href="#connectivity">2.1.4. Connectivity</a></li>
-<li><a class="reference internal" href="#index">2.1.5. Index</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#instant-selectors">2.2. Instant selectors</a><ul>
-<li><a class="reference internal" href="#segment-selector">2.2.1. Segment selector</a></li>
-<li><a class="reference internal" href="#resid-selector">2.2.2. Resid selector</a></li>
-<li><a class="reference internal" href="#residue-name-selector">2.2.3. Residue name selector</a></li>
-<li><a class="reference internal" href="#atom-name-selector">2.2.4. Atom name selector</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#ordered-selections">2.3. Ordered selections</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="overview.html"
-                        title="previous chapter">1. Overview over MDAnalysis</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="analysis_modules.html"
-                        title="next chapter">3. Analysis modules</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/documentation_pages/selections.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -408,7 +415,10 @@ might expect:</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
+        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
+    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
+    and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

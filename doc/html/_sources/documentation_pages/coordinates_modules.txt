@@ -13,6 +13,8 @@ concern themselves with classes and functions described here.
 Programmers and anyone trying to implement new functionality should read the
 :ref:`Trajectory API` (described in :mod:`MDAnalysis.coordinates`).
 
+.. rubric:: Contents
+
 .. toctree::
    :maxdepth: 1
 

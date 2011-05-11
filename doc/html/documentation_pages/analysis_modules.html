@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>3. Analysis modules &mdash; MDAnalysis v0.7.3 documentation</title>
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -22,6 +22,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis v0.7.3 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../index.html" />
     <link rel="next" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align" href="analysis/align.html" />
     <link rel="prev" title="2. Selection Commands" href="selections.html" /> 
@@ -44,52 +48,12 @@
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li> 
       </ul>
-    </div>  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
-  <div class="section" id="analysis-modules">
-<h1>3. Analysis modules<a class="headerlink" href="#analysis-modules" title="Permalink to this headline">¶</a></h1>
-<p>These modules are located in the <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis</span></tt> module (and the
-code lives in the <tt class="docutils literal"><span class="pre">MDAnalysis/analysis/</span></tt> directory). They contain abstract
-functionality for specific analysis tasks (for example, bilayer
-<a class="reference internal" href="analysis/leaflet.html#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><tt class="xref py py-mod docutils literal"><span class="pre">leaflet</span></tt></a> selection). In many cases it will be
-preferable to use these provided tools over manually-coded alternatives because
-some components may have already been written in C for time-critical routines.</p>
-<p>These modules are not imported by default; in order to use them one has to</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis.analysis</span>
-</pre></div>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/align.html">3.1. Coordinate fitting and alignment &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/contacts.html">3.2. Native contacts analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/distances.html">3.3. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/density.html">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/hbonds.html">3.5. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/helanal.html">3.6. HELANAL &#8212; analysis of protein helices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/leaflet.html">3.7. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></li>
-</ul>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Some of the modules require additional Python packages such as
-<tt class="xref py py-mod docutils literal"><span class="pre">scipy</span></tt> from the <a class="reference external" href="http://www.scipy.org/">SciPy</a> package or <tt class="xref py py-mod docutils literal"><span class="pre">networkx</span></tt> from
-<a class="reference external" href="http://networkx.lanl.gov/">NetworkX</a>. These package are <em>not automatically installed</em> (although one can
-add the <tt class="docutils literal"><span class="pre">[analysis]</span></tt> requirement to the <strong class="program">easy_install</strong> command
-line to force their installation.</p>
-</div>
-</div>
-
-
-          </div>
-        </div>
-      </div>
+    </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="selections.html"
                         title="previous chapter">2. Selection Commands</a></p>
@@ -116,6 +80,53 @@ line to force their installation.</p>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="analysis-modules">
+<h1>3. Analysis modules<a class="headerlink" href="#analysis-modules" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis</span></tt> module contains code to carry out
+specific analysis functionality. It is based on the core functionality
+(i.e. trajectory I/O, selections etc). The analysis modules can be
+used as examples for how to use MDAnalysis but also as working code
+for research projects; typically all contributed code has been used by
+the authors in their own work.</p>
+<p>Please see the individual module documentation for additional
+references and citation information.</p>
+<p>These modules are not imported by default; in order to use them one
+has to import them from <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis</span></tt>, for instance</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.align</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Some of the modules require additional Python packages such as
+<tt class="xref py py-mod docutils literal"><span class="pre">scipy</span></tt> from the <a class="reference external" href="http://www.scipy.org/">SciPy</a> package or <tt class="xref py py-mod docutils literal"><span class="pre">networkx</span></tt> from
+<a class="reference external" href="http://networkx.lanl.gov/">NetworkX</a>. These package are <em>not automatically installed</em> (although one can
+add the <tt class="docutils literal"><span class="pre">[analysis]</span></tt> requirement to the <strong class="program">easy_install</strong> command
+line to force their installation.</p>
+</div>
+<p class="rubric">Contents</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis/align.html">3.1. Coordinate fitting and alignment &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/contacts.html">3.2. Native contacts analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/distances.html">3.3. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/density.html">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/hbonds.html">3.5. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/helanal.html">3.6. HELANAL &#8212; analysis of protein helices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/leaflet.html">3.7. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -137,7 +148,10 @@ line to force their installation.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
+        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
+    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
+    and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

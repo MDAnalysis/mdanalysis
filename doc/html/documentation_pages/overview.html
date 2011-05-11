@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>1. Overview over MDAnalysis &mdash; MDAnalysis v0.7.3 documentation</title>
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -22,6 +22,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis v0.7.3 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../index.html" />
     <link rel="next" title="2. Selection Commands" href="selections.html" />
     <link rel="prev" title="MDAnalysis documentation" href="../index.html" /> 
@@ -44,7 +48,51 @@
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">1. Overview over MDAnalysis</a><ul>
+<li><a class="reference internal" href="#using-mdanalysis-in-python">1.1. Using MDAnalysis in python</a></li>
+<li><a class="reference internal" href="#examples">1.2. Examples</a><ul>
+<li><a class="reference internal" href="#included-trajectories">1.2.1. Included trajectories</a></li>
+<li><a class="reference internal" href="#code-snippets">1.2.2. Code snippets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">MDAnalysis documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="selections.html"
+                        title="next chapter">2. Selection Commands</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/documentation_pages/overview.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -97,7 +145,7 @@ from within the interpreter:</p>
 </pre></div>
 </div>
 <p>The idea behind MDAnalysis is to get trajectory data into <a class="reference external" href="http://numpy.scipy.org">NumPy</a>
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-433b02a)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> arrays, where it can then be easily manipulated using
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-b233716)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> arrays, where it can then be easily manipulated using
 all the power in <a class="reference external" href="http://numpy.scipy.org">NumPy</a> and <a class="reference external" href="http://www.scipy.org/">SciPy</a>.</p>
 <p>MDAnalysis works well both in scripts and in interactive use. The developers
 very much recommend using MDAnalysis from within the <a class="reference external" href="http://ipython.scipy.org/">IPython</a> Python shell.  It
@@ -217,47 +265,6 @@ via clustering (<a class="reference external" href="http://code.google.com/p/mda
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">1. Overview over MDAnalysis</a><ul>
-<li><a class="reference internal" href="#using-mdanalysis-in-python">1.1. Using MDAnalysis in python</a></li>
-<li><a class="reference internal" href="#examples">1.2. Examples</a><ul>
-<li><a class="reference internal" href="#included-trajectories">1.2.1. Included trajectories</a></li>
-<li><a class="reference internal" href="#code-snippets">1.2.2. Code snippets</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="../index.html"
-                        title="previous chapter">MDAnalysis documentation</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="selections.html"
-                        title="next chapter">2. Selection Commands</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/documentation_pages/overview.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -279,7 +286,10 @@ via clustering (<a class="reference external" href="http://code.google.com/p/mda
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein.
+        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
+    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
+    and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

@@ -4,6 +4,14 @@
 Core modules
 **************************
 
+The :mod:`MDAnalysis.core` modules contain functionality essential for
+MDAnalysis, such as the central data structures in
+:mod:`MDAnalysis.core.AtomGroup` or the selection definitions and
+parsing in :mod:`MDAnalysis.core.Selection`.
+
+
+.. rubric:: Contents 
+
 .. toctree::
    :maxdepth: 1
 
