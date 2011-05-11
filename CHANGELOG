@@ -10,7 +10,9 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/11 orbeckst, jandom, Benjamin Hall, Paul Rigor, David Caplan
+??/??/11 orbeckst, jandom, Benjamin Hall, Paul Rigor, dcaplan,
+         Christian Beckstein (logo)
+
   * 0.7.3 development
 
   Enhancements
@@ -27,6 +29,8 @@ The rules for this file:
   * hydrogen bonds analysis in MDAnalysis.analysis.hbonds
   * MDAnalysis.analysis.distances.dist() for calculating distances between
     matching atoms in two groups
+  * MDAnalysis logo by Christian Beckstein (and a reformatting of the
+    online docs to match the logo theme)
 
   Change of behaviour
 

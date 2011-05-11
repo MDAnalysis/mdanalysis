@@ -15,6 +15,8 @@ Typically, MDAnalysis recognizes formats by the file extension
 and hence most users probably do not need to concern themselves with
 classes and functions described here.
 
+.. rubric:: Contents
+
 .. toctree::
    :maxdepth: 1
 

@@ -25,13 +25,14 @@ following is adopted from the description of the PQR_ format as used by APBS_:
 *MDAnalysis* reads very loosely-formatted PQR files: all fields are
 **whitespace-delimited** rather than the strict column formatting mandated
 by the PDB_ format. This more liberal formatting allows coordinates
-which are larger/smaller than Â±999 Ã….
+which are larger/smaller than ±999 Å.
 
 MDAnalysis reads data on a per-line basis from PQR files using the following format::
 
    recordName serial atomName residueName chainID residueNumber X Y Z charge radius
 
-If this fails it is assumed that the *chainID* was ommitted and the shorter format is read::
+If this fails it is assumed that the *chainID* was omitted and the shorter
+format is read::
 
    recordName serial atomName residueName residueNumber X Y Z charge radius
 

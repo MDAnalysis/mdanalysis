@@ -1,3 +1,8 @@
+==========================================================================
+Licenses of components of MDAnalysis
+==========================================================================
+
+
 		    GNU GENERAL PUBLIC LICENSE
 		       Version 2, June 1991
 
@@ -686,5 +691,21 @@ PyQCPROT
     THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- -----------------------------------------------------------------------------
+
+
+==========================================================================
+
+MDAnalysis logo (see doc/sphinx/source/logos)
+
+MDAnalysis Logo 'Atom' by Christian Beckstein is licensed under a
+Creative Commons Attribution-NoDerivs 3.0 Unported License.
+
+http://creativecommons.org/licenses/by-nd/3.0/
+
+See the file LICENSE in the logo directory for the full text of the
+license.
+
+==========================================================================
+
+
 

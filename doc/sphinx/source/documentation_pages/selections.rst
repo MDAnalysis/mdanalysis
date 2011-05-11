@@ -4,8 +4,8 @@
  Selection Commands
 ====================
 
-Once you have the universe object, you can select atoms (using a syntax very
-similar to `CHARMM's atom selection syntax`_)::
+Once you have the :meth:`~MDAnalysis.core.Universe` object, you can select
+atoms (using a syntax very similar to `CHARMM's atom selection syntax`_)::
 
   >>> kalp = universe.selectAtoms("segid KALP")
 

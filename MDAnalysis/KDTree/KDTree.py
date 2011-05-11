@@ -18,12 +18,17 @@
 """
 KDTree --- :mod:`MDAnalysis.KDTree.KDTree`
 ===============================================
+
+:Author: Thomas Hamelryck, Oliver Beckstein
+:Year:   2002, 2008
+:License: BSD
+
 The KD tree data structure can be used for all kinds of searches that
 involve N-dimensional vectors, e.g.  neighbor searches (find all points
 within a radius of a given point) or finding all point pairs in a set
 that are within a certain radius of each other. See "Computational Geometry:
 Algorithms and Applications" (Mark de Berg, Marc van Kreveld, Mark Overmars,
-Otfried Schwarzkopf). Author: Thomas Hamelryck.
+Otfried Schwarzkopf) [deBerg2000]_.
 """
 
 import numpy
@@ -47,9 +52,9 @@ class KDTree:
     2nd rev. ed. 2000.
     ISBN: 3-540-65620-0
 
-    The KD tree data structure is described in chapter 5, pg. 99.
+    The KD tree data structure is described in chapter 5, pg. 99 of [deBerg2000]_.
 
-    The following article made clear to me that the nodes should
+    The following article [Bentley1990]_ made clear to me that the nodes should
     contain more than one point (this leads to dramatic speed
     improvements for the "all fixed radius neighbor search", see
     below):

@@ -43,7 +43,10 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-authors = u'Naveen Michaud-Agrawal, Elizabeth J. Denning, Danny Parton, Philip Fowler, Tyler Reddy, Joseph Goose, Joshua Adelman, and Oliver Beckstein'
+authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
+    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
+    and Oliver Beckstein"""
 project = u'MDAnalysis'
 copyright = u'2005-2011, ' + authors
 
@@ -51,7 +54,7 @@ copyright = u'2005-2011, ' + authors
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-# Dynamically calculate the version 
+# Dynamically calculate the version
 ##packageversion = __import__('MDAnalysis').get_version()
 packageversion = '0.7.3'
 # The short X.Y version.
@@ -100,7 +103,7 @@ autoclass_content = 'both'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'sphinxdoc'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -119,12 +122,12 @@ html_theme = 'default'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-#html_logo = None
+html_logo = "logos/mdanalysis-logo-200x150.png"
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-#html_favicon = None
+html_favicon = "logos/mdanalysis-logo.ico"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -167,7 +170,7 @@ html_static_path = ['_static']
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
 # base URL from which the finished HTML is served.
-#html_use_opensearch = ''
+html_use_opensearch = 'http://mdanalysis.googlecode.com/svn/trunk/doc/html'
 
 # This is the file name suffix for HTML files (e.g. ".xhtml").
 #html_file_suffix = None
@@ -231,7 +234,7 @@ man_pages = [
 epub_title = u'MDAnalysis'
 epub_author = authors
 epub_publisher = 'University of Oxford, Oxford, UK'
-epub_copyright = u'2010, '+authors
+epub_copyright = u'2011, '+authors
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

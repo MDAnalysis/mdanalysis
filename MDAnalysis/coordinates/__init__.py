@@ -31,7 +31,7 @@ entry point attribute
 
 that points to the actual :class:`~MDAnalysis.coordinates.base.Reader`
 object; all Readers are supposed to be accessible through this entry
-point in the same manner (`duck typing`_)
+point in the same manner ("`duck typing`_").
 
 In order to **write coordinates**, a factory function is provided
 (:func:`MDAnalysis.coordinates.core.writer`) which is made available
@@ -96,7 +96,7 @@ are also recognized when they are compressed with :program:`gzip` or
 +---------------+-----------+-------+------------------------------------------------------+
 | PDBQT [#a]_   | pdbqt     | r/w   | file format used by AutoDock with atom types *t*     |
 |               |           |       | and partial charges *q*. Module:                     |
-|               |           |       | :mod:`MDAnalysis.coordinates.PQBQT`                  |
+|               |           |       | :mod:`MDAnalysis.coordinates.PDBQT`                  |
 +---------------+-----------+-------+------------------------------------------------------+
 | PQR [#a]_     | pqr       |  r    | PDB-like but whitespace-separated files with charge  |
 |               |           |       | and radius information. Module                       |
