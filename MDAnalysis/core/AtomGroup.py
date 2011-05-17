@@ -439,49 +439,69 @@ class AtomGroup(object):
         .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 4
            :class:`Atom`; anything else will raise a :exc:`ValueError`.
         """
-        if len(self) != 4:
-                raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
 
-        # TODO: the defs should be util or elsewhere...
+	####  To whom altered this previously. please do not change or attempt to simplify  as incorrect dihedral values were calculated (developer -- Elizabeth Denning)
         def vector(atm1, atm2):
-                """Returns vector between two point coordinates."""
-                return atm1 - atm2
-        def normal(vec1, vec2):
-                """Returns the unit vector normal to two vectors."""
-                normal = numpy.cross(vec1, vec2)
-                dist = numpy.linalg.norm(normal)
-                try:
-                    normal /= dist
-                except ZeroDivisionError:
-                    pass  # returns 0,0,0
-                return normal
-        def angle(norm1, norm2):
-                """Returns the angle between two vectors in radians"""
-                return numpy.arccos(
-                    numpy.dot(norm1, norm2) /
-                    (numpy.linalg.norm(norm1)*numpy.linalg.norm(norm2)))
+		"""takes two points in three dimensional space and finds the vector between them"""
+		vector = [0,0,0]
+		vector[0] = atm1[0] - atm2[0]
+		vector[1] = atm1[1] - atm2[1]
+		vector[2] = atm1[2] - atm2[2]
+		return vector
+	def normal(vec1, vec2):
+		"""takes two vectors and finds a UNIT vector normal to them"""
+		normal = [0,0,0]
+		normal[0] = vec1[1]*vec2[2] - vec1[2]*vec2[1]
+		normal[1] = vec1[2]*vec2[0] - vec1[0]*vec2[2]
+		normal[2] = vec1[0]*vec2[1] - vec1[1]*vec2[0]
+		dist = sqrt(normal[0]**2 + normal[1]**2 + normal[2]**2)
+		try:
+			normal[0] = normal[0]/dist
+			normal[1] = normal[1]/dist
+			normal[2] = normal[2]/dist
+		except ZeroDivisionError:
+			print ''
+		return normal
+	def angle(norm1, norm2):
+		"""finds the angle between two vectors"""
+		dist1 = sqrt(norm1[0]**2 + norm1[1]**2 + norm1[2]**2)
+		dist2 = sqrt(norm2[0]**2 + norm2[1]**2 + norm2[2]**2)
+		cosa1 = norm1[0]/dist1; cosb1 = norm1[1]/dist1; cosg1 = norm1[2]/dist1
+		cosa2 = norm2[0]/dist2; cosb2 = norm2[1]/dist2; cosg2 = norm2[2]/dist2
+		costheta = cosa1*cosa2 + cosb1*cosb2 + cosg1*cosg2
+		theta = acos(costheta)*180./pi
+		return theta
 
-        def stp(vec1, vec2, vec3):
-                """Takes the scalar triple product of three vectors"""
-                return numpy.dot(vec3, numpy.cross(vec1, vec2))
+	def dot(vec1, vec2):
+		"""finds the dot product of two vectors"""
+		return vec1[0]*vec2[0] + vec1[1]*vec2[1] + vec1[2]*vec2[2]
 
-        def anglecheck(angle,vec1,vec2,vec3):
-                """Determines the sign (+/-) of the angle in question"""
-                angleout=angle
-                if stp(vec1, vec2, vec3) > 0.0:
-                        angleout = -angle
-                return angleout
+	def cross(vec1, vec2):
+		"""Takes the cross product of two vectors"""
+		return [vec1[1]*vec2[2] - vec1[2]*vec2[1],\
+		vec1[2]*vec2[0] - vec1[0]*vec2[2],\
+		vec1[0]*vec2[1] - vec1[1]*vec2[0]]
 
-        norm1 = normal(vector(self.coordinates()[0], self.coordinates()[1]),
-                       vector(self.coordinates()[1], self.coordinates()[2]))
-        norm2 = normal(vector(self.coordinates()[1], self.coordinates()[2]),
-                       vector(self.coordinates()[2], self.coordinates()[3]))
-        pre_dihe  = angle(norm1, norm2)
-        dihe = anglecheck(pre_dihe,
-                          vector(self.coordinates()[0], self.coordinates()[1]),
-                          vector(self.coordinates()[1], self.coordinates()[2]),
-                          vector(self.coordinates()[2], self.coordinates()[3]))
-        return dihe
+	def stp(vec1, vec2, vec3):
+		"""Takes the scalar triple product of three vectors"""
+		return dot(vec3, cross(vec1, vec2))
+
+	def anglecheck(angle,vec1,vec2,vec3):
+		"""Determines the sign (+/-) of the angle in question"""
+		angleout=angle
+		if stp(vec1, vec2, vec3) > 0.0:
+			angleout = -angle
+		return angleout
+
+	if len(self) != 4:
+		raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
+
+	norm1 = normal(vector(self.coordinates()[0], self.coordinates()[1]), vector(self.coordinates()[1], self.coordinates()[2]))
+	norm2 = normal(vector(self.coordinates()[1], self.coordinates()[2]), vector(self.coordinates()[2], self.coordinates()[3]))
+	pre_dihe  = angle(norm1, norm2)
+	dihe = anglecheck(pre_dihe, vector(self.coordinates()[0], self.coordinates()[1]), vector(self.coordinates()[1], self.coordinates()[2]), vector(self.coordinates()[2], self.coordinates()[3]))
+
+	return dihe
 
     def principalAxes(self):
         """Calculate the principal axes from the moment of inertia.
