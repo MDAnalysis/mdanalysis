@@ -25,7 +25,7 @@ The most important data structure in MDAnalysis is the
 A :class:`Universe` is the user-visible entry point and collects all
 information needed to analyze a structure or a whole trajectory.
 
-Segments and Residues are a way to refer to a collection of atoms. By
+Segments and residues are a way to refer to a collection of atoms. By
 convention, a :class:`Residue` is a single amino acid, or a water
 molecule, ion, or ligand. A :class:`Segment` is a collection of
 residues such as a whole protein or a chain in a protein or all the
@@ -39,14 +39,18 @@ contain Atoms; all containers are derived from :class:`AtomGroup`, and
 thus one can always analyze them as a collection of atoms, independent
 of the hierarchical level.
 
+Each :class:`Atom` can only belong to a single :class:`Residue`, and a
+:class:`Residue` belongs to one specific :class:`Segment`. This
+hierarchy can be described as
+
     Segment > Residue > Atom
 
 Depending on the use case, it can be more convenient to access data
 on, for instance, the basis of residues than atoms, or to write out
 individual chains (segments) of a protein. MDAnalysis simply provides
 access to these groupings and keeps track of where an atom
-belongs. Each object provides three attributes (:attr:`atoms`,
-:attr:`residues` or :attr:`~Atom.residue`, :attr:`segments` or
+belongs. Each object provides three attributes (:attr:`~AtomGroup.atoms`,
+:attr:`~AtomGroup.residues` or :attr:`~Atom.residue`, :attr:`~AtomGroup.segments` or
 :attr:`~Atom.segment`) that give access to the tiers in the hierarchy
 that the object belongs to.
 
@@ -74,6 +78,8 @@ import warnings
 import numpy
 from math import *
 from MDAnalysis import SelectionError, NoDataError, SelectionWarning
+
+import Selection
 
 class Atom(object):
     """A single atom definition
@@ -649,9 +655,8 @@ class AtomGroup(object):
     def translate(self, t):
         """Apply translation vector *t* to the selection's coordinates.
 
-        AtomGroup.translate(t)
-
-        AtomGroup.translate((A, B))
+          >>> AtomGroup.translate(t)
+          >>> AtomGroup.translate((A, B))
 
         The method applies a translation to the AtomGroup from current
         coordinates x to new coordinates x':
@@ -659,11 +664,11 @@ class AtomGroup(object):
             x' = x + t
 
         The translation can also be given as a tuple of two MDAnalysis objects
-        such as two selections (selA, selB), i.e. two :class:`AtomGroup`s, or
-        two :class:`Atom`s. The translation vector is computed as the
-        difference between the centers of geometry (centroid) of B and A:
+        such as two selections `(selA, selB)`, i.e. two :class:`AtomGroup`, or
+        two :class:`Atom`. The translation vector is computed as the
+        difference between the centers of geometry (centroid) of B and A::
 
-        t = B.centroid() - A.centroid()
+            t = B.centroid() - A.centroid()
         """
         try:
             sel1,sel2 = t
@@ -774,7 +779,6 @@ class AtomGroup(object):
 
         .. SeeAlso:: :meth:`Universe.selectAtoms`
         """
-        import Selection
         atomgrp = Selection.Parser.parse(sel).apply(self)
         if len(othersel) == 0: return atomgrp
         else:
@@ -1127,33 +1131,36 @@ class SegmentGroup(ResidueGroup):
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
 
-      Universe(topology[,trajectory[,permissive]]) --> universe
-
     The system always requires a *topology* file --- in the simplest
     case just a list of atoms. This can be a CHARMM/NAMD PSF file or a
     simple coordinate file with atom informations such as PDB, Gromacs
-    GRO, or CHARMM CRD.
+    GRO, or CHARMM CRD. See :ref:`Supported topology formats` for what
+    topologies can be read.
 
     A trajectory provides coordinates; the coordinates have to be
-    ordered in the same way as the topology. A trajectory can be a
-    single frame such as a PDB, CRD, or GRO file, or it can be a MD
-    trajectory (in CHARMM/NAMD/LAMMOS DCD, Gromacs XTC/TRR, or generic
-    XYZ format).
+    ordered in the same way as the list of atoms in the topology. A
+    trajectory can be a single frame such as a PDB, CRD, or GRO file,
+    or it can be a MD trajectory (in CHARMM/NAMD/LAMMOS DCD, Gromacs
+    XTC/TRR, or generic XYZ format). See :ref:`Supported coordinate
+    formats` for what can be read as a "trahjectory".
 
     As a special case, when the topology is a PDB, GRO or CRD file
     then the coordinates re immediately loaded from the "topology"
     file unless a trajectory is supplied.
 
     Examples for setting up a universe::
+
        u = Universe(topology, trajectory)          # read system from file(s)
        u = Universe(pdbfile)                       # read atoms and coordinates from PDB or GRO
        u = Universe(topology, [traj1, traj2, ...]) # read from a list of trajectories
 
-    Load new data into a universe (replaces old trajectory and does *not* append):
+    Load new data into a universe (replaces old trajectory and does *not* append)::
+
        u.load_new(trajectory)                      # read from a new trajectory file
 
     Select atoms, with syntax similar to CHARMM (see
-   :class:`AtomGroup.selectAtoms` for details)::
+    :class:`AtomGroup.selectAtoms` for details)::
+
        u.selectAtoms(...)
 
 
@@ -1164,10 +1171,11 @@ class Universe(object):
          set in the trajectory)
        - bonds, angles, dihedrals, impropers (low level access through :attr:`Universe._psf`)
 
-    .. Note:: Only a single-frame PDB file is supported; use DCDs or XTC/TRR for
-              trajectories or supply a list of PDB files as the trajectory argument.
-              If a PDB is used instead of a PSF then charges are not correct, masses
-              are guessed, and bonds are not available.
+    .. Note:: Only single-frame PDB files are supported at the moment; use DCDs
+              or XTC/TRR for trajectories or supply a *list of PDB files* as
+              the trajectory argument.  If a PDB is used instead of a PSF then
+              charges are not correct, masses are guessed, and bonds are not
+              available.
     """
     def __init__(self, topologyfile, coordinatefile=None, **kwargs):
         """Initialize the central MDAnalysis Universe object.
@@ -1198,9 +1206,8 @@ class Universe(object):
 
                 u = Universe('1ake.pdb')
 
-          2. If only a psf file is provided one will have to load coordinates
-             manually using :meth:`Universe.load_new_dcd` or
-             :meth:`Universe.load_new_pdb`.
+          2. If only a topology file without coordinate information is provided
+             one will have to load coordinates manually using :meth:`Universe.load_new`.
         """
         import MDAnalysis.topology.core
 
@@ -1294,103 +1301,98 @@ class Universe(object):
     def selectAtoms(self, sel, *othersel):
         """Select atoms using a CHARMM selection string.
 
-        Returns an AtomGroup with atoms sorted according to their index in the
-        psf (this is to ensure that there aren't any duplicates, which can
-        happen with complicated selections).
+        Returns an :class:`AtomGroup` with atoms sorted according to their
+        index in the psf (this is to ensure that there aren't any duplicates,
+        which can happen with complicated selections).
 
-        .. Note:: you can group subselections using parentheses, but
-                  you need to put spaces around the parentheses due to
-                  the way the parser is implemented.
+        Subselections can be grouped with parentheses.
 
         Example:
            >>> universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
            <AtomGroup with 3420 atoms>
 
-        Here's a list of all keywords; keywords are CASE SENSITIVE:
+        .. Note:: If exact ordering of atoms is required (for instance, for
+                  :meth:`~AtomGroup.angle` or :meth:`~AtomGroup.dihedral`
+                  calculations) then one supplies selections *separately* in
+                  the required order. Also, when multiple :class:`AtomGroup`
+                  instances are concatenated with the ``+`` operator then the
+                  order of :class:`Atom` instances is preserved and duplicates
+                  are not removed.
+
+        The selection parser understands the following CASE SENSITIVE *keywords*:
+
 
         **Simple selections**
-        .. ------------------
 
-           protein, backbone, nucleic, nucleicbackbone
-              selects all atoms that belong to a standard set of residues, may
-              not work for esoteric residues
-
-           segid, resid, resname, name, type
-              single argument describing selection, resid can take a range of
-              numbers separated by a colon (inclusive) ie "segid DMPC", "resname
-              LYS", "name CA", "resid 1:5"
-
-           atom
-              a selector for a single atom consisting of segid resid atomname ie
-              "DMPC 1 C2" selects the C2 carbon of the first residue of the DMPC
-              segment
+            protein, backbone, nucleic, nucleicbackbone
+                selects all atoms that belong to a standard set of residues; a protein
+                is identfied by a hard-coded set of residue names so it  may not
+                work for esoteric residues.
+            segid *seg-name*
+                select by segid (as given in the topology), e.g. ``segid 4AKE`` or ``segid DMPC``
+            resid *residue-number-range*
+                resid can take a single residue number or a range of numbers. A range
+                consists of two numbers separated by a colon (inclusive) such
+                as ``resid 1:5``. A residue number ("resid") is taken directly from the
+                topology.
+            resname *residue-name*
+                select by residue name, e.g. ``resname LYS``
+            name *atom-name*
+                select by atom name (as given in the topology). Often, this is force
+                field dependent. Example: ``name CA`` (for C&alpha; atoms) or ``name OW`` (for SPC water oxygen)
+            type *atom-type*
+                select by atom type; this is either a string or a number and depends on
+                the force field; it is read from the topology file (e.g. the CHARMM PSF
+                file contains numeric atom types). It has non-sensical values when a
+                PDB or GRO file is used as a topology.
+            atom *seg-name*  *residue-number*  *atom-name*
+                a selector for a single atom consisting of segid resid atomname,
+                e.g. ``DMPC 1 C2`` selects the C2 carbon of the first residue of the DMPC
+                segment
 
         **Boolean**
-        .. --------
 
-           not
-              all atoms not in the selection; ie "not protein" selects all atoms
-              that aren't part of a protein
-
-           and, or
-              combine two selections according to the rules of boolean algebra ie
-              "protein and not ( resname ALA or resname LYS )" selects all atoms
-              that belong to a protein, but are not in a lysine or alanine
-              residue
-
+            not
+                all atoms not in the selection, e.g. ``not protein`` selects all atoms that aren't part of a protein
+            and, or
+                combine two selections according to the rules of boolean algebra,
+                e.g. ``protein and not (resname ALA or resname LYS)`` selects all atoms
+                that belong to a protein, but are not in a lysine or alanine residue
 
         **Geometric**
-        .. ----------
 
-           around
-              selects all atoms a certain cutoff away from another selection; ie
-              "around 3.5 protein" selects all atoms not belonging to protein
-              that are within 3.5 Angstroms from the protein point::
-
-                around distance selection
-
-           point
-              selects all atoms within a sphere of given radius around point::
-
-                point x y z distance
-
-              Make sure coordinate is separated by spaces, i.e. "point 5.0
-              5.0 5.0 3.5" selects all atoms within 3.5 Angstroms of the
-              coordinate (5.0, 5.0, 5.0)
-
-           prop
-              selects atoms based on position, using x, y, or z coordinate
-              supports the abs keyword (for absolute value) and the following
-              operators: >, <, >=, <=, ==, != ie "prop z >= 5.0" selects all
-              atoms with z coordinate greater than 5.0 "prop abs z <= 5.0"
-              selects all atoms within -5.0 <= z <= 5.0
-
-           Periodicity is only taken into account with the 'distance matrix'
-           distance functions via a minimum image convention (and this only works
-           for rectangular simulation cells). If this behavior is required, set
-           these flags::
-
-              MDAnalysis.core.flags['use_periodic_selections'] = True   # default
-              MDAnalysis.core.flags['use_KDTree_routines'] = False
-
+            around *distance*  *selection*
+                selects all atoms a certain cutoff away from another selection,
+                e.g. ``around 3.5 protein`` selects all atoms not belonging to protein
+                that are within 3.5 Angstroms from the protein
+            point *x* *y* *z*  *distance*
+                selects all atoms within a cutoff of a point in space, make sure
+                coordinate is separated by spaces, e.g. ``point 5.0 5.0 5.0  3.5`` selects
+                all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0, 5.0)
+            prop [abs] *property*  *operator*  *value*
+                selects atoms based on position, using *property*  **x**, **y**, or
+                **z** coordinate. Supports the **abs** keyword (for absolute value) and
+                the following *operators*: **<, >, <=, >=, ==, !=**. For example, ``prop z >= 5.0``
+                selects all atoms with z coordinate greater than 5.0; ``prop abs z <= 5.0``
+            selects all atoms within -5.0 <= z <= 5.0.
 
         **Connectivity**
-        .. -------------
 
-           byres
-              selects all atoms that are in the same segment and residue as
-              selection ie specify the subselection after the byres keyword
-
+            byres *selection*
+                selects all atoms that are in the same segment and residue as
+                selection, e.g. specify the subselection after the byres keyword
 
         **Index**
-        .. ------
 
-           bynum
-              selects all atoms within a range of (1-based) inclusive indices ie
-              "bynum 1" selects the first atom in the universe "bynum 5:10"
-              selects atoms 5 through 10 inclusive
+            bynum *index-range*
+                selects all atoms within a range of (1-based) inclusive indices,
+                e.g. ``bynum 1`` selects the first atom in the universe; ``bynum 5:10``
+                selects atoms 5 through 10 inclusive. All atoms in the
+                :class:`MDAnalysis.Universe` are consecutively numbered, and the index
+                runs from 1 up to the total number of atoms.
+
+        .. SeeAlso:: :ref:`selection-commands-label` for further details and examples.
         """
-        import Selection
         atomgrp = Selection.Parser.parse(sel).apply(self)
         if len(othersel) == 0: return atomgrp
         else:
@@ -1416,22 +1418,21 @@ class Universe(object):
         """Reference to current timestep and coordinates of universe.
 
         The raw trajectory coordinates are :attr:`Universe.coord._pos`,
-        represented as a :attr:`numpy.float32` array.
+        represented as a :class:`numpy.float32` array.
 
-        Because :attr:`coord` is a reference, it changes its contents while one
-        is stepping through the trajectory.
+        Because :attr:`coord` is a reference to a
+        :class:`~MDAnalysis.coordinates.base.Timestep`, it changes its contents
+        while one is stepping through the trajectory.
 
         .. Note:: In order to access the coordinates it is probably better to
                   use the :meth:`AtomGroup.coordinates` method; for instance,
                   all coordinates of the Universe as a numpy array:
                   :meth:`Universe.atoms.coordinates`.
-
-        .. SeeAlso:: :class:`MDAnalysis.coordinates.DCD.Timestep`
         """
         return self.trajectory.ts
 
     def trajectory():
-        doc = "Reference to trajectory reader object containing trajectory data"
+        doc = "Reference to trajectory reader object containing trajectory data."
         def fget(self):
             if not self.__trajectory == None: return self.__trajectory
             else: raise AttributeError("No trajectory loaded into Universe")

@@ -28,6 +28,8 @@ coordinate file and their residue names and numbers.
 
 The following table lists the currently supported topology formats.
 
+.. _Supported topology formats:
+
 =============  ==========  =====================================================
 Name           extension   remarks
 =============  ==========  =====================================================
