@@ -143,9 +143,9 @@ if __name__ == '__main__':
                   Extension('core._transformations', ['src/transformations/transformations.c'],
                             libraries = ['m'],
                             define_macros=define_macros,
-                            include_dirs = include_dirs+fast_numeric_include,
+                            include_dirs = include_dirs,
                             extra_compile_args=extra_compile_args),
-                  Extension('KDTree._CKDTree', 
+                  Extension('KDTree._CKDTree',
                             ["src/KDTree/KDTree.cpp",
                              "src/KDTree/KDTree.swig.cpp"],
                             include_dirs = include_dirs,
@@ -153,7 +153,7 @@ if __name__ == '__main__':
                             language="c++"),
                   Extension('coordinates.xdrfile._libxdrfile',
                             sources=['src/xdrfile/libxdrfile_wrap.c',
-                                     'src/xdrfile/xdrfile.c', 
+                                     'src/xdrfile/xdrfile.c',
                                      'src/xdrfile/xdrfile_trr.c',
                                      'src/xdrfile/xdrfile_xtc.c'],
                             include_dirs = include_dirs),
@@ -167,10 +167,10 @@ if __name__ == '__main__':
           url               = 'http://mdanalysis.googlecode.com/',
           license           = 'GPL 2',
           packages          = [ 'MDAnalysis', 'MDAnalysis.core', 'MDAnalysis.topology',
-                                'MDAnalysis.selections', 
+                                'MDAnalysis.selections',
                                 'MDAnalysis.coordinates',
-                                'MDAnalysis.coordinates.xdrfile', 
-                                'MDAnalysis.coordinates.pdb', 
+                                'MDAnalysis.coordinates.xdrfile',
+                                'MDAnalysis.coordinates.pdb',
                                 'MDAnalysis.util', 'MDAnalysis.KDTree',
                                 'MDAnalysis.analysis',
                                 'MDAnalysis.tests'],
@@ -178,7 +178,7 @@ if __name__ == '__main__':
           package_data      = {'MDAnalysis':
                                    ['tests/data/*.psf','tests/data/*.dcd','tests/data/*.pdb',
                                     'tests/data/*.gro', 'tests/data/*.xtc','tests/data/*.trr',
-                                    'tests/data/*.crd', 'tests/data/*.xyz', 
+                                    'tests/data/*.crd', 'tests/data/*.xyz',
                                     'tests/data/*.prmtop', 'tests/data/*.trj', 'tests/data/*.mdcrd',
                                     'tests/data/*.pqr', 'tests/data/*.pdbqt', 'tests/data/*.bz2',
                                     ],
@@ -194,8 +194,8 @@ if __name__ == '__main__':
                 'tests': ['nose>=0.10'],
                 'analysis': ['networkx>=1.0',  # LeafletFinder
                              'scipy',          # sparse contact matrix
-                             'GridDataFormats',# http://github.com/orbeckst/GridDataFormats  
+                             'GridDataFormats',# http://github.com/orbeckst/GridDataFormats
                              ],
-                },          
+                },
           zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
           )
