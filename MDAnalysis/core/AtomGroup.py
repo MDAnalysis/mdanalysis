@@ -1,22 +1,6 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
-#
-# MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see website for details)
-# Released under the GNU Public Licence, v2 or any higher version
-#
-# Please cite your use of MDAnalysis in published work:
-#
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
-#     doi:10.1002/jcc.21787
-#
-
+# $Id$
 """
-Fundamental building blocks --- :mod:`MDAnalysis.core.AtomGroup`
+Fundamental building blocks --- :mod:`MDAnalysis.core.AtomGroup` 
 ================================================================
 
 The most important data structure in MDAnalysis is the
@@ -29,7 +13,7 @@ Segments and Residues are a way to refer to a collection of atoms. By
 convention, a :class:`Residue` is a single amino acid, or a water
 molecule, ion, or ligand. A :class:`Segment` is a collection of
 residues such as a whole protein or a chain in a protein or all the
-water in the system.
+water in the system. 
 
 Class Hierarchy
 ---------------
@@ -80,7 +64,7 @@ class Atom(object):
 
       a = Atom()
 
-    :Data:
+    :Data: 
         number
           atom number
         segid
@@ -106,8 +90,9 @@ class Atom(object):
            file with the :class:`~MDAnalysis.coordinates.PQR.PQRReader`.)
         :attr:`~Atom.bfactor`
            temperature factor. (Only if loaded from a PDB.)
+           
     """
-    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
+    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid", 
                  "mass", "charge", "residue", "segment", "bonds", "__universe",
                  "radius", "bfactor")
 
@@ -115,7 +100,7 @@ class Atom(object):
                  residue=None, segment=None, radius=None, bfactor=None):
         self.number = number
         self.name = name
-        self.type = type        # numeric or string
+        self.type = type
         self.resname = resname
         self.resid = resid
         self.residue = residue  # typically patched in later
@@ -143,7 +128,7 @@ class Atom(object):
     @property
     def pos(self):
         """Current cartesian coordinates of the atom."""
-        return self.universe.coord[self.number] # internal numbering starts at 0
+        return self.universe.coord[self.number] # PDB numbering starts at 0
 
     def centroid(self):
         """The centroid of an atom is its position, :attr:`Atom.pos`."""
@@ -171,7 +156,7 @@ class AtomGroup(object):
 
     An AtomGroup can be indexed and sliced like a list::
 
-       ag[0], ag[-1]
+       ag[0], ag[-1]   
 
     will return the first and the last :class:`Atom` in the group
     whereas the slice
@@ -197,10 +182,10 @@ class AtomGroup(object):
 
     Atoms can also be accessed in a Pythonic fashion by using the atom name as
     an attribute. For instance, ::
-
+      
        ag.CA
 
-    will provide a :class:`AtomGroup` of all CA atoms in the group.
+    will provide a :class:`AtomGroup` of all CA atoms in the group. 
 
     .. Note:: The name-attribute access to atoms is mainly meant for quick
        interactive work. Thus it either returns a single :class:`Atom` if there
@@ -210,7 +195,7 @@ class AtomGroup(object):
 
     :Data:
         atoms
-            The AtomGroup itself; provided for unified access across the hierarchy.
+            The AtomGroup itself; provided for unified access across the hierarchy. 
             Use :attr:`_atoms` if you really only need a list.
         _atoms
             A list of references to the corresponding atoms in :attr:`Universe.atoms`;
@@ -227,11 +212,11 @@ class AtomGroup(object):
     """
     def __init__(self, atoms):
         if len(atoms) < 1: raise NoDataError("No atoms defined for AtomGroup")
-        # __atoms property is effectively readonly
+        # __atoms property is effectively readonly        
         # check that atoms is indexable:
         try:
             atoms[0]
-            self.__atoms = atoms
+            self.__atoms = atoms      
         except TypeError:
             self.__atoms = list(atoms)
         # sanity check
@@ -250,7 +235,7 @@ class AtomGroup(object):
     def atoms(self):
         """AtomGroup of all atoms in this group"""
         # Cannot just return self because fails with inheritance from AtomGroup
-        if type(self) == AtomGroup:
+        if type(self) == AtomGroup:            
             return self
         return AtomGroup(self.__atoms)
 
@@ -258,7 +243,7 @@ class AtomGroup(object):
     def _atoms(self):
         """a immutable list of references to the atoms in the group"""
         return self.__atoms
-
+    
     # Universe pointer is important for Selections to work on groups
     @property
     def universe(self):
@@ -293,14 +278,14 @@ class AtomGroup(object):
     def __contains__(self, other):
         if hasattr(self, "_atom_cache"):
             return other in self._atom_cache
-        else:
+        else: 
             return other in self._atoms
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
             raise TypeError('Can only concatenate AtomGroup (not "'+repr(other.__class__.__name__)+'") to AtomGroup')
-        if isinstance(other, AtomGroup):
+        if isinstance(other, AtomGroup): 
             return AtomGroup(self._atoms + other._atoms)
-        else:
+        else: 
             return AtomGroup(self._atoms+[other])
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(self.numberOfAtoms())+' atoms>'
@@ -418,38 +403,26 @@ class AtomGroup(object):
 
         :Returns: [[xmin, ymin, zmin], [xmax, ymax, zmax]]
         """
-        x = self.coordinates()
+        x = u.A.coordinates()
         return numpy.array([x.min(axis=0), x.max(axis=0)])
 
-    def bsphere(self):
-        """Return the bounding sphere of the selection.
-
-        The sphere is calculated relative to the centre of geometry.
-
-        :Returns: `(R, [xcen,ycen,zcen])`
-        """
-        x = self.coordinates()
-        centroid = self.centerOfGeometry()
-        R = numpy.sqrt(numpy.max(numpy.sum(numpy.square(x-centroid), axis=1)))
-        return R, centroid
-
     def dihedral(self):
-        """Calculate the dihedral angle in radians.
+        """Calculate the dihedral angle.
 
         .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 4
            :class:`Atom`; anything else will raise a :exc:`ValueError`.
         """
+        # NOTE: should be rewritten with numpy!!
 
-	####  To whom altered this previously. please do not change or attempt to simplify  as incorrect dihedral values were calculated (developer -- Elizabeth Denning)
-        def vector(atm1, atm2):
-		"""takes two points in three dimensional space and finds the vector between them"""
-		vector = [0,0,0]
+	def vector(atm1, atm2):
+                """takes two points in three dimensional space and finds the vector between them"""
+                vector = [0,0,0]
 		vector[0] = atm1[0] - atm2[0]
 		vector[1] = atm1[1] - atm2[1]
 		vector[2] = atm1[2] - atm2[2]
 		return vector
 	def normal(vec1, vec2):
-		"""takes two vectors and finds a UNIT vector normal to them"""
+	        """takes two vectors and finds a UNIT vector normal to them"""
 		normal = [0,0,0]
 		normal[0] = vec1[1]*vec2[2] - vec1[2]*vec2[1]
 		normal[1] = vec1[2]*vec2[0] - vec1[0]*vec2[2]
@@ -463,7 +436,7 @@ class AtomGroup(object):
 			print ''
 		return normal
 	def angle(norm1, norm2):
-		"""finds the angle between two vectors"""
+                """finds the angle between two vectors"""
 		dist1 = sqrt(norm1[0]**2 + norm1[1]**2 + norm1[2]**2)
 		dist2 = sqrt(norm2[0]**2 + norm2[1]**2 + norm2[2]**2)
 		cosa1 = norm1[0]/dist1; cosb1 = norm1[1]/dist1; cosg1 = norm1[2]/dist1
@@ -471,38 +444,37 @@ class AtomGroup(object):
 		costheta = cosa1*cosa2 + cosb1*cosb2 + cosg1*cosg2
 		theta = acos(costheta)*180./pi
 		return theta
-
+	
 	def dot(vec1, vec2):
-		"""finds the dot product of two vectors"""
+                """finds the dot product of two vectors"""
 		return vec1[0]*vec2[0] + vec1[1]*vec2[1] + vec1[2]*vec2[2]
 
 	def cross(vec1, vec2):
-		"""Takes the cross product of two vectors"""
+	        """Takes the cross product of two vectors"""
 		return [vec1[1]*vec2[2] - vec1[2]*vec2[1],\
 		vec1[2]*vec2[0] - vec1[0]*vec2[2],\
 		vec1[0]*vec2[1] - vec1[1]*vec2[0]]
 
 	def stp(vec1, vec2, vec3):
-		"""Takes the scalar triple product of three vectors"""
+                """Takes the scalar triple product of three vectors"""
 		return dot(vec3, cross(vec1, vec2))
 
 	def anglecheck(angle,vec1,vec2,vec3):
-		"""Determines the sign (+/-) of the angle in question"""
+                """Determines the sign (+/-) of the angle in question"""
 		angleout=angle
 		if stp(vec1, vec2, vec3) > 0.0:
 			angleout = -angle
 		return angleout
 
-	if len(self) != 4:
-		raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
+        if len(self) != 4:
+                raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
 
 	norm1 = normal(vector(self.coordinates()[0], self.coordinates()[1]), vector(self.coordinates()[1], self.coordinates()[2]))
 	norm2 = normal(vector(self.coordinates()[1], self.coordinates()[2]), vector(self.coordinates()[2], self.coordinates()[3]))
 	pre_dihe  = angle(norm1, norm2)
 	dihe = anglecheck(pre_dihe, vector(self.coordinates()[0], self.coordinates()[1]), vector(self.coordinates()[1], self.coordinates()[2]), vector(self.coordinates()[2], self.coordinates()[3]))
-
 	return dihe
-
+    
     def principalAxes(self):
         """Calculate the principal axes from the moment of inertia.
 
@@ -547,7 +519,7 @@ class AtomGroup(object):
         x[idx]  = numpy.dot(x[idx], R.T)
         x[idx] += t
         return R
-
+        
     def translate(self, t):
         """Apply translation vector *t* to the selection's coordinates.
 
@@ -692,14 +664,14 @@ class AtomGroup(object):
         """Write AtomGroup to a file.
 
         AtomGroup.write(filename[,format])
-
+        
         :Keywords:
           *filename*
                ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
           *format*
-                PDB, CRD, GRO; case-insensitive and can also be supplied as
+                PDB, CRD, GRO; case-insensitive and can also be supplied as 
                 the filename extension [PDB]
-          *filenamefmt*
+          *filenamefmt*   
                 format string for default filename; use substitution tokens
                 'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
         """
@@ -799,15 +771,14 @@ class Residue(AtomGroup):
           < Atom 5: name 'CA' of type '22' of resname 'MET', resid 1 and segid '4AKE'>
       - ``r['name']`` or ``r[id]`` - returns the atom corresponding to that name
 
-    :Data:
+    :Data: 
       :attr:`Residue.name`
         Three letter residue name.
       :attr:`Residue.id`
         Numeric (integer) resid, taken from the topology.
 
     """
-    ## FIXME (see below, Issue 70)
-    ##__cache = {}
+    __cache = {}
     def __init__(self, name, id, atoms):
         super(Residue, self).__init__(atoms)
         self.name = name
@@ -817,10 +788,8 @@ class Residue(AtomGroup):
             a.id = i
             a.residue = self
         # Should I cache the positions of atoms within a residue?
-        # FIXME: breaks when termini are used to populate the cache; termini typically
-        #        have the SAME residue name but different atoms!!! Issue 70
-        ##if not Residue.__cache.has_key(name):
-        ##    Residue.__cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
+        if not Residue.__cache.has_key(name):
+            Residue.__cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
     def phi_selection(self):
         """AtomGroup corresponding to the phi protein backbone dihedral C'-N-CA-C.
 
@@ -829,9 +798,8 @@ class Residue(AtomGroup):
                   method returns ``None``.
         """
         try:
-            return self.universe.selectAtoms(
-                'segid %s and resid %d and name C' % (self.segment.id, self.id-1)) +\
-                self.N + self.CA + self.C
+            return self.universe.selectAtoms('segid %s and resid %d and name C' % (self.segment.id, self.id - 1)) \
+                + self.N + self.CA + self.C
         except (SelectionError, NoDataError):
             return None
 
@@ -844,8 +812,7 @@ class Residue(AtomGroup):
         """
         try:
             return self.N + self.CA + self.C + \
-                self.universe.selectAtoms(
-                'segid %s and resid %d and name N' % (self.segment.id, self.id + 1))
+                self.universe.selectAtoms('segid %s and resid %d and name N' % (self.segment.id, self.id + 1))
         except (SelectionError, NoDataError):
             return None
 
@@ -861,12 +828,9 @@ class Residue(AtomGroup):
                   method returns ``None``.
         """
         nextres = self.id + 1
-        segid = self.segment.id
         try:
             return self.CA + self.C +\
-                self.universe.selectAtoms(
-                'segid %s and resid %d and name N' % (segid, nextres),
-                'segid %s and resid %d and name CA' % (segid, nextres))
+                self.universe.selectAtoms('resid %d and name N' % nextres, 'resid %d and name CA' % nextres)
         except (SelectionError, NoDataError):
             return None
 
@@ -876,18 +840,13 @@ class Residue(AtomGroup):
         else: return self.__getattr__(item)
     def __getattr__(self, name):
         # There can only be one atom with a certain name
-         for atom in self.atoms:
-             if (name == atom.name):
-                 return atom
-         raise SelectionError("No atom in residue "+self.name+" with name "+name)
-
         # Use the cache
-        ## FIXME (see above, __cache, Issue 70)
-        ##try:
-        ##    index = Residue.__cache[self.name][name]
-        ##    return self._atoms[index]
-        ##except KeyError:
-        ##    raise SelectionError("No atom in residue "+self.name+" with name "+name)
+        #for atom in self.atoms:
+        #    if (name == atom.name): return atom
+        try:
+            index = Residue.__cache[self.name][name]
+            return self._atoms[index]
+        except KeyError: raise SelectionError("No atom in residue "+self.name+" with name "+name)
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self.name)+', '+repr(self.id)+'>'
 
@@ -930,7 +889,7 @@ class Segment(ResidueGroup):
     """A group of residues corresponding to one segment of the topology.
 
     Pythonic access to residues:
-      - The attribute rN returns the N-th residue :class:`Residue` of the
+      - The attribute rN returns the N-th residue :class:`Residue` of the 
         segment (numbering starts at N=1). Example:
           >>> from MDAnalysis.tests.datafiles import PSF,DCD
           >>> u = Universe(PSF,DCD)
@@ -964,7 +923,7 @@ class Segment(ResidueGroup):
             self.name = x
         return locals()
     id = property(**id())
-
+        
     def __getattr__(self, attr):
         if attr[0] == 'r':
             resnum = int(attr[1:]) - 1   # 1-based for the user, 0-based internally
@@ -985,7 +944,7 @@ class SegmentGroup(ResidueGroup):
 
     Pythonic access to segments:
       - Using a segid as attribute returns the segment. Because
-        of python language rule, any segid starting with a non-letter
+        of python language rule, any segid starting with a non-letter 
         character is prefixed with 's', thus '4AKE' --> 's4AKE'.
         Example:
           >>> from MDAnalysis.tests.datafiles import PSF,DCD
@@ -1051,7 +1010,7 @@ class Universe(object):
        u = Universe(pdbfile)                       # read atoms and coordinates from PDB or GRO
        u = Universe(topology, [traj1, traj2, ...]) # read from a list of trajectories
 
-    Load new data into a universe (replaces old trajectory and does *not* append):
+    Load new data into a universe (replaces old trajectory and does *not* append): 
        u.load_new(trajectory)                      # read from a new trajectory file
 
     Select atoms, with syntax similar to CHARMM (see
@@ -1059,16 +1018,16 @@ class Universe(object):
        u.selectAtoms(...)
 
 
-    Attributes:
-       - :attr:`Universe.trajectory`: currently loaded trajectory reader;
+    Attributes: 
+       - :attr:`Universe.trajectory`: currently loaded trajectory reader; 
          :attr:`Universe.trajectory.ts` is the current time step
-       - :attr:`Universe.dimensions`: current system dimensions (simulation unit cell, if
+       - :attr:`Universe.dimensions`: current system dimensions (simulation unit cell, if 
          set in the trajectory)
        - bonds, angles, dihedrals, impropers (low level access through :attr:`Universe._psf`)
 
     .. Note:: Only a single-frame PDB file is supported; use DCDs or XTC/TRR for
               trajectories or supply a list of PDB files as the trajectory argument.
-              If a PDB is used instead of a PSF then charges are not correct, masses
+              If a PDB is used instead of a PSF then charges are not correct, masses 
               are guessed, and bonds are not available.
     """
     def __init__(self, topologyfile, coordinatefile=None, **kwargs):
@@ -1090,16 +1049,16 @@ class Universe(object):
           *permissive*
              currently only relevant for PDB files: Set to ``True`` in order to ignore most errors
              and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
-             which can be useful for real Protein Databank PDB files. ``None``  selects the
+             which can be useful for real Protein Databank PDB files. ``None``  selects the 
              MDAnalysis default (which is set in :class:`MDAnalysis.core.flags`) [``None``]
 
-        This routine tries to do the right thing:
+        This routine tries to do the right thing: 
           1. If a pdb/gro file is provided instead of a psf and no *coordinatefile*
-             then the coordinates are taken from the first file. Thus you can load
+             then the coordinates are taken from the first file. Thus you can load 
              a functional universe with ::
 
                 u = Universe('1ake.pdb')
-
+   
           2. If only a psf file is provided one will have to load coordinates
              manually using :meth:`Universe.load_new_dcd` or
              :meth:`Universe.load_new_pdb`.
@@ -1126,7 +1085,7 @@ class Universe(object):
         #    setattr(self, data, struc[data])
         self.atoms = AtomGroup(struc["_atoms"])
         # XXX: add H-bond information here if available from psf (or other sources)
-        #
+        # 
         segments = MDAnalysis.topology.core.build_segments(self.atoms)
         # Because of weird python rules, attribute names cannot start with a digit
         for seg in segments.keys():
@@ -1136,7 +1095,7 @@ class Universe(object):
                 del segments[seg]
         self.__dict__.update(segments)
         # convenience access to residues and segments (these are managed attributes
-        # (properties) and are built on the fly or read from a cache) -- does this
+        # (properties) and are built on the fly or read from a cache) -- does this 
         # create memory problems?
         self.segments = self.atoms.segments
         self.residues = self.atoms.residues
@@ -1157,14 +1116,14 @@ class Universe(object):
     def load_new(self, filename, **kwargs):
         """Load coordinates from *filename*, using the suffix to detect file format.
 
-        :Arguments:
-             *filename*
+        :Arguments: 
+             *filename* 
                  the coordinate file (single frame or trajectory) OR a list of
                  filenames, which are read one after another
              *permissive*
                  currently only relevant for PDB files: Set to ``True`` in order to ignore most errors
                  and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
-                 which can be useful for real Protein Databank PDB files. ``None``  selects the
+                 which can be useful for real Protein Databank PDB files. ``None``  selects the 
                  MDAnalysis default (which is set in :class:`MDAnalysis.core.flags`) [``None``]
              *kwargs*
                  other kwargs are passed to the trajectory reader (only for advanced use)
@@ -1192,9 +1151,9 @@ class Universe(object):
         if self.trajectory.numatoms != self.atoms.numberOfAtoms():
             raise ValueError("The topology and %s trajectory files don't have the same number of atoms!" % self.trajectory.format)
         return filename, self.trajectory.format
-
+            
     def selectAtoms(self, sel, *othersel):
-        """Select atoms using a CHARMM selection string.
+        """Select atoms using a CHARMM selection string. 
 
         Returns an AtomGroup with atoms sorted according to their index in the
         psf (this is to ensure that there aren't any duplicates, which can
@@ -1222,7 +1181,7 @@ class Universe(object):
               numbers separated by a colon (inclusive) ie "segid DMPC", "resname
               LYS", "name CA", "resid 1:5"
 
-           atom
+           atom 
               a selector for a single atom consisting of segid resid atomname ie
               "DMPC 1 C2" selects the C2 carbon of the first residue of the DMPC
               segment
@@ -1312,7 +1271,7 @@ class Universe(object):
     def dimensions(self):
         """Current dimensions of the unitcell"""
         return self.coord.dimensions
-
+    
     @property
     def coord(self):
         """Reference to current timestep and coordinates of universe.
@@ -1347,12 +1306,12 @@ def asUniverse(*args, **kwargs):
     """Return a universe from the input arguments.
 
     1. If the first argument is a universe, just return it::
-
+ 
        as_universe(universe) --> universe
 
     2. Otherwise try to build a universe from the first or the first
        and second argument::
-
+ 
        asUniverse(PDB, **kwargs) --> Universe(PDB, **kwargs)
        asUniverse(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
        asUniverse(*args, **kwargs) --> Universe(*args, **kwargs)
@@ -1364,4 +1323,4 @@ def asUniverse(*args, **kwargs):
     elif len(args) == 1 and type(args[0]) is Universe:
         return args[0]
     return Universe(*args, **kwargs)
-
+        
