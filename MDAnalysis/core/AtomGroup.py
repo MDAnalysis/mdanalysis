@@ -433,6 +433,37 @@ class AtomGroup(object):
         R = numpy.sqrt(numpy.max(numpy.sum(numpy.square(x-centroid), axis=1)))
         return R, centroid
 
+    def bond(self):
+        """Returns the distance between atoms in a 2-atom group.
+
+        Distance between atoms 0 and 1::
+            0---1
+
+        """
+        if len(self) != 2:
+                raise ValueError("distance computation only makes sense for a group with exactly 2 atoms")
+        return numpy.linalg.norm(self[0].pos - self[1].pos)
+
+    def angle(self):
+        """Returns the angle in degrees between atoms 0, 1, 2.
+
+        Angle between atoms 0 and 2 with apex at 1::
+            0     2
+             \   /
+              \ /
+               1
+        """
+        if len(self) != 3:
+                raise ValueError("angle computation only makes sense for a group with exactly 3 atoms")
+        a = self[0].pos - self[1].pos
+        b = self[2].pos - self[1].pos
+        return numpy.rad2deg(numpy.arccos(numpy.dot(a, b) /
+                    (numpy.linalg.norm(a)*numpy.linalg.norm(b))))
+
+    def improper(self):
+        """Returns the improper dihedral XXXX"""
+        raise NotImplementedError
+
     def dihedral(self):
         """Calculate the dihedral angle in degrees.
 

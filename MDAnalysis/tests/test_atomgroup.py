@@ -210,6 +210,19 @@ class TestAtomGroup(TestCase):
         nodih = self.universe.selectAtoms("resid 3:5")
         assert_raises(ValueError, nodih.dihedral)
 
+    def test_bond(self):
+        self.universe.trajectory.rewind()   # just to make sure...
+        sel2 = self.universe.s4AKE.r98.selectAtoms("name OE1", "name OE2")
+        assert_almost_equal(sel2.bond(), 2.1210737228393555, 3,
+                            "distance of Glu98 OE1--OE2 wrong")
+
+    def test_angle(self):
+        self.universe.trajectory.rewind()   # just to make sure...
+        sel3 = self.universe.s4AKE.r98.selectAtoms("name OE1", "name CD", "name OE2")
+        assert_almost_equal(sel3.angle(), 117.46187591552734, 3,
+                            "angle of Glu98 OE1-CD-OE2 wrong")
+
+
 class _WriteAtoms(TestCase):
     """Set up the standard AdK system in implicit solvent."""
     ext = None   # override to test various output writers
