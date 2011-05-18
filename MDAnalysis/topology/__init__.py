@@ -28,41 +28,43 @@ coordinate file and their residue names and numbers.
 
 The following table lists the currently supported topology formats.
 
-.. _Supported topology formats:
+.. _`Supported topology formats`:
 
-=============  ==========  =====================================================
-Name           extension   remarks
-=============  ==========  =====================================================
-CHARMM/XPLOR   psf         reads either format, but only atoms and bonds
-                           information is used at the moment;
-                           :mod:`MDAnalysis.topology.PSFParser`
+.. table:: Table of Supported topology formats
 
-CHARMM*        crd         "CARD" coordinate output from CHARMM; deals with
-                           either standard or EXTended format;
-                           :mod:`MDAnalysis.topology.CRDParser`
+   =============  ==========  =====================================================
+   Name           extension   remarks
+   =============  ==========  =====================================================
+   CHARMM/XPLOR   psf         reads either format, but only atoms and bonds
+                              information is used at the moment;
+                              :mod:`MDAnalysis.topology.PSFParser`
 
-Brookhaven*    pdb         a simplified PDB format (as used in MD simulations)
-                           is read by default; the full format can be read by
-                           supplying the `permissive=False` flag to
-                           :class:`MDAnalysis.Universe`;
-                           :mod:`MDAnalysis.topology.PrimitivePDBParser` and
-                           :mod:`MDAnalysis.topology.PDBParser`
+   CHARMM*        crd         "CARD" coordinate output from CHARMM; deals with
+                              either standard or EXTended format;
+                              :mod:`MDAnalysis.topology.CRDParser`
 
-PQR*           pqr         PDB-like but whitespace-separated files with charge
-                           and radius information;
-                           :mod:`MDAnalysis.topology.PQRParser`
+   Brookhaven*    pdb         a simplified PDB format (as used in MD simulations)
+                              is read by default; the full format can be read by
+                              supplying the `permissive=False` flag to
+                              :class:`MDAnalysis.Universe`;
+                              :mod:`MDAnalysis.topology.PrimitivePDBParser` and
+                              :mod:`MDAnalysis.topology.PDBParser`
 
-PDBQT*         pdbqt       file format used by AutoDock with atom types *t*
-                           and partial charges *q*. Module:
-                           :mod:`MDAnalysis.topology.PQBQTParser`
+   PQR*           pqr         PDB-like but whitespace-separated files with charge
+                              and radius information;
+                              :mod:`MDAnalysis.topology.PQRParser`
 
-GROMOS96*      gro         GROMOS96 coordinate file;
-                           :mod:`MDAnalysis.topology.GROParser`
+   PDBQT*         pdbqt       file format used by AutoDock with atom types *t*
+                              and partial charges *q*. Module:
+                              :mod:`MDAnalysis.topology.PQBQTParser`
 
-Amber          top         simple Amber format read (only supports a subset of
-               prmtop      flags);
-                           :mod:`MDAnalysis.topology.TOPParser`
-=============  ==========  =====================================================
+   GROMOS96*      gro         GROMOS96 coordinate file;
+                              :mod:`MDAnalysis.topology.GROParser`
+
+   Amber          top         simple Amber format read (only supports a subset of
+                  prmtop      flags);
+                              :mod:`MDAnalysis.topology.TOPParser`
+   =============  ==========  =====================================================
 
 Formats marked with ans asterisk * also hold coordinates and thus can
 be used as the sole argument to :class:`MDAnalysis.Universe` to set up

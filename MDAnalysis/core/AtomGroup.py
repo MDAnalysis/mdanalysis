@@ -79,8 +79,6 @@ import numpy
 from math import *
 from MDAnalysis import SelectionError, NoDataError, SelectionWarning
 
-import Selection
-
 class Atom(object):
     """A single atom definition
 
@@ -376,7 +374,13 @@ class AtomGroup(object):
     # TODO release 0.8: make this a method again (in MDAnalysis 0.8)
     @property
     def bfactors(self):
-        """Crystallographic B-factors (from PDB) in A**2"""
+        """Crystallographic B-factors (from PDB) in A**2.
+
+        .. deprecated:: 0.8
+           This managed attribute will become a method in 0.8 in order to
+           provide a unified interface to querying properties:
+           :attr:`AtomGroup.bfactors` will become :meth:`AtomGroup.bfactors`
+        """
         warnings.warn("AtomGroup.bfactors will become AtomGroup.bfactors() in MDAnalysis 0.8",
                       DeprecationWarning)
         return numpy.array([atom.bfactor for atom in self._atoms])
@@ -423,6 +427,8 @@ class AtomGroup(object):
           A,B,C = L[1] - L[0]
 
         :Returns: [[xmin, ymin, zmin], [xmax, ymax, zmax]]
+
+        .. versionadded:: 0.7.2
         """
         x = self.coordinates()
         return numpy.array([x.min(axis=0), x.max(axis=0)])
@@ -433,6 +439,8 @@ class AtomGroup(object):
         The sphere is calculated relative to the centre of geometry.
 
         :Returns: `(R, [xcen,ycen,zcen])`
+
+        .. versionadded:: 0.7.3
         """
         x = self.coordinates()
         centroid = self.centerOfGeometry()
@@ -443,8 +451,13 @@ class AtomGroup(object):
         """Returns the distance between atoms in a 2-atom group.
 
         Distance between atoms 0 and 1::
+
             0---1
 
+        .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 2
+           :class:`Atom`; anything else will raise a :exc:`ValueError`.
+
+        .. versionadded:: 0.7.3
         """
         if len(self) != 2:
                 raise ValueError("distance computation only makes sense for a group with exactly 2 atoms")
@@ -454,10 +467,16 @@ class AtomGroup(object):
         """Returns the angle in degrees between atoms 0, 1, 2.
 
         Angle between atoms 0 and 2 with apex at 1::
-            0     2
-             \   /
-              \ /
-               1
+
+              2
+             /
+            /
+           1------0
+
+        .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 3
+           :class:`Atom`; anything else will raise a :exc:`ValueError`.
+
+        .. versionadded:: 0.7.3
         """
         if len(self) != 3:
                 raise ValueError("angle computation only makes sense for a group with exactly 3 atoms")
@@ -467,13 +486,26 @@ class AtomGroup(object):
                     (numpy.linalg.norm(a)*numpy.linalg.norm(b))))
 
     def improper(self):
-        """Returns the improper dihedral XXXX"""
-        raise NotImplementedError
+        """Returns the improper dihedral between 4 atoms.
+
+        The improper dihedral is calculated in the same way as the proper
+        :meth:`dihedral`: The angle between the planes formed by atoms (0,1,2)
+        and (1,2,3).
+
+        .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 4
+           :class:`Atom`; anything else will raise a :exc:`ValueError`. The
+           interpretation of the angle as an "improper" solely depends on the
+           selection of atoms and thus the user input!
+
+        .. versionadded:: 0.7.3
+        """
+        return self.dihedral()
 
     def dihedral(self):
         """Calculate the dihedral angle in degrees.
 
-        Dihedral around axis connecting atoms 1 and 2::
+        Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
+        between the planes spanned by atoms (0,1,2) and (1,2,3))::
 
                   3
                   |
@@ -483,10 +515,12 @@ class AtomGroup(object):
 
         .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 4
            :class:`Atom`; anything else will raise a :exc:`ValueError`.
+
+        .. versionadded:: 0.7.0
         """
         if len(self) != 4:
                 raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
-        #return self.dihedral_orig()
+        # TODO 0.7.3: merge in dihedral_numpy() and remove dihedral_orig()
         return self.dihedral_numpy()
 
     def dihedral_orig(self):
@@ -494,6 +528,11 @@ class AtomGroup(object):
 
         .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 4
            :class:`Atom`; anything else will raise a :exc:`ValueError`.
+
+        .. deprecated:: 0.7.3
+           This is a slower implementation (without numpy) and will be
+           removed. Use :meth:`dihedral_numpy` instead (or simply
+           :meth:`dihedral` which is set up to use :meth:`dihedral_numpy`.)
         """
 
         ####  To whom altered this previously. please do not change or attempt to simplify  as incorrect dihedral values were calculated (developer -- Elizabeth Denning)
@@ -564,6 +603,10 @@ class AtomGroup(object):
 
         .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 4
            :class:`Atom`; anything else will raise a :exc:`ValueError`.
+
+        .. deprecated:: 0.7.3
+           Do not use this method directly; instead simply use :meth:`dihedral`
+           which is set up to use :meth:`dihedral_numpy`.
         """
         if len(self) != 4:
                 raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
@@ -779,6 +822,7 @@ class AtomGroup(object):
 
         .. SeeAlso:: :meth:`Universe.selectAtoms`
         """
+        import Selection     # can ONLY import in method, otherwise cyclical import!
         atomgrp = Selection.Parser.parse(sel).apply(self)
         if len(othersel) == 0: return atomgrp
         else:
@@ -837,6 +881,7 @@ class AtomGroup(object):
           *kwargs*
                 additional keywords are passed on to the appropriate
                 :class:`~MDAnalysis.selections.base.SelectionWriter`
+
         """
         import util
         import os.path
@@ -894,11 +939,13 @@ class Residue(AtomGroup):
 
     Pythonic access to atoms:
       - Using a atom name as attribute returns the matching atom (a
-        :class:`Atom` instance), i.e. ``r.name``. Example:
+        :class:`Atom` instance), i.e. ``r.name``. Example::
+
           >>> from MDAnalysis.tests.datafiles import PSF,DCD
           >>> u = Universe(PSF,DCD)
           >>> print(u.s4AKE.r1.CA)  # C-alpha of M1
           < Atom 5: name 'CA' of type '22' of resname 'MET', resid 1 and segid '4AKE'>
+
       - ``r['name']`` or ``r[id]`` - returns the atom corresponding to that name
 
     :Data:
@@ -961,6 +1008,7 @@ class Residue(AtomGroup):
         :Returns: 4-atom selection in the correct order.  If no C'
                   found in the previous residue (by resid) then this
                   method returns ``None``.
+
         """
         nextres = self.id + 1
         segid = self.segment.id
@@ -998,7 +1046,8 @@ class ResidueGroup(AtomGroup):
 
     Pythonic access to atoms:
       - Using a atom name as attribute returns a list of all atoms (a
-        :class:`AtomGroup`) of the same name. Example:
+        :class:`AtomGroup`) of the same name. Example::
+
           >>> from MDAnalysis.tests.datafiles import PSF,DCD
           >>> u = Universe(PSF,DCD)
           >>> print(u.s4AKE.MET.CA)  # C-alpha of all Met
@@ -1033,13 +1082,16 @@ class Segment(ResidueGroup):
 
     Pythonic access to residues:
       - The attribute rN returns the N-th residue :class:`Residue` of the
-        segment (numbering starts at N=1). Example:
+        segment (numbering starts at N=1). Example::
+
           >>> from MDAnalysis.tests.datafiles import PSF,DCD
           >>> u = Universe(PSF,DCD)
           >>> print(u.s4AKE.r1)
           <Residue 'MET', 1>
+
       - Using a residue name as attribute returns a list of all residues (a
-        :class:`ResidueGroup`) of the same name. Example:
+        :class:`ResidueGroup`) of the same name. Example::
+
           >>> from MDAnalysis.tests.datafiles import PSF,DCD
           >>> u = Universe(PSF,DCD)
           >>> print(u.s4AKE.CYS)
@@ -1089,12 +1141,15 @@ class SegmentGroup(ResidueGroup):
       - Using a segid as attribute returns the segment. Because
         of python language rule, any segid starting with a non-letter
         character is prefixed with 's', thus '4AKE' --> 's4AKE'.
-        Example:
+
+        Example::
+
           >>> from MDAnalysis.tests.datafiles import PSF,DCD
           >>> u = Universe(PSF,DCD)
           >>> print(u.atoms.segments.s4AKE)  # segment 4AKE
           <AtomGroup with 3314 atoms>
-       - Indexing the group returns the appropriate segment.
+
+      - Indexing the group returns the appropriate segment.
 
     :Data: :attr:`SegmentGroup._segments`
 
@@ -1131,21 +1186,20 @@ class SegmentGroup(ResidueGroup):
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
 
-    The system always requires a *topology* file --- in the simplest
-    case just a list of atoms. This can be a CHARMM/NAMD PSF file or a
-    simple coordinate file with atom informations such as PDB, Gromacs
-    GRO, or CHARMM CRD. See :ref:`Supported topology formats` for what
-    topologies can be read.
+    The system always requires a *topology* file --- in the simplest case just
+    a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate
+    file with atom informations such as PDB, Gromacs GRO, or CHARMM CRD. See
+    :ref:`Supported topology formats` for what kind of topologies can be read.
 
-    A trajectory provides coordinates; the coordinates have to be
-    ordered in the same way as the list of atoms in the topology. A
-    trajectory can be a single frame such as a PDB, CRD, or GRO file,
-    or it can be a MD trajectory (in CHARMM/NAMD/LAMMOS DCD, Gromacs
-    XTC/TRR, or generic XYZ format). See :ref:`Supported coordinate
-    formats` for what can be read as a "trahjectory".
+    A trajectory provides coordinates; the coordinates have to be ordered in
+    the same way as the list of atoms in the topology. A trajectory can be a
+    single frame such as a PDB, CRD, or GRO file, or it can be a MD trajectory
+    (in CHARMM/NAMD/LAMMOS DCD, Gromacs XTC/TRR, or generic XYZ format).  See
+    :ref:`Supported coordinate formats` for what can be read as a
+    "trajectory".
 
     As a special case, when the topology is a PDB, GRO or CRD file
-    then the coordinates re immediately loaded from the "topology"
+    then the coordinates are immediately loaded from the "topology"
     file unless a trajectory is supplied.
 
     Examples for setting up a universe::
@@ -1307,7 +1361,7 @@ class Universe(object):
 
         Subselections can be grouped with parentheses.
 
-        Example:
+        Example::
            >>> universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
            <AtomGroup with 3420 atoms>
 
@@ -1319,8 +1373,9 @@ class Universe(object):
                   order of :class:`Atom` instances is preserved and duplicates
                   are not removed.
 
-        The selection parser understands the following CASE SENSITIVE *keywords*:
+        .. SeeAlso:: :ref:`selection-commands-label` for further details and examples.
 
+        The selection parser understands the following CASE SENSITIVE *keywords*:
 
         **Simple selections**
 
@@ -1353,7 +1408,9 @@ class Universe(object):
         **Boolean**
 
             not
-                all atoms not in the selection, e.g. ``not protein`` selects all atoms that aren't part of a protein
+                all atoms not in the selection, e.g. ``not protein`` selects
+                all atoms that aren't part of a protein
+
             and, or
                 combine two selections according to the rules of boolean algebra,
                 e.g. ``protein and not (resname ALA or resname LYS)`` selects all atoms
@@ -1374,7 +1431,7 @@ class Universe(object):
                 **z** coordinate. Supports the **abs** keyword (for absolute value) and
                 the following *operators*: **<, >, <=, >=, ==, !=**. For example, ``prop z >= 5.0``
                 selects all atoms with z coordinate greater than 5.0; ``prop abs z <= 5.0``
-            selects all atoms within -5.0 <= z <= 5.0.
+                selects all atoms within -5.0 <= z <= 5.0.
 
         **Connectivity**
 
@@ -1391,8 +1448,8 @@ class Universe(object):
                 :class:`MDAnalysis.Universe` are consecutively numbered, and the index
                 runs from 1 up to the total number of atoms.
 
-        .. SeeAlso:: :ref:`selection-commands-label` for further details and examples.
         """
+        import Selection     # can ONLY import in method, otherwise cyclical import!
         atomgrp = Selection.Parser.parse(sel).apply(self)
         if len(othersel) == 0: return atomgrp
         else:
@@ -1447,14 +1504,14 @@ def asUniverse(*args, **kwargs):
 
     1. If the first argument is a universe, just return it::
 
-       as_universe(universe) --> universe
+         as_universe(universe) --> universe
 
     2. Otherwise try to build a universe from the first or the first
        and second argument::
 
-       asUniverse(PDB, **kwargs) --> Universe(PDB, **kwargs)
-       asUniverse(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
-       asUniverse(*args, **kwargs) --> Universe(*args, **kwargs)
+         asUniverse(PDB, **kwargs) --> Universe(PDB, **kwargs)
+         asUniverse(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
+         asUniverse(*args, **kwargs) --> Universe(*args, **kwargs)
 
     :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
     """

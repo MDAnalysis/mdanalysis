@@ -53,7 +53,6 @@ appropriate reader automatically.
 .. _duck typing: http://c2.com/cgi/wiki?DuckTyping
 
 
-.. _Supported coordinate formats:
 
 Supported coordinate formats
 ----------------------------
@@ -65,51 +64,54 @@ file always has to end with ".dcd" to be recognized as such. (A number of files
 are also recognized when they are compressed with :program:`gzip` or
 :program:`bzip2` such as ".xyz.bz2".)
 
-+---------------+-----------+-------+------------------------------------------------------+
-|Name           | extension |  IO   | remarks                                              |
-+===============+===========+=======+======================================================+
-| CHARMM,       |  dcd      |   r/w | standard CHARMM binary trajectory; endianness is     |
-| NAMD,         |           |       | autodetected. Fixed atoms may not be handled         |
-| LAMMPS        |           |       | correctly (requires testing). Module                 |
-|               |           |       | :mod:`MDAnalysis.coordinates.DCD`                    |
-+---------------+-----------+-------+------------------------------------------------------+
-| Gromacs       | xtc       |  r/w  | Compressed (lossy) xtc trajectory format. Module     |
-|               |           |       | :mod:`MDAnalysis.coordinates.XTC`                    |
-+---------------+-----------+-------+------------------------------------------------------+
-| Gromacs       | trr       |  r/w  | Full precision trr trajectory. Only coordinates are  |
-|               |           |       | processed at the moment. Module                      |
-|               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |
-+---------------+-----------+-------+------------------------------------------------------+
-| XYZ           |  xyz      |  r    | Generic white-space separate XYZ format; can be      |
-|               |           |       | compressed. Module                                   |
-|               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
-+---------------+-----------+-------+------------------------------------------------------+
-| Amber         | trj,      |  r    | formatted (ASCII) trajectories; the presence of a    |
-|               | mdcrd     |       | periodic box is autodetected (*experimental*).       |
-|               |           |       | Module :mod:`MDAnalysis.coordinates.TRJ`             |
-+---------------+-----------+-------+------------------------------------------------------+
-| Brookhaven    | pdb       |  r/w  | a simplified PDB format (as used in MD simulations)  |
-| [#a]_         |           |       | is read by default; the full format can be read by   |
-|               |           |       | supplying the `permissive=False` flag to             |
-|               |           |       | :class:`MDAnalysis.Universe`. Module                 |
-|               |           |       | :mod:`MDAnalysis.coordinates.PDB`                    |
-+---------------+-----------+-------+------------------------------------------------------+
-| PDBQT [#a]_   | pdbqt     | r/w   | file format used by AutoDock with atom types *t*     |
-|               |           |       | and partial charges *q*. Module:                     |
-|               |           |       | :mod:`MDAnalysis.coordinates.PDBQT`                  |
-+---------------+-----------+-------+------------------------------------------------------+
-| PQR [#a]_     | pqr       |  r    | PDB-like but whitespace-separated files with charge  |
-|               |           |       | and radius information. Module                       |
-|               |           |       | :mod:`MDAnalysis.coordinates.PQR`                    |
-+---------------+-----------+-------+------------------------------------------------------+
-| GROMOS96      | gro       |  r/w  | basic GROMOS96 format (without velocities). Module   |
-| [#a]_         |           |       | :mod:`MDAnalysis.coordinates.GRO`                    |
-+---------------+-----------+-------+------------------------------------------------------+
-| CHARMM [#a]_  | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
-|               |           |       | either standard or EXTended format. Module           |
-|               |           |       | :mod:`MDAnalysis.coordinates.CRD`                    |
-+---------------+-----------+-------+------------------------------------------------------+
+.. _Supported coordinate formats:
 
+.. table:: Table of Supported coordinate formats
+
+   +---------------+-----------+-------+------------------------------------------------------+
+   |Name           | extension |  IO   | remarks                                              |
+   +===============+===========+=======+======================================================+
+   | CHARMM,       |  dcd      |   r/w | standard CHARMM binary trajectory; endianness is     |
+   | NAMD,         |           |       | autodetected. Fixed atoms may not be handled         |
+   | LAMMPS        |           |       | correctly (requires testing). Module                 |
+   |               |           |       | :mod:`MDAnalysis.coordinates.DCD`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | Gromacs       | xtc       |  r/w  | Compressed (lossy) xtc trajectory format. Module     |
+   |               |           |       | :mod:`MDAnalysis.coordinates.XTC`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | Gromacs       | trr       |  r/w  | Full precision trr trajectory. Only coordinates are  |
+   |               |           |       | processed at the moment. Module                      |
+   |               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | XYZ           |  xyz      |  r    | Generic white-space separate XYZ format; can be      |
+   |               |           |       | compressed. Module                                   |
+   |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | Amber         | trj,      |  r    | formatted (ASCII) trajectories; the presence of a    |
+   |               | mdcrd     |       | periodic box is autodetected (*experimental*).       |
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.TRJ`             |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | Brookhaven    | pdb       |  r/w  | a simplified PDB format (as used in MD simulations)  |
+   | [#a]_         |           |       | is read by default; the full format can be read by   |
+   |               |           |       | supplying the `permissive=False` flag to             |
+   |               |           |       | :class:`MDAnalysis.Universe`. Module                 |
+   |               |           |       | :mod:`MDAnalysis.coordinates.PDB`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | PDBQT [#a]_   | pdbqt     | r/w   | file format used by AutoDock with atom types *t*     |
+   |               |           |       | and partial charges *q*. Module:                     |
+   |               |           |       | :mod:`MDAnalysis.coordinates.PDBQT`                  |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | PQR [#a]_     | pqr       |  r    | PDB-like but whitespace-separated files with charge  |
+   |               |           |       | and radius information. Module                       |
+   |               |           |       | :mod:`MDAnalysis.coordinates.PQR`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | GROMOS96      | gro       |  r/w  | basic GROMOS96 format (without velocities). Module   |
+   | [#a]_         |           |       | :mod:`MDAnalysis.coordinates.GRO`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | CHARMM [#a]_  | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
+   |               |           |       | either standard or EXTended format. Module           |
+   |               |           |       | :mod:`MDAnalysis.coordinates.CRD`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a

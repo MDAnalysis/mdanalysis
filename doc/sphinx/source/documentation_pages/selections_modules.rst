@@ -19,24 +19,23 @@ table below.
 
 .. _Supported selection exporters:
 
-Supported exporters and recognized file name extensions:
+.. table:: Table of supported exporters and recognized file name extensions.
 
-+---------------+-----------+-------+--------------------------------------------+
-|Name           | extension |  IO   | remarks                                    |
-+===============+===========+=======+============================================+
-| vmd           | tcl       | w     | VMD_ macros, available in Representations; |
-|               |           |       | module :mod:`MDAnalysis.selections.vmd`    |
-+---------------+-----------+-------+--------------------------------------------+
-| pymol         | pml       | w     | simple PyMOL_ selection string;            |
-|               | 	    | 	    | module :mod:`MDAnalysis.selections.pymol`  |
-+---------------+-----------+-------+--------------------------------------------+
-| gromacs       | ndx       | w     | Gromacs_ index file;                       |
-|               |           |       | module :mod:`MDAnalysis.selections.gromacs`|
-+---------------+-----------+-------+--------------------------------------------+
-| charmm        | str       | w     | CHARMM_ selection of individual atoms;     |
-|               |           |       | module :mod:`MDAnalysis.selections.charmm` |
-+---------------+-----------+-------+--------------------------------------------+
-
+   +---------------+-----------+-------+--------------------------------------------+
+   |Name           | extension |  IO   | remarks                                    |
+   +===============+===========+=======+============================================+
+   | vmd           | tcl       | w     | VMD_ macros, available in Representations; |
+   |               |           |       | module :mod:`MDAnalysis.selections.vmd`    |
+   +---------------+-----------+-------+--------------------------------------------+
+   | pymol         | pml       | w     | simple PyMOL_ selection string;            |
+   |               | 	       |       | module :mod:`MDAnalysis.selections.pymol`  |
+   +---------------+-----------+-------+--------------------------------------------+
+   | gromacs       | ndx       | w     | Gromacs_ index file;                       |
+   |               |           |       | module :mod:`MDAnalysis.selections.gromacs`|
+   +---------------+-----------+-------+--------------------------------------------+
+   | charmm        | str       | w     | CHARMM_ selection of individual atoms;     |
+   |               |           |       | module :mod:`MDAnalysis.selections.charmm` |
+   +---------------+-----------+-------+--------------------------------------------+
 
 .. rubric:: Contents
 

@@ -210,6 +210,23 @@ class TestAtomGroup(TestCase):
         nodih = self.universe.selectAtoms("resid 3:5")
         assert_raises(ValueError, nodih.dihedral)
 
+    def test_improper(self):
+        u = self.universe
+        u.trajectory.rewind()   # just to make sure...
+        peptbond =  u.selectAtoms("atom 4AKE 20 C", "atom 4AKE 21 CA",
+                                  "atom 4AKE 21 N", "atom 4AKE 21 HN")
+        assert_almost_equal(peptbond.improper(), 168.52952575683594, 3,
+                            "Peptide bond improper dihedral for M21 calculated wrongly.")
+
+    def test_dihedral_equals_improper(self):
+        u = self.universe
+        u.trajectory.rewind()   # just to make sure...
+        peptbond =  u.selectAtoms("atom 4AKE 20 C", "atom 4AKE 21 CA",
+                                  "atom 4AKE 21 N", "atom 4AKE 21 HN")
+        assert_equal(peptbond.improper(), peptbond.dihedral(),
+                     "improper() and proper dihedral() give different results")
+
+
     def test_bond(self):
         self.universe.trajectory.rewind()   # just to make sure...
         sel2 = self.universe.s4AKE.r98.selectAtoms("name OE1", "name OE2")
