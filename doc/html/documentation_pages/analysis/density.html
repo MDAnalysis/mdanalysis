@@ -158,7 +158,7 @@ the rest should work for an array of any dimension.</p>
 <p>If the input histogram consists of counts per cell then the
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><tt class="xref py py-meth docutils literal"><span class="pre">Density.make_density()</span></tt></a> method converts the grid to a physical density. For
 a probability density, divide it by <tt class="xref py py-meth docutils literal"><span class="pre">Density.grid.sum()</span></tt> or use <tt class="docutils literal"><span class="pre">normed=True</span></tt>
-right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.0.dev-b233716)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
+right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.0.dev-5c4efaa)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
 <p>The user <em>should</em> set the <em>parameters</em> keyword (see docs for the
 constructor); in particular, if the data are already a density, one must
 set <em>isDensity</em> == <tt class="xref docutils literal"><span class="pre">True</span></tt> because there is no reliable way to detect if

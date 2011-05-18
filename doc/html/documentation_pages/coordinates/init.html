@@ -95,7 +95,7 @@
                         title="previous chapter">5. Coordinates modules</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="base.html"
-                        title="next chapter">5.2. Base classes &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></p>
+                        title="next chapter">5.2. Base classes &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/init.txt"
@@ -151,14 +151,15 @@ instance although this is often not needed because the
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> class can choose an
 appropriate reader automatically.</p>
 <div class="section" id="supported-coordinate-formats">
-<span id="id1"></span><h2>5.1.1. Supported coordinate formats<a class="headerlink" href="#supported-coordinate-formats" title="Permalink to this headline">¶</a></h2>
+<h2>5.1.1. Supported coordinate formats<a class="headerlink" href="#supported-coordinate-formats" title="Permalink to this headline">¶</a></h2>
 <p>The table below lists the coordinate file formats understood by MDAnalysis. The
 emphasis is on formats that are used in popular molecular dynamics
 codes. MDAnalysis figures out formats by looking at the extension. Thus, a DCD
 file always has to end with &#8221;.dcd&#8221; to be recognized as such. (A number of files
 are also recognized when they are compressed with <strong class="program">gzip</strong> or
 <strong class="program">bzip2</strong> such as &#8221;.xyz.bz2&#8221;.)</p>
-<table border="1" class="docutils">
+<table border="1" class="docutils" id="id1">
+<caption>Table of Supported coordinate formats</caption>
 <colgroup>
 <col width="17%" />
 <col width="13%" />
@@ -320,7 +321,7 @@ different ways:</p>
 <dd>empty Timestep for <em>arg</em> atoms (allocate arrays etc)</dd>
 <dt><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></dt>
 <dd>makes a deep copy of the <em>arg</em></dd>
-<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-b233716)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
+<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-5c4efaa)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
 <dd>update the Timesteps positions array with the contents of <em>arg</em></dd>
 </dl>
 </div></blockquote>
