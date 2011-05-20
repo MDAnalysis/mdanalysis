@@ -149,16 +149,16 @@ to look at the pure rotation one needs to superimpose the centres of
 mass (or geometry) first:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ref0</span> <span class="o">=</span>  <span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">CA</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">CA</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mobile0</span> <span class="o">=</span>  <span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">CA</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">CA</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rmsd</span><span class="p">(</span><span class="n">mobile0</span><span class="p">,</span> <span class="n">ref0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">CA</span><span class="o">.</span><span class="n">masses</span><span class="p">())</span>
-<span class="go">23.599250605958503</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rmsd</span><span class="p">(</span><span class="n">mobile0</span><span class="p">,</span> <span class="n">ref0</span><span class="p">)</span>
+<span class="go"> 6.8093965864717951</span>
 </pre></div>
 </div>
 <p>The rotation matrix that superimposes <em>mobile</em> on <em>ref</em> while
 minimizing the CA-RMSD is obtained with the <a class="reference internal" href="#MDAnalysis.analysis.align.rotation_matrix" title="MDAnalysis.analysis.align.rotation_matrix"><tt class="xref py py-func docutils literal"><span class="pre">rotation_matrix()</span></tt></a>
 function</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span><span class="p">,</span> <span class="n">rmsd</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">mobile0</span><span class="p">,</span> <span class="n">ref0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">CA</span><span class="o">.</span><span class="n">masses</span><span class="p">())</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span><span class="p">,</span> <span class="n">rmsd</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">mobile0</span><span class="p">,</span> <span class="n">ref0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">rmsd</span>
-<span class="go">23.599250606</span>
+<span class="go">6.8093965864717951</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">R</span>
 <span class="go">[[ 0.14514539 -0.27259113  0.95111876]</span>
 <span class="go"> [ 0.88652593  0.46267112 -0.00268642]</span>
