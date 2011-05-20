@@ -418,7 +418,6 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     if mass_weighted:
         # if performing a mass-weighted alignment/rmsd calculation
         weight = masses/numpy.mean(masses)
-        raise NotImplementedError("mass weighting not implemented at the moment")
     else:
         weight = None
 
