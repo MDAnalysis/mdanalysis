@@ -2,36 +2,6 @@
 ## Intel compiler [but might fail (at least on Ubuntu 8.04)]
 #compiler=intel
 
-[linux]
-# Fast math libraries
-# -------------------
-# where to find the include files (for -I)
-#fast_numeric_include =
-
-# where to find the libraries (-L); separate paths by space
-#fast_numeric_linkpath =
-
-# which libraries to link (-l); separate them by space
-#fast_numeric_libs =
-
-# example for using Intel MKL on my machine; your paths 
-# will probably differ! 
-#
-#   fast_numeric_include = /opt/intel/cmkl/10.0.5.025/include
-#   fast_numeric_linkpath = /opt/intel/cmkl/10.0.5.025/lib/em64t
-#   fast_numeric_libs = mkl_lapack mkl guide
-
-# example for using ATLAS libraries (instead of MKL)
-#fast_numeric_include = /usr/include
-#fast_numeric_linkpath = /usr/lib/atlas
-#fast_numeric_libs = lapack
-
-[darwin]
-# Fast math libraries
-# -------------------
-# No need to configure; we always use the native vecLib 
-# framework for good performance.
-
 [sdist]
 formats=gztar
 

@@ -15,6 +15,13 @@ The rules for this file:
 
   * 0.7.3 development
 
+  Removals
+
+  * completely removed the old core.rms_fitting module (and thus we also do not
+    depend on the LAPACK library anymore, which should simplify installation);
+    use the functions accessible through MDAnalysis.analysis.align (which are
+    faster and use QCPROT)
+
   Enhancements
  
   * PDBQT (autodock) format added (reading and writing of single frames)

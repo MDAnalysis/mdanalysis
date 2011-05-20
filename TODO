@@ -31,8 +31,5 @@ Feature requests and pertinent bugs
 Installation
 ============
 
-* simplify installation (e.g. find the fast algebra library
-  automatically or bundle a light-weight version as a fall back)
-
 * intel compiler does not work (at least Ubuntu 8.04 Linux) 
   

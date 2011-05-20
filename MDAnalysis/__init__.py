@@ -81,7 +81,7 @@ Import the package::
 
 (note that not everything in MDAnalysis is imported right away; for
 additional functionality you might have to import sub-modules
-separately, e.g. for RMS fitting ``import MDAnalysis.core.rms_fitting``.)
+separately, e.g. for RMS fitting ``import MDAnalysis.analysis.align``.)
 
 Build a "universe" from a topology (PSF, PDB) and a trajectory (DCD, XTC/TRR);
 here we are assuming that PSF, DCD, etc contain file names. If you don't have

@@ -12,9 +12,6 @@ build the library some C and C++ code needs to be compiled. Thus you will need
     * a C and a C++ compiler (e.g. GNU gcc),
     * the python header files (typically in a package python-dev),
     * numpy and cython to compile the DCD reader and numerical extensions,
-    * a LAPACK library (standard LAPACK/BLAS, ATLAS, or the Intel Math
-      Kernel Library (MKL); on Mac OS X we simply use the native fast
-      vecLib framework so you don't have to install anything else).
 
 See *Additional non-standard packages* below for what else you need at
 run time.
@@ -48,19 +45,6 @@ Installation from source
 Currently MDAnalysis is only distributed in source form. You will need
 a C compiler to compile the DCD and XTC reader and numerical extensions.
 
-In the top directory, you can customize the setup by copying the setup
-configuration template to setup.cfg and editing it.::
-
-   cp setup.cfg.template setup.cfg
-
-For instance, you can choose to use the Intel compiler for faster
-code if you have it installed or you can add paths to the Intel
-Math Kernel (MKL) libraries. However, this is not required and
-everything should work without touching setup.cfg or
-setup.cfg.template; if you have problem first try installing with
-defaults (i.e. without using setup.cfg at all).
-
-
 In principle, installation should be as simple as ::
 
    python setup.py build
@@ -79,53 +63,6 @@ system specific notes at the end of this file or look in the issue
 tracker --- maybe the problem is recognized and a work around can be
 found in the comments
 
-
-Fast math libraries
--------------------
-
-On Mac OS X we use the systems vecLib for fast linear algebra and
-nothing needs to be configured. On Linux you will probably want to use
-something such as ATLAS or the Intel Math Kernel Libraries for better
-performance for the rms fitting.
-
-The fast math library paths are set in ``setup.cfg``. See the example
-in the template and below.
-
-To get an idea if you have lapack libraries installed, run
-
-  locate lapack
-
-and look for 'liblapack.a' or 'liblapack.so'. Also ask your package
-management system.
-
-
-Example MKL
-~~~~~~~~~~~
-
-Linux section of setup.cfg (your paths are probably different from the
-ones in this example)::
-
-  [linux]
-  fast_numeric_include = /opt/intel/cmkl/10.0.5.025/include
-  fast_numeric_linkpath = /opt/intel/cmkl/10.0.5.025/lib/em64t
-  fast_numeric_libs = mkl_lapack mkl guide
-
-Example ATLAS LAPACK
-~~~~~~~~~~~~~~~~~~~~
-
-If you want to use the ATLAS LAPACK libraries use something such as ::
-
-  [linux]
-  fast_numeric_include = /usr/include
-  fast_numeric_linkpath = /usr/lib/atlas
-  fast_numeric_libs = lapack
-
-or 
-
-  [linux]
-  fast_numeric_include = /usr/include
-  fast_numeric_linkpath = /usr/lib/sse2/atlas
-  fast_numeric_libs = lapack
 
 
 Selecting an installation directory
@@ -223,45 +160,13 @@ Linux
     [build]
     compiler=intel
 
-  and install the Math Kernel Libraries (MKL). You will have to add
-  the 'fast_numeric_*' paths in setup.cfg  under the [linux] section;
-  see the template for examples.
-
   (Although, in some instances the KDTree does not compile with
   Intel. In this case please file a bug and use gcc in the mean time.)
 
-* RMS fitting requires a linear algebra library. If you get ::
- 
-    ImportError: MDAnalysis/core/rms_fitting.so: undefined symbol: dsyev_
-
-  then install any LAPACK library and install again. 
- 
-     1. Install any LAPACK, eg ATLAS/LAPACK. On Ubuntu I can do
-
-            sudo aptitude install liblapack-dev
-
-        This installs liblapack.a; if your library is named
-        differently then you will need to use the library name
-        (without initial 'lib') instead of lapack.
-
-     2. Make sure that the library name is added to a linker line
-        during setup. If it is "lapack" (the default) then you don't
-        have to do anything. If it is different (e.g. "lapack-3") then
-        you have to use ``setup.cfg`` as described above. For
-        "liblapack-3.a" in "/usr/lib" you would have the lines ::
-
-  	  fast_numeric_include =
-	  fast_numeric_linkpath = /usr/lib
-	  fast_numeric_libs = lapack-3
-
-       (Note that the include list can stay empty when the header
-       files are in a standard location such as /usr/include; this is
-       the case with the aptitude package installation.)
 
 * Install prerequisite packages on Ubuntu or Debian with
 
     sudo aptitude install python-dev python-cython python-numpy g++
-    sudo aptitude install liblapack-dev   # also see notes on fast_numeric_*
 
   Install packages needed for full functionality
 
@@ -276,9 +181,6 @@ OS specific notes
 
 
 * Tested with Mac OS X 10.4.11+fink and 10.6.2+MacPorts. 
-
-  The RMS-fitting code uses the fast vecLib framework for linear
-  algebra (this is part of Mac OS X).
 
 * fink hints:
   Install prerequisite packages using fink::

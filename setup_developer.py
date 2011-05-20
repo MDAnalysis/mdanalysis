@@ -70,27 +70,8 @@ except ImportError:
     print "Please get it from http://cython.org/ or install it through your package manager."
     sys.exit(-1)
 
-import ConfigParser
-
 include_dirs = [numpy_include]
 
-if sys.platform == "darwin": # Mac OS X
-    fast_numeric_include = ['/System/Library/Frameworks/vecLib.framework/Versions/A/Headers']
-    fast_numeric_link = ["-framework","vecLib"]
-elif sys.platform[:5] == "linux":
-    parser = ConfigParser.ConfigParser()
-    parser.read("setup.cfg")
-    try:
-        fast_numeric_include = parser.get("linux","fast_numeric_include").split()
-        linkpath = ["-L"+path for path in parser.get("linux","fast_numeric_linkpath").split()]
-        linklibs = ["-l"+lib for lib in parser.get("linux","fast_numeric_libs").split()]
-        fast_numeric_link = linkpath + linklibs
-    except ConfigParser.NoSectionError:
-        fast_numeric_include = []
-        fast_numeric_link = ["-llapack"]
-else:
-    fast_numeric_include = []
-    fast_numeric_link = ["-llapack"]
 
 if __name__ == '__main__':
     RELEASE = "0.7.3-devel"
@@ -129,12 +110,6 @@ if __name__ == '__main__':
                             libraries = ['m'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                   Extension('core.rms_fitting', ['src/numtools/rms_fitting.pyx'],
-                             libraries = ['m'],
-                             define_macros=define_macros,
-                             include_dirs = include_dirs+fast_numeric_include,
-                             extra_link_args=fast_numeric_link,
-                             extra_compile_args=extra_compile_args),
                   Extension('core.qcprot', ['src/pyqcprot/pyqcprot.pyx'],
                             include_dirs=include_dirs,
                             extra_compile_args=["-O3","-ffast-math"]),
