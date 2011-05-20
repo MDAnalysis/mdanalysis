@@ -67,16 +67,16 @@ mass (or geometry) first:
 
    >>> ref0 =  ref.atoms.CA.coordinates() - ref.atoms.CA.centerOfMass()
    >>> mobile0 =  mobile.atoms.CA.coordinates() - mobile.atoms.CA.centerOfMass()
-   >>> rmsd(mobile0, ref0, weights=ref.atoms.CA.masses())
-   23.599250605958503
+   >>> rmsd(mobile0, ref0)
+    6.8093965864717951
 
 The rotation matrix that superimposes *mobile* on *ref* while
 minimizing the CA-RMSD is obtained with the :func:`rotation_matrix`
 function ::
 
-   >>> R, rmsd = rotation_matrix(mobile0, ref0, weights=ref.atoms.CA.masses())
+   >>> R, rmsd = rotation_matrix(mobile0, ref0)
    >>> print rmsd
-   23.599250606
+   6.8093965864717951
    >>> print R
    [[ 0.14514539 -0.27259113  0.95111876]
     [ 0.88652593  0.46267112 -0.00268642]
@@ -167,6 +167,9 @@ def rmsd(a,b, weights=None):
      >>> rmsd(A,B)
      6.8342494129169804
     """
+    if not weights is None:
+        # weights are constructed as relative to the mean
+        weights = numpy.asarray(weights)/numpy.mean(weights)
     return qcp.CalcRMSDRotationalMatrix(a.T.astype(numpy.float64),b.T.astype(numpy.float64),
                                         a.shape[0], None, weights)
 
@@ -209,6 +212,9 @@ def rotation_matrix(a,b, weights=None):
                  :func:`rms_fit_trj`. A complete fit of two structures can be
                  done with :func:`alignto`.
     """
+    if not weights is None:
+        # weights are constructed as relative to the mean
+        weights = numpy.asarray(weights)/numpy.mean(weights)
     rot = numpy.zeros(9, dtype=numpy.float64)
     rmsd = qcp.CalcRMSDRotationalMatrix(a.T.astype(numpy.float64), b.T.astype(numpy.float64),
                                         b.shape[0], rot, weights)
@@ -312,11 +318,11 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     mobile_atoms = mobile.selectAtoms(select['mobile'])
     ref_atoms = reference.selectAtoms(select['reference'])
     if mass_weighted:
-        masses = ref_atoms.masses()
+        weights = ref_atoms.masses()/numpy.mean(ref_atoms.masses())
         ref_com = ref_atoms.centerOfMass()
         mobile_com = mobile_atoms.centerOfMass()
     else:
-        masses = None
+        weights = None
         ref_com = ref_atoms.centerOfGeometry()
         mobile_com = mobile_atoms.centerOfGeometry()
 
@@ -325,7 +331,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
 
     old_rmsd = rmsd(mobile_atoms.coordinates(), ref_atoms.coordinates())
 
-    R, new_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates, weights=masses)
+    R, new_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates, weights=weights)
 
     if subselection is None:
         atoms = mobile.universe.atoms
@@ -413,11 +419,10 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         logger.error(errmsg)
         raise SelectionError(errmsg)
     del mass_mismatches
-    masses = ref_atoms.masses()
 
     if mass_weighted:
         # if performing a mass-weighted alignment/rmsd calculation
-        weight = masses/numpy.mean(masses)
+        weight = ref_atoms.masses()/ref_atoms.masses().mean()
     else:
         weight = None
 
