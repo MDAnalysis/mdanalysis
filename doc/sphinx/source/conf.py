@@ -38,7 +38,6 @@ source_suffix = '.rst'
 #source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-#master_doc = 'mdanalysis_documentation_index'
 # 'index' has the advantage that it is immediately picked up by the webserver
 master_doc = 'index'
 
@@ -56,7 +55,7 @@ copyright = u'2005-2011, ' + authors
 #
 # Dynamically calculate the version
 ##packageversion = __import__('MDAnalysis').get_version()
-packageversion = '0.7.3'
+packageversion = '0.7.4-devel'
 # The short X.Y version.
 version = '.'.join(packageversion.split('.')[:2])
 # The full version, including alpha/beta/rc tags.
