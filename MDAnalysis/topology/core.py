@@ -99,31 +99,42 @@ def build_bondlists(atoms, bonds):
         atom1.bonds.append(b)
         atom2.bonds.append(b)
 
-def get_parser_for(filename, permissive=False):
-    """Return the appropriate topology parser for *filename*."""
-    format = guess_format(filename)
+def get_parser_for(filename, permissive=False, format=None):
+    """Return the appropriate topology parser for *filename*.
+
+    Automatic detection is disabled when an explicit *format* is
+    provided.
+    """
+    format = guess_format(filename, format=format)
     if permissive:
         return MDAnalysis.topology._topology_parsers_permissive[format]
     return MDAnalysis.topology._topology_parsers[format]
 
-def guess_format(filename):
+def guess_format(filename, format=None):
     """Returns the type of topology file *filename*.
 
     The current heuristic simply looks at the filename extension but
     more complicated probes could be implemented here or in the
     individual packages (e.g. as static methods).
+
+    If *format* is supplied then it overrides the auto detection.
     """
 
-    # simple extension checking... something more complicated is left
-    # for the ambitious
-    root, ext = os.path.splitext(filename)
-    try:
-        if ext.startswith('.'):
-            ext = ext[1:]
-        format = ext.upper()
-    except:
-        raise TypeError("Cannot determine topology type for %r" % filename)
+    if format is None:
+        # simple extension checking... something more complicated is left
+        # for the ambitious
+        root, ext = os.path.splitext(filename)
+        try:
+            if ext.startswith('.'):
+                ext = ext[1:]
+            format = ext.upper()
+        except:
+            raise TypeError("Cannot determine topology type for %r" % filename)
+    else:
+        # internally, formats are all uppercase
+        format = str(format).upper()
 
+    # sanity check
     if not format in MDAnalysis.topology._topology_parsers:
         raise TypeError("Unknown topology extension %r from %r; only %r are implemented in MDAnalysis." %
                         (format, filename, MDAnalysis.topology._topology_parsers.keys()))

@@ -1252,6 +1252,16 @@ class Universe(object):
              and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
              which can be useful for real Protein Databank PDB files. ``None``  selects the
              MDAnalysis default (which is set in :class:`MDAnalysis.core.flags`) [``None``]
+          *topology_format*
+             provide the file format of the topology file; ``None`` guesses it from the file
+             extension [``None``]
+          *coordinate_format*
+             provide the file format of the coordinate or trajectory file;
+             ``None`` guesses it from the file extension. Note that this
+             keyword has no effect if a list of file names is supplied because
+             the "chained" reader has to guess the file format for each
+             individual list member [``None``]
+
 
         This routine tries to do the right thing:
           1. If a pdb/gro file is provided instead of a psf and no *coordinatefile*
@@ -1262,8 +1272,13 @@ class Universe(object):
 
           2. If only a topology file without coordinate information is provided
              one will have to load coordinates manually using :meth:`Universe.load_new`.
+
+        .. versionchanged:: 0.7.4
+           New *topology_format* and *coordinate_format* parameters to override the file
+           format detection.
         """
-        import MDAnalysis.topology.core
+        from MDAnalysis.topology.core import get_parser_for, build_segments, guess_format
+        import MDAnalysis.core
 
         # managed attribute holding TRJReader (the Universe.trajectory
         # attribute is also aliased as Universe.<EXT> where <EXT> is the
@@ -1272,9 +1287,12 @@ class Universe(object):
 
         if kwargs.get('permissive',None) is None:
             kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
+        topology_format = kwargs.pop('topology_format', None)
+
         # build the topology (or at least a list of atoms)
         try:
-            parser = MDAnalysis.topology.core.get_parser_for(topologyfile, permissive=kwargs['permissive'])
+            parser = get_parser_for(topologyfile, permissive=kwargs['permissive'],
+                                    format=topology_format)
             struc = parser(topologyfile)
         except TypeError, err:
             raise ValueError("Failed to build a topology from either a psf, pdb or gro (%s)" % err)
@@ -1286,7 +1304,7 @@ class Universe(object):
         self.atoms = AtomGroup(struc["_atoms"])
         # XXX: add H-bond information here if available from psf (or other sources)
         #
-        segments = MDAnalysis.topology.core.build_segments(self.atoms)
+        segments = build_segments(self.atoms)
         # Because of weird python rules, attribute names cannot start with a digit
         for seg in segments.keys():
             if seg[0].isdigit():
@@ -1307,8 +1325,7 @@ class Universe(object):
             a.universe = self
 
         # Load coordinates
-        if coordinatefile is None and \
-                MDAnalysis.topology.core.guess_format(topologyfile) in \
+        if coordinatefile is None and guess_format(topologyfile, format=topology_format) in \
                 MDAnalysis.coordinates._topology_coordinates_readers:
             coordinatefile = topologyfile         # hack for pdb/gro/crd - only
         self.load_new(coordinatefile, **kwargs)
@@ -1318,13 +1335,19 @@ class Universe(object):
 
         :Arguments:
              *filename*
-                 the coordinate file (single frame or trajectory) OR a list of
+                 the coordinate file (single frame or trajectory) *or* a list of
                  filenames, which are read one after another
              *permissive*
                  currently only relevant for PDB files: Set to ``True`` in order to ignore most errors
                  and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
                  which can be useful for real Protein Databank PDB files. ``None``  selects the
                  MDAnalysis default (which is set in :class:`MDAnalysis.core.flags`) [``None``]
+             *coordinate_format*
+                 provide the file format of the coordinate or trajectory file;
+                 ``None`` guesses it from the file extension. Note that this
+                 keyword has no effect if a list of file names is supplied because
+                 the "chained" reader has to guess the file format for each
+                 individual list member [``None``]
              *kwargs*
                  other kwargs are passed to the trajectory reader (only for advanced use)
 
@@ -1335,13 +1358,14 @@ class Universe(object):
         if filename is None:
             return
 
-        import MDAnalysis.coordinates.core
+        from MDAnalysis.coordinates.core import get_reader_for
         from itertools import izip
 
         if kwargs.get('permissive',None) is None:
             kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
         try:
-            TRJReader = MDAnalysis.coordinates.core.get_reader_for(filename, permissive=kwargs.pop('permissive'))
+            TRJReader = get_reader_for(filename, permissive=kwargs.pop('permissive'),
+                                       format=kwargs.pop('coordinate_format', None))
         except TypeError, err:
             raise TypeError("Universe.load_new() cannot find an appropriate coordinate reader "
                             "for file %r.\n%r" % (filename, err))

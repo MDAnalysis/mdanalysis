@@ -14,6 +14,12 @@ The rules for this file:
 
   * 0.7.4 (in development)
 
+  Enhancements
+
+  * Universe() got new keywords topology_format and coordinate_format to allow
+    the user to specify the file formats instead of deriving it from the
+    extensions (does not work with "chained" files at the moment)
+
 
 05/22/11 orbeckst, jandom, Benjamin Hall, Paul Rigor, dcaplan,
          Christian Beckstein (logo), denniej0

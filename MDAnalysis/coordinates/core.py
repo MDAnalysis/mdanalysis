@@ -51,9 +51,13 @@ except ImportError:
         return x*numpy.pi/180.0
 
 
-def get_reader_for(filename, permissive=False):
-    """Return the appropriate trajectory reader class for *filename*."""
-    format = guess_format(filename)
+def get_reader_for(filename, permissive=False, format=None):
+    """Return the appropriate trajectory reader class for *filename*.
+
+    Automatic detection is disabled when an explicit *format* is
+    provided.
+    """
+    format = guess_format(filename, format=format)
     if permissive:
         return MDAnalysis.coordinates._trajectory_readers_permissive[format]
     return MDAnalysis.coordinates._trajectory_readers[format]
@@ -155,31 +159,38 @@ def get_ext(filename):
         ext = ext[1:]
     return root, ext.lower()
 
-def guess_format(filename):
+def guess_format(filename, format=None):
     """Returns the type of coordinate file *filename*.
 
     The current heuristic simply looks at the filename extension but
     more complicated probes could be implemented here or in the
     individual packages (e.g. as static methods).
+
+    If *format* is supplied then it overrides the auto detection.
     """
-    # simple extension checking... something more complicated is left
-    # for the ambitious
-
-    # Note: at the moment the upper-case extension *is* the format specifier
-
-    if MDAnalysis.core.util.iterable(filename):
-        # list of filenames, handled by ChainReader
-        format = 'CHAIN'
+    if format is None:
+        # simple extension checking... something more complicated is left
+        # for the ambitious
+        # Note: at the moment the upper-case extension *is* the format specifier
+        if MDAnalysis.core.util.iterable(filename):
+            # list of filenames, handled by ChainReader
+            format = 'CHAIN'
+        else:
+            try:
+                root, ext = get_ext(filename)
+            except:
+                raise TypeError("Cannot determine coordinate format for %r" % filename)
+            format = ext.upper()
+            format = check_compressed_format(root, ext)
     else:
-        try:
-            root, ext = get_ext(filename)
-        except:
-            raise TypeError("Cannot determine coordinate format for %r" % filename)
-        format = ext.upper()
-        format = check_compressed_format(root, ext)
-        if not format in MDAnalysis.coordinates._trajectory_readers:
-            raise TypeError("Unknown coordinate trajectory extension %r from %r; only %r are implemented in MDAnalysis." %
-                            (ext, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
+        # internally, formats are all uppercase
+        format = str(format).upper()
+
+    # sanity check
+    if format != 'CHAIN' and not format in MDAnalysis.coordinates._trajectory_readers:
+        raise TypeError("Unknown coordinate trajectory extension %r from %r; only %r are implemented in MDAnalysis." %
+                        (ext, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
+
     return format
 
 def check_compressed_format(root, ext):
