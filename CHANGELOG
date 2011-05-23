@@ -10,13 +10,13 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/??
+??/??/?? orbeckst
 
   * 0.7.4 (in development)
 
   Enhancements
 
-  * Universe() got new keywords topology_format and coordinate_format to allow
+  * Universe() got new keywords topology_format and format to allow
     the user to specify the file formats instead of deriving it from the
     extensions (does not work with "chained" files at the moment)
 
