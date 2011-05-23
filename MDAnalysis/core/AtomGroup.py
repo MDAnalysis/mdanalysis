@@ -1255,12 +1255,12 @@ class Universe(object):
           *topology_format*
              provide the file format of the topology file; ``None`` guesses it from the file
              extension [``None``]
-          *coordinate_format*
+          *format*
              provide the file format of the coordinate or trajectory file;
              ``None`` guesses it from the file extension. Note that this
              keyword has no effect if a list of file names is supplied because
              the "chained" reader has to guess the file format for each
-             individual list member [``None``]
+             individual list member. [``None``]
 
 
         This routine tries to do the right thing:
@@ -1270,11 +1270,18 @@ class Universe(object):
 
                 u = Universe('1ake.pdb')
 
+             If you want to specify the coordinate file format yourself you can
+             do so using the *format* keyword::
+
+                u = Universe('1ake.ent1', format='pdb')
+
           2. If only a topology file without coordinate information is provided
-             one will have to load coordinates manually using :meth:`Universe.load_new`.
+             one will have to load coordinates manually using
+             :meth:`Universe.load_new`. The file format of the topology file
+             can be explicitly set with the *topology_format* keyword.
 
         .. versionchanged:: 0.7.4
-           New *topology_format* and *coordinate_format* parameters to override the file
+           New *topology_format* and *format* parameters to override the file
            format detection.
         """
         from MDAnalysis.topology.core import get_parser_for, build_segments, guess_format
@@ -1287,7 +1294,19 @@ class Universe(object):
 
         if kwargs.get('permissive',None) is None:
             kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
+
         topology_format = kwargs.pop('topology_format', None)
+
+        if coordinatefile is None:
+            # special hacks to treat a coordinate file as a coordinate AND topology file
+            if kwargs.get('format', None) is None:
+                kwargs['format'] = topology_format
+            elif topology_format is None:
+                topology_format = kwargs.get('format', None)
+
+            if coordinatefile is None and guess_format(topologyfile, format=kwargs.get('format', None)) in \
+                    MDAnalysis.coordinates._topology_coordinates_readers:
+                coordinatefile = topologyfile         # hack for pdb/gro/crd - only
 
         # build the topology (or at least a list of atoms)
         try:
@@ -1325,9 +1344,6 @@ class Universe(object):
             a.universe = self
 
         # Load coordinates
-        if coordinatefile is None and guess_format(topologyfile, format=topology_format) in \
-                MDAnalysis.coordinates._topology_coordinates_readers:
-            coordinatefile = topologyfile         # hack for pdb/gro/crd - only
         self.load_new(coordinatefile, **kwargs)
 
     def load_new(self, filename, **kwargs):
@@ -1342,7 +1358,7 @@ class Universe(object):
                  and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
                  which can be useful for real Protein Databank PDB files. ``None``  selects the
                  MDAnalysis default (which is set in :class:`MDAnalysis.core.flags`) [``None``]
-             *coordinate_format*
+             *format*
                  provide the file format of the coordinate or trajectory file;
                  ``None`` guesses it from the file extension. Note that this
                  keyword has no effect if a list of file names is supplied because
@@ -1365,7 +1381,7 @@ class Universe(object):
             kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
         try:
             TRJReader = get_reader_for(filename, permissive=kwargs.pop('permissive'),
-                                       format=kwargs.pop('coordinate_format', None))
+                                       format=kwargs.pop('format', None))
         except TypeError, err:
             raise TypeError("Universe.load_new() cannot find an appropriate coordinate reader "
                             "for file %r.\n%r" % (filename, err))
