@@ -78,14 +78,16 @@ if __name__ == '__main__':
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 """
-    CLASSIFIERS = ['Development Status :: 1 - Alpha',
-                   'Environment :: Workstation',
+    CLASSIFIERS = ['Development Status :: 4 - Beta',
+                   'Environment :: Console',
                    'Intended Audience :: Scientists',
-                   'License :: OSI Approved :: GPL License',
-                   'Operating System :: OS Independent',
+                   'License :: OSI Approved :: GNU General Public License (GPL)',
+                   'Operating System :: POSIX',
+                   'Operating System :: MacOS :: MacOS X',
                    'Programming Language :: Python',
-                   'Topic :: Scientific Software :: Biology',
-                   'Topic :: Scientific Software :: Chemistry',]
+                   'Topic :: Scientific/Engineering :: Bio-Informatics',
+                   'Topic :: Scientific/Engineering :: Chemistry',
+                   ]
 
     if 'DEBUG_CFLAGS' in os.environ:
         extra_compile_args = '\
