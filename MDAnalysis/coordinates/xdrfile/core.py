@@ -82,21 +82,24 @@ class Timestep(base.Timestep):
                 if hasattr(arg, attr):
                     self.__setattr__(attr, arg.__getattribute__(attr))
         elif isinstance(arg, numpy.ndarray):
-            if len(arg.shape) != 2: raise Exception("numpy array can only have 2 dimensions")
+            if len(arg.shape) != 2:
+                raise ValueError("numpy array can only have 2 dimensions")
             self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
             self.frame = 0
-            if arg.shape[0] == DIM:    ## wrong order
-                self.numatoms = arg.shape[-1]
-            else:
+            if arg.shape[0] == DIM and arg.shape[1] != DIM:    ## wrong order (need to exclude natoms == DIM!)
+                raise ValueError("Coordinate array must have shape (natoms, %(DIM)d)" % vars())
+            if arg.shape[1] == DIM:
                 self.numatoms = arg.shape[0]
-            self._pos = arg.copy('C')  ## C-order ! (?) -- does this work or do I have to transpose?
+            else:
+                raise ValueError("XDR timestep has not second dimension 3: shape=%r" % (arg.shape,))
+            self._pos = arg.copy('C')  ## C-order
             # additional data for xtc
             self.status = libxdrfile.exdrOK
             self.step = 0
             self.time = 0
             self.prec = 0
         else:
-            raise Exception("Cannot create an empty Timestep")
+            raise ValueError("Cannot create an empty Timestep")
         self._x = self._pos[:,0]
         self._y = self._pos[:,1]
         self._z = self._pos[:,2]
@@ -116,6 +119,120 @@ class Timestep(base.Timestep):
         z = self._unitcell[2]
         return triclinic_box(x,y,z)
 
+class TrjWriter(base.Writer):
+    """Writes to a Gromacs trajectory file
+
+    (Base class)
+    """
+    #: units of time (ps) and length (nm) in Gromacs
+    units = {'time': 'ps', 'length': 'nm'}
+    #: override to define trajectory format of the reader (XTC or TRR)
+    format = None
+
+    def __init__(self, filename, numatoms, start=0, step=1, delta=1.0, precision=1000.0, remarks=None,
+                  convert_units=None):
+        ''' Create a new TrjWriter
+
+        :Arguments:
+          *filename*
+             name of output file
+          *numatoms*
+             number of atoms in trajectory file
+
+        :Keywords:
+          *start*
+             starting timestep
+          *step*
+             skip between subsequent timesteps
+          *delta*
+             timestep
+          *precision*
+             accuracy for lossy XTC format [1000]
+          *convert_units*
+             ``True``: units are converted to the MDAnalysis base format; ``None`` selects
+             the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
+        '''
+        assert self.format in ('XTC', 'TRR')
+
+        if numatoms == 0:
+            raise ValueError("TrjWriter: no atoms in output trajectory")
+        self.filename = filename
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+        self.convert_units = convert_units    # convert length and time to base units on the fly?
+        self.numatoms = numatoms
+
+        self.frames_written = 0
+        self.start = start
+        self.step = step
+        self.delta = delta
+        self.remarks = remarks
+        self.precision = precision  # only for XTC
+        self.xdrfile = libxdrfile.xdrfile_open(filename, 'w')
+
+        self.ts = None
+
+    def write_next_timestep(self, ts=None):
+        ''' write a new timestep to the trj file
+
+        *ts* is a :class:`Timestep` instance containing coordinates to
+        be written to trajectory file
+        '''
+        if self.xdrfile is None:
+            raise IOError("Attempted to write to closed file %r", self.filename)
+        if ts is None:
+            if not hasattr(self, "ts"):
+                raise IOError("TrjWriter: no coordinate data to write to trajectory file")
+            else:
+                ts=self.ts
+        elif not ts.numatoms == self.numatoms:
+            # Check to make sure Timestep has the correct number of atoms
+            raise IOError("TrjWriter: Timestep does not have the correct number of atoms")
+
+        status = self._write_next_timestep(ts)
+
+        if status != libxdrfile.exdrOK:
+            raise IOError(errno.EIO, "Error writing %s file (status %d)" % (self.format, status), self.filename)
+        self.frames_written += 1
+
+    def _write_next_timestep(self, ts):
+        """Generic writer with minimum intelligence; override if necessary."""
+        if self.convert_units:
+            self.convert_pos_to_native(ts._pos)             # in-place !
+            try:
+                ts.time = self.convert_time_to_native(ts.time)
+            except AttributeError:
+                ts.time = ts.frame * self.convert_time_to_native(self.delta)
+        if not hasattr(ts, 'step'):
+            # bogus, should be actual MD step number, i.e. frame * delta/dt
+            ts.step = ts.frame
+        unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
+        if self.format == 'XTC':
+            status = libxdrfile.write_xtc(self.xdrfile, ts.step, ts.time, unitcell, ts._pos, self.precision)
+        elif self.format == 'TRR':
+            if not hasattr(ts, 'lmbda'):
+                ts.lmbda = 1.0
+            if not hasattr(ts, '_velocities'):
+                ts._velocities = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
+            if not hasattr(ts, '_forces'):
+                ts._forces = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
+            status = libxdrfile.write_trr(self.xdrfile, ts.step, ts.time, ts.lmbda, unitcell,
+                                           ts._pos, ts._velocities, ts._forces)
+        else:
+            raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
+        return status
+
+    def close(self):
+        status = libxdrfile.exdrCLOSE
+        if not self.xdrfile is None:
+            status = libxdrfile.xdrfile_close(self.xdrfile)
+            self.xdrfile = None
+        return status
+
+    def convert_dimensions_to_unitcell(self, ts):
+        """Read dimensions from timestep *ts* and return Gromacs box vectors"""
+        return self.convert_pos_to_native(triclinic_vectors(ts.dimensions))
+
 class TrjReader(base.Reader):
     """Generic base class for reading Gromacs trajectories inside MDAnalysis.
 
@@ -134,6 +251,8 @@ class TrjReader(base.Reader):
     #: supply the appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC
     _Timestep = Timestep
+    #: writer class that matches this reader (override appropriately)
+    _Writer = TrjWriter
 
     def __init__(self, filename, convert_units=None, **kwargs):
         self.filename = filename
@@ -278,14 +397,17 @@ class TrjReader(base.Reader):
               accuracy for lossy XTC format as a power of 10 (ignored
               for TRR) [1000.0]
 
-        :Returns: :class:`TrjWriter`
+        :Returns: appropriate :class:`TrjWriter`
         """
         numatoms = kwargs.pop('numatoms', self.numatoms)
         kwargs.pop('start', None)            # ignored by TrjWriter
         kwargs['step'] = self.skip_timestep  # ignored/fixed to 1
         kwargs.setdefault('delta', self.delta)
-        kwargs.setdefault('precision', self.precision)
-        return TrjWriter(filename, numatoms, **kwargs)
+        try:
+            kwargs.setdefault('precision', self.precision)
+        except AttributeError:
+            pass                             # not needed for TRR
+        return self._Writer(filename, numatoms, **kwargs)
 
     def __iter__(self):
         self.ts.frame = 0  # start at 0 so that the first frame becomes 1
@@ -396,118 +518,3 @@ class TrjReader(base.Reader):
 
     def __del__(self):
         self.close()
-
-
-class TrjWriter(base.Writer):
-    """Writes to a Gromacs trajectory file
-
-    (Base class)
-    """
-    #: units of time (ps) and length (nm) in Gromacs
-    units = {'time': 'ps', 'length': 'nm'}
-    #: override to define trajectory format of the reader (XTC or TRR)
-    format = None
-
-    def __init__(self, filename, numatoms, start=0, step=1, delta=1.0, precision=1000.0, remarks=None,
-                  convert_units=None):
-        ''' Create a new TrjWriter
-
-        :Arguments:
-          *filename*
-             name of output file
-          *numatoms*
-             number of atoms in trajectory file
-
-        :Keywords:
-          *start*
-             starting timestep
-          *step*
-             skip between subsequent timesteps
-          *delta*
-             timestep
-          *precision*
-             accuracy for lossy XTC format [1000]
-          *convert_units*
-             ``True``: units are converted to the MDAnalysis base format; ``None`` selects
-             the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
-        '''
-        assert self.format in ('XTC', 'TRR')
-
-        if numatoms == 0:
-            raise ValueError("TrjWriter: no atoms in output trajectory")
-        self.filename = filename
-        if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
-        self.convert_units = convert_units    # convert length and time to base units on the fly?
-        self.numatoms = numatoms
-
-        self.frames_written = 0
-        self.start = start
-        self.step = step
-        self.delta = delta
-        self.remarks = remarks
-        self.precision = precision  # only for XTC
-        self.xdrfile = libxdrfile.xdrfile_open(filename, 'w')
-
-        self.ts = None
-
-    def write_next_timestep(self, ts=None):
-        ''' write a new timestep to the trj file
-
-        *ts* is a :class:`Timestep` instance containing coordinates to
-        be written to trajectory file
-        '''
-        if self.xdrfile is None:
-            raise IOError("Attempted to write to closed file %r", self.filename)
-        if ts is None:
-            if not hasattr(self, "ts"):
-                raise IOError("TrjWriter: no coordinate data to write to trajectory file")
-            else:
-                ts=self.ts
-        elif not ts.numatoms == self.numatoms:
-            # Check to make sure Timestep has the correct number of atoms
-            raise IOError("TrjWriter: Timestep does not have the correct number of atoms")
-
-        status = self._write_next_timestep(ts)
-
-        if status != libxdrfile.exdrOK:
-            raise IOError(errno.EIO, "Error writing %s file (status %d)" % (self.format, status), self.filename)
-        self.frames_written += 1
-
-    def _write_next_timestep(self, ts):
-        """Generic writer with minimum intelligence; override if necessary."""
-        if self.convert_units:
-            self.convert_pos_to_native(ts._pos)             # in-place !
-            try:
-                ts.time = self.convert_time_to_native(ts.time)
-            except AttributeError:
-                ts.time = ts.frame * self.convert_time_to_native(self.delta)
-        if not hasattr(ts, 'step'):
-            # bogus, should be actual MD step number, i.e. frame * delta/dt
-            ts.step = ts.frame
-        unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
-        if self.format == 'XTC':
-            status = libxdrfile.write_xtc(self.xdrfile, ts.step, ts.time, unitcell, ts._pos, self.precision)
-        elif self.format == 'TRR':
-            if not hasattr(ts, 'lmbda'):
-                ts.lmbda = 1.0
-            if not hasattr(ts, '_velocities'):
-                ts._velocities = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
-            if not hasattr(ts, '_forces'):
-                ts._forces = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
-            status = libxdrfile.write_trr(self.xdrfile, ts.step, ts.time, ts.lmbda, unitcell,
-                                           ts._pos, ts._velocities, ts._forces)
-        else:
-            raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
-        return status
-
-    def close(self):
-        status = libxdrfile.exdrCLOSE
-        if not self.xdrfile is None:
-            status = libxdrfile.xdrfile_close(self.xdrfile)
-            self.xdrfile = None
-        return status
-
-    def convert_dimensions_to_unitcell(self, ts):
-        """Read dimensions from timestep *ts* and return Gromacs box vectors"""
-        return self.convert_pos_to_native(triclinic_vectors(ts.dimensions))

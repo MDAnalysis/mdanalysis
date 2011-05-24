@@ -43,12 +43,13 @@ import core
 class Timestep(core.Timestep):
     """Timestep for a Gromacs XTC trajectory."""
 
+class XTCWriter(core.TrjWriter):
+    """Write a Gromacs_ XTC trajectory."""
+    format = "XTC"
+
 class XTCReader(core.TrjReader):
     """Read Gromacs_ XTC trajectory."""
     format = "XTC"
     _Timestep = Timestep
-
-class XTCWriter(core.TrjWriter):
-    """Write a Gromacs_ XTC trajectory."""
-    format = "XTC"
+    _Writer = XTCWriter
 

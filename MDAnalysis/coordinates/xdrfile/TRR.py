@@ -75,20 +75,25 @@ class Timestep(core.Timestep):
         elif isinstance(arg, numpy.ndarray):
             # provide packed array shape == (natoms, 3*DIM)
             # which contains pos = arg[:,0:3], v = arg[:,3:6], f = arg[:, 6:9]
-            if len(arg.shape) != 2: raise ValueError("packed numpy array (x,v,f) can only have 2 dimensions")
+            # or just positions: pos = arg[:,0:3] == arg
+            if len(arg.shape) != 2:
+                raise ValueError("packed numpy array (x,v,f) can only have 2 dimensions")
             self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
             self.frame = 0
-            if arg.shape[0] == 3*DIM:
-                self.numatoms = arg.shape[1]    # C-order
-            elif arg.shape[1] == 3*DIM:
-                self.numatoms = arg.shape[0]    # C-order
+            if (arg.shape[0] == 3*DIM and arg.shape[1] != 3*DIM) or \
+                    (arg.shape[0] == DIM and arg.shape[1] != DIM):
+                # wrong order (but need to exclude case where natoms == DIM or natoms == 3*DIM!)
+                raise ValueError("TRR timestep is to be initialized from (natoms, 3*3) or (natoms, 3) array")
+            self.numatoms = arg.shape[0]
+            self._pos = arg[:,0:DIM].copy('C')                   # C-order
+            if arg.shape[1] == 3*DIM:
+                self._velocities = arg[:,DIM:2*DIM].copy('C')    # C-order
+                self._forces = arg[:,2*DIM:3*DIM].copy('C')      # C-order
+            elif arg.shape[1] == DIM:
+                self._velocities = numpy.zeros_like(self._pos)
+                self._forces = numpy.zeros_like(self._pos)
             else:
-                raise ValueError("TRR timestep is to be initialized from (natoms, 3*3) array")
-            # OB -- not sure if this is really doing what it's supposed to, especially
-            # when the order is really swapped in arg
-            self._pos = arg[:,0:DIM].copy('C')               # C-order
-            self._velocities = arg[:,DIM:2*DIM].copy('C')    # C-order
-            self._pos = arg[:,2*DIM:3*DIM].copy('C')         # C-order
+                raise ValueError("TRR timestep has not second dimension 3 or 9: shape=%r" % (arg.shape,))
             # additional data for trr
             self.status = libxdrfile.exdrOK
             self.step = 0
@@ -100,14 +105,15 @@ class Timestep(core.Timestep):
         self._y = self._pos[:,1]
         self._z = self._pos[:,2]
 
+class TRRWriter(core.TrjWriter):
+    """Write a Gromacs_ TRR trajectory."""
+    format = "TRR"
+    units = {'time': 'ps', 'length':'nm', 'velocity':'nm/ps', 'force':'kJ/(mol*nm)'}
 
 class TRRReader(core.TrjReader):
     """Read a Gromacs_ TRR trajectory."""
     format = "TRR"
     _Timestep = Timestep
+    _Writer = TRRWriter
     units = {'time': 'ps', 'length':'nm', 'velocity':'nm/ps', 'force':'kJ/(mol*nm)'}
 
-class TRRWriter(core.TrjWriter):
-    """Write a Gromacs_ TRR trajectory."""
-    format = "TRR"
-    units = {'time': 'ps', 'length':'nm', 'velocity':'nm/ps', 'force':'kJ/(mol*nm)'}

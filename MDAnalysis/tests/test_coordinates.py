@@ -937,6 +937,16 @@ class _GromacsReader(TestCase):
         self.trajectory = self.universe.trajectory
         self.prec = 3
         self.ts = self.universe.coord
+        # dummy output file
+        ext = os.path.splitext(self.filename)[1]
+        fd, self.outfile = tempfile.mkstemp(suffix=ext)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+        del self.universe
 
     @dec.slow
     def test_flag_convert_gromacs_lengths(self):
@@ -1030,6 +1040,25 @@ class _GromacsReader(TestCase):
         assert_almost_equal(self.universe.trajectory.time, 500.0, 5,
                             err_msg="wrong time of frame")
 
+    @dec.slow
+    def test_get_Writer(self):
+        W = self.universe.trajectory.Writer(self.outfile)
+        assert_equal(self.universe.trajectory.format, W.format)
+        assert_equal(self.universe.atoms.numberOfAtoms(), W.numatoms)
+        W.close()
+
+    @dec.slow
+    def test_Writer(self):
+        W = self.universe.trajectory.Writer(self.outfile)
+        W.write(self.universe.atoms)
+        self.universe.trajectory.next()
+        W.write(self.universe.atoms)
+        W.close()
+        self.universe.trajectory.rewind()
+        u = MDAnalysis.Universe(GRO, self.outfile)
+        assert_equal(u.trajectory.numframes, 2)
+        # prec = 6: TRR test fails; here I am generous and take self.prec = 3...
+        assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec)
 
 class TestXTCReader(_GromacsReader):
     filename = XTC
