@@ -136,7 +136,7 @@ def guess_format(filename, format=None):
 
     # sanity check
     if not format in MDAnalysis.topology._topology_parsers:
-        raise TypeError("Unknown topology extension %r from %r; only %r are implemented in MDAnalysis." %
+        raise TypeError("Unknown topology format %r for %r; only %r are implemented in MDAnalysis." %
                         (format, filename, MDAnalysis.topology._topology_parsers.keys()))
     return format
 

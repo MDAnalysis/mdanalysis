@@ -1194,7 +1194,7 @@ class Universe(object):
     A trajectory provides coordinates; the coordinates have to be ordered in
     the same way as the list of atoms in the topology. A trajectory can be a
     single frame such as a PDB, CRD, or GRO file, or it can be a MD trajectory
-    (in CHARMM/NAMD/LAMMOS DCD, Gromacs XTC/TRR, or generic XYZ format).  See
+    (in CHARMM/NAMD/LAMMPS DCD, Gromacs XTC/TRR, or generic XYZ format).  See
     :ref:`Supported coordinate formats` for what can be read as a
     "trajectory".
 

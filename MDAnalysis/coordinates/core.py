@@ -188,8 +188,8 @@ def guess_format(filename, format=None):
 
     # sanity check
     if format != 'CHAIN' and not format in MDAnalysis.coordinates._trajectory_readers:
-        raise TypeError("Unknown coordinate trajectory extension %r from %r; only %r are implemented in MDAnalysis." %
-                        (ext, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
+        raise TypeError("Unknown coordinate trajectory format %r for %r; only %r are implemented in MDAnalysis." %
+                        (format, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
 
     return format
 
