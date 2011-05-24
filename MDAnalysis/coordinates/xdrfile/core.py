@@ -281,7 +281,7 @@ class TrjReader(base.Reader):
         :Returns: :class:`TrjWriter`
         """
         numatoms = kwargs.pop('numatoms', self.numatoms)
-        kwargs.pop('start')                  # ignored by TrjWriter
+        kwargs.pop('start', None)            # ignored by TrjWriter
         kwargs['step'] = self.skip_timestep  # ignored/fixed to 1
         kwargs.setdefault('delta', self.delta)
         kwargs.setdefault('precision', self.precision)
