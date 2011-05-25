@@ -57,7 +57,9 @@ literature value of the TIP3P water model at ambient conditions (see the values
 in :data:`MDAnalysis.core.units.water` for details). Finally, the density is
 writte as an OpenDX_ compatible file that can be read in VMD_ or PyMOL_.
 
-See :class:`Density` for details.
+See :class:`Density` for details. In particular, the density is stored
+as a NumPy array in :attr:`Density.grid`, which can be processed in
+any manner.
 
 .. _OpenDX: http://www.opendx.org/
 
@@ -67,12 +69,17 @@ Classes and Functions
 
 .. autoclass:: Density
    :members:
+   :inherited-members:
+   :show-inheritance:
 .. autofunction:: density_from_Universe
 .. autofunction:: density_from_trajectory
 .. autofunction:: density_from_PDB
 .. autofunction:: Bfactor2RMSF
 .. autoclass:: BfactorDensityCreator
    :members:
+.. autoclass:: Grid
+   :members:
+   :inherited-members:
 
 """
 import numpy  # need v >= 1.0.3
@@ -118,9 +125,9 @@ class Density(Grid):
     The attribute :attr:`Density.metadata` holds a user-defined dictionary that
     can be used to annotate the data. It is also saved with :meth:`Density.save`.
 
-    The :meth:`Density.export(format='dx')` method always exports a 3D
-    object (written in such a way to be readable in VMD_ and PyMOL_),
-    the rest should work for an array of any dimension.
+    The :meth:`Density.export` method always exports a 3D object
+    (written in such a way to be readable in VMD_ and PyMOL_), the
+    rest should work for an array of any dimension.
 
     If the input histogram consists of counts per cell then the
     :meth:`Density.make_density` method converts the grid to a physical density. For
@@ -165,15 +172,18 @@ class Density(Grid):
        Angstrom, with the density values itself measured relative to the
        density of water.
 
+    :class:`Density` objects can be algebraically manipulated (added,
+    subtracted, multiplied, ...)  but there are *no sanity checks* in place to
+    make sure that units, metadata, etc are compatible!
+
     .. Note:: It is suggested to construct the Grid object from a
        histogram, to supply the appropriate length unit, and to use
        :meth:`Density.make_density` to obtain a density. This ensures
        that the length- and the density unit correspond to each other.
 
-    .. SeeAlso:: :class:`gridData.Grid` at GridDataFormats_ (from which :class:`Density`
-       is derived) for more details. Note that :class:`Density` objects can be
-       algebraically manipulated but there are *no sanity checks* in
-       place to make sure that units, metadata, etc are compatible!
+    .. SeeAlso:: :class:`Grid` which is the base class of
+       :class:`Density`. (:class:`Grid` has been imported from
+       :class:`gridData.Grid` which is part of GridDataFormats_).
 
     .. _VMD:   http://www.ks.uiuc.edu/Research/vmd/
     .. _PyMOL: http://www.pymol.org/
@@ -183,11 +193,11 @@ class Density(Grid):
         """Create a :class:`Density` from data.
 
         :Arguments:
-          grid
-            histogram or density and ...
-          edges
+          *grid*
+            histogram or density, typically a :class:`numpy.ndarray`
+          *edges*
             list of arrays, the lower and upper bin edges along the axes
-          parameters
+          *parameters*
             dictionary of class parameters; saved with
             :meth:`Density.save`. The following keys are meaningful to
             the class. Meaning of the values are listed:
@@ -198,7 +208,7 @@ class Density(Grid):
                 - ``True``: a density
 
                 Applying :meth:`Density.make_density`` sets it to ``True``.
-          units
+          *units*
             A dict with the keys
 
             - *length*:  physical unit of grid edges (Angstrom or nm) [Angstrom]
@@ -208,10 +218,10 @@ class Density(Grid):
             (Actually, the default unit is the value of
             :attr:`MDAnalysis.core.flags['length_unit']`; in most cases this is "Angstrom".)
 
-          metadata
-                a user defined dictionary of arbitrary values
-                associated with the density; the class does not touch
-                :attr:`Density.metadata` but stores it with :meth:`Density.save`
+          *metadata*
+            a user defined dictionary of arbitrary values associated with the
+            density; the class does not touch :attr:`Density.metadata` but
+            stores it with :meth:`Density.save`
 
         """
         length_unit = MDAnalysis.core.flags['length_unit']
@@ -662,24 +672,25 @@ class BfactorDensityCreator(object):
     Sigma can be fixed or taken from the B-factor field, in which case
     sigma is taken as sqrt(3.*B/8.)/pi (see :func:`BFactor2RMSF`).
 
-    **TODO**
-
-       * Make Gaussian convolution more efficient (at least for same
-         sigma) because right now it is *very* slow (which may be
-         acceptable if one only runs this once)
-       * Using a temporary Creator class with the
-         :meth:`BfactorDensityCreator.Density` helper method is clumsy.
+    .. TODO
+    .. * Make Gaussian convolution more efficient (at least for same
+    ..   sigma) because right now it is *very* slow (which may be
+    ..   acceptable if one only runs this once)
+    .. * Using a temporary Creator class with the
+    ..   :meth:`BfactorDensityCreator.Density` helper method is clumsy.
 
     """
     def __init__(self,pdb,delta=1.0,atomselection='resname HOH and name O',
                 metadata=None,padding=1.0, sigma=None):
         """Construct the density from psf and pdb and the atomselection.
 
-        DC = BfactorDensityCreator(pdb, delta=<delta>, atomselection=<MDAnalysis selection>,
+          DC = BfactorDensityCreator(pdb, delta=<delta>, atomselection=<MDAnalysis selection>,
                                   metadata=<dict>, padding=2, sigma=None)
-        density = DC.Density()
+
+          density = DC.Density()
 
         :Arguments:
+
           pdb
             PDB file or :class:`MDAnalysis.Universe`; a PDB is read with the
             simpl PDB reader. If the Bio.PDB reader is required, either set
