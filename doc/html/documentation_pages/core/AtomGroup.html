@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.3 documentation</title>
+    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.4-devel documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.3',
+        VERSION:     '0.7.4-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.3 documentation"
+          title="Search within MDAnalysis v0.7.4-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.4-devel documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
     <link rel="prev" title="7.1. Core functions of MDAnalysis" href="init.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.4-devel documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -141,7 +141,7 @@ file with atom informations such as PDB, Gromacs GRO, or CHARMM CRD. See
 <p>A trajectory provides coordinates; the coordinates have to be ordered in
 the same way as the list of atoms in the topology. A trajectory can be a
 single frame such as a PDB, CRD, or GRO file, or it can be a MD trajectory
-(in CHARMM/NAMD/LAMMOS DCD, Gromacs XTC/TRR, or generic XYZ format).  See
+(in CHARMM/NAMD/LAMMPS DCD, Gromacs XTC/TRR, or generic XYZ format).  See
 <a class="reference internal" href="../coordinates/init.html#id1"><em>Table of Supported coordinate formats</em></a> for what can be read as a
 &#8220;trajectory&#8221;.</p>
 <p>As a special case, when the topology is a PDB, GRO or CRD file
@@ -207,6 +207,17 @@ and read typical MD simulation PDB files; set to <tt class="xref docutils litera
 which can be useful for real Protein Databank PDB files. <tt class="xref docutils literal"><span class="pre">None</span></tt>  selects the
 MDAnalysis default (which is set in <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt>) [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
+<dt><em>topology_format</em></dt>
+<dd><p class="first last">provide the file format of the topology file; <tt class="xref docutils literal"><span class="pre">None</span></tt> guesses it from the file
+extension [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+<dt><em>format</em></dt>
+<dd><p class="first last">provide the file format of the coordinate or trajectory file;
+<tt class="xref docutils literal"><span class="pre">None</span></tt> guesses it from the file extension. Note that this
+keyword has no effect if a list of file names is supplied because
+the &#8220;chained&#8221; reader has to guess the file format for each
+individual list member. [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
 </dl>
 </td>
 </tr>
@@ -221,13 +232,23 @@ a functional universe with</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s">&#39;1ake.pdb&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>If you want to specify the coordinate file format yourself you can
+do so using the <em>format</em> keyword:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s">&#39;1ake.ent1&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;pdb&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 <li><p class="first">If only a topology file without coordinate information is provided
-one will have to load coordinates manually using <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.load_new" title="MDAnalysis.core.AtomGroup.Universe.load_new"><tt class="xref py py-meth docutils literal"><span class="pre">Universe.load_new()</span></tt></a>.</p>
+one will have to load coordinates manually using
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.load_new" title="MDAnalysis.core.AtomGroup.Universe.load_new"><tt class="xref py py-meth docutils literal"><span class="pre">Universe.load_new()</span></tt></a>. The file format of the topology file
+can be explicitly set with the <em>topology_format</em> keyword.</p>
 </li>
 </ol>
 </dd>
 </dl>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.4: </span>New <em>topology_format</em> and <em>format</em> parameters to override the file
+format detection.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Universe.coord">
 <tt class="descname">coord</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.coord" title="Permalink to this definition">¶</a></dt>
@@ -262,7 +283,7 @@ all coordinates of the Universe as a numpy array:
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
-<dd><p class="first last">the coordinate file (single frame or trajectory) OR a list of
+<dd><p class="first last">the coordinate file (single frame or trajectory) <em>or</em> a list of
 filenames, which are read one after another</p>
 </dd>
 <dt><em>permissive</em></dt>
@@ -270,6 +291,13 @@ filenames, which are read one after another</p>
 and read typical MD simulation PDB files; set to <tt class="xref docutils literal"><span class="pre">False</span></tt> to read with the Bio.PDB reader,
 which can be useful for real Protein Databank PDB files. <tt class="xref docutils literal"><span class="pre">None</span></tt>  selects the
 MDAnalysis default (which is set in <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt>) [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+<dt><em>format</em></dt>
+<dd><p class="first last">provide the file format of the coordinate or trajectory file;
+<tt class="xref docutils literal"><span class="pre">None</span></tt> guesses it from the file extension. Note that this
+keyword has no effect if a list of file names is supplied because
+the &#8220;chained&#8221; reader has to guess the file format for each
+individual list member [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">other kwargs are passed to the trajectory reader (only for advanced use)</p>
@@ -428,7 +456,7 @@ whereas the slice</p>
 <div>ag[0:6:2]</div></blockquote>
 <p>returns every second element, corresponding to indices 0, 2, and 4.</p>
 <p>It also supports &#8220;advanced slicing&#8221; when the argument is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-5c4efaa)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-3071eab)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aslice</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">ag</span><span class="p">[</span><span class="n">aslice</span><span class="p">]</span>
 </pre></div>
@@ -1258,7 +1286,7 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.4-devel documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>

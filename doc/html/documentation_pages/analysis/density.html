@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.4. Generating densities from trajectories — MDAnalysis.analysis.density &mdash; MDAnalysis v0.7.3 documentation</title>
+    <title>3.4. Generating densities from trajectories — MDAnalysis.analysis.density &mdash; MDAnalysis v0.7.4-devel documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.3',
+        VERSION:     '0.7.4-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.3 documentation"
+          title="Search within MDAnalysis v0.7.4-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.3 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.4-devel documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.5. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds" href="hbonds.html" />
     <link rel="prev" title="3.3. Distance analysis — MDAnalysis.distances" href="distances.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="distances.html" title="3.3. Distance analysis — MDAnalysis.distances"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.4-devel documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -67,7 +67,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="distances.html"
-                        title="previous chapter">3.3. Distance analysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
+                        title="previous chapter">3.3. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="hbonds.html"
                         title="next chapter">3.5. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a></p>
@@ -138,27 +138,30 @@ changed. In the example we are now measuring the density relative to the
 literature value of the TIP3P water model at ambient conditions (see the values
 in <a class="reference internal" href="../core/units.html#MDAnalysis.core.units.water" title="MDAnalysis.core.units.water"><tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.units.water</span></tt></a> for details). Finally, the density is
 writte as an <a class="reference external" href="http://www.opendx.org/">OpenDX</a> compatible file that can be read in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> or <a class="reference external" href="http://www.pymol.org/">PyMOL</a>.</p>
-<p>See <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a> for details.</p>
+<p>See <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a> for details. In particular, the density is stored
+as a NumPy array in <tt class="xref py py-attr docutils literal"><span class="pre">Density.grid</span></tt>, which can be processed in
+any manner.</p>
 </div>
 <div class="section" id="classes-and-functions">
 <h2>3.4.2. Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.density.Density">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">Density</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class representing a density on a regular cartesian grid.</p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">gridData.core.Grid</span></tt></p>
+<p>Class representing a density on a regular cartesian grid.</p>
 <p>The data (<tt class="xref py py-attr docutils literal"><span class="pre">Density.grid</span></tt>) can be manipulated as a standard numpy
-array. Changes can be saved to a file using the <tt class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></tt> method. The
-grid can be restored using the <tt class="xref py py-meth docutils literal"><span class="pre">Density.load()</span></tt> method or by supplying the
+array. Changes can be saved to a file using the <a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><tt class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></tt></a> method. The
+grid can be restored using the <a class="reference internal" href="#MDAnalysis.analysis.density.Density.load" title="MDAnalysis.analysis.density.Density.load"><tt class="xref py py-meth docutils literal"><span class="pre">Density.load()</span></tt></a> method or by supplying the
 filename to the constructor.</p>
 <p>The attribute <tt class="xref py py-attr docutils literal"><span class="pre">Density.metadata</span></tt> holds a user-defined dictionary that
-can be used to annotate the data. It is also saved with <tt class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></tt>.</p>
-<p>The <tt class="xref py py-meth docutils literal"><span class="pre">Density.export(format='dx')()</span></tt> method always exports a 3D
-object (written in such a way to be readable in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> and <a class="reference external" href="http://www.pymol.org/">PyMOL</a>),
-the rest should work for an array of any dimension.</p>
+can be used to annotate the data. It is also saved with <a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><tt class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></tt></a>.</p>
+<p>The <a class="reference internal" href="#MDAnalysis.analysis.density.Density.export" title="MDAnalysis.analysis.density.Density.export"><tt class="xref py py-meth docutils literal"><span class="pre">Density.export()</span></tt></a> method always exports a 3D object
+(written in such a way to be readable in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> and <a class="reference external" href="http://www.pymol.org/">PyMOL</a>), the
+rest should work for an array of any dimension.</p>
 <p>If the input histogram consists of counts per cell then the
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><tt class="xref py py-meth docutils literal"><span class="pre">Density.make_density()</span></tt></a> method converts the grid to a physical density. For
 a probability density, divide it by <tt class="xref py py-meth docutils literal"><span class="pre">Density.grid.sum()</span></tt> or use <tt class="docutils literal"><span class="pre">normed=True</span></tt>
-right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.0.dev-5c4efaa)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
+right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.0.dev-3071eab)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
 <p>The user <em>should</em> set the <em>parameters</em> keyword (see docs for the
 constructor); in particular, if the data are already a density, one must
 set <em>isDensity</em> == <tt class="xref docutils literal"><span class="pre">True</span></tt> because there is no reliable way to detect if
@@ -200,6 +203,9 @@ Angstrom, with the density values itself measured relative to the
 density of water.</p>
 </li>
 </ol>
+<p><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a> objects can be algebraically manipulated (added,
+subtracted, multiplied, ...)  but there are <em>no sanity checks</em> in place to
+make sure that units, metadata, etc are compatible!</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">It is suggested to construct the Grid object from a
@@ -209,10 +215,9 @@ that the length- and the density unit correspond to each other.</p>
 </div>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-class docutils literal"><span class="pre">gridData.Grid</span></tt> at <a class="reference external" href="https://github.com/orbeckst/GridDataFormats">GridDataFormats</a> (from which <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a>
-is derived) for more details. Note that <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a> objects can be
-algebraically manipulated but there are <em>no sanity checks</em> in
-place to make sure that units, metadata, etc are compatible!</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><tt class="xref py py-class docutils literal"><span class="pre">Grid</span></tt></a> which is the base class of
+<a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a>. (<a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><tt class="xref py py-class docutils literal"><span class="pre">Grid</span></tt></a> has been imported from
+<tt class="xref py py-class docutils literal"><span class="pre">gridData.Grid</span></tt> which is part of <a class="reference external" href="https://github.com/orbeckst/GridDataFormats">GridDataFormats</a>).</p>
 </div>
 <p>Create a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a> from data.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -220,15 +225,15 @@ place to make sure that units, metadata, etc are compatible!</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
-<dt>grid</dt>
-<dd><p class="first last">histogram or density and ...</p>
+<dt><em>grid</em></dt>
+<dd><p class="first last">histogram or density, typically a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-3071eab)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></p>
 </dd>
-<dt>edges</dt>
+<dt><em>edges</em></dt>
 <dd><p class="first last">list of arrays, the lower and upper bin edges along the axes</p>
 </dd>
-<dt>parameters</dt>
+<dt><em>parameters</em></dt>
 <dd><p class="first">dictionary of class parameters; saved with
-<tt class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></tt>. The following keys are meaningful to
+<a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><tt class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></tt></a>. The following keys are meaningful to
 the class. Meaning of the values are listed:</p>
 <blockquote class="last">
 <div><p><em>isDensity</em></p>
@@ -241,7 +246,7 @@ the class. Meaning of the values are listed:</p>
 </div></blockquote>
 </div></blockquote>
 </dd>
-<dt>units</dt>
+<dt><em>units</em></dt>
 <dd><p class="first">A dict with the keys</p>
 <ul class="simple">
 <li><em>length</em>:  physical unit of grid edges (Angstrom or nm) [Angstrom]</li>
@@ -251,16 +256,40 @@ otherwise; the default is &#8220;Angstrom^{-3}&#8221; for densities (meaning A^-
 <p class="last">(Actually, the default unit is the value of
 <tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.flags['length_unit']</span></tt>; in most cases this is &#8220;Angstrom&#8221;.)</p>
 </dd>
-<dt>metadata</dt>
-<dd><p class="first last">a user defined dictionary of arbitrary values
-associated with the density; the class does not touch
-<tt class="xref py py-attr docutils literal"><span class="pre">Density.metadata</span></tt> but stores it with <tt class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></tt></p>
+<dt><em>metadata</em></dt>
+<dd><p class="first last">a user defined dictionary of arbitrary values associated with the
+density; the class does not touch <tt class="xref py py-attr docutils literal"><span class="pre">Density.metadata</span></tt> but
+stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><tt class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></tt></a></p>
 </dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Density.centers">
+<tt class="descname">centers</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.centers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the coordinates of the centers of all grid cells as an iterator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Density.check_compatible">
+<tt class="descname">check_compatible</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.check_compatible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if <em>other</em> can be used in an arithmetic operation.</p>
+<ol class="arabic simple">
+<li><em>other</em> is a scalar</li>
+<li><em>other</em> is a grid defined on the same edges</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt> if not compatible.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.Density.convert_density">
 <tt class="descname">convert_density</tt><big>(</big><em>unit='Angstrom'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.convert_density" title="Permalink to this definition">¶</a></dt>
@@ -340,6 +369,54 @@ to start from a histogram and a length unit and use
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.analysis.density.Density.export">
+<tt class="descname">export</tt><big>(</big><em>filename</em>, <em>format=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>export density to file using the given format; use &#8216;dx&#8217; for visualization.</p>
+<p>export(filename=&lt;filename&gt;,format=&lt;format&gt;)</p>
+<p>The format can also be deduced from the suffix of the filename
+though the <em>format</em> keyword takes precedence.</p>
+<p>The default format for export() is &#8216;dx&#8217;.</p>
+<p>Only implemented formats:</p>
+<p>dx        OpenDX
+pickle    pickle (use Grid.load(filename) to restore); Grid.save()</p>
+<blockquote>
+<div>is simpler than export(format=&#8217;python&#8217;).</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.Density.interpolated">
+<tt class="descname">interpolated</tt><a class="headerlink" href="#MDAnalysis.analysis.density.Density.interpolated" title="Permalink to this definition">¶</a></dt>
+<dd><p>B-spline function over the data grid(x,y,z).</p>
+<blockquote>
+<div>interpolated([x1,x2,...],[y1,y2,...],[z1,z2,...]) -&gt; F[x1,y1,z1],F[x2,y2,z2],...</div></blockquote>
+<p>The interpolation order is set in <tt class="xref py py-attr docutils literal"><span class="pre">Grid.interpolation_spline_order</span></tt>.</p>
+<p>The interpolated function is computed once and is cached for better
+performance. Whenever <tt class="xref py py-attr docutils literal"><span class="pre">interpolation_spline_order</span></tt> is
+modified, <a class="reference internal" href="#MDAnalysis.analysis.density.Grid.interpolated" title="MDAnalysis.analysis.density.Grid.interpolated"><tt class="xref py py-meth docutils literal"><span class="pre">Grid.interpolated()</span></tt></a> is recomputed.</p>
+<p>The value for unknown data is set in <tt class="xref py py-attr docutils literal"><span class="pre">Grid.interpolation_cval</span></tt>
+(TODO: also recompute when interpolation_cval value is changed.)</p>
+<dl class="docutils">
+<dt>Example usage for resampling::</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">XX</span><span class="p">,</span><span class="n">YY</span><span class="p">,</span><span class="n">ZZ</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">75</span><span class="p">:</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">96</span><span class="p">:</span><span class="mi">150</span><span class="p">:</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mf">0.5</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FF</span> <span class="o">=</span> <span class="n">interpolated</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span><span class="n">YY</span><span class="p">,</span><span class="n">ZZ</span><span class="p">)</span>            
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Density.load">
+<tt class="descname">load</tt><big>(</big><em>filename</em>, <em>format=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load saved (pickled or dx) grid and edges from &lt;filename&gt;.pickle</p>
+<blockquote>
+<div>Grid.load(&lt;filename&gt;.pickle)
+Grid.load(&lt;filename&gt;.dx)</div></blockquote>
+<p>The load() method calls the class&#8217;s constructor method and
+completely resets all values, based on the loaded data.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.analysis.density.Density.make_density">
 <tt class="descname">make_density</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.make_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the grid (a histogram, counts in a cell) to a density (counts/volume).</p>
@@ -350,6 +427,37 @@ to start from a histogram and a length unit and use
 <li>For a probability density, manually divide by grid.sum().</li>
 </ol>
 <p>If this is already a density, then a warning is issued and nothing is done.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Density.resample">
+<tt class="descname">resample</tt><big>(</big><em>edges</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.resample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample data to a new grid with edges <em>edges</em>.</p>
+<blockquote>
+<div>resample(edges) &#8211;&gt; Grid</div></blockquote>
+<p>or</p>
+<blockquote>
+<div>resample(otherGrid) &#8211;&gt; Grid</div></blockquote>
+<p>The order of the interpolation is set by
+<tt class="xref py py-attr docutils literal"><span class="pre">Grid.interpolation_spline_order</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Density.resample_factor">
+<tt class="descname">resample_factor</tt><big>(</big><em>factor</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.resample_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample to a new regular grid with factor*oldN cells along each dimension.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Density.save">
+<tt class="descname">save</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a grid object to &lt;filename&gt;.pickle</p>
+<blockquote>
+<div>Grid.save(filename)</div></blockquote>
+<p>Internally, this calls Grid.export(filename,format=&#8221;python&#8221;). A grid can be
+regenerated from the saved data with</p>
+<blockquote>
+<div>g = Grid(filename=&lt;filename&gt;)</div></blockquote>
 </dd></dl>
 
 </dd></dl>
@@ -559,22 +667,14 @@ estimated by placing Gaussians of width sigma at the position of
 all selected atoms.</p>
 <p>Sigma can be fixed or taken from the B-factor field, in which case
 sigma is taken as sqrt(3.*B/8.)/pi (see <tt class="xref py py-func docutils literal"><span class="pre">BFactor2RMSF()</span></tt>).</p>
-<p><strong>TODO</strong></p>
-<blockquote>
-<div><ul class="simple">
-<li>Make Gaussian convolution more efficient (at least for same
-sigma) because right now it is <em>very</em> slow (which may be
-acceptable if one only runs this once)</li>
-<li>Using a temporary Creator class with the
-<a class="reference internal" href="#MDAnalysis.analysis.density.BfactorDensityCreator.Density" title="MDAnalysis.analysis.density.BfactorDensityCreator.Density"><tt class="xref py py-meth docutils literal"><span class="pre">BfactorDensityCreator.Density()</span></tt></a> helper method is clumsy.</li>
-</ul>
-</div></blockquote>
 <p>Construct the density from psf and pdb and the atomselection.</p>
-<dl class="docutils">
+<blockquote>
+<div><dl class="docutils">
 <dt>DC = BfactorDensityCreator(pdb, delta=&lt;delta&gt;, atomselection=&lt;MDAnalysis selection&gt;,</dt>
 <dd>metadata=&lt;dict&gt;, padding=2, sigma=None)</dd>
 </dl>
 <p>density = DC.Density()</p>
+</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -621,6 +721,166 @@ that can be easily matched to a broader density distribution.</p>
 
 </dd></dl>
 
+<dl class="class">
+<dt id="MDAnalysis.analysis.density.Grid">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">Grid</tt><big>(</big><em>grid=None</em>, <em>edges=None</em>, <em>origin=None</em>, <em>delta=None</em>, <em>metadata=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to manage a multidimensional grid object.</p>
+<p>The export(format=&#8217;dx&#8217;) method always exports a 3D object, the
+rest should work for an array of any dimension.</p>
+<p>The grid (Grid.grid) can be manipulated as a standard numpy
+array.</p>
+<p>The attribute Grid.metadata holds a user-defined dictionary that
+can be used to annotate the data. It is saved with save().</p>
+<p>Create a Grid object from data.</p>
+<dl class="docutils">
+<dt>From a numpy.histogramdd()::</dt>
+<dd>grid,edges = numpy.histogramdd(...)
+g = Grid(grid,edges=edges)</dd>
+<dt>From an arbitrary grid::</dt>
+<dd>g = Grid(grid,origin=origin,delta=delta)</dd>
+<dt>From a saved file::</dt>
+<dd>g = Grid(filename)</dd>
+<dt>or</dt>
+<dd>g = Grid()
+g.load(filename)</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt>grid       </dt>
+<dd><p class="first last">histogram or density, defined on numpy nD array</p>
+</dd>
+<dt>edges</dt>
+<dd><p class="first last">list of arrays, the lower and upper bin edges along the axes
+(both are output by numpy.histogramdd())</p>
+</dd>
+<dt>origin</dt>
+<dd><p class="first last">cartesian coordinates of the center of grid[0,0,...,0]</p>
+</dd>
+<dt>delta</dt>
+<dd><p class="first last">Either n x n array containing the cell lengths in each dimension, 
+or n x 1 array for rectangular arrays.</p>
+</dd>
+<dt>metadata</dt>
+<dd><p class="first last">a user defined dictionary of arbitrary values
+associated with the density; the class does not touch
+metadata[] but stores it with save()</p>
+</dd>
+<dt>interpolation_spline_order</dt>
+<dd><p class="first last">order of interpolation function for resampling; cubic splines = 3 [3]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.centers">
+<tt class="descname">centers</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.centers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the coordinates of the centers of all grid cells as an iterator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.check_compatible">
+<tt class="descname">check_compatible</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.check_compatible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if <em>other</em> can be used in an arithmetic operation.</p>
+<ol class="arabic simple">
+<li><em>other</em> is a scalar</li>
+<li><em>other</em> is a grid defined on the same edges</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt> if not compatible.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.export">
+<tt class="descname">export</tt><big>(</big><em>filename</em>, <em>format=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>export density to file using the given format; use &#8216;dx&#8217; for visualization.</p>
+<p>export(filename=&lt;filename&gt;,format=&lt;format&gt;)</p>
+<p>The format can also be deduced from the suffix of the filename
+though the <em>format</em> keyword takes precedence.</p>
+<p>The default format for export() is &#8216;dx&#8217;.</p>
+<p>Only implemented formats:</p>
+<p>dx        OpenDX
+pickle    pickle (use Grid.load(filename) to restore); Grid.save()</p>
+<blockquote>
+<div>is simpler than export(format=&#8217;python&#8217;).</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.Grid.interpolated">
+<tt class="descname">interpolated</tt><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.interpolated" title="Permalink to this definition">¶</a></dt>
+<dd><p>B-spline function over the data grid(x,y,z).</p>
+<blockquote>
+<div>interpolated([x1,x2,...],[y1,y2,...],[z1,z2,...]) -&gt; F[x1,y1,z1],F[x2,y2,z2],...</div></blockquote>
+<p>The interpolation order is set in <tt class="xref py py-attr docutils literal"><span class="pre">Grid.interpolation_spline_order</span></tt>.</p>
+<p>The interpolated function is computed once and is cached for better
+performance. Whenever <tt class="xref py py-attr docutils literal"><span class="pre">interpolation_spline_order</span></tt> is
+modified, <a class="reference internal" href="#MDAnalysis.analysis.density.Grid.interpolated" title="MDAnalysis.analysis.density.Grid.interpolated"><tt class="xref py py-meth docutils literal"><span class="pre">Grid.interpolated()</span></tt></a> is recomputed.</p>
+<p>The value for unknown data is set in <tt class="xref py py-attr docutils literal"><span class="pre">Grid.interpolation_cval</span></tt>
+(TODO: also recompute when interpolation_cval value is changed.)</p>
+<dl class="docutils">
+<dt>Example usage for resampling::</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">XX</span><span class="p">,</span><span class="n">YY</span><span class="p">,</span><span class="n">ZZ</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">75</span><span class="p">:</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">96</span><span class="p">:</span><span class="mi">150</span><span class="p">:</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mf">0.5</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FF</span> <span class="o">=</span> <span class="n">interpolated</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span><span class="n">YY</span><span class="p">,</span><span class="n">ZZ</span><span class="p">)</span>            
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.load">
+<tt class="descname">load</tt><big>(</big><em>filename</em>, <em>format=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load saved (pickled or dx) grid and edges from &lt;filename&gt;.pickle</p>
+<blockquote>
+<div>Grid.load(&lt;filename&gt;.pickle)
+Grid.load(&lt;filename&gt;.dx)</div></blockquote>
+<p>The load() method calls the class&#8217;s constructor method and
+completely resets all values, based on the loaded data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.resample">
+<tt class="descname">resample</tt><big>(</big><em>edges</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.resample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample data to a new grid with edges <em>edges</em>.</p>
+<blockquote>
+<div>resample(edges) &#8211;&gt; Grid</div></blockquote>
+<p>or</p>
+<blockquote>
+<div>resample(otherGrid) &#8211;&gt; Grid</div></blockquote>
+<p>The order of the interpolation is set by
+<tt class="xref py py-attr docutils literal"><span class="pre">Grid.interpolation_spline_order</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.resample_factor">
+<tt class="descname">resample_factor</tt><big>(</big><em>factor</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.resample_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample to a new regular grid with factor*oldN cells along each dimension.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.save">
+<tt class="descname">save</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a grid object to &lt;filename&gt;.pickle</p>
+<blockquote>
+<div>Grid.save(filename)</div></blockquote>
+<p>Internally, this calls Grid.export(filename,format=&#8221;python&#8221;). A grid can be
+regenerated from the saved data with</p>
+<blockquote>
+<div>g = Grid(filename=&lt;filename&gt;)</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 
@@ -645,7 +905,7 @@ that can be easily matched to a broader density distribution.</p>
         <li class="right" >
           <a href="distances.html" title="3.3. Distance analysis — MDAnalysis.distances"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.4-devel documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
