@@ -17,6 +17,7 @@
 
 import MDAnalysis
 from MDAnalysis.topology.core import guess_atom_type, get_atom_mass
+from MDAnalysis.tests.datafiles import PRMpbc
 
 from numpy.testing import *
 
@@ -91,3 +92,26 @@ class TestMagnesium(_TestGuessAtomType):
     testnames = ['MG', 'MG2+']
 
 # add more...
+
+# specific topology readers
+
+# AMBER
+
+class RefCappedAla(object):
+    """Mixin class to provide comparison numbers.
+
+    Capped Ala in water
+    """
+    PRM = PRMpbc
+    ref_numatoms = 5071
+    ref_proteinatoms = 22
+
+class TestAmber(TestCase, RefCappedAla):
+    def test_TOPParser(self):
+        """Testing AMBER PRMTOP parser (Issue 76)"""
+        # note: hard to test the issue because one needs a very specifi datafile
+        #       so this test really checks that we did not break the parser for the
+        #       existing test cases
+        U = MDAnalysis.Universe(self.PRM)
+        assert_equal(len(U.atoms), self.ref_numatoms, "load topology from PRM")
+

@@ -71,16 +71,16 @@ def parse(filename):
 
     def parse_sec(section_info):
         desc, atoms_per, per_line, parsefunc, data_struc, sect_num = section_info
-        from math import ceil as c
+        from math import ceil
         # Get the number
         num = sys_info[sect_num]
         if data_struc in ["_resname","_bond"]:
-                x = 1
+                pass
         else:
                 header = next_line()
 
         # Now figure out how many lines to read
-        numlines = int((float(num)/per_line))
+        numlines = int(ceil(float(num)/per_line))
         #print data_struc, numlines
         if parsefunc == __parsebond_:
                 parsefunc(next_line, atoms_per, data_struc, final_structure, numlines)
@@ -116,7 +116,7 @@ def parse(filename):
         for info in sections:
             parse_sec(info)
     except StopIteration:
-        raise Exception("The TOP file didn't contain the minimum required section of ATOM_NAME")
+        raise TOPParseError("The TOP file didn't contain the minimum required section of ATOM_NAME")
     # Completing info respoint to include all atoms in last resid
     structure["_respoint"].append(sys_info[0]+1)
     topfile.close()
@@ -125,39 +125,37 @@ def parse(filename):
     from MDAnalysis.core.AtomGroup import Atom
     index = 0
     j = 0
+    structure_items = structure.items()
     for i in range(sys_info[0]):
         if structure.keys()[0] == "_charge":
                 index += 1
-                charge = MDAnalysis.core.units.convert(structure.items()[0][1][i],
+                charge = MDAnalysis.core.units.convert(structure_items[0][1][i],
                                                        'Amber', MDAnalysis.core.flags['charge_unit'])
-                if structure.items()[5][1][j] <= index < structure.items()[5][1][j+1]:
+                if structure_items[5][1][j] <= index < structure_items[5][1][j+1]:
                         resid = j + 1
-                        resname = structure.items()[1][1][j]
+                        resname = structure_items[1][1][j]
                 else:
                         j += 1
                         resid = j + 1
-                        resname = structure.items()[1][1][j]
-                mass = structure.items()[2][1][i]
-                atomtype = structure.items()[3][1][i]
-                atomname = structure.items()[4][1][i]
+                        resname = structure_items[1][1][j]
+                mass = structure_items[2][1][i]
+                atomtype = structure_items[3][1][i]
+                atomname = structure_items[4][1][i]
                 segid = 'SYSTEM'  # does not exist in Amber
         else:
                 raise TOPParseError("Something is screwy with this top file")
         atom_desc = Atom(index-1,atomname,atomtype,resname,resid,segid,mass,charge)
         atoms[i] = atom_desc
+    del structure_items
     final_structure["_atoms"] = atoms
     final_structure["_numatoms"] = sys_info[0]
     return final_structure
 
-
-import operator
-
 def __parseskip_(lines, atoms_per, attr, structure, numlines):
     section = []
     lines()
-    #print lax
     while (lines()[:5] != "%FLAG"):
-        x = 1 #l = lines()
+        pass
 
 def __parsebond_(lines, atoms_per, attr, structure, numlines):
     section = [] #[None,]*numlines
@@ -176,7 +174,7 @@ def __parsesectionint_(lines, atoms_per, attr, structure, numlines):
     y.strip(")")
     x = util.FORTRANReader(y)
     liz = 1
-    for i in xrange(numlines+1):
+    for i in xrange(numlines):
         l = lines()
         # Subtract 1 from each number to ensure zero-indexing for the atoms
         try:
@@ -192,7 +190,7 @@ def __parsesection_(lines, atoms_per, attr, structure, numlines):
     y = lines().strip("%FORMAT(")
     y.strip(")")
     x = util.FORTRANReader(y)
-    for i in xrange(numlines+1):
+    for i in xrange(numlines):
         l = lines()
         # Subtract 1 from each number to ensure zero-indexing for the atoms
         try:
@@ -207,7 +205,7 @@ def __parseatoms_(lines, atoms_per, attr, structure, numlines):
     y = lines().strip("%FORMAT(")
     y.strip(")")
     x = util.FORTRANReader(y)
-    for i in xrange(numlines+1):
+    for i in xrange(numlines):
         l = lines()
         # Subtract 1 from each number to ensure zero-indexing for the atoms
         for j in range(0, len(x.entries)):

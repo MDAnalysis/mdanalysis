@@ -53,7 +53,7 @@ def parse(filename):
 
     def parse_sec(section_info):
         desc, atoms_per, per_line, parsefunc, data_struc = section_info
-        from math import ceil as c
+        from math import ceil
         header = next_line()
         while header.strip() == "": header = next_line()
         header = header.split()
@@ -63,7 +63,7 @@ def parse(filename):
         # Make sure the section type matches the desc
         if not (sect_type == desc): raise PSFParseError("Something is screwy with this psf file")
         # Now figure out how many lines to read
-        numlines = int(c(float(num)/per_line))
+        numlines = int(ceil(float(num)/per_line))
         # Too bad I don't have generator expressions
         #def repeat(func, num):
         #    for i in xrange(num):
@@ -86,7 +86,7 @@ def parse(filename):
     except StopIteration:
         # Reached the end of the file before we expected
         if not structure.has_key("_atoms"):
-            raise Exception("The PSF file didn't contain the minimum required section of NATOM")
+            raise PSFParseError("The PSF file didn't contain the minimum required section of NATOM")
     # Who cares about the rest
     psffile.close()
     return structure
@@ -157,8 +157,6 @@ def __parseatoms_(lines, atoms_per, attr, structure, numlines):
 
     structure[attr] = atoms
 
-
-import operator
 def __parsesection_(lines, atoms_per, attr, structure, numlines):
     section = [] #[None,]*numlines
     #for l in lines:

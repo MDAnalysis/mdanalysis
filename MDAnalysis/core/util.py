@@ -308,9 +308,9 @@ class FORTRANReader(object):
           parse_FORTRAN_format(edit_descriptor) --> dict
 
         :Returns: dict with totallength (in chars), repeat, length,
-                  format, decimals; if the specifier could not be parsed,
-                  an empty dict is returned.
-        :Raises: :exc:`ValueError` if the *edit_descriptor* is not recognized.
+                  format, decimals
+        :Raises: :exc:`ValueError` if the *edit_descriptor* is not recognized
+                 and cannot be parsed
 
         .. Note:: Specifiers: *L ES EN T TL TR / r S SP SS BN BZ* are *not*
            supported, and neither are the scientific notation *Ew.dEe* forms.
@@ -320,6 +320,8 @@ class FORTRANReader(object):
         if m is None:
             try:
                 m = _FORTRAN_format_pattern.match("1"+edit_descriptor.upper())
+                if m is None:
+                    raise ValueError  # really no idea what the descriptor is supposed to mean
             except:
                 raise ValueError("unrecognized FORTRAN format %r" % edit_descriptor)
         d = m.groupdict()

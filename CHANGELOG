@@ -18,7 +18,13 @@ The rules for this file:
 
   * Universe() got new keywords topology_format and format to allow
     the user to specify the file formats instead of deriving it from the
-    extensions (does not work with "chained" files at the moment)
+    extensions (does not work with "chained" files at the moment); thanks to
+    Michael Lerner for the suggestion
+
+  Fixes
+ 
+  * fixed Issue 74 (bug in AMBER topology parser which would show up for
+    certain numbers of input lines; thanks to htaoyu1)
 
 
 05/22/11 orbeckst, jandom, Benjamin Hall, Paul Rigor, dcaplan,
