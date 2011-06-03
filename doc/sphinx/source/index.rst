@@ -56,7 +56,8 @@ When using MDAnalysis in published work, please cite
 
 *   N. Michaud-Agrawal, E. J. Denning, T. B. Woolf,
     and O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular
-    Dynamics Simulations. *J. Comput. Chem.* (2011), doi:`10.1002/jcc.21787`_
+    Dynamics Simulations. *J. Comput. Chem.* **32** (2011), 2319–2327.
+    doi:`10.1002/jcc.21787`_
 
 .. rubric:: Included algorithms
 
@@ -69,13 +70,13 @@ that uses the :mod:`~MDAnalysis.core.qcprot` module please also cite
 
 *   Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald. Fast
     determination of the optimal rotational matrix for macromolecular
-    superpositions. *J. Comput. Chem.* **31** (2010), 1561-1563.
+    superpositions. *J. Comput. Chem.* **31** (2010), 1561–1563.
 
 If you use the helix analysis algorithm HELANAL_ in
 :mod:`MDAnalysis.analysis.helanal` please cite
 
 *   Bansal M, Kumar S, Velavan R. 2000. HELANAL — A program to characterise
-    helix geometry in proteins. *J. Biomol. Struct. Dyn.* **17**, 811-819
+    helix geometry in proteins. *J. Biomol. Struct. Dyn.* **17**, 811–819
 
 Thanks! 
 

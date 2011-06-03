@@ -11,7 +11,7 @@
 #
 #     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
 #     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
 #     doi:10.1002/jcc.21787
 #
 
@@ -44,7 +44,7 @@ When using MDAnalysis in published work, please cite
 
     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics
-    Simulations. J. Comput. Chem. (2011), doi:`10.1002/jcc.21787`_
+    Simulations. J. Comput. Chem. 32 (2011), 2319--2327, doi:`10.1002/jcc.21787`_
     http://mdanalysis.googlecode.com
 
 
