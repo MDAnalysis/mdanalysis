@@ -186,7 +186,8 @@ def start_logging(logfile="MDAnalysis.log"):
 def stop_logging():
     """Stop logging to logfile and console."""
     import core.log
-    logging.getLogger("MDAnalysis").info("MDAnalysis STOPPED logging")
+    logger = logging.getLogger("MDAnalysis")
+    logger.info("MDAnalysis STOPPED logging")
     core.log.clear_handlers(logger)  # this _should_ do the job...
 
 # custom exceptions and warnings
