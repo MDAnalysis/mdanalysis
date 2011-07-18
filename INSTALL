@@ -11,14 +11,45 @@ build the library some C and C++ code needs to be compiled. Thus you will need
     * python (>=2.5)
     * a C and a C++ compiler (e.g. GNU gcc),
     * the python header files (typically in a package python-dev),
-    * numpy and cython to compile the DCD reader and numerical extensions,
+    * numpy to compile the DCD and XTC reader and other extensions,
 
 See *Additional non-standard packages* below for what else you need at
 run time.
 
-The source code can be obtained from the SVN repository. The primary
-dependency is numpy, although pylab is a useful addition to plot
-analyses generated with MDAnalysis. 
+Stable releases are distributed as tar files from
+http://code.google.com/p/mdanalysis/downloads/list .  The current
+source code can als be obtained from the SVN (subversion) source code
+repository http://code.google.com/p/mdanalysis/source/checkout. 
+
+The primary dependency is NumPy http://numpy.scipy.org, which needs to
+be installed before MDAnalysis can be installed itself. (pylab
+http://matplotlib.sourceforge.net is a useful addition to plot results
+generated with MDAnalysis and is recommended.)
+
+
+Help
+====
+
+If you have any problems please read through the files INSTALL (this
+file) and README and check the MDAnalysis project pages at
+
+      http://mdanalysis.googlecode.com
+
+in particular http://code.google.com/p/mdanalysis/wiki/Install and
+related pages.
+
+You can always ask questions on the MDAnalysis mailing list:
+
+      http://groups.google.com/group/mdnalysis-discussion
+
+People there are very happy to help. When posting please remember to
+mention the release of MDAnalysis you are trying to install (e.g. "tar
+file MDAnalysis-0.7.3 from website" or "subversion r818"), all the
+commands that you typed to install the package, and the full output
+(typically right from 'python setup.py build'). You should also
+mention your operating system (e.g. Ubuntu 10.04) and Python version
+(output from 'python --version') so that we can better diagnose the
+problem.
 
 
 Getting the source 
@@ -43,7 +74,7 @@ Installation from source
 ========================
 
 Currently MDAnalysis is only distributed in source form. You will need
-a C compiler to compile the DCD and XTC reader and numerical extensions.
+a C compiler to compile the DCD and XTC reader and other extensions.
 
 In principle, installation should be as simple as ::
 
