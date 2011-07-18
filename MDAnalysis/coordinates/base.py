@@ -32,14 +32,19 @@ module. The derived classes must follow the Trajectory API in
 .. autoclass:: Reader
    :members:
 
+.. autoclass:: ChainReader
+   :members:
+
 .. autoclass:: Writer
    :members:
+
 """
 
 import itertools
 import os.path
 import warnings
 
+import bisect
 import numpy
 
 import MDAnalysis.core
@@ -284,23 +289,41 @@ class Reader(IObase):
         return "< %s %r with %d frames of %d atoms (%d fixed) >" % \
             (self.__class__.__name__, self.filename, self.numframes, self.numatoms, self.fixed)
 
+
 class ChainReader(Reader):
     """Reader that concatenates multiple trajectories on the fly.
 
     **Known issues**
-
-    - indexing not implemented yet
 
     - Trajectory API attributes exist but most of them only reflect
       the first trajectory in the list; :attr:`ChainReader.numframes`,
       :attr:`ChainReader.numatoms`, and :attr:`ChainReader.fixed` are
       properly set, though
 
-    - Similarly, :attr:`time` and :attr:`frame` not implemented yet
+    - slicing not implemented
+
+    - :attr:`time` not implemented yet
     """
     format = 'CHAIN'
 
     def __init__(self, filenames, **kwargs):
+        """Set up the chain reader.
+
+        :Arguments:
+           *filenames* 
+               file name or list of file names; the reader will open
+               all file names and provide frames in the order of
+               trajectories from the list. Each trajectory must
+               contain the same number of atoms in the same order
+               (i.e. they all must belong to the same topology). The trajectory
+               format is deduced from the extension of *filename*.
+           *skip*
+               skip step (also passed on to the individual trajectory
+               readers); must be same for all trajectories
+           *kwargs*
+               all other keyword arguments are passed on to each
+               trajectory reader unchanged
+        """
         self.filenames = asiterable(filenames)
         self.readers = [core.reader(filename, **kwargs) for filename in self.filenames]
         self.__active_reader_index = 0   # pointer to "active" trajectory index into self.readers
@@ -309,28 +332,61 @@ class ChainReader(Reader):
         self.numatoms = self._get_same('numatoms')
         self.fixed = self._get_same('fixed')
 
-        # build a map of frames (idealy use a tree structure?)
-        # need to solve: virtual frame k --> (traj_index, traj_frame)
-        # could use a big lookup table :-p ... not really
-        # 1. store first k0 and last kN for each trajectory {i: [k0, kN]}
-        #    (can be a  table for easier search
-        #    (the i-th trajectory contains kN-k0+1 frames)
-        # 2. for given k, search through list and find the block (=index) bracketing k
-        # 3. k -->  k - k0
-        #
-        # NOT IMPLEMENTED YET
+        # Translation between virtual frames and frames in individual
+        # trajectories.
+        # Assumes that individual trajectories i contain frames that can
+        # be addressed with an index 0 <= f < numframes[i]
 
-        # build map
+        # Build a map of frames: ordered list of starting virtual
+        # frames; the index i into this list corresponds to the index
+        # into self.readers
+        #
+        # For virtual frame k (1...sum(numframes)) find corresponding
+        # trajectory i and local frame f (i.e. readers[i][f] will
+        # correspond to ChainReader[k]).
+
+        # build map 'start_frames', which is used by _get_local_frame()
         numframes = self._get('numframes')
+        # [0]: frames are 0-indexed internally 
+        # (see Timestep._check_slice_indices())
+        self.__start_frames = numpy.cumsum([0] + numframes)
+
         self.numframes = numpy.sum(numframes)
 
         #: source for trajectories frame (fakes trajectory)
         self.__chained_trajectories_iter = None
 
         # make sure that iteration always yields frame 1
-        # rewind(0 also sets self.ts
+        # rewind() also sets self.ts
         self.ts = None
         self.rewind()
+
+    def _get_local_frame(self, k):
+        """Find trajectory index and trajectory frame for chained frame k.
+
+        Frame *k* in the chained trajectory can be found in the
+        trajectory at index *i* and frame index *f*.
+
+        Frames are internally treated as 0-based indices into the
+        trajectory. (This might not be fully consistent across
+        MDAnalysis at the moment!)
+
+        :Returns: **local frame** tuple `(i, f)`
+        
+        :Raises: :exc:`IndexError` for `k<0` or `i<0`.
+
+        .. Note:: Does not check if *k* is larger than the maximum
+                  number of frames in the chained trajectory.
+        """
+        if k < 0:
+            raise IndexError("Virtual (chained) frames must be >= 0")
+        # trajectory index i
+        i = bisect.bisect_right(self.__start_frames, k) - 1
+        if i < 0:
+            raise IndexError("Cannot find trajectory for virtual frame %d" % k)
+        # local frame index f in trajectory i (frame indices are 0-based)
+        f = k - self.__start_frames[i]
+        return i, f
 
     # methods that can change with the current reader
     def convert_time_from_native(self, t):
@@ -365,11 +421,18 @@ class ChainReader(Reader):
         except AttributeError:
             return None
 
-    # TODO: bookkeeping/accumulation
     @property
     def frame(self):
-        """Cumulative frame number of the current time step."""
-        raise NotImplementedError
+        """Cumulative frame number of the current time step.
+
+        .. Note:: The frame number is 1-based, i.e. the first frame
+                  has frame number 1. However, frame indices (used for
+                  indexing and slicing with the
+                  `trajectory[frame_index]` notation use a 0-based
+                  index, i.e. *frame* - 1.
+        """
+        return self.ts.frame
+
     @property
     def time(self):
         """Cumulative time of the current frame in MDAnalysis time units (typically ps)."""
@@ -380,7 +443,7 @@ class ChainReader(Reader):
         return [reader.__getattribute__(method)(**kwargs) for reader in self.readers]
 
     def _get(self, attr):
-        """Execute *method* with *kwargs* for all readers."""
+        """Get value of *attr* for all readers."""
         return [reader.__getattribute__(attr) for reader in self.readers]
 
     def _get_same(self, attr):
@@ -398,19 +461,48 @@ class ChainReader(Reader):
                              " (%d):\n%r" % (attr, value, bad_traj))
         return value
 
+    def __activate_reader(self, i):
+        """Make reader *i* the active reader."""
+        # private method, not to be used by user to avoid a total mess
+        if i < 0 or i >= len(self.readers):
+            raise IndexError("Reader index must be 0 <= i < %d" % len(self.readers))
+        self.__active_reader_index = i
+
     @property
     def active_reader(self):
         """Reader instance from which frames are being read."""
         return self.readers[self.__active_reader_index]
 
+    def _jump_to_frame(self, frame):
+        """Position trajectory at frame index *frame*.
+
+        The frame is translated to the corresponding reader and local
+        frame index and the Timestep instance in
+        :attr:`ChainReader.ts` is updated.
+
+        .. Note:: *frame* is 0-based, i.e. the first frame in the
+                  trajectory is accessed with *frame* = 0.
+
+        .. SeeAlso:: :meth:`~ChainReader._get_local_frame`.                  
+        """
+        i,f = self._get_local_frame(frame)
+        # seek to (1) reader i and (2) frame f in trajectory i
+        self.__activate_reader(i)
+        self.active_reader[f]      # rely on reader to implement __getitem__()
+        # update Timestep
+        self.ts = self.active_reader.ts
+        self.ts.frame = frame + 1  # continuous frames, 1-based
+
     def _chained_iterator(self):
-        """Core method that generates the chained trajectory."""
-        # TODO: maybe update active_reader, but no idea how
+        """Iterator that presents itself as a chained trajectory."""
         self._rewind()  # must rewind all readers
         readers = itertools.chain(*self.readers)
         for frame, ts in enumerate(readers):
             ts.frame = frame+1  # fake continuous frames, 1-based
             self.ts = ts
+            # make sure that the active reader is in sync
+            i,f = self._get_local_frame(frame)  # uses 0-based frames!
+            self.__activate_reader(i)
             yield ts
 
     def _read_next_timestep(self, ts=None):
@@ -426,7 +518,7 @@ class ChainReader(Reader):
     def _rewind(self):
         """Internal method: Rewind trajectories themselves and trj pointer."""
         self._apply('rewind')
-        self.__active_reader_index = 0
+        self.__activate_reader(0)
 
     def close(self):
         self._apply('close')
@@ -437,6 +529,24 @@ class ChainReader(Reader):
         self.__chained_trajectories_iter = self._chained_iterator()  # start from first frame
         for ts in self.__chained_trajectories_iter:
             yield ts
+
+    def __getitem__(self, frame):
+        """Index with 0-based frame index to jump to a frame.
+
+        Updates timestep; slices will be implemented in the future.
+        """
+        if numpy.dtype(type(frame)) != numpy.dtype(int) and type(frame) != slice:
+            raise TypeError("frames (0-based) must be int or a slice")
+        if numpy.dtype(type(frame)) == numpy.dtype(int):
+            if frame < 0:
+                # Interpret similar to a sequence
+                frame = len(self) + frame
+            if frame < 0 or frame >= len(self):
+                raise IndexError("frame index out of bounds")
+            self._jump_to_frame(frame)  # updates ts
+            return self.ts
+        elif type(frame) == slice: # if frame is a slice object
+            raise NotImplementedError("Slices not implemented for ChainReader")
 
     def __repr__(self):
         return "< %s %r with %d frames of %d atoms (%d fixed) >" % \

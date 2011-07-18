@@ -20,6 +20,7 @@ The rules for this file:
     the user to specify the file formats instead of deriving it from the
     extensions (does not work with "chained" files at the moment); thanks to
     Michael Lerner for the suggestion
+  * Chain trajectory reader allows frame indexing.
 
   Fixes
  

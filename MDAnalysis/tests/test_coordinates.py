@@ -876,48 +876,55 @@ def compute_correl_references():
     C.clear()
     return results
 
-class TestChainedReader(TestCase):
+class TestChainReader(TestCase):
     def setUp(self):
-        self.universe = mda.Universe(PSF, [DCD, DCD, DCD])
-        self.dcd = self.universe.trajectory
-        self.ts = self.universe.coord
+        self.universe = mda.Universe(PSF, [DCD,CRD,DCD,CRD,DCD,CRD,CRD])
+        self.trajectory = self.universe.trajectory
 
-    def test_next_dcd(self):
-        self.dcd.rewind()
-        self.dcd.next()
-        assert_equal(self.ts.frame, 2, "loading frame 2")
+    def test_next_trajectory(self):
+        self.trajectory.rewind()
+        self.trajectory.next()
+        assert_equal(self.trajectory.ts.frame, 2, "loading frame 2")
 
     def test_numatoms(self):
         assert_equal(self.universe.trajectory.numatoms, 3341, "wrong number of atoms")
 
     def test_numframes(self):
-        assert_equal(self.universe.trajectory.numframes, 3*98, "wrong number of frames in chained dcd")
+        assert_equal(self.universe.trajectory.numframes, 3*98 + 4, "wrong number of frames in chained dcd")
 
     def test_iteration(self):
-        for ts in self.dcd:
+        for ts in self.trajectory:
             pass # just forward to last frame
-        assert_equal(self.dcd.numframes, ts.frame,
+        assert_equal(self.trajectory.numframes, ts.frame,
                      "iteration yielded wrong number of frames (%d), should be %d" \
-                         % (ts.frame, self.dcd.numframes))
+                         % (ts.frame, self.trajectory.numframes))
 
-    @dec.knownfailureif(True, "indexing not implemented for chained reader")
-    def test_jump_lastframe_dcd(self):
-        self.dcd[-1]
-        assert_equal(self.ts.frame, self.dcd.numframes, "indexing last frame with dcd[-1]")
+    def test_jump_lastframe_trajectory(self):
+        self.trajectory[-1]
+        print self.trajectory.ts, self.trajectory.ts.frame
+        assert_equal(self.trajectory.ts.frame, self.trajectory.numframes, "indexing last frame with trajectory[-1]")
 
     @dec.knownfailureif(True, "slicing not implemented for chained reader")
-    def test_slice_dcd(self):
-        frames = [ts.frame for ts in self.dcd[5:17:3]]
+    def test_slice_trajectory(self):
+        frames = [ts.frame for ts in self.trajectory[5:17:3]]
         assert_equal(frames, [6, 9, 12, 15], "slicing dcd [5:17:3]")
 
-    @dec.knownfailureif(True, "frame attribute not implemented for chained reader")
+    def test_frame_numbering(self):
+        self.trajectory[98]  # index is 0-based but frames are 1-based
+        assert_equal(self.universe.trajectory.frame, 99, "wrong frame number")
+
     def test_frame(self):
-        self.dcd[30]  # index is 0-based but frames are 1-based
-        assert_equal(self.universe.trajectory.frame, 31, "wrong frame number")
+        self.trajectory[0]
+        coord0 = self.universe.atoms.coordinates().copy()
+        # forward to frame where we repeat original dcd again:
+        # dcd:0..97 crd:98 dcd:99..196
+        self.trajectory[99]
+        assert_array_equal(self.universe.atoms.coordinates(), coord0,
+                           "coordinates at frame 1 and 100 should be the same!")
 
     @dec.knownfailureif(True, "time attribute not implemented for chained reader")
     def test_time(self):
-        self.dcd[30]  # index is 0-based but frames are 1-based
+        self.trajectory[30]  # index is 0-based but frames are 1-based
         assert_almost_equal(self.universe.trajectory.time, 31.0, 5,
                             err_msg="wrong time of frame")
 
