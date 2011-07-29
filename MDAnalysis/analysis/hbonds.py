@@ -1,36 +1,71 @@
+# -*- encoding: utf-8 -*-
 # Hydrogen Bonding Analysis
 """
 Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds`
 ===================================================================
 
 :Author: David Caplan
-:Year: 2010
+:Year: 2010-2011
 :Copyright: GNU Public License v3
 
 
-This is modeled after the VMD HBONDS plugin (http://www.ks.uiuc.edu/Research/vmd/plugins/hbonds/)
+Given a :class:`~MDAnalysis.core.AtomGroup.Universe` (simulation
+trajectory with 1 or more frames) measure all hydrogen bonds for each
+frame between selections 1 and 2.
 
-Given a Universe (simulation trajectory with 1 or more frames) measure all hydrogen bonds for each frame between selections 1 and 2.
+The :class:`HydrogenBondAnalysis` class is modeled after the `VMD
+HBONDS plugin`_.
+
+.. _`VMD HBONDS plugin`: http://www.ks.uiuc.edu/Research/vmd/plugins/hbonds/
 
 Options:
-  - update_selections (True): update selections at each frame?
-  - selection_1_type ('both'): selection 1 is the: donor, acceptor, both
-  - donor-acceptor distance (A): 3.0
-  - Angle cutoff (degrees): 120.0
-  - donor and acceptor atom types
+  - *update_selections* (``True``): update selections at each frame?
+  - *selection_1_type* ("both"): selection 1 is the: "donor", "acceptor", "both"
+  - donor-acceptor *distance* (Å): 3.0
+  - Angle *cutoff* (degrees): 120.0
+  - *donors* and *acceptors* atom types (to add additional atom names)
 
-Returns hydrogen bond data per frame:
+Returns hydrogen bond data per frame::
+
     results[ [ <donor index>, <acceptor index>, <donor string>, <acceptor string>, <distance>, <angle> ], [frame 1], [frame 2] ... ]
+
+
+.. _Default atom names for hydrogen bonding analysis:
+
+.. table:: Default atom names for hydrogen bonding analysis
+
+   =========== ===========  ===========
+   group       donor        acceptor
+   =========== ===========  ===========
+   main chain  NH           CO
+   water       H1, H2       OH2
+   ARG         NE, NH2
+   ASN         ND2          OD1
+   HIS         ND1, NE2     ND1
+   SER         OG           OG
+   TYR         OH           OH
+   ARG         NH1
+   CYS         SG
+   CYH                      SG
+   THR         OG1          OG1
+   GLN         NE2          OE1
+   LYS         NZ
+   TRP         NE1
+   MET                      SD
+   ASP                      OD1, OD2
+   GLU                      OE1, OE2
+   =========== ===========  ===========
+
+
 
 
 Example
 -------
 
-TODO
+TODO ::
 
-  import MDAnalysis
-  import hbonds
-  
+  import MDAnalysis.analysis.hbonds
+
   u = MDAnalysis.Universe(PSF, PDB, permissive=True)
   h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'protein', 'resname TIP3', distance=3.0, angle=120.0)
   results = h.run()
@@ -53,9 +88,6 @@ import MDAnalysis.KDTree.NeighborSearch as NS
 import logging
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
 
-DEFAULT_DONORS = ('NH', 'OH2', 'OW', 'NE', 'ND2', 'NE2', 'OG', 'OH', 'NH1', 'SG', 'ND1', 'OG1', 'NH2', 'NE2', 'NZ', 'NE1', )
-DEFAULT_ACCEPTORS = ('CO', 'OH2', 'OW', 'OD1', 'OE1', 'SD', 'OD1', 'OE1', 'OG', 'OD2', 'OE2', 'OG1', 'SG', 'ND1', 'OH', )
-
 class HydrogenBondAnalysis(object):
     """Perform a hydrogen bond analysis
 
@@ -68,15 +100,44 @@ class HydrogenBondAnalysis(object):
         frame  selection1 selection2  num_hbonds
 
 
-    Donors: NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS NE2, SER OG, TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2, GLN NE2, LYS NZ, TRP NE1
-    Acceptors: CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1, MET SD, ASP OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH SG, HIS ND1, TYR OH.
+    Donors
+      NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS
+      NE2, SER OG, TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2,
+      GLN NE2, LYS NZ, TRP NE1
+
+    Acceptors
+      CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1,
+      MET SD, ASP OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH
+      SG, HIS ND1, TYR OH.
+
+    .. SeeAlso:: :ref:`Default atom names for hydrogen bonding analysis`
 
     """
-    
+
+    #: default atom names that are treated as hydrogen *donors*:
+    #:
+    #:   NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS NE2, SER OG,
+    #:   TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2, GLN NE2, LYS
+    #:   NZ, TRP NE1.
+    #:
+    #: Use the keyword *donors* to add a list of additional donor names.
+    DEFAULT_DONORS = ('NH', 'OH2', 'OW', 'NE', 'ND2', 'NE2', 'OG', 'OH', 'NH1', 'SG',
+                      'ND1', 'OG1', 'NH2', 'NE2', 'NZ', 'NE1', )
+
+    #: default atom names that are treated as hydrogen *acceptors*:
+    #:
+    #:   CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1, MET SD, ASP
+    #:   OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH SG, HIS ND1,
+    #:   TYR OH.
+    #:
+    #: Use the keyword *acceptors* to add a list of additional acceptor names.
+    DEFAULT_ACCEPTORS = ('CO', 'OH2', 'OW', 'OD1', 'OE1', 'SD',
+                         'OD1', 'OE1', 'OG', 'OD2', 'OE2', 'OG1', 'SG', 'ND1', 'OH', )
+
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
                 update_selection1=False, update_selection2=False, filter_first=True, distance=3.0, angle=120.0,
-                donors=[], acceptors=[]):
-        """Calculate hydrogen bonds between two selections in a universe.
+                donors=None, acceptors=None):
+        """Set up calculation of hydrogen bonds between two selections in a universe.
 
         :Arguments:
           *universe*
@@ -98,10 +159,12 @@ class HydrogenBondAnalysis(object):
           *angle*
             Angle cutoff for hydrogen bonds
           *donors*
-            Extra H donor atom types (in addition to those in DEFAULT_DONORS)
+            Extra H donor atom types (in addition to those in
+            :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS`), must be a sequence.
           *acceptors*
-            Extra H acceptor atom types (in addition to those in DEFAULT_ACCEPTORS)
-            
+            Extra H acceptor atom types (in addition to those in
+            :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a sequence.
+
         The timeseries accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
         """
 
@@ -116,16 +179,20 @@ class HydrogenBondAnalysis(object):
         self.angle = angle
 
         # set up the donors/acceptors lists
-        self.donors = DEFAULT_DONORS + tuple(donors)
-        self.acceptors = DEFAULT_ACCEPTORS + tuple(acceptors)
-        
+        if donors is None:
+            donors = []
+        if acceptors is None:
+            acceptors = []
+        self.donors = self.DEFAULT_DONORS + tuple(donors)
+        self.acceptors = self.DEFAULT_ACCEPTORS + tuple(acceptors)
+
         if not (self.selection1 and self.selection2):
-            raise Exception('HydrogenBondAnalysis: invalid selections')
+            raise ValueError('HydrogenBondAnalysis: invalid selections')
         elif self.selection1_type not in ('both', 'donor', 'acceptor'):
-            raise Exception('HydrogenBondAnalysis: Invalid selection type %s' % self.selection1_type)
+            raise ValueError('HydrogenBondAnalysis: Invalid selection type %s' % self.selection1_type)
 
         self.timeseries = None  # final result
-        
+
         self._update_selection_1()
         self._update_selection_2()
 
@@ -164,7 +231,7 @@ class HydrogenBondAnalysis(object):
             ns_selection_2 = NS.AtomNeighborSearch(self._s2)
             self._s2 = ns_selection_2.search_list(self._s1, 3.*self.distance)
         logger.debug("Size of selection 2: %d atoms" % len(self._s2))
-        
+
         if self.selection1_type in ('donor', 'both'):
             self._s2_acceptors = self._s2.selectAtoms(' or '.join([ 'name %s' % i for i in self.acceptors ]))
             logger.debug("Selection 2 acceptors: %d" % len(self._s2_acceptors))
@@ -176,23 +243,23 @@ class HydrogenBondAnalysis(object):
                 if tmp:
                     self._s2_donors_h[i] = tmp
             logger.debug("Selection 2 donors: %d" % len(self._s2_donors))
-            logger.debug("Selection 2 donor hydrogens: %d" % len(self._s2_donors_h.keys()))   
+            logger.debug("Selection 2 donor hydrogens: %d" % len(self._s2_donors_h.keys()))
 
     def run(self):
         """Analyze trajectory and produce timeseries.
         """
         self.timeseries = []
-        
+
         for ts in self.u.trajectory:
             frame_results = []
-            
+
             frame = ts.frame
             logger.debug("Analyzing frame %d" % frame)
             if self.update_selection1:
                 self._update_selection_1()
             if self.update_selection2:
                 self._update_selection_2()
-            
+
             if self.selection1_type in ('donor', 'both'):
                 logger.debug("Selection 1 Donors <-> Acceptors")
                 ns_acceptors = NS.AtomNeighborSearch(self._s2_acceptors)
@@ -205,7 +272,7 @@ class HydrogenBondAnalysis(object):
                             dist = self.calc_eucl_distance(h,a)
                             if angle >= self.angle and dist <= self.distance:
                                 logger.debug("S1-D: %s <-> S2-A: %s %fA, %f DEG" % (h.number, a.number, dist, angle))
-                                frame_results.append([h.number+1, a.number+1, '%s%s:%s' % (h.resname, repr(h.resid), h.name), '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])                                
+                                frame_results.append([h.number+1, a.number+1, '%s%s:%s' % (h.resname, repr(h.resid), h.name), '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
             if self.selection1_type in ('acceptor', 'both'):
                 logger.debug("Selection 1 Acceptors <-> Donors")
                 ns_acceptors = NS.AtomNeighborSearch(self._s1_acceptors)
@@ -218,10 +285,10 @@ class HydrogenBondAnalysis(object):
                             dist = self.calc_eucl_distance(h,a)
                             if angle >= self.angle and dist <= self.distance:
                                 logger.debug("S1-A: %s <-> S2-D: %s %fA, %f DEG" % (a.number+1, h.number, dist, angle))
-                                frame_results.append([h.number+1, a.number+1, '%s%s:%s' % (h.resname, repr(h.resid), h.name), '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])                                
+                                frame_results.append([h.number+1, a.number+1, '%s%s:%s' % (h.resname, repr(h.resid), h.name), '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
             self.timeseries.append(frame_results)
         return self.timeseries
-        
+
     def calc_angle(self, d, h, a):
         """Calculate the angle (in degrees) between two atoms
         """
