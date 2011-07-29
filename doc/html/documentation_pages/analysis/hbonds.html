@@ -67,7 +67,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="density.html"
-                        title="previous chapter">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
+                        title="previous chapter">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="helanal.html"
                         title="next chapter">3.6. HELANAL &#8212; analysis of protein helices</a></p>
@@ -105,42 +105,131 @@
 <tbody valign="top">
 <tr class="field"><th class="field-name">Author:</th><td class="field-body">David Caplan</td>
 </tr>
-<tr class="field"><th class="field-name">Year:</th><td class="field-body">2010</td>
+<tr class="field"><th class="field-name">Year:</th><td class="field-body">2010-2011</td>
 </tr>
 <tr class="field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
 </tr>
 </tbody>
 </table>
-<p>This is modeled after the VMD HBONDS plugin (<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/hbonds/">http://www.ks.uiuc.edu/Research/vmd/plugins/hbonds/</a>)</p>
-<p>Given a Universe (simulation trajectory with 1 or more frames) measure all hydrogen bonds for each frame between selections 1 and 2.</p>
+<p>Given a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> (simulation
+trajectory with 1 or more frames) measure all hydrogen bonds for each
+frame between selections 1 and 2.</p>
+<p>The <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">HydrogenBondAnalysis</span></tt></a> class is modeled after the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/hbonds/">VMD
+HBONDS plugin</a>.</p>
 <dl class="docutils">
 <dt>Options:</dt>
 <dd><ul class="first last simple">
-<li>update_selections (True): update selections at each frame?</li>
-<li>selection_1_type (&#8216;both&#8217;): selection 1 is the: donor, acceptor, both</li>
-<li>donor-acceptor distance (A): 3.0</li>
-<li>Angle cutoff (degrees): 120.0</li>
+<li><em>update_selections</em> (<tt class="xref docutils literal"><span class="pre">True</span></tt>): update selections at each frame?</li>
+<li><em>selection_1_type</em> (&#8220;both&#8221;): selection 1 is the: &#8220;donor&#8221;, &#8220;acceptor&#8221;, &#8220;both&#8221;</li>
+<li>donor-acceptor <em>distance</em> (Å): 3.0</li>
+<li>Angle <em>cutoff</em> (degrees): 120.0</li>
+<li><em>donors</em> and <em>acceptors</em> atom types (to add additional atom names)</li>
 </ul>
 </dd>
-<dt>Returns hydrogen bond data per frame:</dt>
-<dd>results[ [ &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt; ], [frame 1], [frame 2] ... ]</dd>
 </dl>
+<p>Returns hydrogen bond data per frame:</p>
+<div class="highlight-python"><pre>results[ [ &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt; ], [frame 1], [frame 2] ... ]</pre>
+</div>
+<table border="1" class="docutils" id="default-atom-names-for-hydrogen-bonding-analysis">
+<caption>Default atom names for hydrogen bonding analysis</caption>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">group</th>
+<th class="head">donor</th>
+<th class="head">acceptor</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>main chain</td>
+<td>NH</td>
+<td>CO</td>
+</tr>
+<tr><td>water</td>
+<td>H1, H2</td>
+<td>OH2</td>
+</tr>
+<tr><td>ARG</td>
+<td>NE, NH2</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>ASN</td>
+<td>ND2</td>
+<td>OD1</td>
+</tr>
+<tr><td>HIS</td>
+<td>ND1, NE2</td>
+<td>ND1</td>
+</tr>
+<tr><td>SER</td>
+<td>OG</td>
+<td>OG</td>
+</tr>
+<tr><td>TYR</td>
+<td>OH</td>
+<td>OH</td>
+</tr>
+<tr><td>ARG</td>
+<td>NH1</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>CYS</td>
+<td>SG</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>CYH</td>
+<td>&nbsp;</td>
+<td>SG</td>
+</tr>
+<tr><td>THR</td>
+<td>OG1</td>
+<td>OG1</td>
+</tr>
+<tr><td>GLN</td>
+<td>NE2</td>
+<td>OE1</td>
+</tr>
+<tr><td>LYS</td>
+<td>NZ</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>TRP</td>
+<td>NE1</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>MET</td>
+<td>&nbsp;</td>
+<td>SD</td>
+</tr>
+<tr><td>ASP</td>
+<td>&nbsp;</td>
+<td>OD1, OD2</td>
+</tr>
+<tr><td>GLU</td>
+<td>&nbsp;</td>
+<td>OE1, OE2</td>
+</tr>
+</tbody>
+</table>
 <div class="section" id="example">
 <h2>3.5.1. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>TODO</p>
-<blockquote>
-<div><p>import MDAnalysis
-import hbonds</p>
-<p>u = MDAnalysis.Universe(PSF, PDB, permissive=True)
-h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, &#8216;protein&#8217;, &#8216;resname TIP3&#8217;, distance=3.0, angle=120.0)
-results = h.run()</p>
-</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.hbonds</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">PDB</span><span class="p">,</span> <span class="n">permissive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">hbonds</span><span class="o">.</span><span class="n">HydrogenBondAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s">&#39;protein&#39;</span><span class="p">,</span> <span class="s">&#39;resname TIP3&#39;</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="classes">
 <h2>3.5.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hbonds.</tt><tt class="descname">HydrogenBondAnalysis</tt><big>(</big><em>universe</em>, <em>selection1='protein'</em>, <em>selection2='all'</em>, <em>selection1_type='both'</em>, <em>update_selection1=False</em>, <em>update_selection2=False</em>, <em>filter_first=True</em>, <em>distance=3.0</em>, <em>angle=120.0</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hbonds.</tt><tt class="descname">HydrogenBondAnalysis</tt><big>(</big><em>universe</em>, <em>selection1='protein'</em>, <em>selection2='all'</em>, <em>selection1_type='both'</em>, <em>update_selection1=False</em>, <em>update_selection2=False</em>, <em>filter_first=True</em>, <em>distance=3.0</em>, <em>angle=120.0</em>, <em>donors=None</em>, <em>acceptors=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a hydrogen bond analysis</p>
 <p>The analysis of the trajectory is performed with the
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.run()</span></tt></a> method. The result is stored in
@@ -149,9 +238,21 @@ contains the frame number at index 0, selection1 and selection2,
 and the total number of hydrogen bonds</p>
 <div class="highlight-python"><pre>frame  selection1 selection2  num_hbonds</pre>
 </div>
-<p>Donors: NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS NE2, SER OG, TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2, GLN NE2, LYS NZ, TRP NE1
-Acceptors: CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1, MET SD, ASP OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH SG, HIS ND1, TYR OH.</p>
-<p>Calculate hydrogen bonds between two selections in a universe.</p>
+<dl class="docutils">
+<dt>Donors</dt>
+<dd>NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS
+NE2, SER OG, TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2,
+GLN NE2, LYS NZ, TRP NE1</dd>
+<dt>Acceptors</dt>
+<dd>CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1,
+MET SD, ASP OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH
+SG, HIS ND1, TYR OH.</dd>
+</dl>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default atom names for hydrogen bonding analysis</em></a></p>
+</div>
+<p>Set up calculation of hydrogen bonds between two selections in a universe.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -184,12 +285,42 @@ Acceptors: CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1, MET SD, ASP OD1
 <dt><em>angle</em></dt>
 <dd><p class="first last">Angle cutoff for hydrogen bonds</p>
 </dd>
+<dt><em>donors</em></dt>
+<dd><p class="first last">Extra H donor atom types (in addition to those in
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_DONORS" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_DONORS"><tt class="xref py py-attr docutils literal"><span class="pre">DEFAULT_DONORS</span></tt></a>), must be a sequence.</p>
+</dd>
+<dt><em>acceptors</em></dt>
+<dd><p class="first last">Extra H acceptor atom types (in addition to those in
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS"><tt class="xref py py-attr docutils literal"><span class="pre">DEFAULT_ACCEPTORS</span></tt></a>), must be a sequence.</p>
+</dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
 <p>The timeseries accessible as the attribute <tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
+<tt class="descname">DEFAULT_ACCEPTORS</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<dd><p>default atom names that are treated as hydrogen <em>acceptors</em>:</p>
+<blockquote>
+<div>CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1, MET SD, ASP
+OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH SG, HIS ND1,
+TYR OH.</div></blockquote>
+<p>Use the keyword <em>acceptors</em> to add a list of additional acceptor names.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_DONORS">
+<tt class="descname">DEFAULT_DONORS</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<dd><p>default atom names that are treated as hydrogen <em>donors</em>:</p>
+<blockquote>
+<div>NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS NE2, SER OG,
+TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2, GLN NE2, LYS
+NZ, TRP NE1.</div></blockquote>
+<p>Use the keyword <em>donors</em> to add a list of additional donor names.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.calc_angle">
 <tt class="descname">calc_angle</tt><big>(</big><em>d</em>, <em>h</em>, <em>a</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.calc_angle" title="Permalink to this definition">¶</a></dt>
