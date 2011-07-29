@@ -145,7 +145,7 @@ from within the interpreter:</p>
 </pre></div>
 </div>
 <p>The idea behind MDAnalysis is to get trajectory data into <a class="reference external" href="http://numpy.scipy.org">NumPy</a>
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-3071eab)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> arrays, where it can then be easily manipulated using
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-6dcc6e4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> arrays, where it can then be easily manipulated using
 all the power in <a class="reference external" href="http://numpy.scipy.org">NumPy</a> and <a class="reference external" href="http://www.scipy.org/">SciPy</a>.</p>
 <p>MDAnalysis works well both in scripts and in interactive use. The developers
 very much recommend using MDAnalysis from within the <a class="reference external" href="http://ipython.scipy.org/">IPython</a> Python shell.  It
@@ -153,7 +153,8 @@ allows one to interactively explore the objects (using TAB-completion and
 online help), do analysis and immediately plot results. The examples in this manual
 are typically run from an interactive <strong class="program">ipython</strong> session.</p>
 <p>Invariably, a MDAnalysis session starts with loading data into the
-<tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> class:</p>
+<a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> class (which can be accessed
+as <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>):</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="n">universe</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 </pre></div>
@@ -179,17 +180,18 @@ trajectory is loaded with</p>
 </div>
 <p>(The <tt class="docutils literal"><span class="pre">&gt;&gt;&gt;</span></tt> signs are the Python input prompt and are not to be typed; they
 just make clear in the examples what is input and what is output.)</p>
-<p>The <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> contains a number of important attributes,
-the most important ones of which are <tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.Universe.atoms</span></tt>:</p>
+<p>The <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> contains a number of important attributes,
+the most important ones of which is
+<tt class="xref py py-attr docutils literal"><span class="pre">atoms</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
 <span class="go">&lt;AtomGroup with 3341 atoms&gt;</span>
 </pre></div>
 </div>
-<p><tt class="xref py py-attr docutils literal"><span class="pre">atoms</span></tt> is a
-<a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> and can be thought of as list
-consisting of <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> objects. The
-<a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> is the elementary and fundamental
-object in MDAnalysis.</p>
+<p><tt class="xref py py-attr docutils literal"><span class="pre">Universe.atoms</span></tt> is a
+<a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> and can be thought of as
+list consisting of <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>
+objects. The <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> is the
+elementary and fundamental object in MDAnalysis.</p>
 <p>The <tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.Universe.trajectory</span></tt> attribute gives access to the coordinates
 over time:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
@@ -229,11 +231,11 @@ the OPLS/AA force field.</p>
 <table class="docutils citation" frame="void" id="beckstein2009" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[Beckstein2009]</a></td><td>O. Beckstein, E.J. Denning, J.R. Perilla and
-T.B. Woolf, Zipping and Unzipping of Adenylate
+<tr><td class="label"><a class="fn-backref" href="#id1">[Beckstein2009]</a></td><td>O. Beckstein, E.J. Denning, J.R. Perilla, and
+T.B. Woolf. Zipping and Unzipping of Adenylate
 Kinase: Atomistic Insights into the Ensemble of
 Open &lt;&#8211;&gt; Closed Transitions. <em>J Mol Biol</em> <strong>394</strong>
-(2009), 160&#8211;176, doi:10.1016/j.jmb.2009.09.009</td></tr>
+(2009), 160&#8211;176, doi:<a class="reference external" href="http://dx.doi.org/10.1016/j.jmb.2009.09.009">10.1016/j.jmb.2009.09.009</a></td></tr>
 </tbody>
 </table>
 </div>

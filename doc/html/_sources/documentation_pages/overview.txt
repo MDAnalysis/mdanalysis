@@ -70,7 +70,8 @@ online help), do analysis and immediately plot results. The examples in this man
 are typically run from an interactive :program:`ipython` session.
 
 Invariably, a MDAnalysis session starts with loading data into the
-:class:`MDAnalysis.Universe` class::
+:class:`~MDAnalysis.core.AtomGroup.Universe` class (which can be accessed
+as :class:`MDAnalysis.Universe`)::
 
  from MDAnalysis import *
  universe = Universe(topology, trajectory)
@@ -97,17 +98,18 @@ trajectory is loaded with ::
 (The ``>>>`` signs are the Python input prompt and are not to be typed; they
 just make clear in the examples what is input and what is output.)
 
-The :class:`~MDAnalysis.Universe` contains a number of important attributes,
-the most important ones of which are :attr:`MDAnalysis.Universe.atoms`::
+The :class:`~MDAnalysis.core.AtomGroup.Universe` contains a number of important attributes,
+the most important ones of which is
+:attr:`~MDAnalysis.core.AtomGroup.Universe.atoms`::
 
   >>> print u.atoms
   <AtomGroup with 3341 atoms>
 
-:attr:`~MDAnalysis.Universe.atoms` is a
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup` and can be thought of as list
-consisting of :class:`~MDAnalysis.core.AtomGroup.Atom` objects. The
-:class:`~MDAnalysis.core.AtomGroup.Atom` is the elementary and fundamental
-object in MDAnalysis.
+:attr:`Universe.atoms` is a
+:class:`~MDAnalysis.core.AtomGroup.AtomGroup` and can be thought of as
+list consisting of :class:`~MDAnalysis.core.AtomGroup.Atom`
+objects. The :class:`~MDAnalysis.core.AtomGroup.Atom` is the
+elementary and fundamental object in MDAnalysis.
 
 The :attr:`MDAnalysis.Universe.trajectory` attribute gives access to the coordinates
 over time::
@@ -154,12 +156,13 @@ Adenylate Kinase (from [Beckstein2009]_) and the PDB+XTC file are ten
 frames from a Gromacs simulation of AdK solvated in TIP4P water with
 the OPLS/AA force field.
 
-.. [Beckstein2009] O. Beckstein, E.J. Denning, J.R. Perilla and
-                   T.B. Woolf, Zipping and Unzipping of Adenylate
+.. [Beckstein2009] O. Beckstein, E.J. Denning, J.R. Perilla, and
+                   T.B. Woolf. Zipping and Unzipping of Adenylate
                    Kinase: Atomistic Insights into the Ensemble of
                    Open <--> Closed Transitions. *J Mol Biol* **394**
-                   (2009), 160--176, doi:10.1016/j.jmb.2009.09.009
+                   (2009), 160--176, doi:`10.1016/j.jmb.2009.09.009`_
 
+.. _`10.1016/j.jmb.2009.09.009`: http://dx.doi.org/10.1016/j.jmb.2009.09.009
 
 Code snippets
 -------------
