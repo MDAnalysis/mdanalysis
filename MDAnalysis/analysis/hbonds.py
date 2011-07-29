@@ -17,6 +17,7 @@ Options:
   - selection_1_type ('both'): selection 1 is the: donor, acceptor, both
   - donor-acceptor distance (A): 3.0
   - Angle cutoff (degrees): 120.0
+  - donor and acceptor atom types
 
 Returns hydrogen bond data per frame:
     results[ [ <donor index>, <acceptor index>, <donor string>, <acceptor string>, <distance>, <angle> ], [frame 1], [frame 2] ... ]
@@ -44,18 +45,16 @@ Classes
 
 from __future__ import with_statement
 
-import os
-import warnings
-import bz2
 import numpy
 
-import MDAnalysis
-from MDAnalysis.core.distances import self_distance_array
 from MDAnalysis.core.AtomGroup import AtomGroup
 import MDAnalysis.KDTree.NeighborSearch as NS
 
 import logging
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
+
+DEFAULT_DONORS = ('NH', 'OH2', 'OW', 'NE', 'ND2', 'NE2', 'OG', 'OH', 'NH1', 'SG', 'ND1', 'OG1', 'NH2', 'NE2', 'NZ', 'NE1', )
+DEFAULT_ACCEPTORS = ('CO', 'OH2', 'OW', 'OD1', 'OE1', 'SD', 'OD1', 'OE1', 'OG', 'OD2', 'OE2', 'OG1', 'SG', 'ND1', 'OH', )
 
 class HydrogenBondAnalysis(object):
     """Perform a hydrogen bond analysis
@@ -74,11 +73,9 @@ class HydrogenBondAnalysis(object):
 
     """
     
-    donors = ('NH', 'OH2', 'OW', 'NE', 'ND2', 'NE2', 'OG', 'OH', 'NH1', 'SG', 'ND1', 'OG1', 'NH2', 'NE2', 'NZ', 'NE1', )
-    acceptors = ('CO', 'OH2', 'OW', 'OD1', 'OE1', 'SD', 'OD1', 'OE1', 'OG', 'OD2', 'OE2', 'OG1', 'SG', 'ND1', 'OH', )
-    
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
-                update_selection1=False, update_selection2=False, filter_first=True, distance=3.0, angle=120.0):
+                update_selection1=False, update_selection2=False, filter_first=True, distance=3.0, angle=120.0,
+                donors=[], acceptors=[]):
         """Calculate hydrogen bonds between two selections in a universe.
 
         :Arguments:
@@ -100,6 +97,10 @@ class HydrogenBondAnalysis(object):
             Distance cutoff for hydrogen bonds
           *angle*
             Angle cutoff for hydrogen bonds
+          *donors*
+            Extra H donor atom types (in addition to those in DEFAULT_DONORS)
+          *acceptors*
+            Extra H acceptor atom types (in addition to those in DEFAULT_ACCEPTORS)
             
         The timeseries accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
         """
@@ -113,6 +114,10 @@ class HydrogenBondAnalysis(object):
         self.filter_first = filter_first
         self.distance = distance
         self.angle = angle
+
+        # set up the donors/acceptors lists
+        self.donors = DEFAULT_DONORS + tuple(donors)
+        self.acceptors = DEFAULT_ACCEPTORS + tuple(acceptors)
         
         if not (self.selection1 and self.selection2):
             raise Exception('HydrogenBondAnalysis: invalid selections')

@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/?? orbeckst
+??/??/?? orbeckst, dcaplan
 
   * 0.7.4 (in development)
 
@@ -21,6 +21,7 @@ The rules for this file:
     extensions (does not work with "chained" files at the moment); thanks to
     Michael Lerner for the suggestion
   * Chain trajectory reader allows frame indexing.
+  * Issue 75: additional donors and acceptors keywords for H-bond analysis
 
   Fixes
  
