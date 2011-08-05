@@ -55,6 +55,14 @@ Data manipulation and handling
 
 .. autofunction:: fixedwidth_bins
 
+
+Mathematics and Geometry
+------------------------
+
+.. autofunction:: normal
+.. autofunction:: angle
+.. autofunction:: stp
+
 """
 from __future__ import with_statement
 
@@ -64,6 +72,8 @@ import os.path
 from contextlib import contextmanager
 import bz2, gzip
 import re
+
+import numpy
 
 def filename(name,ext=None,keep=False):
     """Return a new name that has suffix attached; replaces other extensions.
@@ -353,7 +363,6 @@ def fixedwidth_bins(delta,xmin,xmax):
 
     The dict contains 'Nbins', 'delta', 'min', and 'max'.
     """
-    import numpy
     if not numpy.all(xmin < xmax):
         raise ValueError('Boundaries are not sane: should be xmin < xmax.')
     _delta = numpy.asarray(delta,dtype=numpy.float_)
@@ -363,4 +372,27 @@ def fixedwidth_bins(delta,xmin,xmax):
     N = numpy.ceil(_length/_delta).astype(numpy.int_)      # number of bins
     dx = 0.5 * (N*_delta - _length)   # add half of the excess to each end
     return {'Nbins':N, 'delta':_delta,'min':_xmin-dx, 'max':_xmax+dx}
+
+
+# geometric functions
+def normal(vec1, vec2):
+    """Returns the unit vector normal to two vectors."""
+    normal = numpy.cross(vec1, vec2)
+    dist = numpy.linalg.norm(normal)
+    try:
+        normal /= dist
+    except ZeroDivisionError:
+        pass  # returns 0,0,0
+    return normal
+
+def angle(norm1, norm2):
+    """Returns the angle between two vectors in radians"""
+    return numpy.arccos(numpy.dot(norm1, norm2) / (numpy.linalg.norm(norm1)*numpy.linalg.norm(norm2)))
+
+def stp(vec1, vec2, vec3):
+    """Takes the scalar triple product of three vectors.
+
+    :Returns: v3 . (v1 x v2)
+    """
+    return numpy.dot(vec3, numpy.cross(vec1, vec2))
 

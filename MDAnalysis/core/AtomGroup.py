@@ -78,6 +78,7 @@ import warnings
 import numpy
 from math import *
 from MDAnalysis import SelectionError, NoDataError, SelectionWarning
+from MDAnalysis.core.util import normal, angle, stp
 
 class Atom(object):
     """A single atom definition
@@ -611,43 +612,18 @@ class AtomGroup(object):
         if len(self) != 4:
                 raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
 
-        # TODO: the defs should be util or elsewhere...
-        def vector(atm1, atm2):
-                """Returns vector *atm1* - *atm2* between two point coordinates."""
-                return atm1 - atm2
-        def normal(vec1, vec2):
-                """Returns the unit vector normal to two vectors."""
-                normal = numpy.cross(vec1, vec2)
-                dist = numpy.linalg.norm(normal)
-                try:
-                    normal /= dist
-                except ZeroDivisionError:
-                    pass  # returns 0,0,0
-                return normal
-        def angle(norm1, norm2):
-                """Returns the angle between two vectors in radians"""
-                return numpy.arccos(
-                    numpy.dot(norm1, norm2) /
-                    (numpy.linalg.norm(norm1)*numpy.linalg.norm(norm2)))
-        def stp(vec1, vec2, vec3):
-                """Takes the scalar triple product of three vectors"""
-                return numpy.dot(vec3, numpy.cross(vec1, vec2))
-        def anglecheck(angle,vec1,vec2,vec3):
-                """Returns the signed (+/-) angle within -pi < x < pi deg"""
-                angleout=angle
-                if stp(vec1, vec2, vec3) > 0.0:
-                        angleout = -angle
-                return angleout
+        def anglecheck(angle, vec1, vec2, vec3):
+            """Returns the signed (+/-) angle within -pi < x < pi deg"""
+            angleout = angle
+            if stp(vec1, vec2, vec3) > 0.0:
+                angleout = -angle
+            return angleout
 
-        norm1 = normal(vector(self.coordinates()[0], self.coordinates()[1]),
-                       vector(self.coordinates()[1], self.coordinates()[2]))
-        norm2 = normal(vector(self.coordinates()[1], self.coordinates()[2]),
-                       vector(self.coordinates()[2], self.coordinates()[3]))
-        pre_dihe  = angle(norm1, norm2)
-        dihe = anglecheck(pre_dihe,
-                          vector(self.coordinates()[0], self.coordinates()[1]),
-                          vector(self.coordinates()[1], self.coordinates()[2]),
-                          vector(self.coordinates()[2], self.coordinates()[3]))
+        A,B,C,D = self.coordinates()[:4]
+        ab = A - B
+        bc = B - C
+        cd = C - D
+        dihe = anglecheck(angle(normal(ab, bc), normal(bc, cd)), ab, bc, cd)
         return numpy.rad2deg(dihe)
 
     def principalAxes(self):
