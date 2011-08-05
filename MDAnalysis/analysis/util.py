@@ -26,4 +26,4 @@ def progress_meter(current_step , target_step):
     Progress meter for tracking long jobs
     """
     percentage_progress = ( float(current_step) / float(target_step) ) * 100.
-    print '%.1f %% done' % percentage_progress
+    print '\r%.1f %% done' % percentage_progress

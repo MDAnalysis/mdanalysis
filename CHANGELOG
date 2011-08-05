@@ -27,6 +27,8 @@ The rules for this file:
  
   * fixed Issue 74 (bug in AMBER topology parser which would show up for
     certain numbers of input lines; thanks to htaoyu1)
+  * fix for Issue 48 (sparse contact_matrix in distances.py was slow when 
+    written in pure python; optimized in c code using scipy.weave) 
 
 
 05/22/11 orbeckst, jandom, Benjamin Hall, Paul Rigor, dcaplan,

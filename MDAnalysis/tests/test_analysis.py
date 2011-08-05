@@ -62,11 +62,12 @@ class TestContactMatrix(TestCase):
         selection = U.selectAtoms('bynum 1:50')
         # small cutoff value as the input file is a protein
         # High progress_meter_freq so progress meter is not printed during test
-        contacts = MDAnalysis.analysis.distances.contact_matrix(selection.coordinates() , cutoff=1.0 , returntype="sparse" , suppress_progmet=True)
+        contacts = MDAnalysis.analysis.distances.contact_matrix(selection.coordinates() , cutoff=1.07 , returntype="sparse" , suppress_progmet=True)
         assert_equal(contacts.shape, (50, 50), "wrong shape (should be (50,50))")
         assert_equal(contacts[0,0] , False , "entry (0,0) should be a non-contact")
-        assert_equal(contacts[19,20] , True , "entry (19,20) should be a contact")
-
+        assert_equal(contacts[0,2] , True , "entry (0,2) should be a contact")
+        assert_equal(contacts[0,3] , True , "entry (0,3) should be a contact")
+        assert_equal(contacts[0,4] , False , "entry (0,3) should be a contact")
 
 class TestAlign(TestCase):
     def setUp(self):

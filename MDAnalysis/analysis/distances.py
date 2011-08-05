@@ -28,6 +28,8 @@ __all__ = ['distance_array', 'self_distance_array', 'contact_matrix', 'dist']
 
 import numpy
 from scipy import sparse
+from scipy import weave
+from scipy.weave import converters
 
 from MDAnalysis.core.distances import distance_array, self_distance_array
 from MDAnalysis.analysis.util import progress_meter
@@ -54,54 +56,136 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_me
         # Initialize square List of Lists matrix of dimensions equal to number of coordinates passed
         sparse_contacts = sparse.lil_matrix((len(coord),len(coord))  , dtype='bool')
         # if PBC
-        if box != None:
-            print box
-            box_half = box[0:3] / 2.
-            print box_half
+        
+        # TODO Jan: this distance matrix will be symmetric, hence some of the iterations could be skipped.
+        if box != None: 
+            contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, suppress_progmet )
 
-            for i in range(len(coord)):
-                # Print progress every hundred atoms
-                # TODO progress_meter will be changed to a class
-                if i % progress_meter_freq == 0 and suppress_progmet == False:
-                    progress_meter(i , len(coord))
-
-                for j in range(len(coord)):
-                    diff = coord[j] - coord[i]
-                    if abs(diff[0]) > box_half[0]:
-                        if diff[0] < 0.:
-                            diff[0] += box[0]
-                        else:
-                            diff[0] -= box[0]
-                    if abs(diff[1]) > box_half[1]:
-                        if diff[1] < 0.:
-                            diff[1] += box[1]
-                        else:
-                            diff[1] -= box[1]
-                    if abs(diff[2]) > box_half[2]:
-                        if diff[2] < 0.:
-                            diff[2] += box[2]
-                        else:
-                            diff[2] -= box[2]
-
-                    dist = ( ( diff[0] ** 2. ) + ( diff[1] ** 2. ) + ( diff[2] ** 2. ) ) ** 0.5
-                    if dist != 0.0 and dist < cutoff:
-                        sparse_contacts[i,j] = True
-
-            # if no PBC
-        else:
-            for i in range(len(coord)):
-                # Print progress every hundred atoms
-                # TODO progress_meter will be changed to a class
-                if i % progress_meter_freq == 0 and suppress_progmet == False:
-                    progress_meter(i , len(coord))
-
-                for j in range(len(coord)):
-                    diff = coord[j] - coord[i]
-                    dist = ( ( diff[0] ** 2. ) + ( diff[1] ** 2. ) + ( diff[2] ** 2. ) ) ** 0.5
-                    if dist != 0.0 and dist < cutoff:
-                        sparse_contacts[i,j] = True
+        # if no PBC
+        else: 
+            contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, suppress_progmet )
 
         return sparse_contacts
+
+def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, suppress_progmet ):
+    print box
+    box_half = numpy.array([x / 2. for x in box] )
+    print box_half
+
+    c_code = """
+    #include <math.h>
+
+    int rows = Ncoord[0];
+    
+    float cutoff2 = powf(cutoff, 2);
+
+    py::tuple args(2);
+    
+    bool b = 1;
+                
+    args[1] = b;
+
+    for (int i=0; i < rows; i++) {
+    
+        // Print progress meter
+        if (i % progress_meter_freq == 0 ) {
+            printf("%.1f percent done \\n", (100.0 * i / rows));
+        }
+           
+        for (int j=0; j < rows; j++) {
+            float x = coord(i,0) - coord(j,0);
+            float y = coord(i,1) - coord(j,1);
+            float z = coord(i,2) - coord(j,2);
+
+
+            // Handle the periodicity
+            if (fabs(x) > box_half(0) ) {
+                if (x < 0.0) {x += box(0); }
+                else { x -= box(0); }            
+            }
+
+            if (fabs(y) > box_half(1) ) {
+                if (y < 0.0) {y += box(1); }
+                else { y -= box(1); }            
+            }
+            
+            if (fabs(z) > box_half(2) ) {
+                if (z < 0.0) {z += box(2); }
+                else { z -= box(2); }            
+            }
+
+            
+            float dist = powf(x, 2) + powf(y, 2) + powf(z, 2);
+            
+            if (dist != 0.0 && dist < cutoff2) {
+                
+                py::tuple idx(2);
+                
+                idx[0] = i;
+                
+                idx[1] = j;
+                
+                args[0] = idx;
+                
+                sparse_contacts.mcall("__setitem__",args);
+            }
+        }
+    }
+    """
+    
+    weave.inline(c_code, ['coord', 'sparse_contacts', 'box', 'box_half', 'cutoff', 'progress_meter_freq', 'suppress_progmet'], type_converters=converters.blitz) 
+
+def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, suppress_progmet ):
+    """
+    
+    Examples of python.weave usage http://github.com/scipy/scipy/tree/master/scipy/weave/examples
+    """
+    
+    c_code = """
+    #include <math.h>
+
+    int rows = Ncoord[0];
+    
+    float cutoff2 = powf(cutoff, 2.);
+
+    py::tuple args(2);
+    
+    bool b = 1;
+                
+    args[1] = b;
+
+    for (int i=0; i < rows; i++) {
+    
+        // Print progress meter
+        if (i % progress_meter_freq == 0 ) {
+            printf("%.1f percent done \\n", (100.0 * i / rows));
+        }
+           
+        for (int j=0; j < rows; j++) {
+            float x = coord(i,0) - coord(j,0);
+            float y = coord(i,1) - coord(j,1);
+            float z = coord(i,2) - coord(j,2);
+            
+            float dist = powf(x, 2.) + powf(y, 2.) + powf(z, 2.);
+            
+            if (dist != 0.0 && dist < cutoff2) {
+                
+                py::tuple idx(2);
+                
+                idx[0] = i;
+                
+                idx[1] = j;
+                
+                args[0] = idx;               
+                
+                sparse_contacts.mcall("__setitem__",args);
+            }
+        }
+    }
+    """
+    
+    weave.inline(c_code, ['coord', 'sparse_contacts', 'cutoff', 'progress_meter_freq', 'suppress_progmet'], type_converters=converters.blitz)   
+
 
 def dist(A, B, offset=0):
     """Return distance between atoms in two atom groups.
