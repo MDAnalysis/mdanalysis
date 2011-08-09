@@ -375,19 +375,24 @@ def fixedwidth_bins(delta,xmin,xmax):
 
 
 # geometric functions
+def norm(v):
+    """Returns the length of a vector, ``sqrt(v.v)``.
+
+    Faster than :func:`numpy.linalg.norm` because no frills.
+    """
+    return numpy.sqrt(numpy.dot(v,v))
+
 def normal(vec1, vec2):
     """Returns the unit vector normal to two vectors."""
     normal = numpy.cross(vec1, vec2)
-    dist = numpy.linalg.norm(normal)
-    try:
-        normal /= dist
-    except ZeroDivisionError:
-        pass  # returns 0,0,0
-    return normal
+    n = norm(normal)
+    if n == 0.0:
+        return normal  # returns [0,0,0] instead of [nan,nan,nan]
+    return normal/n    # ... could also use numpy.nan_to_num(normal/norm(normal))
 
-def angle(norm1, norm2):
+def angle(a, b):
     """Returns the angle between two vectors in radians"""
-    return numpy.arccos(numpy.dot(norm1, norm2) / (numpy.linalg.norm(norm1)*numpy.linalg.norm(norm2)))
+    return numpy.arccos(numpy.dot(a, b) / (norm(a)*norm(b)))
 
 def stp(vec1, vec2, vec3):
     """Takes the scalar triple product of three vectors.

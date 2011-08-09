@@ -97,6 +97,7 @@ import numpy
 
 from MDAnalysis.core.AtomGroup import AtomGroup
 import MDAnalysis.KDTree.NeighborSearch as NS
+from MDAnalysis.core.util import norm, angle
 
 import logging
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
@@ -317,25 +318,19 @@ class HydrogenBondAnalysis(object):
                                 logger.debug("S1-A: %s <-> S2-D: %s %fA, %f DEG" % (a.number+1, h.number, dist, angle))
                                 frame_results.append([h.number+1, a.number+1, '%s%s:%s' % (h.resname, repr(h.resid), h.name), '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
             self.timeseries.append(frame_results)
-        return self.timeseries
+        return self.timeseries  # can we omitt this?
 
     def calc_angle(self, d, h, a):
-        """Calculate the angle (in degrees) between two atoms
+        """Calculate the angle (in degrees) between two atoms with H at apex.
         """
         v1 = h.pos-d.pos
         v2 = h.pos-a.pos
-        v1 /= numpy.linalg.norm(v1)
-        v2 /= numpy.linalg.norm(v2)
-
-        if v1.tolist() == v2.tolist():
+        if numpy.all(v1 == v2):
             return 0.0
-        return numpy.arccos(numpy.dot(v1, v2) / (numpy.linalg.norm(v1)*numpy.linalg.norm(v2))) * 180 / numpy.pi
-
+        return numpy.rad2deg(angle(v1, v2))
 
     def calc_eucl_distance(self, a1, a2):
         """Calculate the Euclidean distance between two atoms.
         """
-        v1 = a1.pos
-        v2 = a2.pos
-        return numpy.sqrt((v1[0] - v2[0]) ** 2 + (v1[1] - v2[1]) ** 2 + (v1[2] - v2[2]) ** 2)
+        return norm(a2.pos - a1.pos)
 
