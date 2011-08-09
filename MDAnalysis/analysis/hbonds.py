@@ -100,6 +100,7 @@ from MDAnalysis.core.AtomGroup import AtomGroup
 import MDAnalysis.KDTree.NeighborSearch as NS
 from MDAnalysis.core.util import norm, angle, parse_residue
 
+import warnings
 import logging
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
 
