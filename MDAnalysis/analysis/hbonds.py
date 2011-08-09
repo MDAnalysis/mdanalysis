@@ -95,9 +95,10 @@ from __future__ import with_statement
 
 import numpy
 
+from MDAnalysis import MissingDataWarning
 from MDAnalysis.core.AtomGroup import AtomGroup
 import MDAnalysis.KDTree.NeighborSearch as NS
-from MDAnalysis.core.util import norm, angle
+from MDAnalysis.core.util import norm, angle, parse_residue
 
 import logging
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
@@ -202,6 +203,7 @@ class HydrogenBondAnalysis(object):
             raise ValueError('HydrogenBondAnalysis: Invalid selection type %s' % self.selection1_type)
 
         self.timeseries = None  # final result
+        self._timesteps = None  # time for each frame
 
         self._update_selection_1()
         self._update_selection_2()
@@ -279,13 +281,30 @@ class HydrogenBondAnalysis(object):
         The data are also stored as :attr:`HydrogenBondAnalysis.timeseries`.
 
         """
+        logger.info("HBond analysis: starting")
+
         self.timeseries = []
+        self._timesteps = []
+
+        try:
+            self.u.trajectory.time
+            def _get_timestep():
+                return self.u.trajectory.time
+            logger.debug("HBond analysis is recording time step")
+        except NotImplementedError:
+            # chained reader or xyz(?) cannot do time yet
+            def _get_timestep():
+                return self.u.trajectory.frame
+            logger.warn("HBond analysis is recording frame number instead of time step")
 
         for ts in self.u.trajectory:
             frame_results = []
 
             frame = ts.frame
-            logger.debug("Analyzing frame %d" % frame)
+            timestep = _get_timestep()
+            self._timesteps.append(timestep)
+
+            logger.debug("Analyzing frame %(frame)d, timestep %(timestep)f ps", vars())
             if self.update_selection1:
                 self._update_selection_1()
             if self.update_selection2:
@@ -318,7 +337,9 @@ class HydrogenBondAnalysis(object):
                                 logger.debug("S1-A: %s <-> S2-D: %s %fA, %f DEG" % (a.number+1, h.number, dist, angle))
                                 frame_results.append([h.number+1, a.number+1, '%s%s:%s' % (h.resname, repr(h.resid), h.name), '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
             self.timeseries.append(frame_results)
-        return self.timeseries  # can we omitt this?
+
+        logger.info("HBond analysis: complete; timeseries in %s.timeseries", self.__class__.__name__)
+        ##return self.timeseries  # can we omitt this?
 
     def calc_angle(self, d, h, a):
         """Calculate the angle (in degrees) between two atoms with H at apex.
@@ -334,3 +355,67 @@ class HydrogenBondAnalysis(object):
         """
         return norm(a2.pos - a1.pos)
 
+
+    def generate_table(self):
+        """Generate a normalised table of the results.
+
+        The table is stored as a :class:`numpy.recarray` in the
+        attribute :attr:`~HydrogenBondAnalysis.table` and can be used
+        with e.g. `recsql`_.
+
+        Columns:
+          0. "time"
+          1. "donor_idx"
+          2. "acceptor_idx"
+          3. "donor_resnm"
+          4. "donor_resid"
+          5. "donor_atom"
+          6. "acceptor_resnm"
+          7. "acceptor_resid"
+          8. "acceptor_atom"
+          9. "distance"
+          10. "angle"
+
+        .. _recsql:: http://sbcb.bioch.ox.ac.uk/oliver/software/RecSQL/html/index.html
+        """
+        from itertools import izip
+        if self.timeseries is None:
+            msg = "No timeseries computed, do run() first."
+            warnings.warn(msg)
+            logger.warn(msg, category=MissingDataWarning)
+            return
+
+        num_records = numpy.sum([len(f) for f in self.timeseries])
+        dtype = [("time",float), ("donor_idx",int), ("acceptor_idx",int),
+                 ("donor_resnm","|S4"), ("donor_resid",int), ("donor_atom","|S4"),
+                 ("acceptor_resnm","|S4"), ("acceptor_resid",int), ("acceptor_atom","|S4"),
+                 ("distance",float), ("angle",float)]
+        self.table = numpy.recarray((num_records,), dtype=dtype)
+        row = 0
+        for t,hframe in izip(self._timesteps, self.timeseries):
+            self.table[row:row+len(hframe)].time = t
+            for hrow, (donor_idx, acceptor_idx, donor, acceptor, distance, angle) in enumerate(hframe):
+                cursor = row + hrow
+                r = self.table[cursor]
+                r.donor_idx = donor_idx
+                r.donor_resnm, r.donor_resid, r.donor_atom = parse_residue(donor)
+                r.acceptor_idx = acceptor_idx
+                r.acceptor_resnm, r.acceptor_resid, r.acceptor_atom = parse_residue(acceptor)
+                r.distance = distance
+                r.angle = angle
+            row = cursor + 1
+
+    def save_table(self, filename="hbond_table.pickle"):
+        """Saves the table to a pickled file.
+
+        Load with ::
+
+           import cPickle
+           table = cPickle.load(open(filename))
+
+        .. SeeAlso:: :mod:`cPickle` module and :class:`numpy.recarray`
+        """
+        import cPickle
+        if not self.table:
+            self.generate_table()
+        cPickle.save(self.table, open(filename, 'wb'), protocol=cpickle.HIGHEST_PROTOCOL)
