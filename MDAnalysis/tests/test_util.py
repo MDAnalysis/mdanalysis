@@ -22,6 +22,14 @@ from numpy import pi, sin, cos
 
 import MDAnalysis.core.util as util
 
+class TestStringFunctions(TestCase):
+    def testParse_residue(self):
+        assert_equal(util.parse_residue("LYS300:HZ1"), ("LYS", 300, "HZ1"))
+        assert_equal(util.parse_residue("K300:HZ1"), ("LYS", 300, "HZ1"))
+        assert_equal(util.parse_residue("K300"), ("LYS", 300, None))
+        assert_equal(util.parse_residue("LYS 300:HZ1"), ("LYS", 300, "HZ1"))
+        assert_equal(util.parse_residue("M1:CA"), ("MET", 1, "CA"))
+
 class TestGeometryFunctions(TestCase):
     def setUp(self):
         self.e1 = numpy.array([1.,0,0])

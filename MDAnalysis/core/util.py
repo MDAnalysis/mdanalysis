@@ -56,10 +56,18 @@ Data manipulation and handling
 .. autofunction:: fixedwidth_bins
 
 
+Strings
+-------
+
+.. autofunction:: convert_aa_code
+.. autofunction:: parse_residue
+
+
 Mathematics and Geometry
 ------------------------
 
 .. autofunction:: normal
+.. autofunction:: norm
 .. autofunction:: angle
 .. autofunction:: stp
 
@@ -401,3 +409,76 @@ def stp(vec1, vec2, vec3):
     """
     return numpy.dot(vec3, numpy.cross(vec1, vec2))
 
+
+# String functions
+# ----------------
+
+# TODO: make it work for non-default charge state amino acids.
+#: translation table for 1-letter codes --> 3-letter codes
+#: .. Note: This does not work for HISB and non-default charge state aa!
+amino_acid_codes = {'A':'ALA', 'C':'CYS', 'D':'ASP', 'E':'GLU',
+                    'F':'PHE', 'G':'GLY', 'H':'HIS', 'I':'ILE',
+                    'K':'LYS', 'L':'LEU', 'M':'MET', 'N':'ASN',
+                    'P':'PRO', 'Q':'GLN', 'R':'ARG', 'S':'SER',
+                    'T':'THR', 'V':'VAL', 'W':'TRP', 'Y':'TYR'}
+inverse_aa_codes = dict([(three, one) for one,three in amino_acid_codes.items()])
+
+# from GromacsWrapper utilities
+def convert_aa_code(x):
+    """Converts between 3-letter and 1-letter amino acid codes."""
+    if len(x) == 1:
+        return amino_acid_codes[x.upper()]
+    elif len(x) == 3:
+        return inverse_aa_codes[x.upper()]
+    else:
+        raise ValueError("Can only convert 1-letter or 3-letter amino acid codes, "
+                         "not %r" % x)
+
+
+#: Regular expression to match and parse a residue-atom selection; will match
+#: "LYS300:HZ1" or "K300:HZ1" or "K300".
+RESIDUE = re.compile("""
+                 (?P<aa>([ACDEFGHIKLMNPQRSTVWY])   # 1-letter amino acid
+                        |                          #   or
+                        ([A-Z][A-Z][A-Z][A-Z]?)    # 3-letter or 4-letter residue name
+                 )
+                 \s*                               # white space allowed
+                 (?P<resid>\d+)                    # resid
+                 \s*
+                 (:                                # separator ':'
+                   \s*
+                   (?P<atom>\w+)                   # atom name
+                 )?                                # possibly one
+            """, re.VERBOSE | re.IGNORECASE)
+
+# from GromacsWrapper cbook.IndexBuilder
+def parse_residue(residue):
+    """Process residue string.
+
+    Examples:
+     - "LYS300:HZ1" --> ("LYS", 300, "HZ1")
+     - "K300:HZ1" --> ("LYS", 300, "HZ1")
+     - "K300" --> ("LYS", 300, None)
+
+    :Argument: The *residue* must contain a 1-letter or 3-letter or
+               4-letter residue string, a number (the resid) and
+               optionally an atom identifier, which must be separate
+               from the residue with a colon (":"). White space is
+               allowed in between.
+
+    :Returns: `(3-letter aa string, resid, atomname)`; known 1-letter
+              aa codes are converted to 3-letter codes
+    """
+
+    # XXX: use _translate_residue() ....
+    m = RESIDUE.match(residue)
+    if not m:
+        raise ValueError("Selection %(residue)r is not valid (only 1/3/4 letter resnames, resid required)." % vars())
+    resid = int(m.group('resid'))
+    residue = m.group('aa')
+    if len(residue) == 1:
+        resname = convert_aa_code(residue) # only works for AA
+    else:
+        resname = residue                            # use 3-letter for any resname
+    atomname = m.group('atom')
+    return (resname, resid, atomname)
