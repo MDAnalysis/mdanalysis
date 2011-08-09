@@ -25,10 +25,23 @@ Options:
   - Angle *cutoff* (degrees): 120.0
   - *donors* and *acceptors* atom types (to add additional atom names)
 
-Returns hydrogen bond data per frame::
+Returns hydrogen bond data per frame (# indicates comments that are not part of the output)::
 
-    results[ [ <donor index>, <acceptor index>, <donor string>, <acceptor string>, <distance>, <angle> ], [frame 1], [frame 2] ... ]
-
+    results = [
+        [ # frame 1
+           [ # hbond 1
+              <donor index>, <acceptor index>, <donor string>, <acceptor string>, <distance>, <angle>
+           ],
+           [ # hbond 2
+              <donor index>, <acceptor index>, <donor string>, <acceptor string>, <distance>, <angle>
+           ],
+           ....
+        ],
+        [ # frame 2
+          [ ... ], [ ... ], ...
+        ],
+        ...
+    ]
 
 .. _Default atom names for hydrogen bonding analysis:
 
@@ -93,19 +106,15 @@ class HydrogenBondAnalysis(object):
 
     The analysis of the trajectory is performed with the
     :meth:`HydrogenBondAnalysis.run` method. The result is stored in
-    :attr:`HydrogenBondAnalysis.timeseries`. It is a numpy array which
-    contains the frame number at index 0, selection1 and selection2,
-    and the total number of hydrogen bonds ::
+    :attr:`HydrogenBondAnalysis.timeseries`. See
+    :meth:`~HydrogenBondAnalysis.run` for the format.
 
-        frame  selection1 selection2  num_hbonds
-
-
-    Donors
+    *Donors*
       NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS
       NE2, SER OG, TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2,
       GLN NE2, LYS NZ, TRP NE1
 
-    Acceptors
+    *Acceptors*
       CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1,
       MET SD, ASP OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH
       SG, HIS ND1, TYR OH.
@@ -247,6 +256,27 @@ class HydrogenBondAnalysis(object):
 
     def run(self):
         """Analyze trajectory and produce timeseries.
+
+        Returns hydrogen bond data per frame (# indicates comments that are not part of the output)::
+
+          results = [
+              [ # frame 1
+                 [ # hbond 1
+                    <donor index>, <acceptor index>, <donor string>, <acceptor string>, <distance>, <angle>
+                 ],
+                 [ # hbond 2
+                    <donor index>, <acceptor index>, <donor string>, <acceptor string>, <distance>, <angle>
+                 ],
+                 ....
+              ],
+              [ # frame 2
+                [ ... ], [ ... ], ...
+              ],
+              ...
+          ]
+
+        The data are also stored as :attr:`HydrogenBondAnalysis.timeseries`.
+
         """
         self.timeseries = []
 
