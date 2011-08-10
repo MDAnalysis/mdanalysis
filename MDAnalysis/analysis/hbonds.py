@@ -340,7 +340,7 @@ class HydrogenBondAnalysis(object):
             self.timeseries.append(frame_results)
 
         logger.info("HBond analysis: complete; timeseries in %s.timeseries", self.__class__.__name__)
-        ##return self.timeseries  # can we omitt this?
+        return self.timeseries  # can we omitt this?
 
     def calc_angle(self, d, h, a):
         """Calculate the angle (in degrees) between two atoms with H at apex.
@@ -377,7 +377,7 @@ class HydrogenBondAnalysis(object):
           9. "distance"
           10. "angle"
 
-        .. _recsql:: http://sbcb.bioch.ox.ac.uk/oliver/software/RecSQL/html/index.html
+        .. _recsql: http://sbcb.bioch.ox.ac.uk/oliver/software/RecSQL/html/index.html
         """
         from itertools import izip
         if self.timeseries is None:
