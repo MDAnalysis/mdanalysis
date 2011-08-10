@@ -417,6 +417,6 @@ class HydrogenBondAnalysis(object):
         .. SeeAlso:: :mod:`cPickle` module and :class:`numpy.recarray`
         """
         import cPickle
-        if not self.table:
+        if self.table is None:
             self.generate_table()
-        cPickle.save(self.table, open(filename, 'wb'), protocol=cpickle.HIGHEST_PROTOCOL)
+        cPickle.dump(self.table, open(filename, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)
