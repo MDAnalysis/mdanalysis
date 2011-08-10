@@ -59,8 +59,10 @@
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">3.5. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a><ul>
-<li><a class="reference internal" href="#example">3.5.1. Example</a></li>
-<li><a class="reference internal" href="#classes">3.5.2. Classes</a></li>
+<li><a class="reference internal" href="#output">3.5.1. Output</a></li>
+<li><a class="reference internal" href="#detection-of-hydrogen-bonds">3.5.2. Detection of hydrogen bonds</a></li>
+<li><a class="reference internal" href="#example">3.5.3. Example</a></li>
+<li><a class="reference internal" href="#classes">3.5.4. Classes</a></li>
 </ul>
 </li>
 </ul>
@@ -127,7 +129,9 @@ HBONDS plugin</a>.</p>
 </ul>
 </dd>
 </dl>
-<p>Returns hydrogen bond data per frame (# indicates comments that are not part of the output):</p>
+<div class="section" id="output">
+<span id="analysis-output"></span><h2>3.5.1. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<p>The results are hydrogen bond data per frame (# indicates comments that are not part of the output):</p>
 <div class="highlight-python"><pre>results = [
     [ # frame 1
        [ # hbond 1
@@ -144,93 +148,168 @@ HBONDS plugin</a>.</p>
     ...
 ]</pre>
 </div>
+<p>Using the <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></tt></a> method one can reformat
+the results as a flat &#8220;normalised&#8221; table that is easier to import into a
+database for further processing. <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.save_table()</span></tt></a> saves
+the table to a pickled file. The table itself is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-26aa3cf)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
+</div>
+<div class="section" id="detection-of-hydrogen-bonds">
+<h2>3.5.2. Detection of hydrogen bonds<a class="headerlink" href="#detection-of-hydrogen-bonds" title="Permalink to this headline">¶</a></h2>
+<p>Hydrogen bonds are recorded based on a geometric criterion:</p>
+<ol class="arabic simple">
+<li>The distance between acceptor and hydrogen is less than or equal to
+<em>distance</em> (default is 3 Å).</li>
+<li>The angle between donor-hydrogen-acceptor is greater than or equal to
+<em>angle</em> (default is 120º).</li>
+</ol>
+<p>The cut-off values <em>angle</em> and <em>distance</em> can be set as keywords to
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">HydrogenBondAnalysis</span></tt></a>.</p>
+<p>Donor and acceptor heavy atoms are detected from atom names. The current
+defaults are appropriate for the CHARMM27 force field as defined in Table
+<a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis">Default atom names for hydrogen bonding analysis</a>. Hydrogen atoms are
+searched for as atom names following in sequence and starting with &#8216;H&#8217;.</p>
 <table border="1" class="docutils" id="default-atom-names-for-hydrogen-bonding-analysis">
-<caption>Default atom names for hydrogen bonding analysis</caption>
+<caption>Default heavy atom names for hydrogen bonding analysis.</caption>
 <colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
+<col width="15%" />
+<col width="19%" />
+<col width="15%" />
+<col width="50%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">group</th>
 <th class="head">donor</th>
 <th class="head">acceptor</th>
+<th class="head">comments</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr><td>main chain</td>
-<td>NH</td>
-<td>CO</td>
+<td>N</td>
+<td>C</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>water</td>
-<td>H1, H2</td>
-<td>OH2</td>
+<td>OH2, OW</td>
+<td>OH2, OW</td>
+<td>SPC, TIP3P, TIP4P (CHARMM27,Gromacs)</td>
 </tr>
 <tr><td>ARG</td>
-<td>NE, NH2</td>
+<td>NE, NH1, NH2</td>
+<td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
 <tr><td>ASN</td>
 <td>ND2</td>
 <td>OD1</td>
+<td>&nbsp;</td>
 </tr>
-<tr><td>HIS</td>
-<td>ND1, NE2</td>
-<td>ND1</td>
-</tr>
-<tr><td>SER</td>
-<td>OG</td>
-<td>OG</td>
-</tr>
-<tr><td>TYR</td>
-<td>OH</td>
-<td>OH</td>
-</tr>
-<tr><td>ARG</td>
-<td>NH1</td>
+<tr><td>ASP</td>
+<td>&nbsp;</td>
+<td>OD1, OD2</td>
 <td>&nbsp;</td>
 </tr>
 <tr><td>CYS</td>
 <td>SG</td>
 <td>&nbsp;</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>CYH</td>
 <td>&nbsp;</td>
 <td>SG</td>
-</tr>
-<tr><td>THR</td>
-<td>OG1</td>
-<td>OG1</td>
+<td>possible false positives for CYS</td>
 </tr>
 <tr><td>GLN</td>
 <td>NE2</td>
 <td>OE1</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>GLU</td>
+<td>&nbsp;</td>
+<td>OE1, OE2</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>HIS</td>
+<td>ND1, NE2</td>
+<td>ND1, NE2</td>
+<td>presence of H determines if donor</td>
+</tr>
+<tr><td>HSD</td>
+<td>ND1</td>
+<td>NE2</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>HSE</td>
+<td>NE2</td>
+<td>ND1</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>HSP</td>
+<td>ND1, NE2</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
 </tr>
 <tr><td>LYS</td>
 <td>NZ</td>
 <td>&nbsp;</td>
-</tr>
-<tr><td>TRP</td>
-<td>NE1</td>
 <td>&nbsp;</td>
 </tr>
 <tr><td>MET</td>
 <td>&nbsp;</td>
 <td>SD</td>
+<td>see e.g. <a class="reference internal" href="#gregoret1991">[Gregoret1991]</a></td>
 </tr>
-<tr><td>ASP</td>
+<tr><td>SER</td>
+<td>OG</td>
+<td>OG</td>
 <td>&nbsp;</td>
-<td>OD1, OD2</td>
 </tr>
-<tr><td>GLU</td>
+<tr><td>THR</td>
+<td>OG1</td>
+<td>OG1</td>
 <td>&nbsp;</td>
-<td>OE1, OE2</td>
+</tr>
+<tr><td>TRP</td>
+<td>NE1</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>TYR</td>
+<td>OH</td>
+<td>OH</td>
+<td>&nbsp;</td>
 </tr>
 </tbody>
 </table>
+<p>Donor and acceptor names are based on the CHARMM27 force field but will also
+work for e.g. OPLS/AA (tested in Gromacs) . Residue names in the table are for
+information only and are not taken into account when determining acceptors and
+donors. This can potentially lead to some ambiguity in the assignment of
+donors/acceptors for residues such as histidine or cytosine.</p>
+<p>The lists of donor and acceptor names can be extended by providing lists of
+atom names in the <em>donors</em> and <em>acceptors</em> keywords to
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">HydrogenBondAnalysis</span></tt></a>. If the lists are entirely inapprpriate
+(e.g. when analysing simulations done with a force field that uses very
+different atom names or when analysing non-protein system) then one can derive
+a new class and set the default lists oneself:</p>
+<div class="highlight-python"><pre>class HydrogenBondAnalysis_OtherFF(HydrogenBondAnalysis):
+      DEFAULT_DONORS = (....)      # add donor heavy atoms here
+      DEFAULT_ACCEPTORS = (....)   # add acceptor heavy atoms here</pre>
+</div>
+<p>Then simply use the new class instead of the parent class.</p>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="gregoret1991" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[Gregoret1991]</a></td><td>L.M. Gregoret, S.D. Rader, R.J. Fletterick, and
+F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,
+9(2):99–107, 1991. <a class="reference external" href="http://dx.doi.org/10.1002/prot.340090204">10.1002/prot.340090204</a>.</td></tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="example">
-<h2>3.5.1. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>TODO</p>
+<h2>3.5.3. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>All protein-water hydrogen bonds can be analysed with</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.hbonds</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">PDB</span><span class="p">,</span> <span class="n">permissive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -238,9 +317,18 @@ HBONDS plugin</a>.</p>
 <span class="n">results</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>The results are also stored as the attribute <tt class="xref py py-attr docutils literal"><span class="pre">h.timeseries</span></tt>; see
+<a class="reference internal" href="#analysis-output"><em>Output</em></a> for the format and further options.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Due to the way <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">HydrogenBondAnalysis</span></tt></a> is implemented, it is
+more efficient to have the second selection (<em>selection2</em>) be the
+<em>larger</em> group, e.g. the water when looking at water-protein H-bonds
+or the whole protein when looking at ligand-protein interactions.</p>
+</div>
 </div>
 <div class="section" id="classes">
-<h2>3.5.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>3.5.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hbonds.</tt><tt class="descname">HydrogenBondAnalysis</tt><big>(</big><em>universe</em>, <em>selection1='protein'</em>, <em>selection2='all'</em>, <em>selection1_type='both'</em>, <em>update_selection1=False</em>, <em>update_selection2=False</em>, <em>filter_first=True</em>, <em>distance=3.0</em>, <em>angle=120.0</em>, <em>donors=None</em>, <em>acceptors=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
@@ -249,19 +337,19 @@ HBONDS plugin</a>.</p>
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.run()</span></tt></a> method. The result is stored in
 <tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>. See
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">run()</span></tt></a> for the format.</p>
+<p>The default atom names are taken from the CHARMM 27 force field files but
+also work for e.g. OPLS/AA in Gromacs.</p>
 <dl class="docutils">
-<dt><em>Donors</em></dt>
-<dd>NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS
-NE2, SER OG, TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2,
-GLN NE2, LYS NZ, TRP NE1</dd>
+<dt><em>Donors</em> (associated hydrogens are deduced from topology)</dt>
+<dd>N of the main chain, water OH2/OW, ARG NE/NH1/NH2, ASN ND2, HIS ND1/NE2,
+SER OG, TYR OH, CYS SG, THR OG1, GLN NE2, LYS NZ, TRP NE1</dd>
 <dt><em>Acceptors</em></dt>
-<dd>CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1,
-MET SD, ASP OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH
-SG, HIS ND1, TYR OH.</dd>
+<dd>O of the main chain, water OH2/OW, ASN OD1, ASP OD1/OD2, CYH SG, GLN OE1,
+GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH</dd>
 </dl>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default atom names for hydrogen bonding analysis</em></a></p>
+<p class="last">Table <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default heavy atom names for hydrogen bonding analysis.</em></a></p>
 </div>
 <p>Set up calculation of hydrogen bonds between two selections in a universe.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -309,27 +397,21 @@ SG, HIS ND1, TYR OH.</dd>
 </tr>
 </tbody>
 </table>
-<p>The timeseries accessible as the attribute <tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>.</p>
+<p>The timeseries is accessible as the attribute <tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
 <tt class="descname">DEFAULT_ACCEPTORS</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
-<dd><p>default atom names that are treated as hydrogen <em>acceptors</em>:</p>
-<blockquote>
-<div>CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1, MET SD, ASP
-OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH SG, HIS ND1,
-TYR OH.</div></blockquote>
-<p>Use the keyword <em>acceptors</em> to add a list of additional acceptor names.</p>
+<dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
+(see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default heavy atom names for hydrogen bonding analysis.</em></a>)
+Use the keyword <em>acceptors</em> to add a list of additional acceptor names.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_DONORS">
 <tt class="descname">DEFAULT_DONORS</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
-<dd><p>default atom names that are treated as hydrogen <em>donors</em>:</p>
-<blockquote>
-<div>NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS NE2, SER OG,
-TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2, GLN NE2, LYS
-NZ, TRP NE1.</div></blockquote>
-<p>Use the keyword <em>donors</em> to add a list of additional donor names.</p>
+<dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
+(see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default heavy atom names for hydrogen bonding analysis.</em></a>)
+Use the keyword <em>donors</em> to add a list of additional donor names.</p>
 </dd></dl>
 
 <dl class="method">
