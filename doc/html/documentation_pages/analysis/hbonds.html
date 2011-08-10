@@ -67,7 +67,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="density.html"
-                        title="previous chapter">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
+                        title="previous chapter">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="helanal.html"
                         title="next chapter">3.6. HELANAL &#8212; analysis of protein helices</a></p>
@@ -127,8 +127,22 @@ HBONDS plugin</a>.</p>
 </ul>
 </dd>
 </dl>
-<p>Returns hydrogen bond data per frame:</p>
-<div class="highlight-python"><pre>results[ [ &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt; ], [frame 1], [frame 2] ... ]</pre>
+<p>Returns hydrogen bond data per frame (# indicates comments that are not part of the output):</p>
+<div class="highlight-python"><pre>results = [
+    [ # frame 1
+       [ # hbond 1
+          &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
+       ],
+       [ # hbond 2
+          &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
+       ],
+       ....
+    ],
+    [ # frame 2
+      [ ... ], [ ... ], ...
+    ],
+    ...
+]</pre>
 </div>
 <table border="1" class="docutils" id="default-atom-names-for-hydrogen-bonding-analysis">
 <caption>Default atom names for hydrogen bonding analysis</caption>
@@ -233,17 +247,14 @@ HBONDS plugin</a>.</p>
 <dd><p>Perform a hydrogen bond analysis</p>
 <p>The analysis of the trajectory is performed with the
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.run()</span></tt></a> method. The result is stored in
-<tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>. It is a numpy array which
-contains the frame number at index 0, selection1 and selection2,
-and the total number of hydrogen bonds</p>
-<div class="highlight-python"><pre>frame  selection1 selection2  num_hbonds</pre>
-</div>
+<tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>. See
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">run()</span></tt></a> for the format.</p>
 <dl class="docutils">
-<dt>Donors</dt>
+<dt><em>Donors</em></dt>
 <dd>NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS
 NE2, SER OG, TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2,
 GLN NE2, LYS NZ, TRP NE1</dd>
-<dt>Acceptors</dt>
+<dt><em>Acceptors</em></dt>
 <dd>CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1,
 MET SD, ASP OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH
 SG, HIS ND1, TYR OH.</dd>
@@ -324,7 +335,7 @@ NZ, TRP NE1.</div></blockquote>
 <dl class="method">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.calc_angle">
 <tt class="descname">calc_angle</tt><big>(</big><em>d</em>, <em>h</em>, <em>a</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.calc_angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the angle (in degrees) between two atoms</p>
+<dd><p>Calculate the angle (in degrees) between two atoms with H at apex.</p>
 </dd></dl>
 
 <dl class="method">
@@ -334,9 +345,68 @@ NZ, TRP NE1.</div></blockquote>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table">
+<tt class="descname">generate_table</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a normalised table of the results.</p>
+<p>The table is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-26aa3cf)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> in the
+attribute <tt class="xref py py-attr docutils literal"><span class="pre">table</span></tt> and can be used
+with e.g. <a href="#id1"><span class="problematic" id="id2">`recsql`_</span></a>.</p>
+<dl class="docutils">
+<dt>Columns:</dt>
+<dd><ol class="first last arabic simple" start="0">
+<li>&#8220;time&#8221;</li>
+<li>&#8220;donor_idx&#8221;</li>
+<li>&#8220;acceptor_idx&#8221;</li>
+<li>&#8220;donor_resnm&#8221;</li>
+<li>&#8220;donor_resid&#8221;</li>
+<li>&#8220;donor_atom&#8221;</li>
+<li>&#8220;acceptor_resnm&#8221;</li>
+<li>&#8220;acceptor_resid&#8221;</li>
+<li>&#8220;acceptor_atom&#8221;</li>
+<li>&#8220;distance&#8221;</li>
+<li>&#8220;angle&#8221;</li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run">
 <tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze trajectory and produce timeseries.</p>
+<p>Returns hydrogen bond data per frame (# indicates comments that are not part of the output):</p>
+<div class="highlight-python"><pre>results = [
+    [ # frame 1
+       [ # hbond 1
+          &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
+       ],
+       [ # hbond 2
+          &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
+       ],
+       ....
+    ],
+    [ # frame 2
+      [ ... ], [ ... ], ...
+    ],
+    ...
+]</pre>
+</div>
+<p>The data are also stored as <tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table">
+<tt class="descname">save_table</tt><big>(</big><em>filename='hbond_table.pickle'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the table to a pickled file.</p>
+<p>Load with</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">cPickle</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="http://docs.python.org/library/pickle.html#module-cPickle" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cPickle</span></tt></a> module and <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-26aa3cf)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a></p>
+</div>
 </dd></dl>
 
 </dd></dl>

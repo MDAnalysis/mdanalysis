@@ -63,16 +63,18 @@
 <li><a class="reference internal" href="#containers-and-lists">7.9.2. Containers and lists</a></li>
 <li><a class="reference internal" href="#file-parsing">7.9.3. File parsing</a></li>
 <li><a class="reference internal" href="#data-manipulation-and-handling">7.9.4. Data manipulation and handling</a></li>
+<li><a class="reference internal" href="#strings">7.9.5. Strings</a></li>
+<li><a class="reference internal" href="#mathematics-and-geometry">7.9.6. Mathematics and Geometry</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="units.html"
-                        title="previous chapter">7.8. Constants and unit conversion &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
+                        title="previous chapter">7.8. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="log.html"
-                        title="next chapter">7.10. Setting up logging &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
+                        title="next chapter">7.10. Setting up logging &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/util.txt"
@@ -271,6 +273,81 @@ supported, and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
 <dd><p>Return bins of width delta that cover xmin,xmax (or a larger range).</p>
 <p>dict = fixedwidth_bins(delta,xmin,xmax)</p>
 <p>The dict contains &#8216;Nbins&#8217;, &#8216;delta&#8217;, &#8216;min&#8217;, and &#8216;max&#8217;.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="strings">
+<h2>7.9.5. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.core.util.convert_aa_code">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">convert_aa_code</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.convert_aa_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts between 3-letter and 1-letter amino acid codes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.util.parse_residue">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">parse_residue</tt><big>(</big><em>residue</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.parse_residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process residue string.</p>
+<dl class="docutils">
+<dt>Examples:</dt>
+<dd><ul class="first last simple">
+<li>&#8220;LYS300:HZ1&#8221; &#8211;&gt; (&#8220;LYS&#8221;, 300, &#8220;HZ1&#8221;)</li>
+<li>&#8220;K300:HZ1&#8221; &#8211;&gt; (&#8220;LYS&#8221;, 300, &#8220;HZ1&#8221;)</li>
+<li>&#8220;K300&#8221; &#8211;&gt; (&#8220;LYS&#8221;, 300, None)</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Argument :</th><td class="field-body">The <em>residue</em> must contain a 1-letter or 3-letter or
+4-letter residue string, a number (the resid) and
+optionally an atom identifier, which must be separate
+from the residue with a colon (&#8221;:&#8221;). White space is
+allowed in between.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><cite>(3-letter aa string, resid, atomname)</cite>; known 1-letter
+aa codes are converted to 3-letter codes</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="mathematics-and-geometry">
+<h2>7.9.6. Mathematics and Geometry<a class="headerlink" href="#mathematics-and-geometry" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.core.util.normal">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">normal</tt><big>(</big><em>vec1</em>, <em>vec2</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the unit vector normal to two vectors.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.util.norm">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">norm</tt><big>(</big><em>v</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the length of a vector, <tt class="docutils literal"><span class="pre">sqrt(v.v)</span></tt>.</p>
+<p>Faster than <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v2.0.dev-26aa3cf)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></tt></a> because no frills.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.util.angle">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">angle</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the angle between two vectors in radians</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.util.stp">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">stp</tt><big>(</big><em>vec1</em>, <em>vec2</em>, <em>vec3</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.stp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes the scalar triple product of three vectors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body">v3 . (v1 x v2)</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
