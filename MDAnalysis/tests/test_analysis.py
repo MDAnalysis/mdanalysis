@@ -18,6 +18,7 @@
 import MDAnalysis
 import MDAnalysis.analysis.distances
 import MDAnalysis.analysis.align
+import MDAnalysis.analysis.hbonds
 
 import numpy as np
 from numpy.testing import *
@@ -26,7 +27,7 @@ from nose.plugins.attrib import attr
 import os
 import tempfile
 
-from MDAnalysis.tests.datafiles import PSF,DCD
+from MDAnalysis.tests.datafiles import PSF,DCD,CRD
 
 class TestContactMatrix(TestCase):
     def setUp(self):
@@ -120,3 +121,35 @@ class TestAlign(TestCase):
         assert_almost_equal(rmsd, desired, decimal=5,
                             err_msg="frame %d of fit does not have expected RMSD" % frame)
 
+class TestHydrogenBondAnalysis(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PSF, CRD)  # just single frame for speed
+
+    def test_HBondAnalysis_Protein(self):
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'protein', 'protein', distance=3.0, angle=120.0)
+        h.run()
+        h.generate_table()
+
+        # very quick check that it keeps producing the same results
+        assert_equal(len(h.table), 262)
+        assert_almost_equal(h.table.distance.mean(), 2.5000324100210811, 6)
+        assert_almost_equal(h.table.distance.std(), 0.47581971294373848, 6)
+        assert_almost_equal(h.table.angle.mean(), 151.84702005167765, 6)
+        assert_almost_equal(h.table.angle.std(), 17.006397753838051, 6)
+        del h
+
+    def test_HBondAnalysis_Backbone(self):
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'backbone', 'protein', distance=3.0, angle=120.0)
+        h.run()
+        h.generate_table()
+
+        # very quick check that it keeps producing the same results
+        assert_equal(len(h.table), 146)
+        assert_almost_equal(h.table.distance.mean(), 2.7399016704762111, 6)
+        assert_almost_equal(h.table.distance.std(), 0.29556370652504049, 6)
+        assert_almost_equal(h.table.angle.mean(), 152.39720811202221, 6)
+        assert_almost_equal(h.table.angle.std(), 17.076663879481604, 6)
+        del h
+
+    def tearDown(self):
+        del self.universe

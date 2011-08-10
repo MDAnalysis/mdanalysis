@@ -25,7 +25,13 @@ Options:
   - Angle *cutoff* (degrees): 120.0
   - *donors* and *acceptors* atom types (to add additional atom names)
 
-Returns hydrogen bond data per frame (# indicates comments that are not part of the output)::
+
+.. _Analysis Output:
+
+Output
+------
+
+The results are hydrogen bond data per frame (# indicates comments that are not part of the output)::
 
     results = [
         [ # frame 1
@@ -43,45 +49,111 @@ Returns hydrogen bond data per frame (# indicates comments that are not part of 
         ...
     ]
 
+Using the :meth:`HydrogenBondAnalysis.generate_table` method one can reformat
+the results as a flat "normalised" table that is easier to import into a
+database for further processing. :meth:`HydrogenBondAnalysis.save_table` saves
+the table to a pickled file. The table itself is a :class:`numpy.recarray`.
+
+Detection of hydrogen bonds
+---------------------------
+
+Hydrogen bonds are recorded based on a geometric criterion:
+
+1. The distance between acceptor and hydrogen is less than or equal to
+   *distance* (default is 3 Å).
+
+2. The angle between donor-hydrogen-acceptor is greater than or equal to
+   *angle* (default is 120º).
+
+The cut-off values *angle* and *distance* can be set as keywords to
+:class:`HydrogenBondAnalysis`.
+
+Donor and acceptor heavy atoms are detected from atom names. The current
+defaults are appropriate for the CHARMM27 force field as defined in Table
+`Default atom names for hydrogen bonding analysis`_. Hydrogen atoms are
+searched for as atom names following in sequence and starting with 'H'.
+
+
 .. _Default atom names for hydrogen bonding analysis:
 
-.. table:: Default atom names for hydrogen bonding analysis
+.. table:: Default heavy atom names for hydrogen bonding analysis.
 
-   =========== ===========  ===========
-   group       donor        acceptor
-   =========== ===========  ===========
-   main chain  NH           CO
-   water       H1, H2       OH2
-   ARG         NE, NH2
-   ASN         ND2          OD1
-   HIS         ND1, NE2     ND1
-   SER         OG           OG
-   TYR         OH           OH
-   ARG         NH1
+   =========== ==============  =========== ====================================
+   group       donor           acceptor    comments
+   =========== ==============  =========== ====================================
+   main chain  N               C
+   water       OH2, OW         OH2, OW     SPC, TIP3P, TIP4P (CHARMM27,Gromacs)
+
+   ARG         NE, NH1, NH2
+   ASN         ND2             OD1
+   ASP                         OD1, OD2
    CYS         SG
-   CYH                      SG
-   THR         OG1          OG1
-   GLN         NE2          OE1
+   CYH                         SG          possible false positives for CYS
+   GLN         NE2             OE1
+   GLU                         OE1, OE2
+   HIS         ND1, NE2        ND1, NE2    presence of H determines if donor
+   HSD         ND1             NE2
+   HSE         NE2             ND1
+   HSP         ND1, NE2
    LYS         NZ
+   MET                         SD          see e.g. [Gregoret1991]_
+   SER         OG              OG
+   THR         OG1             OG1
    TRP         NE1
-   MET                      SD
-   ASP                      OD1, OD2
-   GLU                      OE1, OE2
-   =========== ===========  ===========
+   TYR         OH              OH
+   =========== ==============  =========== ====================================
 
 
+Donor and acceptor names are based on the CHARMM27 force field but will also
+work for e.g. OPLS/AA (tested in Gromacs) . Residue names in the table are for
+information only and are not taken into account when determining acceptors and
+donors. This can potentially lead to some ambiguity in the assignment of
+donors/acceptors for residues such as histidine or cytosine.
+
+The lists of donor and acceptor names can be extended by providing lists of
+atom names in the *donors* and *acceptors* keywords to
+:class:`HydrogenBondAnalysis`. If the lists are entirely inapprpriate
+(e.g. when analysing simulations done with a force field that uses very
+different atom names or when analysing non-protein system) then one can derive
+a new class and set the default lists oneself::
+
+ class HydrogenBondAnalysis_OtherFF(HydrogenBondAnalysis):
+       DEFAULT_DONORS = (....)      # add donor heavy atoms here
+       DEFAULT_ACCEPTORS = (....)   # add acceptor heavy atoms here
+
+Then simply use the new class instead of the parent class.
+
+
+.. rubric:: References
+
+.. [Gregoret1991] L.M. Gregoret, S.D. Rader, R.J. Fletterick, and
+   F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,
+   9(2):99–107, 1991. `10.1002/prot.340090204`_.
+
+.. _`10.1002/prot.340090204`: http://dx.doi.org/10.1002/prot.340090204
 
 
 Example
 -------
 
-TODO ::
+All protein-water hydrogen bonds can be analysed with ::
 
   import MDAnalysis.analysis.hbonds
 
   u = MDAnalysis.Universe(PSF, PDB, permissive=True)
   h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'protein', 'resname TIP3', distance=3.0, angle=120.0)
   results = h.run()
+
+The results are also stored as the attribute :attr:`h.timeseries`; see
+:ref:`Analysis Output` for the format and further options.
+
+.. Note:: Due to the way :class:`HydrogenBondAnalysis` is implemented, it is
+          more efficient to have the second selection (*selection2*) be the
+          *larger* group, e.g. the water when looking at water-protein H-bonds
+          or the whole protein when looking at ligand-protein interactions.
+
+.. TODO: how to analyse the ouput and notes on selection updating
+
 
 Classes
 -------
@@ -112,39 +184,37 @@ class HydrogenBondAnalysis(object):
     :attr:`HydrogenBondAnalysis.timeseries`. See
     :meth:`~HydrogenBondAnalysis.run` for the format.
 
-    *Donors*
-      NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS
-      NE2, SER OG, TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2,
-      GLN NE2, LYS NZ, TRP NE1
+    The default atom names are taken from the CHARMM 27 force field files but
+    also work for e.g. OPLS/AA in Gromacs.
+
+    *Donors* (associated hydrogens are deduced from topology)
+      N of the main chain, water OH2/OW, ARG NE/NH1/NH2, ASN ND2, HIS ND1/NE2,
+      SER OG, TYR OH, CYS SG, THR OG1, GLN NE2, LYS NZ, TRP NE1
 
     *Acceptors*
-      CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1,
-      MET SD, ASP OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH
-      SG, HIS ND1, TYR OH.
+      O of the main chain, water OH2/OW, ASN OD1, ASP OD1/OD2, CYH SG, GLN OE1,
+      GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH
 
-    .. SeeAlso:: :ref:`Default atom names for hydrogen bonding analysis`
+    .. SeeAlso:: Table :ref:`Default atom names for hydrogen bonding analysis`
 
     """
 
-    #: default atom names that are treated as hydrogen *donors*:
-    #:
-    #:   NH of the main chain, water-H1/H2, ARG NE, ASN ND2, HIS NE2, SER OG,
-    #:   TYR OH, ARG NH1, CYS SG, HIS ND1, THR OG1, ARG NH2, GLN NE2, LYS
-    #:   NZ, TRP NE1.
-    #:
-    #: Use the keyword *donors* to add a list of additional donor names.
-    DEFAULT_DONORS = ('NH', 'OH2', 'OW', 'NE', 'ND2', 'NE2', 'OG', 'OH', 'NH1', 'SG',
-                      'ND1', 'OG1', 'NH2', 'NE2', 'NZ', 'NE1', )
+    # use tuple(set()) here so that one can just copy&paste names from the
+    # table; set() takes care for removing duplicates. At the end the
+    # DEFAULT_DONORS and DEFAULT_ACCEPTORS should simply be tuples.
 
-    #: default atom names that are treated as hydrogen *acceptors*:
-    #:
-    #:   CO main chain, water-OH2, water-OW, ASN OD1, GLN OE1, MET SD, ASP
-    #:   OD1, GLU OE1, SER OG, ASP OD2, GLU OE2, THR OG1,CYH SG, HIS ND1,
-    #:   TYR OH.
-    #:
+    #: default heavy atom names whose hydrogens are treated as *donors*
+    #: (see :ref:`Default atom names for hydrogen bonding analysis`)
+    #: Use the keyword *donors* to add a list of additional donor names.
+    DEFAULT_DONORS = tuple(set(['N', 'OH2', 'OW', 'NE', 'NH1' 'NH2', 'ND2', 'SG', 'NE2',
+                               'ND1', 'NE2', 'ND1', 'NE2', 'ND1', 'NE2', 'NZ', 'OG', 'OG1',
+                               'NE1', 'OH',]))
+
+    #: default atom names that are treated as hydrogen *acceptors*
+    #: (see :ref:`Default atom names for hydrogen bonding analysis`)
     #: Use the keyword *acceptors* to add a list of additional acceptor names.
-    DEFAULT_ACCEPTORS = ('CO', 'OH2', 'OW', 'OD1', 'OE1', 'SD',
-                         'OD1', 'OE1', 'OG', 'OD2', 'OE2', 'OG1', 'SG', 'ND1', 'OH', )
+    DEFAULT_ACCEPTORS = tuple(set(['C', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1', 'OE2',
+                                   'ND1', 'NE2', 'NE2', 'ND1', 'SD', 'OG', 'OG1', 'OH',]))
 
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
                 update_selection1=False, update_selection2=False, filter_first=True, distance=3.0, angle=120.0,
@@ -177,7 +247,7 @@ class HydrogenBondAnalysis(object):
             Extra H acceptor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a sequence.
 
-        The timeseries accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
+        The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
         """
 
         self.u = universe

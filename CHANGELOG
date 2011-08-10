@@ -29,8 +29,10 @@ The rules for this file:
     certain numbers of input lines; thanks to htaoyu1)
   * fix for Issue 48 (sparse contact_matrix in distances.py was slow when 
     written in pure python; optimized in c code using scipy.weave) 
+  * HydrogenBondingAnalysis: donor atom name CO --> O (proper backbone
+    oxygen); without the fix one misses most of the backbone H-bonds
 
-
+ 
 05/22/11 orbeckst, jandom, Benjamin Hall, Paul Rigor, dcaplan,
          Christian Beckstein (logo), denniej0
 
