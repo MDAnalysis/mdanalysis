@@ -136,17 +136,13 @@ import MDAnalysis
 import MDAnalysis.coordinates
 import MDAnalysis.core.qcprot as qcp
 from MDAnalysis import SelectionError
+from MDAnalysis.core.log import echo
 
 import os.path
-import sys
+
 
 import logging
 logger = logging.getLogger('MDAnalysis.analysis.align')
-
-def echo(s=''):
-    """Simple string output that immediately prints to the console."""
-    sys.stderr.write(s)
-    sys.stderr.flush()
 
 def rmsd(a,b, weights=None):
     """Returns RMSD between two coordinate sets *a* and *b*.
