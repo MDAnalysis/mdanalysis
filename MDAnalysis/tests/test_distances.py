@@ -20,9 +20,42 @@ import MDAnalysis.core.distances
 
 import numpy as np
 from numpy.testing import *
+del test
 from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF,DCD
+
+
+
+class TestDistanceArray(TestCase):
+    def setUp(self):
+        self.box = np.array([1.,1.,2.], dtype=np.float32)
+        self.points = np.array([[0,0,0], [1,1,2], [1,0,2],  # identical under PBC
+                                [0.5, 0.5, 1.5],
+                                ], dtype=np.float32)
+        self.ref = self.points[0:1]
+        self.conf = self.points[1:]
+
+    def _dist(self, n, ref=None):
+        if ref is None:
+            ref = self.ref[0]
+        else:
+            ref = np.asarray(ref, dtype=np.float32)
+        x = self.points[n]
+        r = x - ref
+        return np.sqrt(np.dot(r,r))
+
+    def test_noPBC(self):
+        d = MDAnalysis.core.distances.distance_array(self.ref, self.points)
+        assert_almost_equal(d, np.array([[self._dist(0), self._dist(1), self._dist(2),
+                                          self._dist(3),
+                                          ]]))
+
+    def test_PBC(self):
+        d = MDAnalysis.core.distances.distance_array(self.ref, self.points, box=self.box)
+        assert_almost_equal(d, np.array([[ 0., 0., 0.,
+                                           self._dist(3, ref=[1,1,2]),
+                                           ]]))
 
 class TestDistanceArrayDCD(TestCase):
     def setUp(self):
@@ -138,5 +171,6 @@ class TestSelfDistanceArrayDCD(TestCase):
                             err_msg="wrong minimum distance value with PBC")
         assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value with PBC")
+
 
 
