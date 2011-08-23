@@ -32,7 +32,11 @@ The rules for this file:
   * HydrogenBondingAnalysis: donor atom name CO --> O (proper backbone
     oxygen); without the fix one misses most of the backbone H-bonds
 
+  Changes
+
+  * replaced analysis.util.progress_meter() with class core.log.ProgressMeter
  
+
 05/22/11 orbeckst, jandom, Benjamin Hall, Paul Rigor, dcaplan,
          Christian Beckstein (logo), denniej0
 

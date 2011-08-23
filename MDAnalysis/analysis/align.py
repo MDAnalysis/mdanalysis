@@ -132,11 +132,11 @@ Functions
 """
 
 import numpy
+
 import MDAnalysis
-import MDAnalysis.coordinates
 import MDAnalysis.core.qcprot as qcp
 from MDAnalysis import SelectionError
-from MDAnalysis.core.log import echo
+from MDAnalysis.core.log import ProgressMeter
 
 import os.path
 
@@ -439,6 +439,10 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
     rot = numpy.zeros(9,dtype=numpy.float64)      # allocate space for calculation
     R = numpy.matrix(rot.reshape(3,3))
+
+    percentage = ProgressMeter(nframes, interval=10,
+                               format="Fitted frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
+
     for k,ts in enumerate(frames):
         # shift coordinates for rotation fitting
         # selection is updated with the time frame
@@ -462,19 +466,9 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         ts._pos   += ref_com
 
         writer.write(traj.atoms) # write whole input trajectory system
-        # for debugging:
-        # rmsd_old = rmsd(ref_atoms.coordinates(),traj_coordinates)
-        # rmsd_new = rmsd(ref_atoms.coordinates(),traj_atoms.coordinates())
-        # logger.debug("Fitted frame %5d/%d  [%5.1f%%]  %5.2fA --> %5.2fA  |translation|=%.2fA\r" % \
-        #            (ts.frame,frames.numframes,100.0*ts.frame/frames.numframes,
-        #             rmsd_old, rmsd_new, rmsd(x_com,ref_com)) )
-        if ts.frame % 10 == 0:
-            echo("Fitted frame %5d/%d  [%5.1f%%]\r" % \
-                (ts.frame,frames.numframes,100.0*ts.frame/frames.numframes))
-    # done
-    echo("Fitted frame %5d/%d  [%5.1f%%]\r\n" % \
-             (ts.frame,frames.numframes,100.0*ts.frame/frames.numframes))
-    logger.info("Wrote %d RMS-fitted coordinate frames to file %r", frames.numframes, filename)
+        percentage.echo(ts.frame)
+    logger.info("Wrote %d RMS-fitted coordinate frames to file %r",
+                frames.numframes, filename)
     if not rmsdfile is None:
         numpy.savetxt(rmsdfile,rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)

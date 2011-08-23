@@ -32,7 +32,6 @@ from scipy import weave
 from scipy.weave import converters
 
 from MDAnalysis.core.distances import distance_array, self_distance_array
-from MDAnalysis.core.log import progress_meter
 
 
 def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_meter_freq=100, suppress_progmet=False):
