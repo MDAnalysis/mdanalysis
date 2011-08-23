@@ -137,6 +137,7 @@ import MDAnalysis
 import MDAnalysis.core.qcprot as qcp
 from MDAnalysis import SelectionError
 from MDAnalysis.core.log import ProgressMeter
+from MDAnalysis.core.util import asiterable
 
 import os.path
 
@@ -229,7 +230,8 @@ def _process_selection(select):
            dictionary based on a ClustalW_ or STAMP_ sequence alignment.
          - tuple ``(sel1, sel2)``
 
-    :Returns: dict with keys `reference` and `mobile`
+    :Returns: dict with keys `reference` and `mobile`; the values are guaranteed to
+              be iterable (so that one can provide selections that retain order)
     """
     if type(select) is str:
         select = {'reference':select,'mobile':select}
@@ -256,6 +258,8 @@ def _process_selection(select):
                            "'mobile' and 'reference'.")
     else:
         raise TypeError("'select' must be either a string, 2-tuple, or dict")
+    select['mobile'] = asiterable(select['mobile'])
+    select['reference'] = asiterable(select['reference'])
     return select
 
 def alignto(mobile, reference, select="all", mass_weighted=False,
@@ -275,6 +279,18 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
        contains *mobile* are shifted and rotated. (See below for how
        to change this behavior through the *subselection* keyword.)
 
+    The *mobile* and *reference* atom groups can be constructed so that they
+    already match atom by atom. In this case, *select* should be set to "all"
+    (or ``None``) so that no further selections are applied to *mobile* and
+    *reference*, therefore preserving the exact atom ordering (see
+    :ref:`ordered-selections-label`).
+
+    .. Warning:: The atom order for *mobile* and *reference* is *only*
+       preserved when *select* is either "all" or ``None``. In any other case,
+       a new selection will be made that will sort the resulting AtomGroup by
+       index and therefore destroy the correspondence between the two groups. **It
+       is safest not to mix ordered AtomGroups with selection strings.**
+
     :Arguments:
       *mobile*
          structure to be aligned, a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
@@ -283,13 +299,17 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
          reference structure, a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
          or a whole :class:`~MDAnalysis.core.AtomGroup.Universe`
       *select*
-         - any valid selection string for
-           :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
-           selections in *mobile* and *reference*; or
-         - dictionary ``{'mobile':sel1, 'reference':sel2}``.
-           The :func:`fasta2select` function returns such a
-           dictionary based on a ClustalW_ or STAMP_ sequence alignment.
-         - tuple ``(sel1, sel2)``
+         1. any valid selection string for
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
+            selections in *mobile* and *reference*; or
+         2. dictionary ``{'mobile':sel1, 'reference':sel2}``.
+            (the :func:`fasta2select` function returns such a
+            dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
+         3.  tuple ``(sel1, sel2)``
+
+         When using 2. or 3. with *sel1* and *sel2* then these selections can also each be
+         a list of selection strings (to generate a AtomGroup with defined atom order as
+         described under :ref:`ordered-selections-label`).
       *mass_weighted* : boolean
          ``True`` uses the masses :meth:`reference.masses` as weights for the
          RMSD fit.
@@ -310,9 +330,16 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     .. SeeAlso:: For RMSD-fitting trajectories it is more efficient to
                  use :func:`rms_fit_trj`.
     """
-    select = _process_selection(select)
-    mobile_atoms = mobile.selectAtoms(select['mobile'])
-    ref_atoms = reference.selectAtoms(select['reference'])
+    if select in ('all', None):
+        # keep the EXACT order in the input AtomGroups; selectAtoms('all')
+        # orders them by index, which can lead to wrong results if the user
+        # has crafted mobile and reference to match atom by atom
+        mobile_atoms = mobile.atoms
+        ref_atoms = reference.atoms
+    else:
+        select = _process_selection(select)
+        mobile_atoms = mobile.selectAtoms(*select['mobile'])
+        ref_atoms = reference.selectAtoms(*select['reference'])
     if mass_weighted:
         weights = ref_atoms.masses()/numpy.mean(ref_atoms.masses())
         ref_com = ref_atoms.centerOfMass()
@@ -357,12 +384,17 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
          reference coordinates; :class:`MDAnalysis.Universe` object
          (uses the current time step of the object)
       *select*
-         - any valid selection string for
-           :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
-           selections in *traj* and *reference*; or
-         - dictionary ``{'reference':sel1, 'mobile':sel2}``.
-           The :func:`fasta2select` function returns such a
-           dictionary based on a ClustalW_ or STAMP_ sequence alignment.
+         1. any valid selection string for
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
+            selections in *mobile* and *reference*; or
+         2. a dictionary ``{'mobile':sel1, 'reference':sel2}`` (the
+            :func:`fasta2select` function returns such a
+            dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
+         3. a tuple ``(sel1, sel2)``
+
+         When using 2. or 3. with *sel1* and *sel2* then these selections can also each be
+         a list of selection strings (to generate a AtomGroup with defined atom order as
+         described under :ref:`ordered-selections-label`).
       *filename*
          file name for the RMS-fitted trajectory or pdb; defaults to the
          original trajectory filename (from *traj*) with *prefix* prepended
@@ -394,8 +426,8 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
 
     writer = frames.Writer(filename, remarks='RMS fitted trajectory to reference')
 
-    ref_atoms = reference.selectAtoms(select['reference'])
-    traj_atoms = traj.selectAtoms(select['mobile'])
+    ref_atoms = reference.selectAtoms(*select['reference'])
+    traj_atoms = traj.selectAtoms(*select['mobile'])
     natoms = traj_atoms.numberOfAtoms()
     if len(ref_atoms) != len(traj_atoms):
         raise SelectionError("Reference and trajectory atom selections do not contain "+

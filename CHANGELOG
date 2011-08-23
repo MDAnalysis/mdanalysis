@@ -22,6 +22,10 @@ The rules for this file:
     Michael Lerner for the suggestion
   * Chain trajectory reader allows frame indexing.
   * Issue 75: additional donors and acceptors keywords for H-bond analysis
+  * structural alignment functions alignto() and rms_fit_traj() can also take a
+    list of selection strings in order to define atom groups with fixed atom
+    order and alignto() preserves the order of supplied AtomGroups for the
+    special select values "all" and None.
 
   Fixes
  
