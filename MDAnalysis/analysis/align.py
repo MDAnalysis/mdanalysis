@@ -235,7 +235,7 @@ def _process_selection(select):
         select = {'reference':select,'mobile':select}
     elif type(select) is tuple:
         try:
-            select = {'reference':select[0],'mobile':select[1]}
+            select = {'mobile':select[0], 'reference':select[1]}
         except IndexError:
             raise IndexError("select must contain two selection strings "
                              "(reference, mobile)")

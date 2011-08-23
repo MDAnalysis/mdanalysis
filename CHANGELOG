@@ -31,6 +31,8 @@ The rules for this file:
     written in pure python; optimized in c code using scipy.weave) 
   * HydrogenBondingAnalysis: donor atom name CO --> O (proper backbone
     oxygen); without the fix one misses most of the backbone H-bonds
+  * alignto() and rms_fit_trj(): order of mobile and reference
+    selection was reversed when supplied as a tuple (sel1, sel2)
 
   Changes
 
