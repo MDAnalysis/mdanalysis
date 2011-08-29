@@ -124,13 +124,17 @@
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.NucleicSelection">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicSelection" title="Permalink to this definition">¶</a></dt>
-<dd><p>A nucleic selection consists of all atoms in nucleic acid residues with  recognized residue names.
-Recognized residue names:
-* from the Charmm force field</p>
-<blockquote>
-<div>awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</div></blockquote>
-<ul class="simple">
-<li>recognized: &#8216;ADE&#8217;, &#8216;URA&#8217;, &#8216;CYT&#8217;, &#8216;GUA&#8217;, &#8216;THY&#8217;</li>
+<dd><p>A nucleic selection consists of all atoms in nucleic acid residues with  recognized residue names.</p>
+<p>Recognized residue names:</p>
+<ul>
+<li><dl class="first docutils">
+<dt>from the Charmm force field ::</dt>
+<dd><p class="first last">awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">recognized: &#8216;ADE&#8217;, &#8216;URA&#8217;, &#8216;CYT&#8217;, &#8216;GUA&#8217;, &#8216;THY&#8217;</p>
+</li>
 </ul>
 </dd></dl>
 
@@ -143,13 +147,17 @@ Recognized residue names:
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.NucleicXstalSelection">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicXstalSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicXstalSelection" title="Permalink to this definition">¶</a></dt>
-<dd><p>A nucleic selection consists of all atoms in nucleic acid residues with PDB-like resnames.
-Recognized residue names:
-* from the Charmm force field:</p>
-<blockquote>
-<div>awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</div></blockquote>
-<ul class="simple">
-<li>recognized: &#8216;A&#8217;, &#8216;U&#8217;, &#8216;C&#8217;, &#8216;G&#8217;, &#8216;DT&#8217;,&#8217;DA&#8217;,&#8217;DC&#8217;,&#8217;DG&#8217;</li>
+<dd><p>A nucleic selection consists of all atoms in nucleic acid residues with PDB-like resnames.</p>
+<p>Recognized residue names:</p>
+<ul>
+<li><dl class="first docutils">
+<dt>from the Charmm force field::</dt>
+<dd><p class="first last">awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">recognized: &#8216;A&#8217;, &#8216;U&#8217;, &#8216;C&#8217;, &#8216;G&#8217;, &#8216;DT&#8217;,&#8217;DA&#8217;,&#8217;DC&#8217;,&#8217;DG&#8217;</p>
+</li>
 </ul>
 </dd></dl>
 
@@ -194,21 +202,18 @@ x, y, z, radius, mass,</p>
 recursive descent parsing using Precedence climbing (see
 <a class="reference external" href="http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm">http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm</a>).  Transforms
 expressions into nested Selection tree.</p>
-<p>For reference, the grammar that we parse is :</p>
-<p>E(xpression)&#8211;&gt; Exp(0)
-Exp(p) &#8211;&gt;      P {B Exp(q)}
-P &#8211;&gt;           U Exp(q) | &#8220;(&#8221; E &#8221;)&#8221; | v
-B(inary) &#8211;&gt;    &#8220;and&#8221; | &#8220;or&#8221;
-U(nary) &#8211;&gt;     &#8220;not&#8221;
-T(erms) &#8211;&gt;     segid [value]</p>
-<blockquote>
-<div><div class="line-block">
-<div class="line">resname [value]</div>
-<div class="line">resid [value]</div>
-<div class="line">name [value]</div>
-<div class="line">type [value]</div>
+<p>For reference, the grammar that we parse is</p>
+<div class="highlight-python"><pre>E(xpression)--&gt; Exp(0)
+Exp(p) --&gt;      P {B Exp(q)}
+P --&gt;           U Exp(q) | "(" E ")" | v
+B(inary) --&gt;    "and" | "or"
+U(nary) --&gt;     "not"
+T(erms) --&gt;     segid [value]
+                | resname [value]
+                | resid [value]
+                | name [value]
+                | type [value]</pre>
 </div>
-</div></blockquote>
 </dd></dl>
 
 </div>

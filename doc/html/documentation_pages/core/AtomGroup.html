@@ -361,6 +361,9 @@ work for esoteric residues.</dd>
 consists of two numbers separated by a colon (inclusive) such
 as <tt class="docutils literal"><span class="pre">resid</span> <span class="pre">1:5</span></tt>. A residue number (&#8220;resid&#8221;) is taken directly from the
 topology.</dd>
+<dt>resnum <em>resnum-number-range</em></dt>
+<dd>resnum is the canonical residue number; typically it is set to the residue id
+in the original PDB structure.</dd>
 <dt>resname <em>residue-name</em></dt>
 <dd>select by residue name, e.g. <tt class="docutils literal"><span class="pre">resname</span> <span class="pre">LYS</span></tt></dd>
 <dt>name <em>atom-name</em></dt>
@@ -427,6 +430,8 @@ selects atoms 5 through 10 inclusive. All atoms in the
 runs from 1 up to the total number of atoms.</dd>
 </dl>
 </div></blockquote>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.4: </span>Added <em>resnum</em> selection.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -456,7 +461,7 @@ whereas the slice</p>
 <div>ag[0:6:2]</div></blockquote>
 <p>returns every second element, corresponding to indices 0, 2, and 4.</p>
 <p>It also supports &#8220;advanced slicing&#8221; when the argument is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-26aa3cf)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-4fb84e7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aslice</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">ag</span><span class="p">[</span><span class="n">aslice</span><span class="p">]</span>
 </pre></div>
@@ -807,6 +812,14 @@ and <tt class="docutils literal"><span class="pre">v[2]</span></tt> as third eig
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.resnums">
+<tt class="descname">resnums</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.resnums" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of canonical residue numbers.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.4.</span></p>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.rotate">
 <tt class="descname">rotate</tt><big>(</big><em>R</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.rotate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply a rotation matrix <em>R</em> to the selection&#8217;s coordinates.</p>
@@ -878,6 +891,92 @@ and the translation vectort M[:3,3].</p>
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.selectAtoms" title="MDAnalysis.core.AtomGroup.Universe.selectAtoms"><tt class="xref py py-meth docutils literal"><span class="pre">Universe.selectAtoms()</span></tt></a></p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_bfactor">
+<tt class="descname">set_bfactor</tt><big>(</big><em>bfactor</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_bfactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the atom bfactor to float <em>bfactor</em> for <strong>all atoms</strong> in the AtomGroup.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.4.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_charge">
+<tt class="descname">set_charge</tt><big>(</big><em>charge</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_charge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the partial charge to float <em>charge</em> for <strong>all atoms</strong> in the AtomGroup.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.4.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_mass">
+<tt class="descname">set_mass</tt><big>(</big><em>mass</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the atom mass to float <em>mass</em> for <strong>all atoms</strong> in the AtomGroup.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.4.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_name">
+<tt class="descname">set_name</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the atom name to string <em>name</em> for <strong>all atoms</strong> in the AtomGroup.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.4.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_radius">
+<tt class="descname">set_radius</tt><big>(</big><em>charge</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the atom radius to float <em>radius</em> for <strong>all atoms</strong> in the AtomGroup.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.4.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_resid">
+<tt class="descname">set_resid</tt><big>(</big><em>resid</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_resid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the resid to integer <em>resid</em> for <strong>all atoms</strong> in the AtomGroup.</p>
+<p>(Only changes the resid but does not create combined <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a>
+objects.)</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.4.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_resname">
+<tt class="descname">set_resname</tt><big>(</big><em>resname</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_resname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the resname to string <em>resname</em> for <strong>all atoms</strong> in the AtomGroup.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.4.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_resnum">
+<tt class="descname">set_resnum</tt><big>(</big><em>resnum</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_resnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the resnum to <em>resnum</em> for <strong>all atoms</strong> in the AtomGroup.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.4.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_segid">
+<tt class="descname">set_segid</tt><big>(</big><em>segid</em>, <em>buildsegments=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_segid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the segid to <em>segid</em> for all atoms in the AtomGroup.</p>
+<p>If <em>buildsegments</em> is set to <tt class="xref docutils literal"><span class="pre">False</span></tt> for performance reasons then one
+needs to run <tt class="xref py py-meth docutils literal"><span class="pre">Universe._build_segments()</span></tt> in order to update the
+list of <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Segment" title="MDAnalysis.core.AtomGroup.Segment"><tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt></a> instances and regenerate the segid instant
+selectors.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.4.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_type">
+<tt class="descname">set_type</tt><big>(</big><em>atype</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the atom type to <em>atype</em> for <strong>all atoms</strong> in the AtomGroup.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.4.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -1007,7 +1106,7 @@ placeholders; the extension is set according to the <em>format</em>
 
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.Atom">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Atom</tt><big>(</big><em>number</em>, <em>name</em>, <em>type</em>, <em>resname</em>, <em>resid</em>, <em>segid</em>, <em>mass</em>, <em>charge</em>, <em>residue=None</em>, <em>segment=None</em>, <em>radius=None</em>, <em>bfactor=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Atom</tt><big>(</big><em>number</em>, <em>name</em>, <em>type</em>, <em>resname</em>, <em>resid</em>, <em>segid</em>, <em>mass</em>, <em>charge</em>, <em>residue=None</em>, <em>segment=None</em>, <em>radius=None</em>, <em>bfactor=None</em>, <em>resnum=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom" title="Permalink to this definition">¶</a></dt>
 <dd><p>A single atom definition</p>
 <blockquote>
 <div>a = Atom()</div></blockquote>
@@ -1024,6 +1123,10 @@ placeholders; the extension is set according to the <em>format</em>
 </dd>
 <dt>resid</dt>
 <dd><p class="first last">residue number</p>
+</dd>
+<dt>resnum</dt>
+<dd><p class="first last">canonical residue number as, for instance, used in the original
+PDB file</p>
 </dd>
 <dt>resname</dt>
 <dd><p class="first last">residue name</p>
@@ -1058,6 +1161,8 @@ file with the <a class="reference internal" href="../coordinates/PQR.html#MDAnal
 </tr>
 </tbody>
 </table>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.4: </span>Added <tt class="xref py py-attr docutils literal"><span class="pre">Atom.resnum</span></tt>.</p>
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.Atom.centroid">
 <tt class="descname">centroid</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.centroid" title="Permalink to this definition">¶</a></dt>
@@ -1080,7 +1185,7 @@ file with the <a class="reference internal" href="../coordinates/PQR.html#MDAnal
 
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.Residue">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Residue</tt><big>(</big><em>name</em>, <em>id</em>, <em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Residue</tt><big>(</big><em>name</em>, <em>id</em>, <em>atoms</em>, <em>resnum=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue" title="Permalink to this definition">¶</a></dt>
 <dd><p>A group of atoms corresponding to a residue.</p>
 <dl class="docutils">
 <dt>Pythonic access to atoms:</dt>
@@ -1110,11 +1215,16 @@ file with the <a class="reference internal" href="../coordinates/PQR.html#MDAnal
 <dt><tt class="xref py py-attr docutils literal"><span class="pre">Residue.id</span></tt></dt>
 <dd><p class="first last">Numeric (integer) resid, taken from the topology.</p>
 </dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">Residue.resnum</span></tt></dt>
+<dd><p class="first last">Numeric canonical residue id (e.g. as used in the PDB structure).</p>
+</dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.4: </span>Added <tt class="xref py py-attr docutils literal"><span class="pre">Residue.resnum</span></tt> attribute and <em>resnum</em> keyword argument.</p>
 </dd></dl>
 
 <dl class="class">

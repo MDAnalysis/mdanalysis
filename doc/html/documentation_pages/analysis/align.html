@@ -224,6 +224,19 @@ how <em>sel1</em> and <em>sel2</em> are derived from <em>select</em>.)</li>
 contains <em>mobile</em> are shifted and rotated. (See below for how
 to change this behavior through the <em>subselection</em> keyword.)</li>
 </ol>
+<p>The <em>mobile</em> and <em>reference</em> atom groups can be constructed so that they
+already match atom by atom. In this case, <em>select</em> should be set to &#8220;all&#8221;
+(or <tt class="xref docutils literal"><span class="pre">None</span></tt>) so that no further selections are applied to <em>mobile</em> and
+<em>reference</em>, therefore preserving the exact atom ordering (see
+<a class="reference internal" href="../selections.html#ordered-selections-label"><em>Ordered selections</em></a>).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The atom order for <em>mobile</em> and <em>reference</em> is <em>only</em>
+preserved when <em>select</em> is either &#8220;all&#8221; or <tt class="xref docutils literal"><span class="pre">None</span></tt>. In any other case,
+a new selection will be made that will sort the resulting AtomGroup by
+index and therefore destroy the correspondence between the two groups. <strong>It
+is safest not to mix ordered AtomGroups with selection strings.</strong></p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -238,15 +251,18 @@ or a whole <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis
 or a whole <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a></p>
 </dd>
 <dt><em>select</em></dt>
-<dd><ul class="first last simple">
+<dd><ol class="first arabic simple">
 <li>any valid selection string for
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms" title="MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms"><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt></a> that produces identical
 selections in <em>mobile</em> and <em>reference</em>; or</li>
 <li>dictionary <tt class="docutils literal"><span class="pre">{'mobile':sel1,</span> <span class="pre">'reference':sel2}</span></tt>.
-The <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
-dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment.</li>
+(the <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
+dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment); or</li>
 <li>tuple <tt class="docutils literal"><span class="pre">(sel1,</span> <span class="pre">sel2)</span></tt></li>
-</ul>
+</ol>
+<p class="last">When using 2. or 3. with <em>sel1</em> and <em>sel2</em> then these selections can also each be
+a list of selection strings (to generate a AtomGroup with defined atom order as
+described under <a class="reference internal" href="../selections.html#ordered-selections-label"><em>Ordered selections</em></a>).</p>
 </dd>
 <dt><em>mass_weighted</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
 <dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> uses the masses <tt class="xref py py-meth docutils literal"><span class="pre">reference.masses()</span></tt> as weights for the
@@ -281,12 +297,6 @@ protein, ligands and the surrounding water)</p>
 <p class="last">For RMSD-fitting trajectories it is more efficient to
 use <a class="reference internal" href="#MDAnalysis.analysis.align.rms_fit_trj" title="MDAnalysis.analysis.align.rms_fit_trj"><tt class="xref py py-func docutils literal"><span class="pre">rms_fit_trj()</span></tt></a>.</p>
 </div>
-</dd></dl>
-
-<dl class="function">
-<dt id="MDAnalysis.analysis.align.echo">
-<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">echo</tt><big>(</big><em>s=''</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.echo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simple string output that immediately prints to the console.</p>
 </dd></dl>
 
 <dl class="function">
@@ -373,14 +383,18 @@ that can be used immediately in <a class="reference internal" href="#MDAnalysis.
 (uses the current time step of the object)</p>
 </dd>
 <dt><em>select</em></dt>
-<dd><ul class="first last simple">
+<dd><ol class="first arabic simple">
 <li>any valid selection string for
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms" title="MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms"><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt></a> that produces identical
-selections in <em>traj</em> and <em>reference</em>; or</li>
-<li>dictionary <tt class="docutils literal"><span class="pre">{'reference':sel1,</span> <span class="pre">'mobile':sel2}</span></tt>.
-The <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
-dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment.</li>
-</ul>
+selections in <em>mobile</em> and <em>reference</em>; or</li>
+<li>a dictionary <tt class="docutils literal"><span class="pre">{'mobile':sel1,</span> <span class="pre">'reference':sel2}</span></tt> (the
+<a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
+dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment); or</li>
+<li>a tuple <tt class="docutils literal"><span class="pre">(sel1,</span> <span class="pre">sel2)</span></tt></li>
+</ol>
+<p class="last">When using 2. or 3. with <em>sel1</em> and <em>sel2</em> then these selections can also each be
+a list of selection strings (to generate a AtomGroup with defined atom order as
+described under <a class="reference internal" href="../selections.html#ordered-selections-label"><em>Ordered selections</em></a>).</p>
 </dd>
 <dt><em>filename</em></dt>
 <dd><p class="first last">file name for the RMS-fitted trajectory or pdb; defaults to the
