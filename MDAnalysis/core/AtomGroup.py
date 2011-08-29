@@ -92,6 +92,9 @@ class Atom(object):
           name of the segment
         resid
            residue number
+        resnum
+           canonical residue number as, for instance, used in the original
+           PDB file
         resname
            residue name
         residue
@@ -111,18 +114,22 @@ class Atom(object):
            file with the :class:`~MDAnalysis.coordinates.PQR.PQRReader`.)
         :attr:`~Atom.bfactor`
            temperature factor. (Only if loaded from a PDB.)
+
+    .. versionchanged:: 0.7.4
+       Added :attr:`Atom.resnum`.
     """
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
                  "mass", "charge", "residue", "segment", "bonds", "__universe",
-                 "radius", "bfactor")
+                 "radius", "bfactor", "resnum")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
-                 residue=None, segment=None, radius=None, bfactor=None):
+                 residue=None, segment=None, radius=None, bfactor=None, resnum=None):
         self.number = number
         self.name = name
         self.type = type        # numeric or string
         self.resname = resname
         self.resid = resid
+        self.resnum = resnum
         self.residue = residue  # typically patched in later
         self.segid = segid
         self.segment = segment  # typically patched in later
@@ -340,6 +347,12 @@ class AtomGroup(object):
     def resnames(self):
         """Returns a list of residue names."""
         return [r.name for r in self.residues]
+    def resnums(self):
+        """Returns a list of canonical residue numbers.
+
+        .. versionadded:: 0.7.4
+        """
+        return [r.resnum for r in self.residues]
     @property
     def segments(self):
         """Read-only list of :class:`Segment` objects."""
@@ -405,6 +418,12 @@ class AtomGroup(object):
         .. versionadded:: 0.7.4
         """
         self._set_atoms("resid", int(resid))
+    def set_resnum(self, resnum):
+        """Set the resnum to *resnum* for **all atoms** in the AtomGroup.
+
+        .. versionadded:: 0.7.4
+        """
+        self._set_atoms("resnum", resnum)
     def set_resname(self, resname):
         """Set the resname to string *resname* for **all atoms** in the AtomGroup.
 
@@ -1002,17 +1021,26 @@ class Residue(AtomGroup):
         Three letter residue name.
       :attr:`Residue.id`
         Numeric (integer) resid, taken from the topology.
+      :attr:`Residue.resnum`
+        Numeric canonical residue id (e.g. as used in the PDB structure).
 
+    .. versionchanged:: 0.7.4
+       Added :attr:`Residue.resnum` attribute and *resnum* keyword argument.
     """
     ## FIXME (see below, Issue 70)
     ##__cache = {}
-    def __init__(self, name, id, atoms):
+    def __init__(self, name, id, atoms, resnum=None):
         super(Residue, self).__init__(atoms)
         self.name = name
         self.id = id
+        if resnum is not None:
+            self.resnum = resnum
+        else:
+            self.resnum = self.id   # TODO: get resnum from topologies that support it
         self.segment = None
         for i, a in enumerate(atoms):
             a.id = i
+            a.resnum = self.resnum
             a.residue = self
         # Should I cache the positions of atoms within a residue?
         # FIXME: breaks when termini are used to populate the cache; termini typically
@@ -1490,6 +1518,9 @@ class Universe(object):
                 consists of two numbers separated by a colon (inclusive) such
                 as ``resid 1:5``. A residue number ("resid") is taken directly from the
                 topology.
+            resnum *resnum-number-range*
+                resnum is the canonical residue number; typically it is set to the residue id
+                in the original PDB structure.
             resname *residue-name*
                 select by residue name, e.g. ``resname LYS``
             name *atom-name*
@@ -1548,6 +1579,8 @@ class Universe(object):
                 :class:`MDAnalysis.Universe` are consecutively numbered, and the index
                 runs from 1 up to the total number of atoms.
 
+        .. versionchanged:: 0.7.4
+           Added *resnum* selection.
         """
         import Selection     # can ONLY import in method, otherwise cyclical import!
         atomgrp = Selection.Parser.parse(sel).apply(self)

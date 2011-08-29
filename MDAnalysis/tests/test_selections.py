@@ -57,12 +57,26 @@ class TestSelections(TestCase):
         assert_equal(sel.numberOfAtoms(), 89)
         assert_equal(sel.resnames(),  ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
 
+    # resnum selections are boring here because we haven't really a mechanism yet
+    # to assign the canonical PDB resnums
+    def test_resnum_single(self):
+        sel = self.universe.selectAtoms('resnum 100')
+        assert_equal(sel.numberOfAtoms(), 7)
+        assert_equal(sel.resids(), [100])
+        assert_equal(sel.resnames(), ['GLY'])
+
+    def test_resnum_range(self):
+        sel = self.universe.selectAtoms('resnum 100:105')
+        assert_equal(sel.numberOfAtoms(), 89)
+        assert_equal(sel.resids(), range(100,106))
+        assert_equal(sel.resnames(),  ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
+
     def test_resname(self):
         sel = self.universe.selectAtoms('resname LEU')
         assert_equal(sel.numberOfAtoms(), 304, "Failed to find all 'resname LEU' atoms.")
         assert_equal(sel.numberOfResidues(), 16, "Failed to find all 'resname LEU' residues.")
         assert_equal(sel._atoms, self.universe.s4AKE.LEU._atoms,
-                     "selected 'resname LEU' atoms are not the same as aut-generated s4AKE.LEU")
+                     "selected 'resname LEU' atoms are not the same as auto-generated s4AKE.LEU")
 
     def test_name(self):
         sel = self.universe.selectAtoms('name CA')

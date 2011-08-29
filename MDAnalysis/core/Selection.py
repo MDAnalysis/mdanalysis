@@ -24,6 +24,7 @@ These objects are constructed and applied to the group
 Currently all atom arrays are handled internally as sets, but returned as AtomGroups
 
 """
+import re
 
 try:
     set([])
@@ -294,31 +295,36 @@ class ByResSelection(Selection):
     def __repr__(self):
         return "<'ByResSelection'>"
 
-class ResidueIDSelection(Selection):
+class _RangeSelection(Selection):
     def __init__(self, lower, upper):
         Selection.__init__(self)
         self.lower = lower
         self.upper = upper
+    def __repr__(self):
+        return "<'"+self.__class__.__name__+"' "+repr(self.lower)+":"+repr(self.upper)+" >"
+
+class ResidueIDSelection(_RangeSelection):
     def _apply(self, group):
         if self.upper != None:
             return set([a for a in group.atoms if (self.lower <= a.resid <= self.upper)])
-        else: return set([a for a in group.atoms if a.resid == self.lower])
-    def __repr__(self):
-        return "<'ResidueIDSelection' "+repr(self.lower)+":"+repr(self.upper)+" >"
+        else:
+            return set([a for a in group.atoms if a.resid == self.lower])
 
-class ByNumSelection(Selection):
-    def __init__(self, lower, upper):
-        Selection.__init__(self)
-        self.lower = lower
-        self.upper = upper
+class ResnumSelection(_RangeSelection):
+    def _apply(self, group):
+        if self.upper != None:
+            return set([a for a in group.atoms if (self.lower <= a.resnum <= self.upper)])
+        else:
+            return set([a for a in group.atoms if a.resnum == self.lower])
+
+class ByNumSelection(_RangeSelection):
     def _apply(self, group):
         if self.upper != None:
             # In this case we'll use 1 indexing since that's what the user will be
             # familiar with
             return set(group.atoms[self.lower-1:self.upper])
-        else: return set(group.atoms[self.lower-1:self.lower])
-    def __repr__(self):
-        return "<'ByNumSelection' "+repr(self.lower)+":"+repr(self.upper)+" >"
+        else:
+            return set(group.atoms[self.lower-1:self.lower])
 
 class ProteinSelection(Selection):
     """A protein selection consists of all residues with  recognized residue names.
@@ -361,9 +367,11 @@ class ProteinSelection(Selection):
 
 class NucleicSelection(Selection):
     """A nucleic selection consists of all atoms in nucleic acid residues with  recognized residue names.
+
     Recognized residue names:
-    * from the Charmm force field
-      awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_na.rtf
+
+    * from the Charmm force field ::
+        awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_na.rtf
     * recognized: 'ADE', 'URA', 'CYT', 'GUA', 'THY'
     """
     nucl_res = dict([(x,None) for x in ['ADE', 'URA', 'CYT', 'GUA', 'THY']])
@@ -374,9 +382,11 @@ class NucleicSelection(Selection):
 
 class NucleicXstalSelection(Selection):
     """A nucleic selection consists of all atoms in nucleic acid residues with PDB-like resnames.
+
     Recognized residue names:
-    * from the Charmm force field:
-      awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_na.rtf
+
+    * from the Charmm force field::
+        awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_na.rtf
     * recognized: 'A', 'U', 'C', 'G', 'DT','DA','DC','DG'
     """
     nucl_res = dict([(x,None) for x in ['A', 'U', 'C', 'G', 'DT','DA','DC','DG']])
@@ -497,18 +507,18 @@ class SelectionParser:
     http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm).  Transforms
     expressions into nested Selection tree.
 
-    For reference, the grammar that we parse is :
+    For reference, the grammar that we parse is ::
 
-    E(xpression)--> Exp(0)
-    Exp(p) -->      P {B Exp(q)}
-    P -->           U Exp(q) | "(" E ")" | v
-    B(inary) -->    "and" | "or"
-    U(nary) -->     "not"
-    T(erms) -->     segid [value]
-                    | resname [value]
-                    | resid [value]
-                    | name [value]
-                    | type [value]
+       E(xpression)--> Exp(0)
+       Exp(p) -->      P {B Exp(q)}
+       P -->           U Exp(q) | "(" E ")" | v
+       B(inary) -->    "and" | "or"
+       U(nary) -->     "not"
+       T(erms) -->     segid [value]
+                       | resname [value]
+                       | resid [value]
+                       | name [value]
+                       | type [value]
    """
 
     #Here are the symbolic tokens that we'll process:
@@ -527,6 +537,7 @@ class SelectionParser:
     RPAREN = ')'
     SEGID = 'segid'
     RESID = 'resid'
+    RESNUM = 'resnum'
     RESNAME = 'resname'
     NAME = 'name'
     TYPE = 'type'
@@ -546,7 +557,7 @@ class SelectionParser:
     NE = '!='
 
     classdict = dict([(ALL, AllSelection), (NOT, NotSelection), (AND, AndSelection), (OR, OrSelection),
-                      (SEGID, SegmentNameSelection), (RESID, ResidueIDSelection),
+                      (SEGID, SegmentNameSelection), (RESID, ResidueIDSelection), (RESNUM, ResnumSelection),
                       (RESNAME, ResidueNameSelection), (NAME, AtomNameSelection),
                       (TYPE, AtomTypeSelection), (BYRES, ByResSelection),
                       (BYNUM, ByNumSelection), (PROP, PropertySelection),
@@ -645,26 +656,14 @@ class SelectionParser:
             return self.classdict[op]()
         elif op == self.SUGAR:
             return self.classdict[op]()
-        elif op == self.RESID:
+        elif op in (self.RESID, self.RESNUM, self.BYNUM):  # can operate on ranges X:Y or X-Y
             data = self.__consume_token()
             try:
                 lower = int(data)
                 upper = None
             except ValueError:
-                import re
                 selrange=re.match("(\d+)[:-](\d+)",data) # check if in appropriate format 'lower:upper' or 'lower-upper'
-                if not selrange: self.__error(self.RESID)
-                lower, upper = map(int, selrange.groups())
-            return self.classdict[op](lower,upper)
-        elif op == self.BYNUM:
-            data = self.__consume_token()
-            try:
-                lower = int(data)
-                upper = None
-            except ValueError:
-                import re
-                selrange=re.match("(\d+)[:-](\d+)",data) # in the appropriate format 'lower:upper'
-                if not selrange: self.__error(self.BYNUM)
+                if not selrange: self.__error(op)
                 lower, upper = map(int, selrange.groups())
             return self.classdict[op](lower,upper)
         elif op == self.PROP:

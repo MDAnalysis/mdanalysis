@@ -60,6 +60,9 @@ Simple selections
         consists of two numbers separated by a colon (inclusive) such
         as ``resid 1:5``. A residue number ("resid") is taken directly from the
         topology.
+    resnum *resnum-number-range*
+        resnum is the canonical residue number; typically it is set to the residue id
+        in the original PDB structure.
     resname *residue-name*
         select by residue name, e.g. ``resname LYS``
     name *atom-name*
