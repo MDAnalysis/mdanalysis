@@ -248,7 +248,7 @@ class AtomGroup(object):
         # managed timestep object
         self.__ts = None
 
-    # AtomGroup.atoms is guaranteed to be a AtomGroupTo; keeps a consistent API
+    # AtomGroup.atoms is guaranteed to be a AtomGroup, too; keeps a consistent API
     # between AtomGroup, Residue, ResidueGroup, Segment; access the list as
     # _atoms (although atoms supports all list-like operations, too).
     @property
@@ -385,6 +385,79 @@ class AtomGroup(object):
         warnings.warn("AtomGroup.bfactors will become AtomGroup.bfactors() in MDAnalysis 0.8",
                       DeprecationWarning)
         return numpy.array([atom.bfactor for atom in self._atoms])
+
+    def _set_atoms(self, name, value):
+        """Set attribute *name* to *value* for all atoms in the AtomGroup"""
+        for a in self.atoms:
+            setattr(a, name, value)
+    def set_name(self, name):
+        """Set the atom name to string *name* for **all atoms** in the AtomGroup.
+
+        .. versionadded:: 0.7.4
+        """
+        self._set_atoms("name", str(name))
+    def set_resid(self, resid):
+        """Set the resid to integer *resid* for **all atoms** in the AtomGroup.
+
+        (Only changes the resid but does not create combined :class:`Residue`
+        objects.)
+
+        .. versionadded:: 0.7.4
+        """
+        self._set_atoms("resid", int(resid))
+    def set_resname(self, resname):
+        """Set the resname to string *resname* for **all atoms** in the AtomGroup.
+
+        .. versionadded:: 0.7.4
+        """
+        self._set_atoms("resname", str(resname))
+    def set_segid(self, segid, buildsegments=True):
+        """Set the segid to *segid* for all atoms in the AtomGroup.
+
+        If *buildsegments* is set to ``False`` for performance reasons then one
+        needs to run :meth:`Universe._build_segments` in order to update the
+        list of :class:`Segment` instances and regenerate the segid instant
+        selectors.
+
+        .. versionadded:: 0.7.4
+        """
+        self._set_atoms("segid", segid)
+        if buildsegments:
+            try:
+                del self._cached_segments
+            except AttributeError:
+                pass
+            self.universe._build_segments()
+    def set_mass(self, mass):
+        """Set the atom mass to float *mass* for **all atoms** in the AtomGroup.
+
+        .. versionadded:: 0.7.4
+        """
+        self._set_atoms("mass", float(mass))
+    def set_type(self, atype):
+        """Set the atom type to *atype* for **all atoms** in the AtomGroup.
+
+        .. versionadded:: 0.7.4
+        """
+        self._set_atoms("type", atype)
+    def set_charge(self, charge):
+        """Set the partial charge to float *charge* for **all atoms** in the AtomGroup.
+
+        .. versionadded:: 0.7.4
+        """
+        self._set_atoms("charge", float(charge))
+    def set_radius(self, charge):
+        """Set the atom radius to float *radius* for **all atoms** in the AtomGroup.
+
+        .. versionadded:: 0.7.4
+        """
+        self._set_atoms("radius", float(radius))
+    def set_bfactor(self, bfactor):
+        """Set the atom bfactor to float *bfactor* for **all atoms** in the AtomGroup.
+
+        .. versionadded:: 0.7.4
+        """
+        self._set_atoms("bfactor", float(bfactor))
     def centerOfGeometry(self):
         """Center of geometry (also known as centroid) of the selection."""
         return numpy.sum(self.coordinates(), axis=0)/self.numberOfAtoms()
@@ -1260,7 +1333,7 @@ class Universe(object):
            New *topology_format* and *format* parameters to override the file
            format detection.
         """
-        from MDAnalysis.topology.core import get_parser_for, build_segments, guess_format
+        from MDAnalysis.topology.core import get_parser_for, guess_format
         import MDAnalysis.core
 
         # managed attribute holding TRJReader (the Universe.trajectory
@@ -1298,15 +1371,8 @@ class Universe(object):
         #    setattr(self, data, struc[data])
         self.atoms = AtomGroup(struc["_atoms"])
         # XXX: add H-bond information here if available from psf (or other sources)
-        #
-        segments = build_segments(self.atoms)
-        # Because of weird python rules, attribute names cannot start with a digit
-        for seg in segments.keys():
-            if seg[0].isdigit():
-                newsegname = 's'+seg
-                segments[newsegname] = segments[seg]
-                del segments[seg]
-        self.__dict__.update(segments)
+        # segment instant selectors
+        self._build_segments()
         # convenience access to residues and segments (these are managed attributes
         # (properties) and are built on the fly or read from a cache) -- does this
         # create memory problems?
@@ -1321,6 +1387,24 @@ class Universe(object):
 
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
+
+    def _build_segments(self):
+        """Parse topology into segments and create the segid instant selectors.
+
+        Because of Python's syntax rules, attribute names cannot start with a
+        digit and so we prefix any segments starting with a digit with the
+        letter 's'. For instance, '4AKE' becomes the segid instant selector
+        's4AKE'.
+        """
+        from MDAnalysis.topology.core import build_segments
+        segments = build_segments(self.atoms)
+        for seg in segments.keys():
+            if seg[0].isdigit():
+                newsegname = 's'+seg
+                segments[newsegname] = segments[seg]
+                del segments[seg]
+        self.__dict__.update(segments)
+        self.segments = self.atoms.segments   # duplicated, but keep for e.g. set_segid()!
 
     def load_new(self, filename, **kwargs):
         """Load coordinates from *filename*, using the suffix to detect file format.

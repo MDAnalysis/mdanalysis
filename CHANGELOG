@@ -26,6 +26,8 @@ The rules for this file:
     list of selection strings in order to define atom groups with fixed atom
     order and alignto() preserves the order of supplied AtomGroups for the
     special select values "all" and None.
+  * new set_* methods for AtomGroup allows changing of Atom attributes
+    for all members of the group (such as the segid) (EXPERIMENTAL)
 
   Fixes
  
