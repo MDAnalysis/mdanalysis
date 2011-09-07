@@ -33,7 +33,7 @@ __all__ = ["PSF", "DCD", "CRD",                 # CHARMM
            "DCD_empty",
            "PDB_small",                         # PDB
            "PDB", "GRO", "XTC", "TRR", "TPR",   # Gromacs
-           "XYZ", "XYZ_bz2" ,                   # XYZ
+           "XYZ", "XYZ_psf", "XYZ_bz2",         # XYZ
            "PRM", "TRJ", "TRJ_bz2",             # Amber (no periodic box)
            "PRMpbc", "TRJpbc_bz2",              # Amber (periodic box)
            "PQR",                               # PQR

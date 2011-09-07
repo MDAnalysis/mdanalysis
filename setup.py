@@ -97,5 +97,5 @@ split up into a separate package.
                                },
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
-          zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
+          zip_safe = False,   # had 'KeyError' as zipped egg (2MB savings are not worth the trouble)
           )
