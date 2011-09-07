@@ -72,7 +72,7 @@ except ImportError:
 include_dirs = [numpy_include]
 
 if __name__ == '__main__':
-    RELEASE = "0.7.4-devel"
+    RELEASE = "0.7.4"
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 """
