@@ -155,7 +155,7 @@ def get_ext(filename):
     :Returns: root, ext
     """
     root, ext = os.path.splitext(filename)
-    if ext.startswith('.'):
+    if ext.startswith(os.extsep):
         ext = ext[1:]
     return root, ext.lower()
 
@@ -243,7 +243,10 @@ def triclinic_box(x,y,z):
 def triclinic_vectors(dimensions):
     """Convert `[A,B,C,alpha,beta,gamma]` to a triclinic box representation.
 
-    Original code by Tsjerk Wassenaar; see http://www.mail-archive.com/gmx-users@gromacs.org/msg28032.html
+    Original `code by Tsjerk Wassenaar`_ posted on the Gromacs mailinglist
+
+    .. _code by Tsjerk Wassenaar:
+       http://www.mail-archive.com/gmx-users@gromacs.org/msg28032.html
 
     :Arguments:
       *dimensions*

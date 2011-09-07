@@ -248,8 +248,7 @@ class FixedcolumnEntry(object):
         try:
             return self.convertor(line[self.start:self.stop])
         except ValueError:
-            raise ValueError("%r: Failed to read&convert %r",
-                             self, line[self.start:self.stop])
+            raise ValueError("%r: Failed to read&convert %r" % (self, line[self.start:self.stop]))
     def __len__(self):
         """Length of the field in columns (stop - start)"""
         return self.stop - self.start
