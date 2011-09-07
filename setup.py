@@ -57,27 +57,15 @@ if sys.version_info[:2] < (2, 5):
     print "Please upgrade your version of Python."
     sys.exit(-1)
 
-try:
-    # Obtain the numpy include directory.  This logic works across numpy versions.
-    import numpy
-except ImportError:
-    print "*** package 'numpy' not found ***"
-    print "MDAnalysis requires a version of NumPy (>=1.0.3), even for setup."
-    print "Please get it from http://numpy.scipy.org/ or install it through your package manager."
-    sys.exit(-1)
-
-try:
-    numpy_include = numpy.get_include()
-except AttributeError:
-    numpy_include = numpy.get_numpy_include()
-
-
-include_dirs = [numpy_include]
 
 if __name__ == '__main__':
-    RELEASE = "0.7.4-devel"
+    RELEASE = "0.7.4"
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
+
+This package contains the trajectory data that are used for the test
+cases. In order to make downloads more efficient, these data were
+split up into a separate package.
 """
     CLASSIFIERS = ['Development Status :: 4 - Beta',
                    'Environment :: Console',
@@ -90,88 +78,24 @@ if __name__ == '__main__':
                    'Topic :: Scientific/Engineering :: Chemistry',
                    ]
 
-    if 'DEBUG_CFLAGS' in os.environ:
-        extra_compile_args = '\
-            -std=c99 -pedantic -Wall -Wcast-align -Wcast-qual -Wpointer-arith \
-            -Wchar-subscripts -Winline -Wnested-externs -Wbad-function-cast \
-            -Wunreachable-code -Werror'
-        define_macros = [('DEBUG', '1')]
-    else:
-        extra_compile_args = ''
-        define_macros = []
-
-    extensions = [Extension('coordinates._dcdmodule', ['src/dcd/dcd.c'],
-                            include_dirs = include_dirs+['src/dcd/include'],
-                            define_macros=define_macros,
-                            extra_compile_args=extra_compile_args),
-                  Extension('coordinates.dcdtimeseries', ['src/dcd/dcdtimeseries.c'],
-                            include_dirs = include_dirs+['src/dcd/include'],
-                            define_macros=define_macros,
-                            extra_compile_args=extra_compile_args),
-                  Extension('core.distances', ['src/numtools/distances.c'],
-                            include_dirs = include_dirs+['src/numtools'],
-                            libraries = ['m'],
-                            define_macros=define_macros,
-                            extra_compile_args=extra_compile_args),
-                  Extension('core.qcprot', ['src/pyqcprot/pyqcprot.c'],
-                            include_dirs=include_dirs,
-                            extra_compile_args=["-O3","-ffast-math"]),
-                  Extension('core._transformations', ['src/transformations/transformations.c'],
-                            libraries = ['m'],
-                            define_macros=define_macros,
-                            include_dirs = include_dirs,
-                            extra_compile_args=extra_compile_args),
-                  Extension('KDTree._CKDTree',
-                            ["src/KDTree/KDTree.cpp",
-                             "src/KDTree/KDTree.swig.cpp"],
-                            include_dirs = include_dirs,
-                            libraries=["stdc++"],
-                            language="c++"),
-                  Extension('coordinates.xdrfile._libxdrfile',
-                            sources=['src/xdrfile/libxdrfile_wrap.c',
-                                     'src/xdrfile/xdrfile.c',
-                                     'src/xdrfile/xdrfile_trr.c',
-                                     'src/xdrfile/xdrfile_xtc.c'],
-                            include_dirs = include_dirs),
-                  ]
-
-    setup(name              = 'MDAnalysis',
+    setup(name              = 'MDAnalysisTestData',
           version           = RELEASE,
-          description       = 'Python tools to support analysis of trajectories',
+          description       = 'Python tools to support analysis of trajectories (test data files)',
           author            = 'Naveen Michaud-Agrawal',
           author_email      = 'naveen.michaudagrawal@gmail.com',
           url               = 'http://mdanalysis.googlecode.com/',
           license           = 'GPL 2',
-          packages          = [ 'MDAnalysis', 'MDAnalysis.core', 'MDAnalysis.topology',
-                                'MDAnalysis.selections',
-                                'MDAnalysis.coordinates',
-                                'MDAnalysis.coordinates.xdrfile',
-                                'MDAnalysis.coordinates.pdb',
-                                'MDAnalysis.util', 'MDAnalysis.KDTree',
-                                'MDAnalysis.analysis',
-                                'MDAnalysis.tests'],
-          package_dir       = {'MDAnalysis': 'MDAnalysis'},
-          package_data      = {'MDAnalysis':
-                                   ['tests/data/*.psf','tests/data/*.dcd','tests/data/*.pdb',
-                                    'tests/data/*.gro', 'tests/data/*.xtc','tests/data/*.trr',
-                                    'tests/data/*.crd', 'tests/data/*.xyz',
-                                    'tests/data/*.prmtop', 'tests/data/*.trj', 'tests/data/*.mdcrd',
-                                    'tests/data/*.pqr', 'tests/data/*.pdbqt', 'tests/data/*.bz2',
+          packages          = ['MDAnalysisTestData'],
+          package_dir       = {'MDAnalysisTestData': 'MDAnalysisTestData'},
+          package_data      = {'MDAnalysisTestData':
+                                   ['data/*.psf','data/*.dcd','data/*.pdb',
+                                    'data/*.gro', 'data/*.xtc','data/*.trr',
+                                    'data/*.crd', 'data/*.xyz',
+                                    'data/*.prmtop', 'data/*.trj', 'data/*.mdcrd',
+                                    'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
                                     ],
                                },
-          ext_package       = 'MDAnalysis',
-          ext_modules       = extensions,
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
-          install_requires = ['numpy>=1.0.3',  # currently not useful because without numpy we don't get here
-                              'biopython',   # required for standard PDB reader
-                              ],
-          extras_require = {
-                'tests': ['nose>=0.10'],
-                'analysis': ['networkx>=1.0',  # LeafletFinder
-                             'scipy',          # sparse contact matrix
-                             'GridDataFormats',# http://github.com/orbeckst/GridDataFormats
-                             ],
-                },
           zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
           )

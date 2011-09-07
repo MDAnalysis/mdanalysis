@@ -1,12 +1,5 @@
-include src/dcd/*
-include src/dcd/include/*
-include src/numtools/*
-include src/KDTree/*
-include src/xdrfile/*
-include src/pyqcprot/*
-include src/transformations/*
-graft   MDAnalysis/tests/data/
-recursive-include doc README html
-include README INSTALL CHANGELOG LICENSE AUTHORS TODO
-include ez_setup.py setup.py setup_developer.py  setup.cfg.template
-recursive-include examples *.py *.txt *dat.bz2 *.png *.pdf
+graft   MDAnalysisTestData/data/
+include ez_setup.py setup.py
+prune doc 
+prune src
+prune examples
