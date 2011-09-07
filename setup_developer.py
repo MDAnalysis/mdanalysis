@@ -51,9 +51,8 @@ try:
     # Obtain the numpy include directory.  This logic works across numpy versions.
     import numpy
 except ImportError:
-    # TODO: somehow fix this so that easy_install could get numpy if needed
     print "*** package 'numpy' not found ***"
-    print "MDAnalysis requires a version of NumPy, even for setup."
+    print "MDAnalysis requires a version of NumPy (>=1.0.3), even for setup."
     print "Please get it from http://numpy.scipy.org/ or install it through your package manager."
     sys.exit(-1)
 
@@ -71,7 +70,6 @@ except ImportError:
     sys.exit(-1)
 
 include_dirs = [numpy_include]
-
 
 if __name__ == '__main__':
     RELEASE = "0.7.4-devel"
@@ -156,14 +154,6 @@ if __name__ == '__main__':
                                 'MDAnalysis.analysis',
                                 'MDAnalysis.tests'],
           package_dir       = {'MDAnalysis': 'MDAnalysis'},
-          package_data      = {'MDAnalysis':
-                                   ['tests/data/*.psf','tests/data/*.dcd','tests/data/*.pdb',
-                                    'tests/data/*.gro', 'tests/data/*.xtc','tests/data/*.trr',
-                                    'tests/data/*.crd', 'tests/data/*.xyz',
-                                    'tests/data/*.prmtop', 'tests/data/*.trj', 'tests/data/*.mdcrd',
-                                    'tests/data/*.pqr', 'tests/data/*.bz2',
-                                    ],
-                               },
           ext_package       = 'MDAnalysis',
           ext_modules       = extensions,
           classifiers       = CLASSIFIERS,
@@ -173,7 +163,8 @@ if __name__ == '__main__':
                               'biopython',   # required for standard PDB reader
                               ],
           extras_require = {
-                'tests': ['nose>=0.10'],
+                'tests': ['MDAnalysisTestData>=0.7.4',
+                          'nose>=0.10'],
                 'analysis': ['networkx>=1.0',  # LeafletFinder
                              'scipy',          # sparse contact matrix
                              'GridDataFormats',# http://github.com/orbeckst/GridDataFormats

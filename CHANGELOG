@@ -45,6 +45,14 @@ The rules for this file:
   Changes
 
   * replaced analysis.util.progress_meter() with class core.log.ProgressMeter
+
+  * Issue 28: split off test data trajectories and structures from
+    MDAnalaysis/tests/data into separate package MDAnalysisTestData, which is
+    required to run the UnitTests from release 0.7.4 onwards. Numbering matches
+    the earliest MDAnalysis release for which the data is needed. Any later
+    releases of MDAnalysis will also use these test data unless a
+    MDAnalysisTestData package with a higher release number is available.
+
  
 
 05/22/11 orbeckst, jandom, Benjamin Hall, Paul Rigor, dcaplan,

@@ -151,14 +151,6 @@ if __name__ == '__main__':
                                 'MDAnalysis.analysis',
                                 'MDAnalysis.tests'],
           package_dir       = {'MDAnalysis': 'MDAnalysis'},
-          package_data      = {'MDAnalysis':
-                                   ['tests/data/*.psf','tests/data/*.dcd','tests/data/*.pdb',
-                                    'tests/data/*.gro', 'tests/data/*.xtc','tests/data/*.trr',
-                                    'tests/data/*.crd', 'tests/data/*.xyz',
-                                    'tests/data/*.prmtop', 'tests/data/*.trj', 'tests/data/*.mdcrd',
-                                    'tests/data/*.pqr', 'tests/data/*.pdbqt', 'tests/data/*.bz2',
-                                    ],
-                               },
           ext_package       = 'MDAnalysis',
           ext_modules       = extensions,
           classifiers       = CLASSIFIERS,
@@ -167,7 +159,8 @@ if __name__ == '__main__':
                               'biopython',   # required for standard PDB reader
                               ],
           extras_require = {
-                'tests': ['nose>=0.10'],
+                'tests': ['MDAnalysisTestData>=0.7.4',
+                          'nose>=0.10'],
                 'analysis': ['networkx>=1.0',  # LeafletFinder
                              'scipy',          # sparse contact matrix
                              'GridDataFormats',# http://github.com/orbeckst/GridDataFormats

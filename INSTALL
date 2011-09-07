@@ -132,7 +132,8 @@ suite) then you can have easy_install fetch and install additionaly
 required packages if you have not been able to install them through
 your package manager (always preferred!). For instance,
 
-  easy_install ./mdanalysis[analysis]
+  cd mdanalysis
+  easy_install . mdanalysis[analysis]
 
 should also install packages required for analysis.
 
@@ -166,6 +167,34 @@ Optional python packages (used in MDAnalysis.analysis):
     * nose (http://somethingaboutorange.com/mrl/projects/nose/) -- for testing
     * ScientificPython http://dirac.cnrs-orleans.fr/plone/software/scientificpython/
       Scientific.IO.FortranFormat (experimental LAMMPS parser)
+
+
+Running test cases
+==================
+
+If you want to check that your installation works correctly you can
+run the test suite. It requires that you have a recent version of
+NumPy, the Python package 'nose', and the MDAnalysisTestData (a
+collection of structures and trajectories that we use as test input).
+
+Download and install MDAnalysisTestData from 
+
+  http://code.google.com/p/mdanalysis/downloads/list
+
+Pick a file named `MDAnalysisTestData-X.Y.Z.tar.gz` where the release
+number X.Y.Z should either match or be smaller than the release number
+of MDAnalysis itself. E.g. For MDAnalysis-0.7.4 you would get
+MDAnalysisTestData-0.7.4, and for MDAnalysis-0.7.5 you would also
+install MDAnalysisTestData-0.7.4 (unless MDAnalysisTestData-0.7.5
+existed).
+
+For more details on the test cases see
+http://code.google.com/p/mdanalysis/wiki/UnitTests
+
+.. Note:: In order to install the other packages you can use
+          easy_install with the special `test` specifier::
+
+            easy_install MDAnalysis[tests]
 
 
 OS specific notes
