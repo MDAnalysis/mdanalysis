@@ -27,6 +27,8 @@ for help:
 (Note that the group really is called `mdnalysis-discussion' because
 Google groups forbids any name that contains the string `anal'.)
 """
+from __future__ import with_statement
+
 # EasyInstall installation:
 from ez_setup import use_setuptools
 use_setuptools()
@@ -73,18 +75,19 @@ include_dirs = [numpy_include]
 
 if __name__ == '__main__':
     RELEASE = "0.7.5-devel"
-    LONG_DESCRIPTION = \
-"""MDAnalysis is a tool for analyzing molecular dynamics trajectories.
-"""
+    with open("SUMMARY.txt") as summary:
+        LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = ['Development Status :: 4 - Beta',
                    'Environment :: Console',
-                   'Intended Audience :: Scientists',
+                   'Intended Audience :: Science/Research',
                    'License :: OSI Approved :: GNU General Public License (GPL)',
                    'Operating System :: POSIX',
                    'Operating System :: MacOS :: MacOS X',
                    'Programming Language :: Python',
+                   'Programming Language :: C',
                    'Topic :: Scientific/Engineering :: Bio-Informatics',
                    'Topic :: Scientific/Engineering :: Chemistry',
+                   'Topic :: Software Development :: Libraries :: Python Modules',
                    ]
 
     if 'DEBUG_CFLAGS' in os.environ:
