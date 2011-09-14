@@ -163,12 +163,14 @@ if __name__ == '__main__':
                               'biopython',   # required for standard PDB reader
                               ],
           extras_require = {
-                'tests': ['MDAnalysisTestData>=0.7.4',
-                          'nose>=0.10'],
                 'analysis': ['networkx>=1.0',  # LeafletFinder
                              'scipy',          # sparse contact matrix
                              'GridDataFormats',# http://github.com/orbeckst/GridDataFormats
                              ],
                 },
+          test_suite = "nose.collector",
+          tests_require = ['nose>=0.10',
+                           'MDAnalysisTestData>=0.7.4',
+                           ],
           zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
           )
