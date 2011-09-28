@@ -161,18 +161,24 @@ if __name__ == '__main__':
           ext_modules       = extensions,
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
-          install_requires = ['numpy>=1.0.3',  # currently not useful because without numpy we don't get here
-                              'biopython',   # required for standard PDB reader
+          # all standard requirements are available through PyPi and
+          # typically can be installed without difficulties through setuptools
+          install_requires = ['numpy>=1.0.3',   # currently not useful because without numpy we don't get here
+                              'biopython',      # required for standard PDB reader
+                              'networkx>=1.0',  # LeafletFinder
+                              'GridDataFormats>=0.2.2', # volumes and densities
                               ],
+          # extras can be difficult to install through setuptools and/or
+          # you might prefer to use the version available through your
+          # packaging system
           extras_require = {
-                'analysis': ['networkx>=1.0',  # LeafletFinder
+                'analysis': ['matplotlib',
                              'scipy',          # sparse contact matrix
-                             'GridDataFormats',# http://github.com/orbeckst/GridDataFormats
                              ],
                 },
           test_suite = "nose.collector",
           tests_require = ['nose>=0.10',
-                           'MDAnalysisTestData>=0.7.4',
+                           'MDAnalysisTestData==0.7.4',
                            ],
           zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
           )
