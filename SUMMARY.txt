@@ -18,17 +18,25 @@ written out in a range of formats.
 Availability
 ============
 
-Source code is available from http://mdanalysis.googlecode.com under the
-`GNU Public Licence, version 2`_, together with the `online documentation`_.
+**Source code** is available from http://mdanalysis.googlecode.com under the
+`GNU Public Licence, version 2`_, together with the `online
+documentation`_. **Packages** can be downloaded from
 
-Please report *bugs* or *enhancement requests* through the `Issue
+  http://code.google.com/p/mdanalysis/downloads/list
+
+or installed/upgraded via PyPI (using either `easy_install`_ or `pip`_)::
+
+  easy_install -U MDAnalysis
+  pip install --upgrade MDAnalysis
+
+Please report **bugs** or **enhancement requests** through the `Issue
 Tracker`_. Questions can also be asked on the `mdnalysis-discussion mailing
 list`_.
 
-In order to run the `Unit Tests`_ it is also necessary to install a separate
-package MDAnalysisTestData_ containing the test data. As it contains about 18 MB of molecular
-dynamics trajectories and simulation system structures it is not included with
-the library itself.
+In order to run the `Unit Tests`_ it is also necessary to install a
+separate package MDAnalysisTestData_ containing the test data. As it
+contains about 18 MB of molecular dynamics trajectories and simulation
+system structures it is not included with the library itself.
 
 
 Citation
@@ -70,3 +78,9 @@ When using MDAnalysis in published work, please cite
 
 .. _Unit Tests: http://code.google.com/p/mdanalysis/wiki/UnitTests
 .. _MDAnalysisTestData: http://code.google.com/p/mdanalysis/wiki/MDAnalysisTestData
+
+.. _`easy_install`: http://packages.python.org/distribute/easy_install.html
+.. _`pip`: http://www.pip-installer.org/en/latest/index.html
+
+PyPI Metadata
+=============
