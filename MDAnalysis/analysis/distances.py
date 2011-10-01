@@ -224,3 +224,25 @@ def dist(A, B, offset=0):
     d = numpy.sqrt(numpy.sum(r*r, axis=1))
     return numpy.array([residues_A, residues_B, d])
 
+
+def between(group, A, B, distance):
+  """Return sub group of *group* that is within *distance* of both *A* and *B*.
+
+  *group*, *A*, and *B* must be
+  :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances.  Works best
+  if *group* is bigger than either *A* or *B*. This function is not
+  aware of periodic boundary conditions.
+
+  Can be used to find bridging waters or molecules in an interface.
+
+  Similar to "*group* and (AROUND *A* *distance* and AROUND *B* *distance*)".
+
+  .. SeeAlso:: Makes use of :mod:`MDAnalysis.KDTree.NeighborSearch`.
+
+  .. versionadded: 0.7.5
+  """
+  from MDAnalysis.KDTree.NeighborSearch import AtomNeighborSearch
+  ns_group = AtomNeighborSearch(group)
+  resA = set(ns_group.search_list(A, cutoff))
+  resB = set(ns_group.search_list(B, cutoff))
+  return MDAnalysis.core.AtomGroup.AtomGroup(resB.intersection(resA))
