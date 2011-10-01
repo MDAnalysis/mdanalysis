@@ -1098,9 +1098,10 @@ class Residue(AtomGroup):
             return None
 
     def __getitem__(self, item):
-        if (type(item) == int) or (type(item) == slice):
+        if numpy.dtype(type(item)) == numpy.dtype(int) or type(item) == slice:
             return self._atoms[item]
-        else: return self.__getattr__(item)
+        else:
+            return self.__getattr__(item)
     def __getattr__(self, name):
         # There can only be one atom with a certain name
          for atom in self.atoms:
@@ -1145,9 +1146,10 @@ class ResidueGroup(AtomGroup):
     def __len__(self):
         return len(self._residues)
     def __getitem__(self, item):
-        if (type(item) == int) or (type(item) == slice):
+        if numpy.dtype(type(item)) == numpy.dtype(int) or type(item) == slice:
             return self._residues[item]
-        else: raise NotImplementedError()
+        else:
+            raise TypeError("Residue group indices must be int or a slice, not %s." % type(item))
     def __getattr__(self, attr):
         atomlist = [atom for atom in self.atoms if atom.name == attr]
         return AtomGroup(atomlist)
@@ -1243,9 +1245,10 @@ class SegmentGroup(ResidueGroup):
     def __len__(self):
         return len(self._segments)
     def __getitem__(self, item):
-        if (type(item) == int) or (type(item) == slice):
+        if numpy.dtype(type(item)) == numpy.dtype(int) or type(item) == slice:
             return self._segments[item]
-        else: raise NotImplementedError()
+        else:
+            raise TypeError("Segment group indices must be int or a slice, not %s." % type(item))
     def __getattr__(self, attr):
         if attr.startswith('s') and attr[1].isdigit():
             attr = attr[1:]  # sNxxx only used for python, the name is stored without s-prefix
