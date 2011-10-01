@@ -150,7 +150,7 @@ class ProgressMeter(object):
        u = Universe(PSF, DCD)
        pm = ProgressMeter(u.trajectory.numframes, interval=100)
        for ts in u.trajectory:
-           pm.print(ts.frame)
+           pm.echo(ts.frame)
            ...
 
     Will produce for a trajectory with 10000 frames
@@ -165,7 +165,7 @@ class ProgressMeter(object):
 
     """
     def __init__(self, numsteps, format=None, interval=10, offset=0):
-        """Set up the ProgresMeter
+        """Set up the ProgressMeter
 
         :Arguments:
            *numsteps*
@@ -196,7 +196,7 @@ class ProgressMeter(object):
         self.interval = int(interval)
         self.offset = int(offset)
         if format is None:
-            format = "Step %(step)5d/%(numsteps)d [%(percentage)5.1%%]\r"
+            format = "Step %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r"
         self.format = format
         if self.format.endswith('\r'):
             self.last_newline = '\n'
