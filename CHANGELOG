@@ -15,18 +15,31 @@ The rules for this file:
 
   * 0.7.5 (currently in development)
 
+  MDAnalysis can now be found on PyPI, allowing simple installation
+  from the internet. Metadata was added to setup to facilitate PyPI
+  upload and pages on the wiki describe how to do this.
+
   Enhancements
 
   * new method OtherWriter() for trajectory readers to generate a
     writer for any format that has been initialised for the common
     basic values
+  * new distances.between() function (EXPERIMENTAL)
 
+  Changes
+
+  * install a range of analysis dependencies right away: networkx,
+    biopython, GridDataFormats (usually all painless); leave scipy and
+    matplotlib to the user and the local package manager   
   
   Fixes
 
   * analysis.align.rms_fit_traj(): can output fitted trajectory to any
     supported format not just the input format
-
+  * fixed ProgressMeter: default format string was broken
+  * fixed: ResidueGroup and SegmentGroup indexing (did not work with
+    numpy.int64 etc) and now raise TypeError if it does not fit
+ 
 
 07/09/11 orbeckst, dcaplan, jandom
 
