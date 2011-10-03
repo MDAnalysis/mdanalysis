@@ -421,10 +421,11 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     if filename is None:
         path,fn = os.path.split(frames.filename)
         filename = os.path.join(path,prefix+fn)
+        writer = frames.Writer(filename, remarks='RMS fitted trajectory to reference')
+    else:
+        writer = frames.OtherWriter(filename)
 
     select = _process_selection(select)
-
-    writer = frames.Writer(filename, remarks='RMS fitted trajectory to reference')
 
     ref_atoms = reference.selectAtoms(*select['reference'])
     traj_atoms = traj.selectAtoms(*select['mobile'])

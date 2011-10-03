@@ -11,7 +11,21 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
+??/??/?? orbeckst
+
   * 0.7.5 (currently in development)
+
+  Enhancements
+
+  * new method OtherWriter() for trajectory readers to generate a
+    writer for any format that has been initialised for the common
+    basic values
+
+  
+  Fixes
+
+  * analysis.align.rms_fit_traj(): can output fitted trajectory to any
+    supported format not just the input format
 
 
 07/09/11 orbeckst, dcaplan, jandom

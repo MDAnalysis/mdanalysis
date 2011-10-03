@@ -717,6 +717,22 @@ class TestDCDWriter(TestCase):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
 
+    def test_OtherWriter(self):
+        t = self.universe.trajectory
+        W = t.OtherWriter(self.outfile)
+        for ts in self.universe.trajectory:
+            W.write_next_timestep(ts)
+        W.close()
+
+        uw = mda.Universe(PSF, self.outfile)
+
+        # check that the coordinates are identical for each time step
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
+                                      err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+
+
+
 class TestDCDWriter_Issue59(TestCase):
     def setUp(self):
         """Generate input xtc."""
@@ -734,7 +750,7 @@ class TestDCDWriter_Issue59(TestCase):
             pass
         try:
             os.unlink(self.dcd)
-        except OSError:
+        except (AttributeError, OSError):
             pass
         del self.u
 
@@ -753,8 +769,26 @@ class TestDCDWriter_Issue59(TestCase):
         xtc.trajectory.rewind()
         dcd.trajectory.rewind()
 
-        assert_array_almost_equal(xtc.atoms.coordinates(), dcd.atoms.coordinates(), 4,
+        assert_array_almost_equal(xtc.atoms.coordinates(), dcd.atoms.coordinates(), 3,
                                   err_msg="XTC -> DCD: DCD coordinates are messed up (Issue 59)")
+
+    def test_OtherWriter(self):
+        dcd = self.u
+        wXTC = dcd.trajectory.OtherWriter(self.xtc)
+        for ts in dcd.trajectory:
+            wXTC.write(ts)
+        wXTC.close()
+
+        xtc = MDAnalysis.Universe(PSF, self.xtc)
+        xtc.trajectory.rewind()
+        dcd.trajectory.rewind()
+
+        assert_array_almost_equal(dcd.atoms.coordinates(), xtc.atoms.coordinates(), 2,
+                                  err_msg="DCD -> XTC: coordinates are messed up (frame %d)" % dcd.trajectory.frame)
+        xtc.trajectory[3]
+        dcd.trajectory[3]
+        assert_array_almost_equal(dcd.atoms.coordinates(), xtc.atoms.coordinates(), 2,
+                                  err_msg="DCD -> XTC: coordinates are messed up (frame %d)" % dcd.trajectory.frame)
 
 
 class TestDCDCorrel(_TestDCD):

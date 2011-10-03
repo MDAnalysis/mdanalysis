@@ -259,6 +259,23 @@ class Reader(IObase):
         raise NotImplementedError("Sorry, there is no Writer for this format in MDAnalysis. "
                                   "Please file an enhancement request at http://code.google.com/p/mdanalysis/issues/")
 
+    def OtherWriter(self, filename, **kwargs):
+        """Returns a writer appropriate for *filename*.
+
+        Sets the default keywords *start*, *step* and *delta* (if
+        available). *numatoms* is always set from :attr:`Reader.numatoms`.
+
+        .. SeeAlso:: :meth:`Reader.Writer` and :func:`MDAnalysis.Writer`
+        """
+        kwargs['numatoms'] = self.numatoms            # essential
+        kwargs.setdefault('start', self.frame - 1)    # -1 should be correct... [orbeckst] ?!?
+        kwargs.setdefault('step', self.skip_timestep)
+        try:
+            kwargs.setdefault('delta', self.dt)
+        except KeyError:
+            pass
+        return core.writer(filename, **kwargs)
+
     def _read_next_timestep(self, ts=None):
         # Example from DCDReader:
         #     if ts is None: ts = self.ts
@@ -310,7 +327,7 @@ class ChainReader(Reader):
         """Set up the chain reader.
 
         :Arguments:
-           *filenames* 
+           *filenames*
                file name or list of file names; the reader will open
                all file names and provide frames in the order of
                trajectories from the list. Each trajectory must
@@ -347,7 +364,7 @@ class ChainReader(Reader):
 
         # build map 'start_frames', which is used by _get_local_frame()
         numframes = self._get('numframes')
-        # [0]: frames are 0-indexed internally 
+        # [0]: frames are 0-indexed internally
         # (see Timestep._check_slice_indices())
         self.__start_frames = numpy.cumsum([0] + numframes)
 
@@ -372,7 +389,7 @@ class ChainReader(Reader):
         MDAnalysis at the moment!)
 
         :Returns: **local frame** tuple `(i, f)`
-        
+
         :Raises: :exc:`IndexError` for `k<0` or `i<0`.
 
         .. Note:: Does not check if *k* is larger than the maximum
@@ -483,7 +500,7 @@ class ChainReader(Reader):
         .. Note:: *frame* is 0-based, i.e. the first frame in the
                   trajectory is accessed with *frame* = 0.
 
-        .. SeeAlso:: :meth:`~ChainReader._get_local_frame`.                  
+        .. SeeAlso:: :meth:`~ChainReader._get_local_frame`.
         """
         i,f = self._get_local_frame(frame)
         # seek to (1) reader i and (2) frame f in trajectory i
