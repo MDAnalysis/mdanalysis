@@ -41,9 +41,10 @@ class RefAdKSmall(object):
 
     Based on small PDB with AdK (:data:`PDB_small`).
 
-    .. Note:: All distances must be in ANGSTROEM as this is the
-       MDAnalysis default unit. All readers must return Angstroem by
-       default.
+    .. Note::
+
+       All distances must be in ANGSTROEM as this is the MDAnalysis
+       default unit. All readers must return Angstroem by default.
     """
     ref_coordinates = {
         'A10CA': np.array([ -1.198, 7.937, 22.654]),   # G11:CA, copied frm adk_open.pdb
@@ -63,9 +64,10 @@ class RefAdK(object):
 
     Based on PDB/GRO with AdK in water + Na+ (:data:`PDB`).
 
-    .. Note:: All distances must be in ANGSTROEM as this is the
-       MDAnalysis default unit. All readers must return Angstroem by
-       default.
+    .. Note::
+
+       All distances must be in ANGSTROEM as this is the MDAnalysis
+       default unit. All readers must return Angstroem by default.
     """
     ref_coordinates = {
         'A10CA': np.array([ 62.97600174,  62.08800125,  20.2329998 ]),  # Angstroem as MDAnalysis unit!!
@@ -83,9 +85,10 @@ class Ref2r9r(object):
 
     Based on S6 helices of chimeric Kv channel
 
-    .. Note:: All distances must be in ANGSTROEM as this is the
-       MDAnalysis default unit. All readers must return Angstroem by
-       default.
+    .. Note::
+
+       All distances must be in ANGSTROEM as this is the MDAnalysis
+       default unit. All readers must return Angstroem by default.
     """
     ref_numatoms = 1284
     ref_sum_centre_of_geometry = -98.24146

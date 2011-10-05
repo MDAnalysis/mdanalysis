@@ -153,8 +153,10 @@ def get_structure(pdbfile,pdbid='system'):
     This function ignores duplicate atom numbers and resids from the
     file and simply increments them.
 
-    .. Note:: The call signature is reversed compared to the one of
-              :meth:`Bio.PDB.PDBParser.get_structure`.
+    .. Note::
+
+       The call signature is reversed compared to the one of
+       :meth:`Bio.PDB.PDBParser.get_structure`.
     """
     return sloppyparser.get_structure(pdbid,pdbfile)
 

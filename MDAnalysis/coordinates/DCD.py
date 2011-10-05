@@ -103,8 +103,10 @@ class DCDWriter(base.Writer):
                int with_unitcell;
              } dcdhandle;
 
-        .. Note:: This function only exists for debugging purposes and might be
-                  removed without notice.
+        .. deprecated:: 0.7.5
+           This function only exists for debugging purposes and might
+           be removed without notice. Do not rely on it.
+
         """
         # was broken (no idea why [orbeckst]), see Issue 27
         # 'PiiiiiidiPPiiii' should be the unpack string according to the struct.
@@ -212,8 +214,10 @@ class DCDReader(base.Reader):
                int with_unitcell;
              } dcdhandle;
 
-        .. Note:: This function only exists for debugging purposes and might be
-                  removed without notice.
+        .. deprecated:: 0.7.5
+           This function only exists for debugging purposes and might
+           be removed without notice. Do not rely on it.
+
         """
         # was broken (no idea why [orbeckst]), see Issue 27
         # 'PiiiiiidiPPiiii' should be the unpack string according to the struct.
@@ -327,9 +331,11 @@ class DCDReader(base.Reader):
 
         :Returns: :class:`DCDWriter`
 
-        .. Note:: The keyword arguments set the low-level attributes of the DCD
-                  according to the CHARMM format. The time between two frames
-                  would be *delta* * *step* !
+        .. Note::
+
+           The keyword arguments set the low-level attributes of the DCD
+           according to the CHARMM format. The time between two frames would be
+           *delta* * *step* !
         """
         numatoms = kwargs.pop('numatoms', self.numatoms)
         kwargs.setdefault('start', self.start_timestep)

@@ -477,9 +477,11 @@ Methods
    obtained from a selection) or :class:`~MDAnalysis.core.AtomGroup.Universe`
    to the file and closes the file
 
-.. Note:: Trajectory and Frame writers can be used in almost exactly the same
-   manner with the one difference that Frame writers cannot deal with raw
-   :class:`~MDAnalysis.coordinates.base.Timestep` objects.
+.. Note::
+
+   Trajectory and Frame writers can be used in almost exactly the same
+   manner with the one difference that Frame writers cannot deal with
+   raw :class:`~MDAnalysis.coordinates.base.Timestep` objects.
 
 
 Reader/Writer registry

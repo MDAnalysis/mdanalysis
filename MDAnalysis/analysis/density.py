@@ -176,12 +176,16 @@ class Density(Grid):
     subtracted, multiplied, ...)  but there are *no sanity checks* in place to
     make sure that units, metadata, etc are compatible!
 
-    .. Note:: It is suggested to construct the Grid object from a
-       histogram, to supply the appropriate length unit, and to use
+    .. Note::
+
+       It is suggested to construct the Grid object from a histogram,
+       to supply the appropriate length unit, and to use
        :meth:`Density.make_density` to obtain a density. This ensures
        that the length- and the density unit correspond to each other.
 
-    .. SeeAlso:: :class:`Grid` which is the base class of
+    .. SeeAlso::
+
+       :class:`Grid` which is the base class of
        :class:`Density`. (:class:`Grid` has been imported from
        :class:`gridData.Grid` which is part of GridDataFormats_).
 
@@ -551,11 +555,12 @@ def notwithin_coordinates_factory(universe,sel1, sel2, cutoff, not_within=True, 
          False: use distance matrix approach
 
     .. Note::
-        * Periodic boundary conditions are NOT taken into account: the naive
-          minimum image convention employed in the distance check is currently
-          not being applied to remap the coordinates themselves, and hence it
-          would lead to counts in the wrong region.
-        * The selections are static and do not change with time steps.
+
+       * Periodic boundary conditions are NOT taken into account: the naive
+         minimum image convention employed in the distance check is currently
+         not being applied to remap the coordinates themselves, and hence it
+         would lead to counts in the wrong region.
+       * The selections are static and do not change with time steps.
 
     """
     # Benchmark of FABP system (solvent 3400 OH2, protein 2100 atoms) on G4 powerbook, 500 frames
@@ -623,13 +628,18 @@ def density_from_PDB(pdb, **kwargs):
     file then they are used to calculate the width of the gaussian.
 
     Using the `sigma` keyword, one can override this choice and
-    prescribe a gaussian width for all atoms (in Angstrom), which is calculated as
+    prescribe a gaussian width for all atoms (in Angstrom), which is
+    calculated as
 
       B = [(8*PI**2)/3] * (RMSF)**2
 
-    .. Note:: The current implementation is *painfully* slow.
+    .. Note::
 
-    .. SeeAlso:: :func:`Bfactor2RMSF` and :class:`BfactorDensityCreator`.
+       The current implementation is *painfully* slow.
+
+    .. SeeAlso::
+
+       :func:`Bfactor2RMSF` and :class:`BfactorDensityCreator`.
 
     :Arguments:
        *pdb*

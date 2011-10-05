@@ -468,8 +468,9 @@ class TrjReader(base.Reader):
     def _forward_to_frame(self, frameindex):
         """Slow implementation: must read sequentially.
 
-        .. Note:: *frameindex* starts from 0; i.e. *frameindex* =
-                  frame - 1.
+        .. Note::
+
+           *frameindex* starts from 0; i.e. *frameindex* = frame - 1.
 
         :TODO: Should we treat frame as 0-based or 1-based??  Right
                now: 0-based (which is inconsistent) but analogous to

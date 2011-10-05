@@ -23,7 +23,9 @@ Real MD simulation data, used for examples and the unit tests::
 
   from MDAnalysis.tests.datafiles import *
 
-.. Note:: The actual files are contained in the separate
+.. Note::
+
+   The actual files are contained in the separate
    :mod:`MDAnalysisTestData` package which must be downloaded from
    http://code.google.com/p/mdanalysis/downloads/list and installed.
 """

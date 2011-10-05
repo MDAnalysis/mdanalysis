@@ -330,9 +330,11 @@ class ContactAnalysis1(object):
       selA = 'name CA and resid 1:95'     # corresponds to refA
       selB = 'name CA and resid 150:189'  # corresponds to refB
 
-    .. Note:: It is the user's responsibility to provide a reference group (or
-              groups) that describe equivalent atoms to the ones selected by
-              *selection*.
+    .. Note::
+
+       It is the user's responsibility to provide a reference group
+       (or groups) that describe equivalent atoms to the ones selected
+       by *selection*.
 
     Now we are ready to set up the analysis::
 

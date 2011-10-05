@@ -147,10 +147,13 @@ All protein-water hydrogen bonds can be analysed with ::
 The results are also stored as the attribute :attr:`h.timeseries`; see
 :ref:`Analysis Output` for the format and further options.
 
-.. Note:: Due to the way :class:`HydrogenBondAnalysis` is implemented, it is
-          more efficient to have the second selection (*selection2*) be the
-          *larger* group, e.g. the water when looking at water-protein H-bonds
-          or the whole protein when looking at ligand-protein interactions.
+.. Note::
+
+   Due to the way :class:`HydrogenBondAnalysis` is implemented, it is
+   more efficient to have the second selection (*selection2*) be the
+   *larger* group, e.g. the water when looking at water-protein
+   H-bonds or the whole protein when looking at ligand-protein
+   interactions.
 
 .. TODO: how to analyse the ouput and notes on selection updating
 

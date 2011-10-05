@@ -24,9 +24,11 @@ partial charges and masses from the PRMTOP file.
 
 The format is defined in `PARM parameter/topology file specification`_.
 
-.. Note:: The Amber charge is converted to electron charges as used in
-          MDAnalysis and other packages. To get back Amber charges,
-          multiply by 18.2223.
+.. Note::
+
+   The Amber charge is converted to electron charges as used in
+   MDAnalysis and other packages. To get back Amber charges, multiply
+   by 18.2223.
 
 .. _`PARM parameter/topology file specification`:
    http://ambermd.org/formats.html#topology

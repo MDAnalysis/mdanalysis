@@ -256,8 +256,10 @@ def triclinic_vectors(dimensions):
     :Returns: numpy 3x3 array B, with B[0] = first box vector,
               B[1] = second vector, B[2] third box vector.
 
-    .. note:: The first vector is always pointing along the
-                  X-axis i.e. parallel to (1,0,0).
+    .. note::
+
+       The first vector is always pointing along the X-axis
+       i.e. parallel to (1,0,0).
     """
     B = numpy.zeros((3,3), dtype=numpy.float32)
     x, y, z, a, b, c = dimensions[:6]

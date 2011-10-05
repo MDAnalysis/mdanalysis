@@ -142,7 +142,9 @@ class GROReader(base.Reader):
 class GROWriter(base.Writer):
         """GRO Writer that conforms to the Trajectory API.
 
-        .. Note:: The precision is hard coded to three decimal places.
+        .. Note::
+
+           The precision is hard coded to three decimal places.
         """
 
         format = 'GRO'

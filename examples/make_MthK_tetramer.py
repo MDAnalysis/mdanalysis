@@ -3,8 +3,10 @@
 Rotate the monomer in pdb:3LDD around the 4-fold axis formed by the
 K+-ions in the filter.
 
-.. Note:: This example is not exact; use the BIOMT record in the PDB
-          to create the real tetramer.
+.. Note::
+
+   This example is not exact; use the BIOMT record in the PDB to
+   create the real tetramer.
 """
 import MDAnalysis
 

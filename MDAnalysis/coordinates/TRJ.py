@@ -26,9 +26,11 @@ compressed files.
 Amber trajectories are recognised by the suffix '.trj' or '.mdcrd'
 (possibly with an additional '.gz' or '.bz2').
 
-.. Note:: Support for Amber is *experimental* and feedback and
-   contributions are highly appreciated. Use the `Issue Tracker`_ or
-   get in touch on the `MDAnalysis mailinglist`_.
+.. Note::
+
+   Support for Amber is *experimental* and feedback and contributions
+   are highly appreciated. Use the `Issue Tracker`_ or get in touch on
+   the `MDAnalysis mailinglist`_.
 
 .. _Amber: http://ambermd.org
 .. _Amber TRJ format: http://ambermd.org/formats.html#trajectory
@@ -92,9 +94,11 @@ class Timestep(base.Timestep):
                 - `beta` = angle(`e1, e3`)
                 - `gamma` = angle(`e2, e3`)
 
-                .. Note:: The Amber trajectory only contains box lengths
-                           `A,B,C`; we assume an orthorhombic box and set all
-                           angles to 90Âº.
+                .. Note::
+
+                   The Amber trajectory only contains box lengths
+                   `A,B,C`; we assume an orthorhombic box and set all
+                   angles to 90º.
                 """
                 # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
                 return self._unitcell

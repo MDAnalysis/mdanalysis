@@ -64,16 +64,16 @@ class Timestep(object):
         coordinates as a (*numatoms*,3) :class:`numpy.ndarray` of dtype
         :data:`~numpy.float32`.
 
-        .. Note:: normally one does not directly access :attr:`_pos`
-           but uses the
-           :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.coordinates`
-           method of an :meth:`~MDAnalysis.core.AtomGroup.AtomGroup`
-           but sometimes it can be faster to directly use the raw
-           coordinates. Any changes to this array are imediately
-           reflected in atom positions. If the frame is written to a
-           new trajectory then the coordinates are changed. If a new
-           trajectory frame is loaded, then *all* contents of
-           :attr:`_pos` are overwritten.
+        .. Note::
+
+           normally one does not directly access :attr:`_pos` but uses the
+           :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.coordinates` method of
+           an :meth:`~MDAnalysis.core.AtomGroup.AtomGroup` but sometimes it can
+           be faster to directly use the raw coordinates. Any changes to this
+           array are imediately reflected in atom positions. If the frame is
+           written to a new trajectory then the coordinates are changed. If a
+           new trajectory frame is loaded, then *all* contents of :attr:`_pos`
+           are overwritten.
 
       :attr:`dimensions`:
          system box dimensions (A, B, C, alpha, beta, gamma); lengths
@@ -392,8 +392,10 @@ class ChainReader(Reader):
 
         :Raises: :exc:`IndexError` for `k<0` or `i<0`.
 
-        .. Note:: Does not check if *k* is larger than the maximum
-                  number of frames in the chained trajectory.
+        .. Note::
+
+           Does not check if *k* is larger than the maximum number of frames in
+           the chained trajectory.
         """
         if k < 0:
             raise IndexError("Virtual (chained) frames must be >= 0")
@@ -442,11 +444,12 @@ class ChainReader(Reader):
     def frame(self):
         """Cumulative frame number of the current time step.
 
-        .. Note:: The frame number is 1-based, i.e. the first frame
-                  has frame number 1. However, frame indices (used for
-                  indexing and slicing with the
-                  `trajectory[frame_index]` notation use a 0-based
-                  index, i.e. *frame* - 1.
+        .. Note::
+
+           The frame number is 1-based, i.e. the first frame has frame number
+           1. However, frame indices (used for indexing and slicing with the
+           `trajectory[frame_index]` notation use a 0-based index, i.e. *frame*
+           - 1.
         """
         return self.ts.frame
 
@@ -497,8 +500,10 @@ class ChainReader(Reader):
         frame index and the Timestep instance in
         :attr:`ChainReader.ts` is updated.
 
-        .. Note:: *frame* is 0-based, i.e. the first frame in the
-                  trajectory is accessed with *frame* = 0.
+        .. Note::
+
+           *frame* is 0-based, i.e. the first frame in the trajectory is
+           accessed with *frame* = 0.
 
         .. SeeAlso:: :meth:`~ChainReader._get_local_frame`.
         """
@@ -593,8 +598,10 @@ class Writer(IObase):
         The argument should be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or
         a :class:`~MDAnalysis.Universe` or a :class:`Timestep` instance.
 
-        .. Note:: The size of the *obj* must be the same as the number
-                  of atom provided when setting up the trajectory.
+        .. Note::
+
+           The size of the *obj* must be the same as the number of atom
+           provided when setting up the trajectory.
         """
         if isinstance(obj, Timestep):
             ts = obj

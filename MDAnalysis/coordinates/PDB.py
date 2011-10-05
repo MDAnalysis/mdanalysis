@@ -120,9 +120,12 @@ class PDBReader(base.Reader):
 
         :Returns: :class:`PDBWriter`
 
-        .. Note:: This :class:`PDBWriter` 's :meth:`~PDBWriter.write` method always requires a
-                  :class:`Timestep` as an argument (it is not optional anymore when the Writer
-                  is obtained through this method of :class:`PDBReader`.)
+        .. Note::
+
+           This :class:`PDBWriter` 's :meth:`~PDBWriter.write` method
+           always requires a :class:`Timestep` as an argument (it is
+           not optional anymore when the Writer is obtained through
+           this method of :class:`PDBReader`.)
         """
         # This is messy; we cannot get a universe from the Reader, which would be
         # also needed to be fed to the PDBWriter (which is a total mess...).
@@ -155,8 +158,10 @@ class PDBWriter(base.Writer):
     used) or if this is really only an atom selection (then a less
     sophistiocated writer is employed).
 
-    .. Note:: The standard PDBWriter can only write the *whole system*.
-      In order to write a selection, use the :class:`PrimitivePDBWriter`,
+    .. Note::
+
+      The standard PDBWriter can only write the *whole system*.  In
+      order to write a selection, use the :class:`PrimitivePDBWriter`,
       which happens automatically when the
       :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of a
       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance is used.
@@ -417,8 +422,10 @@ class PrimitivePDBWriter(base.Writer):
           *frame*
             optionally move to frame *FRAME*
 
-        .. Note:: The first letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid`
-                  is used as the PDB chainID.
+        .. Note::
+
+           The first letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid`
+           is used as the PDB chainID.
         """
         u = selection.universe
         if frame is not None:

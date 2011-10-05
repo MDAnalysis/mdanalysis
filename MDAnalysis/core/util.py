@@ -210,7 +210,8 @@ def asiterable(obj):
     return obj
 
 #: Regular expresssion (see :mod:`re`) to parse a simple `FORTRAN edit descriptor`_.
-#:   ``(?P<repeat>\d?)(?P<format>[IFELAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?``
+#: ``(?P<repeat>\d?)(?P<format>[IFELAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?``
+#:
 #: .. _FORTRAN edit descriptor: http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html
 FORTRAN_format_regex = "(?P<repeat>\d+?)(?P<format>[IFEAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?"
 _FORTRAN_format_pattern = re.compile(FORTRAN_format_regex)
@@ -329,8 +330,11 @@ class FORTRANReader(object):
         :Raises: :exc:`ValueError` if the *edit_descriptor* is not recognized
                  and cannot be parsed
 
-        .. Note:: Specifiers: *L ES EN T TL TR / r S SP SS BN BZ* are *not*
-           supported, and neither are the scientific notation *Ew.dEe* forms.
+        .. Note::
+
+           Specifiers: *L ES EN T TL TR / r S SP SS BN BZ* are *not*
+           supported, and neither are the scientific notation *Ew.dEe*
+           forms.
         """
 
         m = _FORTRAN_format_pattern.match(edit_descriptor.upper())

@@ -201,7 +201,9 @@ class AtomGroup(object):
     will return a new :class:`AtomGroup` containing (ag[0], ag[3], ag[-1],
     ag[10], ag[3]).
 
-    .. Note:: AtomGroups originating from a selection are sorted and
+    .. Note::
+
+       AtomGroups originating from a selection are sorted and
        duplicate elements are removed. This is not true for AtomGroups
        produced by slicing. Thus slicing can be used when the order of
        atoms is crucial (for instance, in order to define angles or
@@ -214,11 +216,14 @@ class AtomGroup(object):
 
     will provide a :class:`AtomGroup` of all CA atoms in the group.
 
-    .. Note:: The name-attribute access to atoms is mainly meant for quick
-       interactive work. Thus it either returns a single :class:`Atom` if there
-       is only one matching atom, *or* a new :class:`AtomGroup` for multiple
-       matches. This makes it difficult to use the feature consistently in
-       scripts but is much better for interactive work.
+    .. Note::
+
+       The name-attribute  access to atoms  is mainly meant  for quick
+       interactive work. Thus it either returns a single :class:`Atom`
+       if   there   is   only   one   matching  atom,   *or*   a   new
+       :class:`AtomGroup`   for  multiple   matches.  This   makes  it
+       difficult  to use the  feature consistently  in scripts  but is
+       much better for interactive work.
 
     :Data:
         atoms
@@ -547,8 +552,11 @@ class AtomGroup(object):
 
             0---1
 
-        .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 2
-           :class:`Atom`; anything else will raise a :exc:`ValueError`.
+        .. Note::
+
+           Only makes sense for a :class:`AtomGroup` with exactly 2
+           :class:`Atom`; anything else will raise a
+           :exc:`ValueError`.
 
         .. versionadded:: 0.7.3
         """
@@ -566,7 +574,9 @@ class AtomGroup(object):
             /
            1------0
 
-        .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 3
+        .. Note::
+
+           Only makes sense for a :class:`AtomGroup` with exactly 3
            :class:`Atom`; anything else will raise a :exc:`ValueError`.
 
         .. versionadded:: 0.7.3
@@ -585,7 +595,9 @@ class AtomGroup(object):
         :meth:`dihedral`: The angle between the planes formed by atoms (0,1,2)
         and (1,2,3).
 
-        .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 4
+        .. Note::
+
+           Only makes sense for a :class:`AtomGroup` with exactly 4
            :class:`Atom`; anything else will raise a :exc:`ValueError`. The
            interpretation of the angle as an "improper" solely depends on the
            selection of atoms and thus the user input!
@@ -606,7 +618,9 @@ class AtomGroup(object):
            /
           0
 
-        .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 4
+        .. Note::
+
+           Only makes sense for a :class:`AtomGroup` with exactly 4
            :class:`Atom`; anything else will raise a :exc:`ValueError`.
 
         .. versionadded:: 0.7.0
@@ -619,7 +633,9 @@ class AtomGroup(object):
     def dihedral_orig(self):
         """Calculate the dihedral angle in degrees.
 
-        .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 4
+        .. Note::
+
+           Only makes sense for a :class:`AtomGroup` with exactly 4
            :class:`Atom`; anything else will raise a :exc:`ValueError`.
 
         .. deprecated:: 0.7.3
@@ -694,7 +710,9 @@ class AtomGroup(object):
     def dihedral_numpy(self):
         """Calculate the dihedral angle in degrees.
 
-        .. Note:: Only makes sense for a :class:`AtomGroup` with exactly 4
+        .. Note::
+
+           Only makes sense for a :class:`AtomGroup` with exactly 4
            :class:`Atom`; anything else will raise a :exc:`ValueError`.
 
         .. deprecated:: 0.7.3
@@ -1305,11 +1323,12 @@ class Universe(object):
          set in the trajectory)
        - bonds, angles, dihedrals, impropers (low level access through :attr:`Universe._psf`)
 
-    .. Note:: Only single-frame PDB files are supported at the moment; use DCDs
-              or XTC/TRR for trajectories or supply a *list of PDB files* as
-              the trajectory argument.  If a PDB is used instead of a PSF then
-              charges are not correct, masses are guessed, and bonds are not
-              available.
+    .. Note::
+
+       Only single-frame PDB files are supported at the moment; use DCDs or
+       XTC/TRR for trajectories or supply a *list of PDB files* as the
+       trajectory argument.  If a PDB is used instead of a PSF then charges are
+       not correct, masses are guessed, and bonds are not available.
     """
     def __init__(self, topologyfile, coordinatefile=None, **kwargs):
         """Initialize the central MDAnalysis Universe object.
@@ -1496,13 +1515,14 @@ class Universe(object):
            >>> universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
            <AtomGroup with 3420 atoms>
 
-        .. Note:: If exact ordering of atoms is required (for instance, for
-                  :meth:`~AtomGroup.angle` or :meth:`~AtomGroup.dihedral`
-                  calculations) then one supplies selections *separately* in
-                  the required order. Also, when multiple :class:`AtomGroup`
-                  instances are concatenated with the ``+`` operator then the
-                  order of :class:`Atom` instances is preserved and duplicates
-                  are not removed.
+        .. Note::
+
+           If exact ordering of atoms is required (for instance, for
+           :meth:`~AtomGroup.angle` or :meth:`~AtomGroup.dihedral`
+           calculations) then one supplies selections *separately* in the
+           required order. Also, when multiple :class:`AtomGroup` instances are
+           concatenated with the ``+`` operator then the order of :class:`Atom`
+           instances is preserved and duplicates are not removed.
 
         .. SeeAlso:: :ref:`selection-commands-label` for further details and examples.
 
@@ -1617,10 +1637,12 @@ class Universe(object):
         :class:`~MDAnalysis.coordinates.base.Timestep`, it changes its contents
         while one is stepping through the trajectory.
 
-        .. Note:: In order to access the coordinates it is probably better to
-                  use the :meth:`AtomGroup.coordinates` method; for instance,
-                  all coordinates of the Universe as a numpy array:
-                  :meth:`Universe.atoms.coordinates`.
+        .. Note::
+
+           In order to access the coordinates it is probably better to use the
+           :meth:`AtomGroup.coordinates` method; for instance, all coordinates
+           of the Universe as a numpy array:
+           :meth:`Universe.atoms.coordinates`.
         """
         return self.trajectory.ts
 

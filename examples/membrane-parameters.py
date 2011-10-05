@@ -11,10 +11,12 @@ This example shows how to use the
 :class:`MDAnalysis.analysis.leaflet.LeafletFinder` to determine the
 centre of a bilayer and its approximate thickness of a approximately planar bilayer.
 
-.. Note:: This is a very promitive script. Depending on what you want
-   to know and what your system looks like you will have to work
-   significantly harder to compute appropriate numbers. This approach
-   is not generally recommended for quantitative work!
+.. Note::
+
+   This is a very promitive script. Depending on what you want to know
+   and what your system looks like you will have to work significantly
+   harder to compute appropriate numbers. This approach is not
+   generally recommended for quantitative work!
 
 Algorithm
 ---------
@@ -29,7 +31,7 @@ the **center of the bilayer** is approximately
 The approximate thickness is
 
   t_mem = abs(c1z - c2z)
- 
+
 """
 
 usage = """%%prog [options] structure-file
@@ -87,19 +89,19 @@ if __name__ == "__main__":
                       "|N0 - N1|/|N0 + N1| > Q (Ni = number of lipids in group i) "
                       "This heuristic picks groups with balanced numbers of lipids. "
                       "[%default]")
-                      
+
 
     parser.set_defaults(pbc=False, cutoff=15.0,optimize=False,
                         max_imbalance=0.2,
                         # PO-lipids (and CHOL for CG) but not CHARMM K+
                         selection="(name P* or name ROH) and not name POT",
                         )
-    # TODO: selection should be set based on the identities of lipids. 
+    # TODO: selection should be set based on the identities of lipids.
     #       combined with fingerprinting in the future to do this automagically;
     #       Hard coded for now.
-    
+
     options, args = parser.parse_args()
-    
+
     try:
         structure = args[0]
     except IndexError:
@@ -121,7 +123,7 @@ if __name__ == "__main__":
         except:
             raise RuntimeError("Failed cutoff optimization, try without --optimize")
         print "# Optimized cutoff=%(cutoff).1f A, finding %(N)d disconnected groups" % vars()
-    else:        
+    else:
         cutoff = options.cutoff
         print "# Using fixed cutoff=%(cutoff).1f A" % vars()
 

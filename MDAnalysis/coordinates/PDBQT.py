@@ -308,8 +308,11 @@ class PDBQTWriter(base.Writer):
           *frame*
             optionally move to frame *FRAME*
 
-        .. Note:: The first letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid`
-                  is used as the PDB chainID.
+        .. Note::
+
+           The first letter of the
+           :attr:`~MDAnalysis.core.AtomGroup.Atom.segid` is used as the PDB
+           chainID.
         """
         u = selection.universe
         if frame is not None:

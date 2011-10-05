@@ -194,13 +194,15 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
                        prefix="helanal_", ref_axis=None):
         """Perform HELANAL_ helix analysis on all frames in *universe*.
 
-        .. Note:: Only a single helix is analyzed. Use the selection to specify
-                  the helix, e.g. with "name CA and resid 1:20" or use start=1,
-                  stop=20.
+        .. Note::
+
+           Only a single helix is analyzed. Use the selection to specify the
+           helix, e.g. with "name CA and resid 1:20" or use start=1, stop=20.
 
         :Arguments:
            *universe*
               :class:`~MDAnalysis.core.AtomGroup.Universe`
+
         :Keywords:
            *selection*
               selection string that selects Calpha atoms ["name CA"]
