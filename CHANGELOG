@@ -39,7 +39,11 @@ The rules for this file:
   * fixed ProgressMeter: default format string was broken
   * fixed: ResidueGroup and SegmentGroup indexing (did not work with
     numpy.int64 etc) and now raise TypeError if it does not fit
- 
+  * fixed HydrogenBondingAnalysis backbone donor list: had C but
+    should have been O (this was supposed to be fixed with r849 in
+    0.7.4 but a typo crept in). NOTE: analysis might have produced
+    partially wrong results. 
+
 
 07/09/11 orbeckst, dcaplan, jandom
 

@@ -81,7 +81,7 @@ searched for as atom names following in sequence and starting with 'H'.
    =========== ==============  =========== ====================================
    group       donor           acceptor    comments
    =========== ==============  =========== ====================================
-   main chain  N               C
+   main chain  N               O
    water       OH2, OW         OH2, OW     SPC, TIP3P, TIP4P (CHARMM27,Gromacs)
 
    ARG         NE, NH1, NH2
@@ -213,7 +213,7 @@ class HydrogenBondAnalysis(object):
     #: default atom names that are treated as hydrogen *acceptors*
     #: (see :ref:`Default atom names for hydrogen bonding analysis`)
     #: Use the keyword *acceptors* to add a list of additional acceptor names.
-    DEFAULT_ACCEPTORS = tuple(set(['C', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1', 'OE2',
+    DEFAULT_ACCEPTORS = tuple(set(['O', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1', 'OE2',
                                    'ND1', 'NE2', 'NE2', 'ND1', 'SD', 'OG', 'OG1', 'OH',]))
 
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
@@ -447,7 +447,7 @@ class HydrogenBondAnalysis(object):
           9. "distance"
           10. "angle"
 
-        .. _recsql: http://sbcb.bioch.ox.ac.uk/oliver/software/RecSQL/html/index.html
+        .. _recsql: http://pypi.python.org/pypi/RecSQL
         """
         from itertools import izip
         if self.timeseries is None:
