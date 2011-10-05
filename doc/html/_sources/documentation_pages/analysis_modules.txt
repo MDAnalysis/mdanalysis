@@ -19,11 +19,13 @@ has to import them from :mod:`MDAnalysis.analysis`, for instance ::
 
     import MDAnalysis.analysis.align
 
-.. Note:: Some of the modules require additional Python packages such as
+.. Note:: 
+
+  Some of the modules require additional Python packages such as
   :mod:`scipy` from the SciPy_ package or :mod:`networkx` from
-  NetworkX_. These package are *not automatically installed* (although one can
-  add the ``[analysis]`` requirement to the :program:`easy_install` command
-  line to force their installation.
+  NetworkX_. These package are *not automatically installed* (although
+  one can add the ``[analysis]`` requirement to the
+  :program:`easy_install` command line to force their installation.
 
 .. TODO: write a INSTALLATION page and link to it
 

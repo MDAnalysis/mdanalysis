@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.4 documentation</title>
+    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.5-devel documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.4',
+        VERSION:     '0.7.5-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.4 documentation"
+          title="Search within MDAnalysis v0.7.5-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5-devel documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
     <link rel="prev" title="7.1. Core functions of MDAnalysis" href="init.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -175,11 +175,10 @@ set in the trajectory)</li>
 </dl>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Only single-frame PDB files are supported at the moment; use DCDs
-or XTC/TRR for trajectories or supply a <em>list of PDB files</em> as
-the trajectory argument.  If a PDB is used instead of a PSF then
-charges are not correct, masses are guessed, and bonds are not
-available.</p>
+<p class="last">Only single-frame PDB files are supported at the moment; use DCDs or
+XTC/TRR for trajectories or supply a <em>list of PDB files</em> as the
+trajectory argument.  If a PDB is used instead of a PSF then charges are
+not correct, masses are guessed, and bonds are not available.</p>
 </div>
 <p>Initialize the central MDAnalysis Universe object.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -260,9 +259,9 @@ represented as a <tt class="xref py py-class docutils literal"><span class="pre"
 while one is stepping through the trajectory.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">In order to access the coordinates it is probably better to
-use the <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.coordinates" title="MDAnalysis.core.AtomGroup.AtomGroup.coordinates"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.coordinates()</span></tt></a> method; for instance,
-all coordinates of the Universe as a numpy array:
+<p class="last">In order to access the coordinates it is probably better to use the
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.coordinates" title="MDAnalysis.core.AtomGroup.AtomGroup.coordinates"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.coordinates()</span></tt></a> method; for instance, all coordinates
+of the Universe as a numpy array:
 <tt class="xref py py-meth docutils literal"><span class="pre">Universe.atoms.coordinates()</span></tt>.</p>
 </div>
 </dd></dl>
@@ -336,11 +335,10 @@ which can happen with complicated selections).</p>
 <p class="first admonition-title">Note</p>
 <p class="last">If exact ordering of atoms is required (for instance, for
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.angle" title="MDAnalysis.core.AtomGroup.AtomGroup.angle"><tt class="xref py py-meth docutils literal"><span class="pre">angle()</span></tt></a> or <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.dihedral" title="MDAnalysis.core.AtomGroup.AtomGroup.dihedral"><tt class="xref py py-meth docutils literal"><span class="pre">dihedral()</span></tt></a>
-calculations) then one supplies selections <em>separately</em> in
-the required order. Also, when multiple <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>
-instances are concatenated with the <tt class="docutils literal"><span class="pre">+</span></tt> operator then the
-order of <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances is preserved and duplicates
-are not removed.</p>
+calculations) then one supplies selections <em>separately</em> in the
+required order. Also, when multiple <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> instances are
+concatenated with the <tt class="docutils literal"><span class="pre">+</span></tt> operator then the order of <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>
+instances is preserved and duplicates are not removed.</p>
 </div>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -484,11 +482,12 @@ an attribute. For instance,</p>
 <p>will provide a <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> of all CA atoms in the group.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The name-attribute access to atoms is mainly meant for quick
-interactive work. Thus it either returns a single <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> if there
-is only one matching atom, <em>or</em> a new <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> for multiple
-matches. This makes it difficult to use the feature consistently in
-scripts but is much better for interactive work.</p>
+<p class="last">The name-attribute  access to atoms  is mainly meant  for quick
+interactive work. Thus it either returns a single <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>
+if   there   is   only   one   matching  atom,   <em>or</em>   a   new
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>   for  multiple   matches.  This   makes  it
+difficult  to use the  feature consistently  in scripts  but is
+much better for interactive work.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -618,7 +617,8 @@ provide a unified interface to querying properties:
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Only makes sense for a <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> with exactly 2
-<a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>; anything else will raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>.</p>
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>; anything else will raise a
+<tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>.</p>
 </div>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.3.</span></p>
@@ -1396,7 +1396,7 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>

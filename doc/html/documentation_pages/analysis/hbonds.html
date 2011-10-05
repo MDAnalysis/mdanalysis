@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.5. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis v0.7.4 documentation</title>
+    <title>3.5. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis v0.7.5-devel documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.4',
+        VERSION:     '0.7.5-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.4 documentation"
+          title="Search within MDAnalysis v0.7.5-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5-devel documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.6. HELANAL — analysis of protein helices" href="helanal.html" />
     <link rel="prev" title="3.4. Generating densities from trajectories — MDAnalysis.analysis.density" href="density.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="density.html" title="3.4. Generating densities from trajectories — MDAnalysis.analysis.density"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -69,7 +69,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="density.html"
-                        title="previous chapter">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
+                        title="previous chapter">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="helanal.html"
                         title="next chapter">3.6. HELANAL &#8212; analysis of protein helices</a></p>
@@ -186,7 +186,7 @@ searched for as atom names following in sequence and starting with &#8216;H&#821
 <tbody valign="top">
 <tr><td>main chain</td>
 <td>N</td>
-<td>C</td>
+<td>O</td>
 <td>&nbsp;</td>
 </tr>
 <tr><td>water</td>
@@ -323,8 +323,9 @@ F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,
 <p class="first admonition-title">Note</p>
 <p class="last">Due to the way <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">HydrogenBondAnalysis</span></tt></a> is implemented, it is
 more efficient to have the second selection (<em>selection2</em>) be the
-<em>larger</em> group, e.g. the water when looking at water-protein H-bonds
-or the whole protein when looking at ligand-protein interactions.</p>
+<em>larger</em> group, e.g. the water when looking at water-protein
+H-bonds or the whole protein when looking at ligand-protein
+interactions.</p>
 </div>
 </div>
 <div class="section" id="classes">
@@ -432,7 +433,7 @@ Use the keyword <em>donors</em> to add a list of additional donor names.</p>
 <dd><p>Generate a normalised table of the results.</p>
 <p>The table is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-4fb84e7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> in the
 attribute <tt class="xref py py-attr docutils literal"><span class="pre">table</span></tt> and can be used
-with e.g. <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/software/RecSQL/html/index.html">recsql</a>.</p>
+with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL">recsql</a>.</p>
 <dl class="docutils">
 <dt>Columns:</dt>
 <dd><ol class="first last arabic simple" start="0">
@@ -517,7 +518,7 @@ with e.g. <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/
         <li class="right" >
           <a href="density.html" title="3.4. Generating densities from trajectories — MDAnalysis.analysis.density"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>

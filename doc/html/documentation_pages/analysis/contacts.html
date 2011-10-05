@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.2. Native contacts analysis — MDAnalysis.analysis.contacts &mdash; MDAnalysis v0.7.4 documentation</title>
+    <title>3.2. Native contacts analysis — MDAnalysis.analysis.contacts &mdash; MDAnalysis v0.7.5-devel documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.4',
+        VERSION:     '0.7.5-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.4 documentation"
+          title="Search within MDAnalysis v0.7.5-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5-devel documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.3. Distance analysis — MDAnalysis.distances" href="distances.html" />
     <link rel="prev" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align" href="align.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="align.html" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -67,7 +67,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="align.html"
-                        title="previous chapter">3.1. Coordinate fitting and alignment &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></p>
+                        title="previous chapter">3.1. Coordinate fitting and alignment &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="distances.html"
                         title="next chapter">3.3. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
@@ -288,9 +288,9 @@ reference (i.e. <tt class="docutils literal"><span class="pre">u.selectAtoms(sel
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">It is the user&#8217;s responsibility to provide a reference group (or
-groups) that describe equivalent atoms to the ones selected by
-<em>selection</em>.</p>
+<p class="last">It is the user&#8217;s responsibility to provide a reference group
+(or groups) that describe equivalent atoms to the ones selected
+by <em>selection</em>.</p>
 </div>
 <p>Now we are ready to set up the analysis:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">CA1</span> <span class="o">=</span> <span class="n">ContactAnalysis1</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="p">(</span><span class="n">selA</span><span class="p">,</span><span class="n">selB</span><span class="p">),</span> <span class="n">refgroup</span><span class="o">=</span><span class="p">(</span><span class="n">refA</span><span class="p">,</span><span class="n">refB</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="s">&quot;q.dat&quot;</span><span class="p">)</span>
@@ -474,7 +474,7 @@ data file.</p>
         <li class="right" >
           <a href="align.html" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>

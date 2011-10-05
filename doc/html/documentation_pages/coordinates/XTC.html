@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.12. Gromacs XTC file IO — MDAnalysis.coordinates.XTC &mdash; MDAnalysis v0.7.4 documentation</title>
+    <title>5.12. Gromacs XTC file IO — MDAnalysis.coordinates.XTC &mdash; MDAnalysis v0.7.5-devel documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.4',
+        VERSION:     '0.7.5-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.4 documentation"
+          title="Search within MDAnalysis v0.7.5-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5-devel documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.13. XYZ trajectory reader — MDAnalysis.coordinates.XYZ" href="XYZ.html" />
     <link rel="prev" title="5.11. Gromacs TRR file IO — MDAnalysis.coordinates.TRR" href="TRR.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="TRR.html" title="5.11. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -134,6 +134,18 @@ bindings to the Gromacs trajectory file formats</p>
 <dt id="MDAnalysis.coordinates.xdrfile.XTC.XTCReader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.XTC.</tt><tt class="descname">XTCReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.XTCReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read <a class="reference external" href="http://www.gromacs.org">Gromacs</a> XTC trajectory.</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.XTC.XTCReader.OtherWriter">
+<tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.XTCReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a writer appropriate for <em>filename</em>.</p>
+<p>Sets the default keywords <em>start</em>, <em>step</em> and <em>delta</em> (if
+available). <em>numatoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.numatoms</span></tt>.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">Reader.Writer()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></tt></p>
+</div>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.XTC.XTCReader.Writer">
 <tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.XTCReader.Writer" title="Permalink to this definition">¶</a></dt>
@@ -497,7 +509,7 @@ the value of :data:<a href="#id3"><span class="problematic" id="id4">`</span></a
         <li class="right" >
           <a href="TRR.html" title="5.11. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
