@@ -43,6 +43,8 @@ The rules for this file:
     should have been O (this was supposed to be fixed with r849 in
     0.7.4 but a typo crept in). NOTE: analysis might have produced
     partially wrong results. 
+  * fixed: dihedral() and other methods using core.util.angle() sometimes
+    returned nan instead of +pi or -pi
 
 
 07/09/11 orbeckst, dcaplan, jandom

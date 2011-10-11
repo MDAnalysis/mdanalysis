@@ -403,7 +403,13 @@ def normal(vec1, vec2):
 
 def angle(a, b):
     """Returns the angle between two vectors in radians"""
-    return numpy.arccos(numpy.dot(a, b) / (norm(a)*norm(b)))
+    x = numpy.dot(a, b) / (norm(a)*norm(b))
+    # catch roundoffs that lead to nan otherwise
+    if x > 1.0:
+        return 0.0
+    elif x < -1.0:
+        return -numpy.pi
+    return numpy.arccos(x)
 
 def stp(vec1, vec2, vec3):
     """Takes the scalar triple product of three vectors.
