@@ -185,6 +185,14 @@ class TestAtomGroup(TestCase):
         assert_equal(osel.resids(), [8, 9])
         assert_equal(osel.resnames(), ['ALA', 'PRO'])
 
+    def test_chi1_selection(self):
+        sel =  self.universe.s4AKE.r8.chi1_selection()
+        assert_equal(sel, None)  # ALA
+        sel =  self.universe.s4AKE.r13.chi1_selection()  # LYS
+        assert_equal(sel.names(), ['N', 'CA', 'CB', 'CG'])
+        assert_equal(sel.resids(), [13])
+        assert_equal(sel.resnames(), ['LYS'])
+
     def test_dihedral_phi(self):
         u = self.universe
         u.trajectory.rewind()   # just to make sure...
@@ -202,6 +210,12 @@ class TestAtomGroup(TestCase):
         u.trajectory.rewind()   # just to make sure...
         osel =  u.s4AKE.r8.omega_selection()
         assert_almost_equal(osel.dihedral(), -179.93439, 3)
+
+    def test_dihedral_chi1(self):
+        u = self.universe
+        u.trajectory.rewind()   # just to make sure...
+        sel =  u.s4AKE.r13.chi1_selection()  # LYS
+        assert_almost_equal(sel.dihedral(), -58.428127, 3)
 
     def test_dihedral_ValueError(self):
         """test that AtomGroup.dihedral() raises ValueError if not exactly 4 atoms given"""

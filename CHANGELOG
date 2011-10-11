@@ -24,6 +24,7 @@ The rules for this file:
   * new method OtherWriter() for trajectory readers to generate a
     writer for any format that has been initialised for the common
     basic values
+  * new simple Residue.chi1_selection() selection
   * new distances.between() function (EXPERIMENTAL)
 
   Changes

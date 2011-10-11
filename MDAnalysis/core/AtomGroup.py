@@ -1096,7 +1096,7 @@ class Residue(AtomGroup):
     def omega_selection(self):
         """AtomGroup corresponding to the omega protein backbone dihedral CA-C-N'-CA'.
 
-        omega described the -C-N- peptide bond. Typically, it is trans
+        omega describes the -C-N- peptide bond. Typically, it is trans
         (180 degrees) although cis-bonds (0 degrees) are also
         occasionally observed (especially near Proline).
 
@@ -1112,6 +1112,19 @@ class Residue(AtomGroup):
                 self.universe.selectAtoms(
                 'segid %s and resid %d and name N' % (segid, nextres),
                 'segid %s and resid %d and name CA' % (segid, nextres))
+        except (SelectionError, NoDataError):
+            return None
+
+    def chi1_selection(self):
+        """AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
+
+        :Returns: 4-atom selection in the correct order.  If no CB and/or CG is
+                  found then this method returns ``None``.
+
+        .. versionadded:: 0.7.5
+        """
+        try:
+            return self.N + self.CA + self.CB + self.CG
         except (SelectionError, NoDataError):
             return None
 
