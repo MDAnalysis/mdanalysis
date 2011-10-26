@@ -25,35 +25,96 @@ Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`
 
 Analysis of native contacts *q* over a trajectory.
 
- * a "contact" exists between two atoms i and j if the distance between them is
-   smaller than the *radius*
+* a "contact" exists between two atoms *i* and *j* if the distance between them is
+  smaller than a given *radius*
 
- * a "native contact" exists between i and j if a contact exists and if the
-   contact also exists in between the equivalent atoms in the reference
-   structure
+* a "native contact" exists between *i* and *j* if a contact exists and if the
+  contact also exists between the equivalent atoms in a reference structure or
+  conformation
 
-The "fraction of native contacts" q(t) is a number between 0 and 1 and
+The "fraction of native contacts" *q(t)* is a number between 0 and 1 and
 calculated as the total number of native contacts for a given time frame
 divided by the total number of contacts in the reference structure.
 
-Contacts can be defined between two separate groups of atoms (use
-:class:`ContactAnalysis1`) or between all atoms in a protein (use
-:class:`ContactAnalysis`).
+Classes are available for two somewhat different ways to perform a contact
+analysis:
 
-For equilibrium trajectories one can analyze the time series q(t).
+1. Contacts between two groups of atoms are defined with
+   :class:`ContactAnalysis1`), which allows one to calculate *q(t)* over
+   time. This is especially useful in order to look at native contacts during
+   an equilibrium simulation where one can also look at the average matrix of
+   native contacts (see :meth:`ContactAnalysis1.plot_qavg`).
 
-Transition pathways have been analyzed in terms of two variables q1 and q2 that
-relate to the native contacts in the end states of the transition ("q1-q2"
-analysis; can be carried out with :class:`ContactAnalysis`).
+2. Contacts are defined within one group in a protein (e.g. all C-alpha atoms)
+   but relative to *two different conformations* 1 and 2, using
+   :class:`ContactAnalysis`. This allows one to do a *q1-q2* analysis that
+   shows how native contacts of state 1 change in comparison to native contacts
+   of state 2.  Transition pathways have been analyzed in terms of these two
+   variables q1 and q2 that relate to the native contacts in the end states of
+   the transition.
 
 .. SeeAlso:: See http://lorentz.dynstr.pasteur.fr/joel/adenylate.php for an
    example of contact analysis applied to MinActionPath trajectories of AdK
-   (although this was *not* performed with MDAnalysis --- it is just to give an
-   idea what it is about).
+   (although this was *not* performed with MDAnalysis --- it's provided as a
+   very good illustrative example).
 
 
-Example
--------
+Examples
+--------
+
+One-dimensional contact analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+As an example we analyze the opening ("unzipping") of salt bridges
+when the AdK enzyme opens up; this is one of the example trajectories
+in MDAnalysis. ::
+
+    import MDAnalysis
+    import MDAnalysis.analysis.contacts
+    from MDAnalysis.tests.datafiles import PSF,DCD
+
+    # example trajectory (transition of AdK from closed to open)
+    u = MDAnalysis.Universe(PSF,DCD)
+
+    # crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and OE*/OD* in ASP/GLU.
+    # You might want to think a little bit harder about the problem before using this for real work.
+    sel_basic = "(resname ARG or resname LYS) and (name NH* or name NZ)"
+    sel_acidic = "(resname ASP or resname GLU) and (name OE* or name OD*)"
+
+    # reference groups (first frame of the trajectory, but you could also use a separate PDB, eg crystal structure)
+    acidic = u.selectAtoms(sel_acidic)
+    basic = u.selectAtoms(sel_basic)
+
+    # set up analysis of native contacts ("salt bridges"); salt bridges have a distance <6 A
+    CA1 = MDAnalysis.analysis.contacts.ContactAnalysis1(u, selection=(sel_acidic, sel_basic), refgroup=(acidic, basic), radius=6.0, outfile="qsalt.dat")
+
+    # iterate through trajectory and perform analysis of "native contacts" q
+    # (force=True ignores any previous results, force=True is useful when testing)
+    CA1.run(force=True)
+
+    # plot time series q(t) [possibly do "import pylab; pylab.clf()" do clear the figure first...]
+    CA1.plot(filename="adk_saltbridge_contact_analysis1.pdf", linewidth=3, color="blue")
+
+    # or plot the data in qsalt.dat yourself.
+    CA1.plot_qavg(filename="adk_saltbridge_contact_analysis1_matrix.pdf")
+
+The first graph shows that when AdK opens, about 20% of the salt
+bridges that existed in the closed state disappear when the enzyme
+opens. They open in a step-wise fashion (made more clear by the movie
+http://sbcb.bioch.ox.ac.uk/oliver/Movies/AdK/AdK_zipper_cartoon.avi
+(divx, on Mac use http://perian.org)).
+
+The output graphs can be made prettier but if you look at the code
+itself then you'll quickly figure out what to do. The qavg plot is the
+matrix of all contacts, averaged over the trajectory. This plot makes
+more sense for an equilibrium trajectory than for the example above
+but is is included for illustration.
+
+See the docs for :class:`ContactAnalysis1` for another example.
+
+
+Two-dimensional contact analysis (q1-q2)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Analyze a single DIMS transition of AdK between its closed and open
 conformation and plot the trajectory projected on q1-q2::
@@ -64,8 +125,10 @@ conformation and plot the trajectory projected on q1-q2::
   C.run()
   C.plot()
 
-See the docs for :class:`ContactAnalysis1` for another example.
+Compare the resulting pathway to the `MinActionPath result for AdK`_.
 
+.. _MinActionPath result for AdK:
+   http://lorentz.dynstr.pasteur.fr/joel/adenylate.php
 
 Classes
 -------
@@ -304,6 +367,11 @@ class ContactAnalysis(object):
 class ContactAnalysis1(object):
     """Perform a very flexible native contact analysis with respect to a single reference.
 
+    .. class:: ContactAnalysis1(topology, trajectory[,selection[,refgroup[,radius[,outfile]]]])
+
+    .. class:: ContactAnalysis1(universe[,selection[,refgroup[,radius[,outfile]]]])
+
+
     This analysis class allows one to calculate the fraction of native contacts
     *q* between two arbitrary groups of atoms with respect to an arbitrary
     reference structure. For instance, as a reference one could take a crystal
@@ -346,13 +414,13 @@ class ContactAnalysis1(object):
 
       CA1.run()
 
-    Results are saved to *outfile* (framenumber q N) and can also be plotted
-    with ::
+    Results are saved to *outfile* (``framenumber q N`` per line) and
+    can also be plotted with ::
 
       CA1.plot()        # plots the time series q(t)
       CA1.plot_qavg()   # plots the matrix of average contacts <q>
 
-    **Description of computed values**
+    **Description of computed values** in the output file:
 
     *N*
          number of native contacts
@@ -364,10 +432,6 @@ class ContactAnalysis1(object):
 
     def __init__(self, *args, **kwargs):
         """Calculate native contacts within a group or between two groups.
-
-        .. class:: ContactAnalysis1(topology, trajectory[,selection[,refgroup[,radius[,outfile]]]]) --> obj
-
-        .. class:: ContactAnalysis1(universe[,selection[,refgroup[,radius[,outfile]]]]) --> obj
 
         :Arguments:
           *topology*
@@ -517,9 +581,15 @@ class ContactAnalysis1(object):
     def qarray(self, d, out=None):
         """Return distance array with True for contacts.
 
+        *d* is the matrix of distances. The method uses the value of
+        :attr:`ContactAnalysis1.radius` to determine if a ``distance < radius``
+        is considered a contact.
+
         If *out* is supplied as a pre-allocated array of the correct
         shape then it is filled instead of allocating a new one in
         order to increase performance.
+
+        This method is typically only used internally.
         """
         if out is None:
             out = (d <= self.radius)
@@ -530,9 +600,13 @@ class ContactAnalysis1(object):
     def qN(self, q, out=None):
         """Calculate native contacts relative to reference state.
 
+        *q* is the matrix of contacts (e.g. :attr:`~ContactAnalysis1.q`).
+
         If *out* is supplied as a pre-allocated array of the correct
         shape then it is filled instead of allocating a new one in
         order to increase performance.
+
+        This method is typically only used internally.
         """
         if out is None:
             out = numpy.logical_and(q, self.qref)

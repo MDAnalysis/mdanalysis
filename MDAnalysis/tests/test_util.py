@@ -54,7 +54,7 @@ class TestGeometryFunctions(TestCase):
         assert_equal(util.angle(self.a, self.a), 0.0)
 
     def testAnglePi(self):
-        assert_almost_equal(util.angle(-2.3456e7*self.e1, 3.4567e-6*self.e1), numpy.pi)
+        assert_almost_equal(util.angle(-2.3456e7*self.e1, 3.4567e-6*self.e1), pi)
         assert_almost_equal(util.angle(2.3456e7*self.e1, 3.4567e-6*self.e1), 0.0)
 
     def testAngleRandom(self):
