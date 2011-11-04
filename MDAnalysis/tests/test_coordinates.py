@@ -917,6 +917,16 @@ class TestChainReader(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, [DCD,CRD,DCD,CRD,DCD,CRD,CRD])
         self.trajectory = self.universe.trajectory
+        self.prec = 3
+        # dummy output DCD file
+        fd, self.outfile = tempfile.mkstemp(suffix=".dcd")
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+        del self.universe
 
     def test_next_trajectory(self):
         self.trajectory.rewind()
@@ -965,6 +975,19 @@ class TestChainReader(TestCase):
         assert_almost_equal(self.universe.trajectory.time, 31.0, 5,
                             err_msg="wrong time of frame")
 
+    @dec.slow
+    def test_write_dcd(self):
+        """test that ChainReader written dcd (containing crds) is correct (Issue 81)"""
+        from itertools import izip
+        W = MDAnalysis.Writer(self.outfile, self.universe.atoms.numberOfAtoms())
+        for ts in self.universe.trajectory:
+            W.write(self.universe)
+        W.close()
+        self.universe.trajectory.rewind()
+        u = MDAnalysis.Universe(PSF, self.outfile)
+        for (ts_orig, ts_new) in izip(self.universe.trajectory, u.trajectory):
+            assert_almost_equal(ts_orig._pos, ts_new._pos, self.prec,
+                                err_msg="Coordinates disagree at frame %d" % ts_orig.frame)
 
 class _GromacsReader(TestCase):
     # This base class assumes same lengths and dt for XTC and TRR test cases!

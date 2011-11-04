@@ -109,7 +109,7 @@ class Timestep(object):
             if arg.shape[1] == 3: self.numatoms = arg.shape[0]
             else: self.numatoms = arg.shape[0]   # Or should an exception be raised if coordinate structure is not 3-dimensional? Maybe velocities could be read one day... [DP]
 
-            self._pos = arg.copy('Fortran')
+            self._pos = arg.astype(numpy.float32).copy('Fortran',)
         else: raise ValueError("Cannot create an empty Timestep")
         self._x = self._pos[:,0]
         self._y = self._pos[:,1]

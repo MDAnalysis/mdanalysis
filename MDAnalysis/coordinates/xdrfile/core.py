@@ -92,7 +92,7 @@ class Timestep(base.Timestep):
                 self.numatoms = arg.shape[0]
             else:
                 raise ValueError("XDR timestep has not second dimension 3: shape=%r" % (arg.shape,))
-            self._pos = arg.copy('C')  ## C-order
+            self._pos = arg.astype(numpy.float32).copy('C')  ## C-order
             # additional data for xtc
             self.status = libxdrfile.exdrOK
             self.step = 0

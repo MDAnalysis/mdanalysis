@@ -46,6 +46,9 @@ The rules for this file:
     partially wrong results. 
   * fixed: dihedral() and other methods using core.util.angle() sometimes
     returned nan instead of +pi or -pi
+  * fixed: writing a trajectory from chained CRD files gave garbage
+    coordinates (Issue 81)
+
 
 
 07/09/11 orbeckst, dcaplan, jandom
