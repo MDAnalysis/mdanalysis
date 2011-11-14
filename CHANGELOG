@@ -48,6 +48,9 @@ The rules for this file:
     returned nan instead of +pi or -pi
   * fixed: writing a trajectory from chained CRD files gave garbage
     coordinates (Issue 81)
+  * fixed: support files for docs are now in included in the source
+    distribution (thanks to Sebastien Buchoux; Issue 82)
+
 
 
 

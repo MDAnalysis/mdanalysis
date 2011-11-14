@@ -5,7 +5,8 @@ include src/KDTree/*
 include src/xdrfile/*
 include src/pyqcprot/*
 include src/transformations/*
-recursive-include doc README html
+include doc README
+recursive-include doc/html *
 include README INSTALL CHANGELOG LICENSE AUTHORS TODO SUMMARY.txt
 include ez_setup.py setup.py setup_developer.py  setup.cfg.template
 recursive-include examples *.py *.txt *dat.bz2 *.png *.pdf
