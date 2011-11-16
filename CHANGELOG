@@ -50,7 +50,10 @@ The rules for this file:
     coordinates (Issue 81)
   * fixed: support files for docs are now in included in the source
     distribution (thanks to Sebastien Buchoux; Issue 82)
-
+  * fixed: core.util.iterable() would wrongly detect unicode strings
+    as "iterable"; this lead the Reader autodections and then the
+    ChainReader fail with "Runtime Error: Maximum recursion depth
+    exceeded" for single filenames provided as a unicode string.
 
 
 

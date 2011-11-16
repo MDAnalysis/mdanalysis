@@ -192,7 +192,7 @@ def greedy_splitext(p):
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
-    if type(obj) is str:
+    if isinstance(obj, basestring):
         return False    # avoid iterating over characters of a string
 
     if hasattr(obj, 'next'):

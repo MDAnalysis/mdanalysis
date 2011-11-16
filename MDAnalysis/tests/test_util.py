@@ -30,6 +30,24 @@ class TestStringFunctions(TestCase):
         assert_equal(util.parse_residue("LYS 300:HZ1"), ("LYS", 300, "HZ1"))
         assert_equal(util.parse_residue("M1:CA"), ("MET", 1, "CA"))
 
+class TestIterable(TestCase):
+    def test_lists(self):
+        assert_equal(util.iterable([1, 2, 3]), True)
+        assert_equal(util.iterable([]), True)
+    def test_tuples(self):
+        assert_equal(util.iterable((1, 2, 3)), True)
+        assert_equal(util.iterable(()), True)
+    def test_iterator(self):
+        assert_equal(util.iterable(xrange(3)), True)
+    def test_arrays(self):
+        assert_equal(util.iterable(numpy.array([1,2,3])), True)
+    def test_scalars(self):
+        assert_equal(util.iterable(123), False)
+    def test_strings(self):
+        """Test that iterable() works on any string (Fixed bug)"""
+        assert_equal(util.iterable("byte string"), False)
+        assert_equal(util.iterable(u"unicode string"), False)
+
 class TestGeometryFunctions(TestCase):
     def setUp(self):
         self.e1 = numpy.array([1.,0,0])
