@@ -18,6 +18,7 @@ The rules for this file:
   MDAnalysis can now be found on PyPI, allowing simple installation
   from the internet. Metadata was added to setup to facilitate PyPI
   upload and pages on the wiki describe how to do this.
+  In addition, Debian/Ubuntu packages are also available.
 
   Enhancements
 

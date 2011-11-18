@@ -2,11 +2,38 @@
 Installing MDAnalysis
 =====================
 
-Requirements
-============
+Installing using binary packages (for Ubuntu/Debian users)
+==========================================================
 
-Currently MDAnalysis is only distributed in source form. In order to
-build the library some C and C++ code needs to be compiled. Thus you will need
+Binary packages of MDAnalysis are available for Ubuntu and Debian users.
+They can be downloaded from the following PPA:
+
+      https://launchpad.net/~seb-buch/+archive/mdanalysis
+
+It is possible to add this PPA to your software sources. To do so,
+run the following command ::
+
+  sudo add-apt-repository ppa:seb-buch/mdanalysis
+
+After updating your package index files, you should be able to install
+the following packages:
+
+    * python-mdanalysis (main package - required to used MDAnalysis)
+    * python-mdanalysis-doc (documentation - optional)
+    * python-mdanalysis.tests (test suite - optional)
+    * python-mdanalysis.tests-data (data used by tests - optional
+      but required to run tests)
+    * python-griddataformats (additional package - optional)
+
+Note 1: Dependencies such python-numpy or python-biopython will also be installed (if needed).
+
+Note 2: Not-required (but yet recommended) packages such as python-networkx or
+        python-scipy will not be installed automatically!
+
+Requirements for installing from source
+=======================================
+
+In order to build MDAnalysis from source, you will need
 
     * python (>=2.5)
     * a C and a C++ compiler (e.g. GNU gcc),
@@ -73,8 +100,7 @@ simply do ::
 Installation from source
 ========================
 
-Currently MDAnalysis is only distributed in source form. You will need
-a C compiler to compile the DCD and XTC reader and other extensions.
+You will need a C compiler to compile the DCD and XTC reader and other extensions.
 
 In principle, installation should be as simple as ::
 
