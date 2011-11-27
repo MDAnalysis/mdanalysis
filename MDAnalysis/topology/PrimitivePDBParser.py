@@ -50,6 +50,7 @@ def parse(filename):
     __parseatoms_(pdb, structure)
     # TODO: reconstruct bonds from CONECT or guess from distance search
     #       (e.g. like VMD)
+    __parsebonds_(filename, structure)
     return structure
 
 def __parseatoms_(pdb, structure):
@@ -74,3 +75,16 @@ def __parseatoms_(pdb, structure):
                           bfactor=bfactor))
 
     structure[attr] = atoms
+
+def __parsebonds_(filename, structure):
+  attr = "_bonds"
+  bonds = []
+
+  with open(filename , "r") as filename:
+    for num,line in enumerate(filename):
+      if line[:6] != "CONECT": continue
+      bond = line[6:].split()
+      bond = [int(atom) for atom in bond]
+      bonds.append(bond) 
+
+  structure[attr] = bonds

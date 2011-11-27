@@ -289,6 +289,9 @@ class PrimitivePDBReader(base.Reader):
 
         coords = []
         atoms = []
+        header = {'name': '', 'date': '', 'ligandcode':''}
+        compound = []
+        remark = {}
         unitcell = numpy.zeros(6, dtype=numpy.float32)
         with util.openany(filename, 'r') as pdbfile:
             for line in pdbfile:
@@ -296,11 +299,24 @@ class PrimitivePDBReader(base.Reader):
                     return self._col(line, start, stop, typeclass=typeclass)
                 if line[:3] == 'END':
                     break
-                if line[:6] == 'CRYST1':
+                elif line[:6] == 'CRYST1':
                     A,B,C = _c(7,15), _c(16,24), _c(25,33)
                     alpha,beta,gamma = _c(34,40), _c(41,47), _c(48,54)
                     unitcell[:] = A,B,C, alpha,beta,gamma
-                if line[:6] in ('ATOM  ', 'HETATM'):
+                    continue
+                elif line[:6] == 'HEADER':
+                    l = line.split()
+                    header['name'], header['date'], header['ligandcode'] = l[1], l[2], l[3]
+                    continue
+                elif line[:6] == 'COMPND':
+                    l = line[6:-1]
+                    compound.append(l)
+                    continue
+                elif line[:6] == 'REMARK':
+                    category, content = int(line[6:11].strip()), line[11:-1]
+                    if not category in remark: remark[category] = []
+                    remark[category].append(content)
+                elif line[:6] in ('ATOM  ', 'HETATM'):
                     # directly use COLUMNS from PDB spec
                     serial = _c(7,11,int)
                     name = _c(13,16,str).strip()
@@ -314,6 +330,10 @@ class PrimitivePDBReader(base.Reader):
                     element = _c(77,78, str).strip()
                     coords.append((x,y,z))
                     atoms.append((serial, name, resName, chainID, resSeq, occupancy, tempFactor, segID, element))
+                    continue
+        self.header = header
+        self.compound = compound
+        self.remark = remark
         self.numatoms = len(coords)
         self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
         self.ts._unitcell[:] = unitcell
@@ -396,9 +416,12 @@ class PrimitivePDBWriter(base.Writer):
     #fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
     # PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc ignored
     fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(segID)-4s%(element)2s%(charge)2d\n",
-           'REMARK': "REMARK     %s\n",
+           'REMARK': "REMARK%4d %s\n",
+           'COMPND': "COMPND%s\n",
+           'HEADER': "HEADER    %-40s%8s%8s\n",
            'TITLE':  "TITLE    %s\n",
            'CRYST1': "CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %-11s%4d\n",
+           'CONECT': "CONECT%s\n"
            }
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
@@ -435,8 +458,10 @@ class PrimitivePDBWriter(base.Writer):
                 frame = u.trajectory.ts.frame
             except AttributeError:
                 frame = 1   # should catch cases when we are analyzing a single PDB (?)
-
+        self.HEADER(u.trajectory.header)
         self.TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
+        self.COMPND(u.trajectory.compound)
+        self.REMARK(u.trajectory.remark)
         self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
         atoms = selection.atoms    # make sure to use atoms (Issue 46)
         coor = atoms.coordinates() # can write from selection == Universe (Issue 49)
@@ -453,13 +478,30 @@ class PrimitivePDBWriter(base.Writer):
                              (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
 
         for i, atom in enumerate(atoms):
-            self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
-                      chainID=atom.segid.strip(), segID=atom.segid.strip(),
+            self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), 
+                      resSeq=atom.resid, chainID=atom.segid.strip(), segID=atom.segid.strip(),
+                      tempFactor=atom.bfactor,
                       x=coor[i,0], y=coor[i,1], z=coor[i,2])
             # get bfactor, too, and add to output?
             # 'element' is auto-guessed from atom.name in ATOM()
+        
+        """
+        TODO all bonds are written out, using the old atom numbers - this is
+        incorrect. Once a selection is made, the atom numbers have to be updated
+        (currently they are unmodified) and bonds have to be seleceted for,
+        only if all the atoms for a bond are still present.
+        
+        The bonds should not be a list of ints, as are now, but a list of
+        Atom objects. 
+        """
+        bonds = selection.universe.bonds
+        for i, conect in enumerate(bonds):
+            self.CONECT(conect)
+        self.pdb.write("END")
         self.close()
-
+    def HEADER(self, header):
+        line = (header['name'], header['date'], header['ligandcode'])
+        self.pdb.write(self.fmt['HEADER'] % line)
     def TITLE(self,*title):
         """Write TITLE record.
         http://www.wwpdb.org/documentation/format32/sect2.html
@@ -467,13 +509,21 @@ class PrimitivePDBWriter(base.Writer):
         line = " ".join(title)    # should do continuation automatically
         self.pdb.write(self.fmt['TITLE'] % line)
 
-    def REMARK(self,*remark):
+    def REMARK(self,remarks):
         """Write generic REMARK record (without number).
         http://www.wwpdb.org/documentation/format32/remarks1.html
         http://www.wwpdb.org/documentation/format32/remarks2.html
         """
-        line = " ".join(remark)
-        self.pdb.write(self.fmt['REMARK'] % line)
+        k = remarks.keys()
+        k.sort()
+        
+        for key in k:
+          for remark in remarks[key]:
+            self.pdb.write(self.fmt['REMARK'] % (key, remark))
+    
+    def COMPND(self,compound):
+        for c in compound:
+          self.pdb.write(self.fmt['COMPND'] % c)
 
     def CRYST1(self,dimensions, spacegroup='P 1', zvalue=1):
         """Write CRYST1 record.
@@ -516,6 +566,11 @@ class PrimitivePDBWriter(base.Writer):
         segID = segID or chainID
         segID = segID[:4]
         self.pdb.write(self.fmt['ATOM'] % vars())
-
+    
+    def CONECT(self, conect):
+      conect = ["%5d" % entry for entry in conect]
+      conect = "".join(conect)
+      self.pdb.write(self.fmt['CONECT'] % conect)
+    
     def __del__(self):
         self.close()
