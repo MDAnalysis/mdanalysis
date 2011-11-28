@@ -254,11 +254,57 @@ class AtomGroup(object):
         # sanity check
         if not isinstance(self.__atoms[0], Atom):
             raise TypeError("atoms must be a Atom or a list of Atoms.")
-        # If the number of atoms is very large, create a dictionary cache for lookup
-        if len(atoms) > 10000:
-            self._atom_cache = dict(((x,None) for x in self.__atoms))
         # managed timestep object
         self.__ts = None
+
+        # caches:
+        # - built on the fly when they are needed
+        # - delete entry to invalidate
+        self.__cache = dict()
+
+    def _rebuild_caches(self):
+        """Rebuild all AtomGroup caches.
+
+        A number of lists and attributes are cached. These caches are lazily
+        built the first time they are needed. When editing the topology it
+        might happen that not all caches were synced properly (even though that
+        this is supposed to happen eventually). In this case the user can
+        manually force a complete cache rebuild.
+
+        Currently the following caches are used:
+
+        * atoms (for "in" lookup); cache is only built for large systems with
+          > 10,000 atoms
+        * indices (:meth:`AtomGroup.indices`)
+        * masses (:meth:`AtomGroup.masses`)
+        * residues (:attr:`AtomGroup.residues`)
+        * segments (:attr:`AtomGroup.segments`)
+
+        .. versionadded:: 0.7.5
+        """
+        # If the number of atoms is very large, create a dictionary cache for lookup
+        if len(atoms) > 10000:
+            self.__cache['atoms'] = dict(((x,None) for x in self.__atoms))
+        # indices
+        self.__cache['indices'] = numpy.array([atom.number for atom in self._atoms])
+        # residue instances
+        residues = []
+        current_residue = None
+        for atom in self._atoms:
+            if atom.residue != current_residue:
+                residues.append(atom.residue)
+            current_residue = atom.residue
+        self.__cache['residues'] = ResidueGroup(residues)
+        # segment instances
+        segments = []
+        current_segment = None
+        for atom in self._atoms:
+            if atom.segment != current_segment:
+                segments.append(atom.segment)
+            current_segment = atom.segment
+        self.__cache['segments'] = SegmentGroup(segments)
+        # masses
+        self.__cache['masses'] = numpy.array([atom.mass for atom in self._atoms])
 
     # AtomGroup.atoms is guaranteed to be a AtomGroup, too; keeps a consistent API
     # between AtomGroup, Residue, ResidueGroup, Segment; access the list as
@@ -308,9 +354,12 @@ class AtomGroup(object):
     def __iter__(self):
         return iter(self._atoms)
     def __contains__(self, other):
-        if hasattr(self, "_atom_cache"):
-            return other in self._atom_cache
-        else:
+        # If the number of atoms is very large, create a dictionary cache for lookup
+        if len(atoms) > 10000 and not 'atoms' in self.__cache:
+            self.__cache['atoms'] = dict(((x,None) for x in self.__atoms))
+        try:
+            return other in self.__cache['atoms']
+        except KeyError:
             return other in self._atoms
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
@@ -328,24 +377,24 @@ class AtomGroup(object):
     def numberOfSegments(self):
         return len(self.segments)
     def indices(self):
-        if not hasattr(self,'_cached_indices'):
-            self._cached_indices = numpy.array([atom.number for atom in self._atoms])
-        return self._cached_indices
+        if not 'indices' in self.__cache:
+            self.__cache['indices'] = numpy.array([atom.number for atom in self._atoms])
+        return self.__cache['indices']
     def names(self):
         """Returns a list of atom names."""
         return [a.name for a in self._atoms]
     @property
     def residues(self):
         """Read-only list of :class:`Residue` objects."""
-        if not hasattr(self,'_cached_residues'):
+        if not 'residues' in self.__cache:
             residues = []
             current_residue = None
             for atom in self._atoms:
                 if atom.residue != current_residue:
                     residues.append(atom.residue)
                 current_residue = atom.residue
-            self._cached_residues = ResidueGroup(residues)
-        return self._cached_residues
+            self.__cache['residues'] = ResidueGroup(residues)
+        return self.__cache['residues']
     def resids(self):
         """Returns a list of residue numbers."""
         return [r.id for r in self.residues]
@@ -361,23 +410,23 @@ class AtomGroup(object):
     @property
     def segments(self):
         """Read-only list of :class:`Segment` objects."""
-        if not hasattr(self,'_cached_segments'):
+        if not 'segments' in self.__cache:
             segments = []
             current_segment = None
             for atom in self._atoms:
                 if atom.segment != current_segment:
                     segments.append(atom.segment)
                 current_segment = atom.segment
-            self._cached_segments = SegmentGroup(segments)
-        return self._cached_segments
+            self.__cache['segments'] = SegmentGroup(segments)
+        return self.__cache['segments']
     def segids(self):
         """Returns a list of segment ids (=segment names)."""
         return [s.name for s in self.segments]
     def masses(self):
         """Array of atomic masses (as defined in the topology)"""
-        if not hasattr(self, "_cached_masses"):
-            self._cached_masses = numpy.array([atom.mass for atom in self._atoms])
-        return self._cached_masses
+        if not 'masses' in self.__cache:
+            self.__cache['masses'] = numpy.array([atom.mass for atom in self._atoms])
+        return self.__cache['masses']
     def totalMass(self):
         """Total mass of the selection (masses are taken from the topology or guessed)."""
         return numpy.sum(self.masses(), axis=0)
@@ -408,6 +457,10 @@ class AtomGroup(object):
         """Set attribute *name* to *value* for all atoms in the AtomGroup"""
         for a in self.atoms:
             setattr(a, name, value)
+        try:
+            del self.__cache['atoms']
+        except KeyError:
+            pass
     def set_name(self, name):
         """Set the atom name to string *name* for **all atoms** in the AtomGroup.
 
@@ -423,18 +476,30 @@ class AtomGroup(object):
         .. versionadded:: 0.7.4
         """
         self._set_atoms("resid", int(resid))
+        try:
+            del self.__cache['residues']
+        except KeyError:
+            pass
     def set_resnum(self, resnum):
         """Set the resnum to *resnum* for **all atoms** in the AtomGroup.
 
         .. versionadded:: 0.7.4
         """
         self._set_atoms("resnum", resnum)
+        try:
+            del self.__cache['residues']
+        except KeyError:
+            pass
     def set_resname(self, resname):
         """Set the resname to string *resname* for **all atoms** in the AtomGroup.
 
         .. versionadded:: 0.7.4
         """
         self._set_atoms("resname", str(resname))
+        try:
+            del self.__cache['residues']
+        except KeyError:
+            pass
     def set_segid(self, segid, buildsegments=True):
         """Set the segid to *segid* for all atoms in the AtomGroup.
 
@@ -448,8 +513,8 @@ class AtomGroup(object):
         self._set_atoms("segid", segid)
         if buildsegments:
             try:
-                del self._cached_segments
-            except AttributeError:
+                del self.__cache['segments']
+            except KeyError:
                 pass
             self.universe._build_segments()
     def set_mass(self, mass):
@@ -458,6 +523,10 @@ class AtomGroup(object):
         .. versionadded:: 0.7.4
         """
         self._set_atoms("mass", float(mass))
+        try:
+            del self.__cache['masses']
+        except KeyError:
+            pass
     def set_type(self, atype):
         """Set the atom type to *atype* for **all atoms** in the AtomGroup.
 
