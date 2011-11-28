@@ -277,10 +277,11 @@ _flags = [
             .. Warning:: Do not change, only Angstrom fully supported.
          """
          ),
-    Flag('time_unit',
+    _Flag('time_unit',
          'ps',
          {'ps': 'ps', 'pico second': 'ps', 'picosecond': 'ps',
           'ns': 'ns', 'nano second': 'ns', 'nanosecond': 'ns',
+          'fs': 'fs', 'femto second': 'fs', 'femtosecond': 'fs',
           'AKMA': 'AKMA', 'Charmm': 'AKMA',
           },
          """
@@ -290,7 +291,7 @@ _flags = [
 
          """
          ),
-    Flag('charge_unit',
+    _Flag('charge_unit',
          'e',
          {'e': 'e', 'electron charge': 'e',
           'Amber': 'Amber',
