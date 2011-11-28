@@ -454,11 +454,25 @@ class AtomGroup(object):
         return numpy.array([atom.bfactor for atom in self._atoms])
 
     def _set_atoms(self, name, value):
-        """Set attribute *name* to *value* for all atoms in the AtomGroup"""
+        """Set attribute *name* to *value* for all atoms in the AtomGroup.
+
+        .. versionadded:: 0.7.4
+        """
         for a in self.atoms:
             setattr(a, name, value)
         try:
             del self.__cache['atoms']
+        except KeyError:
+            pass
+    def _set_residues(self, name, value):
+        """Set attribute *name* to *value* for all residues in the AtomGroup.
+
+        .. versionadded:: 0.7.5
+        """
+        for r in self.residues:
+            setattr(r, name, value)
+        try:
+            del self.__cache['residues']
         except KeyError:
             pass
     def set_name(self, name):
@@ -470,36 +484,36 @@ class AtomGroup(object):
     def set_resid(self, resid):
         """Set the resid to integer *resid* for **all atoms** in the AtomGroup.
 
-        (Only changes the resid but does not create combined :class:`Residue`
-        objects.)
+        .. Note::
+
+           Only changes the resid but does not create combined :class:`Residue`
+           objects or split them.
 
         .. versionadded:: 0.7.4
+        .. versionchanged:: 0.7.5
+           Also changes the residues.
         """
         self._set_atoms("resid", int(resid))
-        try:
-            del self.__cache['residues']
-        except KeyError:
-            pass
+        self._set_residues("id", int(resid))
+        # should rebuild residues: would allow us to split/merge residues
     def set_resnum(self, resnum):
         """Set the resnum to *resnum* for **all atoms** in the AtomGroup.
 
         .. versionadded:: 0.7.4
+        .. versionchanged:: 0.7.5
+           Also changes the residues.
         """
         self._set_atoms("resnum", resnum)
-        try:
-            del self.__cache['residues']
-        except KeyError:
-            pass
+        self._set_residues("resnum", resnum)
     def set_resname(self, resname):
         """Set the resname to string *resname* for **all atoms** in the AtomGroup.
 
         .. versionadded:: 0.7.4
+        .. versionchanged:: 0.7.5
+           Also changes the residues.
         """
         self._set_atoms("resname", str(resname))
-        try:
-            del self.__cache['residues']
-        except KeyError:
-            pass
+        self._set_residues("name", str(resname))
     def set_segid(self, segid, buildsegments=True):
         """Set the segid to *segid* for all atoms in the AtomGroup.
 
