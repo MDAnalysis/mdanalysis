@@ -1487,7 +1487,7 @@ class Universe(object):
         # trajectory format type (i.e. the extension))
         self.__trajectory = None
 
-        if kwargs.get('permissive',None) is None:
+        if kwargs.get('permissive', None) is None:
             kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
 
         topology_format = kwargs.pop('topology_format', None)

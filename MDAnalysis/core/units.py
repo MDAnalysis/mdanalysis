@@ -63,8 +63,7 @@ relative to a density rho0 in g/cm^3::
 from `rho/rho0 = n/(N_A * M**-1) / rho0`  where `[n] = 1/Volume`, `[rho] = mass/Volume`
 
 
-.. SeeAlso:: Maybe we should simply use Quantities_ instead of this
-             home grown attempt?
+.. SeeAlso:: Maybe we should simply use Quantities_?
 
 .. _Quantities: http://packages.python.org/quantities/
 
@@ -92,7 +91,7 @@ References
 
 .. [Jorgensen1998]  W. Jorgensen, C. Jenson, J Comp Chem 19 (1998), 1179-1186
 
-.. _AKMA: http://www.charmm.org/html/documentation/c35b1/usage.html#%20AKMA
+.. _AKMA: http://www.charmm.org/html/documentation/c36b1/usage.html#%20AKMA
 .. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
 .. _`Avogadro's constant`: http://physics.nist.gov/cgi-bin/cuu/Value?na
 
@@ -142,9 +141,10 @@ densityUnit_factor = {
 
 #: For *time*, the basic unit is ps; in particular CHARMM's
 #: 1 AKMA_ time unit = 4.888821E-14 sec is supported.
-timeUnit_factor = {'ps': 1/1.0,
-                   'ns': 1/1e3,
-                   'second': 1/1e12,
+timeUnit_factor = {'ps': 1.0,   # 1/1.0
+                   'fs': 1e3,   # 1/1e-3,
+                   'ns': 1e-3,  # 1/1e3,
+                   'second': 1e-12, 'sec':  1e-12, 's':  1e-12, # 1/1e12,
                    'AKMA': 1/4.888821e-2,
                    }
 # getting the factor f:  1200ps * f = 1.2 ns  ==> f = 1/1000 ns/ps

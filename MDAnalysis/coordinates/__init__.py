@@ -503,7 +503,7 @@ directly.
 
 __all__ = ['reader', 'writer']
 
-import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT  #, NETCDF
+import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS  #, NETCDF
 import base
 from core import reader, writer
 
@@ -521,6 +521,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'MDCRD':TRJ.TRJReader,   # Amber text
                        #'NETCDF':NETCDFReader,  # Amber netcdf
                        'PQR': PQR.PQRReader,
+                       'LAMMPS': LAMMPS.DCDReader,
                        'CHAIN': base.ChainReader,
                        }
 
@@ -565,5 +566,6 @@ _frame_writers = {'PDB': PDB.PrimitivePDBWriter,
 _trajectory_writers = {'DCD': DCD.DCDWriter,
                        'XTC': XTC.XTCWriter,
                        'TRR': TRR.TRRWriter,
+                       'LAMMPS': LAMMPS.DCDWriter,
                        }
 # note: no PDB movies yet

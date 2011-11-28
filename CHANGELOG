@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/?? orbeckst
+??/??/?? orbeckst, sebastien.buchoux
 
   * 0.7.5 (currently in development)
 
@@ -27,6 +27,7 @@ The rules for this file:
     basic values
   * new simple Residue.chi1_selection() selection
   * new distances.between() function (EXPERIMENTAL)
+  * support LAMMPS non-standard DCD files (Issue 84; EXPERIMENTAL)
 
   Changes
 
