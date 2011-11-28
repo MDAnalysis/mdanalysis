@@ -131,11 +131,11 @@ class TestHydrogenBondAnalysis(TestCase):
         h.generate_table()
 
         # very quick check that it keeps producing the same results
-        assert_equal(len(h.table), 262)
-        assert_almost_equal(h.table.distance.mean(), 2.5000324100210811, 6)
-        assert_almost_equal(h.table.distance.std(), 0.47581971294373848, 6)
-        assert_almost_equal(h.table.angle.mean(), 151.84702005167765, 6)
-        assert_almost_equal(h.table.angle.std(), 17.006397753838051, 6)
+        assert_equal(len(h.table), 528)
+        assert_almost_equal(h.table.distance.mean(), 2.2033853110941974, 6)
+        assert_almost_equal(h.table.distance.std(), 0.36265632018642174, 6)
+        assert_almost_equal(h.table.angle.mean(), 153.70618863539264, 6)
+        assert_almost_equal(h.table.angle.std(), 15.186319943288213, 6)
         del h
 
     def test_HBondAnalysis_Backbone(self):
@@ -144,11 +144,11 @@ class TestHydrogenBondAnalysis(TestCase):
         h.generate_table()
 
         # very quick check that it keeps producing the same results
-        assert_equal(len(h.table), 146)
-        assert_almost_equal(h.table.distance.mean(), 2.7399016704762111, 6)
-        assert_almost_equal(h.table.distance.std(), 0.29556370652504049, 6)
-        assert_almost_equal(h.table.angle.mean(), 152.39720811202221, 6)
-        assert_almost_equal(h.table.angle.std(), 17.076663879481604, 6)
+        assert_equal(len(h.table), 404)
+        assert_almost_equal(h.table.distance.mean(), 2.2072176254621825, 6)
+        assert_almost_equal(h.table.distance.std(),  0.32159687889930633, 6)
+        assert_almost_equal(h.table.angle.mean(), 154.67867707734061, 6)
+        assert_almost_equal(h.table.angle.std(), 14.417728937653131, 6)
         del h
 
     def tearDown(self):
