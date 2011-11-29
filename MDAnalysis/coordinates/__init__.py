@@ -566,10 +566,7 @@ _frame_writers = {
 _trajectory_writers = {'DCD': DCD.DCDWriter,
                        'XTC': XTC.XTCWriter,
                        'TRR': TRR.TRRWriter,
-<<<<<<< HEAD
                        'LAMMPS': LAMMPS.DCDWriter,
-=======
                        'PDB': PDB.PrimitivePDBWriter,
->>>>>>> d8b293e... PrimitivePDBWriter prototype complete
                        }
 # note: no PDB movies yet
