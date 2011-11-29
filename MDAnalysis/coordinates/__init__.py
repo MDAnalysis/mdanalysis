@@ -513,7 +513,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'XTC': XTC.XTCReader,
                        'XYZ': XYZ.XYZReader,
                        'TRR': TRR.TRRReader,
-                       'PDB': PDB.PDBReader,
+                       'PDB': PDB.PrimitivePDBReader,
                        'PDBQT': PDBQT.PDBQTReader,
                        'CRD': CRD.CRDReader,
                        'GRO': GRO.GROReader,
@@ -549,7 +549,7 @@ _trajectory_readers_permissive['PDB'] =  PDB.PrimitivePDBReader
 #:
 #:   W = FrameWriter(filename)
 #:   W.write(AtomGroup)
-_frame_writers = {'PDB': PDB.PrimitivePDBWriter,
+_frame_writers = {
                   'PDBQT': PDBQT.PDBQTWriter,
                   'CRD': CRD.CRDWriter,
                   'GRO': GRO.GROWriter,
@@ -566,6 +566,10 @@ _frame_writers = {'PDB': PDB.PrimitivePDBWriter,
 _trajectory_writers = {'DCD': DCD.DCDWriter,
                        'XTC': XTC.XTCWriter,
                        'TRR': TRR.TRRWriter,
+<<<<<<< HEAD
                        'LAMMPS': LAMMPS.DCDWriter,
+=======
+                       'PDB': PDB.PrimitivePDBWriter,
+>>>>>>> d8b293e... PrimitivePDBWriter prototype complete
                        }
 # note: no PDB movies yet

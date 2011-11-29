@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/?? orbeckst, sebastien.buchoux
+??/??/?? orbeckst, sebastien.buchoux, jandom
 
   * 0.7.5 (currently in development)
 
@@ -28,6 +28,8 @@ The rules for this file:
   * new simple Residue.chi1_selection() selection
   * new distances.between() function (EXPERIMENTAL)
   * support LAMMPS non-standard DCD files (Issue 84; EXPERIMENTAL)
+  * read and write multi-frame PDB files (Issue 77; EXPERIMENTAL)
+  * extend the PDB parsing, support CONECT and REMARK entries
 
   Changes
 
