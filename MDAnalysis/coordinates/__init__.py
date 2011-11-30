@@ -553,6 +553,7 @@ _frame_writers = {
                   'PDBQT': PDBQT.PDBQTWriter,
                   'CRD': CRD.CRDWriter,
                   'GRO': GRO.GROWriter,
+                  'PDB' : PDB.PrimitivePDBWriter,
                  }
 
 #: trajectory writers: export frames, typically only saving coordinates
