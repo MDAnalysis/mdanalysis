@@ -86,21 +86,22 @@ Download a tar ball from
 http://code.google.com/p/mdanalysis/downloads/list ; these
 instructions apply to versions 0.6.0-rc2 or higher.
 
-Alternatively, check out the MDAnalysis directory from the SVN
+Alternatively, check out the MDAnalysis directory from the git
 repository at http://mdanalysis.googlecode.com. See the source
 checkout instructions for details
 (http://code.google.com/p/mdanalysis/source/checkout). In most cases
 simply do ::
 
-  svn checkout http://mdanalysis.googlecode.com/svn/trunk/ MDAnalysis
-  cd MDAnalysis
+  git clone https://code.google.com/p/mdanalysis/
+  cd mdanalysis
 
 
 
 Installation from source
 ========================
 
-You will need a C compiler to compile the DCD and XTC reader and other extensions.
+You will need a C compiler to compile the DCD and XTC reader and other
+extensions.
 
 In principle, installation should be as simple as ::
 
@@ -190,6 +191,7 @@ Optional python packages (used in MDAnalysis.analysis):
 
     * networkx (http://networkx.lanl.gov/) --- for analysis of lipid 
       leaflets via MDAnalysis.analysis.leaflet
+    * GridDataFormats (http://pypi.python.org/pypi/GridDataFormats)
     * nose (http://somethingaboutorange.com/mrl/projects/nose/) -- for testing
     * ScientificPython http://dirac.cnrs-orleans.fr/plone/software/scientificpython/
       Scientific.IO.FortranFormat (experimental LAMMPS parser)
