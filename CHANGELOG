@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/?? orbeckst, sebastien.buchoux, jandom
+??/??/?? orbeckst, sebastien.buchoux, jandom, hallben
 
   * 0.7.5 (currently in development)
 
@@ -30,6 +30,7 @@ The rules for this file:
   * support LAMMPS non-standard DCD files (Issue 84; EXPERIMENTAL)
   * read and write multi-frame PDB files (Issue 77; EXPERIMENTAL)
   * extend the PDB parsing, support CONECT and REMARK entries
+  * new GNM-based trajectory analysis module (Issue 90)
 
   Changes
 
