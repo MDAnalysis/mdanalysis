@@ -34,7 +34,8 @@ License
 This software is copyright 
 (c) 2005 Naveen Michaud-Agrawal
 (c) 2006 Naveen Michaud-Agrawal and Elizabeth J. Denning
-(c) 2007-2011 Naveen Michaud-Agrawal, Elizabeth J. Denning, and Oliver Beckstein
+(c) 2007-2011 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+    and the MDAnalysis authors (see AUTHORS)
 unless stated otherwise in the source files.
 
 MDAnalysis is released under the GPL software license, version 2, with
@@ -79,17 +80,17 @@ If you use the RMSD alignment code that uses the QCProt module please also cite
 
     Douglas L. Theobald. Rapid calculation of RMSD using a
     quaternion-based characteristic polynomial. Acta Crystallographica
-    A 61 (2005), 478-480.
+    A 61 (2005), 478--480.
 
     Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald. Fast
     determination of the optimal rotational matrix for macromolecular
-    superpositions. J. Comput. Chem. 31 (2010), 1561-1563.
+    superpositions. J. Comput. Chem. 31 (2010), 1561--1563.
 
 If you use the helix analysis algorithm HELANAL in MDAnalysis.analysis.helanal
 please cite
 
-    Bansal M, Kumar S, Velavan R. 2000. HELANAL - A program to characterise
-    helix geometry in proteins. J. Biomol. Struct. Dyn. 17, 811-819
+    M. Bansal, S. Kumar, and R. Velavan. HELANAL - A program to characterise
+    helix geometry in proteins. J. Biomol. Struct. Dyn. 17 (2000), 811--819
 
 Thanks! 
 
