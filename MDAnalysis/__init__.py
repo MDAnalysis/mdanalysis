@@ -161,6 +161,9 @@ the OPLS/AA force field.
 # people don't need it we rather wait for them to import it and then throw
 # a error (TODO: catch that ImportError when no liblapack.so found so that we
 # can issue sensible advice)
+
+__version__ = "0.7.5-devel"
+
 __all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
 
 import logging
