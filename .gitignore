@@ -1,0 +1,5 @@
+# Ignore python bytecoded files
+*.py[c|o]
+
+# Ignore build dir
+build/
