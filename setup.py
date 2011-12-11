@@ -1,4 +1,4 @@
-# $Id$
+#! /usr/bin/python
 """Setuptools-based setup script for MDAnalysis.
 
 A working installation of NumPy <http://numpy.scipy.org> is required.
@@ -72,8 +72,16 @@ try:
 except AttributeError:
     numpy_include = numpy.get_numpy_include()
 
-
 include_dirs = [numpy_include]
+
+# Handle cython modules
+try:
+    from Cython.Distutils import build_ext
+    use_cython = True
+    cmdclass = {'build_ext': build_ext}
+except ImportError:
+    use_cython = False
+    cmdclass = {}
 
 if __name__ == '__main__':
     RELEASE = "0.7.5-devel"
@@ -106,16 +114,16 @@ if __name__ == '__main__':
                             include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('coordinates.dcdtimeseries', ['src/dcd/dcdtimeseries.c'],
+                  Extension('coordinates.dcdtimeseries', ['src/dcd/dcdtimeseries.%s' % ("pyx" if use_cython else "c")],
                             include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('core.distances', ['src/numtools/distances.c'],
+                  Extension('core.distances', ['src/numtools/distances.%s' % ("pyx" if use_cython else "c")],
                             include_dirs = include_dirs+['src/numtools'],
                             libraries = ['m'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
-                  Extension('core.qcprot', ['src/pyqcprot/pyqcprot.c'],
+                  Extension('core.qcprot', ['src/pyqcprot/pyqcprot.%s' % ("pyx" if use_cython else "c")],
                             include_dirs=include_dirs,
                             extra_compile_args=["-O3","-ffast-math"]),
                   Extension('core._transformations', ['src/transformations/transformations.c'],
@@ -161,6 +169,7 @@ if __name__ == '__main__':
           ext_modules       = extensions,
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
+          cmdclass          = cmdclass,
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           install_requires = ['numpy>=1.0.3',   # currently not useful because without numpy we don't get here
