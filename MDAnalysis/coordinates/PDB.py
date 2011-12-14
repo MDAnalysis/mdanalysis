@@ -354,7 +354,7 @@ class PrimitivePDBReader(base.Reader):
        
         self.frames = frames
         self.numframes = len(frames) if frames else 1
-        self._currentframe = 0
+        self.ts.frame = 0
         self.fixed = 0
         self.skip = 1
         self.periodic = False
@@ -407,7 +407,8 @@ class PrimitivePDBReader(base.Reader):
         pass  
     
     def rewind(self):
-        self._currentframe = -1
+        #self._currentframe = -1
+        self.ts.frame = -1
         self._read_next_timestep()
     
     def next(self):
@@ -424,10 +425,13 @@ class PrimitivePDBReader(base.Reader):
         return iterPDB()
         
     def _read_next_timestep(self):
-        frame = self._currentframe + 1
-        if not self.frames.has_key(frame): return
+        #frame = self._currentframe + 1
+        frame = self.frame + 1
+        if not self.frames.has_key(frame): return False
         self.__getitem__(frame)
-        self._currentframe = frame
+        #self._currentframe = frame
+        self.ts.frame = frame
+        return True
     
     def __getitem__(self, frame):
         if numpy.dtype(type(frame)) != numpy.dtype(int):
@@ -473,7 +477,7 @@ class PrimitivePDBReader(base.Reader):
             self.convert_pos_from_native(self.ts._pos)             # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)        
         
-        self._currentframe = frame
+        self.ts.frame = frame
 
 
 class PrimitivePDBWriter(base.Writer):

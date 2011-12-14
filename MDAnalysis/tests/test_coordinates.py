@@ -24,7 +24,7 @@ import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
-from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small,PDB,CRD,XTC,TRR,GRO, \
+from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small, PDB_multiframe, PDB,CRD,XTC,TRR,GRO, \
     XYZ,XYZ_bz2,XYZ_psf, PRM,TRJ,TRJ_bz2, PRMpbc, TRJpbc_bz2, PQR
 
 import os
@@ -322,10 +322,12 @@ class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
 class TestPrimitivePDBWriter(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True)
+        self.multiverse = mda.Universe(PDB_multiframe, premissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         ext = ".pdb"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
         fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
+        fd, self.outfile3 = tempfile.mkstemp(suffix=ext)
 
     def tearDown(self):
         try:
@@ -336,7 +338,11 @@ class TestPrimitivePDBWriter(TestCase):
             os.unlink(self.outfile2)
         except OSError:
             pass
-        del self.universe
+        try:
+            os.unlink(self.outfile3)
+        except OSError:
+            pass
+        del self.universe, self.multiverse
 
     def test_writer(self):
         self.universe.atoms.write(self.outfile)
@@ -344,6 +350,79 @@ class TestPrimitivePDBWriter(TestCase):
         assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec,
                             err_msg="Writing PDB file with PrimitivePDBWriter does not reproduce original coordinates")
 
+    def test_multiframe_writer(self):
+        """
+        Test if multiframe writer can write selected frames for an atomselection.
+        """
+        u = self.multiverse
+        
+        group  = u.selectAtoms('name CA', 'name C')
+        
+        desired_group = 56
+        
+        desired_frames = 6
+        
+        group.write(self.outfile, start=12, step=2)
+        
+        u = mda.Universe(self.outfile)
+        
+        assert_equal(len(u.atoms), desired_group, err_msg="PrimitivePDBWriter trajectory written for an AtomGroup contains %d atoms, it should contain %d" % (len(u.atoms), desired_group))
+        
+        assert_equal(len(u.trajectory), desired_frames, err_msg = "PrimitivePDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
+      
+
+    def test_numframes(self):
+        u = self.multiverse
+        desired = 24
+        assert_equal(u.trajectory.numframes, desired, 
+                            err_msg="Test PDB contains %d frames, trajectory contains only %d" % (desired, u.trajectory.numframes))
+        
+    def test_numatoms_frame(self):
+        u = self.multiverse
+        
+        desired = 392
+        
+        # rewind after previous test, otherwise the iterator is NoneType and next() cannot be called
+        
+        for frame in u.trajectory:
+          
+          assert_equal(len(u.atoms), desired, err_msg="The number of atoms in the Universe (%d) does not match the number of atoms in the test case (%d) at frame %d" % (len(u.atoms), desired, u.trajectory.frame))
+        
+    
+    def test_numconnections(self):
+        u = self.multiverse
+        
+        # the bond list is sorted - so swaps in input pdb sequence should not be a problem
+        desired = [[48, 365], 
+                   [99, 166],
+                   [166, 99],
+                   [249, 387],
+                   [313, 331],
+                   [331, 313, 332, 340],
+                   [332, 331, 333, 338, 341],
+                   [333, 332, 334, 342, 343],
+                   [334, 333, 335, 344, 345],
+                   [335, 334, 336, 337],
+                   [336, 335],
+                   [337, 335, 346, 347, 348],
+                   [338, 332, 339, 349],
+                   [339, 338],
+                   [340, 331],
+                   [341, 332],
+                   [342, 333],
+                   [343, 333],
+                   [344, 334],
+                   [345, 334],
+                   [346, 337],
+                   [347, 337],
+                   [348, 337],
+                   [349, 338],
+                   [365, 48],
+                   [387, 249]]  
+          
+        assert_equal(u._psf['_bonds'], desired, 
+                                err_msg="The bond list does not match the test reference; len(actual) is %d, len(desired) is %d " % (len(u._psf['_bonds']), len(desired)))
+          
     @attr('issue')
     def test_check_coordinate_limits_min(self):
         """Test that illegal PDB coordinates (x <= -999.9995 A) are caught with ValueError (Issue 57)"""

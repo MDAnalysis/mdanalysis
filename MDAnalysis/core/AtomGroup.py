@@ -1003,7 +1003,7 @@ class AtomGroup(object):
             #return tuple(atomselections)
             return atomgrp
 
-    def write(self,filename=None,format="PDB",filenamefmt="%(trjname)s_%(frame)d"):
+    def write(self,filename=None,format="PDB",filenamefmt="%(trjname)s_%(frame)d", **kwargs):
         """Write AtomGroup to a file.
 
         AtomGroup.write(filename[,format])
@@ -1029,7 +1029,7 @@ class AtomGroup(object):
             trjname,ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt % vars()
         filename = util.filename(filename,ext=format.lower(),keep=True)
-        framewriter = MDAnalysis.coordinates.writer(filename)
+        framewriter = MDAnalysis.coordinates.writer(filename, **kwargs)
         framewriter.write(self)         # wants a atomgroup
 
     # TODO: This is _almost_ the same code as write() --- should unify!
