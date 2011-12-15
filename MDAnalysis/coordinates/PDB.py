@@ -316,7 +316,7 @@ class PrimitivePDBReader(base.Reader):
                     compound.append(l)
                     continue
                 elif line[:6] == 'REMARK':
-                    content = line[11:-1]
+                    content = line[6:-1]
                     remark.append(content)
                 elif line[:5] == 'MODEL':
                     frameno = int(line.split()[1])
@@ -497,7 +497,7 @@ class PrimitivePDBWriter(base.Writer):
     #fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
     # PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc ignored
     fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(segID)-4s%(element)2s%(charge)2d\n",
-           'REMARK': "REMARK %s\n",
+           'REMARK': "REMARK%s\n",
            'COMPND': "COMPND%s\n",
            'HEADER': "HEADER%s\n",
            'TITLE':  "TITLE    %s\n",

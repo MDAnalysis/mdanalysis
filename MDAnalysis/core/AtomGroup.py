@@ -1519,7 +1519,9 @@ class Universe(object):
         
         # TODO wrap-around in a BondGroup class, translating bonds to lists of Atom objects; otherwise indexing becomes a pain
         # TODO move to universe._psf.bonds
-        #self.bonds = struc["_bonds"]
+        
+        if struc.has_key("_bonds"):
+          self.bonds = struc["_bonds"]
         
         # XXX: add H-bond information here if available from psf (or other sources)
         # segment instant selectors
