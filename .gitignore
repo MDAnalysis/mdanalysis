@@ -1,5 +1,11 @@
 # Ignore python bytecoded files
 *.py[c|o]
-
+*.[oa]
+*~
+*.so
+MDAnalysis.egg-info
 # Ignore build dir
 build/
+temp/
+examples/eigenvalues.dat
+examples/output.txt
