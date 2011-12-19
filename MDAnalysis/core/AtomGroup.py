@@ -65,9 +65,13 @@ Classes and functions
 .. autoclass:: Atom
    :members:
 .. autoclass:: Residue
+   :members:
 .. autoclass:: ResidueGroup
+   :members:
 .. autoclass:: Segment
+   :members:
 .. autoclass:: SegmentGroup
+   :members:
 
 .. autofunction:: asUniverse
 .. autoexception:: SelectionError
@@ -1516,13 +1520,13 @@ class Universe(object):
         #for data in struc.keys():
         #    setattr(self, data, struc[data])
         self.atoms = AtomGroup(struc["_atoms"])
-        
+
         # TODO wrap-around in a BondGroup class, translating bonds to lists of Atom objects; otherwise indexing becomes a pain
         # TODO move to universe._psf.bonds
-        
+
         if struc.has_key("_bonds"):
           self.bonds = struc["_bonds"]
-        
+
         # XXX: add H-bond information here if available from psf (or other sources)
         # segment instant selectors
         self._build_segments()
