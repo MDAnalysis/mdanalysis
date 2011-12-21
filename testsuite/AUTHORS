@@ -1,0 +1,75 @@
+=======================
+ Authors of MDAnalysis
+=======================
+
+MDAnalysis was originally written by Naveen Michaud-Agrawal.
+
+Oliver Beckstein and Elizabeth J. Denning are maintaining the project
+and contributing to the development.
+
+Also see the project page
+http://code.google.com/p/mdanalysis/people/list for a list of people
+directly involved.
+
+
+Chronological list of authors
+-----------------------------
+
+2005
+  - Naveen Michaud-Agrawal
+2006
+  - Elizabeth J. Denning
+2007
+  - Oliver Beckstein
+2010
+  - Danny Parton
+  - Philip Fowler
+  - Tyler Reddy
+  - Joseph Goose
+  - Jan Domanski
+2011
+  - Benjamin Hall
+  - Paul Rigor
+  - David Caplan
+  - Christian Beckstein (logo)
+
+
+External code
+-------------
+
+External code (under a GPL-compatible licence) was obtained from
+various sources. The authors (as far as we know them) are listed here.
+
+libxdrfile
+  - David van der Spoel <spoel@gromacs.org>
+  - Erik Lindahl <lindahl@gromacs.org>
+
+numpy.i
+  - Bill Spotz
+
+KDTree
+  - Thomas Hamelryck <thamelry@binf.ku.dk>
+
+DCD reader from catdcd
+  - Justin Gullingsrud
+
+transformations
+  - Christoph Gohlke <http://www.lfd.uci.edu/~gohlke/>
+
+pyqcprot
+  - Joshua L. Adelman, University of Pittsburgh <jla65@pitt.edu>
+  - https://github.com/synapticarbors/pyqcprot
+
+helanal
+  - Benjamin Hall, University of Oxford <benjamin.hall@bioch.ox.ac.uk>
+  - based on HELANAL from
+    http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
+
+
+Logo
+----
+
+The MDAnalysis 'Atom' logo was designed by Christian Beckstein; it is
+Copyright (c) 2011 Christian Beckstein and made available under a
+Creative Commons Attribution-NoDerivs 3.0 Unported License.
+

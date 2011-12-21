@@ -1,0 +1,5 @@
+graft   MDAnalysisTestData/data/
+include ez_setup.py setup.py
+prune doc 
+prune src
+prune examples

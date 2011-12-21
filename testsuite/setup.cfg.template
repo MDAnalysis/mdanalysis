@@ -1,0 +1,15 @@
+[build]
+## Intel compiler [but might fail (at least on Ubuntu 8.04)]
+#compiler=intel
+
+[sdist]
+formats=gztar
+
+[bdist_rpm]
+release = 1
+group = Development/Languages/Python
+packager = Naveen Michaud-Agrawal <naveen.michaudagrawal@gmail.com>
+#doc_files = *.txt doc/
+
+[nosetests]
+exe=1

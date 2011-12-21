@@ -1,0 +1,108 @@
+=============================
+Installing MDAnalysisTestData
+=============================
+
+The MDAnalysisTestData package contains trajectories and structures
+that are used in the test suite of the MDAnalysis package
+http://code.google.com/p/mdanalysis. They should be installed together
+with MDAnalysis.
+
+However, the test files change less frequently, take up almost 20 GB
+of space, and are not needed for daily use of MDAnalysis so they are
+distributed separately from the main package.
+
+
+Help
+====
+
+If you have any problems please read through the files INSTALL (this
+file) and README and check the MDAnalysis project pages at
+
+      http://mdanalysis.googlecode.com
+
+in particular http://code.google.com/p/mdanalysis/wiki/Install and
+related pages.
+
+You can always ask questions on the MDAnalysis mailing list:
+
+      http://groups.google.com/group/mdnalysis-discussion
+
+People there are very happy to help. When posting please remember to
+mention the release of MDAnalysis you are trying to install (e.g. "tar
+file MDAnalysis-0.7.3 from website" or "subversion r818"), all the
+commands that you typed to install the package, and the full output
+(typically right from 'python setup.py build'). You should also
+mention your operating system (e.g. Ubuntu 10.04) and Python version
+(output from 'python --version') so that we can better diagnose the
+problem.
+
+
+Getting the source 
+==================
+
+Download a tar ball from
+http://code.google.com/p/mdanalysis/downloads/list ; these
+instructions apply to versions 0.6.0-rc2 or higher.
+
+Alternatively, check out the MDAnalysis directory from the SVN
+repository at http://mdanalysis.googlecode.com. See the source
+checkout instructions for details
+(http://code.google.com/p/mdanalysis/source/checkout). In most cases
+simply do ::
+
+  svn checkout http://mdanalysis.googlecode.com/svn/branches/MDAnalysisTestData MDAnalysisTestData
+  cd MDAnalysisTestData
+
+
+
+Installation from source
+========================
+
+In principle, installation should be as simple as ::
+
+   python setup.py install
+
+This installs MDAnalysis in the system wide python directory; this may
+require administrative privileges.
+
+It is also possible to use --prefix, --home, or --user options for
+setup.py to install in a different (probably your private) python
+directory hierarchy. ``python setup.py install --help`` should show
+you your options.
+
+If you have problem at this stage then have a look at the operating
+system specific notes at the end of this file or look in the issue
+tracker --- maybe the problem is recognized and a work around can be
+found in the comments
+
+
+
+Selecting an installation directory
+-----------------------------------
+
+In order to install in a non-default directory one can use various
+options to setup (see --help) such as ::
+
+ python setup.py install --prefix LOCAL_DIRECTORY
+
+or any of the other options of distutil's setup.py to install in
+alternative directories, for instance
+
+ python setup.py install --user
+
+
+
+Easy Install
+------------
+
+We are also exploring the use of easy_install. This is experimental
+but you might be able to do ::
+
+  easy_install [options] ./MDAnalysisTestData
+ 
+A developer installation (that immediately reflects changes to the
+sources) with ::
+
+  cd ./MDAnalysisTestData
+  python setup develop [options]
+
