@@ -1,5 +1,2 @@
-graft   MDAnalysisTestData/data/
+graft   MDAnalysisTests/data/
 include ez_setup.py setup.py
-prune doc 
-prune src
-prune examples

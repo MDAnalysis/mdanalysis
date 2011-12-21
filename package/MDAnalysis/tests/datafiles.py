@@ -26,12 +26,12 @@ Real MD simulation data, used for examples and the unit tests::
 .. Note::
 
    The actual files are contained in the separate
-   :mod:`MDAnalysisTestData` package which must be downloaded from
+   :mod:`MDAnalysisTests` package which must be downloaded from
    http://code.google.com/p/mdanalysis/downloads/list and installed.
 """
 
 try:
-    from MDAnalysisTestData.datafiles import *
+    from MDAnalysisTests.datafiles import *
 except ImportError:
     print "*** ERROR ***"
     print "In order to run the MDAnalysis test cases you must install the"
@@ -42,5 +42,5 @@ except ImportError:
     print
     print "and download and install the `MDAnalysisTestData-x.y.z.tar.gz'"
     print "which matches your MDAnalysis release or is smaller."
-    raise ImportError("MDAnalysisTestData package not installed.")
+    raise ImportError("MDAnalysisTests package not installed.")
 

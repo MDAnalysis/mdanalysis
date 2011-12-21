@@ -20,30 +20,27 @@
 Test cases for MDAnalysis
 =========================
 
-Test cases are stored in a separate packacge (:mod:`MDAnalysisTests`)
-that has to be installed separately from http://mdanalysis.googlecode.com
-
 We are using the NumPy_ testing frame work; thus, numpy *must* be
 installed for the tests to run at all.
 
 Run all the tests with
 
-   >>> import MDAnalysis.tests
-   >>> MDAnalysis.tests.test(label='full')
+   >>> import MDAnalysisTests.tests
+   >>> MDAnalysisTests.tests.test(label='full')
 
 Some tests can take a few seconds; in order to skip the slow tests run
 
-   >>> MDAnalysis.tests.test(label='fast')
+   >>> MDAnalysisTests.tests.test(label='fast')
 
 Additional information is displayed at a higher verbosity level (the default is
 1):
 
-   >>> MDAnalysis.tests.test(label='fast', verbose=3)
+   >>> MDAnalysisTests.tests.test(label='fast', verbose=3)
 
 Note that if no tests are being run then one might have to run the
 tests with the ``--exe`` flag
 
-   >>> MDAnalysis.tests.test(label='fast', extra_argv=['--exe'])
+   >>> MDAnalysisTests.tests.test(label='fast', extra_argv=['--exe'])
 
 (This happens when python files are installed with the executable bit set. By
 default the nose_ testing framework refuses to use those files and must be
@@ -52,7 +49,7 @@ encouraged to do so with the ``--exe`` switch.)
 See `nose commandline options`_ for additional options that can be used; for
 instance, code coverage can also be checked:
 
-  >>> MDAnalysis.tests.test(label='full', extra_argv=['--exe', '--with-coverage'])
+  >>> MDAnalysisTests.tests.test(label='full', extra_argv=['--exe', '--with-coverage'])
 
 
 Data
@@ -82,7 +79,7 @@ Writing test cases
 ==================
 
 The unittests use the :mod:`unittest` module together with nose_. See the
-examples in the ``MDAnalysis/tests`` directory.
+examples in the ``MDAnalysisTests`` directory.
 
 The `SciPy testing guidelines`_ are a good howto for writing test cases,
 especially as we are directly using this framework (imported from numpy).
@@ -98,11 +95,10 @@ especially as we are directly using this framework (imported from numpy).
 .. _Gromacs: http://www.gromacs.org
 """
 
-
 try:
-    from MDAnalysisTests import test
+    from numpy.testing import Tester
+    test = Tester().test
 except ImportError:
-    print("Install MDAnalysisTests first. The source package is available from")
-    print("http://code.google.com/p/mdanalysis/downloads/list")
-    raise ImportError("Package MDAnalysisTests required!")
+    raise ImportError("""numpy>=1.3  is required to run the test suite. Please install it first. """
+                      """(For example, try "easy_install 'numpy>=1.3'").""")
 

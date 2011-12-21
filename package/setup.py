@@ -187,7 +187,7 @@ if __name__ == '__main__':
                 },
           test_suite = "nose.collector",
           tests_require = ['nose>=0.10',
-                           'MDAnalysisTestData==0.7.4',
+                           'MDAnalysisTests==0.7.5',
                            ],
           zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
           )

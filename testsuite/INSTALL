@@ -1,8 +1,8 @@
-=============================
-Installing MDAnalysisTestData
-=============================
+==========================
+Installing MDAnalysisTests
+==========================
 
-The MDAnalysisTestData package contains trajectories and structures
+The MDAnalysisTests package contains trajectories and structures
 that are used in the test suite of the MDAnalysis package
 http://code.google.com/p/mdanalysis. They should be installed together
 with MDAnalysis.
@@ -44,14 +44,13 @@ Download a tar ball from
 http://code.google.com/p/mdanalysis/downloads/list ; these
 instructions apply to versions 0.6.0-rc2 or higher.
 
-Alternatively, check out the MDAnalysis directory from the SVN
+Alternatively, check out the MDAnalysis directory from the git
 repository at http://mdanalysis.googlecode.com. See the source
 checkout instructions for details
-(http://code.google.com/p/mdanalysis/source/checkout). In most cases
-simply do ::
+(http://code.google.com/p/mdanalysis/source/checkout). Typically:
 
-  svn checkout http://mdanalysis.googlecode.com/svn/branches/MDAnalysisTestData MDAnalysisTestData
-  cd MDAnalysisTestData
+  git clone https://code.google.com/p/mdanalysis/
+  cd mdanalysis/testsuite
 
 
 
@@ -98,11 +97,11 @@ Easy Install
 We are also exploring the use of easy_install. This is experimental
 but you might be able to do ::
 
-  easy_install [options] ./MDAnalysisTestData
+  easy_install [options] ./MDAnalysisTests
  
 A developer installation (that immediately reflects changes to the
 sources) with ::
 
-  cd ./MDAnalysisTestData
+  cd testsuite
   python setup develop [options]
 

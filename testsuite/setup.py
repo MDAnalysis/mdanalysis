@@ -1,5 +1,4 @@
-# $Id$
-"""Setuptools-based setup script for MDAnalysis.
+"""Setuptools-based setup script for tests of MDAnalysis.
 
 A working installation of NumPy <http://numpy.scipy.org> is required.
 
@@ -59,13 +58,13 @@ if sys.version_info[:2] < (2, 5):
 
 
 if __name__ == '__main__':
-    RELEASE = "0.7.4"
+    RELEASE = "0.7.5"
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
-This package contains the trajectory data that are used for the test
-cases. In order to make downloads more efficient, these data were
-split up into a separate package.
+This package contains the test code and the trajectory data that are
+used for the test cases. In order to make downloads and binary package
+maintenance more efficient, these tests were moved into this packe.
 """
     CLASSIFIERS = ['Development Status :: 4 - Beta',
                    'Environment :: Console',
@@ -78,16 +77,16 @@ split up into a separate package.
                    'Topic :: Scientific/Engineering :: Chemistry',
                    ]
 
-    setup(name              = 'MDAnalysisTestData',
+    setup(name              = 'MDAnalysisTests',
           version           = RELEASE,
-          description       = 'Python tools to support analysis of trajectories (test data files)',
+          description       = 'Python tools to support analysis of trajectories (test cases)',
           author            = 'Naveen Michaud-Agrawal',
           author_email      = 'naveen.michaudagrawal@gmail.com',
           url               = 'http://mdanalysis.googlecode.com/',
           license           = 'GPL 2',
-          packages          = ['MDAnalysisTestData'],
-          package_dir       = {'MDAnalysisTestData': 'MDAnalysisTestData'},
-          package_data      = {'MDAnalysisTestData':
+          packages          = ['MDAnalysisTests'],
+          package_dir       = {'MDAnalysisTests': 'MDAnalysisTests'},
+          package_data      = {'MDAnalysisTests':
                                    ['data/*.psf','data/*.dcd','data/*.pdb',
                                     'data/*.gro', 'data/*.xtc','data/*.trr',
                                     'data/*.crd', 'data/*.xyz',
