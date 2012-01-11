@@ -42,7 +42,8 @@ try:
     # BioPython is overkill but potentially extensible (altLoc etc)
     import Bio.PDB
 except ImportError:
-    raise ImportError("No PDB I/O functionality. Install biopython.")
+    # TODO: fall back to PrimitivePDBReader
+    raise ImportError("No full-feature PDB I/O functionality. Install biopython.")
 
 import os, errno
 import numpy
@@ -281,22 +282,31 @@ class PrimitivePDBReader(base.Reader):
         """Read coordinates from *filename*.
 
         *filename* can be a gzipped or bzip2ed compressed PDB file.
+
+        If the pdb file contains multiple MODEL records then it is
+        read as a trajectory where the MODEL numbers correspond to
+        frame numbers. Therefore, the MODEL numbers must be a sequence
+        of integeres (typically starting at 1 or 0).
         """
         self.filename = filename
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
-        self.convert_units = convert_units  # convert length and time to base units
+        self.convert_units = convert_units  # convert length and time
+        # to base units add this number to the MODEL number to get
+        # frame: typically PDB starts at 1 but Gromacs trjconv exports
+        # starting with MODEL 0. (MODEL 0 is autodetected in the code, though!)
+        self.model_offset = kwargs.pop("model_offset", -1)
 
         header = ""
         compound = []
         remark = []
 
-        frames = {}         
+        frames = {}
         coords = []
         atoms = []
 
         unitcell = numpy.zeros(6, dtype=numpy.float32)
-        
+
         with util.openany(filename, 'r') as pdbfile:
             for i, line in enumerate(pdbfile):
                 def _c(start, stop, typeclass=float):
@@ -320,10 +330,15 @@ class PrimitivePDBReader(base.Reader):
                     remark.append(content)
                 elif line[:5] == 'MODEL':
                     frameno = int(line.split()[1])
-                    frames[frameno - 1] = i # 0-based indexing
+                    if frameno == 0:
+                        # detect if MODEL starts at 0 or at 1; switch model_offset appropriately
+                        # Will break/loose frames if MODELs are renumbered in the PDB file...
+                        self.model_offset = 0
+                    frames[frameno + self.model_offset] = i # 0-based indexing
                 elif line[:6] in ('ATOM  ', 'HETATM'):
                     # skip atom/hetatm for frames other than the first - they will be read in when next() is called on the trajectory reader
-                    if len(frames) > 1: continue
+                    if len(frames) > 1:
+                        continue
                     # directly use COLUMNS from PDB spec
                     serial = _c(7, 11, int)
                     name = _c(13, 16, str).strip()
@@ -347,11 +362,11 @@ class PrimitivePDBReader(base.Reader):
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)             # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)
-        
-        # No 'MODEL' entries    
+
+        # No 'MODEL' entries
         if len(frames) == 0:
           frames[0] = None
-       
+
         self.frames = frames
         self.numframes = len(frames) if frames else 1
         self.ts.frame = 0
@@ -400,83 +415,84 @@ class PrimitivePDBReader(base.Reader):
 
         """
         return PrimitivePDBWriter(filename, **kwargs)
+
     def __del__(self):
         pass
-    
+
     def close(self):
-        pass  
-    
+        pass
+
     def rewind(self):
         #self._currentframe = -1
         self.ts.frame = -1
         self._read_next_timestep()
-    
+
     def next(self):
         self._read_next_timestep()
-    
+
     def __len__(self):
         return self.numframes
     def __iter__(self):
-
         def iterPDB():
             for i in xrange(0, self.numframes, self.skip):  # FIXME: skip is not working!!!
                 try: yield self._read_next_timestep()
                 except IOError: raise StopIteration
         return iterPDB()
-        
+
     def _read_next_timestep(self):
         #frame = self._currentframe + 1
         frame = self.frame + 1
-        if not self.frames.has_key(frame): return False
+        if not self.frames.has_key(frame):
+            return False
         self.__getitem__(frame)
         #self._currentframe = frame
         self.ts.frame = frame
         return True
-    
+
     def __getitem__(self, frame):
         if numpy.dtype(type(frame)) != numpy.dtype(int):
             raise TypeError
         if not self.frames.has_key(frame):
             IndexError('PrimitivePDBReader found only %d frames in this trajectory' % len(self.frames))
-        
         line = self.frames[frame]
-        
-        if line is None: 
-          return 
-        
+        if line is None:
+          return
         coords = []
         atoms = []
-        
+        unitcell = numpy.zeros(6, dtype=numpy.float32)
+
         def _c(start, stop, typeclass=float):
             return self._col(line, start, stop, typeclass=typeclass)
-        
-        with open(self.filename) as f:
+
+        with util.openany(self.filename, 'r') as f:
             for i in xrange(line):
-              f.next()
+                f.next()        # forward to frame
             for line in f:
               if line.split()[0] == 'ENDMDL':
                   break
-
+              elif line[:6] == 'CRYST1':
+                  A, B, C = _c(7, 15), _c(16, 24), _c(25, 33)
+                  alpha, beta, gamma = _c(34, 40), _c(41, 47), _c(48, 54)
+                  unitcell[:] = A, B, C, alpha, beta, gamma
+                  continue
               elif line[:6] in ('ATOM  ', 'HETATM'):
                   # we only care about coordinates
                   x, y, z = _c(31, 38), _c(39, 46), _c(47, 54)
                   # TODO import occupancy, bfactors - might these change?
+                  # OB: possibly, at least that would be a useful feature of a PDB trajectory
                   coords.append((x, y, z))
                   continue
 
-        # update an existing timestep: assume unchanged unitcell, convert units again
-        unitcell = self.ts._unitcell
-        
         # check if atom number chaneged
         if len(coords) != len(self.ts._pos):
             raise Exception("PrimitivePDBReader assumes that the number of atoms remains unchanged between frames; the current frame has %d, the next frame has %d atoms" % (len(self.ts._pos), len(coords)))
-        
+
         self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
         self.ts._unitcell[:] = unitcell
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)             # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)        
-        
+            self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)
+
         self.ts.frame = frame
 
 
@@ -549,14 +565,11 @@ class PrimitivePDBWriter(base.Writer):
 
     def _write_pdb_title(self, start, step, remarks):
         self.TITLE("FRAME(S) FORM %d, SKIP %d; %s" % (start, step, remarks))
-        
+
     def _write_pdb_header(self):
-        
         if not self.obj or not hasattr(self.obj, 'universe'):
           return
-      
         u = self.obj.universe
-        
         self.HEADER(u.trajectory)
         self.COMPND(u.trajectory)
         self.REMARK(u.trajectory)
@@ -579,8 +592,8 @@ class PrimitivePDBWriter(base.Writer):
         except OSError, err:
             if err.errno == errno.ENOENT:
                 pass
-        raise ValueError("PDB files must have coordinate values between %.3f and %.3f Angstroem: No file was written." % 
-                         (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))        
+        raise ValueError("PDB files must have coordinate values between %.3f and %.3f Angstroem: No file was written." %
+                         (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
 
     def _write_pdb_bonds(self):
         """
@@ -591,17 +604,17 @@ class PrimitivePDBWriter(base.Writer):
         incorrect. Once a selection is made, the atom numbers have to be updated
         (currently they are unmodified) and bonds have to be seleceted for,
         only if all the atoms for a bond are still present.
-        
+
         The bonds should not be a list of ints, as are now, but a list of
-        Atom objects. 
+        Atom objects.
         """
-        
+
         if not self.obj or not hasattr(self.obj, 'universe'):
-          return        
-        
+          return
+
         if not hasattr(self.obj.universe, 'bonds'):
           return
-        
+
         bonds = self.obj.universe.bonds
         for i, conect in enumerate(bonds):
             self.CONECT(conect)
@@ -622,52 +635,40 @@ class PrimitivePDBWriter(base.Writer):
            The first letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid`
            is used as the PDB chainID.
         """
-        
-        if type(obj) == type(Timestep):
-            raise NotImplementedError("PrimitivePDBWriter cannot write Timestep objects directly, since they lack topology information (atom names and types) required in PDB files")
 
-        self.obj = obj
-
+        if isinstance(obj, Timestep):
+            raise TypeError("PrimitivePDBWriter cannot write Timestep objects directly, since they lack topology information (atom names and types) required in PDB files")
+        self.obj = obj  # remember obj for some of other methods  --- NOTE: this is an evil/lazy hack...
         ts, traj = None, None
-        
-        # For AtomGroup and children (Residue, ResidueGroup, Segment)        
-        if hasattr(obj, 'universe') and type(obj) is not Universe:
-          ts = obj.ts
-          traj = obj.universe.trajectory
-
-        # For Universe only
+        if hasattr(obj, 'universe') and not isinstance(obj, Universe):
+            # For AtomGroup and children (Residue, ResidueGroup, Segment)
+            ts = obj.ts
+            traj = obj.universe.trajectory
         else:
-          ts = obj.trajectory.ts
-          traj = obj.trajectory
-        
-        if not (ts and traj):
-          raise Exception("PrimitivePDBWriter couldn't extract trajectory and timestep information from an object; inheritance problem.")
-        
-        self._check_pdb_coordinates()
-        
-        self.trajectory, self.timestep = traj, ts
-        
-        self._write_pdb_header()
-        
-        self.write_all_timesteps()
+            # For Universe only
+            ts = obj.trajectory.ts
+            traj = obj.trajectory
 
+        if not (ts and traj):
+            raise AssertionError("PrimitivePDBWriter couldn't extract trajectory and timestep information from an object; inheritance problem.")
+
+        self._check_pdb_coordinates()
+        self.trajectory, self.timestep = traj, ts
+        self._write_pdb_header()
+        self.write_all_timesteps()
         self._write_pdb_bonds()
-        
         self.END()
 
     def write_all_timesteps(self):
         start, step = self.start, self.step
-        
         traj = self.trajectory
-        
         for framenumber in xrange(start, len(traj), step):
             traj[framenumber]
             ts = self.timestep
             self.write_next_timestep(ts)
-        
-        # Set the trajectory to the starting position    
+        # Set the trajectory to the starting position
         traj[start]
-        
+
     def write_next_timestep(self, ts=None):
         ''' write a new timestep to the dcd file
 
@@ -678,29 +679,30 @@ class PrimitivePDBWriter(base.Writer):
                 raise Exception("PBDWriter: no coordinate data to write to trajectory file")
             else:
                 ts = self.ts
-        
+
         self._write_timestep(ts)
 
     def _write_timestep(self, ts):
 
         #if type(ts) is Timestep:
         #fmr    raise TypeError("ts has to be a Timestep object")
-        
+
         traj = self.trajectory
 
         atoms = self.obj.atoms
         coor = ts._pos
-        
+
         if len(atoms) != len(coor):
-            raise Exception("Length of the atoms array is %d, this is different form the Timestep coordinate array %d" % (len(atoms), len(ts._pos)))
-        
+            raise ValueError("Length of the atoms array is %d, this is different form the Timestep coordinate array %d" % (len(atoms), len(ts._pos)))
+
         # dont write model records, if only one frame
-        if len(traj) > 1 : self.MODEL(self.frames_written + 1)
-        
+        if len(traj) > 1:
+            self.MODEL(self.frames_written + 1)
+
         for i, atom in enumerate(atoms):
             # TODO Jan: see description in ATOM for why this check has to be made
-           
-            if not atom.bfactor: atom.bfactor = 0.
+            if not atom.bfactor:
+                atom.bfactor = 0.
             self.ATOM(serial=i + 1, name=atom.name.strip(), resName=atom.resname.strip(),
                       resSeq=atom.resid, chainID=atom.segid.strip(), segID=atom.segid.strip(),
                       tempFactor=atom.bfactor,
@@ -708,9 +710,8 @@ class PrimitivePDBWriter(base.Writer):
             # get bfactor, too, and add to output?
             # 'element' is auto-guessed from atom.name in ATOM()
         # dont write model records, if only one frame
-        
-        if len(traj) > 1 : self.ENDMDL()
-        
+        if len(traj) > 1:
+            self.ENDMDL()
         self.frames_written += 1
 
     def HEADER(self, trajectory):
@@ -733,10 +734,10 @@ class PrimitivePDBWriter(base.Writer):
         if not hasattr(trajectory, 'remark'):
           return
         remarks = trajectory.remark
-      
+
         for remark in remarks:
           self.pdbfile.write(self.fmt['REMARK'] % (remark))
-    
+
     def COMPND(self, trajectory):
         if not hasattr(trajectory, 'compound'):
           return
@@ -773,17 +774,22 @@ class PrimitivePDBWriter(base.Writer):
 
         Note: Floats are not checked and can potentially screw up the format.
         """
-        """
-        TODO Jan: PDBReader sets the bfactor value corretly to 0.0 if not 
-        defined, DCD error does not. Thus when saving a Universe(DCDfile), the 
-        bfactor is None rather than 0.0. 
-        
-        Now in the `for` loop below we could remove the offending variable but 
-        this gets us when the fromat `ATOM` expects float and not NoneType.
-        
-        Provisional solution for now: custom check if tempfactor is None, in
-        :meth:`_write_timestep`
-        """
+
+        # TODO Jan: PDBReader sets the bfactor value corretly to 0.0 if not
+        # defined, DCD error does not. Thus when saving a Universe(DCDfile), the
+        # bfactor is None rather than 0.0.
+        #
+        # Now in the `for` loop below we could remove the offending variable but
+        # this gets us when the fromat `ATOM` expects float and not NoneType.
+        #
+        # Provisional solution for now: custom check if tempfactor is None, in
+        # :meth:`_write_timestep`
+        #
+        # OB: The "provisional" solution is correct. ATOM requires the calling code
+        #     to provide a sane value for tempFactor. This is because a tempFactor of
+        #     0 might actually mean to some programs "ignore this atom". Hence we
+        #     don't want to make this decision in the general I/O routine.
+
         for arg in ('serial', 'name', 'resName', 'resSeq', 'x', 'y', 'z',
                     'occupancy', 'tempFactor', 'charge'):
             if locals()[arg] is None:
@@ -805,9 +811,9 @@ class PrimitivePDBWriter(base.Writer):
         segID = segID or chainID
         segID = segID[:4]
         self.pdbfile.write(self.fmt['ATOM'] % vars())
-    
+
     def CONECT(self, conect):
       conect = ["%5d" % entry for entry in conect]
       conect = "".join(conect)
       self.pdbfile.write(self.fmt['CONECT'] % conect)
-  
+
