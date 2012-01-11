@@ -16,7 +16,7 @@
 #
 
 import MDAnalysis
-from MDAnalysis.topology.core import guess_atom_type, get_atom_mass
+from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
 from MDAnalysis.tests.datafiles import PRMpbc
 
 from numpy.testing import *
@@ -24,10 +24,14 @@ from numpy.testing import *
 def check_atom_type(atype, aname):
     assert_equal(guess_atom_type(aname), atype)
 
+def check_atom_element(element, aname):
+    assert_equal(guess_atom_element(aname), element)
+
 class _TestGuessAtomType(object):
     atype = None
     testnames = []
     mass = None
+    element = None
     def test_guess_atom_type(self):
         for aname in self.testnames:
             yield check_atom_type, self.atype, aname
@@ -35,61 +39,77 @@ class _TestGuessAtomType(object):
     def test_guess_atom_mass(self):
         assert_equal(get_atom_mass(self.atype), self.mass)
 
+    def test_guess_atom_element(self):
+        for aname in self.testnames:
+            yield check_atom_element, self.element, aname
+
 
 class TestHydrogen(_TestGuessAtomType):
     atype = 'H'
+    element = 'H'
     mass = 1.008
-    testnames = ['H', 'HZ', '1HZ', '2HW']
+    testnames = ['H', 'HZ', '1HZ', '2HW', 'HE']
 
 class TestCarbon(_TestGuessAtomType):
     atype = 'C'
+    element = 'C'
     mass = 12.0110
     testnames = ['C', 'CA']
 
 class TestSodium(_TestGuessAtomType):
     atype = 'NA'
+    element = 'NA'
     mass = 22.989770
     testnames = ['NA', 'NA+', 'SOD', 'QN']
 
 class TestPotassium(_TestGuessAtomType):
     atype = 'K'
+    element = 'K'
     mass = 39.102
     testnames = ['K', 'K+', 'POT', 'QK']
 
 class TestChloride(_TestGuessAtomType):
     atype = 'CL'
+    element = 'CL'
     mass = 35.450
     testnames = ['CL', 'CL-', 'CLA', 'CLAL']
 
 class TestNitrogen(_TestGuessAtomType):
     atype = 'N'
+    element = 'N'
     mass = 14.007
-    testnames = ['N', 'NZ']
+    testnames = ['N', 'NZ', 'NE']
 
 class TestPhosphorous(_TestGuessAtomType):
     atype = 'P'
+    element = 'P'
     mass = 30.974000
     testnames = ['P', 'PL', 'PO']
 
 class TestSulfur(_TestGuessAtomType):
     atype = 'S'
+    element = 'S'
     mass = 32.06000
     testnames = ['S', 'SG']
 
 class TestOxygen(_TestGuessAtomType):
     atype = 'O'
+    element = 'O'
     mass = 15.99900
     testnames = ['O', 'OA', 'OXT', '1OG', 'OW']
 
 class TestCalcium(_TestGuessAtomType):
     atype = 'CA'
+    element = 'CA'
     mass = 40.080000
     testnames = ['CAL','CA2+', 'C0']
 
 class TestMagnesium(_TestGuessAtomType):
     atype = 'MG'
+    element = 'MG'
     mass = 24.305000
     testnames = ['MG', 'MG2+']
+
 
 # add more...
 

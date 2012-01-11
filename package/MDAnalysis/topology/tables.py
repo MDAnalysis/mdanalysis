@@ -105,8 +105,10 @@ MG           MG
 MG2+         MG
 
 # Noble gases
-HE           HE
-NE           NE
+## XXX collides with NE, HE in Arg  XXX
+## XXX so we remove the noble gases XXX
+##HE           HE
+##NE           NE
 
 # Potassium
 POT          K

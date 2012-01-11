@@ -806,8 +806,8 @@ class PrimitivePDBWriter(base.Writer):
         resSeq = int(str(resSeq)[-4:]) # check for overflow here?
         iCode = iCode or ""
         iCode = iCode[:1]
-        element = element or guess_atom_element(name)  # element == 0|False|None will be guessed
-        element = str(element)[:2]            # make sure that is a string for user input
+        element = element or guess_atom_element(name.strip())  # element == 0|False|None will be guessed
+        element = str(element).strip()[:2]                     # make sure that is a string for user input
         segID = segID or chainID
         segID = segID[:4]
         self.pdbfile.write(self.fmt['ATOM'] % vars())
