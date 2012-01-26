@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/?? orbeckst, sebastien.buchoux, jandom, hallben
+02/??/12 orbeckst, sebastien.buchoux, jandom, hallben, lukasgrosser
 
   * 0.7.5 (currently in development)
 
@@ -31,6 +31,10 @@ The rules for this file:
   * read and write multi-frame PDB files (Issue 77; EXPERIMENTAL)
   * extend the PDB parsing, support CONECT and REMARK entries
   * new GNM-based trajectory analysis module (Issue 90)
+  * hydrogen bond analysis detects a range of GLYCAM atom types
+    and utils.convert_aa_code will also accept GLYCAM-style residue
+    names (Issue 92)
+  * XYZ reader: can set timestep (Issue 92)
 
   Changes
 
@@ -59,7 +63,7 @@ The rules for this file:
     as "iterable"; this lead the Reader autodections and then the
     ChainReader fail with "Runtime Error: Maximum recursion depth
     exceeded" for single filenames provided as a unicode string.
-
+  * fixed: HBond analysis pickling of tables (Issue 92) 
 
 
 07/09/11 orbeckst, dcaplan, jandom

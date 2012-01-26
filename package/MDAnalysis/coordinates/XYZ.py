@@ -27,9 +27,9 @@ the topology, just as here)
 * the atom name (first column) is ignored
 * the coordinates are assumed to be space-delimited rather than fixed width (this may cause issues - see below)
 * all fields to the right of the z-coordinate are ignored
-* it is assumed that the number following "frame" is the time in picoseconds
 * it is assumed that the coordinates are in Angstroms
 * the unitcell information is all zeros since this is not recorded in the XYZ format
+* the length of a timestep can be set by passing the `delta` argument, it's assumed to be in ps (default: 1 ps)
 
 There appears to be no rigid format definition so it is likely users
 will need to tweak this Class.
@@ -101,6 +101,8 @@ class XYZReader(base.Reader):
         self.fixed = 0
         self.skip = 1
         self.periodic = False
+        self.delta = kwargs.pop("delta", 1.0)   # can set delta manually, default is 1ps (taken from TRJReader)
+        self.skip_timestep = 1
 
         self.ts = Timestep(self.numatoms)
 

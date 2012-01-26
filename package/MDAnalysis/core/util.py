@@ -445,11 +445,11 @@ def convert_aa_code(x):
 
 
 #: Regular expression to match and parse a residue-atom selection; will match
-#: "LYS300:HZ1" or "K300:HZ1" or "K300".
+#: "LYS300:HZ1" or "K300:HZ1" or "K300" or "4GB300:H6O" or "4GB300" or "YaA300".
 RESIDUE = re.compile("""
                  (?P<aa>([ACDEFGHIKLMNPQRSTVWY])   # 1-letter amino acid
                         |                          #   or
-                        ([A-Z][A-Z][A-Z][A-Z]?)    # 3-letter or 4-letter residue name
+                        ([0-9A-Z][a-zA-Z][A-Z][A-Z]?)    # 3-letter or 4-letter residue name
                  )
                  \s*                               # white space allowed
                  (?P<resid>\d+)                    # resid
@@ -468,6 +468,8 @@ def parse_residue(residue):
      - "LYS300:HZ1" --> ("LYS", 300, "HZ1")
      - "K300:HZ1" --> ("LYS", 300, "HZ1")
      - "K300" --> ("LYS", 300, None)
+     - "4GB300:H6O" --> ("4GB", 300, "H6O")
+     - "4GB300" --> ("4GB", 300, None)
 
     :Argument: The *residue* must contain a 1-letter or 3-letter or
                4-letter residue string, a number (the resid) and
