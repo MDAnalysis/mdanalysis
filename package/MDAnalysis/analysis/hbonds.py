@@ -281,6 +281,8 @@ class HydrogenBondAnalysis(object):
         self.timeseries = None  # final result
         self._timesteps = None  # time for each frame
 
+        self.table = None # storage for pickle export
+
         self._update_selection_1()
         self._update_selection_2()
 

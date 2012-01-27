@@ -101,6 +101,8 @@ class XYZReader(base.Reader):
         self.fixed = 0
         self.skip = 1
         self.periodic = False
+        self.delta = 0
+        self.skip_timestep = 1
 
         self.ts = Timestep(self.numatoms)
 
