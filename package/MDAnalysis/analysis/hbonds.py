@@ -211,14 +211,13 @@ class HydrogenBondAnalysis(object):
     #: Use the keyword *donors* to add a list of additional donor names.
     DEFAULT_DONORS = tuple(set(['N', 'OH2', 'OW', 'NE', 'NH1' 'NH2', 'ND2', 'SG', 'NE2',
                                'ND1', 'NE2', 'ND1', 'NE2', 'ND1', 'NE2', 'NZ', 'OG', 'OG1',
-                               'NE1', 'OH','O','O1','O2','O3','O4','O5','O6',]))
+                               'NE1', 'OH',]))
 
     #: default atom names that are treated as hydrogen *acceptors*
     #: (see :ref:`Default atom names for hydrogen bonding analysis`)
     #: Use the keyword *acceptors* to add a list of additional acceptor names.
     DEFAULT_ACCEPTORS = tuple(set(['O', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1', 'OE2',
-                                   'ND1', 'NE2', 'NE2', 'ND1', 'SD', 'OG', 'OG1', 'OH','O',
-                                   'O1','O2','O3','O4','O5','O6',]))
+                                   'ND1', 'NE2', 'NE2', 'ND1', 'SD', 'OG', 'OG1', 'OH',]))
 
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
                 update_selection1=False, update_selection2=False, filter_first=True, distance=3.0, angle=120.0,

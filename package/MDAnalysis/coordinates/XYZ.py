@@ -27,7 +27,6 @@ the topology, just as here)
 * the atom name (first column) is ignored
 * the coordinates are assumed to be space-delimited rather than fixed width (this may cause issues - see below)
 * all fields to the right of the z-coordinate are ignored
-* it is assumed that the number following "frame" is the time in picoseconds
 * it is assumed that the coordinates are in Angstroms
 * the unitcell information is all zeros since this is not recorded in the XYZ format
 * the length of a timestep can be set by passing the `delta` argument, it's assumed to be in ps (default: 1 ps)
