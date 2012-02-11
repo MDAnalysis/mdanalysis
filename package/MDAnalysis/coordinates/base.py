@@ -163,27 +163,89 @@ class IObase(object):
     #: ... for formats that support it)
     units = {'time': None, 'length': None}
 
-    def convert_pos_from_native(self, x):
-        """In-place conversion of coordinate array x from native units to base units."""
+    def convert_pos_from_native(self, x, inplace=True):
+        """In-place conversion of coordinate array x from native units to base units.
+
+        By default, the input *x* is modified in place and also returned.
+
+        .. versionchanged:: 0.7.5
+           Keyword *inplace* can be set to ``False`` so that a
+           modified copy is returned *unless* no conversion takes
+           place, in which case the reference to the unmodified *x* is
+           returned.
+
+        """
         f = units.get_conversion_factor('length', self.units['length'], MDAnalysis.core.flags['length_unit'])
+        if f == 1.:
+            return x
+        if not inplace:
+            return f*x
         x *= f
         return x
 
-    def convert_time_from_native(self, t):
-        """Convert time *t* from native units to base units."""
+    def convert_time_from_native(self, t, inplace=True):
+        """Convert time *t* from native units to base units.
+
+        By default, the input *t* is modified in place and also
+        returned (although note that scalar values *t* are passed by
+        value in Python and hence an in-place modification has no
+        effect on the caller.)
+
+        .. versionchanged:: 0.7.5
+           Keyword *inplace* can be set to ``False`` so that a
+           modified copy is returned *unless* no conversion takes
+           place, in which case the reference to the unmodified *x* is
+           returned.
+
+        """
         f = units.get_conversion_factor('time', self.units['time'], MDAnalysis.core.flags['time_unit'])
+        if f == 1.:
+            return t
+        if not inplace:
+            return f*t
         t *= f
         return t
 
-    def convert_pos_to_native(self, x):
-        """In-place conversion of coordinate array x from base units to native units."""
+    def convert_pos_to_native(self, x, inplace=True):
+        """Conversion of coordinate array x from base units to native units.
+
+        By default, the input *x* is modified in place and also returned.
+
+        .. versionchanged:: 0.7.5
+           Keyword *inplace* can be set to ``False`` so that a
+           modified copy is returned *unless* no conversion takes
+           place, in which case the reference to the unmodified *x* is
+           returned.
+
+        """
         f = units.get_conversion_factor('length', MDAnalysis.core.flags['length_unit'], self.units['length'])
+        if f == 1.:
+            return x
+        if not inplace:
+            return f*x
         x *= f
         return x
 
-    def convert_time_to_native(self, t):
-        """Convert time *t* from base units to native units."""
+    def convert_time_to_native(self, t, inplace=True):
+        """Convert time *t* from base units to native units.
+
+        By default, the input *t* is modified in place and also
+        returned. (Also note that scalar values *t* are passed by
+        value in Python and hence an in-place modification has no
+        effect on the caller.)
+
+        .. versionchanged:: 0.7.5
+           Keyword *inplace* can be set to ``False`` so that a
+           modified copy is returned *unless* no conversion takes
+           place, in which case the reference to the unmodified *x* is
+           returned.
+
+        """
         f = units.get_conversion_factor('time', MDAnalysis.core.flags['time_unit'], self.units['time'])
+        if f == 1.:
+            return t
+        if not inplace:
+            return f*t
         t *= f
         return t
 

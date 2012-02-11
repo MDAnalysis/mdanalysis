@@ -40,7 +40,11 @@ The rules for this file:
 
   * install a range of analysis dependencies right away: networkx,
     biopython, GridDataFormats (usually all painless); leave scipy and
-    matplotlib to the user and the local package manager   
+    matplotlib to the user and the local package manager  
+  * When writing a trajectory and converting units, effectively a copy
+    of the timestep is made and the in-memory timestep is not
+    altered. In this way, analysis after writing a frame will still
+    see the coordinates in MDAnalysis units and not converted units.
   
   Fixes
 

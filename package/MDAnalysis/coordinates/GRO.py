@@ -202,7 +202,7 @@ class GROWriter(base.Writer):
 
                 atoms = selection.atoms           # make sure to use atoms (Issue 46)
                 coordinates = atoms.coordinates() # can write from selection == Universe (Issue 49)
-                self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, in-place !
+                self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, inplace because coordinates is already a copy
                 # check if any coordinates are illegal (checks the coordinates in native nm!)
                 if not self.has_valid_coordinates(self.gro_coor_limits, coordinates):
                         raise ValueError("GRO files must have coordinate values between %.3f and %.3f nm: No file was written." %
