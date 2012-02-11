@@ -61,7 +61,7 @@
                         title="previous chapter">5.1. Coordinate/Trajectory Readers and Writers  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="core.html"
-                        title="next chapter">5.3. Common functions for coordinate reading &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
+                        title="next chapter">5.3. Common functions for coordinate reading &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/base.txt"
@@ -109,7 +109,7 @@ module. The derived classes must follow the Trajectory API in
 <dd><p class="first last">frame number</p>
 </dd>
 <dt><tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt></dt>
-<dd><p class="first">coordinates as a (<em>numatoms</em>,3) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-4fb84e7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype
+<dd><p class="first">coordinates as a (<em>numatoms</em>,3) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-ca258fc)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype
 <tt class="xref py py-data docutils literal"><span class="pre">float32</span></tt>.</p>
 <div class="last admonition note">
 <p class="first admonition-title">Note</p>
@@ -177,26 +177,74 @@ are in the MDAnalysis length unit, and angles are in degrees.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_pos_from_native">
-<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
+<p>By default, the input <em>x</em> is modified in place and also returned.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_pos_to_native">
-<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>In-place conversion of coordinate array x from base units to native units.</p>
+<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array x from base units to native units.</p>
+<p>By default, the input <em>x</em> is modified in place and also returned.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_time_from_native">
-<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned (although note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_time_to_native">
-<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned. (Also note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.IObase.convert_velocities_from_native">
+<tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array <em>v</em> from native units to base units.</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.IObase.convert_velocities_to_native">
+<tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -379,7 +427,7 @@ the required attributes and methods.</p>
 <dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
 </dd>
 <dt><em>x</em></dt>
-<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-4fb84e7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
+<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-ca258fc)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
 </dd>
 </dl>
 </td>

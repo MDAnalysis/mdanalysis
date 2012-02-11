@@ -73,7 +73,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="TRJ.html"
-                        title="previous chapter">5.10. TRJ/MDCRD file format (Amber) &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></p>
+                        title="previous chapter">5.10. TRJ/MDCRD file format (Amber) &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="XTC.html"
                         title="next chapter">5.12. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></p>
@@ -258,26 +258,74 @@ for TRR) [1000.0]</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_from_native">
-<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
+<p>By default, the input <em>x</em> is modified in place and also returned.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_to_native">
-<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>In-place conversion of coordinate array x from base units to native units.</p>
+<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array x from base units to native units.</p>
+<p>By default, the input <em>x</em> is modified in place and also returned.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_from_native">
-<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned (although note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_to_native">
-<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned. (Also note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_velocities_from_native">
+<tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array <em>v</em> from native units to base units.</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_velocities_to_native">
+<tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -418,26 +466,74 @@ the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_from_native">
-<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
+<p>By default, the input <em>x</em> is modified in place and also returned.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_to_native">
-<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>In-place conversion of coordinate array x from base units to native units.</p>
+<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array x from base units to native units.</p>
+<p>By default, the input <em>x</em> is modified in place and also returned.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_from_native">
-<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned (although note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_to_native">
-<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned. (Also note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_velocities_from_native">
+<tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array <em>v</em> from native units to base units.</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_velocities_to_native">
+<tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -456,7 +552,7 @@ the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a
 <dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
 </dd>
 <dt><em>x</em></dt>
-<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-4fb84e7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
+<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-ca258fc)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
 </dd>
 </dl>
 </td>
@@ -476,8 +572,8 @@ the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a
 a <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> or a <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The size of the <em>obj</em> must be the same as the number
-of atom provided when setting up the trajectory.</p>
+<p class="last">The size of the <em>obj</em> must be the same as the number of atom
+provided when setting up the trajectory.</p>
 </div>
 </dd></dl>
 

@@ -99,9 +99,9 @@ the topology, just as here)</p>
 <li>the atom name (first column) is ignored</li>
 <li>the coordinates are assumed to be space-delimited rather than fixed width (this may cause issues - see below)</li>
 <li>all fields to the right of the z-coordinate are ignored</li>
-<li>it is assumed that the number following &#8220;frame&#8221; is the time in picoseconds</li>
 <li>it is assumed that the coordinates are in Angstroms</li>
 <li>the unitcell information is all zeros since this is not recorded in the XYZ format</li>
+<li>the length of a timestep can be set by passing the <cite>delta</cite> argument, it&#8217;s assumed to be in ps (default: 1 ps)</li>
 </ul>
 <p>There appears to be no rigid format definition so it is likely users
 will need to tweak this Class.</p>

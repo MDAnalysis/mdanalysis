@@ -331,6 +331,10 @@ multi           False: write a single structure to a single pdb</p>
 </table>
 <p>Read coordinates from <em>filename</em>.</p>
 <p><em>filename</em> can be a gzipped or bzip2ed compressed PDB file.</p>
+<p>If the pdb file contains multiple MODEL records then it is
+read as a trajectory where the MODEL numbers correspond to
+frame numbers. Therefore, the MODEL numbers must be a sequence
+of integeres (typically starting at 1 or 0).</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.Writer">
 <tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.Writer" title="Permalink to this definition">¶</a></dt>
@@ -369,9 +373,36 @@ multi           False: write a single structure to a single pdb</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PrimitivePDBWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PrimitivePDBWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PrimitvePDBWriter'</em>, <em>convert_units=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDB writer that implements a subset of the PDB 3.2 standard.
 <a class="reference external" href="http://www.wwpdb.org/documentation/format32/v3.2.html">http://www.wwpdb.org/documentation/format32/v3.2.html</a></p>
+<p>Create a new PDBWriter</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">name of output file</p>
+</dd>
+<dt><em>start</em></dt>
+<dd><p class="first last">starting timestep</p>
+</dd>
+<dt><em>step</em></dt>
+<dd><p class="first last">skip between subsequent timesteps</p>
+</dd>
+<dt><em>remarks</em></dt>
+<dd><p class="first last">comments to annotate pdb file</p>
+</dd>
+<dt><em>convert_units</em></dt>
+<dd><p class="first last">units are converted to the MDAnalysis base format; <tt class="xref docutils literal"><span class="pre">None</span></tt> selects
+the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a>MDAnalysis.core.flags`[&#8216;convert_gromacs_lengths&#8217;]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM">
 <tt class="descname">ATOM</tt><big>(</big><em>serial=None</em>, <em>name=None</em>, <em>altLoc=None</em>, <em>resName=None</em>, <em>chainID=None</em>, <em>resSeq=None</em>, <em>iCode=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em>, <em>occupancy=1.0</em>, <em>tempFactor=0.0</em>, <em>segID=None</em>, <em>element=None</em>, <em>charge=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM" title="Permalink to this definition">¶</a></dt>
@@ -394,7 +425,7 @@ are chopped.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.REMARK">
-<tt class="descname">REMARK</tt><big>(</big><em>*remark</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.REMARK" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">REMARK</tt><big>(</big><em>trajectory</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.REMARK" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write generic REMARK record (without number).
 <a class="reference external" href="http://www.wwpdb.org/documentation/format32/remarks1.html">http://www.wwpdb.org/documentation/format32/remarks1.html</a>
 <a class="reference external" href="http://www.wwpdb.org/documentation/format32/remarks2.html">http://www.wwpdb.org/documentation/format32/remarks2.html</a></p>
@@ -409,7 +440,7 @@ are chopped.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write">
-<tt class="descname">write</tt><big>(</big><em>selection</em>, <em>frame=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write selection at current trajectory frame to file.</p>
 <p>write(selection,frame=FRAME)</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -433,6 +464,13 @@ are chopped.</p>
 <p class="last">The first letter of the <tt class="xref py py-attr docutils literal"><span class="pre">segid</span></tt>
 is used as the PDB chainID.</p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write_next_timestep">
+<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>write a new timestep to the dcd file</p>
+<p>ts - timestep object containing coordinates to be written to dcd file</p>
 </dd></dl>
 
 </dd></dl>

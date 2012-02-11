@@ -180,6 +180,7 @@
     <dd><dl>
       <dt><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Grid.check_compatible">(MDAnalysis.analysis.density.Grid method)</a></dt>
   </dl></dd>
+    <dt><a href="documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue.chi1_selection">chi1_selection() (MDAnalysis.core.AtomGroup.Residue method)</a></dt>
     <dt><a href="documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection.clear">clear() (MDAnalysis.core.Timeseries.TimeseriesCollection method)</a></dt>
     <dt><a href="documentation_pages/core/log.html#MDAnalysis.core.log.clear_handlers">clear_handlers() (in module MDAnalysis.core.log)</a></dt>
     <dt><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase.close">close() (MDAnalysis.coordinates.base.IObase method)</a></dt>
@@ -207,9 +208,9 @@
     <dt><a href="documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection.compute">compute() (MDAnalysis.core.Timeseries.TimeseriesCollection method)</a></dt>
     <dt><a href="documentation_pages/core/transformations.html#MDAnalysis.core.transformations.concatenate_matrices">concatenate_matrices() (in module MDAnalysis.core.transformations)</a></dt>
     <dt><a href="documentation_pages/analysis/distances.html#MDAnalysis.analysis.distances.contact_matrix">contact_matrix() (in module MDAnalysis.analysis.distances)</a></dt>
+    <dt><a href="documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.ContactAnalysis">ContactAnalysis (class in MDAnalysis.analysis.contacts)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.ContactAnalysis">ContactAnalysis (class in MDAnalysis.analysis.contacts)</a></dt>
     <dt><a href="documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.ContactAnalysis1">ContactAnalysis1 (class in MDAnalysis.analysis.contacts)</a>, <a href="documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.ContactAnalysis1">[1]</a></dt>
     <dt><a href="documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.ContactAnalysis1.ContactAnalysis1">ContactAnalysis1.ContactAnalysis1 (class in MDAnalysis.analysis.contacts)</a></dt>
     <dt><a href="documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.ContactAnalysis1.plot">ContactAnalysis1.plot() (in module MDAnalysis.analysis.contacts)</a></dt>
@@ -252,6 +253,20 @@
       <dt><a href="documentation_pages/coordinates/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_to_native">(MDAnalysis.coordinates.xdrfile.TRR.TRRWriter method)</a></dt>
       <dt><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.XTCReader.convert_time_to_native">(MDAnalysis.coordinates.xdrfile.XTC.XTCReader method)</a></dt>
       <dt><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.XTCWriter.convert_time_to_native">(MDAnalysis.coordinates.xdrfile.XTC.XTCWriter method)</a></dt>
+  </dl></dd>
+    <dt><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase.convert_velocities_from_native">convert_velocities_from_native() (MDAnalysis.coordinates.base.IObase method)</a></dt>
+    <dd><dl>
+      <dt><a href="documentation_pages/coordinates/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_velocities_from_native">(MDAnalysis.coordinates.xdrfile.TRR.TRRReader method)</a></dt>
+      <dt><a href="documentation_pages/coordinates/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_velocities_from_native">(MDAnalysis.coordinates.xdrfile.TRR.TRRWriter method)</a></dt>
+      <dt><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.XTCReader.convert_velocities_from_native">(MDAnalysis.coordinates.xdrfile.XTC.XTCReader method)</a></dt>
+      <dt><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.XTCWriter.convert_velocities_from_native">(MDAnalysis.coordinates.xdrfile.XTC.XTCWriter method)</a></dt>
+  </dl></dd>
+    <dt><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase.convert_velocities_to_native">convert_velocities_to_native() (MDAnalysis.coordinates.base.IObase method)</a></dt>
+    <dd><dl>
+      <dt><a href="documentation_pages/coordinates/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_velocities_to_native">(MDAnalysis.coordinates.xdrfile.TRR.TRRReader method)</a></dt>
+      <dt><a href="documentation_pages/coordinates/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_velocities_to_native">(MDAnalysis.coordinates.xdrfile.TRR.TRRWriter method)</a></dt>
+      <dt><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.XTCReader.convert_velocities_to_native">(MDAnalysis.coordinates.xdrfile.XTC.XTCReader method)</a></dt>
+      <dt><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.XTCWriter.convert_velocities_to_native">(MDAnalysis.coordinates.xdrfile.XTC.XTCWriter method)</a></dt>
   </dl></dd>
     <dt><a href="documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.coord">coord (MDAnalysis.core.AtomGroup.Universe attribute)</a></dt>
     <dt><a href="documentation_pages/KDTree/NeighborSearch.html#MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch">CoordinateNeighborSearch (class in MDAnalysis.KDTree.NeighborSearch)</a></dt>
@@ -428,14 +443,15 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Segment.id">id (MDAnalysis.core.AtomGroup.Segment attribute)</a></dt>
     <dt><a href="documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.improper">improper() (MDAnalysis.core.AtomGroup.AtomGroup method)</a></dt>
     <dt><a href="documentation_pages/core/qcprot.html#MDAnalysis.core.qcprot.InnerProduct">InnerProduct() (in module MDAnalysis.core.qcprot)</a></dt>
+</dl></td>
+  <td style="width: 33%" valign="top"><dl>
     <dt><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.interpolated">interpolated (MDAnalysis.analysis.density.Density attribute)</a></dt>
     <dd><dl>
       <dt><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Grid.interpolated">(MDAnalysis.analysis.density.Grid attribute)</a></dt>
   </dl></dd>
-</dl></td>
-  <td style="width: 33%" valign="top"><dl>
     <dt><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase">IObase (class in MDAnalysis.coordinates.base)</a></dt>
     <dt><a href="documentation_pages/core/util.html#MDAnalysis.core.util.iterable">iterable() (in module MDAnalysis.core.util)</a></dt>
 </dl></td>
@@ -578,15 +594,16 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue.omega_selection">omega_selection() (MDAnalysis.core.AtomGroup.Residue method)</a></dt>
     <dt><a href="documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.TRJReader.open_trajectory">open_trajectory() (MDAnalysis.coordinates.TRJ.TRJReader method)</a></dt>
     <dd><dl>
       <dt><a href="documentation_pages/coordinates/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.open_trajectory">(MDAnalysis.coordinates.xdrfile.TRR.TRRReader method)</a></dt>
       <dt><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.XTCReader.open_trajectory">(MDAnalysis.coordinates.xdrfile.XTC.XTCReader method)</a></dt>
   </dl></dd>
     <dt><a href="documentation_pages/core/util.html#MDAnalysis.core.util.openany">openany() (in module MDAnalysis.core.util)</a></dt>
-    <dt><a href="documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.optimize_cutoff">optimize_cutoff() (in module MDAnalysis.analysis.leaflet)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.optimize_cutoff">optimize_cutoff() (in module MDAnalysis.analysis.leaflet)</a></dt>
     <dt><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Reader.OtherWriter">OtherWriter() (MDAnalysis.coordinates.base.Reader method)</a></dt>
     <dd><dl>
       <dt><a href="documentation_pages/coordinates/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.OtherWriter">(MDAnalysis.coordinates.xdrfile.TRR.TRRReader method)</a></dt>
@@ -620,6 +637,7 @@
     <dt><a href="documentation_pages/coordinates/PDBQT.html#MDAnalysis.coordinates.PDBQT.PDBQTWriter">PDBQTWriter (class in MDAnalysis.coordinates.PDBQT)</a></dt>
     <dt><a href="documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBReader">PDBReader (class in MDAnalysis.coordinates.PDB)</a></dt>
     <dt><a href="documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter">PDBWriter (class in MDAnalysis.coordinates.PDB)</a></dt>
+    <dt><a href="documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue.phi_selection">phi_selection() (MDAnalysis.core.AtomGroup.Residue method)</a></dt>
     <dt><a href="documentation_pages/core/transformations.html#MDAnalysis.core.transformations.Arcball.place">place() (MDAnalysis.core.transformations.Arcball method)</a></dt>
     <dt><a href="documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.ContactAnalysis.plot">plot() (MDAnalysis.analysis.contacts.ContactAnalysis method)</a></dt>
     <dd><dl>
@@ -641,6 +659,7 @@
     <dt><a href="documentation_pages/core/Selection.html#MDAnalysis.core.Selection.ProteinSelection.prot_res">prot_res (MDAnalysis.core.Selection.ProteinSelection attribute)</a></dt>
     <dt><a href="documentation_pages/core/Selection.html#MDAnalysis.core.Selection.ProteinSelection">ProteinSelection (class in MDAnalysis.core.Selection)</a></dt>
     <dt><a href="documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParseError">PSFParseError</a></dt>
+    <dt><a href="documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue.psi_selection">psi_selection() (MDAnalysis.core.AtomGroup.Residue method)</a></dt>
 </dl></td>
 </tr></table>
 
@@ -783,6 +802,7 @@
     <dt><a href="documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.Timeseries.shape">shape (MDAnalysis.core.Timeseries.Timeseries attribute)</a></dt>
     <dt><a href="documentation_pages/core/transformations.html#MDAnalysis.core.transformations.shear_from_matrix">shear_from_matrix() (in module MDAnalysis.core.transformations)</a></dt>
     <dt><a href="documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.LeafletFinder.sizes">sizes() (MDAnalysis.analysis.leaflet.LeafletFinder method)</a></dt>
+    <dt><a href="documentation_pages/core/units.html#MDAnalysis.core.units.speedUnit_factor">speedUnit_factor (in module MDAnalysis.core.units)</a></dt>
     <dt><a href="documentation_pages/core/log.html#MDAnalysis.start_logging">start_logging() (in module MDAnalysis)</a></dt>
     <dt><a href="documentation_pages/core/log.html#MDAnalysis.stop_logging">stop_logging() (in module MDAnalysis)</a></dt>
     <dt><a href="documentation_pages/core/util.html#MDAnalysis.core.util.stp">stp() (in module MDAnalysis.core.util)</a></dt>
@@ -861,8 +881,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
     <dt><a href="documentation_pages/core/transformations.html#MDAnalysis.core.transformations.vecangle">vecangle() (in module MDAnalysis.core.transformations)</a></dt>
+    <dt><a href="documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.velocities">velocities() (MDAnalysis.core.AtomGroup.AtomGroup method)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.velocity">velocity (MDAnalysis.core.AtomGroup.Atom attribute)</a></dt>
     <dt><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.volume">volume (MDAnalysis.coordinates.base.Timestep attribute)</a></dt>
     <dd><dl>
       <dt><a href="documentation_pages/coordinates/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.Timestep.volume">(MDAnalysis.coordinates.xdrfile.TRR.Timestep attribute)</a></dt>
@@ -894,6 +916,7 @@
   </dl></dd>
     <dt><a href="documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep">write_next_timestep() (MDAnalysis.coordinates.DCD.DCDWriter method)</a></dt>
     <dd><dl>
+      <dt><a href="documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write_next_timestep">(MDAnalysis.coordinates.PDB.PrimitivePDBWriter method)</a></dt>
       <dt><a href="documentation_pages/coordinates/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write_next_timestep">(MDAnalysis.coordinates.xdrfile.TRR.TRRWriter method)</a></dt>
       <dt><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.XTCWriter.write_next_timestep">(MDAnalysis.coordinates.xdrfile.XTC.XTCWriter method)</a></dt>
   </dl></dd>

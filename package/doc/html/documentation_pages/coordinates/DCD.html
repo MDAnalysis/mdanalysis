@@ -58,7 +58,7 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="CRD.html"
-                        title="previous chapter">5.4. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></p>
+                        title="previous chapter">5.4. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="GRO.html"
                         title="next chapter">5.6. GRO file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
@@ -288,7 +288,11 @@ the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a
 <dt id="MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep">
 <tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>write a new timestep to the dcd file</p>
-<p>ts - timestep object containing coordinates to be written to dcd file</p>
+<p><em>ts</em> - timestep object containing coordinates to be written to dcd file</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Raises <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> instead of generic <tt class="xref py py-exc docutils literal"><span class="pre">Exception</span></tt>
+if wrong number of atoms supplied and <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt>
+if no coordinates to be written.</p>
 </dd></dl>
 
 </dd></dl>
