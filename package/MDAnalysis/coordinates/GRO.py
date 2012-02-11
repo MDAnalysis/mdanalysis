@@ -29,6 +29,8 @@ Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 from __future__ import with_statement
 
 import os, errno
+import warnings
+
 import numpy
 
 import MDAnalysis
@@ -144,7 +146,8 @@ class GROWriter(base.Writer):
 
         .. Note::
 
-           The precision is hard coded to three decimal places.
+           The precision is hard coded to three decimal places and
+           velocities are not written (yet).
         """
 
         format = 'GRO'
@@ -162,7 +165,7 @@ class GROWriter(base.Writer):
                'box_triclinic': "%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n",
                }
 
-        def __init__(self,filename,**kwargs):
+        def __init__(self, filename, convert_units=None, **kwargs):
                 """Set up a GROWriter with a precision of 3 decimal places.
 
                 :Arguments:
@@ -170,6 +173,10 @@ class GROWriter(base.Writer):
                       output filename
                 """
                 self.filename = util.filename(filename,ext='gro')
+
+                if convert_units is None:
+                        convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+                self.convert_units = convert_units  # convert length and time to base units
 
         def convert_dimensions_to_unitcell(self, ts):
                 """Read dimensions from timestep *ts* and return appropriate unitcell"""
@@ -200,12 +207,15 @@ class GROWriter(base.Writer):
                         except AttributeError:
                                 frame = 1   # should catch cases when we are analyzing a single GRO (?)
 
-                atoms = selection.atoms           # make sure to use atoms (Issue 46)
-                coordinates = atoms.coordinates() # can write from selection == Universe (Issue 49)
-                self.convert_pos_to_native(coordinates)   # Convert back to nm from Angstroms, inplace because coordinates is already a copy
+                atoms = selection.atoms             # make sure to use atoms (Issue 46)
+                coordinates = atoms.coordinates()   # can write from selection == Universe (Issue 49)
+                if self.convert_units:
+                        # Convert back to nm from Angstroms, inplace because coordinates is already a copy
+                        self.convert_pos_to_native(coordinates)
                 # check if any coordinates are illegal (checks the coordinates in native nm!)
                 if not self.has_valid_coordinates(self.gro_coor_limits, coordinates):
-                        raise ValueError("GRO files must have coordinate values between %.3f and %.3f nm: No file was written." %
+                        raise ValueError("GRO files must have coordinate values between %.3f and %.3f nm:"
+                                         "No file was written." %
                                          (self.gro_coor_limits["min"], self.gro_coor_limits["max"]))
 
                 with open(self.filename , 'w') as output_gro:

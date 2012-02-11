@@ -629,6 +629,15 @@ class TestGROWriter(TestCase):
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
+    @dec.slow
+    def test_check_coordinate_limits_max_noconversion(self):
+        """Test that illegal GRO coordinates (x > 9999.9995 nm) also raises exception for convert_units=False"""
+        # modify coordinates so we need our own copy or we could mess up parallel tests
+        u = mda.Universe(GRO, convert_units=False)
+        u.atoms[1000].pos[1] = 9999.9999
+        assert_raises(ValueError, u.atoms.write, self.outfile2, convert_units=False)
+        del u
+
 
 class TestPDBReaderBig(TestCase, RefAdK):
     def setUp(self):
