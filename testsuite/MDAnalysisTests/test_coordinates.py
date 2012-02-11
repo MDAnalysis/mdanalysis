@@ -1220,6 +1220,31 @@ class TestXTCReader(_GromacsReader):
 class TestTRRReader(_GromacsReader):
     filename = TRR
 
+    @dec.slow
+    def test_velocities(self):
+
+        # frame 0, v in nm/ps
+        # from gmxdump -f MDAnalysisTests/data/adk_oplsaa.trr
+        #      v[47675]={-7.86469e-01,  1.57479e+00,  2.79722e-01}
+        #      v[47676]={ 2.70593e-08,  1.08052e-06,  6.97028e-07}
+        v_native = np.array([[-7.86469e-01,  1.57479e+00,  2.79722e-01],
+                             [2.70593e-08,  1.08052e-06,  6.97028e-07]], dtype=np.float32)
+
+        # velocities in the MDA base unit A/ps (needed for True)
+        v_base = v_native * 10.0
+        self.universe.trajectory.rewind()
+        assert_equal(self.ts.frame, 1, "failed to read frame 1")
+
+        assert_array_almost_equal(self.universe.trajectory.ts._velocities[[47675,47676]], v_base, self.prec,
+                                  err_msg="ts._velocities for indices 47675,47676 do not match known values")
+
+        assert_array_almost_equal(self.universe.atoms.velocities()[[47675,47676]], v_base, self.prec,
+                                  err_msg="velocities() for indices 47675,47676 do not match known values")
+
+        for index, v_known in zip([47675,47676], v_base):
+            assert_array_almost_equal(self.universe.atoms[index].velocity, v_known, self.prec,
+                                  err_msg="atom[%d].velocity does not match known values" % index)
+
 
 class _XDRNoConversion(TestCase):
     filename = None
@@ -1317,6 +1342,20 @@ class TestXTCWriter(_GromacsWriter):
 
 class TestTRRWriter(_GromacsWriter):
     infilename = TRR
+
+    def test_velocities(self):
+        t = self.universe.trajectory
+        W = self.Writer(self.outfile, t.numatoms, delta=t.delta, step=t.skip_timestep)
+        for ts in self.universe.trajectory:
+            W.write_next_timestep(ts)
+        W.close()
+
+        uw = mda.Universe(GRO, self.outfile)
+
+        # check that the velocities are identical for each time step
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+            assert_array_almost_equal(written_ts._velocities, orig_ts._velocities, 3,
+                                      err_msg="velocities mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
 
 @attr('issue')
 def test_triclinic_box():

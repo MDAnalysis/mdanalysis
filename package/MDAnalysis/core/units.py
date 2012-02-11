@@ -81,6 +81,7 @@ Data
 .. autodata:: water
 .. autodata:: densityUnit_factor
 .. autodata:: timeUnit_factor
+.. autodata:: speedUnit_factor
 .. autodata:: chargeUnit_factor
 .. autodata:: conversion_factor
 .. autodata:: unit_types
@@ -103,7 +104,8 @@ References
 #: *x* can be *nm*/*nanometer* or *fm*.
 lengthUnit_factor = {'Angstrom': 1.0, 'A': 1.0, 'Å': 1.0,
                      'nm': 1.0/10, 'nanometer': 1.0/10,
-                     'fm': 1.0/1000, 'femtometer': 1.0/1000,
+                     'pm': 1e2, 'picometer': 1e2,
+                     'fm': 1e5, 'femtometer': 1e5,
                      }
 
 
@@ -149,6 +151,16 @@ timeUnit_factor = {'ps': 1.0,   # 1/1.0
                    }
 # getting the factor f:  1200ps * f = 1.2 ns  ==> f = 1/1000 ns/ps
 
+#: For *speed*, the basic unit is Angstrom/ps.
+speedUnit_factor = {'Angstrom/ps': 1.0, 'A/ps': 1.0, 'Å/ps': 1.0, 'Angstrom/picosecond': 1.0,  # 1
+                    'Angstrom/AKMA': 4.888821e-2,
+                    'nm/ps': 0.1, 'nanometer/ps': 0.1, 'nanometer/picosecond': 0.1,       # 1/10
+                    'nm/ns': 0.1/1e-3,
+                    'pm/ps': 1e2,
+                    'm/s': 1e-10/1e-12,
+                    }
+# (TODO: build this combinatorically from lengthUnit and timeUnit)
+
 #: *Charge* is measured in multiples of the `electron charge`_
 #: *e* =  1.602176487 x 10**(-19) C.
 chargeUnit_factor = {'e': 1.0,
@@ -163,6 +175,7 @@ conversion_factor = {'length': lengthUnit_factor,
                      'density': densityUnit_factor,
                      'time': timeUnit_factor,
                      'charge': chargeUnit_factor,
+                     'speed': speedUnit_factor,
                      }
 
 #: Generated lookup table (dict): returns the type of unit for a known input unit.
@@ -175,7 +188,7 @@ for utype,ufactor in conversion_factor.items():
         unit_types[unit] = utype
 
 
-def get_conversion_factor(unit_type,u1,u2):
+def get_conversion_factor(unit_type, u1, u2):
     """generate the conversion factor u1 -> u2 by using the base unit as an intermediate
 
     f[u1 -> u2] = factor[u2]/factor[u1]

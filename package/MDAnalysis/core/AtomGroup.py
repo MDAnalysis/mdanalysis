@@ -161,6 +161,20 @@ class Atom(object):
         """Current cartesian coordinates of the atom."""
         return self.universe.coord[self.number] # internal numbering starts at 0
 
+    @property
+    def velocity(self):
+        """Current velocity of the atom.
+
+        A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory
+        does not contain velocities.
+
+        .. versionadded:: 0.7.5
+        """
+        try:
+            return self.universe.trajectory.ts._velocities[self.number]
+        except AttributeError:
+            raise NoDataError("Timestep does not contain velocities")
+
     def centroid(self):
         """The centroid of an atom is its position, :attr:`Atom.pos`."""
         # centroid exists for compatibility with AtomGroup
@@ -846,6 +860,21 @@ class AtomGroup(object):
         if ts == None:
             ts = self.universe.trajectory.ts
         return numpy.array(ts[self.indices()], copy=copy, dtype=dtype)
+
+    def velocities(self, ts=None, copy=False, dtype=numpy.float32):
+        """NumPy array of the velocities.
+
+        If the trajectory does not contain velocity information then a
+        :exc:`~MDAnalysis.NoDataError` is raised.
+
+        .. versionadded:: 0.7.5
+        """
+        if ts == None:
+            ts = self.universe.trajectory.ts
+        try:
+            return numpy.array(ts._velocities[self.indices()], copy=copy, dtype=dtype)
+        except AttributeError:
+            raise NoDataError("Timestep does not contain velocities")
 
     def transform(self, M):
         """Apply homogenous transformation matrix *M* to the coordinates.

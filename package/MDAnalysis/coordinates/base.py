@@ -161,7 +161,7 @@ class IObase(object):
 
     #: dict with units of of *time* and *length* (and *velocity*, *force*,
     #: ... for formats that support it)
-    units = {'time': None, 'length': None}
+    units = {'time': None, 'length': None, 'velocity': None}
 
     def convert_pos_from_native(self, x, inplace=True):
         """In-place conversion of coordinate array x from native units to base units.
@@ -182,6 +182,21 @@ class IObase(object):
             return f*x
         x *= f
         return x
+
+    def convert_velocities_from_native(self, v, inplace=True):
+        """In-place conversion of coordinate array *v* from native units to base units.
+
+        By default, the input *v* is modified in place and also returned.
+
+        .. versionadded:: 0.7.5
+        """
+        f = units.get_conversion_factor('speed', self.units['velocity'], MDAnalysis.core.flags['speed_unit'])
+        if f == 1.:
+            return v
+        if not inplace:
+            return f*v
+        v *= f
+        return v
 
     def convert_time_from_native(self, t, inplace=True):
         """Convert time *t* from native units to base units.
@@ -225,6 +240,21 @@ class IObase(object):
             return f*x
         x *= f
         return x
+
+    def convert_velocities_to_native(self, v, inplace=True):
+        """In-place conversion of coordinate array *v* from base units to native units.
+
+        By default, the input *v* is modified in place and also returned.
+
+        .. versionadded:: 0.7.5
+        """
+        f = units.get_conversion_factor('speed', MDAnalysis.core.flags['speed_unit'], self.units['velocity'])
+        if f == 1.:
+            return v
+        if not inplace:
+            return f*v
+        v *= f
+        return v
 
     def convert_time_to_native(self, t, inplace=True):
         """Convert time *t* from base units to native units.

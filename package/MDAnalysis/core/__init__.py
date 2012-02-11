@@ -291,6 +291,21 @@ _flags = [
 
          """
          ),
+    _Flag('speed_unit',
+         'Angstrom/ps',
+         {'Angstrom/ps': 'Angstrom/ps', 'A/ps':'Angstrom/ps',
+          'nm/ps': 'nm/ps', 'nanometer/ps': 'nm/ps', 'nanometer/picosecond': 'nm/ps',
+          'Angstrom/AKMA': 'Angstrom/AKMA', 'A/AKMA': 'Angstrom/AKMA',
+          'pm/ps': 'pm/ps',
+          'm/s': 'm/s',
+          },
+         """
+            Base unit for speed (in particular velocities in trajectories)
+
+            >>> flags['%(name)s'] = value
+
+         """
+         ),
     _Flag('charge_unit',
          'e',
          {'e': 'e', 'electron charge': 'e',
