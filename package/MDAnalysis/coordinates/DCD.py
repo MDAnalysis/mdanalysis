@@ -32,6 +32,7 @@ import base
 from base import Timestep
 
 import MDAnalysis.core
+from MDAnalysis import NoDataError
 
 class DCDWriter(base.Writer):
     """Writes to a DCD file
@@ -114,27 +115,34 @@ class DCDWriter(base.Writer):
         # seems to do the job on Mac OS X 10.6.4 ... but I have no idea why,
         # given that the C code seems to define them as normal integers
         import struct
-        desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']
+        desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart',
+                'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr',
+                'reverse', 'charmm', 'first', 'with_unitcell']
         return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii",self._dcd_C_str)))
     def write_next_timestep(self, ts=None):
         ''' write a new timestep to the dcd file
 
-            ts - timestep object containing coordinates to be written to dcd file
+        *ts* - timestep object containing coordinates to be written to dcd file
+
+        .. versionchanged:: 0.7.5
+           Raises :exc:`ValueError` instead of generic :exc:`Exception`
+           if wrong number of atoms supplied and :exc:`~MDAnalysis.NoDataError`
+           if no coordinates to be written.
         '''
         if ts is None:
             if not hasattr(self, "ts"):
-                raise Exception("DCDWriter: no coordinate data to write to trajectory file")
+                raise NoDataError("DCDWriter: no coordinate data to write to trajectory file")
             else:
                 ts=self.ts
         # Check to make sure Timestep has the correct number of atoms
         elif not ts.numatoms == self.numatoms:
-            raise Exception("DCDWriter: Timestep does not have the correct number of atoms")
-        if self.convert_units:
-            self.convert_pos_to_native(ts._pos)             # in-place !
+            raise ValueError("DCDWriter: Timestep does not have the correct number of atoms")
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
         if not ts._pos.flags.f_contiguous:  # Not in fortran format
             ts = Timestep(ts)               # wrap in a new fortran formatted Timestep
-        self._write_next_frame(ts._x, ts._y, ts._z, unitcell)
+        if self.convert_units:
+            pos = self.convert_pos_to_native(ts._pos, inplace=False)  # possibly make a copy to avoid changing the trajectory
+        self._write_next_frame(pos[:,0], pos[:,1], pos[:,2], unitcell)
         self.frames_written += 1
     def close(self):
         # Do i really need this?
@@ -280,9 +288,9 @@ class DCDReader(base.Reader):
         """
         start, stop, skip = self._check_slice_indices(start, stop, skip)
         if len(asel) == 0:
-            raise Exception("Timeseries requires at least one atom to analyze")
+            raise NoDataError("Timeseries requires at least one atom to analyze")
         if len(format) != 3 and format not in ['afc', 'acf', 'caf', 'cfa', 'fac', 'fca']:
-            raise Exception("Invalid timeseries format")
+            raise ValueError("Invalid timeseries format")
         atom_numbers = list(asel.indices())
         # Check if the atom numbers can be grouped for efficiency, then we can read partial buffers
         # from trajectory file instead of an entire timestep
