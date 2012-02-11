@@ -221,10 +221,10 @@ class TrjWriter(base.Writer):
             if hasattr(ts, '_velocities'):
                 if self.convert_units:
                     velocities = self.convert_velocities_to_native(ts._velocities, inplace=False)
-                else:
-                    # 0-velocities (no need to convert those); add it to ts as a sideeffect
-                    # so that we don't have to reallocate next time
-                    velocities = ts._velocities = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
+            else:
+                # 0-velocities (no need to convert those); add it to ts as a sideeffect
+                # so that we don't have to reallocate next time
+                velocities = ts._velocities = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
             if not hasattr(ts, '_forces'):
                 ts._forces = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
             status = libxdrfile.write_trr(self.xdrfile, ts.step, ts.time, ts.lmbda, unitcell,
