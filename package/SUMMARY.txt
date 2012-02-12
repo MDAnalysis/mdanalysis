@@ -34,9 +34,10 @@ Tracker`_. Questions can also be asked on the `mdnalysis-discussion mailing
 list`_.
 
 In order to run the `Unit Tests`_ it is also necessary to install a
-separate package MDAnalysisTestData_ containing the test data. As it
-contains about 18 MB of molecular dynamics trajectories and simulation
-system structures it is not included with the library itself.
+separate package MDAnalysisTests_ containing the test and test
+data. As it contains about 18 MB of molecular dynamics trajectories
+and simulation system structures it is not included with the library
+itself.
 
 
 Citation
@@ -77,7 +78,7 @@ When using MDAnalysis in published work, please cite
 .. _XYZ format: http://openbabel.org/wiki/XYZ_%28format%29
 
 .. _Unit Tests: http://code.google.com/p/mdanalysis/wiki/UnitTests
-.. _MDAnalysisTestData: http://code.google.com/p/mdanalysis/wiki/MDAnalysisTestData
+.. _MDAnalysisTests: http://code.google.com/p/mdanalysis/wiki/MDAnalysisTests
 
 .. _`easy_install`: http://packages.python.org/distribute/easy_install.html
 .. _`pip`: http://www.pip-installer.org/en/latest/index.html
