@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.5 documentation</title>
+    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.6-devel documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5',
+        VERSION:     '0.7.6-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5 documentation"
+          title="Search within MDAnalysis v0.7.6-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.6-devel documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
     <link rel="prev" title="7.1. Core functions of MDAnalysis" href="init.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.6-devel documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -162,24 +162,27 @@ file unless a trajectory is supplied.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>Attributes:</dt>
-<dd><ul class="first last simple">
+<p><em>Attributes:</em></p>
+<ul class="simple">
 <li><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.trajectory" title="MDAnalysis.core.AtomGroup.Universe.trajectory"><tt class="xref py py-attr docutils literal"><span class="pre">Universe.trajectory</span></tt></a>: currently loaded trajectory reader;
 <tt class="xref py py-attr docutils literal"><span class="pre">Universe.trajectory.ts</span></tt> is the current time step</li>
 <li><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.dimensions" title="MDAnalysis.core.AtomGroup.Universe.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Universe.dimensions</span></tt></a>: current system dimensions (simulation unit cell, if
 set in the trajectory)</li>
 <li>bonds, angles, dihedrals, impropers (low level access through <tt class="xref py py-attr docutils literal"><span class="pre">Universe._psf</span></tt>)</li>
 </ul>
-</dd>
-</dl>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Only single-frame PDB files are supported at the moment; use DCDs or
-XTC/TRR for trajectories or supply a <em>list of PDB files</em> as the
-trajectory argument.  If a PDB is used instead of a PSF then charges are
-not correct, masses are guessed, and bonds are not available.</p>
+<p class="last">If atom attributes such as element, mass, or charge are not explicitly
+provided in the topology file then MDAnalysis tries to guess them (see
+<a class="reference internal" href="../topology/tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></tt></a>). This does not always work and if you
+require correct values (e.g. because you want to calculate the center of
+mass) then you need to make sure that MDAnalysis gets all the
+information needed. Furthermore, the list of bonds is only constructed
+when provided in the topology and never guessed (see <cite>Issue 23</cite>).</p>
 </div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Can also read multi-frame PDB files with the
+<a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBReader</span></tt></a>.</p>
 <p>Initialize the central MDAnalysis Universe object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -222,9 +225,8 @@ individual list member. [<tt class="xref docutils literal"><span class="pre">Non
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>This routine tries to do the right thing:</dt>
-<dd><ol class="first last arabic">
+<p>This routine tries to do the right thing:</p>
+<ol class="arabic">
 <li><p class="first">If a pdb/gro file is provided instead of a psf and no <em>coordinatefile</em>
 then the coordinates are taken from the first file. Thus you can load
 a functional universe with</p>
@@ -243,8 +245,6 @@ one will have to load coordinates manually using
 can be explicitly set with the <em>topology_format</em> keyword.</p>
 </li>
 </ol>
-</dd>
-</dl>
 <p class="versionchanged">
 <span class="versionmodified">Changed in version 0.7.4: </span>New <em>topology_format</em> and <em>format</em> parameters to override the file
 format detection.</p>
@@ -1499,7 +1499,7 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.6-devel documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
