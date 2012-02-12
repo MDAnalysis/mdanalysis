@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.7. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB &mdash; MDAnalysis v0.7.5-devel documentation</title>
+    <title>5.7. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB &mdash; MDAnalysis v0.7.5 documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5-devel',
+        VERSION:     '0.7.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5-devel documentation"
+          title="Search within MDAnalysis v0.7.5 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.8. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT" href="PDBQT.html" />
     <link rel="prev" title="5.6. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="GRO.html" title="5.6. GRO file format — MDAnalysis.coordinates.GRO"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -406,36 +406,61 @@ the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM">
 <tt class="descname">ATOM</tt><big>(</big><em>serial=None</em>, <em>name=None</em>, <em>altLoc=None</em>, <em>resName=None</em>, <em>chainID=None</em>, <em>resSeq=None</em>, <em>iCode=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em>, <em>occupancy=1.0</em>, <em>tempFactor=0.0</em>, <em>segID=None</em>, <em>element=None</em>, <em>charge=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write ATOM record.
-<a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html">http://www.wwpdb.org/documentation/format32/sect9.html</a>
-Only some keword args are optional (altLoc, iCode, chainID), for some defaults are set.</p>
+<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html">ATOM</a> record.</p>
+<p>Only some keword args are optional (altLoc, iCode, chainID), for some defaults are set.</p>
 <p>All inputs are cut to the maximum allowed length. For integer
 numbers the highest-value digits are chopped (so that the
 serial and reSeq wrap); for strings the trailing characters
 are chopped.</p>
-<p>Note: Floats are not checked and can potentially screw up the format.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.CONECT">
+<tt class="descname">CONECT</tt><big>(</big><em>conect</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.CONECT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect10.html#CONECT">CONECT</a> record.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.CRYST1">
 <tt class="descname">CRYST1</tt><big>(</big><em>dimensions</em>, <em>spacegroup='P 1'</em>, <em>zvalue=1</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.CRYST1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write CRYST1 record.
-<a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect8.html">http://www.wwpdb.org/documentation/format32/sect8.html</a></p>
+<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect8.html">CRYST1</a> record.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.END">
+<tt class="descname">END</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.END" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect11.html#END">END</a> record.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ENDMDL">
+<tt class="descname">ENDMDL</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ENDMDL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL">ENDMDL</a> record.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.HEADER">
+<tt class="descname">HEADER</tt><big>(</big><em>trajectory</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.HEADER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect2.html#HEADER">HEADER</a> record.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.MODEL">
+<tt class="descname">MODEL</tt><big>(</big><em>modelnumber</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.MODEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#MODEL">MODEL</a> record.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.REMARK">
 <tt class="descname">REMARK</tt><big>(</big><em>trajectory</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.REMARK" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write generic REMARK record (without number).
-<a class="reference external" href="http://www.wwpdb.org/documentation/format32/remarks1.html">http://www.wwpdb.org/documentation/format32/remarks1.html</a>
-<a class="reference external" href="http://www.wwpdb.org/documentation/format32/remarks2.html">http://www.wwpdb.org/documentation/format32/remarks2.html</a></p>
+<dd><p>Write generic <a class="reference external" href="http://www.wwpdb.org/documentation/format32/remarks1.html">REMARK</a> record (without number).</p>
+<p>See also <a class="reference external" href="http://www.wwpdb.org/documentation/format32/remarks2.html">REMARK (update)</a>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.TITLE">
 <tt class="descname">TITLE</tt><big>(</big><em>*title</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.TITLE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write TITLE record.
-<a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect2.html">http://www.wwpdb.org/documentation/format32/sect2.html</a></p>
+<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect2.html">TITLE</a> record.</p>
 </dd></dl>
 
 <dl class="method">
@@ -469,7 +494,7 @@ is used as the PDB chainID.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write_next_timestep">
 <tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
-<dd><p>write a new timestep to the dcd file</p>
+<dd><p>write a new timestep to the PDB file</p>
 <p>ts - timestep object containing coordinates to be written to dcd file</p>
 </dd></dl>
 
@@ -498,15 +523,15 @@ is used as the PDB chainID.</p>
         <li class="right" >
           <a href="GRO.html" title="5.6. GRO file format — MDAnalysis.coordinates.GRO"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
-    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
-    and Oliver Beckstein.
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
+    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
