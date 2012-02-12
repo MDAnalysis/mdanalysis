@@ -1444,20 +1444,30 @@ class Universe(object):
 
        u.selectAtoms(...)
 
+    *Attributes:*
 
-    Attributes:
-       - :attr:`Universe.trajectory`: currently loaded trajectory reader;
-         :attr:`Universe.trajectory.ts` is the current time step
-       - :attr:`Universe.dimensions`: current system dimensions (simulation unit cell, if
-         set in the trajectory)
-       - bonds, angles, dihedrals, impropers (low level access through :attr:`Universe._psf`)
+    - :attr:`Universe.trajectory`: currently loaded trajectory reader;
+      :attr:`Universe.trajectory.ts` is the current time step
+    - :attr:`Universe.dimensions`: current system dimensions (simulation unit cell, if
+      set in the trajectory)
+    - bonds, angles, dihedrals, impropers (low level access through :attr:`Universe._psf`)
 
     .. Note::
 
-       Only single-frame PDB files are supported at the moment; use DCDs or
-       XTC/TRR for trajectories or supply a *list of PDB files* as the
-       trajectory argument.  If a PDB is used instead of a PSF then charges are
-       not correct, masses are guessed, and bonds are not available.
+       If atom attributes such as element, mass, or charge are not explicitly
+       provided in the topology file then MDAnalysis tries to guess them (see
+       :mod:`MDAnalysis.topology.tables`). This does not always work and if you
+       require correct values (e.g. because you want to calculate the center of
+       mass) then you need to make sure that MDAnalysis gets all the
+       information needed. Furthermore, the list of bonds is only constructed
+       when provided in the topology and never guessed (see `Issue 23`).
+
+    .. _`Issue 23`: http://code.google.com/p/mdanalysis/issues/detail?id=23
+
+    .. versionchanged:: 0.7.5
+       Can also read multi-frame PDB files with the
+       :class:`~MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
+
     """
     def __init__(self, topologyfile, coordinatefile=None, **kwargs):
         """Initialize the central MDAnalysis Universe object.
@@ -1492,21 +1502,22 @@ class Universe(object):
 
 
         This routine tries to do the right thing:
-          1. If a pdb/gro file is provided instead of a psf and no *coordinatefile*
-             then the coordinates are taken from the first file. Thus you can load
-             a functional universe with ::
 
-                u = Universe('1ake.pdb')
+        1. If a pdb/gro file is provided instead of a psf and no *coordinatefile*
+           then the coordinates are taken from the first file. Thus you can load
+           a functional universe with ::
 
-             If you want to specify the coordinate file format yourself you can
-             do so using the *format* keyword::
+              u = Universe('1ake.pdb')
 
-                u = Universe('1ake.ent1', format='pdb')
+           If you want to specify the coordinate file format yourself you can
+           do so using the *format* keyword::
 
-          2. If only a topology file without coordinate information is provided
-             one will have to load coordinates manually using
-             :meth:`Universe.load_new`. The file format of the topology file
-             can be explicitly set with the *topology_format* keyword.
+              u = Universe('1ake.ent1', format='pdb')
+
+        2. If only a topology file without coordinate information is provided
+           one will have to load coordinates manually using
+           :meth:`Universe.load_new`. The file format of the topology file
+           can be explicitly set with the *topology_format* keyword.
 
         .. versionchanged:: 0.7.4
            New *topology_format* and *format* parameters to override the file
