@@ -20,6 +20,13 @@
 Test cases for MDAnalysis
 =========================
 
+The test cases and the test data are kept in this package,
+MDAnalysisTests. They will only run when MDAnalysis is also
+installed. MDAnalysis and MDAnalysisTests *must* have the same release
+number, which can be found :data:`MDAnalysis.__version__` and
+:data:`MDAnalysisTests.__version__`. If the versions don't match then
+an :exc:`ImportError` is raised.
+
 We are using the NumPy_ testing frame work; thus, numpy *must* be
 installed for the tests to run at all.
 
@@ -95,6 +102,8 @@ especially as we are directly using this framework (imported from numpy).
 .. _Gromacs: http://www.gromacs.org
 """
 
+__version__ = "0.7.5"   # keep in sync with RELEASE in setup.py
+
 try:
     from numpy.testing import Tester
     test = Tester().test
@@ -102,3 +111,11 @@ except ImportError:
     raise ImportError("""numpy>=1.3  is required to run the test suite. Please install it first. """
                       """(For example, try "easy_install 'numpy>=1.3'").""")
 
+
+try:
+    import MDAnalysis
+    if MDAnalysis.__version__ != __version__:
+        raise ImportError
+except ImportError:
+    raise ImportError("MDAnalysis release %s must be installed to run the tests, not %s" %
+                      (__version__, MDAnalysis.__version__))

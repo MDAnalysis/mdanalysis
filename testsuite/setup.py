@@ -58,13 +58,13 @@ if sys.version_info[:2] < (2, 5):
 
 
 if __name__ == '__main__':
-    RELEASE = "0.7.5"
+    RELEASE = "0.7.5"         # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
 This package contains the test code and the trajectory data that are
 used for the test cases. In order to make downloads and binary package
-maintenance more efficient, these tests were moved into this packe.
+maintenance more efficient, these tests were moved into this package.
 """
     CLASSIFIERS = ['Development Status :: 4 - Beta',
                    'Environment :: Console',
@@ -96,5 +96,7 @@ maintenance more efficient, these tests were moved into this packe.
                                },
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
+          install_requires  = ['MDAnalysis==%s' % RELEASE,  # same as this release!
+                               ],
           zip_safe = False,   # had 'KeyError' as zipped egg (2MB savings are not worth the trouble)
           )

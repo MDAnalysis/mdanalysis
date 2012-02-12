@@ -42,20 +42,20 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
+# (take the list from AUTHORS)
 authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
-    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
-    and Oliver Beckstein"""
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
+    Tyler Reddy, Paul Rigor, and Oliver Beckstein"""
 project = u'MDAnalysis'
-copyright = u'2005-2011, ' + authors
+copyright = u'2005-2012, ' + authors
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-# Dynamically calculate the version -- not implemented yet
-##packageversion = __import__('MDAnalysis').get_version()
-packageversion = '0.7.5-devel'
+# Dynamically calculate the version
+packageversion = __import__('MDAnalysis').__version__
 # The short X.Y version.
 version = '.'.join(packageversion.split('.')[:2])
 # The full version, including alpha/beta/rc tags.
