@@ -10,7 +10,7 @@ BUILDDIR      = ..
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
-ALLSPHINXOPTS   = -d $(BUILDDIR)/html/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
+ALLSPHINXOPTS   =  $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
 .PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest
 
@@ -34,7 +34,9 @@ help:
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 
 clean:
-	-rm -rf $(BUILDDIR)/{html,dirhtml,singlehtml,pickle,json,htmlhelp,qthelp,devhelp,epub,latex,text,man,changes,linkcheck,doctest}
+	for i in html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex text man changes linkcheck doctest; do \
+            rm -rf $(BUILDDIR)/$$i; \
+        done
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html

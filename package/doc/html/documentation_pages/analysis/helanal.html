@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.7. HELANAL — analysis of protein helices &mdash; MDAnalysis v0.7.6-devel documentation</title>
+    <title>3.7. HELANAL — analysis of protein helices &mdash; MDAnalysis 0.7.5.1 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6-devel',
+        VERSION:     '0.7.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.6-devel documentation"
+          title="Search within MDAnalysis 0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.6-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.8. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" />
     <link rel="prev" title="3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds" href="hbonds.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="hbonds.html" title="3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -80,7 +83,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -104,11 +107,11 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Author:</th><td class="field-body">Benjamin Hall &lt;<a class="reference external" href="mailto:benjamin&#46;hall&#37;&#52;&#48;bioch&#46;ox&#46;ac&#46;uk">benjamin<span>&#46;</span>hall<span>&#64;</span>bioch<span>&#46;</span>ox<span>&#46;</span>ac<span>&#46;</span>uk</a>&gt;, Oliver Beckstein</td>
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Benjamin Hall &lt;<a class="reference external" href="mailto:benjamin&#46;hall&#37;&#52;&#48;bioch&#46;ox&#46;ac&#46;uk">benjamin<span>&#46;</span>hall<span>&#64;</span>bioch<span>&#46;</span>ox<span>&#46;</span>ac<span>&#46;</span>uk</a>&gt;, Oliver Beckstein</td>
 </tr>
-<tr class="field"><th class="field-name">Year:</th><td class="field-body">2009, 2011</td>
+<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2009, 2011</td>
 </tr>
-<tr class="field"><th class="field-name">License:</th><td class="field-body">GNU General Public License v2 (or higher)</td>
+<tr class="field-odd field"><th class="field-name">License:</th><td class="field-body">GNU General Public License v2 (or higher)</td>
 </tr>
 </tbody>
 </table>
@@ -202,14 +205,14 @@ helix, e.g. with &#8220;name CA and resid 1:20&#8221; or use start=1, stop=20.</
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a></p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>selection</em></dt>
 <dd><p class="first last">selection string that selects Calpha atoms [&#8220;name CA&#8221;]</p>
 </dd>
@@ -220,12 +223,12 @@ helix, e.g. with &#8220;name CA and resid 1:20&#8221; or use start=1, stop=20.</
 <dd><p class="first last">end residue</p>
 </dd>
 <dt><em>begin</em></dt>
-<dd><p class="first last">start analysing for time &gt;= <em>begin</em>; <tt class="xref docutils literal"><span class="pre">None</span></tt> starts from the
-beginning [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last">start analysing for time &gt;= <em>begin</em>; <tt class="docutils literal"><span class="pre">None</span></tt> starts from the
+beginning [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>finish</em></dt>
-<dd><p class="first last">stop analysis for time =&lt; <em>finish</em>; <tt class="xref docutils literal"><span class="pre">None</span></tt> goes to the
-end of the trajectory [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last">stop analysis for time =&lt; <em>finish</em>; <tt class="docutils literal"><span class="pre">None</span></tt> goes to the
+end of the trajectory [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>matrix_filename</em></dt>
 <dd><p class="first last">Output file- bending matrix [&#8220;bending_matrix.dat&#8221;]</p>
@@ -245,12 +248,12 @@ end of the trajectory [<tt class="xref docutils literal"><span class="pre">None<
 [&#8220;local_tilt.xvg&#8221;]</p>
 </dd>
 <dt><em>prefix</em></dt>
-<dd><p class="first last">Prefix to add to all output file names; set to <tt class="xref docutils literal"><span class="pre">None</span></tt> to disable
+<dd><p class="first last">Prefix to add to all output file names; set to <tt class="docutils literal"><span class="pre">None</span></tt> to disable
 [&#8220;<a href="#id6"><span class="problematic" id="id7">helanal__</span></a>&#8220;]</p>
 </dd>
 <dt><em>ref_axis</em></dt>
-<dd><p class="first last">Calculate tilt angle relative to the axis; if <tt class="xref docutils literal"><span class="pre">None</span></tt> then [0,0,1]
-is chosen [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last">Calculate tilt angle relative to the axis; if <tt class="docutils literal"><span class="pre">None</span></tt> then [0,0,1]
+is chosen [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -294,7 +297,7 @@ the helix, e.g. with &#8220;name CA and resid 1:20&#8221;.</p>
         <li class="right" >
           <a href="hbonds.html" title="3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -303,7 +306,7 @@ the helix, e.g. with &#8220;name CA and resid 1:20&#8221;.</p>
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

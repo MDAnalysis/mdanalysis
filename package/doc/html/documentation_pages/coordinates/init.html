@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis v0.7.6-devel documentation</title>
+    <title>5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis 0.7.5.1 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6-devel',
+        VERSION:     '0.7.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.6-devel documentation"
+          title="Search within MDAnalysis 0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.6-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.2. Base classes — MDAnalysis.coordinates.base" href="base.html" />
     <link rel="prev" title="5. Coordinates modules" href="../coordinates_modules.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="../coordinates_modules.html" title="5. Coordinates modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -104,7 +107,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -167,14 +170,14 @@ are also recognized when they are compressed with <strong class="program">gzip</
 <col width="62%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Name</th>
+<tr class="row-odd"><th class="head">Name</th>
 <th class="head">extension</th>
 <th class="head">IO</th>
 <th class="head">remarks</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>CHARMM,
+<tr class="row-even"><td>CHARMM,
 NAMD,
 LAMMPS</td>
 <td>dcd</td>
@@ -184,27 +187,27 @@ autodetected. Fixed atoms may not be handled
 correctly (requires testing). Module
 <a class="reference internal" href="DCD.html#module-MDAnalysis.coordinates.DCD" title="MDAnalysis.coordinates.DCD"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a></td>
 </tr>
-<tr><td>Gromacs</td>
+<tr class="row-odd"><td>Gromacs</td>
 <td>xtc</td>
 <td>r/w</td>
 <td>Compressed (lossy) xtc trajectory format. Module
 <a class="reference internal" href="XTC.html#module-MDAnalysis.coordinates.XTC" title="MDAnalysis.coordinates.XTC"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></td>
 </tr>
-<tr><td>Gromacs</td>
+<tr class="row-even"><td>Gromacs</td>
 <td>trr</td>
 <td>r/w</td>
 <td>Full precision trr trajectory. Only coordinates are
 processed at the moment. Module
 <a class="reference internal" href="TRR.html#module-MDAnalysis.coordinates.TRR" title="MDAnalysis.coordinates.TRR"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a></td>
 </tr>
-<tr><td>XYZ</td>
+<tr class="row-odd"><td>XYZ</td>
 <td>xyz</td>
 <td>r</td>
 <td>Generic white-space separate XYZ format; can be
 compressed. Module
 <a class="reference internal" href="XYZ.html#module-MDAnalysis.coordinates.XYZ" title="MDAnalysis.coordinates.XYZ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></td>
 </tr>
-<tr><td>Amber</td>
+<tr class="row-even"><td>Amber</td>
 <td>trj,
 mdcrd</td>
 <td>r</td>
@@ -212,7 +215,7 @@ mdcrd</td>
 periodic box is autodetected (<em>experimental</em>).
 Module <a class="reference internal" href="TRJ.html#module-MDAnalysis.coordinates.TRJ" title="MDAnalysis.coordinates.TRJ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></td>
 </tr>
-<tr><td>Brookhaven
+<tr class="row-odd"><td>Brookhaven
 <a class="footnote-reference" href="#a" id="id2">[1]</a></td>
 <td>pdb</td>
 <td>r/w</td>
@@ -222,28 +225,28 @@ supplying the <cite>permissive=False</cite> flag to
 <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>. Module
 <a class="reference internal" href="PDB.html#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></td>
 </tr>
-<tr><td>PDBQT <a class="footnote-reference" href="#a" id="id3">[1]</a></td>
+<tr class="row-even"><td>PDBQT <a class="footnote-reference" href="#a" id="id3">[1]</a></td>
 <td>pdbqt</td>
 <td>r/w</td>
 <td>file format used by AutoDock with atom types <em>t</em>
 and partial charges <em>q</em>. Module:
 <a class="reference internal" href="PDBQT.html#module-MDAnalysis.coordinates.PDBQT" title="MDAnalysis.coordinates.PDBQT"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a></td>
 </tr>
-<tr><td>PQR <a class="footnote-reference" href="#a" id="id4">[1]</a></td>
+<tr class="row-odd"><td>PQR <a class="footnote-reference" href="#a" id="id4">[1]</a></td>
 <td>pqr</td>
 <td>r</td>
 <td>PDB-like but whitespace-separated files with charge
 and radius information. Module
 <a class="reference internal" href="PQR.html#module-MDAnalysis.coordinates.PQR" title="MDAnalysis.coordinates.PQR"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></td>
 </tr>
-<tr><td>GROMOS96
+<tr class="row-even"><td>GROMOS96
 <a class="footnote-reference" href="#a" id="id5">[1]</a></td>
 <td>gro</td>
 <td>r/w</td>
 <td>basic GROMOS96 format (without velocities). Module
 <a class="reference internal" href="GRO.html#module-MDAnalysis.coordinates.GRO" title="MDAnalysis.coordinates.GRO"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></td>
 </tr>
-<tr><td>CHARMM <a class="footnote-reference" href="#a" id="id6">[1]</a></td>
+<tr class="row-odd"><td>CHARMM <a class="footnote-reference" href="#a" id="id6">[1]</a></td>
 <td>crd</td>
 <td>r/w</td>
 <td>&#8220;CARD&#8221; coordinate output from CHARMM; deals with
@@ -321,7 +324,7 @@ different ways:</p>
 <dd>empty Timestep for <em>arg</em> atoms (allocate arrays etc)</dd>
 <dt><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></dt>
 <dd>makes a deep copy of the <em>arg</em></dd>
-<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-ca258fc)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
+<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-ae3dd33)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
 <dd>update the Timesteps positions array with the contents of <em>arg</em></dd>
 </dl>
 </div></blockquote>
@@ -477,7 +480,7 @@ with observable timeseries computed from the trajectory</dd>
 <dt><tt class="docutils literal"><span class="pre">numatoms</span></tt></dt>
 <dd>number of atoms (coordinate sets) in a frame (constant)</dd>
 <dt><tt class="docutils literal"><span class="pre">numframes</span></tt></dt>
-<dd>total number of frames (if known) &#8211; <tt class="xref docutils literal"><span class="pre">None</span></tt> if not known</dd>
+<dd>total number of frames (if known) &#8211; <tt class="docutils literal"><span class="pre">None</span></tt> if not known</dd>
 <dt><tt class="docutils literal"><span class="pre">fixed</span></tt></dt>
 <dd>bool, saying if there are fixed atoms (e.g. dcds)</dd>
 <dt><tt class="docutils literal"><span class="pre">skip</span></tt></dt>
@@ -496,7 +499,7 @@ trajectory format and derived from <tt class="xref py py-class docutils literal"
 <dt><tt class="docutils literal"><span class="pre">units</span></tt></dt>
 <dd>dictionary with keys <em>time</em> and <em>length</em> and the appropriate
 unit (e.g. &#8216;AKMA&#8217; and &#8216;Angstrom&#8217; for Charmm dcds, &#8216;ps&#8217; and &#8216;nm&#8217;
-for Gromacs trajectories, <tt class="xref docutils literal"><span class="pre">None</span></tt> and &#8216;Angstrom&#8217; for PDB).</dd>
+for Gromacs trajectories, <tt class="docutils literal"><span class="pre">None</span></tt> and &#8216;Angstrom&#8217; for PDB).</dd>
 <dt><tt class="docutils literal"><span class="pre">format</span></tt></dt>
 <dd>string that identifies the file format, e.g. &#8220;DCD&#8221;, &#8220;PDB&#8221;, &#8220;CRD&#8221;, &#8220;XTC&#8221;,
 &#8220;TRR&#8221;; this is typically the file extension in upper case.</dd>
@@ -516,7 +519,7 @@ unit for time (pico seconds by default)</dd>
 <blockquote>
 <div><dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">compressed</span></tt></dt>
-<dd>string that identifies the compression (e.g. &#8220;gz&#8221; or &#8220;bz2&#8221;) or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd>
+<dd>string that identifies the compression (e.g. &#8220;gz&#8221; or &#8220;bz2&#8221;) or <tt class="docutils literal"><span class="pre">None</span></tt>.</dd>
 </dl>
 </div></blockquote>
 </div>
@@ -571,7 +574,7 @@ unitcell representation of the format</dd>
 <dt><tt class="docutils literal"><span class="pre">units</span></tt></dt>
 <dd>dictionary with keys <em>time</em> and <em>length</em> and the appropriate
 unit (e.g. &#8216;AKMA&#8217; and &#8216;Angstrom&#8217; for CHARMM dcds, &#8216;ps&#8217; and &#8216;nm&#8217;
-for Gromacs trajectories, <tt class="xref docutils literal"><span class="pre">None</span></tt> and &#8216;Angstrom&#8217; for PDB)</dd>
+for Gromacs trajectories, <tt class="docutils literal"><span class="pre">None</span></tt> and &#8216;Angstrom&#8217; for PDB)</dd>
 <dt><tt class="docutils literal"><span class="pre">format</span></tt></dt>
 <dd>string that identifies the file format, e.g. &#8220;DCD&#8221;, &#8220;PDB&#8221;, &#8220;CRD&#8221;, &#8220;XTC&#8221;,
 &#8220;TRR&#8221;</dd>
@@ -634,20 +637,20 @@ enhance MDAnalysis; the casual user is unlikely to access them
 directly.</p>
 <dl class="data">
 <dt id="MDAnalysis.coordinates.__init__._trajectory_readers">
-<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_trajectory_readers</tt><a class="headerlink" href="#MDAnalysis.coordinates.__init__._trajectory_readers" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_trajectory_readers</tt><em class="property"> = {'TRJ': &lt;class 'MDAnalysis.coordinates.TRJ.TRJReader'&gt;, 'MDCRD': &lt;class 'MDAnalysis.coordinates.TRJ.TRJReader'&gt;, 'XTC': &lt;class 'MDAnalysis.coordinates.xdrfile.XTC.XTCReader'&gt;, 'CRD': &lt;class 'MDAnalysis.coordinates.CRD.CRDReader'&gt;, 'GRO': &lt;class 'MDAnalysis.coordinates.GRO.GROReader'&gt;, 'TRR': &lt;class 'MDAnalysis.coordinates.xdrfile.TRR.TRRReader'&gt;, 'PDB': &lt;class 'MDAnalysis.coordinates.PDB.PrimitivePDBReader'&gt;, 'CHAIN': &lt;class 'MDAnalysis.coordinates.base.ChainReader'&gt;, 'LAMMPS': &lt;class 'MDAnalysis.coordinates.LAMMPS.DCDReader'&gt;, 'DCD': &lt;class 'MDAnalysis.coordinates.DCD.DCDReader'&gt;, 'PDBQT': &lt;class 'MDAnalysis.coordinates.PDBQT.PDBQTReader'&gt;, 'PQR': &lt;class 'MDAnalysis.coordinates.PQR.PQRReader'&gt;, 'XYZ': &lt;class 'MDAnalysis.coordinates.XYZ.XYZReader'&gt;}</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._trajectory_readers" title="Permalink to this definition">¶</a></dt>
 <dd><p>standard trajectory readers (dict with identifier as key and reader class as value)</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.coordinates.__init__._topology_coordinates_readers">
-<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_topology_coordinates_readers</tt><a class="headerlink" href="#MDAnalysis.coordinates.__init__._topology_coordinates_readers" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_topology_coordinates_readers</tt><em class="property"> = {'PDBQT': &lt;class 'MDAnalysis.coordinates.PDBQT.PDBQTReader'&gt;, 'GRO': &lt;class 'MDAnalysis.coordinates.GRO.GROReader'&gt;, 'PQR': &lt;class 'MDAnalysis.coordinates.PQR.PQRReader'&gt;, 'PDB': &lt;class 'MDAnalysis.coordinates.PDB.PrimitivePDBReader'&gt;, 'CRD': &lt;class 'MDAnalysis.coordinates.CRD.CRDReader'&gt;}</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._topology_coordinates_readers" title="Permalink to this definition">¶</a></dt>
 <dd><p>readers of files that contain both topology/atom data and coordinates
 (currently only the keys are used)</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.coordinates.__init__._trajectory_readers_permissive">
-<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_trajectory_readers_permissive</tt><a class="headerlink" href="#MDAnalysis.coordinates.__init__._trajectory_readers_permissive" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_trajectory_readers_permissive</tt><em class="property"> = {'TRJ': &lt;class 'MDAnalysis.coordinates.TRJ.TRJReader'&gt;, 'MDCRD': &lt;class 'MDAnalysis.coordinates.TRJ.TRJReader'&gt;, 'CHAIN': &lt;class 'MDAnalysis.coordinates.base.ChainReader'&gt;, 'DCD': &lt;class 'MDAnalysis.coordinates.DCD.DCDReader'&gt;, 'PDBQT': &lt;class 'MDAnalysis.coordinates.PDBQT.PDBQTReader'&gt;, 'LAMMPS': &lt;class 'MDAnalysis.coordinates.LAMMPS.DCDReader'&gt;, 'PQR': &lt;class 'MDAnalysis.coordinates.PQR.PQRReader'&gt;, 'XTC': &lt;class 'MDAnalysis.coordinates.xdrfile.XTC.XTCReader'&gt;, 'XYZ': &lt;class 'MDAnalysis.coordinates.XYZ.XYZReader'&gt;, 'CRD': &lt;class 'MDAnalysis.coordinates.CRD.CRDReader'&gt;, 'GRO': &lt;class 'MDAnalysis.coordinates.GRO.GROReader'&gt;, 'TRR': &lt;class 'MDAnalysis.coordinates.xdrfile.TRR.TRRReader'&gt;, 'PDB': &lt;class 'MDAnalysis.coordinates.PDB.PrimitivePDBReader'&gt;}</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._trajectory_readers_permissive" title="Permalink to this definition">¶</a></dt>
 <dd><p>hack: readers that ignore most errors (permissive=True); at the moment
 the same as <a class="reference internal" href="#MDAnalysis.coordinates.__init__._trajectory_readers" title="MDAnalysis.coordinates.__init__._trajectory_readers"><tt class="xref py py-data docutils literal"><span class="pre">_trajectory_readers</span></tt></a> with the exception of the
 the PDB reader (<a class="reference internal" href="PDB.html#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><tt class="xref py py-class docutils literal"><span class="pre">PDBReader</span></tt></a> is replaced by <a class="reference internal" href="PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBReader</span></tt></a>).</p>
@@ -655,13 +658,13 @@ the PDB reader (<a class="reference internal" href="PDB.html#MDAnalysis.coordina
 
 <dl class="data">
 <dt id="MDAnalysis.coordinates.__init__._compressed_formats">
-<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_compressed_formats</tt><a class="headerlink" href="#MDAnalysis.coordinates.__init__._compressed_formats" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_compressed_formats</tt><em class="property"> = ['XYZ', 'TRJ', 'MDCRD', 'PQR', 'PDBQT']</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._compressed_formats" title="Permalink to this definition">¶</a></dt>
 <dd><p>formats of readers that can also handle gzip or bzip2 compressed files</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.coordinates.__init__._frame_writers">
-<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_frame_writers</tt><a class="headerlink" href="#MDAnalysis.coordinates.__init__._frame_writers" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_frame_writers</tt><em class="property"> = {'PDBQT': &lt;class 'MDAnalysis.coordinates.PDBQT.PDBQTWriter'&gt;, 'GRO': &lt;class 'MDAnalysis.coordinates.GRO.GROWriter'&gt;, 'PDB': &lt;class 'MDAnalysis.coordinates.PDB.PrimitivePDBWriter'&gt;, 'CRD': &lt;class 'MDAnalysis.coordinates.CRD.CRDWriter'&gt;}</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._frame_writers" title="Permalink to this definition">¶</a></dt>
 <dd><p>frame writers: export to single frame formats such as PDB, gro, crd
 Signature:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">W</span> <span class="o">=</span> <span class="n">FrameWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -672,7 +675,7 @@ Signature:</p>
 
 <dl class="data">
 <dt id="MDAnalysis.coordinates.__init__._trajectory_writers">
-<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_trajectory_writers</tt><a class="headerlink" href="#MDAnalysis.coordinates.__init__._trajectory_writers" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_trajectory_writers</tt><em class="property"> = {'DCD': &lt;class 'MDAnalysis.coordinates.DCD.DCDWriter'&gt;, 'TRR': &lt;class 'MDAnalysis.coordinates.xdrfile.TRR.TRRWriter'&gt;, 'XTC': &lt;class 'MDAnalysis.coordinates.xdrfile.XTC.XTCWriter'&gt;, 'PDB': &lt;class 'MDAnalysis.coordinates.PDB.PrimitivePDBWriter'&gt;, 'LAMMPS': &lt;class 'MDAnalysis.coordinates.LAMMPS.DCDWriter'&gt;}</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._trajectory_writers" title="Permalink to this definition">¶</a></dt>
 <dd><p>trajectory writers: export frames, typically only saving coordinates
 Signature:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">W</span> <span class="o">=</span> <span class="n">TrajectoryWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">numatoms</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -708,7 +711,7 @@ Signature:</p>
         <li class="right" >
           <a href="../coordinates_modules.html" title="5. Coordinates modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -717,7 +720,7 @@ Signature:</p>
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

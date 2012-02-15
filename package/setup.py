@@ -84,7 +84,7 @@ except ImportError:
     cmdclass = {}
 
 if __name__ == '__main__':
-    RELEASE = "0.7.6-devel"     # NOTE: keep in sync with MDAnalysis.version in __init__.py
+    RELEASE = "0.7.5.1"     # NOTE: keep in sync with MDAnalysis.version in __init__.py
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = ['Development Status :: 4 - Beta',
@@ -163,6 +163,7 @@ if __name__ == '__main__':
                                 'MDAnalysis.coordinates.pdb',
                                 'MDAnalysis.util', 'MDAnalysis.KDTree',
                                 'MDAnalysis.analysis',
+                                'MDAnalysis.builder',
                                 'MDAnalysis.tests'],
           package_dir       = {'MDAnalysis': 'MDAnalysis'},
           ext_package       = 'MDAnalysis',
