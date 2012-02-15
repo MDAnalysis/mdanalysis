@@ -1,0 +1,30 @@
+Metadata-Version: 1.0
+Name: MDAnalysisTests
+Version: 0.7.5.1
+Summary: Python tools to support analysis of trajectories (test cases)
+Home-page: http://mdanalysis.googlecode.com/
+Author: Naveen Michaud-Agrawal
+Author-email: naveen.michaudagrawal@gmail.com
+License: GPL 2
+Description: MDAnalysis is a tool for analyzing molecular dynamics trajectories.
+        
+        This package (MDAnalysisTests) contains the test code and the trajectory data
+        that are used for the test cases. In order to make downloads and binary package
+        maintenance more efficient, these tests were moved into this package.
+        
+        For details see the report for `Issue 87`_.
+        
+        .. _`Issue 87`: http://code.google.com/p/mdanalysis/issues/detail?id=87
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: C
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: Topic :: Scientific/Engineering :: Chemistry
+Classifier: Topic :: Software Development :: Libraries :: Python Modules

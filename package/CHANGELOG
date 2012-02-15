@@ -10,6 +10,14 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
+02/16/12 sebastien.buchoux
+
+  * 0.7.5.1
+  
+  Fixes
+  
+  * added: missing files (Issue 95)
+  * removed: unused delaunay-related files
 
 02/11/12 orbeckst, sebastien.buchoux, jandom, hallben, lukasgrossar
 

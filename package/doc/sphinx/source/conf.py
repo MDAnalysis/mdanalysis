@@ -11,11 +11,21 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys, os, platform
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
+# documentation root, use os.path.abspath to make it absolute, like shown
+# here.
+
+# Little trick to make sure sphinx use the dev build if present
+build_path = "../../../build/lib.%s-%s-%s" % (platform.system().lower(),
+                                              platform.machine(),
+                                              ".".join(platform.python_version_tuple()[:2]))
+build_path = os.path.abspath(build_path)
+if os.path.exists(build_path):
+    sys.path.insert(0, build_path)
+
 #sys.path.insert(0, os.path.abspath('.'))
 #sys.path.insert(0, '../../../MDAnalysis/analysis/')
 
@@ -131,7 +141,7 @@ html_favicon = "logos/mdanalysis-logo.ico"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.

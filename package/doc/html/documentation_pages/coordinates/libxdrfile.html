@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.14. The Gromacs xtc/trr library libxdrfile &mdash; MDAnalysis v0.7.6-devel documentation</title>
+    <title>5.14. The Gromacs xtc/trr library libxdrfile &mdash; MDAnalysis 0.7.5.1 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6-devel',
+        VERSION:     '0.7.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.6-devel documentation"
+          title="Search within MDAnalysis 0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.6-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="6. Selection exporters" href="../selections_modules.html" />
     <link rel="prev" title="5.13. XYZ trajectory reader — MDAnalysis.coordinates.XYZ" href="XYZ.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="XYZ.html" title="5.13. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -85,7 +88,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -208,7 +211,7 @@ functions.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>path</em></dt>
 <dd><p class="first last">file name</p>
 </dd>
@@ -218,7 +221,7 @@ functions.</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>XDRFILE</em> handle</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>XDRFILE</em> handle</p>
 </td>
 </tr>
 </tbody>
@@ -253,14 +256,14 @@ multiplied by <em>precision</em> and truncated to the integer part. A typical va
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>fn</em></dt>
 <dd><p class="first last">file name of an xtc file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a XTC 
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a XTC 
 or if it is not readable.</p>
 </td>
 </tr>
@@ -280,14 +283,14 @@ except iterating through the whole trajectory.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>fn</em></dt>
 <dd><p class="first last">file name of an xtc file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a XTC 
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a XTC 
 or if it is not readable.</p>
 </td>
 </tr>
@@ -303,7 +306,7 @@ or if it is not readable.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>XDRFILE</em></dt>
 <dd><p class="first last">open <em>XDRFILE</em> object</p>
 </dd>
@@ -318,7 +321,7 @@ which is updated with the coordinates from the frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The function returns a tuple containing
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The function returns a tuple containing
 <em>status</em></p>
 <blockquote>
 <div><p>integer status (0 = exdrOK), see <a class="reference internal" href="#status-symbols">Status symbols</a> for other
@@ -349,7 +352,7 @@ values)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>XDRFILE</em></dt>
 <dd><p class="first last">open <em>XDRFILE</em> object (writable)</p>
 </dd>
@@ -373,7 +376,7 @@ which contains the coordinates from the frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>status</em>, integer status (0 = OK), see the <tt class="docutils literal"><span class="pre">libxdrfile.exdr*</span></tt> 
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>status</em>, integer status (0 = OK), see the <tt class="docutils literal"><span class="pre">libxdrfile.exdr*</span></tt> 
 constants under <a class="reference internal" href="#status-symbols">Status symbols</a> for other values)</p>
 </td>
 </tr>
@@ -395,14 +398,14 @@ calculations. Velocities and forces are optional in the sense that they can be a
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>fn</em></dt>
 <dd><p class="first last">file name of a trr file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a TRR
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a TRR
 or if it is not readable.</p>
 </td>
 </tr>
@@ -422,14 +425,14 @@ frames&#8212;please supply a better one.)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>fn</em></dt>
 <dd><p class="first last">file name of an xtc file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a TRR or if it is not readable.</p>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a TRR or if it is not readable.</p>
 </td>
 </tr>
 </tbody>
@@ -444,7 +447,7 @@ frames&#8212;please supply a better one.)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>XDRFILE</em></dt>
 <dd><p class="first last">open <em>XDRFILE</em> object</p>
 </dd>
@@ -467,7 +470,7 @@ which is updated with the <strong>forces</strong> from the frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The function returns a tuple containing
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The function returns a tuple containing
 <em>status</em></p>
 <blockquote>
 <div><p>integer status (0 = exdrOK), see the <tt class="docutils literal"><span class="pre">libxdrfile.exdr*</span></tt> constants 
@@ -498,7 +501,7 @@ under <a class="reference internal" href="#status-symbols">Status symbols</a> fo
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>XDRFILE</em></dt>
 <dd><p class="first last">open <em>XDRFILE</em> object (writable)</p>
 </dd>
@@ -530,7 +533,7 @@ which contains the <strong>forces</strong> from the frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>status</em>, integer status (0 = OK), see the <tt class="docutils literal"><span class="pre">libxdrfile.exdr*</span></tt> 
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>status</em>, integer status (0 = OK), see the <tt class="docutils literal"><span class="pre">libxdrfile.exdr*</span></tt> 
 constants under <a class="reference internal" href="#status-symbols">Status symbols</a> for other values)</p>
 </td>
 </tr>
@@ -563,7 +566,7 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
         <li class="right" >
           <a href="XYZ.html" title="5.13. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -572,7 +575,7 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>
