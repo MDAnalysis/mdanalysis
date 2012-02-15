@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis v0.7.6-devel documentation</title>
+    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis 0.7.5.1 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6-devel',
+        VERSION:     '0.7.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.6-devel documentation"
+          title="Search within MDAnalysis 0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.6-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.10. Setting up logging — MDAnalysis.core.log" href="log.html" />
     <link rel="prev" title="7.8. Constants and unit conversion — MDAnalysis.core.units" href="units.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -83,7 +86,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -114,7 +117,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em></dt>
 <dd><p class="first last">filename; extension is replaced unless keep=True</p>
 </dd>
@@ -122,7 +125,7 @@
 <dd><p class="first last">extension</p>
 </dd>
 <dt><em>keep</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt>: replace existing extension; <tt class="xref docutils literal"><span class="pre">True</span></tt>: keep if exists</p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">False</span></tt>: replace existing extension; <tt class="docutils literal"><span class="pre">True</span></tt>: keep if exists</p>
 </dd>
 </dl>
 </td>
@@ -146,7 +149,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>datasource</em></dt>
 <dd><p class="first last">a file or a stream</p>
 </dd>
@@ -172,7 +175,7 @@
 <dl class="function">
 <dt id="MDAnalysis.core.util.iterable">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">iterable</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.iterable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>obj</em> can be iterated over and is <em>not</em> a  string.</p>
+<dd><p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if <em>obj</em> can be iterated over and is <em>not</em> a  string.</p>
 </dd></dl>
 
 <dl class="function">
@@ -216,10 +219,10 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">dict with totallength (in chars), repeat, length,
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">dict with totallength (in chars), repeat, length,
 format, decimals</td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if the <em>edit_descriptor</em> is not recognized
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if the <em>edit_descriptor</em> is not recognized
 and cannot be parsed</td>
 </tr>
 </tbody>
@@ -241,9 +244,9 @@ forms.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">list of entries with appropriate types</td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">list of entries with appropriate types</td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if any of the conversions cannot be made
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if any of the conversions cannot be made
 (e.g. space for an int)</td>
 </tr>
 </tbody>
@@ -258,7 +261,7 @@ forms.</p>
 
 <dl class="data">
 <dt id="MDAnalysis.core.util.FORTRAN_format_regex">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">FORTRAN_format_regex</tt><a class="headerlink" href="#MDAnalysis.core.util.FORTRAN_format_regex" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">FORTRAN_format_regex</tt><em class="property"> = '(?P&lt;repeat&gt;\\d+?)(?P&lt;format&gt;[IFEAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\\d+)(\\.(?P&lt;decimals&gt;\\d+))?)?'</em><a class="headerlink" href="#MDAnalysis.core.util.FORTRAN_format_regex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Regular expresssion (see <a class="reference external" href="http://docs.python.org/library/re.html#re" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">re</span></tt></a>) to parse a simple <a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">FORTRAN edit descriptor</a>.
 <tt class="docutils literal"><span class="pre">(?P&lt;repeat&gt;\d?)(?P&lt;format&gt;[IFELAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\d+)(\.(?P&lt;decimals&gt;\d+))?)?</span></tt></p>
 </dd></dl>
@@ -302,13 +305,13 @@ forms.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Argument :</th><td class="field-body">The <em>residue</em> must contain a 1-letter or 3-letter or
+<tr class="field-odd field"><th class="field-name">Argument :</th><td class="field-body">The <em>residue</em> must contain a 1-letter or 3-letter or
 4-letter residue string, a number (the resid) and
 optionally an atom identifier, which must be separate
 from the residue with a colon (&#8221;:&#8221;). White space is
 allowed in between.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><cite>(3-letter aa string, resid, atomname)</cite>; known 1-letter
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><cite>(3-letter aa string, resid, atomname)</cite>; known 1-letter
 aa codes are converted to 3-letter codes</td>
 </tr>
 </tbody>
@@ -328,7 +331,7 @@ aa codes are converted to 3-letter codes</td>
 <dt id="MDAnalysis.core.util.norm">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">norm</tt><big>(</big><em>v</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the length of a vector, <tt class="docutils literal"><span class="pre">sqrt(v.v)</span></tt>.</p>
-<p>Faster than <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v2.0.dev-ca258fc)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></tt></a> because no frills.</p>
+<p>Faster than <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v2.0.dev-ae3dd33)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></tt></a> because no frills.</p>
 </dd></dl>
 
 <dl class="function">
@@ -345,7 +348,7 @@ aa codes are converted to 3-letter codes</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">v3 . (v1 x v2)</td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">v3 . (v1 x v2)</td>
 </tr>
 </tbody>
 </table>
@@ -375,7 +378,7 @@ aa codes are converted to 3-letter codes</td>
         <li class="right" >
           <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -384,7 +387,7 @@ aa codes are converted to 3-letter codes</td>
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

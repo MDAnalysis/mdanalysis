@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.4. Generating densities from trajectories — MDAnalysis.analysis.density &mdash; MDAnalysis v0.7.6-devel documentation</title>
+    <title>3.4. Generating densities from trajectories — MDAnalysis.analysis.density &mdash; MDAnalysis 0.7.5.1 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6-devel',
+        VERSION:     '0.7.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.6-devel documentation"
+          title="Search within MDAnalysis 0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.6-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" />
     <link rel="prev" title="3.3. Distance analysis — MDAnalysis.distances" href="distances.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="distances.html" title="3.3. Distance analysis — MDAnalysis.distances"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -67,7 +70,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="distances.html"
-                        title="previous chapter">3.3. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
+                        title="previous chapter">3.3. Distance analysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="gnm.html"
                         title="next chapter">3.5. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></p>
@@ -79,7 +82,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -103,11 +106,11 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Author:</th><td class="field-body">Oliver Beckstein</td>
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Oliver Beckstein</td>
 </tr>
-<tr class="field"><th class="field-name">Year:</th><td class="field-body">2011</td>
+<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2011</td>
 </tr>
-<tr class="field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
+<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
 </tr>
 </tbody>
 </table>
@@ -161,10 +164,10 @@ rest should work for an array of any dimension.</p>
 <p>If the input histogram consists of counts per cell then the
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><tt class="xref py py-meth docutils literal"><span class="pre">Density.make_density()</span></tt></a> method converts the grid to a physical density. For
 a probability density, divide it by <tt class="xref py py-meth docutils literal"><span class="pre">Density.grid.sum()</span></tt> or use <tt class="docutils literal"><span class="pre">normed=True</span></tt>
-right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.0.dev-ca258fc)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
+right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.0.dev-ae3dd33)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
 <p>The user <em>should</em> set the <em>parameters</em> keyword (see docs for the
 constructor); in particular, if the data are already a density, one must
-set <em>isDensity</em> == <tt class="xref docutils literal"><span class="pre">True</span></tt> because there is no reliable way to detect if
+set <em>isDensity</em> == <tt class="docutils literal"><span class="pre">True</span></tt> because there is no reliable way to detect if
 data represent counts or a density. As a special convenience, if data are
 read from a file and the user has not set <em>isDensity</em> then it is assumed
 that the data are in fact a density.</p>
@@ -224,9 +227,9 @@ that the length- and the density unit correspond to each other.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>grid</em></dt>
-<dd><p class="first last">histogram or density, typically a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-ca258fc)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></p>
+<dd><p class="first last">histogram or density, typically a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-ae3dd33)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></p>
 </dd>
 <dt><em>edges</em></dt>
 <dd><p class="first last">list of arrays, the lower and upper bin edges along the axes</p>
@@ -239,10 +242,10 @@ the class. Meaning of the values are listed:</p>
 <div><p><em>isDensity</em></p>
 <blockquote>
 <div><ul class="simple">
-<li><tt class="xref docutils literal"><span class="pre">False</span></tt>: grid is a histogram with counts [default]</li>
-<li><tt class="xref docutils literal"><span class="pre">True</span></tt>: a density</li>
+<li><tt class="docutils literal"><span class="pre">False</span></tt>: grid is a histogram with counts [default]</li>
+<li><tt class="docutils literal"><span class="pre">True</span></tt>: a density</li>
 </ul>
-<p>Applying <tt class="xref py py-meth docutils literal"><span class="pre">Density.make_density`()</span></tt> sets it to <tt class="xref docutils literal"><span class="pre">True</span></tt>.</p>
+<p>Applying <tt class="xref py py-meth docutils literal"><span class="pre">Density.make_density`()</span></tt> sets it to <tt class="docutils literal"><span class="pre">True</span></tt>.</p>
 </div></blockquote>
 </div></blockquote>
 </dd>
@@ -250,7 +253,7 @@ the class. Meaning of the values are listed:</p>
 <dd><p class="first">A dict with the keys</p>
 <ul class="simple">
 <li><em>length</em>:  physical unit of grid edges (Angstrom or nm) [Angstrom]</li>
-<li><em>density</em>: unit of the density if <tt class="docutils literal"><span class="pre">isDensity</span> <span class="pre">==</span> <span class="pre">True</span></tt> or <tt class="xref docutils literal"><span class="pre">None</span></tt>
+<li><em>density</em>: unit of the density if <tt class="docutils literal"><span class="pre">isDensity</span> <span class="pre">==</span> <span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">None</span></tt>
 otherwise; the default is &#8220;Angstrom^{-3}&#8221; for densities (meaning A^-3).</li>
 </ul>
 <p class="last">(Actually, the default unit is the value of
@@ -284,7 +287,7 @@ stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt> if not compatible.</td>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt> if not compatible.</td>
 </tr>
 </tbody>
 </table>
@@ -303,30 +306,30 @@ stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.
 <col width="83%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">name</th>
+<tr class="row-odd"><th class="head">name</th>
 <th class="head">description of the unit</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>Angstrom^{-3}</td>
+<tr class="row-even"><td>Angstrom^{-3}</td>
 <td>particles/A**3</td>
 </tr>
-<tr><td>nm^{-3}</td>
+<tr class="row-odd"><td>nm^{-3}</td>
 <td>particles/nm**3</td>
 </tr>
-<tr><td>SPC</td>
+<tr class="row-even"><td>SPC</td>
 <td>density of SPC water at standard conditions</td>
 </tr>
-<tr><td>TIP3P</td>
+<tr class="row-odd"><td>TIP3P</td>
 <td>... see <a class="reference internal" href="../core/units.html#MDAnalysis.core.units.water" title="MDAnalysis.core.units.water"><tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.units.water</span></tt></a></td>
 </tr>
-<tr><td>TIP4P</td>
+<tr class="row-even"><td>TIP4P</td>
 <td>... see <a class="reference internal" href="../core/units.html#MDAnalysis.core.units.water" title="MDAnalysis.core.units.water"><tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.units.water</span></tt></a></td>
 </tr>
-<tr><td>water</td>
+<tr class="row-odd"><td>water</td>
 <td>density of real water at standard conditions (0.997 g/cm**3)</td>
 </tr>
-<tr><td>Molar</td>
+<tr class="row-even"><td>Molar</td>
 <td>mol/l</td>
 </tr>
 </tbody>
@@ -352,7 +355,7 @@ and floating point artifacts for multiple conversions.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>unit</em></dt>
 <dd><p class="first last">Angstrom, nm</p>
 </dd>
@@ -472,14 +475,14 @@ regenerated from the saved data with</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt>universe</dt>
 <dd><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> object with a trajectory</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt>atomselection</dt>
 <dd><p class="first last">selection string (MDAnalysis syntax) for the species to be analyzed
 [&#8220;name OH2&#8221;]</p>
@@ -497,7 +500,7 @@ of delta.) [1.0]</p>
 in Angstroem [2.0]</p>
 </dd>
 <dt>soluteselection</dt>
-<dd><p class="first last">MDAnalysis selection for the solute, e.g. &#8220;protein&#8221; [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last">MDAnalysis selection for the solute, e.g. &#8220;protein&#8221; [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt>cutoff</dt>
 <dd><p class="first last">With <em>cutoff</em>, select &#8216;&lt;atomsel&gt; NOT WITHIN &lt;cutoff&gt; OF &lt;soluteselection&gt;&#8217;
@@ -512,7 +515,7 @@ in Angstroem [2.0]</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a></p>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -532,7 +535,7 @@ in Angstroem [2.0]</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt>psf/pdb/gro</dt>
 <dd><p class="first last">topology file</p>
 </dd>
@@ -543,7 +546,7 @@ once as a single argument</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt>atomselection</dt>
 <dd><p class="first last">selection string (MDAnalysis syntax) for the species to be analyzed
 [&#8220;name OH2&#8221;]</p>
@@ -561,7 +564,7 @@ of delta.) [1.0]</p>
 in Angstroem [2.0]</p>
 </dd>
 <dt>soluteselection</dt>
-<dd><p class="first last">MDAnalysis selection for the solute, e.g. &#8220;protein&#8221; [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last">MDAnalysis selection for the solute, e.g. &#8220;protein&#8221; [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt>cutoff</dt>
 <dd><p class="first last">With <em>cutoff</em>, select &#8216;&lt;atomsel&gt; NOT WITHIN &lt;cutoff&gt; OF &lt;soluteselection&gt;&#8217;
@@ -570,7 +573,7 @@ in Angstroem [2.0]</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a></p>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -606,7 +609,7 @@ calculated as</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>pdb</em></dt>
 <dd><p class="first last">PDB file (should have the temperatureFactor set); ANISO
 records are currently <em>not</em> processed</p>
@@ -614,7 +617,7 @@ records are currently <em>not</em> processed</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>atomselection</em></dt>
 <dd><p class="first last">selection string (MDAnalysis syntax) for the species to be analyzed
 [&#8216;resname HOH and name O&#8217;]</p>
@@ -625,19 +628,19 @@ records are currently <em>not</em> processed</p>
 of delta.) [1.0]</p>
 </dd>
 <dt><em>metadata</em></dt>
-<dd><p class="first last">dictionary of additional data to be saved with the object [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last">dictionary of additional data to be saved with the object [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>padding</em></dt>
 <dd><p class="first last">increase histogram dimensions by padding (on top of initial box size) [1.0]</p>
 </dd>
 <dt><em>sigma</em></dt>
 <dd><p class="first last">width (in Angstrom) of the gaussians that are used to build up the
-density; if <tt class="xref docutils literal"><span class="pre">None</span></tt> then uses B-factors from <em>pdb</em> [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+density; if <tt class="docutils literal"><span class="pre">None</span></tt> then uses B-factors from <em>pdb</em> [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a> object with a density measured relative to the
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><tt class="xref py py-class docutils literal"><span class="pre">Density</span></tt></a> object with a density measured relative to the
 water density at standard conditions</p>
 </td>
 </tr>
@@ -680,13 +683,13 @@ sigma is taken as sqrt(3.*B/8.)/pi (see <tt class="xref py py-func docutils lite
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt>pdb</dt>
 <dd><p class="first last">PDB file or <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>; a PDB is read with the
 simpl PDB reader. If the Bio.PDB reader is required, either set
-the <em>permissive_pdb_reader</em> flag to <tt class="xref docutils literal"><span class="pre">False</span></tt> in
+the <em>permissive_pdb_reader</em> flag to <tt class="docutils literal"><span class="pre">False</span></tt> in
 <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> or supply a Universe
-that was created with the <cite>permissive</cite> = <tt class="xref docutils literal"><span class="pre">False</span></tt> keyword.</p>
+that was created with the <cite>permissive</cite> = <tt class="docutils literal"><span class="pre">False</span></tt> keyword.</p>
 </dd>
 <dt>atomselection</dt>
 <dd><p class="first last">selection string (MDAnalysis syntax) for the species to be analyzed</p>
@@ -749,7 +752,7 @@ g.load(filename)</dd>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt>grid       </dt>
 <dd><p class="first last">histogram or density, defined on numpy nD array</p>
 </dd>
@@ -795,7 +798,7 @@ metadata[] but stores it with save()</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt> if not compatible.</td>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt> if not compatible.</td>
 </tr>
 </tbody>
 </table>
@@ -906,7 +909,7 @@ regenerated from the saved data with</p>
         <li class="right" >
           <a href="distances.html" title="3.3. Distance analysis — MDAnalysis.distances"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -915,7 +918,7 @@ regenerated from the saved data with</p>
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>
