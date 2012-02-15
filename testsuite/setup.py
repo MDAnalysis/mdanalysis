@@ -1,3 +1,4 @@
+#! /usr/bin/python
 """Setuptools-based setup script for tests of MDAnalysis.
 
 A working installation of NumPy <http://numpy.scipy.org> is required.
@@ -58,7 +59,7 @@ if sys.version_info[:2] < (2, 5):
 
 
 if __name__ == '__main__':
-    RELEASE = "0.7.6-devel"         # this must be in-sync with MDAnalysis
+    RELEASE = "0.7.5.1"         # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
