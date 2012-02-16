@@ -1,2 +1,3 @@
 graft   MDAnalysisTests/data/
+include README INSTALL CHANGELOG LICENSE AUTHORS TODO SUMMARY.txt
 include ez_setup.py setup.py
