@@ -3,16 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.3. MDAnalysis topology tables &mdash; MDAnalysis 0.7.5.1 documentation</title>
-    
+    <title>4.3. MDAnalysis topology tables &mdash; MDAnalysis v0.7.5.1 documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -26,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.5.1 documentation"
+          title="Search within MDAnalysis v0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.4. PSF topology parser" href="PSFParser.html" />
     <link rel="prev" title="4.2. Common functions for topology building — MDAnalysis.topology.core" href="core.html" /> 
@@ -50,7 +47,7 @@
         <li class="right" >
           <a href="core.html" title="4.2. Common functions for topology building — MDAnalysis.topology.core"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -73,7 +70,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" size="18" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -97,14 +94,14 @@
 tables are dictionaries that are indexed by the element.</p>
 <dl class="data">
 <dt id="MDAnalysis.topology.tables.atomelements">
-<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">atomelements</tt><em class="property"> = {'BC': 'C', 'K+': 'K', 'AC': 'C', 'LIT': 'LI', 'CA2+': 'CA', 'FE': 'FE', 'CAL': 'CA', 'MG2+': 'MG', 'CL-': 'CL', 'CLAL': 'CL', 'SOD': 'NA', 'CS+': 'CS', 'NA': 'NA', 'POT': 'K', 'LI': 'LI', 'CES': 'CS', 'RB': 'RB', 'C0': 'CA', 'ZN': 'ZN', 'CL': 'CL', 'CLA': 'CL', 'CS': 'CS', 'CU': 'CU', 'MG': 'MG', 'QR': 'RB', 'NA+': 'NA', 'LI+': 'LI', 'QC': 'CE', 'QK': 'K', 'QL': 'LI', 'QN': 'NA'}</em><a class="headerlink" href="#MDAnalysis.topology.tables.atomelements" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">atomelements</tt><a class="headerlink" href="#MDAnalysis.topology.tables.atomelements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with hard-coded special atom names, used for guessing atom types
 with <a class="reference internal" href="core.html#MDAnalysis.topology.core.guess_atom_type" title="MDAnalysis.topology.core.guess_atom_type"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.core.guess_atom_type()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tables.masses">
-<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">masses</tt><em class="property"> = {'ZN': 65.37, 'FE': 55.847, 'BR': 79.904, 'HE': 4.0026, 'NA': 22.98977, 'CL': 35.45, 'NE': 20.1797, 'RB': 85.4678, 'CA': 40.08, 'C': 12.011, 'F': 18.998, 'I': 126.9045, 'H': 1.008, 'K': 39.102, 'O': 15.999, 'N': 14.007, 'P': 30.974, 'S': 32.06, 'CS': 132.9, 'CU': 63.546, 'MG': 24.305, 'Ce': 140.116}</em><a class="headerlink" href="#MDAnalysis.topology.tables.masses" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">masses</tt><a class="headerlink" href="#MDAnalysis.topology.tables.masses" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary table with atomic masses in u, indexed by the element from
 <a class="reference internal" href="#MDAnalysis.topology.tables.atomelements" title="MDAnalysis.topology.tables.atomelements"><tt class="xref py py-data docutils literal"><span class="pre">atomelements</span></tt></a>.</p>
 </dd></dl>
@@ -134,14 +131,14 @@ floating point numbers.</p>
 <p>The raw tables are stored in the strings</p>
 <dl class="data">
 <dt id="MDAnalysis.topology.tables.TABLE_ATOMELEMENTS">
-<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">TABLE_ATOMELEMENTS</tt><em class="property"> = '\n# translation of atomnames to types/element\n# based on CHARMM and AMBER usage with a little bit of GROMOS\n# NOTE: CL might be ambiguous and is interpreted as chloride!\n\n# --------- ------------------\n# atomname   element\n# --------- ------------------\n\n# Calcium\nCAL          CA\nC0           CA\nCA2+         CA\n\n# Cesium\nCES          CS\n\n# Chloride\nCLA          CL\nCLAL         CL\nCL           CL\nCL-          CL\n\n# Iron\nFE           FE\n\n# Lithium\nLIT          LI\nLI           LI\nLI+          LI\nQL           LI\n\n# Magnesium\nMG           MG\nMG2+         MG\n\n# Noble gases\n## XXX collides with NE, HE in Arg  XXX\n## XXX so we remove the noble gases XXX\n##HE           HE\n##NE           NE\n\n# Potassium\nPOT          K\nK+           K\nQK           K\n\n# Sodium\nSOD          NA\nNA           NA\nNA+          NA\nQN           NA\n\n# Zink\nZN           ZN\n\n# Copper\nCU           CU\n\n# Cesium\nCS           CS\nCS+          CS\nCES          CS\n\n# Cerium??\nQC           CE\n\n# Rubidium\nRB           RB\nQR           RB\n\n# special carbons (Amber?)\nBC           C\nAC           C\n\n# other types are guessed from the name; see\n# topology.core.guess_atom_elements()\n'</em><a class="headerlink" href="#MDAnalysis.topology.tables.TABLE_ATOMELEMENTS" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">TABLE_ATOMELEMENTS</tt><a class="headerlink" href="#MDAnalysis.topology.tables.TABLE_ATOMELEMENTS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Table with hard-coded special atom names, used for guessing atom types
 with <a class="reference internal" href="core.html#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.core.guess_atom_element()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tables.TABLE_MASSES">
-<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">TABLE_MASSES</tt><em class="property"> = '\n# masses for elements in atomic units (u)\n# (taken from CHARMM and Gromacs atommass.dat)\n\n#------------ -----------\n# atomtype    mass\n#------------ -----------\nH               1.00800\nC              12.01100\nN              14.00700\nO              15.99900\nS              32.06000\nP              30.97400\nHE              4.00260\nNE             20.17970\nFE             55.84700\nNA             22.98977\nK              39.10200\nRB             85.46780\nCS            132.90000\nMG             24.30500\nCA             40.08000\nCU             63.54600\nZN             65.37000\nCe            140.11600\nF              18.99800\nCL             35.45000\nBR             79.90400\nI             126.90450\n'</em><a class="headerlink" href="#MDAnalysis.topology.tables.TABLE_MASSES" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">TABLE_MASSES</tt><a class="headerlink" href="#MDAnalysis.topology.tables.TABLE_MASSES" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plain-text table with atomic masses in u.</p>
 </dd></dl>
 
@@ -168,7 +165,7 @@ with <a class="reference internal" href="core.html#MDAnalysis.topology.core.gues
         <li class="right" >
           <a href="core.html" title="4.2. Common functions for topology building — MDAnalysis.topology.core"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -177,7 +174,7 @@ with <a class="reference internal" href="core.html#MDAnalysis.topology.core.gues
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

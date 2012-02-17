@@ -3,16 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.12. Gromacs XTC file IO — MDAnalysis.coordinates.XTC &mdash; MDAnalysis 0.7.5.1 documentation</title>
-    
+    <title>5.12. Gromacs XTC file IO — MDAnalysis.coordinates.XTC &mdash; MDAnalysis v0.7.5.1 documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -26,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.5.1 documentation"
+          title="Search within MDAnalysis v0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.13. XYZ trajectory reader — MDAnalysis.coordinates.XYZ" href="XYZ.html" />
     <link rel="prev" title="5.11. Gromacs TRR file IO — MDAnalysis.coordinates.TRR" href="TRR.html" /> 
@@ -50,7 +47,7 @@
         <li class="right" >
           <a href="TRR.html" title="5.11. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -81,7 +78,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" size="18" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -113,6 +110,12 @@ bindings to the Gromacs trajectory file formats</p>
 <dt id="MDAnalysis.coordinates.xdrfile.XTC.Timestep">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.XTC.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Timestep for a Gromacs XTC trajectory.</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.XTC.Timestep.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an independent (&#8220;deep&#8221;) copy of the whole <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep" title="MDAnalysis.coordinates.xdrfile.XTC.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.xdrfile.XTC.Timestep.dimensions">
 <tt class="descname">dimensions</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
@@ -158,14 +161,14 @@ available). <em>numatoms</em> is always set from <tt class="xref py py-attr docu
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output trajectory</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>numatoms</em></dt>
 <dd><p class="first last">number of atoms</p>
 </dd>
@@ -179,7 +182,7 @@ for TRR) [1000.0]</p>
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">appropriate <tt class="xref py py-class docutils literal"><span class="pre">TrjWriter</span></tt></p>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">appropriate <tt class="xref py py-class docutils literal"><span class="pre">TrjWriter</span></tt></p>
 </td>
 </tr>
 </tbody>
@@ -204,7 +207,7 @@ for TRR) [1000.0]</p>
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
 <p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
@@ -216,7 +219,7 @@ returned.</p>
 <dd><p>Conversion of coordinate array x from base units to native units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
 <p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
@@ -231,7 +234,7 @@ returned (although note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
 <p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
@@ -246,7 +249,7 @@ returned. (Also note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
 <p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
@@ -323,9 +326,9 @@ iterating through the whole trajectory.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">pointer to XDRFILE (and sets self.xdrfile)</td>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body">pointer to XDRFILE (and sets self.xdrfile)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> with code EALREADY if file was already opened or
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> with code EALREADY if file was already opened or
 ENOENT if the file cannot be found</td>
 </tr>
 </tbody>
@@ -362,7 +365,7 @@ ENOENT if the file cannot be found</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
@@ -372,7 +375,7 @@ ENOENT if the file cannot be found</td>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>start</em></dt>
 <dd><p class="first last">starting timestep</p>
 </dd>
@@ -386,7 +389,7 @@ ENOENT if the file cannot be found</td>
 <dd><p class="first last">accuracy for lossy XTC format [1000]</p>
 </dd>
 <dt><em>convert_units</em></dt>
-<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: units are converted to the MDAnalysis base format; <tt class="docutils literal"><span class="pre">None</span></tt> selects
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: units are converted to the MDAnalysis base format; <tt class="xref docutils literal"><span class="pre">None</span></tt> selects
 the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a>MDAnalysis.core.flags`[&#8216;convert_gromacs_lengths&#8217;]</p>
 </dd>
 </dl>
@@ -412,7 +415,7 @@ the value of :data:<a href="#id1"><span class="problematic" id="id2">`</span></a
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
 <p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
@@ -424,7 +427,7 @@ returned.</p>
 <dd><p>Conversion of coordinate array x from base units to native units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
 <p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
@@ -439,7 +442,7 @@ returned (although note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
 <p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
@@ -454,7 +457,7 @@ returned. (Also note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
 <p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="xref docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
@@ -481,7 +484,7 @@ returned.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.XTC.XTCWriter.has_valid_coordinates">
 <tt class="descname">has_valid_coordinates</tt><big>(</big><em>criteria</em>, <em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.XTCWriter.has_valid_coordinates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if all values are within limit values of their formats.</p>
+<dd><p>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if all values are within limit values of their formats.</p>
 <p>Due to rounding, the test is asymmetric (and <em>min</em> is supposed to be negative):</p>
 <blockquote>
 <div>min &lt; x &lt;= max</div></blockquote>
@@ -489,17 +492,17 @@ returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>criteria</em></dt>
 <dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
 </dd>
 <dt><em>x</em></dt>
-<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-ae3dd33)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
+<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">boolean</p>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">boolean</p>
 </td>
 </tr>
 </tbody>
@@ -550,7 +553,7 @@ be written to trajectory file</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
@@ -560,7 +563,7 @@ be written to trajectory file</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>start</em></dt>
 <dd><p class="first last">starting timestep</p>
 </dd>
@@ -574,7 +577,7 @@ be written to trajectory file</p>
 <dd><p class="first last">accuracy for lossy XTC format [1000]</p>
 </dd>
 <dt><em>convert_units</em></dt>
-<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: units are converted to the MDAnalysis base format; <tt class="docutils literal"><span class="pre">None</span></tt> selects
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: units are converted to the MDAnalysis base format; <tt class="xref docutils literal"><span class="pre">None</span></tt> selects
 the value of :data:<a href="#id3"><span class="problematic" id="id4">`</span></a>MDAnalysis.core.flags`[&#8216;convert_gromacs_lengths&#8217;]</p>
 </dd>
 </dl>
@@ -608,7 +611,7 @@ the value of :data:<a href="#id3"><span class="problematic" id="id4">`</span></a
         <li class="right" >
           <a href="TRR.html" title="5.11. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -617,7 +620,7 @@ the value of :data:<a href="#id3"><span class="problematic" id="id4">`</span></a
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

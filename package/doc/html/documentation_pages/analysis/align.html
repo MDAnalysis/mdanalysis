@@ -3,16 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align &mdash; MDAnalysis 0.7.5.1 documentation</title>
-    
+    <title>3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align &mdash; MDAnalysis v0.7.5.1 documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -26,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.5.1 documentation"
+          title="Search within MDAnalysis v0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts" href="contacts.html" />
     <link rel="prev" title="3. Analysis modules" href="../analysis_modules.html" /> 
@@ -50,7 +47,7 @@
         <li class="right" >
           <a href="../analysis_modules.html" title="3. Analysis modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -83,7 +80,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" size="18" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -107,11 +104,11 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Oliver Beckstein, Joshua Adelman</td>
+<tr class="field"><th class="field-name">Author:</th><td class="field-body">Oliver Beckstein, Joshua Adelman</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2010&#8211;2011</td>
+<tr class="field"><th class="field-name">Year:</th><td class="field-body">2010&#8211;2011</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
+<tr class="field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
 </tr>
 </tbody>
 </table>
@@ -229,13 +226,13 @@ to change this behavior through the <em>subselection</em> keyword.)</li>
 </ol>
 <p>The <em>mobile</em> and <em>reference</em> atom groups can be constructed so that they
 already match atom by atom. In this case, <em>select</em> should be set to &#8220;all&#8221;
-(or <tt class="docutils literal"><span class="pre">None</span></tt>) so that no further selections are applied to <em>mobile</em> and
+(or <tt class="xref docutils literal"><span class="pre">None</span></tt>) so that no further selections are applied to <em>mobile</em> and
 <em>reference</em>, therefore preserving the exact atom ordering (see
 <a class="reference internal" href="../selections.html#ordered-selections-label"><em>Ordered selections</em></a>).</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">The atom order for <em>mobile</em> and <em>reference</em> is <em>only</em>
-preserved when <em>select</em> is either &#8220;all&#8221; or <tt class="docutils literal"><span class="pre">None</span></tt>. In any other case,
+preserved when <em>select</em> is either &#8220;all&#8221; or <tt class="xref docutils literal"><span class="pre">None</span></tt>. In any other case,
 a new selection will be made that will sort the resulting AtomGroup by
 index and therefore destroy the correspondence between the two groups. <strong>It
 is safest not to mix ordered AtomGroups with selection strings.</strong></p>
@@ -244,7 +241,7 @@ is safest not to mix ordered AtomGroups with selection strings.</strong></p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>mobile</em></dt>
 <dd><p class="first last">structure to be aligned, a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>
 or a whole <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a></p>
@@ -268,13 +265,13 @@ a list of selection strings (to generate a AtomGroup with defined atom order as
 described under <a class="reference internal" href="../selections.html#ordered-selections-label"><em>Ordered selections</em></a>).</p>
 </dd>
 <dt><em>mass_weighted</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt> uses the masses <tt class="xref py py-meth docutils literal"><span class="pre">reference.masses()</span></tt> as weights for the
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> uses the masses <tt class="xref py py-meth docutils literal"><span class="pre">reference.masses()</span></tt> as weights for the
 RMSD fit.</p>
 </dd>
 <dt><em>subselection</em></dt>
 <dd><p class="first">Apply the transformation only to this selection.</p>
 <dl class="last docutils">
-<dt><tt class="docutils literal"><span class="pre">None</span></tt> [default]</dt>
+<dt><tt class="xref docutils literal"><span class="pre">None</span></tt> [default]</dt>
 <dd><p class="first last">Apply to <cite>mobile.universe.atoms</cite> (i.e. all atoms in the
 context of the selection from <em>mobile</em> such as the rest of a
 protein, ligands and the surrounding water)</p>
@@ -290,7 +287,7 @@ protein, ligands and the surrounding water)</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">RMSD before and after spatial alignment.</p>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">RMSD before and after spatial alignment.</p>
 </td>
 </tr>
 </tbody>
@@ -331,7 +328,7 @@ sequence of resids as they appear in the psf in <em>ref_resids</em> or
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>fastafilename</em></dt>
 <dd><p class="first last">FASTA file with first sequence as reference and
 second the one to be aligned (ORDER IS IMPORTANT!)</p>
@@ -356,7 +353,7 @@ to get the original residue number</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>select_dict</em></dt>
 <dd><p class="first last">dictionary with &#8216;reference&#8217; and &#8216;mobile&#8217; selection string
 that can be used immediately in <a class="reference internal" href="#MDAnalysis.analysis.align.rms_fit_trj" title="MDAnalysis.analysis.align.rms_fit_trj"><tt class="xref py py-func docutils literal"><span class="pre">rms_fit_trj()</span></tt></a> as
@@ -371,13 +368,13 @@ that can be used immediately in <a class="reference internal" href="#MDAnalysis.
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.rms_fit_trj">
-<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">rms_fit_trj</tt><big>(</big><em>traj</em>, <em>reference</em>, <em>select='all'</em>, <em>filename=None</em>, <em>rmsdfile=None</em>, <em>prefix='rmsfit_'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.1</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.rms_fit_trj" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">rms_fit_trj</tt><big>(</big><em>traj</em>, <em>reference</em>, <em>select='all'</em>, <em>filename=None</em>, <em>rmsdfile=None</em>, <em>prefix='rmsfit_'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.10000000000000001</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.rms_fit_trj" title="Permalink to this definition">¶</a></dt>
 <dd><p>RMS-fit trajectory to a reference structure using a selection.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>traj</em></dt>
 <dd><p class="first last">trajectory, <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> object</p>
 </dd>
@@ -404,7 +401,7 @@ described under <a class="reference internal" href="../selections.html#ordered-s
 original trajectory filename (from <em>traj</em>) with <em>prefix</em> prepended</p>
 </dd>
 <dt><em>rmsdfile</em></dt>
-<dd><p class="first last">file name for writing the RMSD timeseries [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last">file name for writing the RMSD timeseries [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>prefix</em></dt>
 <dd><p class="first last">prefix for autogenerating the new output filename</p>
@@ -462,7 +459,7 @@ reference structure):</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>a</em></dt>
 <dd><p class="first last">coordinates that are to be rotated (&#8220;mobile set&#8221;); array of N atoms
 of shape N*3 as generated by, e.g.,
@@ -479,7 +476,7 @@ masses of the atoms)</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">(R,</span> <span class="pre">rmsd)</span></tt> rmsd and rotation matrix <em>R</em></p>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">(R,</span> <span class="pre">rmsd)</span></tt> rmsd and rotation matrix <em>R</em></p>
 </td>
 </tr>
 </tbody>
@@ -527,7 +524,7 @@ done with <a class="reference internal" href="#MDAnalysis.analysis.align.alignto
         <li class="right" >
           <a href="../analysis_modules.html" title="3. Analysis modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -536,7 +533,7 @@ done with <a class="reference internal" href="#MDAnalysis.analysis.align.alignto
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>
