@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
@@ -25,6 +25,56 @@ module. The derived classes must follow the Trajectory API in
 
 .. autoclass:: Timestep
    :members:
+
+   .. attribute:: _pos
+
+      :class:`numpy.ndarray` of dtype :class:`~numpy.float32` of shape
+      (*numatoms*, 3) and internal FORTRAN order, holding the raw
+      cartesian coordinates (in MDAnalysis units, i.e. Å).
+
+      .. Note::
+
+         Normally one does not directly access :attr:`_pos` but uses
+         the :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.coordinates`
+         method of an :class:`~MDAnalysis.core.AtomGroup.AtomGroup` but
+         sometimes it can be faster to directly use the raw
+         coordinates. Any changes to this array are immediately
+         reflected in atom positions. If the frame is written to a new
+         trajectory then the coordinates are changed. If a new
+         trajectory frame is loaded, then *all* contents of
+         :attr:`_pos` are overwritten.
+
+   .. attribute:: _velocities
+
+      :class:`numpy.ndarray` of dtype :class:`~numpy.float32`. of shape
+      (*numatoms*, 3), holding the raw velocities (in MDAnalysis
+      units, i.e. typically Å/ps).
+
+      .. Note::
+
+         Normally velocities are accessed through the
+         :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.velocities()`
+         method of an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+         but this attribute is documented as there can be occasions
+         when it is required (e.g. in order to *change* velocities) or
+         much more convenient or faster to access the raw velocities
+         directly.
+
+         :attr:`~Timestep._velocities` only exists if the underlying
+         trajectory format supports velocities. Your code should check
+         for its existence or handle an :exc:`AttributeError`
+         gracefully.
+
+
+      .. versionadded:: 0.7.5
+
+   .. attribute:: numatoms
+
+      number of atoms
+
+   .. attribute::`frame`
+
+      frame number
 
 .. autoclass:: IObase
    :members:
@@ -55,37 +105,26 @@ import core
 class Timestep(object):
     """Timestep data for one frame
 
-    :Attributes:
-      :attr:`numatoms`
-        number of atoms
-      :attr:`frame`
-        frame number
-      :attr:`_pos`
-        coordinates as a (*numatoms*,3) :class:`numpy.ndarray` of dtype
-        :data:`~numpy.float32`.
-
-        .. Note::
-
-           normally one does not directly access :attr:`_pos` but uses the
-           :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.coordinates` method of
-           an :meth:`~MDAnalysis.core.AtomGroup.AtomGroup` but sometimes it can
-           be faster to directly use the raw coordinates. Any changes to this
-           array are imediately reflected in atom positions. If the frame is
-           written to a new trajectory then the coordinates are changed. If a
-           new trajectory frame is loaded, then *all* contents of :attr:`_pos`
-           are overwritten.
-
-      :attr:`dimensions`:
-         system box dimensions (A, B, C, alpha, beta, gamma); lengths
-         are in the MDAnalysis length unit, and angles are in degrees.
-
     :Methods:
-      ``t = Timestep(numatoms)``
-         create a timestep object with space for numatoms (done automatically)
-      ``t[i]``
+
+      ``ts = Timestep(numatoms)``
+
+         create a timestep object with space for numatoms (done
+         automatically)
+
+      ``ts[i]``
+
          return coordinates for the i'th atom (0-based)
-      ``t[start:stop:skip]``
-         return an array of coordinates, where start, stop and skip correspond to atom indices (0-based)
+
+      ``ts[start:stop:skip]``
+
+         return an array of coordinates, where start, stop and skip
+         correspond to atom indices,
+         :attr:`MDAnalysis.core.AtomGroup.Atom.number` (0-based)
+
+      ``for x in ts``
+
+         iterate of the coordinates, atom by atom
     """
     def __init__(self, arg):
         if numpy.dtype(type(arg)) == numpy.dtype(int):
@@ -101,16 +140,20 @@ class Timestep(object):
             self._unitcell = numpy.array(arg._unitcell)
             self._pos = numpy.array(arg._pos, order='F')
         elif isinstance(arg, numpy.ndarray):
-            if len(arg.shape) != 2: raise ValueError("numpy array can only have 2 dimensions")
+            if len(arg.shape) != 2:
+                raise ValueError("numpy array can only have 2 dimensions")
             self._unitcell = numpy.zeros((6), numpy.float32)
             self.frame = 0
-            #if arg.shape[0] == 3: self.numatoms = arg.shape[0]  # ??? is this correct ??? [OB]  # Nope, not sure what the aim was so i've left the lines in as comments [DP]
-            #else: self.numatoms = arg.shape[-1]                 # ??? reverse ??? [OB]
-            if arg.shape[1] == 3: self.numatoms = arg.shape[0]
-            else: self.numatoms = arg.shape[0]   # Or should an exception be raised if coordinate structure is not 3-dimensional? Maybe velocities could be read one day... [DP]
-
+            if arg.shape[1] == 3:
+                self.numatoms = arg.shape[0]
+            else:
+                self.numatoms = arg.shape[0]
+                # Or should an exception be raised if coordinate
+                # structure is not 3-dimensional? Maybe velocities
+                # could be read one day... [DP]
             self._pos = arg.astype(numpy.float32).copy('Fortran',)
-        else: raise ValueError("Cannot create an empty Timestep")
+        else:
+            raise ValueError("Cannot create an empty Timestep")
         self._x = self._pos[:,0]
         self._y = self._pos[:,1]
         self._z = self._pos[:,2]
@@ -134,6 +177,7 @@ class Timestep(object):
     def __repr__(self):
         return "< Timestep "+ repr(self.frame) + " with unit cell dimensions " + repr(self.dimensions) + " >"
     def copy(self):
+        """Make an independent ("deep") copy of the whole :class:`Timestep`."""
         return self.__deepcopy__()
     def __deepcopy__(self):
         # Is this the best way?
@@ -141,7 +185,17 @@ class Timestep(object):
 
     @property
     def dimensions(self):
-        """unitcell dimensions (A, B, C, alpha, beta, gamma)"""
+        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+
+        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
+        angles are in degrees.
+
+        :attr:`dimensions` is read-only because it transforms the
+        actual format of the unitcell (which differs between different
+        trajectory formats) to the representation described here,
+        which is used everywhere in MDAnalysis.
+        """
+
         # Layout of unitcell is [A, alpha, B, beta, gamma, C] --- (originally CHARMM DCD)
         # override for other formats; this strange ordering is kept for historical reasons
         # (the user should not need concern themselves with this)
