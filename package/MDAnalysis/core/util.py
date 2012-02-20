@@ -202,8 +202,9 @@ def which(program):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
     fpath, fname = os.path.split(program)
     if fpath:
-        if is_exe(program):
-            return program
+        real_program = realpath(program)
+        if is_exe(real_program):
+            return real_program
     else:
         for path in os.environ["PATH"].split(os.pathsep):
             exe_file = os.path.join(path, program)
