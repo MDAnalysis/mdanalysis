@@ -293,7 +293,8 @@ class HydrogenBondAnalysis(object):
                 break
             else:
                 if next_atom.name.startswith('H'):
-                    hydrogens.append(next_atom)
+                    if self.calc_eucl_distance(atom, next_atom) < 1.5:
+                        hydrogens.append(next_atom)
         return hydrogens
 
     def _update_selection_1(self):
