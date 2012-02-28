@@ -470,6 +470,7 @@ class HydrogenBondAnalysis(object):
         row = 0
         for t,hframe in izip(self._timesteps, self.timeseries):
             self.table[row:row+len(hframe)].time = t
+            cursor = -1  # if the loop is skipped then row stays at previous value
             for hrow, (donor_idx, acceptor_idx, donor, acceptor, distance, angle) in enumerate(hframe):
                 cursor = row + hrow
                 r = self.table[cursor]
