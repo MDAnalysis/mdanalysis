@@ -28,6 +28,24 @@ findcommand() {
     die "None of the commands $* found." 2
 }
 
+sed_eregex () {
+  # does this sed understand extended regular expressions?
+  # - FreeBSD (Mac OS X) sed -E
+  # - GNU sed --regexp-extended (undocumented: also -E ...)
+  local SED=$1
+  if [ "good" = "$(echo 'bad' | $SED -E 's/(abc)?bad|foo/good/')" ]; then
+     echo "$SED -E"
+     return 0
+  elif [ "good" = "$(echo 'bad' | $SED --regexp-extended 's/(abc)?bad|foo/good/')" ]; then     
+     echo "$SED --regexp-extended"
+     return 0
+  elif [ "good" = "$(echo 'bad' | $SED 's/(abc)?bad|foo/good/')" ]; then
+     echo "$SED"
+     return 0
+  fi
+  echo "false"
+  return 1
+}
 
 while getopts h OPT; do
     case $OPT in
@@ -43,13 +61,21 @@ RELEASE=$1
 
 test -n "$RELEASE" || die "Required argument missing. See -h for help." 2
 
-# find a sed with -i
-SED=$(findcommand gsed sed)
+# find a sed with -i and -E
+for cmd in gsed sed; do 
+   SED=$(sed_eregex $(findcommand $cmd))
+   [ "$SED" != "false" ] && break
+done
+[ "$SED" = "false" ] && { echo "ERROR: cannot find suitable sed."; exit 1; } 
+# should check for -i but we just hope for the best ...
+# modern(ish) seds have -i
+echo "Using sed = $SED"
 
 echo "Setting RELEASE/__version__ in MDAnalysis to $RELEASE"
 
-git grep -E -l 'RELEASE.*[0-9]+\.[0-9]+\.[0-9]+(-devel)?' $FILES  \
-   | xargs -I FILE $SED -i~  '/RELEASE/s/[0-9]\+\.[0-9]\+\.[0-9]\+\(-devel\)\?/'${RELEASE}'/' FILE
-git grep -E -l '__version__ =.*[0-9]+\.[0-9]+\.[0-9]+(-devel)?'  $FILES \
-   | xargs -I FILE $SED -i~ '/__version__/s/[0-9]\+\.[0-9]\+\.[0-9]\+\(-devel\)\?/'${RELEASE}'/' FILE
+git grep -E -l 'RELEASE.*[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-devel)?' $FILES  \
+   | xargs -I FILE $SED -i .bak '/RELEASE/s/[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-devel)?/'${RELEASE}'/' FILE
+git grep -E -l '__version__ =.*[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-devel)?'  $FILES \
+   | xargs -I FILE $SED -i .bak '/__version__/s/[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-devel)?/'${RELEASE}'/' FILE
+git status
 
