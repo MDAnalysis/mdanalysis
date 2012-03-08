@@ -20,6 +20,7 @@ from MDAnalysis.tests.datafiles import PSF,DCD
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup
 
+import numpy
 from numpy.testing import *
 from numpy import array, float32, rad2deg
 from nose.plugins.attrib import attr
@@ -252,6 +253,19 @@ class TestAtomGroup(TestCase):
         sel3 = self.universe.s4AKE.r98.selectAtoms("name OE1", "name CD", "name OE2")
         assert_almost_equal(sel3.angle(), 117.46187591552734, 3,
                             "angle of Glu98 OE1-CD-OE2 wrong")
+
+    # TODO: tests for the coordinate manipulation methods
+    # - transform
+    # - translate
+    # - rotate
+    # - rotateby
+
+    def test_moveto(self):
+        x = numpy.array([-100., 20, 0.])
+        ag = self.universe.selectAtoms("bynum 42")
+        ag.moveto(x)
+        assert_equal(ag.coordinates()[0], x,
+                     "failed to move atom 42 to new position")
 
 
 class _WriteAtoms(TestCase):

@@ -10,6 +10,15 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
+??/??/12 orbeckst
+
+  * 0.7.6 (in development)
+
+  Enhancements
+
+  * new AtomGroup.moveto() method
+
+
 02/16/12 sebastien.buchoux
 
   * 0.7.5.1
