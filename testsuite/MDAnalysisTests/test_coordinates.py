@@ -322,15 +322,12 @@ class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
 class TestPrimitivePDBWriter(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True)
-        self.multiverse = mda.Universe(PDB_multiframe, premissive=True)
-        self.universe2 = mda.Universe(PSF, DCD, premissive=True)
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
+        self.universe2 = mda.Universe(PSF, DCD, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         ext = ".pdb"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
         fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
-        fd, self.outfile3 = tempfile.mkstemp(suffix=ext)
-        fd, self.outfile4 = tempfile.mkstemp(suffix=ext)
-        fd, self.outfile5 = tempfile.mkstemp(suffix=ext)
 
     def tearDown(self):
         try:
@@ -341,14 +338,10 @@ class TestPrimitivePDBWriter(TestCase):
             os.unlink(self.outfile2)
         except OSError:
             pass
-        try:
-            os.unlink(self.outfile3)
-        except OSError:
-            pass
-        del self.universe, self.multiverse
+        del self.universe, self.multiverse, self.universe2
 
     def test_writer(self):
-        print self.universe.trajectory.frame,       self.universe.trajectory.numframes
+        # print self.universe.trajectory.frame, self.universe.trajectory.numframes
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(PSF, self.outfile, permissive=True)
         assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec,
@@ -359,17 +352,11 @@ class TestPrimitivePDBWriter(TestCase):
         Test if multiframe writer can write selected frames for an atomselection.
         """
         u = self.multiverse
-
         group = u.selectAtoms('name CA', 'name C')
-
         desired_group = 56
-
         desired_frames = 6
-
         group.write(self.outfile, start=12, step=2)
-
         u = mda.Universe(self.outfile)
-
         assert_equal(len(u.atoms), desired_group, err_msg="PrimitivePDBWriter trajectory written for an AtomGroup contains %d atoms, it should contain %d" % (len(u.atoms), desired_group))
 
         assert_equal(len(u.trajectory), desired_frames, err_msg="PrimitivePDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
@@ -379,40 +366,35 @@ class TestPrimitivePDBWriter(TestCase):
         u = self.multiverse
         desired = 24
         assert_equal(u.trajectory.numframes, desired,
-                            err_msg="Test PDB contains %d frames, trajectory contains only %d" % (desired, u.trajectory.numframes))
+                     err_msg="Test PDB contains %d frames, trajectory contains only %d" % (desired, u.trajectory.numframes))
 
     def test_numatoms_frame(self):
         u = self.multiverse
-
         desired = 392
-
         # rewind after previous test, otherwise the iterator is NoneType and next() cannot be called
-
         for frame in u.trajectory:
-
           assert_equal(len(u.atoms), desired, err_msg="The number of atoms in the Universe (%d) does not match the number of atoms in the test case (%d) at frame %d" % (len(u.atoms), desired, u.trajectory.frame))
-        
+
     def test_frameindex(self):
-      
         u = self.universe2
-        W = mda.Writer(self.outfile4)
-        
+        W = mda.Writer(self.outfile)
+
         # 1 frame expected
         u.trajectory[-1]
         W.write(u.selectAtoms('all'))
-        u0 = mda.Universe(self.outfile4)
+        u0 = mda.Universe(self.outfile)
         assert_equal(u0.trajectory.numframes, 1, err_msg="The number of frames should be 1.")
-        
+
         # 2 frames expceted
         u.trajectory[-2]
         W.write(u.selectAtoms('all'))
-        u0 = mda.Universe(self.outfile4)
+        u0 = mda.Universe(self.outfile)
         assert_equal(u0.trajectory.numframes, 3, err_msg="The number of frames should be 3.")
-        
+
         u.trajectory[-1]
-        u.selectAtoms('all').write(self.outfile5)
-        u0 = mda.Universe(self.outfile5)
-        assert_equal(u0.trajectory.numframes, 1, err_msg="The number of frames should be 11.")  
+        u.selectAtoms('all').write(self.outfile2)
+        u0 = mda.Universe(self.outfile2)
+        assert_equal(u0.trajectory.numframes, 1, err_msg="The number of frames should be 11.")
 
     def test_numconnections(self):
         u = self.multiverse
