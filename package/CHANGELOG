@@ -18,6 +18,10 @@ The rules for this file:
 
   * new AtomGroup.moveto() method
 
+  Fixes
+
+  * HydrogenBondAnalysis: NH1 and NH2 were not recognized
+
 
 02/16/12 sebastien.buchoux
 
