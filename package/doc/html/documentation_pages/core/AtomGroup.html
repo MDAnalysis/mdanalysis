@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.5.1 documentation</title>
+    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.7.6-devel documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5.1',
+        VERSION:     '0.7.6-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5.1 documentation"
+          title="Search within MDAnalysis 0.7.6-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.6-devel documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
     <link rel="prev" title="7.1. Core functions of MDAnalysis" href="init.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -79,7 +82,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -188,7 +191,7 @@ when provided in the topology and never guessed (see <cite>Issue 23</cite>).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>topologyfile</em></dt>
 <dd><p class="first last">A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to define the
 list of atoms. If the file includes bond information, partial
@@ -204,21 +207,21 @@ as one single trajectory to the Universe. The list can contain different file
 formats.</p>
 </dd>
 <dt><em>permissive</em></dt>
-<dd><p class="first last">currently only relevant for PDB files: Set to <tt class="xref docutils literal"><span class="pre">True</span></tt> in order to ignore most errors
-and read typical MD simulation PDB files; set to <tt class="xref docutils literal"><span class="pre">False</span></tt> to read with the Bio.PDB reader,
-which can be useful for real Protein Databank PDB files. <tt class="xref docutils literal"><span class="pre">None</span></tt>  selects the
-MDAnalysis default (which is set in <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt>) [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last">currently only relevant for PDB files: Set to <tt class="docutils literal"><span class="pre">True</span></tt> in order to ignore most errors
+and read typical MD simulation PDB files; set to <tt class="docutils literal"><span class="pre">False</span></tt> to read with the Bio.PDB reader,
+which can be useful for real Protein Databank PDB files. <tt class="docutils literal"><span class="pre">None</span></tt>  selects the
+MDAnalysis default (which is set in <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt>) [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>topology_format</em></dt>
-<dd><p class="first last">provide the file format of the topology file; <tt class="xref docutils literal"><span class="pre">None</span></tt> guesses it from the file
-extension [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last">provide the file format of the topology file; <tt class="docutils literal"><span class="pre">None</span></tt> guesses it from the file
+extension [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>format</em></dt>
 <dd><p class="first last">provide the file format of the coordinate or trajectory file;
-<tt class="xref docutils literal"><span class="pre">None</span></tt> guesses it from the file extension. Note that this
+<tt class="docutils literal"><span class="pre">None</span></tt> guesses it from the file extension. Note that this
 keyword has no effect if a list of file names is supplied because
 the &#8220;chained&#8221; reader has to guess the file format for each
-individual list member. [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+individual list member. [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -280,23 +283,23 @@ of the Universe as a numpy array:
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">the coordinate file (single frame or trajectory) <em>or</em> a list of
 filenames, which are read one after another</p>
 </dd>
 <dt><em>permissive</em></dt>
-<dd><p class="first last">currently only relevant for PDB files: Set to <tt class="xref docutils literal"><span class="pre">True</span></tt> in order to ignore most errors
-and read typical MD simulation PDB files; set to <tt class="xref docutils literal"><span class="pre">False</span></tt> to read with the Bio.PDB reader,
-which can be useful for real Protein Databank PDB files. <tt class="xref docutils literal"><span class="pre">None</span></tt>  selects the
-MDAnalysis default (which is set in <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt>) [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last">currently only relevant for PDB files: Set to <tt class="docutils literal"><span class="pre">True</span></tt> in order to ignore most errors
+and read typical MD simulation PDB files; set to <tt class="docutils literal"><span class="pre">False</span></tt> to read with the Bio.PDB reader,
+which can be useful for real Protein Databank PDB files. <tt class="docutils literal"><span class="pre">None</span></tt>  selects the
+MDAnalysis default (which is set in <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt>) [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>format</em></dt>
 <dd><p class="first last">provide the file format of the coordinate or trajectory file;
-<tt class="xref docutils literal"><span class="pre">None</span></tt> guesses it from the file extension. Note that this
+<tt class="docutils literal"><span class="pre">None</span></tt> guesses it from the file extension. Note that this
 keyword has no effect if a list of file names is supplied because
 the &#8220;chained&#8221; reader has to guess the file format for each
-individual list member [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+individual list member [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">other kwargs are passed to the trajectory reader (only for advanced use)</p>
@@ -304,10 +307,10 @@ individual list member [<tt class="xref docutils literal"><span class="pre">None
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">(filename, trajectory_format) or <tt class="xref docutils literal"><span class="pre">None</span></tt> if <em>filename</em> == <tt class="xref docutils literal"><span class="pre">None</span></tt></p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">(filename, trajectory_format) or <tt class="docutils literal"><span class="pre">None</span></tt> if <em>filename</em> == <tt class="docutils literal"><span class="pre">None</span></tt></p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt> if trajectory format can not be
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt> if trajectory format can not be
 determined or no appropriate trajectory reader found</p>
 </td>
 </tr>
@@ -460,7 +463,7 @@ whereas the slice</p>
 </div>
 <p>returns every second element, corresponding to indices 0, 2, and 4.</p>
 <p>It also supports &#8220;advanced slicing&#8221; when the argument is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3503c5f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aslice</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">ag</span><span class="p">[</span><span class="n">aslice</span><span class="p">]</span>
 </pre></div>
@@ -529,7 +532,7 @@ manually force a complete cache rebuild.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>axis</em></dt>
 <dd><p class="first last">Index of the principal axis (0, 1, or 2), as produced by
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.principalAxes" title="MDAnalysis.core.AtomGroup.AtomGroup.principalAxes"><tt class="xref py py-meth docutils literal"><span class="pre">principalAxes()</span></tt></a>.</p>
@@ -592,7 +595,7 @@ of individual <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Ato
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">[[xmin, ymin, zmin], [xmax, ymax, zmax]]</td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">[[xmin, ymin, zmin], [xmax, ymax, zmax]]</td>
 </tr>
 </tbody>
 </table>
@@ -637,7 +640,7 @@ provide a unified interface to querying properties:
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><cite>(R, [xcen,ycen,zcen])</cite></td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><cite>(R, [xcen,ycen,zcen])</cite></td>
 </tr>
 </tbody>
 </table>
@@ -771,6 +774,22 @@ selection of atoms and thus the user input!</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.moveto">
+<tt class="descname">moveto</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.moveto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move atom(s) to position <em>x</em>.</p>
+<p><em>x</em> should be a 3N array, which determines the N new
+coordinates for the N members of the AtomGroup.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the AtomGroup contains N atoms but <em>x</em> is a single point
+(i.e. an array of length 3) then <strong>all N atom positions are
+set to *x*.</strong></p>
+</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.6.</span></p>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.names">
 <tt class="descname">names</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of atom names.</p>
@@ -805,7 +824,7 @@ corresponds to the highest eigenvalue and is thus the first principal axes.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">numpy.array <tt class="docutils literal"><span class="pre">v</span></tt> with <tt class="docutils literal"><span class="pre">v[0]</span></tt> as first, <tt class="docutils literal"><span class="pre">v[1]</span></tt> as second,
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">numpy.array <tt class="docutils literal"><span class="pre">v</span></tt> with <tt class="docutils literal"><span class="pre">v[0]</span></tt> as first, <tt class="docutils literal"><span class="pre">v[1]</span></tt> as second,
 and <tt class="docutils literal"><span class="pre">v[2]</span></tt> as third eigenvector.</td>
 </tr>
 </tbody>
@@ -876,7 +895,7 @@ this group.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>angle</em></dt>
 <dd><p class="first last">rotation angle in degrees</p>
 </dd>
@@ -886,7 +905,7 @@ two MDAnalysis objects from which the axis is calculated as the
 vector from the first to the second center of geometry.</p>
 </dd>
 <dt><em>point</em></dt>
-<dd><p class="first last">point on the rotation axis; by default (<tt class="xref docutils literal"><span class="pre">None</span></tt>) the center of
+<dd><p class="first last">point on the rotation axis; by default (<tt class="docutils literal"><span class="pre">None</span></tt>) the center of
 geometry of the selection is chosen, or, if <em>axis</em> is a tuple of
 selections, it defaults to the first point of the axis. <em>point</em>
 can be a 3-tuple, list, or array or a MDAnalysis object (in which
@@ -895,7 +914,7 @@ case its <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGrou
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">The 4x4 matrix which consists of the rotation matrix M[:3,:3]
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">The 4x4 matrix which consists of the rotation matrix M[:3,:3]
 and the translation vectort M[:3,3].</p>
 </td>
 </tr>
@@ -1006,7 +1025,7 @@ objects or split them.</p>
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_segid">
 <tt class="descname">set_segid</tt><big>(</big><em>segid</em>, <em>buildsegments=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_segid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the segid to <em>segid</em> for all atoms in the AtomGroup.</p>
-<p>If <em>buildsegments</em> is set to <tt class="xref docutils literal"><span class="pre">False</span></tt> for performance reasons then one
+<p>If <em>buildsegments</em> is set to <tt class="docutils literal"><span class="pre">False</span></tt> for performance reasons then one
 needs to run <tt class="xref py py-meth docutils literal"><span class="pre">Universe._build_segments()</span></tt> in order to update the
 list of <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Segment" title="MDAnalysis.core.AtomGroup.Segment"><tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt></a> instances and regenerate the segid instant
 selectors.</p>
@@ -1106,9 +1125,9 @@ changes).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">None</span></tt>: create TRJNAME_FRAME.FORMAT from filenamefmt [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">None</span></tt>: create TRJNAME_FRAME.FORMAT from filenamefmt [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>format</em></dt>
 <dd><p class="first last">PDB, CRD, GRO; case-insensitive and can also be supplied as
@@ -1133,9 +1152,9 @@ the filename extension [PDB]</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">None</span></tt>: create TRJNAME_FRAME.FORMAT from <em>filenamefmt</em></p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">None</span></tt>: create TRJNAME_FRAME.FORMAT from <em>filenamefmt</em></p>
 </dd>
 <dt><em>format</em></dt>
 <dd><p class="first last">output file format: VMD (tcl), PyMol (pml), Gromacs (ndx), CHARMM (str);
@@ -1296,7 +1315,7 @@ does not contain velocities.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Data :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Data :</th><td class="field-body"><dl class="first last docutils">
 <dt><tt class="xref py py-attr docutils literal"><span class="pre">Residue.name</span></tt></dt>
 <dd><p class="first last">Three letter residue name.</p>
 </dd>
@@ -1321,8 +1340,8 @@ does not contain velocities.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">4-atom selection in the correct order.  If no CB and/or CG is
-found then this method returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">4-atom selection in the correct order.  If no CB and/or CG is
+found then this method returns <tt class="docutils literal"><span class="pre">None</span></tt>.</td>
 </tr>
 </tbody>
 </table>
@@ -1341,9 +1360,9 @@ occasionally observed (especially near Proline).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">4-atom selection in the correct order.  If no C&#8217;
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">4-atom selection in the correct order.  If no C&#8217;
 found in the previous residue (by resid) then this
-method returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</td>
+method returns <tt class="docutils literal"><span class="pre">None</span></tt>.</td>
 </tr>
 </tbody>
 </table>
@@ -1357,9 +1376,9 @@ method returns <tt class="xref docutils literal"><span class="pre">None</span></
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">4-atom selection in the correct order.  If no C&#8217;
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">4-atom selection in the correct order.  If no C&#8217;
 found in the previous residue (by resid) then this
-method returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</td>
+method returns <tt class="docutils literal"><span class="pre">None</span></tt>.</td>
 </tr>
 </tbody>
 </table>
@@ -1373,9 +1392,9 @@ method returns <tt class="xref docutils literal"><span class="pre">None</span></
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">4-atom selection in the correct order.  If no N&#8217;
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">4-atom selection in the correct order.  If no N&#8217;
 found in the following residue (by resid) then this
-method returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</td>
+method returns <tt class="docutils literal"><span class="pre">None</span></tt>.</td>
 </tr>
 </tbody>
 </table>
@@ -1406,7 +1425,7 @@ method returns <tt class="xref docutils literal"><span class="pre">None</span></
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Data :</th><td class="field-body"><tt class="xref py py-attr docutils literal"><span class="pre">ResidueGroup._residues</span></tt></td>
+<tr class="field-odd field"><th class="field-name">Data :</th><td class="field-body"><tt class="xref py py-attr docutils literal"><span class="pre">ResidueGroup._residues</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -1447,7 +1466,7 @@ segment (numbering starts at N=1). Example:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Data :</th><td class="field-body"><tt class="xref py py-attr docutils literal"><span class="pre">Segment.name</span></tt> is the segid from the topology or the
+<tr class="field-odd field"><th class="field-name">Data :</th><td class="field-body"><tt class="xref py py-attr docutils literal"><span class="pre">Segment.name</span></tt> is the segid from the topology or the
 chain identifier when loaded from a PDB</td>
 </tr>
 </tbody>
@@ -1488,7 +1507,7 @@ character is prefixed with &#8216;s&#8217;, thus &#8216;4AKE&#8217; &#8211;&gt; 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Data :</th><td class="field-body"><tt class="xref py py-attr docutils literal"><span class="pre">SegmentGroup._segments</span></tt></td>
+<tr class="field-odd field"><th class="field-name">Data :</th><td class="field-body"><tt class="xref py py-attr docutils literal"><span class="pre">SegmentGroup._segments</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -1516,7 +1535,7 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">an instance of <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">an instance of <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -1558,7 +1577,7 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -1567,7 +1586,7 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

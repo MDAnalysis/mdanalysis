@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.3. Common functions for coordinate reading — MDAnalysis.coordinates.core &mdash; MDAnalysis v0.7.5.1 documentation</title>
+    <title>5.3. Common functions for coordinate reading — MDAnalysis.coordinates.core &mdash; MDAnalysis 0.7.6-devel documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5.1',
+        VERSION:     '0.7.6-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5.1 documentation"
+          title="Search within MDAnalysis 0.7.6-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.6-devel documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.4. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" href="CRD.html" />
     <link rel="prev" title="5.2. Base classes — MDAnalysis.coordinates.base" href="base.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="base.html" title="5.2. Base classes — MDAnalysis.coordinates.base"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -70,7 +73,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -98,7 +101,7 @@
 <p>This function guesses the file format from the extension of <em>filename</em> and
 it will throw a <tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt> if the extension is not recognized.</p>
 <p>In most cases, no special keyword arguments are necessary. For some readers
-(such as PDB) it might be useful to set the <em>permissive</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> flag to
+(such as PDB) it might be useful to set the <em>permissive</em> = <tt class="docutils literal"><span class="pre">True</span></tt> flag to
 select a simpler but faster reader.</p>
 <p>All other keywords are passed on to the underlying Reader classes; see
 their documentation for details.</p>
@@ -114,13 +117,13 @@ their documentation for details.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the input trajectory or coordinate file</p>
 </dd>
 <dt><em>permissive</em></dt>
-<dd><p class="first last">If set to <tt class="xref docutils literal"><span class="pre">True</span></tt>, a reader is selected that is more tolerant of the
-input (currently only implemented for PDB). [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+<dd><p class="first last">If set to <tt class="docutils literal"><span class="pre">True</span></tt>, a reader is selected that is more tolerant of the
+input (currently only implemented for PDB). [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">Keyword arguments for the selected Reader class.</p>
@@ -140,7 +143,7 @@ input (currently only implemented for PDB). [<tt class="xref docutils literal"><
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">Output filename of the trajectory; the extension determines the
 format.</p>
@@ -200,7 +203,7 @@ of <em>filename</em>. The default is to return a dcd writer (<em>format</em> = &
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">The filename for the trajectory is examined for its extension and
 the Writer is chosen accordingly.</p>
@@ -251,7 +254,7 @@ individual packages (e.g. as static methods).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>dimensions</em></dt>
 <dd><p class="first last">list of box lengths and angles (in degrees) such as
 [A,B,C,alpha,beta,gamma]</p>
@@ -259,7 +262,7 @@ individual packages (e.g. as static methods).</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
 B[1] = second vector, B[2] third box vector.</p>
 </td>
 </tr>
@@ -282,7 +285,7 @@ triclinic box vectors from <a class="reference internal" href="#MDAnalysis.coord
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>dimensions</em></dt>
 <dd><p class="first last">list of box lengths and angles (in degrees) such as
 [A,B,C,alpha,beta,gamma]</p>
@@ -290,7 +293,7 @@ triclinic box vectors from <a class="reference internal" href="#MDAnalysis.coord
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
 B[1] = second vector, B[2] third box vector.</p>
 </td>
 </tr>
@@ -321,7 +324,7 @@ B[1] = second vector, B[2] third box vector.</p>
         <li class="right" >
           <a href="base.html" title="5.2. Base classes — MDAnalysis.coordinates.base"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -330,7 +333,7 @@ B[1] = second vector, B[2] third box vector.</p>
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

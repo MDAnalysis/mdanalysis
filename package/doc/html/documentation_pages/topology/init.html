@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.1. Topology readers — MDAnalysis.topology &mdash; MDAnalysis v0.7.5.1 documentation</title>
+    <title>4.1. Topology readers — MDAnalysis.topology &mdash; MDAnalysis 0.7.6-devel documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5.1',
+        VERSION:     '0.7.6-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5.1 documentation"
+          title="Search within MDAnalysis 0.7.6-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.6-devel documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.2. Common functions for topology building — MDAnalysis.topology.core" href="core.html" />
     <link rel="prev" title="4. Topology modules" href="../topology_modules.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="../topology_modules.html" title="4. Topology modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -70,7 +73,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -105,25 +108,25 @@ coordinate file and their residue names and numbers.</p>
 <col width="70%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Name</th>
+<tr class="row-odd"><th class="head">Name</th>
 <th class="head">extension</th>
 <th class="head">remarks</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>CHARMM/XPLOR</td>
+<tr class="row-even"><td>CHARMM/XPLOR</td>
 <td>psf</td>
 <td>reads either format, but only atoms and bonds
 information is used at the moment;
 <a class="reference internal" href="PSFParser.html#module-MDAnalysis.topology.PSFParser" title="MDAnalysis.topology.PSFParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PSFParser</span></tt></a></td>
 </tr>
-<tr><td>CHARMM*</td>
+<tr class="row-odd"><td>CHARMM*</td>
 <td>crd</td>
 <td>&#8220;CARD&#8221; coordinate output from CHARMM; deals with
 either standard or EXTended format;
 <a class="reference internal" href="CRDParser.html#module-MDAnalysis.topology.CRDParser" title="MDAnalysis.topology.CRDParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.CRDParser</span></tt></a></td>
 </tr>
-<tr><td>Brookhaven*</td>
+<tr class="row-even"><td>Brookhaven*</td>
 <td>pdb</td>
 <td>a simplified PDB format (as used in MD simulations)
 is read by default; the full format can be read by
@@ -132,24 +135,24 @@ supplying the <cite>permissive=False</cite> flag to
 <a class="reference internal" href="PrimitivePDBParser.html#module-MDAnalysis.topology.PrimitivePDBParser" title="MDAnalysis.topology.PrimitivePDBParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PrimitivePDBParser</span></tt></a> and
 <a class="reference internal" href="PDBParser.html#module-MDAnalysis.topology.PDBParser" title="MDAnalysis.topology.PDBParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PDBParser</span></tt></a></td>
 </tr>
-<tr><td>PQR*</td>
+<tr class="row-odd"><td>PQR*</td>
 <td>pqr</td>
 <td>PDB-like but whitespace-separated files with charge
 and radius information;
 <a class="reference internal" href="PQRParser.html#module-MDAnalysis.topology.PQRParser" title="MDAnalysis.topology.PQRParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PQRParser</span></tt></a></td>
 </tr>
-<tr><td>PDBQT*</td>
+<tr class="row-even"><td>PDBQT*</td>
 <td>pdbqt</td>
 <td>file format used by AutoDock with atom types <em>t</em>
 and partial charges <em>q</em>. Module:
 <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PQBQTParser</span></tt></td>
 </tr>
-<tr><td>GROMOS96*</td>
+<tr class="row-odd"><td>GROMOS96*</td>
 <td>gro</td>
 <td>GROMOS96 coordinate file;
 <a class="reference internal" href="GROParser.html#module-MDAnalysis.topology.GROParser" title="MDAnalysis.topology.GROParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.GROParser</span></tt></a></td>
 </tr>
-<tr><td>Amber</td>
+<tr class="row-even"><td>Amber</td>
 <td>top
 prmtop</td>
 <td>simple Amber format read (only supports a subset of
@@ -188,7 +191,7 @@ a system.</p>
         <li class="right" >
           <a href="../topology_modules.html" title="4. Topology modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -197,7 +200,7 @@ a system.</p>
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

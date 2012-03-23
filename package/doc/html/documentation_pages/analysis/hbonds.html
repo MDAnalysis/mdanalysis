@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis v0.7.5.1 documentation</title>
+    <title>3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis 0.7.6-devel documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5.1',
+        VERSION:     '0.7.6-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5.1 documentation"
+          title="Search within MDAnalysis 0.7.6-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.6-devel documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.7. HELANAL — analysis of protein helices" href="helanal.html" />
     <link rel="prev" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="gnm.html" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -81,7 +84,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -105,11 +108,11 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Author:</th><td class="field-body">David Caplan</td>
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">David Caplan</td>
 </tr>
-<tr class="field"><th class="field-name">Year:</th><td class="field-body">2010-2011</td>
+<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2010-2011</td>
 </tr>
-<tr class="field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
+<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
 </tr>
 </tbody>
 </table>
@@ -121,7 +124,7 @@ HBONDS plugin</a>.</p>
 <dl class="docutils">
 <dt>Options:</dt>
 <dd><ul class="first last simple">
-<li><em>update_selections</em> (<tt class="xref docutils literal"><span class="pre">True</span></tt>): update selections at each frame?</li>
+<li><em>update_selections</em> (<tt class="docutils literal"><span class="pre">True</span></tt>): update selections at each frame?</li>
 <li><em>selection_1_type</em> (&#8220;both&#8221;): selection 1 is the: &#8220;donor&#8221;, &#8220;acceptor&#8221;, &#8220;both&#8221;</li>
 <li>donor-acceptor <em>distance</em> (Å): 3.0</li>
 <li>Angle <em>cutoff</em> (degrees): 120.0</li>
@@ -131,7 +134,9 @@ HBONDS plugin</a>.</p>
 </dl>
 <div class="section" id="output">
 <span id="analysis-output"></span><h2>3.6.1. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
-<p>The results are hydrogen bond data per frame (# indicates comments that are not part of the output):</p>
+<p>The results are hydrogen bond data per frame (# indicates comments
+that are not part of the output), stored in
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a>:</p>
 <div class="highlight-python"><pre>results = [
     [ # frame 1
        [ # hbond 1
@@ -151,7 +156,7 @@ HBONDS plugin</a>.</p>
 <p>Using the <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></tt></a> method one can reformat
 the results as a flat &#8220;normalised&#8221; table that is easier to import into a
 database for further processing. <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.save_table()</span></tt></a> saves
-the table to a pickled file. The table itself is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
+the table to a pickled file. The table itself is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-3503c5f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
 </div>
 <div class="section" id="detection-of-hydrogen-bonds">
 <h2>3.6.2. Detection of hydrogen bonds<a class="headerlink" href="#detection-of-hydrogen-bonds" title="Permalink to this headline">¶</a></h2>
@@ -177,104 +182,104 @@ searched for as atom names following in sequence and starting with &#8216;H&#821
 <col width="50%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">group</th>
+<tr class="row-odd"><th class="head">group</th>
 <th class="head">donor</th>
 <th class="head">acceptor</th>
 <th class="head">comments</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>main chain</td>
+<tr class="row-even"><td>main chain</td>
 <td>N</td>
 <td>O</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>water</td>
+<tr class="row-odd"><td>water</td>
 <td>OH2, OW</td>
 <td>OH2, OW</td>
 <td>SPC, TIP3P, TIP4P (CHARMM27,Gromacs)</td>
 </tr>
-<tr><td>ARG</td>
+<tr class="row-even"><td>ARG</td>
 <td>NE, NH1, NH2</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>ASN</td>
+<tr class="row-odd"><td>ASN</td>
 <td>ND2</td>
 <td>OD1</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>ASP</td>
+<tr class="row-even"><td>ASP</td>
 <td>&nbsp;</td>
 <td>OD1, OD2</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>CYS</td>
+<tr class="row-odd"><td>CYS</td>
 <td>SG</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>CYH</td>
+<tr class="row-even"><td>CYH</td>
 <td>&nbsp;</td>
 <td>SG</td>
 <td>possible false positives for CYS</td>
 </tr>
-<tr><td>GLN</td>
+<tr class="row-odd"><td>GLN</td>
 <td>NE2</td>
 <td>OE1</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>GLU</td>
+<tr class="row-even"><td>GLU</td>
 <td>&nbsp;</td>
 <td>OE1, OE2</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>HIS</td>
+<tr class="row-odd"><td>HIS</td>
 <td>ND1, NE2</td>
 <td>ND1, NE2</td>
 <td>presence of H determines if donor</td>
 </tr>
-<tr><td>HSD</td>
+<tr class="row-even"><td>HSD</td>
 <td>ND1</td>
 <td>NE2</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>HSE</td>
+<tr class="row-odd"><td>HSE</td>
 <td>NE2</td>
 <td>ND1</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>HSP</td>
+<tr class="row-even"><td>HSP</td>
 <td>ND1, NE2</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>LYS</td>
+<tr class="row-odd"><td>LYS</td>
 <td>NZ</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>MET</td>
+<tr class="row-even"><td>MET</td>
 <td>&nbsp;</td>
 <td>SD</td>
 <td>see e.g. <a class="reference internal" href="#gregoret1991">[Gregoret1991]</a></td>
 </tr>
-<tr><td>SER</td>
+<tr class="row-odd"><td>SER</td>
 <td>OG</td>
 <td>OG</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>THR</td>
+<tr class="row-even"><td>THR</td>
 <td>OG1</td>
 <td>OG1</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>TRP</td>
+<tr class="row-odd"><td>TRP</td>
 <td>NE1</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>TYR</td>
+<tr class="row-even"><td>TYR</td>
 <td>OH</td>
 <td>OH</td>
 <td>&nbsp;</td>
@@ -336,7 +341,7 @@ interactions.</p>
 <dd><p>Perform a hydrogen bond analysis</p>
 <p>The analysis of the trajectory is performed with the
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.run()</span></tt></a> method. The result is stored in
-<tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>. See
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a>. See
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">run()</span></tt></a> for the format.</p>
 <p>The default atom names are taken from the CHARMM 27 force field files but
 also work for e.g. OPLS/AA in Gromacs.</p>
@@ -357,7 +362,7 @@ GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH</dd>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last">Universe object</p>
 </dd>
@@ -380,10 +385,15 @@ GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH</dd>
 <dd><p class="first last">Filter selection 2 first to only atoms 3*distance away</p>
 </dd>
 <dt><em>distance</em></dt>
-<dd><p class="first last">Distance cutoff for hydrogen bonds</p>
+<dd><p class="first last">Distance cutoff for hydrogen bonds; only interactions with a H-A distance
+&lt;= <em>distance</em> (and the appropriate D-H-A angle, see <em>angle</em>) are
+recorded.</p>
 </dd>
 <dt><em>angle</em></dt>
-<dd><p class="first last">Angle cutoff for hydrogen bonds</p>
+<dd><p class="first last">Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
+180º.  A hydrogen bond is only recorded if the D-H-A angle is
+&gt;=  <em>angle</em>. The default of 120º also finds fairly non-specific
+hydrogen interactions and a possibly better value is 150º.</p>
 </dd>
 <dt><em>donors</em></dt>
 <dd><p class="first last">Extra H donor atom types (in addition to those in
@@ -398,10 +408,61 @@ GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH</dd>
 </tr>
 </tbody>
 </table>
-<p>The timeseries is accessible as the attribute <tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>.</p>
+<p>The timeseries is accessible as the attribute <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a>.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries">
+<tt class="descname">timeseries</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Results of the hydrogen bond analysis, stored for each frame. In
+the following description, # indicates comments that are not
+part of the output:</p>
+<div class="highlight-python"><pre>results = [
+    [ # frame 1
+       [ # hbond 1
+          &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
+       ],
+       [ # hbond 2
+          &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
+       ],
+       ....
+    ],
+    [ # frame 2
+      [ ... ], [ ... ], ...
+    ],
+    ...
+]</pre>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table">
+<tt class="descname">table</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table" title="Permalink to this definition">¶</a></dt>
+<dd><p>A normalised table of the data in
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a>, generated by
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></tt></a>. It is a
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-3503c5f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> with the following columns:</p>
+<blockquote>
+<div><ol class="arabic simple" start="0">
+<li>&#8220;time&#8221;</li>
+<li>&#8220;donor_idx&#8221;</li>
+<li>&#8220;acceptor_idx&#8221;</li>
+<li>&#8220;donor_resnm&#8221;</li>
+<li>&#8220;donor_resid&#8221;</li>
+<li>&#8220;donor_atom&#8221;</li>
+<li>&#8220;acceptor_resnm&#8221;</li>
+<li>&#8220;acceptor_resid&#8221;</li>
+<li>&#8220;acceptor_atom&#8221;</li>
+<li>&#8220;distance&#8221;</li>
+<li>&#8220;angle&#8221;</li>
+</ol>
+</div></blockquote>
+<p>It takes up more space than
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">timeseries</span></tt></a> but it is easier to
+analyze and to import into databases (e.g. using <a class="reference external" href="http://pypi.python.org/pypi/RecSQL">recsql</a>).</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
-<tt class="descname">DEFAULT_ACCEPTORS</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">DEFAULT_ACCEPTORS</tt><em class="property"> = ('OH', 'OG', 'OD1', 'OD2', 'OG1', 'O', 'ND1', 'NE2', 'OE2', 'OW', 'SG', 'OE1', 'OH2', 'SD')</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default heavy atom names for hydrogen bonding analysis.</em></a>)
 Use the keyword <em>acceptors</em> to add a list of additional acceptor names.</p>
@@ -409,7 +470,7 @@ Use the keyword <em>acceptors</em> to add a list of additional acceptor names.</
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_DONORS">
-<tt class="descname">DEFAULT_DONORS</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">DEFAULT_DONORS</tt><em class="property"> = ('OH', 'OG', 'NE2', 'OG1', 'NE', 'N', 'ND1', 'NZ', 'NH1', 'NH2', 'OW', 'ND2', 'SG', 'OH2', 'NE1')</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default heavy atom names for hydrogen bonding analysis.</em></a>)
 Use the keyword <em>donors</em> to add a list of additional donor names.</p>
@@ -431,8 +492,8 @@ Use the keyword <em>donors</em> to add a list of additional donor names.</p>
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table">
 <tt class="descname">generate_table</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a normalised table of the results.</p>
-<p>The table is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> in the
-attribute <tt class="xref py py-attr docutils literal"><span class="pre">table</span></tt> and can be used
+<p>The table is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-3503c5f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> in the
+attribute <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table"><tt class="xref py py-attr docutils literal"><span class="pre">table</span></tt></a> and can be used
 with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL">recsql</a>.</p>
 <dl class="docutils">
 <dt>Columns:</dt>
@@ -457,24 +518,14 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run">
 <tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze trajectory and produce timeseries.</p>
-<p>Returns hydrogen bond data per frame (# indicates comments that are not part of the output):</p>
-<div class="highlight-python"><pre>results = [
-    [ # frame 1
-       [ # hbond 1
-          &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
-       ],
-       [ # hbond 2
-          &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
-       ],
-       ....
-    ],
-    [ # frame 2
-      [ ... ], [ ... ], ...
-    ],
-    ...
-]</pre>
+<p>Returns hydrogen bond data per frame. The data are also stored
+as <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a> (see there for
+output format).</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></tt></a> for
+another way to access the data.</p>
 </div>
-<p>The data are also stored as <tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -488,7 +539,7 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
 </div>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference external" href="http://docs.python.org/library/pickle.html#cPickle" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cPickle</span></tt></a> module and <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a></p>
+<p class="last"><a class="reference external" href="http://docs.python.org/library/pickle.html#cPickle" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cPickle</span></tt></a> module and <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-3503c5f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a></p>
 </div>
 </dd></dl>
 
@@ -518,7 +569,7 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
         <li class="right" >
           <a href="gnm.html" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -527,7 +578,7 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>
