@@ -17,6 +17,12 @@ The rules for this file:
   Enhancements
 
   * new AtomGroup.moveto() method
+  
+  Changes
+
+  * HydrogenBondAnalysis.run() does not return the results anymore; they
+    are simply stored as attribute timeseries (similar to other analysis
+    tools)
 
   Fixes
 

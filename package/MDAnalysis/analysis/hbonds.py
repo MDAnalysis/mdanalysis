@@ -389,12 +389,17 @@ class HydrogenBondAnalysis(object):
     def run(self):
         """Analyze trajectory and produce timeseries.
 
-        Returns hydrogen bond data per frame. The data are also stored
+        Stores the hydrogen bond data per frame
         as :attr:`HydrogenBondAnalysis.timeseries` (see there for
         output format).
 
         .. SeeAlso:: :meth:`HydrogenBondAnalysis.generate_table` for
                      another way to access the data.
+
+        .. versionchanged:: 0.7.6
+
+           Results are not returned, only stored in
+           :attr:`~HydrogenBondAnalysis.timeseries`.
 
         """
         logger.info("HBond analysis: starting")
@@ -457,7 +462,6 @@ class HydrogenBondAnalysis(object):
             self.timeseries.append(frame_results)
 
         logger.info("HBond analysis: complete; timeseries in %s.timeseries", self.__class__.__name__)
-        return self.timeseries  # can we omitt this?
 
     def calc_angle(self, d, h, a):
         """Calculate the angle (in degrees) between two atoms with H at apex.
