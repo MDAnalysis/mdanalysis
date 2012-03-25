@@ -20,9 +20,10 @@ The rules for this file:
   
   Changes
 
-  * HydrogenBondAnalysis.run() does not return the results anymore; they
-    are simply stored as attribute timeseries (similar to other analysis
-    tools)
+  * HydrogenBondAnalysis: run() does not return the results anymore;
+    they are simply stored as attribute timeseries (similar to other
+    analysis tools); also only write per-frame debugging messages to
+    the logfile when the new verbose keyword is set to True
 
   Fixes
 

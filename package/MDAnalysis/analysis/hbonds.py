@@ -166,6 +166,12 @@ Classes
 .. autoclass:: HydrogenBondAnalysis
    :members:
 
+   .. attribute:: timesteps
+
+      List of the times of each timestep. This can be used together with
+      :attr:`~HydrogenBondAnalysis.timeseries` to find the specific time point
+      of a hydrogen bond existence, or see :attr:`~HydrogenBondAnalysis.table`.
+
    .. attribute:: timeseries
 
       Results of the hydrogen bond analysis, stored for each frame. In
@@ -187,6 +193,9 @@ Classes
             ],
             ...
         ]
+
+      The time of each step is not stored with each hydrogen bond frame but in
+      :attr:`~HydrogenBondAnalysis.timesteps`.
 
    .. attribute:: table
 
@@ -221,6 +230,7 @@ from MDAnalysis import MissingDataWarning
 from MDAnalysis.core.AtomGroup import AtomGroup
 import MDAnalysis.KDTree.NeighborSearch as NS
 from MDAnalysis.core.util import norm, angle, parse_residue
+from MDAnalysis.core.log import ProgressMeter
 
 import warnings
 import logging
@@ -269,7 +279,7 @@ class HydrogenBondAnalysis(object):
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
                  update_selection1=False, update_selection2=False, filter_first=True,
                  distance=3.0, angle=120.0,
-                 donors=None, acceptors=None):
+                 donors=None, acceptors=None, verbose=False):
         """Set up calculation of hydrogen bonds between two selections in a universe.
 
         :Arguments:
@@ -302,8 +312,19 @@ class HydrogenBondAnalysis(object):
           *acceptors*
             Extra H acceptor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a sequence.
+          *verbose*
+             If set to true enables per-frame debug logging. This is disabled
+             by default because it generates a very large amount of output in
+             the log file. (Note that a logger must have been started to see
+             the output, e.g. using :func:`MDAnalysis.start_logging`.)
 
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
+
+        .. versionchanged:: 0.7.6
+
+           New *verbose* keyword (and per-frame debug logging disable by
+           default).
+
         """
 
         self.u = universe
@@ -330,12 +351,14 @@ class HydrogenBondAnalysis(object):
             raise ValueError('HydrogenBondAnalysis: Invalid selection type %s' % self.selection1_type)
 
         self.timeseries = None  # final result
-        self._timesteps = None  # time for each frame
+        self.timesteps = None  # time for each frame
 
         self.table = None # placeholder for output table
 
+        self.verbose = True # always enable debug output for initial selection update
         self._update_selection_1()
         self._update_selection_2()
+        self.verbose = verbose  # per-frame debugging output?
 
     def _get_bonded_hydrogens(self, atom):
         hydrogens = []
@@ -351,7 +374,7 @@ class HydrogenBondAnalysis(object):
 
     def _update_selection_1(self):
         self._s1 = self.u.selectAtoms(self.selection1)
-        logger.debug("Size of selection 1: %d atoms" % len(self._s1))
+        self.logger_debug("Size of selection 1: %d atoms" % len(self._s1))
         if self.selection1_type in ('donor', 'both'):
             self._s1_donors = self._s1.selectAtoms(' or '.join([ 'name %s' % i for i in self.donors ]))
             self._s1_donors_h = {}
@@ -359,23 +382,23 @@ class HydrogenBondAnalysis(object):
                 tmp = self._get_bonded_hydrogens(d)
                 if tmp:
                     self._s1_donors_h[i] = tmp
-            logger.debug("Selection 1 donors: %d" % len(self._s1_donors))
-            logger.debug("Selection 1 donor hydrogens: %d" % len(self._s1_donors_h.keys()))
+            self.logger_debug("Selection 1 donors: %d" % len(self._s1_donors))
+            self.logger_debug("Selection 1 donor hydrogens: %d" % len(self._s1_donors_h.keys()))
         if self.selection1_type in ('acceptor', 'both'):
             self._s1_acceptors = self._s1.selectAtoms(' or '.join([ 'name %s' % i for i in self.acceptors ]))
-            logger.debug("Selection 1 acceptors: %d" % len(self._s1_acceptors))
+            self.logger_debug("Selection 1 acceptors: %d" % len(self._s1_acceptors))
 
     def _update_selection_2(self):
         self._s2 = self.u.selectAtoms(self.selection2)
         if self.filter_first:
-            logger.debug("Size of selection 2 before filtering: %d atoms" % len(self._s2))
+            self.logger_debug("Size of selection 2 before filtering: %d atoms" % len(self._s2))
             ns_selection_2 = NS.AtomNeighborSearch(self._s2)
             self._s2 = ns_selection_2.search_list(self._s1, 3.*self.distance)
-        logger.debug("Size of selection 2: %d atoms" % len(self._s2))
+        self.logger_debug("Size of selection 2: %d atoms" % len(self._s2))
 
         if self.selection1_type in ('donor', 'both'):
             self._s2_acceptors = self._s2.selectAtoms(' or '.join([ 'name %s' % i for i in self.acceptors ]))
-            logger.debug("Selection 2 acceptors: %d" % len(self._s2_acceptors))
+            self.logger_debug("Selection 2 acceptors: %d" % len(self._s2_acceptors))
         if self.selection1_type in ('acceptor', 'both'):
             self._s2_donors = self._s2.selectAtoms(' or '.join([ 'name %s' % i for i in self.donors ]))
             self._s2_donors_h = {}
@@ -383,8 +406,12 @@ class HydrogenBondAnalysis(object):
                 tmp = self._get_bonded_hydrogens(d)
                 if tmp:
                     self._s2_donors_h[i] = tmp
-            logger.debug("Selection 2 donors: %d" % len(self._s2_donors))
-            logger.debug("Selection 2 donor hydrogens: %d" % len(self._s2_donors_h.keys()))
+            self.logger_debug("Selection 2 donors: %d" % len(self._s2_donors))
+            self.logger_debug("Selection 2 donor hydrogens: %d" % len(self._s2_donors_h.keys()))
+
+    def logger_debug(self, *args):
+        if self.verbose:
+            logger.debug(*args)
 
     def run(self):
         """Analyze trajectory and produce timeseries.
@@ -393,21 +420,26 @@ class HydrogenBondAnalysis(object):
         as :attr:`HydrogenBondAnalysis.timeseries` (see there for
         output format).
 
-        .. SeeAlso:: :meth:`HydrogenBondAnalysis.generate_table` for
-                     another way to access the data.
+        .. SeeAlso:: :meth:`HydrogenBondAnalysis.generate_table` for processing
+                     the data into a different format.
 
         .. versionchanged:: 0.7.6
 
            Results are not returned, only stored in
            :attr:`~HydrogenBondAnalysis.timeseries`.
-
         """
         logger.info("HBond analysis: starting")
         logger.debug("HBond analysis: donors    %r", self.donors)
         logger.debug("HBond analysis: acceptors %r", self.acceptors)
 
+        if not self.verbose:
+            logger.debug("HBond analysis: For full step-by-step debugging output use verbose=True")
         self.timeseries = []
-        self._timesteps = []
+        self.timesteps = []
+
+        logger.info("checking trajectory...")  # numframes can take a while!
+        pm = ProgressMeter(self.u.trajectory.numframes,
+                           format="HBonds frame %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r")
 
         try:
             self.u.trajectory.time
@@ -425,16 +457,17 @@ class HydrogenBondAnalysis(object):
 
             frame = ts.frame
             timestep = _get_timestep()
-            self._timesteps.append(timestep)
+            self.timesteps.append(timestep)
 
-            logger.debug("Analyzing frame %(frame)d, timestep %(timestep)f ps", vars())
+            pm.echo(ts.frame)
+            self.logger_debug("Analyzing frame %(frame)d, timestep %(timestep)f ps", vars())
             if self.update_selection1:
                 self._update_selection_1()
             if self.update_selection2:
                 self._update_selection_2()
 
             if self.selection1_type in ('donor', 'both'):
-                logger.debug("Selection 1 Donors <-> Acceptors")
+                self.logger_debug("Selection 1 Donors <-> Acceptors")
                 ns_acceptors = NS.AtomNeighborSearch(self._s2_acceptors)
                 for i,donor_h_set in self._s1_donors_h.items():
                     d = self._s1_donors[i]
@@ -444,10 +477,10 @@ class HydrogenBondAnalysis(object):
                             angle = self.calc_angle(d,h,a)
                             dist = self.calc_eucl_distance(h,a)
                             if angle >= self.angle and dist <= self.distance:
-                                logger.debug("S1-D: %s <-> S2-A: %s %fA, %f DEG" % (h.number, a.number, dist, angle))
+                                self.logger_debug("S1-D: %s <-> S2-A: %s %fA, %f DEG" % (h.number, a.number, dist, angle))
                                 frame_results.append([h.number+1, a.number+1, '%s%s:%s' % (h.resname, repr(h.resid), h.name), '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
             if self.selection1_type in ('acceptor', 'both'):
-                logger.debug("Selection 1 Acceptors <-> Donors")
+                self.logger_debug("Selection 1 Acceptors <-> Donors")
                 ns_acceptors = NS.AtomNeighborSearch(self._s1_acceptors)
                 for i,donor_h_set in self._s2_donors_h.items():
                     d = self._s2_donors[i]
@@ -457,7 +490,7 @@ class HydrogenBondAnalysis(object):
                             angle = self.calc_angle(d,h,a)
                             dist = self.calc_eucl_distance(h,a)
                             if angle >= self.angle and dist <= self.distance:
-                                logger.debug("S1-A: %s <-> S2-D: %s %fA, %f DEG" % (a.number+1, h.number, dist, angle))
+                                self.logger_debug("S1-A: %s <-> S2-D: %s %fA, %f DEG" % (a.number+1, h.number, dist, angle))
                                 frame_results.append([h.number+1, a.number+1, '%s%s:%s' % (h.resname, repr(h.resid), h.name), '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
             self.timeseries.append(frame_results)
 
@@ -506,18 +539,19 @@ class HydrogenBondAnalysis(object):
             logger.warn(msg, category=MissingDataWarning)
             return
 
-        num_records = numpy.sum([len(f) for f in self.timeseries])
+        num_records = numpy.sum([len(hframe) for hframe in self.timeseries])
         dtype = [("time",float), ("donor_idx",int), ("acceptor_idx",int),
                  ("donor_resnm","|S4"), ("donor_resid",int), ("donor_atom","|S4"),
                  ("acceptor_resnm","|S4"), ("acceptor_resid",int), ("acceptor_atom","|S4"),
                  ("distance",float), ("angle",float)]
         self.table = numpy.recarray((num_records,), dtype=dtype)
-        row = 0
-        for t,hframe in izip(self._timesteps, self.timeseries):
-            self.table[row:row+len(hframe)].time = t
-            cursor = -1  # if the loop is skipped then row stays at previous value
-            for hrow, (donor_idx, acceptor_idx, donor, acceptor, distance, angle) in enumerate(hframe):
-                cursor = row + hrow
+
+        cursor = 0  # current row
+        for t,hframe in izip(self.timesteps, self.timeseries):
+            if len(hframe) == 0:
+                continue    # not really necessary, should also work without
+            self.table[cursor:cursor+len(hframe)].time = t
+            for donor_idx, acceptor_idx, donor, acceptor, distance, angle in hframe:
                 r = self.table[cursor]
                 r.donor_idx = donor_idx
                 r.donor_resnm, r.donor_resid, r.donor_atom = parse_residue(donor)
@@ -525,10 +559,12 @@ class HydrogenBondAnalysis(object):
                 r.acceptor_resnm, r.acceptor_resid, r.acceptor_atom = parse_residue(acceptor)
                 r.distance = distance
                 r.angle = angle
-            row = cursor + 1
+                cursor += 1
+        assert cursor == num_records, "Internal Error: Not all HB records stored"
+        logger.debug("HBond: Stored results as table with %(num_records)d entries.", vars())
 
     def save_table(self, filename="hbond_table.pickle"):
-        """Saves the table to a pickled file.
+        """Saves :attr:`~HydrogenBondAnalysis.table` to a pickled file.
 
         Load with ::
 
