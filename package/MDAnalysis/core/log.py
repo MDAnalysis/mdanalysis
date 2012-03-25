@@ -190,7 +190,7 @@ class ProgressMeter(object):
               return ``\\r``.
 
               If *format* is ``None`` then the default is used.
-              ["Step %(step)5d/%(numsteps)d [%(percentage)5.1%%]\\r"]
+              ["Step %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\\r"]
            *offset*
               number to add to *step*; e.g. if *step* is 0-based then one would
               set *offset* = 1 [0]
