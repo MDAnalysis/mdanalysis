@@ -72,9 +72,29 @@ The cut-off values *angle* and *distance* can be set as keywords to
 
 Donor and acceptor heavy atoms are detected from atom names. The current
 defaults are appropriate for the CHARMM27 force field as defined in Table
-`Default atom names for hydrogen bonding analysis`_. Hydrogen atoms are
-searched for as atom names following in sequence and starting with 'H'.
+`Default atom names for hydrogen bonding analysis`_.
 
+Hydrogen atoms bonded to a donor are searched with one of two algorithms,
+selected with the *detect_hydrogens* keyword.
+
+*distance*
+
+   Searches for all hydrogens (name "H*" or name "[123]H" or type "H") in the
+   same residue as the donor atom within a cut-off distance of 1.2 Å.
+
+*heuristic*
+
+   Looks at the next three atoms in the list of atoms following the donor and
+   selects any atom whose name matches (name "H*" or name "[123]H").
+
+The *distance* search is more rigorous but slower and is set as the
+default. Until release 0.7.6, only the heuristic search was implemented.
+
+.. versionchanged:: 0.7.6
+
+   Distance search added (see
+   :meth:`HydrogenBondAnalysis._get_bonded_hydrogens_dist`) and heuristic
+   search improved (:meth:`HydrogenBondAnalysis._get_bonded_hydrogens_list`)
 
 .. _Default atom names for hydrogen bonding analysis:
 
@@ -220,13 +240,19 @@ Classes
       :attr:`~HydrogenBondAnalysis.timeseries` but it is easier to
       analyze and to import into databases (e.g. using recsql_).
 
+   .. automethod:: _get_bonded_hydrogens
+
+   .. automethod:: _get_bonded_hydrogens_dist
+
+   .. automethod:: _get_bonded_hydrogens_list
+
 """
 
 from __future__ import with_statement
 
 import numpy
 
-from MDAnalysis import MissingDataWarning
+from MDAnalysis import MissingDataWarning, NoDataError
 from MDAnalysis.core.AtomGroup import AtomGroup
 import MDAnalysis.KDTree.NeighborSearch as NS
 from MDAnalysis.core.util import norm, angle, parse_residue
@@ -279,7 +305,7 @@ class HydrogenBondAnalysis(object):
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
                  update_selection1=False, update_selection2=False, filter_first=True,
                  distance=3.0, angle=120.0,
-                 donors=None, acceptors=None, verbose=False):
+                 donors=None, acceptors=None, verbose=False, detect_hydrogens="distance"):
         """Set up calculation of hydrogen bonds between two selections in a universe.
 
         :Arguments:
@@ -317,6 +343,13 @@ class HydrogenBondAnalysis(object):
              by default because it generates a very large amount of output in
              the log file. (Note that a logger must have been started to see
              the output, e.g. using :func:`MDAnalysis.start_logging`.)
+          *detect_hydrogens*
+             Determine the algorithm to find hydrogens connected to donor
+             atoms. Can be "distance" (default; finds all hydrogens within a
+             cutoff of 1.2 Å of the donor) or "heuristic" (looks for the next
+             few atoms in the atom list). "distance" should always give the
+             correct answer but "heuristic" is faster, especially when the
+             donor list is updated each selection. ["distance"]
 
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
 
@@ -325,7 +358,19 @@ class HydrogenBondAnalysis(object):
            New *verbose* keyword (and per-frame debug logging disable by
            default).
 
+           New *detect_hydrogens* keyword to switch between two different
+           algorithms to detect hydrogens bonded to donor. "distance" is a new,
+           rigorous distance search within the residue of the donor atom,
+           "heuristic" is the previous (updated) atom list scan.
         """
+        self._get_bonded_hydrogens_algorithms = {
+            "distance": self._get_bonded_hydrogens_dist,      # 0.7.6 default
+            "heuristic": self._get_bonded_hydrogens_list,     # pre 0.7.6
+            }
+        if not detect_hydrogens in self._get_bonded_hydrogens_algorithms:
+            raise ValueError("detect_hydrogens must be one of %r" %
+                             self._get_bonded_hydrogens_algorithms.keys())
+        self.detect_hydrogens = detect_hydrogens
 
         self.u = universe
         self.selection1 = selection1
@@ -360,16 +405,97 @@ class HydrogenBondAnalysis(object):
         self._update_selection_2()
         self.verbose = verbose  # per-frame debugging output?
 
-    def _get_bonded_hydrogens(self, atom):
-        hydrogens = []
-        for i in range(3):
-            try:
-                next_atom = self.u.atoms[atom.number+1+i]
-            except:
-                break
-            else:
-                if next_atom.name.startswith('H'):
-                    hydrogens.append(next_atom)
+    def _get_bonded_hydrogens(self, atom, **kwargs):
+        """Find hydrogens bonded to *atom*.
+
+        This method is typically not called by a user but it is documented to
+        facilitate understanding of the internals of
+        :class:`HydrogenBondAnalysis`.
+
+        :Returns: list of hydrogens (can be a
+                  :class:`~MDAnalysis.core.AtomGroup.AtomGroup`) or empty list
+                  ``[]`` if none were found.
+
+        .. SeeAlso::
+
+           :meth:`_get_bonded_hydrogens_dist` and :meth:`_get_bonded_hydrogens_list`
+
+        .. versionchanged:: 0.7.6
+
+           Can switch algorithm by using the *detect_hydrogens* keyword to the
+           constructor. *kwargs* cna be used to supply arguments for algorithm,
+           e.g. *cutoff* for :meth:`_get_bonded_hydrogens_dist`.
+        """
+        return self._get_bonded_hydrogens_algorithms[self.detect_hydrogens](atom, **kwargs)
+
+    def _get_bonded_hydrogens_dist(self, atom, cutoff=1.2):
+        """Find hydrogens bonded within *cutoff* to *atom*.
+
+        * hydrogens are detected by either name ("H*", "[123]H*") or
+          type ("H"); this is not fool-proof as the atom type is not
+          always a character but the name pattern should catch most
+          typical occurrences.
+
+        * The distance from *atom* is calculated for all hydrogens in
+          the residue and only thos within *cutoff* are kept.
+
+        The performance of this implementation could be improved once
+        the topology always contains bonded information; it currently
+        uses the selection parser with an "around" selection.
+
+        .. versionadded:: 0.7.6
+        """
+        try:
+            return atom.residue.selectAtoms("(name H* or name 1H* or name 2H* or name 3H* or type H) and around %f name %s" %
+                                            (cutoff, atom.name))
+        except NoDataError:
+            return []
+
+    def _get_bonded_hydrogens_list(self, atom, **kwargs):
+        """Find "bonded" hydrogens to the donor *atom*.
+
+        At the moment this relies on the **assumption** that the
+        hydrogens are listed directly after the heavy atom in the
+        topology. If this is not the case then this function will
+        fail.
+
+        Hydrogens are detected by name only: ``H*``, ``[123]H*``.
+
+        .. versionchanged:: 0.7.6
+
+           Hack to exclude backbone "HA" which were picked up because
+           the backbone list is typically ``["N", "H", "CA", "HA"]``
+           so that "HA" is picked up wrongly as an additional hydrogen
+           belonging to "N".
+
+           Added detection of ``[123]H``.
+
+           Changed name to :meth:`_get_bonded_hydrogens_list` and
+           added *kwargs* so that it can be used instead of
+           :meth:`_get_bonded_hydrogens_dist`.
+
+        .. deprecated:: 0.7.6
+
+           This method is not recommended because it can miss hydrogens;
+           :meth:`_get_bonded_hydrogens_dist` is safer but this one is faster.
+        """
+        warnings.warn("_get_bonded_hydrogens_list() does not always find "
+                      "all hydrogens; detect_hydrogens='distance' is safer.",
+                      category=DeprecationWarning)
+        # investigate the next *maxsearch* atoms following *atom*
+        maxsearch = 3
+        # hack:
+        if atom.name == "N":
+            # fixes BUG: with maxsearch=3 also takes HA from sidechain as
+            # belonging to N: N H CA HA. (This should be done with proper
+            # connectivity information but we do not have full connectivity for
+            # all topology readers.)
+            maxsearch = 1
+        try:
+            hydrogens = [a for a in self.u.atoms[atom.number+1:atom.number+1+maxsearch]
+                         if a.name.startswith(('H', '1H', '2H', '3H')) ]
+        except IndexError:
+            hydrogens = []  # weird corner case that atom is the last one in universe
         return hydrogens
 
     def _update_selection_1(self):
