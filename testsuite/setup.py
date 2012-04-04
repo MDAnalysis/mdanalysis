@@ -1,3 +1,4 @@
+#! /usr/bin/python
 """Setuptools-based setup script for tests of MDAnalysis.
 
 A working installation of NumPy <http://numpy.scipy.org> is required.
@@ -58,23 +59,29 @@ if sys.version_info[:2] < (2, 5):
 
 
 if __name__ == '__main__':
-    RELEASE = "0.7.5"
+    RELEASE = "0.7.5.1"         # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
-This package contains the test code and the trajectory data that are
-used for the test cases. In order to make downloads and binary package
-maintenance more efficient, these tests were moved into this packe.
+This package (MDAnalysisTests) contains the test code and the trajectory data
+that are used for the test cases. In order to make downloads and binary package
+maintenance more efficient, these tests were moved into this package.
+
+For details see the report for `Issue 87`_.
+
+.. _`Issue 87`: http://code.google.com/p/mdanalysis/issues/detail?id=87
 """
     CLASSIFIERS = ['Development Status :: 4 - Beta',
                    'Environment :: Console',
-                   'Intended Audience :: Scientists',
+                   'Intended Audience :: Science/Research',
                    'License :: OSI Approved :: GNU General Public License (GPL)',
                    'Operating System :: POSIX',
                    'Operating System :: MacOS :: MacOS X',
                    'Programming Language :: Python',
+                   'Programming Language :: C',
                    'Topic :: Scientific/Engineering :: Bio-Informatics',
                    'Topic :: Scientific/Engineering :: Chemistry',
+                   'Topic :: Software Development :: Libraries :: Python Modules',
                    ]
 
     setup(name              = 'MDAnalysisTests',
@@ -96,5 +103,9 @@ maintenance more efficient, these tests were moved into this packe.
                                },
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,
+          install_requires  = ['MDAnalysis==%s' % RELEASE,  # same as this release!
+                               'numpy>=1.3',
+                               'nose>=0.10',
+                               ],
           zip_safe = False,   # had 'KeyError' as zipped egg (2MB savings are not worth the trouble)
           )

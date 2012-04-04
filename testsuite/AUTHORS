@@ -1,3 +1,5 @@
+.. -*- encoding: utf-8 -*-
+
 =======================
  Authors of MDAnalysis
 =======================
@@ -7,7 +9,7 @@ MDAnalysis was originally written by Naveen Michaud-Agrawal.
 Oliver Beckstein and Elizabeth J. Denning are maintaining the project
 and contributing to the development.
 
-Also see the project page
+Also see this file and the project page
 http://code.google.com/p/mdanalysis/people/list for a list of people
 directly involved.
 
@@ -32,6 +34,9 @@ Chronological list of authors
   - Paul Rigor
   - David Caplan
   - Christian Beckstein (logo)
+  - Sébastien Buchoux
+2012
+  - Lukas Grossar
 
 
 External code

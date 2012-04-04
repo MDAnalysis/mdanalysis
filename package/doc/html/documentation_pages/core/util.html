@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis v0.7.5-devel documentation</title>
+    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis v0.7.5.1 documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5-devel',
+        VERSION:     '0.7.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5-devel documentation"
+          title="Search within MDAnalysis v0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.10. Setting up logging — MDAnalysis.core.log" href="log.html" />
     <link rel="prev" title="7.8. Constants and unit conversion — MDAnalysis.core.units" href="units.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -71,10 +71,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="units.html"
-                        title="previous chapter">7.8. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
+                        title="previous chapter">7.8. Constants and unit conversion &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="log.html"
-                        title="next chapter">7.10. Setting up logging &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
+                        title="next chapter">7.10. Setting up logging &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/util.txt"
@@ -259,7 +259,7 @@ forms.</p>
 <dl class="data">
 <dt id="MDAnalysis.core.util.FORTRAN_format_regex">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">FORTRAN_format_regex</tt><a class="headerlink" href="#MDAnalysis.core.util.FORTRAN_format_regex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Regular expresssion (see <a class="reference external" href="http://docs.python.org/library/re.html#module-re" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">re</span></tt></a>) to parse a simple <a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">FORTRAN edit descriptor</a>.
+<dd><p>Regular expresssion (see <a class="reference external" href="http://docs.python.org/library/re.html#re" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">re</span></tt></a>) to parse a simple <a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">FORTRAN edit descriptor</a>.
 <tt class="docutils literal"><span class="pre">(?P&lt;repeat&gt;\d?)(?P&lt;format&gt;[IFELAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\d+)(\.(?P&lt;decimals&gt;\d+))?)?</span></tt></p>
 </dd></dl>
 
@@ -293,6 +293,8 @@ forms.</p>
 <li>&#8220;LYS300:HZ1&#8221; &#8211;&gt; (&#8220;LYS&#8221;, 300, &#8220;HZ1&#8221;)</li>
 <li>&#8220;K300:HZ1&#8221; &#8211;&gt; (&#8220;LYS&#8221;, 300, &#8220;HZ1&#8221;)</li>
 <li>&#8220;K300&#8221; &#8211;&gt; (&#8220;LYS&#8221;, 300, None)</li>
+<li>&#8220;4GB300:H6O&#8221; &#8211;&gt; (&#8220;4GB&#8221;, 300, &#8220;H6O&#8221;)</li>
+<li>&#8220;4GB300&#8221; &#8211;&gt; (&#8220;4GB&#8221;, 300, None)</li>
 </ul>
 </dd>
 </dl>
@@ -326,7 +328,7 @@ aa codes are converted to 3-letter codes</td>
 <dt id="MDAnalysis.core.util.norm">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">norm</tt><big>(</big><em>v</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the length of a vector, <tt class="docutils literal"><span class="pre">sqrt(v.v)</span></tt>.</p>
-<p>Faster than <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v2.0.dev-ec56ee1)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></tt></a> because no frills.</p>
+<p>Faster than <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></tt></a> because no frills.</p>
 </dd></dl>
 
 <dl class="function">
@@ -373,15 +375,15 @@ aa codes are converted to 3-letter codes</td>
         <li class="right" >
           <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
-    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
-    and Oliver Beckstein.
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
+    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

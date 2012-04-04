@@ -355,45 +355,45 @@ class TestPrimitivePDBWriter(TestCase):
         Test if multiframe writer can write selected frames for an atomselection.
         """
         u = self.multiverse
-        
+
         group  = u.selectAtoms('name CA', 'name C')
-        
+
         desired_group = 56
-        
+
         desired_frames = 6
-        
+
         group.write(self.outfile, start=12, step=2)
-        
+
         u = mda.Universe(self.outfile)
-        
+
         assert_equal(len(u.atoms), desired_group, err_msg="PrimitivePDBWriter trajectory written for an AtomGroup contains %d atoms, it should contain %d" % (len(u.atoms), desired_group))
-        
+
         assert_equal(len(u.trajectory), desired_frames, err_msg = "PrimitivePDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
-      
+
 
     def test_numframes(self):
         u = self.multiverse
         desired = 24
-        assert_equal(u.trajectory.numframes, desired, 
+        assert_equal(u.trajectory.numframes, desired,
                             err_msg="Test PDB contains %d frames, trajectory contains only %d" % (desired, u.trajectory.numframes))
-        
+
     def test_numatoms_frame(self):
         u = self.multiverse
-        
+
         desired = 392
-        
+
         # rewind after previous test, otherwise the iterator is NoneType and next() cannot be called
-        
+
         for frame in u.trajectory:
-          
+
           assert_equal(len(u.atoms), desired, err_msg="The number of atoms in the Universe (%d) does not match the number of atoms in the test case (%d) at frame %d" % (len(u.atoms), desired, u.trajectory.frame))
-        
-    
+
+
     def test_numconnections(self):
         u = self.multiverse
-        
+
         # the bond list is sorted - so swaps in input pdb sequence should not be a problem
-        desired = [[48, 365], 
+        desired = [[48, 365],
                    [99, 166],
                    [166, 99],
                    [249, 387],
@@ -418,11 +418,11 @@ class TestPrimitivePDBWriter(TestCase):
                    [348, 337],
                    [349, 338],
                    [365, 48],
-                   [387, 249]]  
-          
-        assert_equal(u._psf['_bonds'], desired, 
+                   [387, 249]]
+
+        assert_equal(u._psf['_bonds'], desired,
                                 err_msg="The bond list does not match the test reference; len(actual) is %d, len(desired) is %d " % (len(u._psf['_bonds']), len(desired)))
-          
+
     @attr('issue')
     def test_check_coordinate_limits_min(self):
         """Test that illegal PDB coordinates (x <= -999.9995 A) are caught with ValueError (Issue 57)"""
@@ -603,6 +603,13 @@ class TestGROWriter(TestCase):
                             err_msg="Writing GRO file with GROWriter does not reproduce original coordinates")
 
     @dec.slow
+    def test_timestep_not_modified_by_writer(self):
+        ts = self.universe.trajectory.ts
+        x = ts._pos.copy()
+        self.universe.atoms.write(self.outfile)
+        assert_equal(ts._pos, x,  err_msg="Positions in Timestep were modified by writer.")
+
+    @dec.slow
     @attr('issue')
     def test_check_coordinate_limits_min(self):
         """Test that illegal GRO coordinates (x <= -999.9995 nm) are caught with ValueError (Issue 57)"""
@@ -620,6 +627,15 @@ class TestGROWriter(TestCase):
         u = mda.Universe(GRO)
         u.atoms[1000].pos[1] = 9999.9999 * 10  # nm -> A  ; [ob] 9999.9996 not caught
         assert_raises(ValueError, u.atoms.write, self.outfile2)
+        del u
+
+    @dec.slow
+    def test_check_coordinate_limits_max_noconversion(self):
+        """Test that illegal GRO coordinates (x > 9999.9995 nm) also raises exception for convert_units=False"""
+        # modify coordinates so we need our own copy or we could mess up parallel tests
+        u = mda.Universe(GRO, convert_units=False)
+        u.atoms[1000].pos[1] = 9999.9999
+        assert_raises(ValueError, u.atoms.write, self.outfile2, convert_units=False)
         del u
 
 
@@ -1206,11 +1222,37 @@ class _GromacsReader(TestCase):
         # prec = 6: TRR test fails; here I am generous and take self.prec = 3...
         assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec)
 
+
 class TestXTCReader(_GromacsReader):
     filename = XTC
 
 class TestTRRReader(_GromacsReader):
     filename = TRR
+
+    @dec.slow
+    def test_velocities(self):
+
+        # frame 0, v in nm/ps
+        # from gmxdump -f MDAnalysisTests/data/adk_oplsaa.trr
+        #      v[47675]={-7.86469e-01,  1.57479e+00,  2.79722e-01}
+        #      v[47676]={ 2.70593e-08,  1.08052e-06,  6.97028e-07}
+        v_native = np.array([[-7.86469e-01,  1.57479e+00,  2.79722e-01],
+                             [2.70593e-08,  1.08052e-06,  6.97028e-07]], dtype=np.float32)
+
+        # velocities in the MDA base unit A/ps (needed for True)
+        v_base = v_native * 10.0
+        self.universe.trajectory.rewind()
+        assert_equal(self.ts.frame, 1, "failed to read frame 1")
+
+        assert_array_almost_equal(self.universe.trajectory.ts._velocities[[47675,47676]], v_base, self.prec,
+                                  err_msg="ts._velocities for indices 47675,47676 do not match known values")
+
+        assert_array_almost_equal(self.universe.atoms.velocities()[[47675,47676]], v_base, self.prec,
+                                  err_msg="velocities() for indices 47675,47676 do not match known values")
+
+        for index, v_known in zip([47675,47676], v_base):
+            assert_array_almost_equal(self.universe.atoms[index].velocity, v_known, self.prec,
+                                  err_msg="atom[%d].velocity does not match known values" % index)
 
 
 class _XDRNoConversion(TestCase):
@@ -1286,11 +1328,43 @@ class _GromacsWriter(TestCase):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
 
+    @dec.slow
+    def test_timestep_not_modified_by_writer(self):
+        trj = self.universe.trajectory
+        ts = trj.ts
+
+        trj[-1]    # last timestep (so that time != 0)
+        x = ts._pos.copy()
+        time = ts.time
+
+        W = self.Writer(self.outfile, trj.numatoms, delta=trj.delta, step=trj.skip_timestep)
+        trj[-1]    # last timestep (so that time != 0) (say it again, just in case...)
+        W.write_next_timestep(ts)
+        W.close()
+
+        assert_equal(ts._pos, x,  err_msg="Positions in Timestep were modified by writer.")
+        assert_equal(ts.time, time,  err_msg="Time in Timestep was modified by writer.")
+
+
 class TestXTCWriter(_GromacsWriter):
     infilename = XTC
 
 class TestTRRWriter(_GromacsWriter):
     infilename = TRR
+
+    def test_velocities(self):
+        t = self.universe.trajectory
+        W = self.Writer(self.outfile, t.numatoms, delta=t.delta, step=t.skip_timestep)
+        for ts in self.universe.trajectory:
+            W.write_next_timestep(ts)
+        W.close()
+
+        uw = mda.Universe(GRO, self.outfile)
+
+        # check that the velocities are identical for each time step
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+            assert_array_almost_equal(written_ts._velocities, orig_ts._velocities, 3,
+                                      err_msg="velocities mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
 
 @attr('issue')
 def test_triclinic_box():

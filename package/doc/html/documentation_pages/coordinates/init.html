@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis v0.7.5-devel documentation</title>
+    <title>5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis v0.7.5.1 documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5-devel',
+        VERSION:     '0.7.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5-devel documentation"
+          title="Search within MDAnalysis v0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.2. Base classes — MDAnalysis.coordinates.base" href="base.html" />
     <link rel="prev" title="5. Coordinates modules" href="../coordinates_modules.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="../coordinates_modules.html" title="5. Coordinates modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -193,15 +193,15 @@ correctly (requires testing). Module
 <tr><td>Gromacs</td>
 <td>trr</td>
 <td>r/w</td>
-<td>Full precision trr trajectory. Only coordinates are
-processed at the moment. Module
+<td>Full precision trr trajectory. Coordinates and
+velocities are processed. Module
 <a class="reference internal" href="TRR.html#module-MDAnalysis.coordinates.TRR" title="MDAnalysis.coordinates.TRR"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a></td>
 </tr>
 <tr><td>XYZ</td>
 <td>xyz</td>
 <td>r</td>
 <td>Generic white-space separate XYZ format; can be
-compressed. Module
+compressed (gzip or bzip2). Module
 <a class="reference internal" href="XYZ.html#module-MDAnalysis.coordinates.XYZ" title="MDAnalysis.coordinates.XYZ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></td>
 </tr>
 <tr><td>Amber</td>
@@ -284,6 +284,7 @@ I/O code can be written in C or python or a mixture thereof.</p>
 <li>2011-03-30 optional Writer() method for Readers</li>
 <li>2011-04-18 added time and frame managed attributes to Reader</li>
 <li>2011-04-20 added volume to Timestep</li>
+<li>2012-02-11 added _velocities to Timestep</li>
 </ul>
 </div>
 <div class="section" id="registry">
@@ -321,7 +322,7 @@ different ways:</p>
 <dd>empty Timestep for <em>arg</em> atoms (allocate arrays etc)</dd>
 <dt><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></dt>
 <dd>makes a deep copy of the <em>arg</em></dd>
-<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-4fb84e7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
+<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
 <dd>update the Timesteps positions array with the contents of <em>arg</em></dd>
 </dl>
 </div></blockquote>
@@ -371,6 +372,16 @@ some cases it is convenient to directly use <tt class="xref py py-attr docutils 
 <dd>unit cell dimensions and angles; the format depends on the underlying
 trajectory format. A user should use <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></tt> to
 access the data in a standard format.</dd>
+</dl>
+</div></blockquote>
+<p>Optional attributes (only implemented by some readers); if an optional
+attribute does not exist, a <tt class="xref py py-exc docutils literal"><span class="pre">AttributeError</span></tt> is raised and the calling
+code should handle this gracefully.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">_velocities</span></tt></dt>
+<dd>raw velocities, a <tt class="xref py py-class docutils literal"><span class="pre">numpy.float32</span></tt> array containing velocities
+(similar to <tt class="docutils literal"><span class="pre">_pos</span></tt>)</dd>
 </dl>
 </div></blockquote>
 </div>
@@ -494,9 +505,10 @@ of a trajctory frame is  <tt class="docutils literal"><span class="pre">skip_tim
 <dd>the <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt> object; typically customized for each
 trajectory format and derived from <tt class="xref py py-class docutils literal"><span class="pre">base.Timestep</span></tt>.</dd>
 <dt><tt class="docutils literal"><span class="pre">units</span></tt></dt>
-<dd>dictionary with keys <em>time</em> and <em>length</em> and the appropriate
-unit (e.g. &#8216;AKMA&#8217; and &#8216;Angstrom&#8217; for Charmm dcds, &#8216;ps&#8217; and &#8216;nm&#8217;
-for Gromacs trajectories, <tt class="xref docutils literal"><span class="pre">None</span></tt> and &#8216;Angstrom&#8217; for PDB).</dd>
+<dd>dictionary with keys <em>time</em>, <em>length</em>, <em>speed</em>, <em>force</em> and the
+appropriate unit (e.g. &#8216;AKMA&#8217; and &#8216;Angstrom&#8217; for Charmm dcds, &#8216;ps&#8217; and
+&#8216;nm&#8217; for Gromacs trajectories, <tt class="xref docutils literal"><span class="pre">None</span></tt> and &#8216;Angstrom&#8217; for PDB).
+Any field not used should be set to <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd>
 <dt><tt class="docutils literal"><span class="pre">format</span></tt></dt>
 <dd>string that identifies the file format, e.g. &#8220;DCD&#8221;, &#8220;PDB&#8221;, &#8220;CRD&#8221;, &#8220;XTC&#8221;,
 &#8220;TRR&#8221;; this is typically the file extension in upper case.</dd>
@@ -569,9 +581,10 @@ unitcell representation of the format</dd>
 <dt><tt class="docutils literal"><span class="pre">start,</span> <span class="pre">stop,</span> <span class="pre">step</span></tt></dt>
 <dd>first and last frame and step</dd>
 <dt><tt class="docutils literal"><span class="pre">units</span></tt></dt>
-<dd>dictionary with keys <em>time</em> and <em>length</em> and the appropriate
-unit (e.g. &#8216;AKMA&#8217; and &#8216;Angstrom&#8217; for CHARMM dcds, &#8216;ps&#8217; and &#8216;nm&#8217;
-for Gromacs trajectories, <tt class="xref docutils literal"><span class="pre">None</span></tt> and &#8216;Angstrom&#8217; for PDB)</dd>
+<dd>dictionary with keys <em>time</em>, <em>length</em>, <em>speed</em>, <em>force</em> and the
+appropriate unit (e.g. &#8216;AKMA&#8217; and &#8216;Angstrom&#8217; for Charmm dcds, &#8216;ps&#8217; and
+&#8216;nm&#8217; for Gromacs trajectories, <tt class="xref docutils literal"><span class="pre">None</span></tt> and &#8216;Angstrom&#8217; for PDB).
+Any field not used should be set to <tt class="xref docutils literal"><span class="pre">None</span></tt>.</dd>
 <dt><tt class="docutils literal"><span class="pre">format</span></tt></dt>
 <dd>string that identifies the file format, e.g. &#8220;DCD&#8221;, &#8220;PDB&#8221;, &#8220;CRD&#8221;, &#8220;XTC&#8221;,
 &#8220;TRR&#8221;</dd>
@@ -708,15 +721,15 @@ Signature:</p>
         <li class="right" >
           <a href="../coordinates_modules.html" title="5. Coordinates modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
-    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
-    and Oliver Beckstein.
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
+    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

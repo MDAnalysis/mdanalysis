@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.6. HELANAL — analysis of protein helices &mdash; MDAnalysis v0.7.5-devel documentation</title>
+    <title>3.7. HELANAL — analysis of protein helices &mdash; MDAnalysis v0.7.5.1 documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5-devel',
+        VERSION:     '0.7.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5-devel documentation"
+          title="Search within MDAnalysis v0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
-    <link rel="next" title="3.7. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" />
-    <link rel="prev" title="3.5. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds" href="hbonds.html" /> 
+    <link rel="next" title="3.8. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" />
+    <link rel="prev" title="3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds" href="hbonds.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,12 +42,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="leaflet.html" title="3.7. Leaflet identification — MDAnalysis.analysis.leaflet"
+          <a href="leaflet.html" title="3.8. Leaflet identification — MDAnalysis.analysis.leaflet"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="hbonds.html" title="3.5. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds"
+          <a href="hbonds.html" title="3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -58,20 +58,20 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">3.6. HELANAL &#8212; analysis of protein helices</a><ul>
-<li><a class="reference internal" href="#background">3.6.1. Background</a></li>
-<li><a class="reference internal" href="#references">3.6.2. References</a></li>
-<li><a class="reference internal" href="#functions">3.6.3. Functions</a></li>
+<li><a class="reference internal" href="#">3.7. HELANAL &#8212; analysis of protein helices</a><ul>
+<li><a class="reference internal" href="#background">3.7.1. Background</a></li>
+<li><a class="reference internal" href="#references">3.7.2. References</a></li>
+<li><a class="reference internal" href="#functions">3.7.3. Functions</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="hbonds.html"
-                        title="previous chapter">3.5. Hydrogen Bond analysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a></p>
+                        title="previous chapter">3.6. Hydrogen Bond analysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="leaflet.html"
-                        title="next chapter">3.7. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
+                        title="next chapter">3.8. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/analysis/helanal.txt"
@@ -99,7 +99,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.analysis.helanal"></span><div class="section" id="helanal-analysis-of-protein-helices">
-<h1>3.6. HELANAL &#8212; analysis of protein helices<a class="headerlink" href="#helanal-analysis-of-protein-helices" title="Permalink to this headline">¶</a></h1>
+<h1>3.7. HELANAL &#8212; analysis of protein helices<a class="headerlink" href="#helanal-analysis-of-protein-helices" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -132,7 +132,7 @@ bending angles. In addition to these, the program can also be used to
 characterise the helix start and end as well as other types of secondary
 structures.</p>
 <div class="section" id="background">
-<h2>3.6.1. Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
+<h2>3.7.1. Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
 <p>From the <a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html">HELANAL</a> home page:</p>
 <p><a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html">HELANAL</a> can be used to characterize the geometry of helices with a minimum 9
 residues. The geometry of an alpha helix is characterized by computing local
@@ -153,7 +153,7 @@ curved</em>. A helix is classified as being <em>kinked</em>, if at least one loc
 angle in the middle of the helix is greater than 20 degrees.</p>
 </div>
 <div class="section" id="references">
-<h2>3.6.2. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<h2>3.7.2. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <table class="docutils citation" frame="void" id="sugeta1967" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -188,7 +188,7 @@ characterise helix geometry in proteins. <em>J Biomol Struct Dyn.</em>  17(5):81
 </table>
 </div>
 <div class="section" id="functions">
-<h2>3.6.3. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<h2>3.7.3. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.helanal.helanal_trajectory">
 <tt class="descclassname">MDAnalysis.analysis.helanal.</tt><tt class="descname">helanal_trajectory</tt><big>(</big><em>universe</em>, <em>selection='name CA'</em>, <em>start=None</em>, <em>end=None</em>, <em>begin=None</em>, <em>finish=None</em>, <em>matrix_filename='bending_matrix.dat'</em>, <em>origin_pdbfile='origin.pdb'</em>, <em>summary_filename='summary.txt'</em>, <em>screw_filename='screw.xvg'</em>, <em>tilt_filename='local_tilt.xvg'</em>, <em>fitted_tilt_filename='fit_tilt.xvg'</em>, <em>prefix='helanal_'</em>, <em>ref_axis=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.helanal.helanal_trajectory" title="Permalink to this definition">¶</a></dt>
@@ -289,20 +289,20 @@ the helix, e.g. with &#8220;name CA and resid 1:20&#8221;.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="leaflet.html" title="3.7. Leaflet identification — MDAnalysis.analysis.leaflet"
+          <a href="leaflet.html" title="3.8. Leaflet identification — MDAnalysis.analysis.leaflet"
              >next</a> |</li>
         <li class="right" >
-          <a href="hbonds.html" title="3.5. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds"
+          <a href="hbonds.html" title="3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
-    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
-    and Oliver Beckstein.
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
+    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

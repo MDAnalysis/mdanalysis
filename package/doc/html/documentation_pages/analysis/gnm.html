@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm &mdash; MDAnalysis v0.7.5.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.5.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis v0.7.5.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
+    <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
+    <link rel="next" title="3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds" href="hbonds.html" />
+    <link rel="prev" title="3.4. Generating densities from trajectories — MDAnalysis.analysis.density" href="density.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="hbonds.html" title="3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="density.html" title="3.4. Generating densities from trajectories — MDAnalysis.analysis.density"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+          <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3.5. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a><ul>
+<li><a class="reference internal" href="#analysis-tasks">3.5.1. Analysis tasks</a></li>
+<li><a class="reference internal" href="#utility-functions">3.5.2. Utility functions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="density.html"
+                        title="previous chapter">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="hbonds.html"
+                        title="next chapter">3.6. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/analysis/gnm.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.analysis.gnm"></span><div class="section" id="elastic-network-analysis-of-md-trajectories-mdanalysis-analysis-gnm">
+<h1>3.5. Elastic network analysis of MD trajectories &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.gnm" title="MDAnalysis.analysis.gnm"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a><a class="headerlink" href="#elastic-network-analysis-of-md-trajectories-mdanalysis-analysis-gnm" title="Permalink to this headline">¶</a></h1>
+<p>Analyse a trajectory using elastic network models, following the approach of <a class="reference internal" href="#hall2007">[Hall2007]</a>.</p>
+<p>An example is provided in <tt class="file docutils literal"><span class="pre">examples/GNMExample.py</span></tt>. The basic
+approach is to pass a trajectory to <a class="reference internal" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="MDAnalysis.analysis.gnm.GNMAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">GNMAnalysis</span></tt></a> and then run
+the analysis:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">gnm</span><span class="o">.</span><span class="n">GNMAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">ReportVector</span><span class="o">=</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
+
+<span class="n">C</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">output</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">C</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+
+<span class="n">outputfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;eigenvalues.dat&quot;</span><span class="p">,</span><span class="s">&quot;w&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+   <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">outputfile</span><span class="p">,</span> <span class="n">item</span>
+<span class="n">outputfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The results are found in <tt class="xref py py-attr docutils literal"><span class="pre">GNMAnalysis.results</span></tt>, which can be
+used for further processing (see <a class="reference internal" href="#hall2007">[Hall2007]</a>).</p>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="hall2007" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Hall2007]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Benjamin A. Hall, Samantha L. Kaye, Andy Pang, Rafael Perera, and
+Philip C. Biggin. Characterization of Protein Conformational
+States by Normal-Mode Frequencies. <em>JACS</em> 129 (2007), 11394&#8211;11401.</td></tr>
+</tbody>
+</table>
+<div class="section" id="analysis-tasks">
+<h2>3.5.1. Analysis tasks<a class="headerlink" href="#analysis-tasks" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.analysis.gnm.GNMAnalysis">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">GNMAnalysis</tt><big>(</big><em>universe</em>, <em>selection='protein and name CA'</em>, <em>cutoff=7.0</em>, <em>ReportVector=None</em>, <em>Bonus_groups=()</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic tool for GNM analysis.</p>
+<p>Each frame is treated as a novel structure and the GNM
+calculated.  By default, this stores the dominant eigenvector
+and its associated eigenvalue; either can be used to monitor
+conformational change in a simulation.</p>
+<dl class="method">
+<dt id="MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff">
+<tt class="descname">generate_kirchoff</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the Kirchhoff matrix of contacts.</p>
+<p>This generates the neighbour matrix by generating a grid of
+near-neighbours and then calculating which are are within
+the cutoff. Returns the resulting matrix</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.gnm.GNMAnalysis.generate_output">
+<tt class="descname">generate_output</tt><big>(</big><em>w</em>, <em>v</em>, <em>outputobject</em>, <em>time</em>, <em>matrix</em>, <em>nmodes=2</em>, <em>ReportVector=None</em>, <em>counter=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.generate_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends eigenvalues and eigenvectors to results.</p>
+<p>This generates the output by adding eigenvalue and
+eigenvector data to an appendable object and optionally
+printing some of the results to file. This is the function
+to replace if you want to generate a more complex set of
+outputs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.gnm.GNMAnalysis.run">
+<tt class="descname">run</tt><big>(</big><em>skip=1</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze trajectory and produce timeseries.</p>
+<p>Returns GNM results per frame:</p>
+<div class="highlight-python"><pre>results = [(time,eigenvalues[1],eigenvectors[1]),(time,eigenvalues[1],eigenvectors[1])... ]</pre>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.analysis.gnm.closeContactGNMAnalysis">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">closeContactGNMAnalysis</tt><big>(</big><em>universe</em>, <em>selection='protein'</em>, <em>cutoff=4.5</em>, <em>ReportVector=None</em>, <em>MassWeight=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>GNMAnalysis only using close contacts.</p>
+<p>This is a version of the GNM where the Kirchoff matrix is
+constructed from the close contacts between individual atoms
+in different residues</p>
+</dd></dl>
+
+</div>
+<div class="section" id="utility-functions">
+<h2>3.5.2. Utility functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h2>
+<p>The following functions are used internally and are typically not
+directly needed to perform the analysis.</p>
+<dl class="function">
+<dt id="MDAnalysis.analysis.gnm.backup_file">
+<tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">backup_file</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.backup_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function helps prevent overwriting default named files</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.gnm.generate_grid">
+<tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">generate_grid</tt><big>(</big><em>positions</em>, <em>cutoff</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.generate_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>An alternative to searching the entire list of each atom; divide the structure into cutoff sized boxes
+This way, for each particle you only need to search the neighbouring boxes to find the particles within the cutoff
+Observed a 6x speed up for a smallish protein with ~300 residues; this should get better with bigger systems.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.gnm.order_list">
+<tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">order_list</tt><big>(</big><em>w</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.order_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary showing the order of eigenvalues (which are reported scrambled normally)</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="hbonds.html" title="3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="density.html" title="3.4. Generating densities from trajectories — MDAnalysis.analysis.density"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+          <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
+    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

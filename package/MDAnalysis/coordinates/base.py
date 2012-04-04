@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
@@ -25,6 +25,56 @@ module. The derived classes must follow the Trajectory API in
 
 .. autoclass:: Timestep
    :members:
+
+   .. attribute:: _pos
+
+      :class:`numpy.ndarray` of dtype :class:`~numpy.float32` of shape
+      (*numatoms*, 3) and internal FORTRAN order, holding the raw
+      cartesian coordinates (in MDAnalysis units, i.e. Å).
+
+      .. Note::
+
+         Normally one does not directly access :attr:`_pos` but uses
+         the :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.coordinates`
+         method of an :class:`~MDAnalysis.core.AtomGroup.AtomGroup` but
+         sometimes it can be faster to directly use the raw
+         coordinates. Any changes to this array are immediately
+         reflected in atom positions. If the frame is written to a new
+         trajectory then the coordinates are changed. If a new
+         trajectory frame is loaded, then *all* contents of
+         :attr:`_pos` are overwritten.
+
+   .. attribute:: _velocities
+
+      :class:`numpy.ndarray` of dtype :class:`~numpy.float32`. of shape
+      (*numatoms*, 3), holding the raw velocities (in MDAnalysis
+      units, i.e. typically Å/ps).
+
+      .. Note::
+
+         Normally velocities are accessed through the
+         :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.velocities()`
+         method of an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+         but this attribute is documented as there can be occasions
+         when it is required (e.g. in order to *change* velocities) or
+         much more convenient or faster to access the raw velocities
+         directly.
+
+         :attr:`~Timestep._velocities` only exists if the underlying
+         trajectory format supports velocities. Your code should check
+         for its existence or handle an :exc:`AttributeError`
+         gracefully.
+
+
+      .. versionadded:: 0.7.5
+
+   .. attribute:: numatoms
+
+      number of atoms
+
+   .. attribute::`frame`
+
+      frame number
 
 .. autoclass:: IObase
    :members:
@@ -55,37 +105,26 @@ import core
 class Timestep(object):
     """Timestep data for one frame
 
-    :Attributes:
-      :attr:`numatoms`
-        number of atoms
-      :attr:`frame`
-        frame number
-      :attr:`_pos`
-        coordinates as a (*numatoms*,3) :class:`numpy.ndarray` of dtype
-        :data:`~numpy.float32`.
-
-        .. Note::
-
-           normally one does not directly access :attr:`_pos` but uses the
-           :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.coordinates` method of
-           an :meth:`~MDAnalysis.core.AtomGroup.AtomGroup` but sometimes it can
-           be faster to directly use the raw coordinates. Any changes to this
-           array are imediately reflected in atom positions. If the frame is
-           written to a new trajectory then the coordinates are changed. If a
-           new trajectory frame is loaded, then *all* contents of :attr:`_pos`
-           are overwritten.
-
-      :attr:`dimensions`:
-         system box dimensions (A, B, C, alpha, beta, gamma); lengths
-         are in the MDAnalysis length unit, and angles are in degrees.
-
     :Methods:
-      ``t = Timestep(numatoms)``
-         create a timestep object with space for numatoms (done automatically)
-      ``t[i]``
+
+      ``ts = Timestep(numatoms)``
+
+         create a timestep object with space for numatoms (done
+         automatically)
+
+      ``ts[i]``
+
          return coordinates for the i'th atom (0-based)
-      ``t[start:stop:skip]``
-         return an array of coordinates, where start, stop and skip correspond to atom indices (0-based)
+
+      ``ts[start:stop:skip]``
+
+         return an array of coordinates, where start, stop and skip
+         correspond to atom indices,
+         :attr:`MDAnalysis.core.AtomGroup.Atom.number` (0-based)
+
+      ``for x in ts``
+
+         iterate of the coordinates, atom by atom
     """
     def __init__(self, arg):
         if numpy.dtype(type(arg)) == numpy.dtype(int):
@@ -101,16 +140,20 @@ class Timestep(object):
             self._unitcell = numpy.array(arg._unitcell)
             self._pos = numpy.array(arg._pos, order='F')
         elif isinstance(arg, numpy.ndarray):
-            if len(arg.shape) != 2: raise ValueError("numpy array can only have 2 dimensions")
+            if len(arg.shape) != 2:
+                raise ValueError("numpy array can only have 2 dimensions")
             self._unitcell = numpy.zeros((6), numpy.float32)
             self.frame = 0
-            #if arg.shape[0] == 3: self.numatoms = arg.shape[0]  # ??? is this correct ??? [OB]  # Nope, not sure what the aim was so i've left the lines in as comments [DP]
-            #else: self.numatoms = arg.shape[-1]                 # ??? reverse ??? [OB]
-            if arg.shape[1] == 3: self.numatoms = arg.shape[0]
-            else: self.numatoms = arg.shape[0]   # Or should an exception be raised if coordinate structure is not 3-dimensional? Maybe velocities could be read one day... [DP]
-
+            if arg.shape[1] == 3:
+                self.numatoms = arg.shape[0]
+            else:
+                self.numatoms = arg.shape[0]
+                # Or should an exception be raised if coordinate
+                # structure is not 3-dimensional? Maybe velocities
+                # could be read one day... [DP]
             self._pos = arg.astype(numpy.float32).copy('Fortran',)
-        else: raise ValueError("Cannot create an empty Timestep")
+        else:
+            raise ValueError("Cannot create an empty Timestep")
         self._x = self._pos[:,0]
         self._y = self._pos[:,1]
         self._z = self._pos[:,2]
@@ -134,6 +177,7 @@ class Timestep(object):
     def __repr__(self):
         return "< Timestep "+ repr(self.frame) + " with unit cell dimensions " + repr(self.dimensions) + " >"
     def copy(self):
+        """Make an independent ("deep") copy of the whole :class:`Timestep`."""
         return self.__deepcopy__()
     def __deepcopy__(self):
         # Is this the best way?
@@ -141,7 +185,17 @@ class Timestep(object):
 
     @property
     def dimensions(self):
-        """unitcell dimensions (A, B, C, alpha, beta, gamma)"""
+        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+
+        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
+        angles are in degrees.
+
+        :attr:`dimensions` is read-only because it transforms the
+        actual format of the unitcell (which differs between different
+        trajectory formats) to the representation described here,
+        which is used everywhere in MDAnalysis.
+        """
+
         # Layout of unitcell is [A, alpha, B, beta, gamma, C] --- (originally CHARMM DCD)
         # override for other formats; this strange ordering is kept for historical reasons
         # (the user should not need concern themselves with this)
@@ -161,29 +215,121 @@ class IObase(object):
 
     #: dict with units of of *time* and *length* (and *velocity*, *force*,
     #: ... for formats that support it)
-    units = {'time': None, 'length': None}
+    units = {'time': None, 'length': None, 'velocity': None}
 
-    def convert_pos_from_native(self, x):
-        """In-place conversion of coordinate array x from native units to base units."""
+    def convert_pos_from_native(self, x, inplace=True):
+        """In-place conversion of coordinate array x from native units to base units.
+
+        By default, the input *x* is modified in place and also returned.
+
+        .. versionchanged:: 0.7.5
+           Keyword *inplace* can be set to ``False`` so that a
+           modified copy is returned *unless* no conversion takes
+           place, in which case the reference to the unmodified *x* is
+           returned.
+
+        """
         f = units.get_conversion_factor('length', self.units['length'], MDAnalysis.core.flags['length_unit'])
+        if f == 1.:
+            return x
+        if not inplace:
+            return f*x
         x *= f
         return x
 
-    def convert_time_from_native(self, t):
-        """Convert time *t* from native units to base units."""
+    def convert_velocities_from_native(self, v, inplace=True):
+        """In-place conversion of coordinate array *v* from native units to base units.
+
+        By default, the input *v* is modified in place and also returned.
+
+        .. versionadded:: 0.7.5
+        """
+        f = units.get_conversion_factor('speed', self.units['velocity'], MDAnalysis.core.flags['speed_unit'])
+        if f == 1.:
+            return v
+        if not inplace:
+            return f*v
+        v *= f
+        return v
+
+    def convert_time_from_native(self, t, inplace=True):
+        """Convert time *t* from native units to base units.
+
+        By default, the input *t* is modified in place and also
+        returned (although note that scalar values *t* are passed by
+        value in Python and hence an in-place modification has no
+        effect on the caller.)
+
+        .. versionchanged:: 0.7.5
+           Keyword *inplace* can be set to ``False`` so that a
+           modified copy is returned *unless* no conversion takes
+           place, in which case the reference to the unmodified *x* is
+           returned.
+
+        """
         f = units.get_conversion_factor('time', self.units['time'], MDAnalysis.core.flags['time_unit'])
+        if f == 1.:
+            return t
+        if not inplace:
+            return f*t
         t *= f
         return t
 
-    def convert_pos_to_native(self, x):
-        """In-place conversion of coordinate array x from base units to native units."""
+    def convert_pos_to_native(self, x, inplace=True):
+        """Conversion of coordinate array x from base units to native units.
+
+        By default, the input *x* is modified in place and also returned.
+
+        .. versionchanged:: 0.7.5
+           Keyword *inplace* can be set to ``False`` so that a
+           modified copy is returned *unless* no conversion takes
+           place, in which case the reference to the unmodified *x* is
+           returned.
+
+        """
         f = units.get_conversion_factor('length', MDAnalysis.core.flags['length_unit'], self.units['length'])
+        if f == 1.:
+            return x
+        if not inplace:
+            return f*x
         x *= f
         return x
 
-    def convert_time_to_native(self, t):
-        """Convert time *t* from base units to native units."""
+    def convert_velocities_to_native(self, v, inplace=True):
+        """In-place conversion of coordinate array *v* from base units to native units.
+
+        By default, the input *v* is modified in place and also returned.
+
+        .. versionadded:: 0.7.5
+        """
+        f = units.get_conversion_factor('speed', MDAnalysis.core.flags['speed_unit'], self.units['velocity'])
+        if f == 1.:
+            return v
+        if not inplace:
+            return f*v
+        v *= f
+        return v
+
+    def convert_time_to_native(self, t, inplace=True):
+        """Convert time *t* from base units to native units.
+
+        By default, the input *t* is modified in place and also
+        returned. (Also note that scalar values *t* are passed by
+        value in Python and hence an in-place modification has no
+        effect on the caller.)
+
+        .. versionchanged:: 0.7.5
+           Keyword *inplace* can be set to ``False`` so that a
+           modified copy is returned *unless* no conversion takes
+           place, in which case the reference to the unmodified *x* is
+           returned.
+
+        """
         f = units.get_conversion_factor('time', MDAnalysis.core.flags['time_unit'], self.units['time'])
+        if f == 1.:
+            return t
+        if not inplace:
+            return f*t
         t *= f
         return t
 

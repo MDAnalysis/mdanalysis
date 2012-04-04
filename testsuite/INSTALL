@@ -57,12 +57,13 @@ checkout instructions for details
 Installation from source
 ========================
 
-In principle, installation should be as simple as ::
+In principle, installation should be as simple as unpacking the source
+and executing from the top directory ::
 
    python setup.py install
 
-This installs MDAnalysis in the system wide python directory; this may
-require administrative privileges.
+This installs MDAnalysisTests in the system wide python directory;
+this may require administrative privileges.
 
 It is also possible to use --prefix, --home, or --user options for
 setup.py to install in a different (probably your private) python

@@ -291,10 +291,11 @@ class PrimitivePDBReader(base.Reader):
         self.filename = filename
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
-        self.convert_units = convert_units  # convert length and time
-        # to base units add this number to the MODEL number to get
-        # frame: typically PDB starts at 1 but Gromacs trjconv exports
-        # starting with MODEL 0. (MODEL 0 is autodetected in the code, though!)
+        self.convert_units = convert_units  # convert length and time to base units
+
+        # add this number to the MODEL number to get frame: typically
+        # PDB starts at 1 but Gromacs trjconv exports starting with
+        # MODEL 0. (MODEL 0 is autodetected in the code, though!)
         self.model_offset = kwargs.pop("model_offset", -1)
 
         header = ""
@@ -545,16 +546,19 @@ class PrimitivePDBWriter(base.Writer):
         """
 
         self.filename = filename
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+        self.convert_units = convert_units  # convert length and time to base units
 
         self.frames_written = 0
         self.start = start
         self.step = step
-        self.pdbfile = file(self.filename, 'wb')
+        self.pdbfile = file(self.filename, 'w')  # open file on init
         self.remarks = remarks
         self._write_pdb_title(start, step, remarks)
 
     def __del__(self):
-        if hasattr(self, 'pdbfile') and not self.pdbfile is None:
+        if hasattr(self, 'pdbfile') and self.pdbfile is not None:
             self.close()
 
     def close_trajectory(self):
@@ -578,14 +582,16 @@ class PrimitivePDBWriter(base.Writer):
     def _check_pdb_coordinates(self):
         """
         Check if the coordinate values fall within the range allowed for PDB files.
-        Raises ValueError if not and attempts to delete the output file.
+        Raises :exc:`ValueError` if not and attempts to delete the output file.
         """
         atoms = self.obj.atoms    # make sure to use atoms (Issue 46)
         coor = atoms.coordinates() # can write from selection == Universe (Issue 49)
 
         # check if any coordinates are illegal (coordinates are already in Angstroem per package default)
         if self.has_valid_coordinates(self.pdb_coor_limits, coor):
-          return
+          return True
+        # note the precarious close() here: we know that the file is open and we now
+        # prepare to remove what we have already written (header and such)
         self.close()
         try:
             os.remove(self.filename)
@@ -670,7 +676,7 @@ class PrimitivePDBWriter(base.Writer):
         traj[start]
 
     def write_next_timestep(self, ts=None):
-        ''' write a new timestep to the dcd file
+        ''' write a new timestep to the PDB file
 
             ts - timestep object containing coordinates to be written to dcd file
         '''
@@ -683,14 +689,24 @@ class PrimitivePDBWriter(base.Writer):
         self._write_timestep(ts)
 
     def _write_timestep(self, ts):
+        """Write a new timestep to file
 
-        #if type(ts) is Timestep:
-        #fmr    raise TypeError("ts has to be a Timestep object")
+        - does unit conversion if necessary
+        - writes MODEL_ ... ENDMDL_ records to represent trajectory frames
+
+        .. Note:: At the moment we do *not* write the NUMMDL_ record.
+
+        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
+        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
+        .. _NUMMDL: http://www.wwpdb.org/documentation/format32/sect2.html#NUMMDL
+        """
 
         traj = self.trajectory
-
         atoms = self.obj.atoms
-        coor = ts._pos
+        if self.convert_units:
+            coor = self.convert_pos_to_native(ts._pos, inplace=False)
+        else:
+            coor = ts._pos
 
         if len(atoms) != len(coor):
             raise ValueError("Length of the atoms array is %d, this is different form the Timestep coordinate array %d" % (len(atoms), len(ts._pos)))
@@ -715,21 +731,30 @@ class PrimitivePDBWriter(base.Writer):
         self.frames_written += 1
 
     def HEADER(self, trajectory):
+        """Write HEADER_ record.
+
+        .. _HEADER: http://www.wwpdb.org/documentation/format32/sect2.html#HEADER
+        """
         if not hasattr(trajectory, 'header'):
           return
         header = trajectory.header
         self.pdbfile.write(self.fmt['HEADER'] % header)
+
     def TITLE(self, *title):
-        """Write TITLE record.
-        http://www.wwpdb.org/documentation/format32/sect2.html
+        """Write TITLE_ record.
+
+        .. _TITLE: http://www.wwpdb.org/documentation/format32/sect2.html
         """
         line = " ".join(title)    # should do continuation automatically
         self.pdbfile.write(self.fmt['TITLE'] % line)
 
     def REMARK(self, trajectory):
-        """Write generic REMARK record (without number).
-        http://www.wwpdb.org/documentation/format32/remarks1.html
-        http://www.wwpdb.org/documentation/format32/remarks2.html
+        """Write generic REMARK_ record (without number).
+
+        See also `REMARK (update)`_.
+
+        .. _REMARK: http://www.wwpdb.org/documentation/format32/remarks1.html
+        .. _REMARK (update): http://www.wwpdb.org/documentation/format32/remarks2.html
         """
         if not hasattr(trajectory, 'remark'):
           return
@@ -746,25 +771,38 @@ class PrimitivePDBWriter(base.Writer):
           self.pdbfile.write(self.fmt['COMPND'] % c)
 
     def CRYST1(self, dimensions, spacegroup='P 1', zvalue=1):
-        """Write CRYST1 record.
-        http://www.wwpdb.org/documentation/format32/sect8.html
+        """Write CRYST1_ record.
+
+        .. _CRYST1: http://www.wwpdb.org/documentation/format32/sect8.html
         """
         self.pdbfile.write(self.fmt['CRYST1'] % (tuple(dimensions) + (spacegroup, zvalue)))
 
     def MODEL(self, modelnumber):
+        """Write the MODEL_ record.
+
+        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
+        """
         self.pdbfile.write(self.fmt['MODEL'] % modelnumber)
 
     def END(self):
+        """Write END_ record.
+
+        .. _END: http://www.wwpdb.org/documentation/format32/sect11.html#END
+        """
         self.pdbfile.write(self.fmt['END'])
 
     def ENDMDL(self):
+        """Write the ENDMDL_ record.
+
+        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
+        """
         self.pdbfile.write(self.fmt['ENDMDL'])
 
     def ATOM(self, serial=None, name=None, altLoc=None, resName=None, chainID=None,
              resSeq=None, iCode=None, x=None, y=None, z=None, occupancy=1.0, tempFactor=0.0,
              segID=None, element=None, charge=0):
-        """Write ATOM record.
-        http://www.wwpdb.org/documentation/format32/sect9.html
+        """Write ATOM_ record.
+
         Only some keword args are optional (altLoc, iCode, chainID), for some defaults are set.
 
         All inputs are cut to the maximum allowed length. For integer
@@ -772,7 +810,9 @@ class PrimitivePDBWriter(base.Writer):
         serial and reSeq wrap); for strings the trailing characters
         are chopped.
 
-        Note: Floats are not checked and can potentially screw up the format.
+        .. Warning: Floats are not checked and can potentially screw up the format.
+
+        .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
         """
 
         # TODO Jan: PDBReader sets the bfactor value corretly to 0.0 if not
@@ -813,7 +853,11 @@ class PrimitivePDBWriter(base.Writer):
         self.pdbfile.write(self.fmt['ATOM'] % vars())
 
     def CONECT(self, conect):
-      conect = ["%5d" % entry for entry in conect]
-      conect = "".join(conect)
-      self.pdbfile.write(self.fmt['CONECT'] % conect)
+        """Write CONECT_ record.
+
+        .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
+        """
+        conect = ["%5d" % entry for entry in conect]
+        conect = "".join(conect)
+        self.pdbfile.write(self.fmt['CONECT'] % conect)
 

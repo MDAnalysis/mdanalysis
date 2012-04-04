@@ -75,8 +75,17 @@ that uses the :mod:`~MDAnalysis.core.qcprot` module please also cite
 If you use the helix analysis algorithm HELANAL_ in
 :mod:`MDAnalysis.analysis.helanal` please cite
 
-*   Bansal M, Kumar S, Velavan R. 2000. HELANAL — A program to characterise
-    helix geometry in proteins. *J. Biomol. Struct. Dyn.* **17**, 811–819
+*   Bansal M, Kumar S, Velavan R. HELANAL — A program to characterise
+    helix geometry in proteins. *J. Biomol. Struct. Dyn.* **17**
+    (2000), 811–819
+
+If you use the GNM trajectory analysis code in
+:mod:`MDAnalysis.analysis.gnm` please cite
+
+*   Benjamin A. Hall, Samantha L. Kaye, Andy Pang, Rafael Perera, and
+    Philip C. Biggin. Characterization of Protein Conformational
+    States by Normal-Mode Frequencies. *JACS* **129** (2007), 11394–11401.
+
 
 Thanks! 
 

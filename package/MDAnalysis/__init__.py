@@ -154,15 +154,7 @@ the OPLS/AA force field.
                 394 (2009), 160--176, doi:10.1016/j.jmb.2009.09.009
 """
 
-# Only import often used modules and objects; anything else should be imported
-# when needed. In particular, we avoid
-#   import core.rms_fitting
-# because it tends to be a show stopper if no LAPACK found; given that many
-# people don't need it we rather wait for them to import it and then throw
-# a error (TODO: catch that ImportError when no liblapack.so found so that we
-# can issue sensible advice)
-
-__version__ = "0.7.5-devel"
+__version__ = "0.7.5.1"  # NOTE: keep in sync with RELEASE in setup.py
 
 __all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
 
@@ -208,6 +200,9 @@ class SelectionWarning(Warning):
 
 class MissingDataWarning(Warning):
     """Warning indicating is that required data are missing."""
+
+class ConversionWarning(Warning):
+    """Warning indicating a problem with converting between units."""
 
 # Bring some often used objects into the current namespace
 from core import Timeseries

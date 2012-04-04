@@ -71,7 +71,7 @@ are also recognized when they are compressed with :program:`gzip` or
    +---------------+-----------+-------+------------------------------------------------------+
    |Name           | extension |  IO   | remarks                                              |
    +===============+===========+=======+======================================================+
-   | CHARMM,       |  dcd      |   r/w | standard CHARMM binary trajectory; endianness is     |
+   | CHARMM,       | dcd       |  r/w  | standard CHARMM binary trajectory; endianness is     |
    | NAMD,         |           |       | autodetected. Fixed atoms may not be handled         |
    | LAMMPS        |           |       | correctly (requires testing). Module                 |
    |               |           |       | :mod:`MDAnalysis.coordinates.DCD`                    |
@@ -79,12 +79,12 @@ are also recognized when they are compressed with :program:`gzip` or
    | Gromacs       | xtc       |  r/w  | Compressed (lossy) xtc trajectory format. Module     |
    |               |           |       | :mod:`MDAnalysis.coordinates.XTC`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | Gromacs       | trr       |  r/w  | Full precision trr trajectory. Only coordinates are  |
-   |               |           |       | processed at the moment. Module                      |
+   | Gromacs       | trr       |  r/w  | Full precision trr trajectory. Coordinates and       |
+   |               |           |       | velocities are processed. Module                     |
    |               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |
    +---------------+-----------+-------+------------------------------------------------------+
    | XYZ           |  xyz      |  r    | Generic white-space separate XYZ format; can be      |
-   |               |           |       | compressed. Module                                   |
+   |               |           |       | compressed (gzip or bzip2). Module                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
    +---------------+-----------+-------+------------------------------------------------------+
    | Amber         | trj,      |  r    | formatted (ASCII) trajectories; the presence of a    |
@@ -148,6 +148,7 @@ History
 - 2011-03-30 optional Writer() method for Readers
 - 2011-04-18 added time and frame managed attributes to Reader
 - 2011-04-20 added volume to Timestep
+- 2012-02-11 added _velocities to Timestep 
 
 .. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
 
@@ -235,6 +236,14 @@ some cases it is convenient to directly use :attr:`Timestep._pos`).
       unit cell dimensions and angles; the format depends on the underlying
       trajectory format. A user should use :attr:`Timestep.dimensions` to
       access the data in a standard format.
+
+Optional attributes (only implemented by some readers); if an optional
+attribute does not exist, a :exc:`AttributeError` is raised and the calling
+code should handle this gracefully.
+
+  ``_velocities``
+      raw velocities, a :class:`numpy.float32` array containing velocities
+      (similar to ``_pos``)
 
 
 Trajectory Reader class
@@ -361,9 +370,10 @@ Attributes
      the :class:`~base.Timestep` object; typically customized for each
      trajectory format and derived from :class:`base.Timestep`.
  ``units``
-     dictionary with keys *time* and *length* and the appropriate
-     unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and 'nm'
-     for Gromacs trajectories, ``None`` and 'Angstrom' for PDB).
+     dictionary with keys *time*, *length*, *speed*, *force* and the
+     appropriate unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and
+     'nm' for Gromacs trajectories, ``None`` and 'Angstrom' for PDB).
+     Any field not used should be set to ``None``.
  ``format``
      string that identifies the file format, e.g. "DCD", "PDB", "CRD", "XTC",
      "TRR"; this is typically the file extension in upper case.
@@ -432,9 +442,10 @@ Attributes
  ``start, stop, step``
      first and last frame and step
  ``units``
-     dictionary with keys *time* and *length* and the appropriate
-     unit (e.g. 'AKMA' and 'Angstrom' for CHARMM dcds, 'ps' and 'nm'
-     for Gromacs trajectories, ``None`` and 'Angstrom' for PDB)
+     dictionary with keys *time*, *length*, *speed*, *force* and the
+     appropriate unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and
+     'nm' for Gromacs trajectories, ``None`` and 'Angstrom' for PDB).
+     Any field not used should be set to ``None``.
  ``format``
      string that identifies the file format, e.g. "DCD", "PDB", "CRD", "XTC",
      "TRR"
@@ -469,6 +480,7 @@ factory function can be used for all writers.
 
 Methods
 .......
+
  ``__init__(filename, **kwargs)``
    opens *filename* for writing; `kwargs` are typically ignored
  ``write(obj)``
@@ -570,4 +582,4 @@ _trajectory_writers = {'DCD': DCD.DCDWriter,
                        'LAMMPS': LAMMPS.DCDWriter,
                        'PDB': PDB.PrimitivePDBWriter,
                        }
-# note: no PDB movies yet
+

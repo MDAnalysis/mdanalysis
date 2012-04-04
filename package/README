@@ -18,7 +18,7 @@ Code and documentation are hosted at
 
 The Online Documentation is available at
 
-    http://mdanalysis.googlecode.com/svn/trunk/doc/html/index.html 
+    http://mdanalysis.googlecode.com/git/package/doc/html/index.html 
 
 The html manual is also located in the docs/ directory of the source
 distribution.
@@ -34,7 +34,7 @@ License
 This software is copyright 
 (c) 2005 Naveen Michaud-Agrawal
 (c) 2006 Naveen Michaud-Agrawal and Elizabeth J. Denning
-(c) 2007-2011 Naveen Michaud-Agrawal, Elizabeth J. Denning, and Oliver Beckstein
+(c) 2007-2012 Naveen Michaud-Agrawal, Elizabeth J. Denning, and Oliver Beckstein
 unless stated otherwise in the source files.
 
 MDAnalysis is released under the GPL software license, version 2, with

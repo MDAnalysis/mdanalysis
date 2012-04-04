@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.5. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis v0.7.5-devel documentation</title>
+    <title>3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis v0.7.5.1 documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5-devel',
+        VERSION:     '0.7.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5-devel documentation"
+          title="Search within MDAnalysis v0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
-    <link rel="next" title="3.6. HELANAL — analysis of protein helices" href="helanal.html" />
-    <link rel="prev" title="3.4. Generating densities from trajectories — MDAnalysis.analysis.density" href="density.html" /> 
+    <link rel="next" title="3.7. HELANAL — analysis of protein helices" href="helanal.html" />
+    <link rel="prev" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,12 +42,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="helanal.html" title="3.6. HELANAL — analysis of protein helices"
+          <a href="helanal.html" title="3.7. HELANAL — analysis of protein helices"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="density.html" title="3.4. Generating densities from trajectories — MDAnalysis.analysis.density"
+          <a href="gnm.html" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -58,21 +58,21 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">3.5. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a><ul>
-<li><a class="reference internal" href="#output">3.5.1. Output</a></li>
-<li><a class="reference internal" href="#detection-of-hydrogen-bonds">3.5.2. Detection of hydrogen bonds</a></li>
-<li><a class="reference internal" href="#example">3.5.3. Example</a></li>
-<li><a class="reference internal" href="#classes">3.5.4. Classes</a></li>
+<li><a class="reference internal" href="#">3.6. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a><ul>
+<li><a class="reference internal" href="#output">3.6.1. Output</a></li>
+<li><a class="reference internal" href="#detection-of-hydrogen-bonds">3.6.2. Detection of hydrogen bonds</a></li>
+<li><a class="reference internal" href="#example">3.6.3. Example</a></li>
+<li><a class="reference internal" href="#classes">3.6.4. Classes</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="density.html"
-                        title="previous chapter">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
+  <p class="topless"><a href="gnm.html"
+                        title="previous chapter">3.5. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="helanal.html"
-                        title="next chapter">3.6. HELANAL &#8212; analysis of protein helices</a></p>
+                        title="next chapter">3.7. HELANAL &#8212; analysis of protein helices</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/analysis/hbonds.txt"
@@ -100,7 +100,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.analysis.hbonds"></span><div class="section" id="hydrogen-bond-analysis-mdanalysis-analysis-hbonds">
-<h1>3.5. Hydrogen Bond analysis &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.hbonds" title="MDAnalysis.analysis.hbonds"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a><a class="headerlink" href="#hydrogen-bond-analysis-mdanalysis-analysis-hbonds" title="Permalink to this headline">¶</a></h1>
+<h1>3.6. Hydrogen Bond analysis &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.hbonds" title="MDAnalysis.analysis.hbonds"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a><a class="headerlink" href="#hydrogen-bond-analysis-mdanalysis-analysis-hbonds" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -130,7 +130,7 @@ HBONDS plugin</a>.</p>
 </dd>
 </dl>
 <div class="section" id="output">
-<span id="analysis-output"></span><h2>3.5.1. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<span id="analysis-output"></span><h2>3.6.1. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>The results are hydrogen bond data per frame (# indicates comments that are not part of the output):</p>
 <div class="highlight-python"><pre>results = [
     [ # frame 1
@@ -151,10 +151,10 @@ HBONDS plugin</a>.</p>
 <p>Using the <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></tt></a> method one can reformat
 the results as a flat &#8220;normalised&#8221; table that is easier to import into a
 database for further processing. <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.save_table()</span></tt></a> saves
-the table to a pickled file. The table itself is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-ec56ee1)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
+the table to a pickled file. The table itself is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
 </div>
 <div class="section" id="detection-of-hydrogen-bonds">
-<h2>3.5.2. Detection of hydrogen bonds<a class="headerlink" href="#detection-of-hydrogen-bonds" title="Permalink to this headline">¶</a></h2>
+<h2>3.6.2. Detection of hydrogen bonds<a class="headerlink" href="#detection-of-hydrogen-bonds" title="Permalink to this headline">¶</a></h2>
 <p>Hydrogen bonds are recorded based on a geometric criterion:</p>
 <ol class="arabic simple">
 <li>The distance between acceptor and hydrogen is less than or equal to
@@ -308,7 +308,7 @@ F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,
 </table>
 </div>
 <div class="section" id="example">
-<h2>3.5.3. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<h2>3.6.3. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>All protein-water hydrogen bonds can be analysed with</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.hbonds</span>
 
@@ -329,7 +329,7 @@ interactions.</p>
 </div>
 </div>
 <div class="section" id="classes">
-<h2>3.5.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>3.6.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hbonds.</tt><tt class="descname">HydrogenBondAnalysis</tt><big>(</big><em>universe</em>, <em>selection1='protein'</em>, <em>selection2='all'</em>, <em>selection1_type='both'</em>, <em>update_selection1=False</em>, <em>update_selection2=False</em>, <em>filter_first=True</em>, <em>distance=3.0</em>, <em>angle=120.0</em>, <em>donors=None</em>, <em>acceptors=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
@@ -431,7 +431,7 @@ Use the keyword <em>donors</em> to add a list of additional donor names.</p>
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table">
 <tt class="descname">generate_table</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a normalised table of the results.</p>
-<p>The table is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-ec56ee1)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> in the
+<p>The table is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> in the
 attribute <tt class="xref py py-attr docutils literal"><span class="pre">table</span></tt> and can be used
 with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL">recsql</a>.</p>
 <dl class="docutils">
@@ -488,7 +488,7 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
 </div>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference external" href="http://docs.python.org/library/pickle.html#module-cPickle" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cPickle</span></tt></a> module and <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-ec56ee1)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a></p>
+<p class="last"><a class="reference external" href="http://docs.python.org/library/pickle.html#cPickle" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cPickle</span></tt></a> module and <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a></p>
 </div>
 </dd></dl>
 
@@ -513,20 +513,20 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="helanal.html" title="3.6. HELANAL — analysis of protein helices"
+          <a href="helanal.html" title="3.7. HELANAL — analysis of protein helices"
              >next</a> |</li>
         <li class="right" >
-          <a href="density.html" title="3.4. Generating densities from trajectories — MDAnalysis.analysis.density"
+          <a href="gnm.html" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
-    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
-    and Oliver Beckstein.
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
+    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

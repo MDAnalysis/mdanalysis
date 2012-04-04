@@ -37,7 +37,7 @@ doc/html/index.html).
 
 The latest version is also on the internet at
 
-   http://mdanalysis.googlecode.com/svn/trunk/doc/html/index.html
+   http://mdanalysis.googlecode.com/git/package/doc/html/index.html
 
 The manual includes all the doc strings with some additional text; it
 is a work in progress and suggestions to improve it are welcome. File

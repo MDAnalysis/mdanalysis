@@ -196,28 +196,51 @@ class TrjWriter(base.Writer):
         self.frames_written += 1
 
     def _write_next_timestep(self, ts):
-        """Generic writer with minimum intelligence; override if necessary."""
+        """Generic writer for XTC and TRR with minimum intelligence; override if necessary."""
+
+        # (1) data common to XTC and TRR
         if self.convert_units:
-            self.convert_pos_to_native(ts._pos)             # in-place !
+            # make a copy of the scaled positions so that the in-memory
+            # timestep is not changed (would have lead to wrong results if
+            # analysed *after* writing a time step to disk). The new
+            # implementation could lead to memory problems and/or slow-down for
+            # very big systems because we temporarily create a new array pos
+            # for each frame written
+            pos = self.convert_pos_to_native(ts._pos, inplace=False)
             try:
-                ts.time = self.convert_time_to_native(ts.time)
+                time = self.convert_time_to_native(ts.time, inplace=False)
             except AttributeError:
-                ts.time = ts.frame * self.convert_time_to_native(self.delta)
+                time = ts.frame * self.convert_time_to_native(self.delta, inplace=False)
+        else:
+            pos = ts._pos
+            try:
+                time = ts.time
+            except AttributeError:
+                time = ts.frame * self.delta
         if not hasattr(ts, 'step'):
             # bogus, should be actual MD step number, i.e. frame * delta/dt
             ts.step = ts.frame
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
+
+        # (2) have to treat XTC and TRR somewhat differently
         if self.format == 'XTC':
-            status = libxdrfile.write_xtc(self.xdrfile, ts.step, ts.time, unitcell, ts._pos, self.precision)
+            status = libxdrfile.write_xtc(self.xdrfile, ts.step, time, unitcell, pos, self.precision)
         elif self.format == 'TRR':
             if not hasattr(ts, 'lmbda'):
                 ts.lmbda = 1.0
-            if not hasattr(ts, '_velocities'):
-                ts._velocities = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
+            if hasattr(ts, '_velocities'):
+                if self.convert_units:
+                    velocities = self.convert_velocities_to_native(ts._velocities, inplace=False)
+                else:
+                    velocities = ts._velocities
+            else:
+                # 0-velocities (no need to convert those); add it to ts as a sideeffect
+                # so that we don't have to reallocate next time
+                velocities = ts._velocities = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
             if not hasattr(ts, '_forces'):
                 ts._forces = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
             status = libxdrfile.write_trr(self.xdrfile, ts.step, ts.time, ts.lmbda, unitcell,
-                                           ts._pos, ts._velocities, ts._forces)
+                                          pos, velocities, ts._forces)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return status
@@ -453,6 +476,8 @@ class TrjReader(base.Reader):
             self.convert_pos_from_native(ts._pos)             # in-place !
             self.convert_pos_from_native(ts._unitcell)        # in-place ! (note: xtc/trr contain unit vecs!)
             ts.time = self.convert_time_from_native(ts.time)  # in-place does not work with scalars
+            if self.format == 'TRR':
+                self.convert_velocities_from_native(ts._velocities) # in-place
         ts.frame += 1
         return ts
 

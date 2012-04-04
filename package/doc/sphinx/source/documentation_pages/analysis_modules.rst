@@ -43,6 +43,7 @@ has to import them from :mod:`MDAnalysis.analysis`, for instance ::
    analysis/contacts
    analysis/distances
    analysis/density
+   analysis/gnm
    analysis/hbonds
    analysis/helanal
    analysis/leaflet

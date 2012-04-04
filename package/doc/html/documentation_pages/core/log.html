@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.10. Setting up logging — MDAnalysis.core.log &mdash; MDAnalysis v0.7.5-devel documentation</title>
+    <title>7.10. Setting up logging — MDAnalysis.core.log &mdash; MDAnalysis v0.7.5.1 documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5-devel',
+        VERSION:     '0.7.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5-devel documentation"
+          title="Search within MDAnalysis v0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="8. KDTree module" href="../KDTree_modules.html" />
     <link rel="prev" title="7.9. Helper functions — MDAnalysis.core.util" href="util.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="util.html" title="7.9. Helper functions — MDAnalysis.core.util"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -107,14 +107,14 @@ under <a class="reference external" href="http://docs.python.org/library/logging
 convention; a simple logger that writes to the console and logfile can
 be created with the <a class="reference internal" href="#MDAnalysis.core.log.create" title="MDAnalysis.core.log.create"><tt class="xref py py-func docutils literal"><span class="pre">create()</span></tt></a> function. This only has to be done
 <em>once</em>. For convenience, the default MDAnalysis logger can be created
-with <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.start_logger()</span></tt>:</p>
+with <a class="reference internal" href="#MDAnalysis.start_logging" title="MDAnalysis.start_logging"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.start_logging()</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="n">MDAnalysis</span><span class="o">.</span><span class="n">start_logger</span><span class="p">()</span>
+<span class="n">MDAnalysis</span><span class="o">.</span><span class="n">start_logging</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Once this has been done, MDAnalysis will write messages to the logfile
 (named <cite>MDAnalysis.log</cite> by default but this can be changed with the
-optional argument to <tt class="xref py py-func docutils literal"><span class="pre">start_logger()</span></tt>).</p>
+optional argument to <a class="reference internal" href="#MDAnalysis.start_logging" title="MDAnalysis.start_logging"><tt class="xref py py-func docutils literal"><span class="pre">start_logging()</span></tt></a>).</p>
 <p>Any code can log to the MDAnalysis logger by using</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;MDAnalysis.MODULENAME&#39;</span><span class="p">)</span>
@@ -127,7 +127,7 @@ optional argument to <tt class="xref py py-func docutils literal"><span class="p
 &#8220;MDAnalysis.&#8221;.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last">The <a class="reference external" href="http://docs.python.org/library/logging.html#module-logging" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">logging</span></tt></a> module in the standard library contains
+<p class="last">The <a class="reference external" href="http://docs.python.org/library/logging.html#logging" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">logging</span></tt></a> module in the standard library contains
 in depth documentation about using logging.</p>
 </div>
 <div class="section" id="convenience-functions">
@@ -169,8 +169,7 @@ and the filter list to empty.</p>
 <dt id="MDAnalysis.core.log.ProgressMeter">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">ProgressMeter</tt><big>(</big><em>numsteps</em>, <em>format=None</em>, <em>interval=10</em>, <em>offset=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple progress meter</p>
-<blockquote>
-<div><p>Usage:</p>
+<p>Usage:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
@@ -178,16 +177,18 @@ and the filter list to empty.</p>
     <span class="o">...</span>
 </pre></div>
 </div>
-<p>Will produce for a trajectory with 10000 frames</p>
-<blockquote>
-<div>Step   100/10000 [  1.0%]
+<p>For a trajectory with 10000 frames this will produce output such
+as</p>
+<div class="highlight-python"><pre>Step   100/10000 [  1.0%]
 Step   200/10000 [  2.0%]
-...</div></blockquote>
-<p>as generated by the default <em>format</em> string</p>
-<div class="highlight-python"><pre>Step %(step)5d/%(numsteps)d [%(percentage)5.1f%%]</pre>
+...</pre>
 </div>
-</div></blockquote>
-<p>&#8220;</p>
+<p>Because the default <em>format</em> string</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&quot;Step </span><span class="si">%(step)5d</span><span class="s">/</span><span class="si">%(numsteps)d</span><span class="s"> [</span><span class="si">%(percentage)5.1f%%</span><span class="s">]</span><span class="se">\r</span><span class="s">&quot;</span>
+</pre></div>
+</div>
+<p>ends with a carriage return <cite>r</cite> and not a newline <cite>n</cite>, the
+lines will be printed on top of each other.</p>
 <p>Set up the ProgressMeter</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -209,9 +210,9 @@ Step   200/10000 [  2.0%]
 values:</p>
 <blockquote>
 <div><ul class="simple">
-<li>_step_: current step</li>
-<li>_numsteps_: total number of steps as supplied in <em>numsteps</em></li>
-<li>_percentage_: percentage of total</li>
+<li><em>step</em>: current step</li>
+<li><em>numsteps</em>: total number of steps as supplied in <em>numsteps</em></li>
+<li><em>percentage</em>: percentage of total</li>
 </ul>
 </div></blockquote>
 <p>The last call to <tt class="xref py py-meth docutils literal"><span class="pre">ProgressMeter.print()</span></tt> will automatically
@@ -303,15 +304,15 @@ console.</p>
         <li class="right" >
           <a href="util.html" title="7.9. Helper functions — MDAnalysis.core.util"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
-    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
-    and Oliver Beckstein.
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
+    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

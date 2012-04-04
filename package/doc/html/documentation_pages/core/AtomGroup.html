@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.5-devel documentation</title>
+    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis v0.7.5.1 documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5-devel',
+        VERSION:     '0.7.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5-devel documentation"
+          title="Search within MDAnalysis v0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
     <link rel="prev" title="7.1. Core functions of MDAnalysis" href="init.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -124,7 +124,7 @@ on, for instance, the basis of residues than atoms, or to write out
 individual chains (segments) of a protein. MDAnalysis simply provides
 access to these groupings and keeps track of where an atom
 belongs. Each object provides three attributes (<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.atoms" title="MDAnalysis.core.AtomGroup.AtomGroup.atoms"><tt class="xref py py-attr docutils literal"><span class="pre">atoms</span></tt></a>,
-<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.residues" title="MDAnalysis.core.AtomGroup.AtomGroup.residues"><tt class="xref py py-attr docutils literal"><span class="pre">residues</span></tt></a> or <tt class="xref py py-attr docutils literal"><span class="pre">residue</span></tt>, <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.segments" title="MDAnalysis.core.AtomGroup.AtomGroup.segments"><tt class="xref py py-attr docutils literal"><span class="pre">segments</span></tt></a> or
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.residues" title="MDAnalysis.core.AtomGroup.AtomGroup.residues"><tt class="xref py py-attr docutils literal"><span class="pre">residues</span></tt></a> or <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom.residue" title="MDAnalysis.core.AtomGroup.Atom.residue"><tt class="xref py py-attr docutils literal"><span class="pre">residue</span></tt></a>, <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.segments" title="MDAnalysis.core.AtomGroup.AtomGroup.segments"><tt class="xref py py-attr docutils literal"><span class="pre">segments</span></tt></a> or
 <tt class="xref py py-attr docutils literal"><span class="pre">segment</span></tt>) that give access to the tiers in the hierarchy
 that the object belongs to.</p>
 </div>
@@ -162,24 +162,27 @@ file unless a trajectory is supplied.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>Attributes:</dt>
-<dd><ul class="first last simple">
+<p><em>Attributes:</em></p>
+<ul class="simple">
 <li><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.trajectory" title="MDAnalysis.core.AtomGroup.Universe.trajectory"><tt class="xref py py-attr docutils literal"><span class="pre">Universe.trajectory</span></tt></a>: currently loaded trajectory reader;
 <tt class="xref py py-attr docutils literal"><span class="pre">Universe.trajectory.ts</span></tt> is the current time step</li>
 <li><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.dimensions" title="MDAnalysis.core.AtomGroup.Universe.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Universe.dimensions</span></tt></a>: current system dimensions (simulation unit cell, if
 set in the trajectory)</li>
 <li>bonds, angles, dihedrals, impropers (low level access through <tt class="xref py py-attr docutils literal"><span class="pre">Universe._psf</span></tt>)</li>
 </ul>
-</dd>
-</dl>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Only single-frame PDB files are supported at the moment; use DCDs or
-XTC/TRR for trajectories or supply a <em>list of PDB files</em> as the
-trajectory argument.  If a PDB is used instead of a PSF then charges are
-not correct, masses are guessed, and bonds are not available.</p>
+<p class="last">If atom attributes such as element, mass, or charge are not explicitly
+provided in the topology file then MDAnalysis tries to guess them (see
+<a class="reference internal" href="../topology/tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></tt></a>). This does not always work and if you
+require correct values (e.g. because you want to calculate the center of
+mass) then you need to make sure that MDAnalysis gets all the
+information needed. Furthermore, the list of bonds is only constructed
+when provided in the topology and never guessed (see <cite>Issue 23</cite>).</p>
 </div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Can also read multi-frame PDB files with the
+<a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBReader</span></tt></a>.</p>
 <p>Initialize the central MDAnalysis Universe object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -222,9 +225,8 @@ individual list member. [<tt class="xref docutils literal"><span class="pre">Non
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>This routine tries to do the right thing:</dt>
-<dd><ol class="first last arabic">
+<p>This routine tries to do the right thing:</p>
+<ol class="arabic">
 <li><p class="first">If a pdb/gro file is provided instead of a psf and no <em>coordinatefile</em>
 then the coordinates are taken from the first file. Thus you can load
 a functional universe with</p>
@@ -243,8 +245,6 @@ one will have to load coordinates manually using
 can be explicitly set with the <em>topology_format</em> keyword.</p>
 </li>
 </ol>
-</dd>
-</dl>
 <p class="versionchanged">
 <span class="versionmodified">Changed in version 0.7.4: </span>New <em>topology_format</em> and <em>format</em> parameters to override the file
 format detection.</p>
@@ -455,11 +455,12 @@ from a selection. It is build from any list-like collection of
 </div>
 <p>will return the first and the last <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> in the group
 whereas the slice</p>
-<blockquote>
-<div>ag[0:6:2]</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ag</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+</div>
 <p>returns every second element, corresponding to indices 0, 2, and 4.</p>
 <p>It also supports &#8220;advanced slicing&#8221; when the argument is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-ec56ee1)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aslice</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">ag</span><span class="p">[</span><span class="n">aslice</span><span class="p">]</span>
 </pre></div>
@@ -479,47 +480,47 @@ an attribute. For instance,</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">ag</span><span class="o">.</span><span class="n">CA</span>
 </pre></div>
 </div>
-<p>will provide a <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> of all CA atoms in the group.</p>
+<p>will provide a <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> of all CA atoms in the
+group. These <em>instant selector</em> attributes are auto-generated for
+each atom name encountered in the group.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The name-attribute  access to atoms  is mainly meant  for quick
-interactive work. Thus it either returns a single <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>
-if   there   is   only   one   matching  atom,   <em>or</em>   a   new
-<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>   for  multiple   matches.  This   makes  it
-difficult  to use the  feature consistently  in scripts  but is
+<p class="last">The name-attribute instant selector access to atoms is mainly
+meant for quick interactive work. Thus it either returns a
+single <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> if there is only one matching atom, <em>or</em> a
+new <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> for multiple matches.  This makes it
+difficult to use the feature consistently in scripts but it is
 much better for interactive work.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Data :</th><td class="field-body"><dl class="first last docutils">
-<dt>atoms</dt>
-<dd><p class="first last">The AtomGroup itself; provided for unified access across the hierarchy.
-Use <tt class="xref py py-attr docutils literal"><span class="pre">_atoms</span></tt> if you really only need a list.</p>
-</dd>
-<dt>_atoms</dt>
-<dd><p class="first last">A list of references to the corresponding atoms in <tt class="xref py py-attr docutils literal"><span class="pre">Universe.atoms</span></tt>;
-AtomGroups are immutable, i.e. this list cannot be changed.</p>
-</dd>
-<dt>residues</dt>
-<dd><p class="first last">A <a class="reference internal" href="#MDAnalysis.core.AtomGroup.ResidueGroup" title="MDAnalysis.core.AtomGroup.ResidueGroup"><tt class="xref py py-class docutils literal"><span class="pre">ResidueGroup</span></tt></a> of all residues that contain atoms in this group.</p>
-</dd>
-<dt>segments</dt>
-<dd><p class="first last">A <a class="reference internal" href="#MDAnalysis.core.AtomGroup.SegmentGroup" title="MDAnalysis.core.AtomGroup.SegmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">SegmentGroup</span></tt></a> of all segments that contain atoms in this group.</p>
-</dd>
-<dt>ts</dt>
-<dd><p class="first last">A <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance, which can
-be passed to a trjectory writer.</p>
-</dd>
-<dt><em>atom-name</em></dt>
-<dd><p class="first last">Auto-generated attribute for each atom name encountered in the group.</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup._atoms">
+<tt class="descname">_atoms</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup._atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>immutable list of references to the atoms <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> in the
+group</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup._rebuild_caches">
+<tt class="descname">_rebuild_caches</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup._rebuild_caches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rebuild all AtomGroup caches.</p>
+<p>A number of lists and attributes are cached. These caches are lazily
+built the first time they are needed. When editing the topology it
+might happen that not all caches were synced properly (even though that
+this is supposed to happen eventually). In this case the user can
+manually force a complete cache rebuild.</p>
+<p>Currently the following caches are used:</p>
+<ul class="simple">
+<li>atoms (for &#8220;in&#8221; lookup); cache is only built for large systems with
+&gt; 10,000 atoms</li>
+<li>indices (<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.indices" title="MDAnalysis.core.AtomGroup.AtomGroup.indices"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.indices()</span></tt></a>)</li>
+<li>masses (<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.masses" title="MDAnalysis.core.AtomGroup.AtomGroup.masses"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.masses()</span></tt></a>)</li>
+<li>residues (<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.residues" title="MDAnalysis.core.AtomGroup.AtomGroup.residues"><tt class="xref py py-attr docutils literal"><span class="pre">AtomGroup.residues</span></tt></a>)</li>
+<li>segments (<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.segments" title="MDAnalysis.core.AtomGroup.AtomGroup.segments"><tt class="xref py py-attr docutils literal"><span class="pre">AtomGroup.segments</span></tt></a>)</li>
+</ul>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.align_principalAxis">
 <tt class="descname">align_principalAxis</tt><big>(</big><em>axis</em>, <em>vector</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.align_principalAxis" title="Permalink to this definition">¶</a></dt>
@@ -572,7 +573,10 @@ i.e. <em>axis</em> = 0) with the z-axis:</p>
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.atoms">
 <tt class="descname">atoms</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.atoms" title="Permalink to this definition">¶</a></dt>
-<dd><p>AtomGroup of all atoms in this group</p>
+<dd><p><a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> of all atoms in this group</p>
+<p>The AtomGroup itself; provided for unified access across the
+hierarchy.  Use <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup._atoms" title="MDAnalysis.core.AtomGroup.AtomGroup._atoms"><tt class="xref py py-attr docutils literal"><span class="pre">_atoms</span></tt></a> if you really only need a list
+of individual <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
 </dd></dl>
 
 <dl class="method">
@@ -746,6 +750,15 @@ selection of atoms and thus the user input!</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.indices">
+<tt class="descname">indices</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of all <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom.number" title="MDAnalysis.core.AtomGroup.Atom.number"><tt class="xref py py-attr docutils literal"><span class="pre">Atom.number</span></tt></a> in the group.</p>
+<p>These indices are 0-based and can be used to directly index
+<tt class="xref py py-attr docutils literal"><span class="pre">Universe.atoms</span></tt> or the coordinate array
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep._pos" title="MDAnalysis.coordinates.base.Timestep._pos"><tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep._pos</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.masses">
 <tt class="descname">masses</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.masses" title="Permalink to this definition">¶</a></dt>
 <dd><p>Array of atomic masses (as defined in the topology)</p>
@@ -761,6 +774,24 @@ selection of atoms and thus the user input!</p>
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.names">
 <tt class="descname">names</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of atom names.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.numberOfAtoms">
+<tt class="descname">numberOfAtoms</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.numberOfAtoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total number of atoms in the group</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.numberOfResidues">
+<tt class="descname">numberOfResidues</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.numberOfResidues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total number of residues in the group</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.numberOfSegments">
+<tt class="descname">numberOfSegments</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.numberOfSegments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total number of segments in the group</p>
 </dd></dl>
 
 <dl class="method">
@@ -803,6 +834,8 @@ and <tt class="docutils literal"><span class="pre">v[2]</span></tt> as third eig
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.residues">
 <tt class="descname">residues</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.residues" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read-only list of <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> objects.</p>
+<p>A <a class="reference internal" href="#MDAnalysis.core.AtomGroup.ResidueGroup" title="MDAnalysis.core.AtomGroup.ResidueGroup"><tt class="xref py py-class docutils literal"><span class="pre">ResidueGroup</span></tt></a> of all residues that contain atoms in
+this group.</p>
 </dd></dl>
 
 <dl class="method">
@@ -880,6 +913,7 @@ and the translation vectort M[:3,3].</p>
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.segments">
 <tt class="descname">segments</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.segments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read-only list of <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Segment" title="MDAnalysis.core.AtomGroup.Segment"><tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt></a> objects.</p>
+<p>A <a class="reference internal" href="#MDAnalysis.core.AtomGroup.SegmentGroup" title="MDAnalysis.core.AtomGroup.SegmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">SegmentGroup</span></tt></a> of all segments that contain atoms in this group.</p>
 </dd></dl>
 
 <dl class="method">
@@ -937,10 +971,15 @@ and the translation vectort M[:3,3].</p>
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_resid">
 <tt class="descname">set_resid</tt><big>(</big><em>resid</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_resid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the resid to integer <em>resid</em> for <strong>all atoms</strong> in the AtomGroup.</p>
-<p>(Only changes the resid but does not create combined <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a>
-objects.)</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only changes the resid but does not create combined <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a>
+objects or split them.</p>
+</div>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Also changes the residues.</p>
 </dd></dl>
 
 <dl class="method">
@@ -949,6 +988,8 @@ objects.)</p>
 <dd><p>Set the resname to string <em>resname</em> for <strong>all atoms</strong> in the AtomGroup.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Also changes the residues.</p>
 </dd></dl>
 
 <dl class="method">
@@ -957,6 +998,8 @@ objects.)</p>
 <dd><p>Set the resnum to <em>resnum</em> for <strong>all atoms</strong> in the AtomGroup.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Also changes the residues.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1027,10 +1070,12 @@ difference between the centers of geometry (centroid) of B and A:</p>
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.ts">
 <tt class="descname">ts</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.ts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Temporary Timestep that contains the selection coordinates.</p>
-<p>If the <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.ts" title="MDAnalysis.core.AtomGroup.AtomGroup.ts"><tt class="xref py py-attr docutils literal"><span class="pre">AtomGroup.ts</span></tt></a>
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> object is modified then
-these modifications will be present until the frame number changes
-(which typically happens when the underlying trajectory frame changes).</p>
+<p>A <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance,
+which can be passed to a trajectory writer.</p>
+<p>If <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.ts" title="MDAnalysis.core.AtomGroup.AtomGroup.ts"><tt class="xref py py-attr docutils literal"><span class="pre">ts</span></tt></a> is modified then these modifications
+will be present until the frame number changes (which
+typically happens when the underlying trajectory frame
+changes).</p>
 <p>It is not possible to assign a new
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> to the
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.ts" title="MDAnalysis.core.AtomGroup.AtomGroup.ts"><tt class="xref py py-attr docutils literal"><span class="pre">AtomGroup.ts</span></tt></a> attribute; change attributes of the object.</p>
@@ -1043,8 +1088,18 @@ these modifications will be present until the frame number changes
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.velocities">
+<tt class="descname">velocities</tt><big>(</big><em>ts=None</em>, <em>copy=False</em>, <em>dtype=&lt;type 'numpy.float32'&gt;</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.velocities" title="Permalink to this definition">¶</a></dt>
+<dd><p>NumPy array of the velocities.</p>
+<p>If the trajectory does not contain velocity information then a
+<tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt> is raised.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.write">
-<tt class="descname">write</tt><big>(</big><em>filename=None</em>, <em>format='PDB'</em>, <em>filenamefmt='%(trjname)s_%(frame)d'</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>filename=None</em>, <em>format='PDB'</em>, <em>filenamefmt='%(trjname)s_%(frame)d'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write AtomGroup to a file.</p>
 <p>AtomGroup.write(filename[,format])</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1107,62 +1162,85 @@ placeholders; the extension is set according to the <em>format</em>
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.Atom">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Atom</tt><big>(</big><em>number</em>, <em>name</em>, <em>type</em>, <em>resname</em>, <em>resid</em>, <em>segid</em>, <em>mass</em>, <em>charge</em>, <em>residue=None</em>, <em>segment=None</em>, <em>radius=None</em>, <em>bfactor=None</em>, <em>resnum=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom" title="Permalink to this definition">¶</a></dt>
-<dd><p>A single atom definition</p>
-<blockquote>
-<div>a = Atom()</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Data :</th><td class="field-body"><dl class="first last docutils">
-<dt>number</dt>
-<dd><p class="first last">atom number</p>
-</dd>
-<dt>segid</dt>
-<dd><p class="first last">name of the segment</p>
-</dd>
-<dt>resid</dt>
-<dd><p class="first last">residue number</p>
-</dd>
-<dt>resnum</dt>
-<dd><p class="first last">canonical residue number as, for instance, used in the original
+<dd><p>A class representing a single atom.</p>
+<p><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> is the basic building block of all larger data
+structures in MDAnalysis, in particular of the
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>.</p>
+<p>An <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> is typically generated by a <a class="reference internal" href="../topology/init.html#supported-topology-formats"><em>topology reader</em></a> from <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology</span></tt>.</p>
+<p>For performance reasons, only a predefined number of attributes
+are included (and thus it is not possible to add attributes &#8220;on
+the fly&#8221;; they have to be included in the class definition).</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.number">
+<tt class="descname">number</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.number" title="Permalink to this definition">¶</a></dt>
+<dd><p>atom number</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.segid">
+<tt class="descname">segid</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.segid" title="Permalink to this definition">¶</a></dt>
+<dd><p>name of the segment</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.resid">
+<tt class="descname">resid</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.resid" title="Permalink to this definition">¶</a></dt>
+<dd><p>residue number</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.resnum">
+<tt class="descname">resnum</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.resnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>canonical residue number as, for instance, used in the original
 PDB file</p>
-</dd>
-<dt>resname</dt>
-<dd><p class="first last">residue name</p>
-</dd>
-<dt>residue</dt>
-<dd><p class="first last"><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> object containing the atoms</p>
-</dd>
-<dt>name</dt>
-<dd><p class="first last">string, short name</p>
-</dd>
-<dt>type</dt>
-<dd><p class="first last">string or number (from force field)</p>
-</dd>
-<dt>mass</dt>
-<dd><p class="first last">float, in atomic units</p>
-</dd>
-<dt>charge</dt>
-<dd><p class="first last">float, in electron charges</p>
-</dd>
-<dt><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom.pos" title="MDAnalysis.core.AtomGroup.Atom.pos"><tt class="xref py py-attr docutils literal"><span class="pre">pos</span></tt></a></dt>
-<dd><p class="first last">The current position (as a numpy array) of this atom</p>
-</dd>
-<dt>radius</dt>
-<dd><p class="first last">Born-radius for electrostatic calculations. (Only if read from a PQR
-file with the <a class="reference internal" href="../coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader" title="MDAnalysis.coordinates.PQR.PQRReader"><tt class="xref py py-class docutils literal"><span class="pre">PQRReader</span></tt></a>.)</p>
-</dd>
-<dt><tt class="xref py py-attr docutils literal"><span class="pre">bfactor</span></tt></dt>
-<dd><p class="first last">temperature factor. (Only if loaded from a PDB.)</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.4: </span>Added <tt class="xref py py-attr docutils literal"><span class="pre">Atom.resnum</span></tt>.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.4.</span></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.resname">
+<tt class="descname">resname</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.resname" title="Permalink to this definition">¶</a></dt>
+<dd><p>residue name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.residue">
+<tt class="descname">residue</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.residue" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> object containing the atoms</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.name">
+<tt class="descname">name</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>string, short name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.type">
+<tt class="descname">type</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>string or number (from force field), describing the atom type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.mass">
+<tt class="descname">mass</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>float, in <a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?u">atomic mass units</a> (u)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.charge">
+<tt class="descname">charge</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.charge" title="Permalink to this definition">¶</a></dt>
+<dd><p>float, in <a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?e">electron charges</a> (<em>e</em>)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.radius">
+<tt class="descname">radius</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Born-radius for electrostatic calculations. (Only if read from a
+PQR file with the
+<a class="reference internal" href="../coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader" title="MDAnalysis.coordinates.PQR.PQRReader"><tt class="xref py py-class docutils literal"><span class="pre">PQRReader</span></tt></a>.)</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.Atom.centroid">
 <tt class="descname">centroid</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.centroid" title="Permalink to this definition">¶</a></dt>
@@ -1179,6 +1257,16 @@ file with the <a class="reference internal" href="../coordinates/PQR.html#MDAnal
 <dt id="MDAnalysis.core.AtomGroup.Atom.universe">
 <tt class="descname">universe</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>a pointer back to the Universe</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.velocity">
+<tt class="descname">velocity</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current velocity of the atom.</p>
+<p>A <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt> is raised if the trajectory
+does not contain velocities.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 </dd></dl>
@@ -1225,6 +1313,74 @@ file with the <a class="reference internal" href="../coordinates/PQR.html#MDAnal
 </table>
 <p class="versionchanged">
 <span class="versionmodified">Changed in version 0.7.4: </span>Added <tt class="xref py py-attr docutils literal"><span class="pre">Residue.resnum</span></tt> attribute and <em>resnum</em> keyword argument.</p>
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.Residue.chi1_selection">
+<tt class="descname">chi1_selection</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue.chi1_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body">4-atom selection in the correct order.  If no CB and/or CG is
+found then this method returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.Residue.omega_selection">
+<tt class="descname">omega_selection</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue.omega_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>AtomGroup corresponding to the omega protein backbone dihedral CA-C-N&#8217;-CA&#8217;.</p>
+<p>omega describes the -C-N- peptide bond. Typically, it is trans
+(180 degrees) although cis-bonds (0 degrees) are also
+occasionally observed (especially near Proline).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body">4-atom selection in the correct order.  If no C&#8217;
+found in the previous residue (by resid) then this
+method returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.Residue.phi_selection">
+<tt class="descname">phi_selection</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue.phi_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>AtomGroup corresponding to the phi protein backbone dihedral C&#8217;-N-CA-C.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body">4-atom selection in the correct order.  If no C&#8217;
+found in the previous residue (by resid) then this
+method returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.Residue.psi_selection">
+<tt class="descname">psi_selection</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue.psi_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>AtomGroup corresponding to the psi protein backbone dihedral N-CA-C-N&#8217;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body">4-atom selection in the correct order.  If no N&#8217;
+found in the following residue (by resid) then this
+method returns <tt class="xref docutils literal"><span class="pre">None</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -1297,6 +1453,12 @@ chain identifier when loaded from a PDB</td>
 </tbody>
 </table>
 <p>Initialize a Segment with segid <em>name</em> from a list of <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> instances.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Segment.id">
+<tt class="descname">id</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Segment.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Segment id (alias for <tt class="xref py py-attr docutils literal"><span class="pre">Segment.name</span></tt>)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -1396,15 +1558,15 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
-    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
-    and Oliver Beckstein.
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
+    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

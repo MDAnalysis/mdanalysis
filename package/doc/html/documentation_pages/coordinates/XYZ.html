@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.13. XYZ trajectory reader — MDAnalysis.coordinates.XYZ &mdash; MDAnalysis v0.7.5-devel documentation</title>
+    <title>5.13. XYZ trajectory reader — MDAnalysis.coordinates.XYZ &mdash; MDAnalysis v0.7.5.1 documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5-devel',
+        VERSION:     '0.7.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5-devel documentation"
+          title="Search within MDAnalysis v0.7.5.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.14. The Gromacs xtc/trr library libxdrfile" href="libxdrfile.html" />
     <link rel="prev" title="5.12. Gromacs XTC file IO — MDAnalysis.coordinates.XTC" href="XTC.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="XTC.html" title="5.12. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -99,9 +99,9 @@ the topology, just as here)</p>
 <li>the atom name (first column) is ignored</li>
 <li>the coordinates are assumed to be space-delimited rather than fixed width (this may cause issues - see below)</li>
 <li>all fields to the right of the z-coordinate are ignored</li>
-<li>it is assumed that the number following &#8220;frame&#8221; is the time in picoseconds</li>
 <li>it is assumed that the coordinates are in Angstroms</li>
 <li>the unitcell information is all zeros since this is not recorded in the XYZ format</li>
+<li>the length of a timestep can be set by passing the <cite>delta</cite> argument, it&#8217;s assumed to be in ps (default: 1 ps)</li>
 </ul>
 <p>There appears to be no rigid format definition so it is likely users
 will need to tweak this Class.</p>
@@ -180,15 +180,15 @@ the XYZ file were also tested</p>
         <li class="right" >
           <a href="XTC.html" title="5.12. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2011, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), David Caplan, Jan Domański, Philip Fowler,
-    Joseph Goose, Benjamin Hall, Danny Parton, Tyler Reddy, Paul Rigor,
-    and Oliver Beckstein.
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
+    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
