@@ -28,7 +28,7 @@
 HELANAL --- analysis of protein helices
 =======================================
 
-:Author:  Benjamin Hall <benjamin.hall@bioch.ox.ac.uk>, Oliver Beckstein
+:Author:  Benjamin Hall <benjamin.a.hall@ucl.ac.uk>, Oliver Beckstein
 :Year:    2009, 2011
 :License: GNU General Public License v2 (or higher)
 

@@ -133,7 +133,7 @@ class DCDWriter(base.Writer):
             if not hasattr(self, "ts"):
                 raise NoDataError("DCDWriter: no coordinate data to write to trajectory file")
             else:
-                ts=self.ts
+                ts = self.ts
         # Check to make sure Timestep has the correct number of atoms
         elif not ts.numatoms == self.numatoms:
             raise ValueError("DCDWriter: Timestep does not have the correct number of atoms")
@@ -145,7 +145,7 @@ class DCDWriter(base.Writer):
         self._write_next_frame(pos[:,0], pos[:,1], pos[:,2], unitcell)
         self.frames_written += 1
     def close(self):
-        # Do i really need this?
+        """Close trajectory and flush buffers."""
         self._finish_dcd_write()
         self.dcdfile.close()
         self.dcdfile = None
@@ -245,7 +245,8 @@ class DCDReader(base.Reader):
                 except IOError: raise StopIteration
         return iterDCD()
     def _read_next_timestep(self, ts=None):
-        if ts is None: ts = self.ts
+        if ts is None:
+            ts = self.ts
         ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
         return ts
     def __getitem__(self, frame):

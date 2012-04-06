@@ -551,6 +551,9 @@ class PrimitivePDBWriter(base.Writer):
         self.convert_units = convert_units  # convert length and time to base units
 
         self.frames_written = 0
+        if start < 0:
+          raise ValueError, "'Start' must be a positive value"
+        
         self.start = start
         self.step = step
         self.pdbfile = file(self.filename, 'w')  # open file on init
@@ -667,7 +670,15 @@ class PrimitivePDBWriter(base.Writer):
 
     def write_all_timesteps(self):
         start, step = self.start, self.step
+        
         traj = self.trajectory
+        
+        # Start from trajectory[0]/frame 1, if there are more than 1 frame. 
+        # If there is onyl 1 frame, the traj.frames is not like a python list:
+        # accessing trajectory[-1] raises key error.
+        if not start and traj.numframes > 1:
+          start = traj.frame - 1
+
         for framenumber in xrange(start, len(traj), step):
             traj[framenumber]
             ts = self.timestep

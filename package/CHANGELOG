@@ -10,6 +10,26 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
+??/??/12 orbeckst
+
+  * 0.7.6 (in development)
+
+  Enhancements
+
+  * new AtomGroup.moveto() method
+  
+  Changes
+
+  * HydrogenBondAnalysis: run() does not return the results anymore;
+    they are simply stored as attribute timeseries (similar to other
+    analysis tools); also only write per-frame debugging messages to
+    the logfile when the new verbose keyword is set to True
+
+  Fixes
+
+  * HydrogenBondAnalysis: NH1 and NH2 were not recognized
+
+
 02/16/12 sebastien.buchoux
 
   * 0.7.5.1

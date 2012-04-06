@@ -768,8 +768,8 @@ class Writer(IObase):
     def __repr__(self):
         try:
             return "< %s %r for %d atoms >" % (self.__class__.__name__, self.filename, self.numatoms)
-        except TypeError:
-            # no trajectory loaded yet
+        except (TypeError, AttributeError):
+            # no trajectory loaded yet or a Writer that does not need e.g. self.numatoms
             return "< %s %r >" % (self.__class__.__name__, self.filename)
 
     def has_valid_coordinates(self, criteria, x):

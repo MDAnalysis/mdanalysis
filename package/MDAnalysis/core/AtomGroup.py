@@ -926,6 +926,22 @@ class AtomGroup(object):
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
 
+    def moveto(self, x):
+        """Move atom(s) to position *x*.
+
+        *x* should be a 3N array, which determines the N new
+        coordinates for the N members of the AtomGroup.
+
+        .. Note::
+
+           If the AtomGroup contains N atoms but *x* is a single point
+           (i.e. an array of length 3) then **all N atom positions are
+           set to *x*.**
+
+        .. versionadded:: 0.7.6
+        """
+        self.universe.trajectory.ts._pos[self.indices(),:] = x
+
     def transform(self, M):
         """Apply homogenous transformation matrix *M* to the coordinates.
 

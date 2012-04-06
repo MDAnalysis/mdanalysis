@@ -148,7 +148,7 @@ History
 - 2011-03-30 optional Writer() method for Readers
 - 2011-04-18 added time and frame managed attributes to Reader
 - 2011-04-20 added volume to Timestep
-- 2012-02-11 added _velocities to Timestep 
+- 2012-02-11 added _velocities to Timestep
 
 .. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
 
@@ -398,7 +398,7 @@ Trajectory Writer class
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Trajectory readers are derived from
-:class:`MDAnalysis.coordinates.base.Writer`. They are use to write
+:class:`MDAnalysis.coordinates.base.Writer`. They are used to write
 multiple frames to a trajectory file. Every time the
 :meth:`~MDAnalysis.coordinates.base.Writer.write` method is called,
 another frame is appended to the trajectory.
@@ -429,7 +429,7 @@ Methods
  ``convert_dimensions_to_unitcell(timestep)``
      take the dimensions from the timestep and convert to the native
      unitcell representation of the format
- ``close_trajectory()``
+ ``close()``
      close file and finish I/O
  ``__del__()``
      ensures that close() is called

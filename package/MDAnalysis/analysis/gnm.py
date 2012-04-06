@@ -23,6 +23,11 @@
 Elastic network analysis of MD trajectories --- :mod:`MDAnalysis.analysis.gnm`
 ==============================================================================
 
+:Author: Benjamin Hall <benjamin.a.hall@ucl.ac.uk>
+:Year: 2011
+:Copyright: GNU Public License v2 or later
+
+
 Analyse a trajectory using elastic network models, following the approach of [Hall2007]_.
 
 An example is provided in :file:`examples/GNMExample.py`. The basic
