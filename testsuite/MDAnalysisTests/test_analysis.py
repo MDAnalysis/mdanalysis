@@ -124,9 +124,10 @@ class TestAlign(TestCase):
 class TestHydrogenBondAnalysis(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, CRD)  # just single frame for speed
+        self.detect_hydrogens = "distance"
 
     def test_HBondAnalysis_Protein(self):
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'protein', 'protein', distance=3.0, angle=120.0)
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'protein', 'protein', distance=3.0, angle=120.0, detect_hydrogens=self.detect_hydrogens)
         h.run()
         h.generate_table()
 
@@ -139,7 +140,7 @@ class TestHydrogenBondAnalysis(TestCase):
         del h
 
     def test_HBondAnalysis_Backbone(self):
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'backbone', 'protein', distance=3.0, angle=120.0)
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'backbone', 'protein', distance=3.0, angle=120.0, detect_hydrogens=self.detect_hydrogens)
         h.run()
         h.generate_table()
 
@@ -153,3 +154,8 @@ class TestHydrogenBondAnalysis(TestCase):
 
     def tearDown(self):
         del self.universe
+
+class TestHydrogenBondAnalysisHeuristic(TestHydrogenBondAnalysis):
+    def setUp(self):
+        super(TestHydrogenBondAnalysisHeuristic, self).setUp()
+        self.detect_hydrogens = "heuristic"
