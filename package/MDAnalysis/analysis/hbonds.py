@@ -5,7 +5,8 @@ Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds`
 ===================================================================
 
 :Author: David Caplan
-:Year: 2010-2011
+:Author: Lukas Grossar
+:Year: 2010-2012
 :Copyright: GNU Public License v3
 
 
@@ -71,7 +72,7 @@ The cut-off values *angle* and *distance* can be set as keywords to
 :class:`HydrogenBondAnalysis`.
 
 Donor and acceptor heavy atoms are detected from atom names. The current
-defaults are appropriate for the CHARMM27 force field as defined in Table
+defaults are appropriate for the CHARMM27 and GLYCAM06 force fields as defined in Table
 `Default atom names for hydrogen bonding analysis`_.
 
 Hydrogen atoms bonded to a donor are searched with one of two algorithms,
@@ -98,7 +99,7 @@ default. Until release 0.7.6, only the heuristic search was implemented.
 
 .. _Default atom names for hydrogen bonding analysis:
 
-.. table:: Default heavy atom names for hydrogen bonding analysis.
+.. table:: Default heavy atom names for CHARMM27 force field.
 
    =========== ==============  =========== ====================================
    group       donor           acceptor    comments
@@ -125,6 +126,19 @@ default. Until release 0.7.6, only the heuristic search was implemented.
    TYR         OH              OH
    =========== ==============  =========== ====================================
 
+.. table:: Default heavy atom names for GLYCAM06 force field.
+   =========== ==============  =========== ====================================
+   group       donor           acceptor    comments
+   =========== ==============  =========== ====================================
+   OW          O               O
+
+   OH          O1,O2,O3,O4,O5,O6,OHG O1,O2,O3,O4,O5,O6,OHG O hydroxyl group
+   OS                          O,O1,O2,O3,O4,O5,O6,O7,O8,O9,OG,OG1 O ether
+   OY                          O6          O ether - for sialic acid only!
+   N           N,N2,N4,N5,ND2  N,N2,N4,N5,ND2 amide
+   =========== ==============  =========== ====================================
+
+!!! NOT CORRECT ANYMORE !!!
 
 Donor and acceptor names are based on the CHARMM27 force field but will also
 work for e.g. OPLS/AA (tested in Gromacs) . Residue names in the table are for
@@ -294,14 +308,14 @@ class HydrogenBondAnalysis(object):
     #: Use the keyword *donors* to add a list of additional donor names.
     DEFAULT_DONORS = {'CHARMM': tuple(set(['N', 'OH2', 'OW', 'NE', 'NH1' 'NH2', 'ND2', 'SG', 'NE2',
                                 'ND1', 'NZ', 'OG', 'OG1', 'NE1', 'OH'])),
-                      'GLYCAM': tuple(set(['O','O1','O2','O3','O6']))}
+                      'GLYCAM': tuple(set(['O','O1','O2','O3','O6','N2','N4','N5']))}
 
     #: default atom names that are treated as hydrogen *acceptors*
     #: (see :ref:`Default atom names for hydrogen bonding analysis`)
     #: Use the keyword *acceptors* to add a list of additional acceptor names.
     DEFAULT_ACCEPTORS = {'CHARMM': tuple(set(['O', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1', 'OE2',
                                    'ND1', 'NE2', 'SD', 'OG', 'OG1', 'OH'])),
-                         'GLYCAM': tuple(set(['O','O1','O2','O3','O4','O5','O6']))}
+                         'GLYCAM': tuple(set(['O','O1','O2','O3','O4','O5','O6','N2','N4','N5']))}
 
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
                  update_selection1=False, update_selection2=False, filter_first=True,
