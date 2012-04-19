@@ -5,7 +5,7 @@ Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds`
 ===================================================================
 
 :Author: David Caplan
-:Author: Lukas Grossar
+:Contributor: Lukas Grossar
 :Year: 2010-2012
 :Copyright: GNU Public License v3
 
@@ -24,8 +24,8 @@ Options:
   - *selection_1_type* ("both"): selection 1 is the: "donor", "acceptor", "both"
   - donor-acceptor *distance* (Å): 3.0
   - Angle *cutoff* (degrees): 120.0
+  - *forcefield* to switch between default values for different force fields
   - *donors* and *acceptors* atom types (to add additional atom names)
-
 
 .. _Analysis Output:
 
@@ -72,8 +72,8 @@ The cut-off values *angle* and *distance* can be set as keywords to
 :class:`HydrogenBondAnalysis`.
 
 Donor and acceptor heavy atoms are detected from atom names. The current
-defaults are appropriate for the CHARMM27 and GLYCAM06 force fields as defined in Table
-`Default atom names for hydrogen bonding analysis`_.
+defaults are appropriate for the CHARMM27 and GLYCAM06 force fields as defined
+in Table `Default atom names for hydrogen bonding analysis`_.
 
 Hydrogen atoms bonded to a donor are searched with one of two algorithms,
 selected with the *detect_hydrogens* keyword.
@@ -92,7 +92,6 @@ The *distance* search is more rigorous but slower and is set as the
 default. Until release 0.7.6, only the heuristic search was implemented.
 
 .. versionchanged:: 0.7.6
-
    Distance search added (see
    :meth:`HydrogenBondAnalysis._get_bonded_hydrogens_dist`) and heuristic
    search improved (:meth:`HydrogenBondAnalysis._get_bonded_hydrogens_list`)
@@ -126,39 +125,40 @@ default. Until release 0.7.6, only the heuristic search was implemented.
    TYR         OH              OH
    =========== ==============  =========== ====================================
 
-.. table:: Default heavy atom names for GLYCAM06 force field.
-   =========== ==============  =========== ====================================
-   group       donor           acceptor    comments
-   =========== ==============  =========== ====================================
-   OW          O               O
+.. table:: Heavy atom types for GLYCAM06 force field.
 
-   OH          O1,O2,O3,O4,O5,O6,OHG O1,O2,O3,O4,O5,O6,OHG O hydroxyl group
-   OS                          O,O1,O2,O3,O4,O5,O6,O7,O8,O9,OG,OG1 O ether
-   OY                          O6          O ether - for sialic acid only!
-   N           N,N2,N4,N5,ND2  N,N2,N4,N5,ND2 amide
-   =========== ==============  =========== ====================================
+   =========== =========== ==================
+   element     donor       acceptor
+   =========== =========== ==================
+   N           N,NT,N3     N,NT
+   O           OH,OW       O,O2,OH,OS,OW,OY
+   P                       P
+   S                       S,SM
+   =========== =========== ==================
 
-!!! NOT CORRECT ANYMORE !!!
-
-Donor and acceptor names are based on the CHARMM27 force field but will also
-work for e.g. OPLS/AA (tested in Gromacs) . Residue names in the table are for
-information only and are not taken into account when determining acceptors and
-donors. This can potentially lead to some ambiguity in the assignment of
+Donor and acceptor names for the CHARMM27 force field will also work for e.g.
+OPLS/AA (tested in Gromacs). Residue names in the table are for information
+only and are not taken into account when determining acceptors and donors.
+This can potentially lead to some ambiguity in the assignment of
 donors/acceptors for residues such as histidine or cytosine.
+
+For more information about the naming convention in GLYCAM06 have a look at
+.. _`Carbohydrate Naming Convention in Glycam`: http://glycam.ccrc.uga.edu/documents/FutureNomenclature.htm
 
 The lists of donor and acceptor names can be extended by providing lists of
 atom names in the *donors* and *acceptors* keywords to
-:class:`HydrogenBondAnalysis`. If the lists are entirely inapprpriate
+:class:`HydrogenBondAnalysis`. If the lists are entirely inappropriate
 (e.g. when analysing simulations done with a force field that uses very
-different atom names or when analysing non-protein system) then one can derive
-a new class and set the default lists oneself::
+different atom names) then one should either use the value "other" for *forcefield*
+to set no default values, or derive a new class and set the default list oneself::
 
  class HydrogenBondAnalysis_OtherFF(HydrogenBondAnalysis):
-       DEFAULT_DONORS = (....)      # add donor heavy atoms here
-       DEFAULT_ACCEPTORS = (....)   # add acceptor heavy atoms here
+       DEFAULT_DONORS = {'OtherFF': tuple(set([...]))}
+       DEFAULT_ACCEPTORS = {'OtherFF': tuple(set([...]))}
 
-Then simply use the new class instead of the parent class.
-
+Then simply use the new class instead of the parent class and call it with
+*forcefield* = 'OtherFF'. Please also consider to contribute the list of heavy
+atom names to MDAnalysis.
 
 .. rubric:: References
 
@@ -284,19 +284,28 @@ class HydrogenBondAnalysis(object):
     :attr:`HydrogenBondAnalysis.timeseries`. See
     :meth:`~HydrogenBondAnalysis.run` for the format.
 
-    The default atom names are taken from the CHARMM 27 force field files but
-    also work for e.g. OPLS/AA in Gromacs.
+    The default atom names are taken from the CHARMM 27 force field files, which
+    will also work for e.g. OPLS/AA in Gromacs, and GLYCAM06.
 
     *Donors* (associated hydrogens are deduced from topology)
-      N of the main chain, water OH2/OW, ARG NE/NH1/NH2, ASN ND2, HIS ND1/NE2,
-      SER OG, TYR OH, CYS SG, THR OG1, GLN NE2, LYS NZ, TRP NE1
+      *CHARMM 27*
+        N of the main chain, water OH2/OW, ARG NE/NH1/NH2, ASN ND2, HIS ND1/NE2,
+        SER OG, TYR OH, CYS SG, THR OG1, GLN NE2, LYS NZ, TRP NE1
+      *GLYCAM06*
+        N,NT,N3,OH,OW
 
     *Acceptors*
-      O of the main chain, water OH2/OW, ASN OD1, ASP OD1/OD2, CYH SG, GLN OE1,
-      GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH
+      *CHARMM 27*
+        O of the main chain, water OH2/OW, ASN OD1, ASP OD1/OD2, CYH SG, GLN OE1,
+        GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH
+      *GLYCAM06*
+        N,NT,O,O2,OH,OS,OW,OY,P,S,SM
 
     .. SeeAlso:: Table :ref:`Default atom names for hydrogen bonding analysis`
 
+    .. versionchanged:: 0.7.6.1
+       DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between
+       default values for different force fields.
     """
 
     # use tuple(set()) here so that one can just copy&paste names from the
@@ -306,21 +315,23 @@ class HydrogenBondAnalysis(object):
     #: default heavy atom names whose hydrogens are treated as *donors*
     #: (see :ref:`Default atom names for hydrogen bonding analysis`)
     #: Use the keyword *donors* to add a list of additional donor names.
-    DEFAULT_DONORS = {'CHARMM': tuple(set(['N', 'OH2', 'OW', 'NE', 'NH1' 'NH2', 'ND2', 'SG', 'NE2',
+    DEFAULT_DONORS = {'CHARMM27': tuple(set(['N', 'OH2', 'OW', 'NE', 'NH1' 'NH2', 'ND2', 'SG', 'NE2',
                                 'ND1', 'NZ', 'OG', 'OG1', 'NE1', 'OH'])),
-                      'GLYCAM': tuple(set(['O','O1','O2','O3','O6','N2','N4','N5']))}
+                      'GLYCAM06': tuple(set(['N','NT','N3','OH','OW'])),
+                      'other':  tuple(set([]))}
 
     #: default atom names that are treated as hydrogen *acceptors*
     #: (see :ref:`Default atom names for hydrogen bonding analysis`)
     #: Use the keyword *acceptors* to add a list of additional acceptor names.
-    DEFAULT_ACCEPTORS = {'CHARMM': tuple(set(['O', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1', 'OE2',
-                                   'ND1', 'NE2', 'SD', 'OG', 'OG1', 'OH'])),
-                         'GLYCAM': tuple(set(['O','O1','O2','O3','O4','O5','O6','N2','N4','N5']))}
+    DEFAULT_ACCEPTORS = {'CHARMM27': tuple(set(['O', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1',
+                                     'OE2', 'ND1', 'NE2', 'SD', 'OG', 'OG1', 'OH'])),
+                         'GLYCAM06': tuple(set(['N','NT','O','O2','OH','OS','OW','OY','P','S','SM'])),
+                         'other':  tuple(set([]))}
 
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
                  update_selection1=False, update_selection2=False, filter_first=True,
                  distance=3.0, angle=120.0,
-                 donors=None, acceptors=None, forcefield='CHARMM', verbose=False, detect_hydrogens="distance"):
+                 forcefield='CHARMM27', donors=None, acceptors=None, verbose=False, detect_hydrogens='distance'):
         """Set up calculation of hydrogen bonds between two selections in a universe.
 
         :Arguments:
@@ -347,15 +358,15 @@ class HydrogenBondAnalysis(object):
             180º.  A hydrogen bond is only recorded if the D-H-A angle is
             >=  *angle*. The default of 120º also finds fairly non-specific
             hydrogen interactions and a possibly better value is 150º.
+          *forcefield*
+            Name of the forcefield used. Switches between different DEFAULT_DONORS and DEFAULT_ACCEPTORS values.
+            Available values: "CHARMM27", "GLYCAM06", "other"
           *donors*
             Extra H donor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS`), must be a sequence.
           *acceptors*
             Extra H acceptor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a sequence.
-          *forcefield*
-            Name of the forcefield used. Switches between different DEFAULT_DONORS and DEFAULT_ACCEPTORS values.
-            Available values: CHARMM, GLYCAM
           *verbose*
              If set to true enables per-frame debug logging. This is disabled
              by default because it generates a very large amount of output in
@@ -372,14 +383,19 @@ class HydrogenBondAnalysis(object):
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
 
         .. versionchanged:: 0.7.6
-
            New *verbose* keyword (and per-frame debug logging disable by
            default).
 
+        .. versionchanged:: 0.7.6
            New *detect_hydrogens* keyword to switch between two different
            algorithms to detect hydrogens bonded to donor. "distance" is a new,
            rigorous distance search within the residue of the donor atom,
            "heuristic" is the previous (updated) atom list scan.
+
+        .. versionchanged:: 0.7.6.1
+           New *forcefield* keyword to switch between different values of
+           DEFAULT_DONORS/ACCEPTORS to accomodate different force fields.
+           Also has an option "other" for no default values.
         """
         self._get_bonded_hydrogens_algorithms = {
             "distance": self._get_bonded_hydrogens_dist,      # 0.7.6 default
@@ -439,7 +455,6 @@ class HydrogenBondAnalysis(object):
            :meth:`_get_bonded_hydrogens_dist` and :meth:`_get_bonded_hydrogens_list`
 
         .. versionchanged:: 0.7.6
-
            Can switch algorithm by using the *detect_hydrogens* keyword to the
            constructor. *kwargs* cna be used to supply arguments for algorithm,
            e.g. *cutoff* for :meth:`_get_bonded_hydrogens_dist`.
@@ -480,7 +495,6 @@ class HydrogenBondAnalysis(object):
         Hydrogens are detected by name only: ``H*``, ``[123]H*``.
 
         .. versionchanged:: 0.7.6
-
            Hack to exclude backbone "HA" which were picked up because
            the backbone list is typically ``["N", "H", "CA", "HA"]``
            so that "HA" is picked up wrongly as an additional hydrogen
@@ -493,7 +507,6 @@ class HydrogenBondAnalysis(object):
            :meth:`_get_bonded_hydrogens_dist`.
 
         .. deprecated:: 0.7.6
-
            This method is not recommended because it can miss hydrogens;
            :meth:`_get_bonded_hydrogens_dist` is safer but this one is faster.
         """
@@ -568,7 +581,6 @@ class HydrogenBondAnalysis(object):
                      the data into a different format.
 
         .. versionchanged:: 0.7.6
-
            Results are not returned, only stored in
            :attr:`~HydrogenBondAnalysis.timeseries`.
         """
