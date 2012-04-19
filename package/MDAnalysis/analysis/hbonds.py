@@ -132,8 +132,7 @@ default. Until release 0.7.6, only the heuristic search was implemented.
    =========== =========== ==================
    N           N,NT,N3     N,NT
    O           OH,OW       O,O2,OH,OS,OW,OY
-   P                       P
-   S                       S,SM
+   S                       SM
    =========== =========== ==================
 
 Donor and acceptor names for the CHARMM27 force field will also work for e.g.
@@ -325,7 +324,7 @@ class HydrogenBondAnalysis(object):
     #: Use the keyword *acceptors* to add a list of additional acceptor names.
     DEFAULT_ACCEPTORS = {'CHARMM27': tuple(set(['O', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1',
                                      'OE2', 'ND1', 'NE2', 'SD', 'OG', 'OG1', 'OH'])),
-                         'GLYCAM06': tuple(set(['N','NT','O','O2','OH','OS','OW','OY','P','S','SM'])),
+                         'GLYCAM06': tuple(set(['N','NT','O','O2','OH','OS','OW','OY','SM'])),
                          'other':  tuple(set([]))}
 
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
