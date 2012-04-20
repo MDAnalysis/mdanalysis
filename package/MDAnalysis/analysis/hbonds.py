@@ -4,8 +4,8 @@
 Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds`
 ===================================================================
 
-:Author: David Caplan
-:Year: 2010-2011
+:Author: David Caplan, Lukas Grossar, Oliver Beckstein
+:Year: 2010-2012
 :Copyright: GNU Public License v3
 
 
@@ -85,7 +85,7 @@ selected with the *detect_hydrogens* keyword.
 *heuristic*
 
    Looks at the next three atoms in the list of atoms following the donor and
-   selects any atom whose name matches (name "H*" or name "[123]H").
+   selects any atom whose name matches (name "H*" or name "[123]H"). For
 
 The *distance* search is more rigorous but slower and is set as the
 default. Until release 0.7.6, only the heuristic search was implemented.
@@ -250,6 +250,7 @@ Classes
 
 from __future__ import with_statement
 
+from collections import defaultdict
 import numpy
 
 from MDAnalysis import MissingDataWarning, NoDataError
@@ -301,6 +302,14 @@ class HydrogenBondAnalysis(object):
     #: Use the keyword *acceptors* to add a list of additional acceptor names.
     DEFAULT_ACCEPTORS = tuple(set(['O', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1', 'OE2',
                                    'ND1', 'NE2', 'NE2', 'ND1', 'SD', 'OG', 'OG1', 'OH',]))
+
+    #: A :class:`collections.defaultdict` of covalent radii of common donors
+    #: (used in :meth`_get_bonded_hydrogens_list` to check if a hydrogen is
+    #: sufficiently close to its donor heavy atom). Values are stored for
+    #: N, O, P, and S. Any other heavy atoms are assumed to have hydrogens
+    #: covalently bound at a maximum distance of 1.5 Å.
+    r_cov = defaultdict(lambda : 1.5,   # default value
+                        N=1.31, O=1.31, P=1.58, S=1.55)
 
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
                  update_selection1=False, update_selection2=False, filter_first=True,
@@ -423,12 +432,12 @@ class HydrogenBondAnalysis(object):
         .. versionchanged:: 0.7.6
 
            Can switch algorithm by using the *detect_hydrogens* keyword to the
-           constructor. *kwargs* cna be used to supply arguments for algorithm,
+           constructor. *kwargs* can be used to supply arguments for algorithm,
            e.g. *cutoff* for :meth:`_get_bonded_hydrogens_dist`.
         """
         return self._get_bonded_hydrogens_algorithms[self.detect_hydrogens](atom, **kwargs)
 
-    def _get_bonded_hydrogens_dist(self, atom, cutoff=1.2):
+    def _get_bonded_hydrogens_dist(self, atom, cutoff=1.58):
         """Find hydrogens bonded within *cutoff* to *atom*.
 
         * hydrogens are detected by either name ("H*", "[123]H*") or
@@ -442,6 +451,9 @@ class HydrogenBondAnalysis(object):
         The performance of this implementation could be improved once
         the topology always contains bonded information; it currently
         uses the selection parser with an "around" selection.
+
+        The distance cutoff default is set to the largest distance in
+        :attr:`HydrogenBondAnalysis.r_cov` (1.58 Å for P as a donor).
 
         .. versionadded:: 0.7.6
         """
@@ -463,37 +475,25 @@ class HydrogenBondAnalysis(object):
 
         .. versionchanged:: 0.7.6
 
-           Hack to exclude backbone "HA" which were picked up because
-           the backbone list is typically ``["N", "H", "CA", "HA"]``
-           so that "HA" is picked up wrongly as an additional hydrogen
-           belonging to "N".
+           Added detection of ``[123]H`` and additional check that a
+           selected hydrogen is bonded to the donor atom (i.e. its
+           distance to the donor is less than the covalent radius
+           stored in :attr:`HydrogenBondAnalysis.r_cov` or the default
+           1.5 Å).
 
-           Added detection of ``[123]H``.
+           Changed name to
+           :meth:`~HydrogenBondAnalysis._get_bonded_hydrogens_list`
+           and added *kwargs* so that it can be used instead of
+           :meth:`~HydrogenBondAnalysis._get_bonded_hydrogens_dist`.
 
-           Changed name to :meth:`_get_bonded_hydrogens_list` and
-           added *kwargs* so that it can be used instead of
-           :meth:`_get_bonded_hydrogens_dist`.
-
-        .. deprecated:: 0.7.6
-
-           This method is not recommended because it can miss hydrogens;
-           :meth:`_get_bonded_hydrogens_dist` is safer but this one is faster.
         """
         warnings.warn("_get_bonded_hydrogens_list() does not always find "
                       "all hydrogens; detect_hydrogens='distance' is safer.",
                       category=DeprecationWarning)
-        # investigate the next *maxsearch* atoms following *atom*
-        maxsearch = 3
-        # hack:
-        if atom.name == "N":
-            # fixes BUG: with maxsearch=3 also takes HA from sidechain as
-            # belonging to N: N H CA HA. (This should be done with proper
-            # connectivity information but we do not have full connectivity for
-            # all topology readers.)
-            maxsearch = 1
         try:
-            hydrogens = [a for a in self.u.atoms[atom.number+1:atom.number+1+maxsearch]
-                         if a.name.startswith(('H', '1H', '2H', '3H')) ]
+            hydrogens = [a for a in self.u.atoms[atom.number+1:atom.number+4]
+                         if a.name.startswith(('H','1H','2H','3H')) \
+                             and self.calc_eucl_distance(atom, a) < self.r_cov[atom.name[0]]]
         except IndexError:
             hydrogens = []  # weird corner case that atom is the last one in universe
         return hydrogens
