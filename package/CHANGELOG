@@ -24,6 +24,9 @@ The rules for this file:
     they are simply stored as attribute timeseries (similar to other
     analysis tools); also only write per-frame debugging messages to
     the logfile when the new verbose keyword is set to True
+  * removed CHO and EAM (formyl and ethanol termini of gA in CHARMM)
+    from the set of residues recognized as protein (collison with
+    commonly used CHO for cholesterol)
 
   Fixes
 
