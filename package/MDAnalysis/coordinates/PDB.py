@@ -498,8 +498,13 @@ class PrimitivePDBReader(base.Reader):
 
 
 class PrimitivePDBWriter(base.Writer):
-    """PDB writer that implements a subset of the PDB 3.2 standard.
-    http://www.wwpdb.org/documentation/format32/v3.2.html
+    """PDB writer that implements a subset of the `PDB 3.2 standard`_.
+
+    PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
+    is written.
+
+    .. _`PDB 3.2 standard`:
+       http://www.wwpdb.org/documentation/format32/v3.2.html
     """
     #          1         2         3         4         5         6         7         8
     # 123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
@@ -553,7 +558,7 @@ class PrimitivePDBWriter(base.Writer):
         self.frames_written = 0
         if start < 0:
           raise ValueError, "'Start' must be a positive value"
-        
+
         self.start = start
         self.step = step
         self.pdbfile = file(self.filename, 'w')  # open file on init
@@ -670,10 +675,10 @@ class PrimitivePDBWriter(base.Writer):
 
     def write_all_timesteps(self):
         start, step = self.start, self.step
-        
+
         traj = self.trajectory
-        
-        # Start from trajectory[0]/frame 1, if there are more than 1 frame. 
+
+        # Start from trajectory[0]/frame 1, if there are more than 1 frame.
         # If there is onyl 1 frame, the traj.frames is not like a python list:
         # accessing trajectory[-1] raises key error.
         if not start and traj.numframes > 1:
@@ -816,14 +821,21 @@ class PrimitivePDBWriter(base.Writer):
 
         Only some keword args are optional (altLoc, iCode, chainID), for some defaults are set.
 
-        All inputs are cut to the maximum allowed length. For integer
-        numbers the highest-value digits are chopped (so that the
-        serial and reSeq wrap); for strings the trailing characters
-        are chopped.
+        All inputs are cut to the maximum allowed length. For integer numbers
+        the highest-value digits are chopped (so that the serial and reSeq
+        wrap); for strings the trailing characters are chopped. The *last*
+        character of *chainID* becomes the PDB *chainID* (unless it has the
+        value "SYSTEM" (assigned by MDAnalysis if neither *segID* nor *chainID*
+        were available), in which case the PDB will have an empty *chainID*).
 
         .. Warning: Floats are not checked and can potentially screw up the format.
 
         .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
+
+        .. versionchanged:: 0.7.6
+           If the *chainID* has the special value "SYSTEM" (case insensitive)
+           then the chain is set to the empty string "".
+
         """
 
         # TODO Jan: PDBReader sets the bfactor value corretly to 0.0 if not
@@ -853,6 +865,7 @@ class PrimitivePDBWriter(base.Writer):
         altLoc = altLoc[:1]
         resName = resName[:4]
         chainID = chainID or ""   # or should we provide a chainID such as 'A'?
+        chainID = chainID if not chainID.upper() == "SYSTEM" else ""  # special case, new in 0.7.6
         chainID = chainID.strip()[-1:] # take the last character
         resSeq = int(str(resSeq)[-4:]) # check for overflow here?
         iCode = iCode or ""
