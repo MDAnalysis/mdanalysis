@@ -733,3 +733,16 @@ class HydrogenBondAnalysis(object):
         if self.table is None:
             self.generate_table()
         cPickle.dump(self.table, open(filename, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)
+
+    def count_by_time(self):
+        from itertools import izip
+        out = numpy.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
+        cursor = 0
+        for (time,frame) in izip(self.timesteps, self.timeseries):
+            r = out[cursor]
+            r = (time,len(frame))
+            cursor += 1
+        return out.view(numpy.recarray)
+
+    def count_by_type(self):
+        hbonds = {}
