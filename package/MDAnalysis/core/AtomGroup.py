@@ -1700,10 +1700,11 @@ class Universe(object):
         if filename is None:
             return
 
+        import MDAnalysis.core
         from MDAnalysis.coordinates.core import get_reader_for
         from itertools import izip
 
-        if kwargs.get('permissive',None) is None:
+        if kwargs.get('permissive', None) is None:
             kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
         try:
             TRJReader = get_reader_for(filename, permissive=kwargs.pop('permissive'),

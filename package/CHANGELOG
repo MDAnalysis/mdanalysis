@@ -34,6 +34,8 @@ The rules for this file:
 
   * HydrogenBondAnalysis: NH1 and NH2 were not recognized
   * GROWriter: enforce maximum resname and atomname length of 5 chars
+  * Universe.load_new() raised a NameError (thanks to Jiyong)
+
 
 
 02/16/12 sebastien.buchoux
