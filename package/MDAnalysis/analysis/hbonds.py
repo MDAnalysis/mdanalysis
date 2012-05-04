@@ -155,7 +155,7 @@ to set no default values, or derive a new class and set the default list oneself
        DEFAULT_ACCEPTORS = {"OtherFF": tuple(set([...]))}
 
 Then simply use the new class instead of the parent class and call it with
-*forcefield* = 'OtherFF'. Please also consider to contribute the list of heavy
+*forcefield* = "OtherFF". Please also consider to contribute the list of heavy
 atom names to MDAnalysis.
 
 .. rubric:: References
@@ -735,7 +735,16 @@ class HydrogenBondAnalysis(object):
         cPickle.dump(self.table, open(filename, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)
 
     def count_by_time(self):
+        """Counts the number of hydrogen bonds per timestep and returns a
+        :class:`numpy.recarray`.
+        """
         from itertools import izip
+        if self.timeseries is None:
+            msg = "No timeseries computed, do run() first."
+            warnings.warn(msg)
+            logger.warn(msg, category=MissingDataWarning)
+            return
+
         out = numpy.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
         cursor = 0
         for (time,frame) in izip(self.timesteps, self.timeseries):
@@ -745,4 +754,97 @@ class HydrogenBondAnalysis(object):
         return out.view(numpy.recarray)
 
     def count_by_type(self):
-        hbonds = {}
+        """Counts the frequency of hydrogen bonds of a specific type in a
+        :class:`HydrogenBondAnalysis` instance and returns a
+        :class:`numpy.recarray`.
+        """
+        if self.timeseries is None:
+            msg = "No timeseries computed, do run() first."
+            warnings.warn(msg)
+            logger.warn(msg, category=MissingDataWarning)
+            return
+
+        hbonds = defaultdict(int)
+        for hframe in self.timeseries:
+            for donor_idx, acceptor_idx, donor, acceptor, distance, angle in hframe:
+                donor_resnm, donor_resid, donor_atom = parse_residue(donor)
+                acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)
+                # generate unambigous key for current hbond
+                hb_key = '%s:%s:%s:%s:%s:%s:%s:%s' % (donor_idx, acceptor_idx,
+                         donor_resnm,    donor_resid,    donor_atom,
+                         acceptor_resnm, acceptor_resid, acceptor_atom)
+
+                hbonds[hb_key] += 1
+
+        # build empty output table
+        out = numpy.empty((len(hbonds),), dtype=[('donor_idx', int), ('acceptor_idx', int),
+                    ('donor_resnm', 'S4'),    ('donor_resid', int),    ('donor_atom', 'S4'),
+                    ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
+                    ('frequency', float)])
+
+        # float because of division later
+        tsteps = float(len(self.timesteps))
+        cursor = 0
+        tmp = ['','','','','','','','',0.0]
+        for (key, count) in hbonds.iteritems():
+            tmp[:8] = key.split(':')
+            tmp[8] = count/tsteps
+            out[cursor] = tuple(tmp)
+            cursor += 1
+
+        # return array as recarray
+        # The recarray has not been used within the function, because accessing the
+        # the elements of a recarray (3.65 us) is much slower then accessing those
+        # of a ndarray (287 ns).
+        return out.view(numpy.recarray)
+
+    def count_by_type_correlation(self):
+        """Basically the same functionality as :func:`count_by_type` but
+        doesn't calculate a frequency, instead it return a
+        :class:`numpy.recarray` that contains the timesteps that a specific
+        hydrogen bond was present.
+        """
+        from itertools import izip
+        if self.timeseries is None:
+            msg = "No timeseries computed, do run() first."
+            warnings.warn(msg)
+            logger.warn(msg, category=MissingDataWarning)
+            return
+
+        hbonds = defaultdict(list)
+        for (t,hframe) in izip(self.timesteps, self.timeseries):
+            for donor_idx, acceptor_idx, donor, acceptor, distance, angle in hframe:
+                donor_resnm, donor_resid, donor_atom = parse_residue(donor)
+                acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)
+                # generate unambigous key for current hbond
+                hb_key = '%s:%s:%s:%s:%s:%s:%s:%s' % (donor_idx, acceptor_idx,
+                         donor_resnm,    donor_resid,    donor_atom,
+                         acceptor_resnm, acceptor_resid, acceptor_atom)
+
+                hbonds[hb_key].append(t)
+
+        out_nrows = 0
+        # count number of timesteps per key to get length of output table
+        for ts_list in hbonds.itervalues():
+            out_nrows += len(ts_list)
+
+        # build empty output table
+        out = numpy.empty((out_nrows,), dtype=[('donor_idx', int), ('acceptor_idx', int),
+                    ('donor_resnm', 'S4'),    ('donor_resid', int),    ('donor_atom', 'S4'),
+                    ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
+                    ('time', float)])
+
+        out_row = 0
+        tmp = ['','','','','','','','',0.0]
+        for (key, times) in hbonds.iteritems():
+            tmp[:8] = key.split(':')
+            for tstep in times:
+                tmp[8] = tstep
+                out[out_row] = tuple(tmp)
+                out_row += 1
+
+        # return array as recarray
+        # The recarray has not been used within the function, because accessing the
+        # the elements of a recarray (3.65 us) is much slower then accessing those
+        # of a ndarray (287 ns).
+        return out.view(numpy.recarray)
