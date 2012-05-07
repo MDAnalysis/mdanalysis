@@ -85,7 +85,7 @@ selected with the *detect_hydrogens* keyword.
 *heuristic*
 
    Looks at the next three atoms in the list of atoms following the donor and
-   selects any atom whose name matches (name "H*" or name "[123]H").
+   selects any atom whose name matches (name "H*" or name "[123]H"). For
 
 The *distance* search is more rigorous but slower and is set as the
 default. Until release 0.7.6, only the heuristic search was implemented.
@@ -140,8 +140,11 @@ only and are not taken into account when determining acceptors and donors.
 This can potentially lead to some ambiguity in the assignment of
 donors/acceptors for residues such as histidine or cytosine.
 
-For more information about the naming convention in GLYCAM06 have a look at
-.. _`Carbohydrate Naming Convention in Glycam`: http://glycam.ccrc.uga.edu/documents/FutureNomenclature.htm
+For more information about the naming convention in GLYCAM06 have a look at the
+`Carbohydrate Naming Convention in Glycam`.
+
+.. _`Carbohydrate Naming Convention in Glycam`:
+   http://glycam.ccrc.uga.edu/documents/FutureNomenclature.htm
 
 The lists of donor and acceptor names can be extended by providing lists of
 atom names in the *donors* and *acceptors* keywords to
@@ -176,10 +179,11 @@ All protein-water hydrogen bonds can be analysed with ::
 
   u = MDAnalysis.Universe(PSF, PDB, permissive=True)
   h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(u, 'protein', 'resname TIP3', distance=3.0, angle=120.0)
-  results = h.run()
+  h.run()
 
-The results are also stored as the attribute :attr:`h.timeseries`; see
-:ref:`Analysis Output` for the format and further options.
+The results are stored as the attribute
+:attr:`HydrogenBondAnalysis.timeseries`; see :ref:`Analysis Output`
+for the format and further options.
 
 .. Note::
 
@@ -302,7 +306,7 @@ class HydrogenBondAnalysis(object):
 
     .. SeeAlso:: Table :ref:`Default atom names for hydrogen bonding analysis`
 
-    .. versionchanged:: 0.7.6.1
+    .. versionchanged:: 0.7.6
        DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between
        default values for different force fields.
     """
@@ -326,6 +330,14 @@ class HydrogenBondAnalysis(object):
                                      'OE2', 'ND1', 'NE2', 'SD', 'OG', 'OG1', 'OH'])),
                          'GLYCAM06': tuple(set(['N','NT','O','O2','OH','OS','OW','OY','SM'])),
                          'other':  tuple(set([]))}
+    #: A :class:`collections.defaultdict` of covalent radii of common donors
+    #: (used in :meth`_get_bonded_hydrogens_list` to check if a hydrogen is
+    #: sufficiently close to its donor heavy atom). Values are stored for
+    #: N, O, P, and S. Any other heavy atoms are assumed to have hydrogens
+    #: covalently bound at a maximum distance of 1.5 Å.
+    r_cov = defaultdict(lambda : 1.5,   # default value
+                        N=1.31, O=1.31, P=1.58, S=1.55)
+
     #: A :class:`collections.defaultdict` of covalent radii of common donors
     #: (used in :meth`_get_bonded_hydrogens_list` to check if a hydrogen is
     #: sufficiently close to its donor heavy atom). Values are stored for
@@ -504,19 +516,18 @@ class HydrogenBondAnalysis(object):
         Hydrogens are detected by name only: ``H*``, ``[123]H*``.
 
         .. versionchanged:: 0.7.6
+
            Added detection of ``[123]H`` and additional check that a
            selected hydrogen is bonded to the donor atom (i.e. its
            distance to the donor is less than the covalent radius
            stored in :attr:`HydrogenBondAnalysis.r_cov` or the default
            1.5 Å).
 
-           Changed name to :meth:`_get_bonded_hydrogens_list` and
-           added *kwargs* so that it can be used instead of
-           :meth:`_get_bonded_hydrogens_dist`.
+           Changed name to
+           :meth:`~HydrogenBondAnalysis._get_bonded_hydrogens_list`
+           and added *kwargs* so that it can be used instead of
+           :meth:`~HydrogenBondAnalysis._get_bonded_hydrogens_dist`.
 
-        .. deprecated:: 0.7.6
-           This method is not recommended because it can miss hydrogens;
-           :meth:`_get_bonded_hydrogens_dist` is safer but this one is faster.
         """
         warnings.warn("_get_bonded_hydrogens_list() does not always find "
                       "all hydrogens; detect_hydrogens='distance' is safer.",
@@ -524,7 +535,7 @@ class HydrogenBondAnalysis(object):
         try:
             hydrogens = [a for a in self.u.atoms[atom.number+1:atom.number+4]
                          if a.name.startswith(('H','1H','2H','3H')) \
-                            and self.calc_eucl_distance(atom,a) < self.r_cov[atom.name[0]]]
+                             and self.calc_eucl_distance(atom,a) < self.r_cov[atom.name[0]]]
         except IndexError:
             hydrogens = []  # weird corner case that atom is the last one in universe
         return hydrogens
