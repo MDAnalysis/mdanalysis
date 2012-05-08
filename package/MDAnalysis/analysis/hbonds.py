@@ -761,6 +761,9 @@ class HydrogenBondAnalysis(object):
                  ("distance",float), ("angle",float)]
         self.table = numpy.recarray((num_records,), dtype=dtype)
 
+        # according to Lukas' notes below, using a recarray at this stage is ineffective
+        # and speedups of ~x10 could be achieved by filling a standard array
+        # (perhaps at the cost of less clarity... but that might just be my code ;-) -- orbeckst)
         cursor = 0  # current row
         for t,hframe in izip(self.timesteps, self.timeseries):
             if len(hframe) == 0:
@@ -831,9 +834,9 @@ class HydrogenBondAnalysis(object):
                 acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)
                 # generate unambigous key for current hbond
                 # (the donor_heavy_atom placeholder '?' is added later)
-                hb_key = '%s:%s:%s:%s:%s:%s:%s:%s:%s' % (donor_idx, acceptor_idx,
-                         donor_resnm,    donor_resid,  "?", donor_atom,
-                         acceptor_resnm, acceptor_resid, acceptor_atom)
+                hb_key = (donor_idx, acceptor_idx,
+                          donor_resnm,    donor_resid,  "?", donor_atom,
+                          acceptor_resnm, acceptor_resid, acceptor_atom)
 
                 hbonds[hb_key] += 1
 
@@ -845,13 +848,8 @@ class HydrogenBondAnalysis(object):
 
         # float because of division later
         tsteps = float(len(self.timesteps))
-        cursor = 0
-        tmp = ['','','','','','','','','',0.0]
-        for (key, count) in hbonds.iteritems():
-            tmp[:9] = key.split(':')
-            tmp[9] = count/tsteps
-            out[cursor] = tuple(tmp)
-            cursor += 1
+        for cursor, (key, count) in enumerate(hbonds.iteritems()):
+            out[cursor] = key + (count/tsteps,)
 
         # return array as recarray
         # The recarray has not been used within the function, because accessing the
@@ -886,10 +884,9 @@ class HydrogenBondAnalysis(object):
                 acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)
                 # generate unambigous key for current hbond
                 # (the donor_heavy_atom placeholder '?' is added later)
-                hb_key = '%s:%s:%s:%s:%s:%s:%s:%s:%s' % (donor_idx, acceptor_idx,
-                         donor_resnm,    donor_resid,  "?", donor_atom,
-                         acceptor_resnm, acceptor_resid, acceptor_atom)
-
+                hb_key = (donor_idx, acceptor_idx,
+                          donor_resnm,    donor_resid,  "?", donor_atom,
+                          acceptor_resnm, acceptor_resid, acceptor_atom)
                 hbonds[hb_key].append(t)
 
         out_nrows = 0
@@ -906,7 +903,7 @@ class HydrogenBondAnalysis(object):
         out_row = 0
         tmp = ['','','','','','','','','',0.0]
         for (key, times) in hbonds.iteritems():
-            tmp[:9] = key.split(':')
+            tmp[:9] = key
             for tstep in times:
                 tmp[9] = tstep
                 out[out_row] = tuple(tmp)
