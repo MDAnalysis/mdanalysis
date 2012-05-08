@@ -407,7 +407,7 @@ class AtomGroup(object):
         return iter(self._atoms)
     def __contains__(self, other):
         # If the number of atoms is very large, create a dictionary cache for lookup
-        if len(atoms) > 10000 and not 'atoms' in self.__cache:
+        if len(self) > 10000 and not 'atoms' in self.__cache:
             self.__cache['atoms'] = dict(((x,None) for x in self.__atoms))
         try:
             return other in self.__cache['atoms']
