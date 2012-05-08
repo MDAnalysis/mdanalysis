@@ -345,7 +345,7 @@ class ProteinSelection(Selection):
                 'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HSD',
                 'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
                 'TRP', 'TYR', 'VAL', 'ALAD',
-                'CHO', 'EAM',
+                ## 'CHO','EAM', # -- special formyl and ethanolamine termini of gramicidin
                 # PDB
                 'HIS', 'MSE',
                 # from Gromacs 4.5.3 oplsaa.ff/aminoacids.rtp

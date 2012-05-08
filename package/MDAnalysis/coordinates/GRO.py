@@ -45,16 +45,19 @@ class Timestep(base.Timestep):
         def dimensions(self):
                 """unitcell dimensions (A, B, C, alpha, beta, gamma)
 
-                GRO:
-                8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085
+                GRO::
 
-                PDB:
-                CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1
+                  8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085
 
-                XTC: c.trajectory.ts._unitcell
-                array([[ 80.00515747,   0.        ,   0.        ],
-                       [  0.        ,  80.00515747,   0.        ],
-                       [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)
+                PDB::
+
+                  CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1
+
+                XTC: c.trajectory.ts._unitcell::
+
+                  array([[ 80.00515747,   0.        ,   0.        ],
+                         [  0.        ,  80.00515747,   0.        ],
+                         [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)
                 """
                 # unit cell line (from http://manual.gromacs.org/current/online/gro.html)
                 # v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)
@@ -196,6 +199,9 @@ class GROWriter(base.Writer):
                 The GRO format only allows 5 digits for resid and atom
                 number. If these number become larger than 99,999 then this
                 routine will chop off the leading digits.
+
+                .. versionchanged:: 0.7.6
+                   resName and atomName are truncated to a maximum of 5 characters
                 """
                 # write() method that complies with the Trajectory API
                 u = selection.universe
@@ -227,8 +233,8 @@ class GROWriter(base.Writer):
                                 c = coordinates[atom_index]
                                 output_line = self.fmt['xyz'] % \
                                     (str(atom.resid)[-5:],     # truncate highest digits on overflow
-                                     atom.resname.strip(),     # XXX: truncate resname and atomname to be sure??
-                                     atom.name.strip(),
+                                     atom.resname.strip()[:5],
+                                     atom.name.strip()[:5],
                                      str(atom.number+1)[-5:],  # number (1-based), truncate highest digits on overflow
                                      c[0], c[1], c[2],         # coords - outputted with 3 d.p.
                                      )

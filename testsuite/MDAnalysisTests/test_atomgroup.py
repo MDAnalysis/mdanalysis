@@ -16,7 +16,7 @@
 #
 
 import MDAnalysis
-from MDAnalysis.tests.datafiles import PSF,DCD
+from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup
 
@@ -384,3 +384,24 @@ def test_instantselection_termini():
     assert_equal(universe.residues[20].CA.name, 'CA', "CA of MET21 is not selected correctly")
     del universe
 
+
+class TestUniverse(TestCase):
+    def test_load(self):
+        u = MDAnalysis.Universe(PSF, PDB_small)
+        assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
+
+    @attr('issue')
+    def test_load_new(self):
+        u = MDAnalysis.Universe(PSF, DCD)
+        u.load_new(PDB_small)
+        assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB)")
+
+    def test_load_new_strict(self):
+        u = MDAnalysis.Universe(PSF, DCD)
+        u.load_new(PDB_small, permissive=False)
+        assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=False)")
+
+    def test_load_new_permissive(self):
+        u = MDAnalysis.Universe(PSF, DCD)
+        u.load_new(PDB_small, permissive=True)
+        assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=True)")
