@@ -51,10 +51,20 @@ that are not part of the output), stored in
         ...
     ]
 
+.. Note::
+
+   For historic reasons, the *donor index* and *acceptor index* are a 1-based
+   indices. To get the :attr:`Atom.number` (the 0-based index typically used in
+   MDAnalysis simply subtract 1. For instance, to find an atom in
+   :attr:`Universe.atoms` by *index* from the output one would use
+   ``u.atoms[index-1]``.
+
+
 Using the :meth:`HydrogenBondAnalysis.generate_table` method one can reformat
 the results as a flat "normalised" table that is easier to import into a
 database for further processing. :meth:`HydrogenBondAnalysis.save_table` saves
 the table to a pickled file. The table itself is a :class:`numpy.recarray`.
+
 
 Detection of hydrogen bonds
 ---------------------------
@@ -233,6 +243,13 @@ Classes
       The time of each step is not stored with each hydrogen bond frame but in
       :attr:`~HydrogenBondAnalysis.timesteps`.
 
+      .. Note::
+
+         The *index* is a 1-based index. To get the :attr:`Atom.number` (the
+         0-based index typically used in MDAnalysis simply subtract 1. For
+         instance, to find an atom in :attr:`Universe.atoms` by *index* one
+         would use ``u.atoms[index-1]``.
+
    .. attribute:: table
 
       A normalised table of the data in
@@ -255,6 +272,14 @@ Classes
       It takes up more space than
       :attr:`~HydrogenBondAnalysis.timeseries` but it is easier to
       analyze and to import into databases (e.g. using recsql_).
+
+      .. Note::
+
+         The *index* is a 1-based index. To get the :attr:`Atom.number` (the
+         0-based index typically used in MDAnalysis simply subtract 1. For
+         instance, to find an atom in :attr:`Universe.atoms` by *index* one
+         would use ``u.atoms[index-1]``.
+
 
    .. automethod:: _get_bonded_hydrogens
 
@@ -392,11 +417,12 @@ class HydrogenBondAnalysis(object):
              the output, e.g. using :func:`MDAnalysis.start_logging`.)
           *detect_hydrogens*
              Determine the algorithm to find hydrogens connected to donor
-             atoms. Can be "distance" (default; finds all hydrogens within a
-             cutoff of 1.2 Å of the donor) or "heuristic" (looks for the next
-             few atoms in the atom list). "distance" should always give the
-             correct answer but "heuristic" is faster, especially when the
-             donor list is updated each selection. ["distance"]
+             atoms. Can be "distance" (default; finds all hydrogens in the
+             donor's residue within a cutoff of the donor) or "heuristic"
+             (looks for the next few atoms in the atom list). "distance" should
+             always give the correct answer but "heuristic" is faster,
+             especially when the donor list is updated each
+             selection. ["distance"]
 
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
 
@@ -404,13 +430,12 @@ class HydrogenBondAnalysis(object):
            New *verbose* keyword (and per-frame debug logging disable by
            default).
 
-        .. versionchanged:: 0.7.6
            New *detect_hydrogens* keyword to switch between two different
            algorithms to detect hydrogens bonded to donor. "distance" is a new,
            rigorous distance search within the residue of the donor atom,
-           "heuristic" is the previous (updated) atom list scan.
+           "heuristic" is the previous list scan (improved with an additional
+           distance check).
 
-        .. versionchanged:: 0.7.6.1
            New *forcefield* keyword to switch between different values of
            DEFAULT_DONORS/ACCEPTORS to accomodate different force fields.
            Also has an option "other" for no default values.
@@ -474,34 +499,33 @@ class HydrogenBondAnalysis(object):
 
         .. versionchanged:: 0.7.6
            Can switch algorithm by using the *detect_hydrogens* keyword to the
-           constructor. *kwargs* can be used to supply arguments for algorithm,
-           e.g. *cutoff* for :meth:`_get_bonded_hydrogens_dist`.
+           constructor. *kwargs* can be used to supply arguments for algorithm.
         """
         return self._get_bonded_hydrogens_algorithms[self.detect_hydrogens](atom, **kwargs)
 
-    def _get_bonded_hydrogens_dist(self, atom, cutoff=1.58):
+    def _get_bonded_hydrogens_dist(self, atom):
         """Find hydrogens bonded within *cutoff* to *atom*.
 
-        * hydrogens are detected by either name ("H*", "[123]H*") or
-          type ("H"); this is not fool-proof as the atom type is not
-          always a character but the name pattern should catch most
-          typical occurrences.
+        * hydrogens are detected by either name ("H*", "[123]H*") or type
+          ("H"); this is not fool-proof as the atom type is not always a
+          character but the name pattern should catch most typical occurrences.
 
-        * The distance from *atom* is calculated for all hydrogens in
-          the residue and only thos within *cutoff* are kept.
+        * The distance from *atom* is calculated for all hydrogens in the
+          residue and only those within a cutoff are kept. The cutoff depends
+          on the heavy atom (more precisely, on its element, which is taken as
+          the first letter of its name ``atom.name[0]``) and is parameterized
+          in :attr:`HydrogenBondAnalysis.r_cov`. If no match is found then the
+          default of 1.5 Å is used.
 
-        The performance of this implementation could be improved once
-        the topology always contains bonded information; it currently
-        uses the selection parser with an "around" selection.
-
-        The distance cutoff default is set to the largest distance in
-        :attr:`HydrogenBondAnalysis.r_cov` (1.58 Å for P as a donor).
+        The performance of this implementation could be improved once the
+        topology always contains bonded information; it currently uses the
+        selection parser with an "around" selection.
 
         .. versionadded:: 0.7.6
         """
         try:
             return atom.residue.selectAtoms("(name H* or name 1H* or name 2H* or name 3H* or type H) and around %f name %s" %
-                                            (cutoff, atom.name))
+                                            (self.r_cov[atom.name[0]], atom.name))
         except NoDataError:
             return []
 
@@ -513,7 +537,10 @@ class HydrogenBondAnalysis(object):
         topology. If this is not the case then this function will
         fail.
 
-        Hydrogens are detected by name only: ``H*``, ``[123]H*``.
+        Hydrogens are detected by name ``H*``, ``[123]H*`` and they have to be
+        within a maximum distance from the heavy atom. The cutoff distance
+        depends on the heavy atom and is parameterized in
+        :attr:`HydrogenBondAnalysis.r_cov`.
 
         .. versionchanged:: 0.7.6
 
@@ -551,7 +578,7 @@ class HydrogenBondAnalysis(object):
                 if tmp:
                     self._s1_donors_h[i] = tmp
             self.logger_debug("Selection 1 donors: %d" % len(self._s1_donors))
-            self.logger_debug("Selection 1 donor hydrogens: %d" % len(self._s1_donors_h.keys()))
+            self.logger_debug("Selection 1 donor hydrogens: %d" % len(self._s1_donors_h))
         if self.selection1_type in ('acceptor', 'both'):
             self._s1_acceptors = self._s1.selectAtoms(' or '.join([ 'name %s' % i for i in self.acceptors ]))
             self.logger_debug("Selection 1 acceptors: %d" % len(self._s1_acceptors))
@@ -575,7 +602,7 @@ class HydrogenBondAnalysis(object):
                 if tmp:
                     self._s2_donors_h[i] = tmp
             self.logger_debug("Selection 2 donors: %d" % len(self._s2_donors))
-            self.logger_debug("Selection 2 donor hydrogens: %d" % len(self._s2_donors_h.keys()))
+            self.logger_debug("Selection 2 donor hydrogens: %d" % len(self._s2_donors_h))
 
     def logger_debug(self, *args):
         if self.verbose:
@@ -702,8 +729,8 @@ class HydrogenBondAnalysis(object):
         from itertools import izip
         if self.timeseries is None:
             msg = "No timeseries computed, do run() first."
-            warnings.warn(msg)
-            logger.warn(msg, category=MissingDataWarning)
+            warnings.warn(msg, category=MissingDataWarning)
+            logger.warn(msg)
             return
 
         num_records = numpy.sum([len(hframe) for hframe in self.timeseries])
@@ -752,8 +779,8 @@ class HydrogenBondAnalysis(object):
         from itertools import izip
         if self.timeseries is None:
             msg = "No timeseries computed, do run() first."
-            warnings.warn(msg)
-            logger.warn(msg, category=MissingDataWarning)
+            warnings.warn(msg, category=MissingDataWarning)
+            logger.warn(msg)
             return
 
         out = numpy.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
@@ -765,14 +792,18 @@ class HydrogenBondAnalysis(object):
         return out.view(numpy.recarray)
 
     def count_by_type(self):
-        """Counts the frequency of hydrogen bonds of a specific type in a
-        :class:`HydrogenBondAnalysis` instance and returns a
-        :class:`numpy.recarray`.
+        """Counts the frequency of hydrogen bonds of a specific type.
+
+        Processes :attr:`HydrogenBondAnalysis.timeseries` and returns
+        a :class:`numpy.recarray` containing atom indices, residue
+        names, residue numbers (for donors and acceptors) and the
+        fraction of the total time during which the hydrogen bond was
+        detected.
         """
         if self.timeseries is None:
             msg = "No timeseries computed, do run() first."
-            warnings.warn(msg)
-            logger.warn(msg, category=MissingDataWarning)
+            warnings.warn(msg, category=MissingDataWarning)
+            logger.warn(msg)
             return
 
         hbonds = defaultdict(int)
@@ -781,8 +812,9 @@ class HydrogenBondAnalysis(object):
                 donor_resnm, donor_resid, donor_atom = parse_residue(donor)
                 acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)
                 # generate unambigous key for current hbond
-                hb_key = '%s:%s:%s:%s:%s:%s:%s:%s' % (donor_idx, acceptor_idx,
-                         donor_resnm,    donor_resid,    donor_atom,
+                # (the donor_heavy_atom placeholder '?' is added later)
+                hb_key = '%s:%s:%s:%s:%s:%s:%s:%s:%s' % (donor_idx, acceptor_idx,
+                         donor_resnm,    donor_resid,    donor_atom, "?",
                          acceptor_resnm, acceptor_resid, acceptor_atom)
 
                 hbonds[hb_key] += 1
@@ -790,18 +822,24 @@ class HydrogenBondAnalysis(object):
         # build empty output table
         out = numpy.empty((len(hbonds),), dtype=[('donor_idx', int), ('acceptor_idx', int),
                     ('donor_resnm', 'S4'),    ('donor_resid', int),    ('donor_atom', 'S4'),
+                    ('donor_heavy_atom', 'S4'),
                     ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
                     ('frequency', float)])
 
         # float because of division later
         tsteps = float(len(self.timesteps))
         cursor = 0
-        tmp = ['','','','','','','','',0.0]
+        tmp = ['','','','','','','','','',0.0]
         for (key, count) in hbonds.iteritems():
-            tmp[:8] = key.split(':')
-            tmp[8] = count/tsteps
+            tmp[:9] = key.split(':')
+            tmp[9] = count/tsteps
             out[cursor] = tuple(tmp)
             cursor += 1
+
+        # patch in donor heavy atom names (replaces '?' in the key)
+        # out.donor_heavy_atom == out[5], out.donor_idx == out[0]
+        h2donor = self._donor_lookup_table_byindex()
+        out[5] = [h2donor[idx-1] for idx in out[0]]
 
         # return array as recarray
         # The recarray has not been used within the function, because accessing the
@@ -809,8 +847,9 @@ class HydrogenBondAnalysis(object):
         # of a ndarray (287 ns).
         return out.view(numpy.recarray)
 
+
     def count_by_type_correlation(self):
-        """Basically the same functionality as :func:`count_by_type` but
+        """Basically the same functionality as :meth:`HydrogenBondAnalysis.count_by_type` but
         doesn't calculate a frequency, instead it return a
         :class:`numpy.recarray` that contains the timesteps that a specific
         hydrogen bond was present.
@@ -818,8 +857,8 @@ class HydrogenBondAnalysis(object):
         from itertools import izip
         if self.timeseries is None:
             msg = "No timeseries computed, do run() first."
-            warnings.warn(msg)
-            logger.warn(msg, category=MissingDataWarning)
+            warnings.warn(msg, category=MissingDataWarning)
+            logger.warn(msg)
             return
 
         hbonds = defaultdict(list)
@@ -828,8 +867,9 @@ class HydrogenBondAnalysis(object):
                 donor_resnm, donor_resid, donor_atom = parse_residue(donor)
                 acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)
                 # generate unambigous key for current hbond
-                hb_key = '%s:%s:%s:%s:%s:%s:%s:%s' % (donor_idx, acceptor_idx,
-                         donor_resnm,    donor_resid,    donor_atom,
+                # (the donor_heavy_atom placeholder '?' is added later)
+                hb_key = '%s:%s:%s:%s:%s:%s:%s:%s:%s' % (donor_idx, acceptor_idx,
+                         donor_resnm,    donor_resid,    donor_atom, "?",
                          acceptor_resnm, acceptor_resid, acceptor_atom)
 
                 hbonds[hb_key].append(t)
@@ -842,20 +882,100 @@ class HydrogenBondAnalysis(object):
         # build empty output table
         out = numpy.empty((out_nrows,), dtype=[('donor_idx', int), ('acceptor_idx', int),
                     ('donor_resnm', 'S4'),    ('donor_resid', int),    ('donor_atom', 'S4'),
+                    ('donor_heavy_atom', 'S4'),
                     ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
                     ('time', float)])
 
         out_row = 0
-        tmp = ['','','','','','','','',0.0]
+        tmp = ['','','','','','','','','',0.0]
         for (key, times) in hbonds.iteritems():
-            tmp[:8] = key.split(':')
+            tmp[:9] = key.split(':')
             for tstep in times:
-                tmp[8] = tstep
+                tmp[9] = tstep
                 out[out_row] = tuple(tmp)
                 out_row += 1
+
+        # patch in donor heavy atom names (replaces '?' in the key)
+        # out.donor_heavy_atom == out[5], out.donor_idx == out[0]
+        h2donor = self._donor_lookup_table_byindex()
+        out[5] = [h2donor[idx-1] for idx in out[0]]
 
         # return array as recarray
         # The recarray has not been used within the function, because accessing the
         # the elements of a recarray (3.65 us) is much slower then accessing those
         # of a ndarray (287 ns).
         return out.view(numpy.recarray)
+
+    def _donor_lookup_table_byres(self):
+        """Look-up table to identify the donor heavy atom from resid and hydrogen name.
+
+        Assumptions:
+        * resids are unique
+        * hydrogen atom names are unique within a residue
+        * selections have not changed (because we are simply looking at the last content
+          of the donors and donor hydrogen lists)
+
+        Donors from *selection1* and *selection2* are merged.
+
+        Output dictionary ``h2donor`` can be used as::
+
+           heavy_atom_name = h2donor[resid][hydrogen_name]
+
+        """
+        s1d = self._s1_donors    # list of donor Atom instances
+        s1h = self._s1_donors_h  # dict indexed by donor position in donor list, containg AtomGroups of H
+        s2d = self._s2_donors
+        s2h = self._s2_donors_h
+
+        def _make_dict(donors, hydrogens):
+            # two steps so that entry for one residue can be UPDATED for multiple donors
+            d = dict((donors[k].resid, {})  for k in xrange(len(donors)) if k in hydrogens)
+            for k in xrange(len(donors)):
+                if k in hydrogens:
+                    d[donors[k].resid].update(dict((atom.name, donors[k].name) for atom in hydrogens[k]))
+            return d
+
+        h2donor = _make_dict(s2d, s2h)    # 2 is typically the larger group
+        # merge (in principle h2donor.update(_make_dict(s1d, s1h) should be sufficient
+        # with our assumptions but the following should be really safe)
+        for resid,names in _make_dict(s1d, s1h).items():
+            if resid in h2donor:
+                h2donor[resid].update(names)
+            else:
+                h2donor[resid] = names
+
+        return h2donor
+
+    def _donor_lookup_table_byindex(self):
+        """Look-up table to identify the donor heavy atom from hydrogen atom index.
+
+        Donors from *selection1* and *selection2* are merged.
+
+        Output dictionary ``h2donor`` can be used as::
+
+           heavy_atom_name = h2donor[index]
+
+        .. Note:: *index* is the 0-based MDAnalysis index (:attr:`Atom.number`).
+                  The tables generated by :class:`HydrogenBondAnalysis` contain 1-based
+                  indices.
+
+        """
+        s1d = self._s1_donors    # list of donor Atom instances
+        s1h = self._s1_donors_h  # dict indexed by donor position in donor list, containg AtomGroups of H
+        s2d = self._s2_donors
+        s2h = self._s2_donors_h
+
+        def _make_dict(donors, hydrogens):
+            #return dict(flatten_1([(atom.id, donors[k].name) for atom in hydrogens[k]] for k in xrange(len(donors)) if k in hydrogens))
+            x = []
+            for k in xrange(len(donors)):
+                if k in hydrogens:
+                    x.extend([(atom.number, donors[k].name) for atom in hydrogens[k]])
+            return dict(x)
+
+        h2donor = _make_dict(s2d, s2h)    # 2 is typically the larger group
+        h2donor.update(_make_dict(s1d, s1h))
+
+        return h2donor
+
+
