@@ -374,7 +374,9 @@ class HydrogenBondAnalysis(object):
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
                  update_selection1=False, update_selection2=False, filter_first=True,
                  distance=3.0, angle=120.0,
-                 forcefield='CHARMM27', donors=None, acceptors=None, verbose=False, detect_hydrogens='distance'):
+                 forcefield='CHARMM27', donors=None, acceptors=None,
+                 start=None, stop=None, step=None,
+                 verbose=False, detect_hydrogens='distance'):
         """Set up calculation of hydrogen bonds between two selections in a universe.
 
         :Arguments:
@@ -410,19 +412,27 @@ class HydrogenBondAnalysis(object):
           *acceptors*
             Extra H acceptor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a sequence.
+          *start*
+            starting frame for analysis, ``None`` is the first one, 1 [``None``]
+          *stop*
+            last trajectory frame for analysis, ``None`` is the last one [``None``]
+          *step*
+            read every *step* between *start* and *stop*, ``None`` selects 1.
+            Note that not all trajectory readers perform well with a step different
+            from 1 [``None``]
           *verbose*
-             If set to true enables per-frame debug logging. This is disabled
-             by default because it generates a very large amount of output in
-             the log file. (Note that a logger must have been started to see
-             the output, e.g. using :func:`MDAnalysis.start_logging`.)
+            If set to true enables per-frame debug logging. This is disabled
+            by default because it generates a very large amount of output in
+            the log file. (Note that a logger must have been started to see
+            the output, e.g. using :func:`MDAnalysis.start_logging`.)
           *detect_hydrogens*
-             Determine the algorithm to find hydrogens connected to donor
-             atoms. Can be "distance" (default; finds all hydrogens in the
-             donor's residue within a cutoff of the donor) or "heuristic"
-             (looks for the next few atoms in the atom list). "distance" should
-             always give the correct answer but "heuristic" is faster,
-             especially when the donor list is updated each
-             selection. ["distance"]
+            Determine the algorithm to find hydrogens connected to donor
+            atoms. Can be "distance" (default; finds all hydrogens in the
+            donor's residue within a cutoff of the donor) or "heuristic"
+            (looks for the next few atoms in the atom list). "distance" should
+            always give the correct answer but "heuristic" is faster,
+            especially when the donor list is updated each
+            selection. ["distance"]
 
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
 
@@ -458,6 +468,12 @@ class HydrogenBondAnalysis(object):
         self.filter_first = filter_first
         self.distance = distance
         self.angle = angle
+        if (start is not None and start < 1) or (stop is not None and stop < 1) or (step is not None and step < 1):
+            # would need to do some fancier processing to get negative index behavior right
+            raise NotImplementedError("Only start/stop/step > 1 supported")
+        self.traj_slice = (start-1 if isinstance(start, int) else None, # internal frames are 0 based
+                           stop-1 if isinstance(stop, int) else None,
+                           step)
 
         # set up the donors/acceptors lists
         if donors is None:
@@ -632,6 +648,7 @@ class HydrogenBondAnalysis(object):
         self.timesteps = []
 
         logger.info("checking trajectory...")  # numframes can take a while!
+        # TODO: ProgressMeter not correct for slices
         pm = ProgressMeter(self.u.trajectory.numframes,
                            format="HBonds frame %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r")
 
@@ -646,7 +663,11 @@ class HydrogenBondAnalysis(object):
                 return self.u.trajectory.frame
             logger.warn("HBond analysis is recording frame number instead of time step")
 
-        for ts in self.u.trajectory:
+
+        logger.info("Starting analysis (start=%d stop=%d, step=%d)",
+                    (self.traj_slice[0] or 0)+1,
+                    (self.traj_slice[1] or self.u.trajectory.numframes), self.traj_slice[2] or 1)
+        for ts in self.u.trajectory[slice(*self.traj_slice)]:
             frame_results = []
 
             frame = ts.frame
@@ -776,7 +797,7 @@ class HydrogenBondAnalysis(object):
         """Counts the number of hydrogen bonds per timestep and returns a
         :class:`numpy.recarray`.
         """
-        from itertools import izip
+        from itertools import izip, imap
         if self.timeseries is None:
             msg = "No timeseries computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
@@ -784,11 +805,8 @@ class HydrogenBondAnalysis(object):
             return
 
         out = numpy.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
-        cursor = 0
-        for (time,frame) in izip(self.timesteps, self.timeseries):
-            r = out[cursor]
-            r = (time,len(frame))
-            cursor += 1
+        for cursor,time_count in enumerate(izip(self.timesteps, imap(len, self.timeseries))):
+            out[cursor] = time_count
         return out.view(numpy.recarray)
 
     def count_by_type(self):
@@ -814,15 +832,14 @@ class HydrogenBondAnalysis(object):
                 # generate unambigous key for current hbond
                 # (the donor_heavy_atom placeholder '?' is added later)
                 hb_key = '%s:%s:%s:%s:%s:%s:%s:%s:%s' % (donor_idx, acceptor_idx,
-                         donor_resnm,    donor_resid,    donor_atom, "?",
+                         donor_resnm,    donor_resid,  "?", donor_atom,
                          acceptor_resnm, acceptor_resid, acceptor_atom)
 
                 hbonds[hb_key] += 1
 
         # build empty output table
         out = numpy.empty((len(hbonds),), dtype=[('donor_idx', int), ('acceptor_idx', int),
-                    ('donor_resnm', 'S4'),    ('donor_resid', int),    ('donor_atom', 'S4'),
-                    ('donor_heavy_atom', 'S4'),
+                    ('donor_resnm', 'S4'),    ('donor_resid', int), ('donor_heavy_atom', 'S4'),  ('donor_atom', 'S4'),
                     ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
                     ('frequency', float)])
 
@@ -836,16 +853,17 @@ class HydrogenBondAnalysis(object):
             out[cursor] = tuple(tmp)
             cursor += 1
 
-        # patch in donor heavy atom names (replaces '?' in the key)
-        # out.donor_heavy_atom == out[5], out.donor_idx == out[0]
-        h2donor = self._donor_lookup_table_byindex()
-        out[5] = [h2donor[idx-1] for idx in out[0]]
-
         # return array as recarray
         # The recarray has not been used within the function, because accessing the
         # the elements of a recarray (3.65 us) is much slower then accessing those
         # of a ndarray (287 ns).
-        return out.view(numpy.recarray)
+        r = out.view(numpy.recarray)
+
+        # patch in donor heavy atom names (replaces '?' in the key)
+        h2donor = self._donor_lookup_table_byindex()
+        r.donor_heavy_atom[:] = [h2donor[idx-1] for idx in r.donor_idx]
+
+        return r
 
 
     def count_by_type_correlation(self):
@@ -869,7 +887,7 @@ class HydrogenBondAnalysis(object):
                 # generate unambigous key for current hbond
                 # (the donor_heavy_atom placeholder '?' is added later)
                 hb_key = '%s:%s:%s:%s:%s:%s:%s:%s:%s' % (donor_idx, acceptor_idx,
-                         donor_resnm,    donor_resid,    donor_atom, "?",
+                         donor_resnm,    donor_resid,  "?", donor_atom,
                          acceptor_resnm, acceptor_resid, acceptor_atom)
 
                 hbonds[hb_key].append(t)
@@ -881,8 +899,7 @@ class HydrogenBondAnalysis(object):
 
         # build empty output table
         out = numpy.empty((out_nrows,), dtype=[('donor_idx', int), ('acceptor_idx', int),
-                    ('donor_resnm', 'S4'),    ('donor_resid', int),    ('donor_atom', 'S4'),
-                    ('donor_heavy_atom', 'S4'),
+                    ('donor_resnm', 'S4'),    ('donor_resid', int), ('donor_heavy_atom', 'S4'),  ('donor_atom', 'S4'),
                     ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
                     ('time', float)])
 
@@ -895,16 +912,17 @@ class HydrogenBondAnalysis(object):
                 out[out_row] = tuple(tmp)
                 out_row += 1
 
-        # patch in donor heavy atom names (replaces '?' in the key)
-        # out.donor_heavy_atom == out[5], out.donor_idx == out[0]
-        h2donor = self._donor_lookup_table_byindex()
-        out[5] = [h2donor[idx-1] for idx in out[0]]
-
         # return array as recarray
         # The recarray has not been used within the function, because accessing the
         # the elements of a recarray (3.65 us) is much slower then accessing those
         # of a ndarray (287 ns).
-        return out.view(numpy.recarray)
+        r = out.view(numpy.recarray)
+
+        # patch in donor heavy atom names (replaces '?' in the key)
+        h2donor = self._donor_lookup_table_byindex()
+        r.donor_heavy_atom[:] = [h2donor[idx-1] for idx in r.donor_idx]
+
+        return r
 
     def _donor_lookup_table_byres(self):
         """Look-up table to identify the donor heavy atom from resid and hydrogen name.
