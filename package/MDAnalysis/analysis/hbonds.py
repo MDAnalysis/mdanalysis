@@ -832,10 +832,11 @@ class HydrogenBondAnalysis(object):
                 hbonds[hb_key] += 1
 
         # build empty output table
-        out = numpy.empty((len(hbonds),), dtype=[('donor_idx', int), ('acceptor_idx', int),
-                    ('donor_resnm', 'S4'),    ('donor_resid', int), ('donor_heavy_atom', 'S4'),  ('donor_atom', 'S4'),
-                    ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
-                    ('frequency', float)])
+        dtype = [('donor_idx', int), ('acceptor_idx', int),
+                ('donor_resnm', 'S4'), ('donor_resid', int), ('donor_heavy_atom', 'S4'), ('donor_atom', 'S4'),
+                ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
+                ('frequency', float)]
+        out = numpy.empty((len(hbonds),), dtype=dtype)
 
         # float because of division later
         tsteps = float(len(self.timesteps))
@@ -888,18 +889,16 @@ class HydrogenBondAnalysis(object):
             out_nrows += len(ts_list)
 
         # build empty output table
-        out = numpy.empty((out_nrows,), dtype=[('donor_idx', int), ('acceptor_idx', int),
-                    ('donor_resnm', 'S4'),    ('donor_resid', int), ('donor_heavy_atom', 'S4'),  ('donor_atom', 'S4'),
-                    ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
-                    ('time', float)])
+        dtype = [('donor_idx', int), ('acceptor_idx', int),
+                ('donor_resnm', 'S4'),    ('donor_resid', int), ('donor_heavy_atom', 'S4'),  ('donor_atom', 'S4'),
+                ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
+                ('time', float)]
+        out = numpy.empty((out_nrows,), dtype=dtype)
 
         out_row = 0
-        tmp = ['','','','','','','','','',0.0]
         for (key, times) in hbonds.iteritems():
-            tmp[:9] = key
             for tstep in times:
-                tmp[9] = tstep
-                out[out_row] = tuple(tmp)
+                out[out_row] = key + (tstep,)
                 out_row += 1
 
         # return array as recarray
