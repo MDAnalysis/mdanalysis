@@ -579,6 +579,9 @@ class HydrogenBondAnalysis(object):
     def _update_selection_1(self):
         self._s1 = self.u.selectAtoms(self.selection1)
         self.logger_debug("Size of selection 1: %d atoms" % len(self._s1))
+        self._s1_donors = {}
+        self._s1_donors_h = {}
+        self._s1_acceptors = {}
         if self.selection1_type in ('donor', 'both'):
             self._s1_donors = self._s1.selectAtoms(' or '.join([ 'name %s' % i for i in self.donors ]))
             self._s1_donors_h = {}
@@ -600,6 +603,9 @@ class HydrogenBondAnalysis(object):
             self._s2 = ns_selection_2.search_list(self._s1, 3.*self.distance)
         self.logger_debug("Size of selection 2: %d atoms" % len(self._s2))
 
+        self._s2_donors = {}
+        self._s2_donors_h = {}
+        self._s2_acceptors = {}
         if self.selection1_type in ('donor', 'both'):
             self._s2_acceptors = self._s2.selectAtoms(' or '.join([ 'name %s' % i for i in self.acceptors ]))
             self.logger_debug("Selection 2 acceptors: %d" % len(self._s2_acceptors))
