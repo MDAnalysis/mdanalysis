@@ -858,11 +858,14 @@ class HydrogenBondAnalysis(object):
         return r
 
 
-    def count_by_type_correlation(self):
-        """Basically the same functionality as :meth:`HydrogenBondAnalysis.count_by_type` but
-        doesn't calculate a frequency, instead it return a
-        :class:`numpy.recarray` that contains the timesteps that a specific
-        hydrogen bond was present.
+    def timesteps_by_type(self):
+        """Gives the timesteps at which a hydrogen bond of a specific
+        type occurs.
+
+        Processes :attr:`HydrogenBondAnalysis.timeseries` and returns
+        a :class:`numpy.recarray` containing atom indices, residue
+        names, residue numbers (for donors and acceptors) and a list
+        of timesteps at which the hydrogen bond was detected.
         """
         from itertools import izip
         if self.timeseries is None:
