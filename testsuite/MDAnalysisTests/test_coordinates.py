@@ -322,79 +322,106 @@ class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
 class TestPrimitivePDBWriter(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True)
-        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
         self.universe2 = mda.Universe(PSF, DCD, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         ext = ".pdb"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
 
     def tearDown(self):
         try:
             os.unlink(self.outfile)
         except OSError:
             pass
-        try:
-            os.unlink(self.outfile2)
-        except OSError:
-            pass
-        del self.universe, self.multiverse, self.universe2
+        del self.universe, self.universe2
 
     def test_writer(self):
-        # print self.universe.trajectory.frame, self.universe.trajectory.numframes
+        "Test writing from a single frame PDB file to a PDB file."""
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(PSF, self.outfile, permissive=True)
         assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec,
                             err_msg="Writing PDB file with PrimitivePDBWriter does not reproduce original coordinates")
 
-    def test_multiframe_writer(self):
-        """
-        Test if multiframe writer can write selected frames for an atomselection.
-        """
-        u = self.multiverse
-        group = u.selectAtoms('name CA', 'name C')
-        desired_group = 56
-        desired_frames = 6
-        group.write(self.outfile, start=12, step=2)
-        u = mda.Universe(self.outfile)
-        assert_equal(len(u.atoms), desired_group, err_msg="PrimitivePDBWriter trajectory written for an AtomGroup contains %d atoms, it should contain %d" % (len(u.atoms), desired_group))
+    @attr('issue')
+    def test_write_single_frame_Writer(self):
+        """Test writing a single frame from a DCD trajectory to a PDB using MDAnalysis.Writer (Issue 105)"""
+        u = self.universe2
+        W = mda.Writer(self.outfile)
+        u.trajectory[50]
+        W.write(u.selectAtoms('all'))
+        W.close()
+        u2 = mda.Universe(self.outfile)
+        assert_equal(u2.trajectory.numframes, 1, err_msg="The number of frames should be 1.")
 
-        assert_equal(len(u.trajectory), desired_frames, err_msg="PrimitivePDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
+    @attr('issue')
+    def test_write_single_frame_AtomGroup(self):
+        """Test writing a single frame from a DCD trajectory to a PDB using AtomGroup.write() (Issue 105)"""
+        u = self.universe2
+        u.trajectory[50]
+        u.atoms.write(self.outfile)
+        u2 = MDAnalysis.Universe(PSF, self.outfile)
+        assert_equal(u2.trajectory.numframes, 1, err_msg="Output PDB should only contain a single frame")
+        assert_almost_equal(u2.atoms.coordinates(), u.atoms.coordinates(), self.prec,
+                            err_msg="Written coordinates do not agree with original coordinates from frame %d" % u.trajectory.frame)
 
+    @attr('issue')
+    def test_check_coordinate_limits_min(self):
+        """Test that illegal PDB coordinates (x <= -999.9995 A) are caught with ValueError (Issue 57)"""
+        # modify coordinates so we need our own copy or we could mess up parallel tests
+        u = mda.Universe(PSF, PDB_small, permissive=True)
+        u.atoms[2000].pos[1] = -999.9995
+        assert_raises(ValueError, u.atoms.write, self.outfile)
+        del u
+
+    @attr('issue')
+    def test_check_coordinate_limits_max(self):
+        """Test that illegal PDB coordinates (x > 9999.9995 A) are caught with ValueError (Issue 57)"""
+        # modify coordinates so we need our own copy or we could mess up parallel tests
+        u = mda.Universe(PSF, PDB_small, permissive=True)
+        u.atoms[1000].pos[1] =  9999.9996   # OB: 9999.99951 is not caught by '<=' ?!?
+        assert_raises(ValueError, u.atoms.write, self.outfile)
+        del u
+
+class TestMultiPDBReader(TestCase):
+    def setUp(self):
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
 
     def test_numframes(self):
-        u = self.multiverse
-        desired = 24
-        assert_equal(u.trajectory.numframes, desired,
-                     err_msg="Test PDB contains %d frames, trajectory contains only %d" % (desired, u.trajectory.numframes))
+        assert_equal(self.multiverse.trajectory.numframes, 24, "Wrong number of frames read from PDB muliple model file")
 
     def test_numatoms_frame(self):
         u = self.multiverse
         desired = 392
-        # rewind after previous test, otherwise the iterator is NoneType and next() cannot be called
         for frame in u.trajectory:
-          assert_equal(len(u.atoms), desired, err_msg="The number of atoms in the Universe (%d) does not match the number of atoms in the test case (%d) at frame %d" % (len(u.atoms), desired, u.trajectory.frame))
+            assert_equal(len(u.atoms), desired, err_msg="The number of atoms in the Universe (%d) does not match the number of atoms in the test case (%d) at frame %d" % (len(u.atoms), desired, u.trajectory.frame))
 
-    def test_frameindex(self):
-        u = self.universe2
-        W = mda.Writer(self.outfile)
+    def test_rewind(self):
+        u = self.multiverse
+        u.trajectory[11]
+        assert_equal(u.trajectory.ts.frame, 12, "Failed to forward to 12th frame (frame index 11)")
+        u.trajectory.rewind()
+        assert_equal(u.trajectory.ts.frame, 1, "Failed to rewind to first frame (frame index 0)")
 
-        # 1 frame expected
-        u.trajectory[-1]
-        W.write(u.selectAtoms('all'))
-        u0 = mda.Universe(self.outfile)
-        assert_equal(u0.trajectory.numframes, 1, err_msg="The number of frames should be 1.")
+    def test_iteration(self):
+        u = self.multiverse
+        frames = []
+        for frame in u.trajectory:
+            pass
+        # should rewind after previous test
+        # problem was: the iterator is NoneType and next() cannot be called
+        for ts in u.trajectory:
+            frames.append(ts)
+        assert_equal(len(frames), u.trajectory.numframes,
+                     "iterated number of frames %d is not the expected number %d; "
+                     "trajectory iterator fails to rewind" % (len(frames), u.trajectory.numframes))
 
-        # 2 frames expceted
-        u.trajectory[-2]
-        W.write(u.selectAtoms('all'))
-        u0 = mda.Universe(self.outfile)
-        assert_equal(u0.trajectory.numframes, 3, err_msg="The number of frames should be 3.")
-
-        u.trajectory[-1]
-        u.selectAtoms('all').write(self.outfile2)
-        u0 = mda.Universe(self.outfile2)
-        assert_equal(u0.trajectory.numframes, 1, err_msg="The number of frames should be 11.")
+    def test_slice_iteration(self):
+        u = self.multiverse
+        frames = []
+        for ts in u.trajectory[4:-2:4]:
+            frames.append(ts)
+        assert_equal(np.array([ts.frame-1 for ts in frames]),
+                     np.arange(u.trajectory.numframes)[4:-2:4],
+                     err_msg="slicing did not produce the expected frames")
 
     def test_numconnections(self):
         u = self.multiverse
@@ -430,23 +457,68 @@ class TestPrimitivePDBWriter(TestCase):
         assert_equal(u._psf['_bonds'], desired,
                                 err_msg="The bond list does not match the test reference; len(actual) is %d, len(desired) is %d " % (len(u._psf['_bonds']), len(desired)))
 
-    @attr('issue')
-    def test_check_coordinate_limits_min(self):
-        """Test that illegal PDB coordinates (x <= -999.9995 A) are caught with ValueError (Issue 57)"""
-        # modify coordinates so we need our own copy or we could mess up parallel tests
-        u = mda.Universe(PSF, PDB_small, permissive=True)
-        u.atoms[2000].pos[1] = -999.9995
-        assert_raises(ValueError, u.atoms.write, self.outfile2)
-        del u
 
-    @attr('issue')
-    def test_check_coordinate_limits_max(self):
-        """Test that illegal PDB coordinates (x > 9999.9995 A) are caught with ValueError (Issue 57)"""
-        # modify coordinates so we need our own copy or we could mess up parallel tests
-        u = mda.Universe(PSF, PDB_small, permissive=True)
-        u.atoms[1000].pos[1] =  9999.9996   # OB: 9999.99951 is not caught by '<=' ?!?
-        assert_raises(ValueError, u.atoms.write, self.outfile2)
-        del u
+class TestMultiPDBWriter(TestCase):
+    def setUp(self):
+        self.universe = mda.Universe(PSF, PDB_small, permissive=True)
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
+        self.universe2 = mda.Universe(PSF, DCD, permissive=True)
+        self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+        ext = ".pdb"
+        fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        try:
+            os.unlink(self.outfile2)
+        except OSError:
+            pass
+        del self.universe, self.multiverse, self.universe2
+
+    def test_write_atomselection(self):
+        """Test if multiframe writer can write selected frames for an atomselection."""
+        u = self.multiverse
+        group = u.selectAtoms('name CA', 'name C')
+        desired_group = 56
+        desired_frames = 6
+        pdb = MDAnalysis.Writer(self.outfile, multiframe=True, start=12, step=2)
+        for ts in u.trajectory[-6:]:
+            pdb.write(group)
+        pdb.close()
+        u2 = mda.Universe(self.outfile)
+        assert_equal(len(u2.atoms), desired_group, err_msg="MultiPDBWriter trajectory written for an AtomGroup contains %d atoms, it should contain %d" % (len(u2.atoms), desired_group))
+
+        assert_equal(len(u2.trajectory), desired_frames, err_msg="MultiPDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
+
+    def test_write_all_timesteps(self):
+        """
+        Test write_all_timesteps() of the  multiframe writer (selected frames for an atomselection)
+        """
+        u = self.multiverse
+        group = u.selectAtoms('name CA', 'name C')
+        desired_group = 56
+        desired_frames = 6
+        pdb = MDAnalysis.Writer(self.outfile, multiframe=True, start=12, step=2)
+        pdb.write_all_timesteps(group)
+        u2 = mda.Universe(self.outfile)
+        assert_equal(len(u2.atoms), desired_group, err_msg="MultiPDBWriter trajectory written for an AtomGroup contains %d atoms, it should contain %d" % (len(u2.atoms), desired_group))
+
+        assert_equal(len(u2.trajectory), desired_frames, err_msg="MultiPDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
+
+    def test_write_atoms(self):
+        u = self.universe2
+        W = mda.Writer(self.outfile, multiframe=True)
+        # 2 frames expceted
+        for ts in u.trajectory[-2:]:
+            W.write(u.atoms)
+        W.close()
+        u0 = mda.Universe(self.outfile)
+        assert_equal(u0.trajectory.numframes, 2, err_msg="The number of frames should be 3.")
+
 
 class TestPQRReader(_SingleFrameReader):
     def setUp(self):

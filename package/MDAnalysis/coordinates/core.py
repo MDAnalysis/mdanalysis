@@ -93,7 +93,7 @@ def reader(filename, **kwargs):
     Reader = get_reader_for(filename, permissive=kwargs.pop('permissive', False))
     return Reader(filename, **kwargs)
 
-def get_writer_for(filename=None, format='DCD'):
+def get_writer_for(filename=None, format='DCD', multiframe=None):
     """Return an appropriate trajectory or frame writer class for *filename*.
 
     The format is determined by the *format* argument or the extension
@@ -106,28 +106,53 @@ def get_writer_for(filename=None, format='DCD'):
       *format*
          If no *filename* is supplied then the format can be explicitly set;
          possible values are "DCD", "XTC", "TRR"; "PDB", "CRD", "GRO".
+      *multiframe*
+         ``True``: write multiple frames to the trajectory; ``False``: only
+         write a single coordinate frame; ``None``: first try trajectory (multi
+         frame writers), then the single frame ones. Default is ``None``.
+
+    .. versionchanged:: 0.7.6
+       Added *multiframe* keyword; the default ``None`` reflects the previous
+       behaviour.
     """
     if filename:
         root, ext = get_ext(filename)
         format = check_compressed_format(root, ext)
-    try:
-        return MDAnalysis.coordinates._trajectory_writers[format]
-    except KeyError:
+    if multiframe is None:
+        try:
+            return MDAnalysis.coordinates._trajectory_writers[format]
+        except KeyError:
+            try:
+                return MDAnalysis.coordinates._frame_writers[format]
+            except KeyError:
+                raise TypeError("No trajectory or frame writer for format %r" % format)
+    elif multiframe is True:
+        try:
+            return MDAnalysis.coordinates._trajectory_writers[format]
+        except KeyError:
+            raise TypeError("No trajectory  writer for format %r" % format)
+    elif multiframe is False:
         try:
             return MDAnalysis.coordinates._frame_writers[format]
         except KeyError:
-            raise TypeError("No trajectory or frame writer for format %r" % format)
+            raise TypeError("No single frame writer for format %r" % format)
+    else:
+        raise ValueError("Unknown value %r for multiframe, only True, False, None allowed" % multiframe)
 
 def writer(filename, numatoms=None, **kwargs):
     """Initialize a trajectory writer instance for *filename*.
 
     :Arguments:
        *filename*
-           Output filename of the trajectory; the extension determines the
-           format.
+            Output filename of the trajectory; the extension determines the
+            format.
        *numatoms*
             The number of atoms in the output trajectory; can be ommitted
             for single-frame writers.
+       *multiframe*
+            ``True``: write a trajectory with multiple frames; ``False``
+            only write a single frame snapshot; ``None`` first try to get
+            a multiframe writer and then fall back to single frame [``None``]
        *kwargs*
             Keyword arguments for the writer; all trajectory Writers accept
             at least
@@ -145,8 +170,12 @@ def writer(filename, numatoms=None, **kwargs):
             .. SeeAlso:: :class:`~MDAnalysis.coordinates.DCD.DCDWriter` for DCD
                trajectories or :class:`~MDAnalysis.coordinates.XTC.XTCWriter`
                and :class:`~MDAnalysis.coordinates.TRR.TRRWriter` for Gromacs.
+
+    .. versionchanged:: 0.7.6
+       Added *multiframe* keyword. See also :func:`get_writer_for`.
     """
-    Writer = get_writer_for(filename, format=kwargs.pop('format',None))
+    Writer = get_writer_for(filename, format=kwargs.pop('format',None),
+                            multiframe=kwargs.pop('multiframe', None))
     return Writer(filename, numatoms=numatoms, **kwargs)
 
 def get_ext(filename):
@@ -190,7 +219,6 @@ def guess_format(filename, format=None):
     if format != 'CHAIN' and not format in MDAnalysis.coordinates._trajectory_readers:
         raise TypeError("Unknown coordinate trajectory format %r for %r; only %r are implemented in MDAnalysis." %
                         (format, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
-
     return format
 
 def check_compressed_format(root, ext):

@@ -94,8 +94,9 @@ are also recognized when they are compressed with :program:`gzip` or
    | Brookhaven    | pdb       |  r/w  | a simplified PDB format (as used in MD simulations)  |
    | [#a]_         |           |       | is read by default; the full format can be read by   |
    |               |           |       | supplying the `permissive=False` flag to             |
-   |               |           |       | :class:`MDAnalysis.Universe`. Module                 |
-   |               |           |       | :mod:`MDAnalysis.coordinates.PDB`                    |
+   |               |           |       | :class:`MDAnalysis.Universe`. Multiple frames (MODEL)|
+   |               |           |       | are supported but require the *multiframe* keyword.  |
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.PDB`             |
    +---------------+-----------+-------+------------------------------------------------------+
    | PDBQT [#a]_   | pdbqt     | r/w   | file format used by AutoDock with atom types *t*     |
    |               |           |       | and partial charges *q*. Module:                     |
@@ -149,6 +150,7 @@ History
 - 2011-04-18 added time and frame managed attributes to Reader
 - 2011-04-20 added volume to Timestep
 - 2012-02-11 added _velocities to Timestep
+- 2012-05-24 multiframe keyword to distinguish trajectory from single frame writers
 
 .. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
 
@@ -504,6 +506,11 @@ format identifiers. They are documented for programmers who want to
 enhance MDAnalysis; the casual user is unlikely to access them
 directly.
 
+Some formats can either write single frames or trajectories (such as
+PDB). In theses cases, the kind of writer is selected with the
+*multiframe* keyword to :func:`MDAnalysis.coordinates.core.get_writer`
+(or the writer itself).
+
 .. autodata:: _trajectory_readers
 .. autodata:: _topology_coordinates_readers
 .. autodata:: _trajectory_readers_permissive
@@ -580,6 +587,6 @@ _trajectory_writers = {'DCD': DCD.DCDWriter,
                        'XTC': XTC.XTCWriter,
                        'TRR': TRR.TRRWriter,
                        'LAMMPS': LAMMPS.DCDWriter,
-                       'PDB': PDB.PrimitivePDBWriter,
+                       'PDB': PDB.MultiPDBWriter,
                        }
 

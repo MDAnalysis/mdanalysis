@@ -17,6 +17,7 @@ The rules for this file:
   Enhancements
 
   * new AtomGroup.moveto() method
+  * PrimitivePDBReader can be sliced
   
   Changes
 
@@ -25,17 +26,19 @@ The rules for this file:
     analysis tools); also only write per-frame debugging messages to
     the logfile when the new verbose keyword is set to True
   * removed CHO and EAM (formyl and ethanol termini of gA in CHARMM)
-    from the set of residues recognized as protein (collison with
+    from the set of residues recognized as protein (collision with
     commonly used CHO for cholesterol)
   * PrimitivePDBWriter: special segid SYSTEM is translated to empty
     chainID
+  * In order to write multi frame PDB files, the multiframe=True
+    keyword must be supplied or use the MultiPDBWriter    
 
   Fixes
 
   * HydrogenBondAnalysis: NH1 and NH2 were not recognized
   * GROWriter: enforce maximum resname and atomname length of 5 chars
   * Universe.load_new() raised a NameError (thanks to Jiyong)
-
+  * fixed Issue 105 (trajectory snapshots could not be written to PDB)
 
 
 02/16/12 sebastien.buchoux

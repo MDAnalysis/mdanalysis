@@ -18,12 +18,12 @@
 # pdb.extensions
 # original file: edPDB.xpdb but only kept content needed for MDAnalysis
 """
+:mod:`pdb.extensions` -- Extensions to :mod:`Bio.PDB`
+=====================================================
+
 :Author:  Oliver Beckstein
 :Year:    2009
 :License: Biopython
-
-:mod:`pdb.extensions` -- Extensions to :mod:`Bio.PDB`
-=====================================================
 
 Extension to :mod:`Bio.PDB` to handle large pdb files.
 

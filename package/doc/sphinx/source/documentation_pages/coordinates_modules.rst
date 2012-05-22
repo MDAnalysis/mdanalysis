@@ -34,4 +34,5 @@ Programmers and anyone trying to implement new functionality should read the
    coordinates/TRR
    coordinates/XTC
    coordinates/XYZ
+   coordinates/pdbextensions
    coordinates/libxdrfile

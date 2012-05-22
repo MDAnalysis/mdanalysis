@@ -18,6 +18,7 @@
 """
 Core functions of MDAnalysis
 ============================
+
 The basic class is an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`;
 the whole simulation is called the
 :class:`~MDAnalysis.core.AtomGroup.Universe`. Selections are computed
@@ -44,6 +45,8 @@ obtain the coordinates as a numpy array ::
 
 and write your own Python code.
 
+
+.. _flags-label:
 
 Flags
 -----
