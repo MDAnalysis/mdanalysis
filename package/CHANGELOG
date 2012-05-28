@@ -18,6 +18,7 @@ The rules for this file:
 
   * new AtomGroup.moveto() method
   * PrimitivePDBReader can be sliced
+  * AMBER NetCDF (binary trajectory) reader (Issue 109)
   
   Changes
 

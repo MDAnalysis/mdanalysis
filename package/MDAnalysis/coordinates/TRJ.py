@@ -16,41 +16,27 @@
 #
 
 """
-TRJ/MDCRD file format (Amber) --- :mod:`MDAnalysis.coordinates.TRJ`
-===================================================================
+AMBER trajectories --- :mod:`MDAnalysis.coordinates.TRJ`
+========================================================
 
-Classes to read formatted Amber_ TRJ coordinate files as defined in `Amber
-TRJ format`_. It is also possible to directly read *bzip2* or *gzip*
-compressed files.
-
-Amber trajectories are recognised by the suffix '.trj' or '.mdcrd'
-(possibly with an additional '.gz' or '.bz2').
+AMBER_ can write ASCII trajectories ("traj") and binary trajectories
+("netcdf"). MDAnalysis supports reading of both formats.
 
 .. Note::
 
-   Support for Amber is *experimental* and feedback and contributions
+   Support for AMBER is *experimental* and feedback and contributions
    are highly appreciated. Use the `Issue Tracker`_ or get in touch on
    the `MDAnalysis mailinglist`_.
 
-.. _Amber: http://ambermd.org
-.. _Amber TRJ format: http://ambermd.org/formats.html#trajectory
-.. _Issue Tracker: http://code.google.com/p/mdanalysis/issues/list
-.. _MDAnalysis mailinglist: http://groups.google.com/group/mdnalysis-discussion
+.. rubric:: Units
 
-Units
------
-
-* lengths in Angstrom (Ã…)
+* lengths in Angstrom (Å)
 * time in ps (but see below)
 
 
-Limitations
------------
+.. rubric:: Limitations
 
-* Reads the ASCII `Amber TRJ format`_, but not the `Amber netcdf`_ one
-  (yet).
-
-* Periodic boxes are only stored as box lengths A, B, C in an Amber
+* Periodic boxes are only stored as box lengths A, B, C in an AMBER
   trajectory; the reader always assumes that these are orthorhombic
   boxes.
 
@@ -65,26 +51,140 @@ Limitations
 * If the trajectory contains exactly *one* atom then it is always
   assumed to be non-periodic (for technical reasons).
 
-.. _Amber netcdf: http://ambermd.org/netcdf/nctraj.html
-
-Classes
--------
+AMBER trajectory coordinate frames are based on a :class:`Timestep`
+object.
 
 .. autoclass:: Timestep
    :members:
+
+
+
+ASCII TRAJ trajectories
+-----------------------
+
+ASCII AMBER_ TRJ coordinate files (as defined in `AMBER TRJ format`_)
+are handled by the :class:`TRJReader`. It is also possible to directly
+read *bzip2* or *gzip* compressed files.
+
+AMBER ASCII trajectories are recognised by the suffix '.trj' or
+'.mdcrd' (possibly with an additional '.gz' or '.bz2').
+
 .. autoclass:: TRJReader
    :members:
+
+
+Binary NetCDF trajectories
+--------------------------
+
+The `AMBER netcdf`_ format make use of NetCDF_ (Network Common Data
+Form) format. Such binary trajectories are recognized in MDAnalysis by
+the '.ncdf' suffix and read by the :class:`NCDFReader`.
+
+Binary trajectories can also contain velocities and can record the exact time
+step. In principle, the trajectories can be in different units than the AMBER
+defaults of ångström and picoseconds but at the moment MDAnalysis only supports
+those and will raise a :exc:`NotImplementedError` if anything else is detected.
+
+.. autoclass:: NCDFReader
+   :members:
+
+
+.. Links
+
+.. _AMBER: http://ambermd.org
+.. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory
+.. _AMBER netcdf format: http://ambermd.org/netcdf/nctraj.html
+.. _AMBER netcdf: http://ambermd.org/netcdf/nctraj.html
+.. _NetCDF: http://www.unidata.ucar.edu/software/netcdf
+.. _Issue Tracker: http://code.google.com/p/mdanalysis/issues/list
+.. _MDAnalysis mailinglist: http://groups.google.com/group/mdnalysis-discussion
+
+
 
 """
 
 import numpy
+import warnings
 
 import MDAnalysis
 import base
 import MDAnalysis.core.util as util
 
+try:
+        import netCDF4 as netcdf
+except ImportError:
+        warnings.warn("Failed to import netCDF4; AMBER NETCDFReader will not work.")
+
+import logging
+logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
+
 class Timestep(base.Timestep):
-        """Amber trajectory Timestep"""
+        """AMBER trajectory Timestep.
+
+        The Timestep can be initialized with *arg* being
+        1. an integer (the number of atoms) and an optiona keyword argument *velocities* to allocate
+           space for both coordinates and velocities;
+        2. another :class:`Timetep` instance, in which case a copy is made;
+        3. a :class:`numpy.ndarray` of shape (numatoms, 3) (for positions only) or (numatoms, 6) (for
+           positions and velocities)
+        """
+        # based on TRR Timestep (MDAnalysis.coordinates.xdrfile.TRR.Timestep)
+        #
+        # NOTE: kwargs is a new thing for Timesteps and not yet in the
+        # trajectory API; if this breaks something then we should simply make
+        # two different classes, one with the other without velocities. [orbeckst, 2012-05-29]
+        def __init__(self, arg, **kwargs):
+                velocities = kwargs.pop('velocities', False)
+                DIM = 3
+                if numpy.dtype(type(arg)) == numpy.dtype(int):
+                        self.frame = 0
+                        self.numatoms = arg
+                        # C floats and C-order for arrays
+                        self._pos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
+                        if velocities:
+                                self._velocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
+                        self._unitcell = numpy.zeros(2*DIM, dtype=numpy.float32)
+                elif isinstance(arg, Timestep): # Copy constructor
+                        # This makes a deepcopy of the timestep
+                        self.frame = arg.frame
+                        self.numatoms = arg.numatoms
+                        self._unitcell = numpy.array(arg._unitcell)
+                        self._pos = numpy.array(arg._pos)
+                        try:
+                                self._velocities = numpy.array(arg._velocities)
+                        except AttributeError:
+                                pass
+                        for attr in ('step', 'time'):
+                                if hasattr(arg, attr):
+                                        self.__setattr__(attr, arg.__getattribute__(attr))
+                elif isinstance(arg, numpy.ndarray):
+                        # provide packed array shape == (natoms, 2*DIM)
+                        # which contains pos = arg[:,0:3], v = arg[:,3:6]
+                        # or just positions: pos = arg[:,0:3] == arg
+                        if len(arg.shape) != 2:
+                                raise ValueError("packed numpy array (x,v) can only have 2 dimensions")
+                        self._unitcell = numpy.zeros(2*DIM, dtype=numpy.float32)
+                        self.frame = 0
+                        if (arg.shape[0] == 2*DIM and arg.shape[1] != 2*DIM) or \
+                                    (arg.shape[0] == DIM and arg.shape[1] != DIM):
+                                # wrong order (but need to exclude case where natoms == DIM or natoms == 2*DIM!)
+                                raise ValueError("AMBER timestep is to be initialized from (natoms, 2*3) or (natoms, 3) array")
+                        self.numatoms = arg.shape[0]
+                        self._pos = arg[:,0:DIM].copy('C')                       # C-order
+                        if arg.shape[1] == 2*DIM:
+                                self._velocities = arg[:,DIM:2*DIM].copy('C')    # C-order
+                        elif arg.shape[1] == DIM and velocities:
+                                self._velocities = numpy.zeros_like(self._pos)
+                        else:
+                                raise ValueError("AMBER timestep has no second dimension 3 or 6: shape=%r" % (arg.shape,))
+                        self.step = 0
+                        self.time = 0
+                else:
+                        raise ValueError("Cannot create an empty Timestep")
+                self._x = self._pos[:,0]
+                self._y = self._pos[:,1]
+                self._z = self._pos[:,2]
+
         @property
         def dimensions(self):
                 """unitcell dimensions (`A, B, C, alpha, beta, gamma`)
@@ -96,7 +196,7 @@ class Timestep(base.Timestep):
 
                 .. Note::
 
-                   The Amber trajectory only contains box lengths
+                   The ASCII AMBER trajectory only contains box lengths
                    `A,B,C`; we assume an orthorhombic box and set all
                    angles to 90º.
                 """
@@ -104,9 +204,9 @@ class Timestep(base.Timestep):
                 return self._unitcell
 
 class TRJReader(base.Reader):
-        """Amber trajectory reader.
+        """AMBER trajectory reader.
 
-        Reads the ASCII formatted `Amber TRJ format`_. Periodic box information
+        Reads the ASCII formatted `AMBER TRJ format`_. Periodic box information
         is auto-detected.
 
         The number of atoms in a timestep *must* be provided in the `numatoms`
@@ -121,10 +221,10 @@ class TRJReader(base.Reader):
         Functionality is currently limited to simple iteration over the
         trajectory.
 
-        .. _Amber TRJ format: http://ambermd.org/formats.html#trajectory
+        .. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory
         """
         format = 'TRJ'
-        units = {'time': 'ps', 'length': 'Angstroms'}
+        units = {'time': 'ps', 'length': 'Angstrom'}
         _Timestep = Timestep
 
         # TODO: implement random access via seek
@@ -132,11 +232,11 @@ class TRJReader(base.Reader):
         #       - compute seek offset & go
         #       - check that this works for files >2GB
 
-        def __init__(self, trjfilename, numatoms=None, **kwargs):
+        def __init__(self, filename, numatoms=None, **kwargs):
                 # amber trj REQUIRES the number of atoms from the topology
                 if numatoms is None:
-                        raise ValueError("Amber TRJ reader REQUIRES the numatoms keyword")
-                self.filename = trjfilename
+                        raise ValueError("AMBER TRJ reader REQUIRES the numatoms keyword")
+                self.filename = filename
                 self.__numatoms = numatoms
                 self.__numframes = None
 
@@ -204,7 +304,7 @@ class TRJReader(base.Reader):
                 return ts
 
         def _detect_amber_box(self):
-                """Detecting a box in a Amber trajectory
+                """Detecting a box in a AMBER trajectory
 
                 Rewind trajectory and check for potential box data
                 after the first frame.
@@ -223,7 +323,7 @@ class TRJReader(base.Reader):
                  - this WILL fail if we have exactly 1 atom in the trajectory because
                    there's no way to distinguish the coordinates from the box
                    so for 1 atom we always assume no box
-                 XXX: needs a Timestep that knows about Amber unitcells!
+                 XXX: needs a Timestep that knows about AMBER unitcells!
                 """
                 if self.numatoms == 1:
                         # for 1 atom we cannot detect the box with the current approach
@@ -249,7 +349,6 @@ class TRJReader(base.Reader):
                 self.close()
                 return self.periodic
 
-
         @property
         def numframes(self):
                 """Number of frames (obtained from reading the whole trajectory)."""
@@ -263,7 +362,7 @@ class TRJReader(base.Reader):
                         return self.__numframes
 
         def _read_trj_numatoms(self, filename):
-                raise NotImplementedError("It is not possible to relaibly deduce NATOMS from Amber trj files")
+                raise NotImplementedError("It is not possible to reliably deduce NATOMS from AMBER trj files")
 
         def _read_trj_numframes(self, filename):
                 self._reopen()
@@ -307,8 +406,8 @@ class TRJReader(base.Reader):
                 self.header = self.trjfile.readline()  # ignore first line
                 if len(self.header.rstrip()) > 80:
                         # Chimera uses this check
-                        raise OSError("Header of Amber formatted trajectory has more than 80 chars. "
-                                      "This is probably not a Amber trajectory.")
+                        raise OSError("Header of AMBER formatted trajectory has more than 80 chars. "
+                                      "This is probably not a AMBER trajectory.")
                 # reset ts
                 ts = self.ts
                 ts.status = 1
@@ -342,3 +441,186 @@ class TRJReader(base.Reader):
                         except EOFError:
                                 self.close()
                                 raise StopIteration
+
+
+class NCDFReader(base.Reader):
+        """Reader for `AMBER NETCDF format`_ (version 1.0).
+
+        AMBER binary trajectories are automatically recognised by the
+        file extension ".ncdf".
+
+        Current limitations:
+
+        * only trajectories with time in ps and lengths in Angstroem are processed
+        * scale_factors are not supported (and not checked)
+
+        .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.html
+
+        .. versionadded: 0.7.6
+        """
+
+        format = 'NCDF'
+        version = "1.0"
+        units = {'time': 'ps', 'length': 'Angstrom'}
+        _Timestep = Timestep
+        def __init__(self, filename, numatoms=None, **kwargs):
+                import netCDF4 as netcdf
+
+                self.filename = filename
+                convert_units = kwargs.pop('convert_units', None)
+                if convert_units is None:
+                        convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+                        self.convert_units = convert_units  # convert length and time to base units
+
+                self.trjfile = netcdf.Dataset(self.filename)
+
+                if not ('AMBER' in self.trjfile.Conventions.split(',') or 'AMBER' in self.trjfile.Conventions.split()):
+                        errmsg = "NCDF trajectory %r does not conform to AMBER specifications, "
+                        "http://ambermd.org/netcdf/nctraj.html ('AMBER' must be one of the tokens "
+                        "in attribute Conventions)" % (self.filename,)
+                        logger.fatal(errmsg)
+                        raise TypeError(errmsg)
+                if not self.trjfile.ConventionVersion == self.version:
+                        wmsg = "NCDF trajectory format is %s but the reader implements format %s" % (self.trjfile.ConventionVersion, self.version)
+                        warnings.warn(wmsg)
+                        logger.warn(wmsg)
+
+                self.numatoms = len(self.trjfile.dimensions['atom'])
+                self.numframes = len(self.trjfile.dimensions['frame'])
+                # also records time steps in data.variables['time'] and unit
+                # but my example only has 0
+
+                try:
+                        self.remarks = self.trjfile.title
+                except AttributeError:
+                        self.remarks = u""
+                # other metadata (*= requd):
+                # - program*              sander
+                # - programVersion*       9.0
+                # - application           AMBER
+                #
+
+                # checks for not-implemented features (other units would need to be hacked into core.units)
+                if self.trjfile.variables['time'].units != "picosecond":
+                        raise NotImplementedError("NETCDFReader currently assumes that the trajectory was written with a time unit of picoseconds and not {0}.".format(self.trjfile.variables['time'].units))
+                if self.trjfile.variables['coordinates'].units != "angstrom":
+                        raise NotImplementedError("NETCDFReader currently assumes that the trajectory was written with a length unit of Angstroem and not {0}.".format(self.trjfile.variables['coordinates'].units))
+                if hasattr(self.trjfile.variables['coordinates'], 'scale_factor'):
+                        raise NotImplementedError("scale_factors are not implemented")
+                if numatoms is not None:
+                        if numatoms != self.numatoms:
+                                raise ValueError("Supplied numatoms (%d) != natom from ncdf (%d). "
+                                                 "Note: numatoms can be None and then the ncdf value is used!" % (numatoms, self.numatoms))
+
+                self.has_velocities =  ('velocities' in self.trjfile.variables)
+                self.fixed = 0
+                self.skip = 1
+                self.skip_timestep = 1   # always 1 for trj at the moment ? CHECK DOCS??
+                self.delta = kwargs.pop("delta", 1.0)   # SHOULD GET FROM NCDF (as mean(diff(time)))??
+                self.ts = Timestep(self.numatoms, velocities=self.has_velocities)
+
+                self.periodic = 'cell_lengths' in self.trjfile.variables
+                self.ts = self._Timestep(self.numatoms)
+
+                self._current_frame = 0
+
+        def _read_frame(self, frame, ts):
+                if numpy.dtype(type(frame)) != numpy.dtype(int):
+                        # convention... for netcdf could also be a slice
+                        raise TypeError("frame must be a positive integer")
+                if frame >= self.numframes or frame < 0:
+                        raise IndexError("frame index must be 0 <= frame < {0}".format(self.numframes))
+                # note: self.trjfile.variables['coordinates'].shape == (frames, numatoms, 3)
+                ts._pos[:] = self.trjfile.variables['coordinates'][frame]
+                ts.time = self.trjfile.variables['time'][frame]
+                if self.has_velocities:
+                        ts._velocities[:] = self.trjfile.variables['velocities'][frame]
+                if self.periodic:
+                        ts._unitcell[:3] = self.trjfile.variables['cell_lengths'][frame]
+                        ts._unitcell[3:] = self.trjfile.variables['cell_angles'][frame]
+                if self.convert_units:
+                        self.convert_pos_from_native(ts._pos)                       # in-place !
+                        self.convert_time_from_native(ts.time)                      # in-place ! (hope this works...)
+                        if self.has_velocities:
+                                self.convert_velocities_from_native(ts._velocities) # in-place !
+                        if self.periodic:
+                                self.convert_pos_from_native(ts._unitcell[:3])      # in-place ! (only lengths)
+                ts.frame = frame+1   # frame labels are 1-based
+                self._current_frame = frame
+                return ts
+
+        def _read_next_timestep(self, ts=None):
+                if ts is None:
+                        ts = self.ts
+                try:
+                        return self._read_frame(self._current_frame+1, ts)
+                except IndexError:
+                        raise IOError
+
+
+        def __getitem__(self, frame):
+                """Return the Timestep corresponding to *frame*.
+
+                If *frame* is a integer then the corresponding frame is
+                returned. Negative numbers are counted from the end.
+
+                If frame is a :class:`slice` then an iterator is returned that
+                allows iteration over that part of the trajectory.
+
+                .. Note:: *frame* is a 0-based frame index.
+                """
+                if numpy.dtype(type(frame)) != numpy.dtype(int) and type(frame) != slice:
+                        raise TypeError("Can only index NETCDF trajectory with int or a slice.")
+                if numpy.dtype(type(frame)) == numpy.dtype(int):
+                        if frame < 0:
+                                # Interpret similar to a sequence
+                                frame = len(self) + frame
+                                if frame < 0 or frame >= len(self):
+                                        raise IndexError
+                        return self._read_frame(frame, self.ts)
+                elif type(frame) == slice: # if frame is a slice object
+                        if not (((type(frame.start) == int) or (frame.start == None)) and
+                                ((type(frame.stop) == int) or (frame.stop == None)) and
+                                ((type(frame.step) == int) or (frame.step == None))):
+                                raise TypeError("Slice indices are not integers")
+                        def iterNETCDF(start=frame.start, stop=frame.stop, step=frame.step):
+                                start, stop, step = self._check_slice_indices(start, stop, step)
+                                for i in xrange(start, stop, step):
+                                        yield self._read_frame(i, self.ts)
+                        return iterNETCDF()
+                raise ValueError("Type {0} of argument {1} not supported".format(type(i), i))
+
+        def __iter__(self):
+                for i in xrange(0, self.numframes):
+                        try:
+                                yield self._read_frame(i, self.ts)
+                        except IndexError:
+                                raise StopIteration
+
+        def close(self):
+                self.trjfile.close()
+
+        __del__ = close
+
+        def Writer(self, filename, **kwargs):
+                """Returns a NCDFWriter for *filename* with the same parameters as this NCDF.
+
+                All values can be changed through keyword arguments.
+
+                :Arguments:
+                  *filename*
+                      filename of the output NCDF trajectory
+                :Keywords:
+                  *numatoms*
+                      number of atoms
+                  *delta*
+                      length of one timestep in picoseconds
+                  *remarks*
+                      string that is stored in the title field
+
+                :Returns: :class:`NCDFWriter`
+                """
+                numatoms = kwargs.pop('numatoms', self.numatoms)
+                kwargs.setdefault('remarks', self.remarks)
+                kwargs.setdefault('delta', self.delta)
+                return NCDFWriter(filename, numatoms, **kwargs)

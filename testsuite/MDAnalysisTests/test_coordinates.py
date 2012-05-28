@@ -25,7 +25,7 @@ from numpy.testing import *
 from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small, PDB_multiframe, PDB,CRD,XTC,TRR,GRO, \
-    XYZ,XYZ_bz2,XYZ_psf, PRM,TRJ,TRJ_bz2, PRMpbc, TRJpbc_bz2, PQR
+    XYZ,XYZ_bz2,XYZ_psf, PRM,TRJ,TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR
 
 import os
 import tempfile
@@ -196,6 +196,22 @@ class RefCappedAla(object):
     ref_numframes = 11
     ref_periodic = True
 
+class RefVGV(object):
+    """Mixin class to provide comparison numbers.
+
+    Computed from bala.trj::
+
+      w = MDAnalysis.Universe(PRMncdf, TRJncdf)
+      ref_numatoms = len(w.atoms)
+      ref_proteinatoms = len(w.selectAtoms("protein"))
+      ref_sum_centre_of_geometry = np.sum([protein.centerOfGeometry() for ts in w.trajectory])
+    """
+    ref_numatoms = 2661
+    ref_proteinatoms = 50
+    ref_sum_centre_of_geometry = 1552.9125
+    ref_numframes = 30
+    ref_periodic = True
+
 
 class _TRJReaderTest(TestCase):
     # use as a base class (override setUp()) and mixin a reference
@@ -240,6 +256,22 @@ class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
     def setUp(self):
         self.universe = mda.Universe(PRMpbc, TRJpbc_bz2)
         self.prec = 3
+
+class TestNCDF(_TRJReaderTest, RefVGV):
+    def setUp(self):
+        self.universe = mda.Universe(PRMncdf, NCDF)
+        self.prec = 3
+
+    def test_slice_iteration(self):
+        frames = [ts.frame-1 for ts in self.universe.trajectory[4:-2:4]]
+        assert_equal(frames,
+                     np.arange(self.universe.trajectory.numframes)[4:-2:4],
+                     err_msg="slicing did not produce the expected frames")
+
+    def test_metadata(self):
+        data = self.universe.trajectory.trjfile
+        assert_equal(data.Conventions, 'AMBER')
+        assert_equal(data.ConventionVersion, '1.0')
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
     # see TestPDBReader how to set up!

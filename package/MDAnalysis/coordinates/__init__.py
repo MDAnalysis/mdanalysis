@@ -522,7 +522,7 @@ PDB). In theses cases, the kind of writer is selected with the
 
 __all__ = ['reader', 'writer']
 
-import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS  #, NETCDF
+import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS
 import base
 from core import reader, writer
 
@@ -536,9 +536,9 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'PDBQT': PDBQT.PDBQTReader,
                        'CRD': CRD.CRDReader,
                        'GRO': GRO.GROReader,
-                       'TRJ':TRJ.TRJReader,     # Amber text
-                       'MDCRD':TRJ.TRJReader,   # Amber text
-                       #'NETCDF':NETCDFReader,  # Amber netcdf
+                       'TRJ': TRJ.TRJReader,     # AMBER text
+                       'MDCRD': TRJ.TRJReader,   # AMBER text
+                       'NCDF': TRJ.NCDFReader,   # AMBER netcdf
                        'PQR': PQR.PQRReader,
                        'LAMMPS': LAMMPS.DCDReader,
                        'CHAIN': base.ChainReader,
