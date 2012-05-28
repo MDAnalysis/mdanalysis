@@ -334,6 +334,7 @@ class _WriteAtoms(TestCase):
         U = self.universe
         W = MDAnalysis.Writer(self.outfile)
         W.write(U)
+        W.close()
         u2 = self.universe_from_tmp()
         assert_equal(len(u2.atoms), len(U.atoms), "written 4AKE universe does not match original universe in size")
         assert_almost_equal(u2.atoms.coordinates(), U.atoms.coordinates(), self.precision,
