@@ -257,7 +257,7 @@ class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
         self.universe = mda.Universe(PRMpbc, TRJpbc_bz2)
         self.prec = 3
 
-class TestNCDF(_TRJReaderTest, RefVGV):
+class TestNCDFReader(_TRJReaderTest, RefVGV):
     def setUp(self):
         self.universe = mda.Universe(PRMncdf, NCDF)
         self.prec = 3
@@ -272,6 +272,72 @@ class TestNCDF(_TRJReaderTest, RefVGV):
         data = self.universe.trajectory.trjfile
         assert_equal(data.Conventions, 'AMBER')
         assert_equal(data.ConventionVersion, '1.0')
+
+class TestNCDFWriter(TestCase, RefVGV):
+    def setUp(self):
+        self.universe = mda.Universe(PRMncdf, NCDF)
+        self.prec = 6
+        ext = ".ncdf"
+        fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        self.Writer = MDAnalysis.coordinates.TRJ.NCDFWriter
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.universe
+        del self.Writer
+
+    def test_write_trajectory(self):
+        t = self.universe.trajectory
+        W = self.Writer(self.outfile, t.numatoms, delta=t.delta)
+        self._copy_traj(W)
+
+    def test_OtherWriter(self):
+        t = self.universe.trajectory
+        W = t.OtherWriter(self.outfile)
+        self._copy_traj(W)
+
+    def _copy_traj(self, writer):
+        for ts in self.universe.trajectory:
+            writer.write_next_timestep(ts)
+        writer.close()
+
+        uw = mda.Universe(PRMncdf, self.outfile)
+
+        # check that the trajectories are identical for each time step
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
+                                      err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+            # not a good test because in the example trajectory all times are 0
+            assert_almost_equal(orig_ts.time, written_ts.time, self.prec,
+                                err_msg="Time for step {0} are not the same.".format(orig_ts.frame))
+            assert_array_almost_equal(written_ts.dimensions, orig_ts.dimensions, self.prec,
+                                      err_msg="unitcells are not identical")
+
+    @attr('slow')
+    def test_TRR2NCDF(self):
+        trr = MDAnalysis.Universe(GRO, TRR)
+        W = self.Writer(self.outfile, trr.trajectory.numatoms)
+        for ts in trr.trajectory:
+            W.write_next_timestep(ts)
+        W.close()
+
+        uw = MDAnalysis.Universe(GRO, self.outfile)
+
+        for orig_ts, written_ts in itertools.izip(trr.trajectory, uw.trajectory):
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
+                                      err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+            assert_array_almost_equal(written_ts._velocities, orig_ts._velocities, self.prec,
+                                      err_msg="velocity mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+            assert_almost_equal(orig_ts.time, written_ts.time, self.prec,
+                                err_msg="Time for step {0} are not the same.".format(orig_ts.frame))
+            assert_array_almost_equal(written_ts.dimensions, orig_ts.dimensions, self.prec,
+                                      err_msg="unitcells are not identical")
+        del trr
+
+
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
     # see TestPDBReader how to set up!
