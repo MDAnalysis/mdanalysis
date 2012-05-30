@@ -31,6 +31,7 @@ Note that the files are actually located in a separate package,
 """
 __all__ = ["PSF", "DCD", "CRD",                 # CHARMM
            "DCD_empty",
+           "PSF_NAMD", "PDB_NAMD",            # NAMD
            "PDB_small",                         # PDB
            "PDB_multiframe",
            "PDB", "GRO", "XTC", "TRR", "TPR",   # Gromacs
@@ -49,6 +50,9 @@ PSF = resource_filename(__name__, 'data/adk.psf')
 DCD = resource_filename(__name__, 'data/adk_dims.dcd')
 DCD_empty = resource_filename(__name__, 'data/empty.dcd')
 CRD = resource_filename(__name__, 'data/adk_open.crd')
+
+PSF_NAMD = resource_filename(__name__, 'data/namd_cgenff.psf')
+PDB_NAMD = resource_filename(__name__, 'data/namd_cgenff.pdb')
 
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
