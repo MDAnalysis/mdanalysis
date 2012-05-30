@@ -24,13 +24,18 @@ data such as B-factors. It is also possible to substitute a PDB file
 instead of PSF file in order to define the list of atoms (but no
 connectivity information will be  available in this case).
 
-Two different implementations of PDB I/O are available: the ":ref:`permissive`"
-and the ":ref:`strict`" Reader/Writers. The default are the "permissive" ones
+Two different implementations of PDB I/O are available: the ":ref:`permissive<permissive>`"
+and the ":ref:`strict<strict>`" Reader/Writers. The default are the "permissive" ones
 but this can be changed by setting the flag "permissive_pdb_reader" in
-:data:`MDAnalysis.flags` (see :ref:`flags-label` and
-:class:`MDAnalysis.flagsDocs`) to ``False``::
+:data:`MDAnalysis.flags` (see :ref:`flags-label`) to ``False``::
 
    MDAnalysis.flags["permissive_pdb_reader"] = False
+
+The *default for MDAnalysis* is to use the
+":ref:`permissive<permissive>`" :class:`PrimitivePDBReader` and
+:class:`PrimitivePDBWriter`, corresponding to ::
+
+   MDAnalysis.flags["permissive_pdb_reader"] = True
 
 On a case-by-case basis one kind of reader can be selected with the
 *permissive* keyword to :class:`~MDAnalysis.core.AtomGroup.Universe`, e.g. ::
@@ -46,6 +51,7 @@ current timestep.
 .. autoclass:: Timestep
    :members:
 
+.. _permissive:
 
 Simple (permissive) PDB Reader and Writer
 -----------------------------------------
@@ -110,10 +116,10 @@ Classes
 .. autoclass:: PrimitivePDBWriter
    :members:
 
-   .. autofunction:: _check_pdb_coordinates
-   .. autofunction:: _write_pdb_bonds
-   .. autofunction:: _update_frame
-   .. autofunction:: _write_timestep
+   .. automethod:: _check_pdb_coordinates
+   .. automethod:: _write_pdb_bonds
+   .. automethod:: _update_frame
+   .. automethod:: _write_timestep
 
 .. autoclass:: MultiPDBWriter
    :members:
@@ -144,16 +150,13 @@ Classes
 .. autoclass:: PDBWriter
    :members:
 
-
-.. _permissive:
-
 References
 ----------
 
 .. [Hamelryck2003]  Hamelryck, T., Manderick, B. (2003) PDB parser and structure class
                     implemented in Python. Bioinformatics, 19, 2308-2310. http://biopython.org
 
-.. PDB standard: http://www.wwpdb.org/documentation/format32/v3.2.html
+.. _PDB standard: http://www.wwpdb.org/documentation/format32/v3.2.html
 """
 from __future__ import with_statement
 
@@ -363,11 +366,15 @@ class PDBWriter(base.Writer):
 class PrimitivePDBReader(base.Reader):
     """PDBReader that reads a PDB-formatted file, no frills.
 
-    Records read:
+    Records read (see `PDB coordinate section`_ for details):
      - CRYST1 for unitcell A,B,C, alpha,beta,gamm
-     - ATOM. HETATM for x,y,z
+     - ATOM or HETATM for x,y,z
+     - HEADER, TITLE, COMPND
 
-    http://www.wwpdb.org/documentation/format32/sect9.html
+    Reads multi-`MODEL`_ PDB files as trajectories.
+
+    .. _PDB coordinate section: http://www.wwpdb.org/documentation/format32/sect9.html
+    .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
 
     =============  ============  ===========  =============================================
     COLUMNS        DATA  TYPE    FIELD        DEFINITION
@@ -397,6 +404,10 @@ class PrimitivePDBReader(base.Reader):
     77 - 78        LString(2)    element      Element symbol, right-justified. IGNORED
     79 - 80        LString(2)    charge       Charge  on the atom. IGNORED
     =============  ============  ===========  =============================================
+
+
+    .. SeeAlso:: :class:`PrimitivePDBWriter`
+
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
@@ -742,13 +753,13 @@ class PrimitivePDBWriter(base.Writer):
 
          *multiframe*
            ``False``: write a single frame to the file; ``True``: create a
-           multi frame PDB file in which frames are written as MODEL_
-           ... ENDMDL_ records. If ``None``, then the class default is chosen.
-           [``None``]
+           multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
+           records. If ``None``, then the class default is chosen.    [``None``]
 
         .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
         .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
         .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
+
         """
 
         self.filename = filename
@@ -1017,6 +1028,7 @@ class PrimitivePDBWriter(base.Writer):
            MODEL records are written. (Previously, this was decided based on the
            underlying trajectory and only if ``len(traj) > 1`` would MODEL records
            have been written.)
+
         """
 
         traj = self.trajectory
@@ -1050,6 +1062,7 @@ class PrimitivePDBWriter(base.Writer):
         """Write HEADER_ record.
 
         .. _HEADER: http://www.wwpdb.org/documentation/format32/sect2.html#HEADER
+
         """
         if not hasattr(trajectory, 'header'):
           return
@@ -1060,6 +1073,7 @@ class PrimitivePDBWriter(base.Writer):
         """Write TITLE_ record.
 
         .. _TITLE: http://www.wwpdb.org/documentation/format32/sect2.html
+
         """
         line = " ".join(title)    # TODO: should do continuation automatically
         self.pdbfile.write(self.fmt['TITLE'] % line)
@@ -1074,6 +1088,7 @@ class PrimitivePDBWriter(base.Writer):
 
         .. _REMARK: http://www.wwpdb.org/documentation/format32/remarks1.html
         .. _REMARK (update): http://www.wwpdb.org/documentation/format32/remarks2.html
+
         """
         for remark in remarks:
             self.pdbfile.write(self.fmt['REMARK'] % (remark))
@@ -1089,6 +1104,7 @@ class PrimitivePDBWriter(base.Writer):
         """Write CRYST1_ record.
 
         .. _CRYST1: http://www.wwpdb.org/documentation/format32/sect8.html
+
         """
         self.pdbfile.write(self.fmt['CRYST1'] % (tuple(dimensions) + (spacegroup, zvalue)))
 
@@ -1096,6 +1112,7 @@ class PrimitivePDBWriter(base.Writer):
         """Write the MODEL_ record.
 
         .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
+
         """
         self.pdbfile.write(self.fmt['MODEL'] % modelnumber)
 
@@ -1108,6 +1125,7 @@ class PrimitivePDBWriter(base.Writer):
         :meth:`~PrimitivePDBWriter.END` explicitly.
 
         .. _END: http://www.wwpdb.org/documentation/format32/sect11.html#END
+
         """
         if not self.has_END:
             self.pdbfile.write(self.fmt['END'])    # only write a single END record
@@ -1117,6 +1135,7 @@ class PrimitivePDBWriter(base.Writer):
         """Write the ENDMDL_ record.
 
         .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
+
         """
         self.pdbfile.write(self.fmt['ENDMDL'])
 
@@ -1188,6 +1207,7 @@ class PrimitivePDBWriter(base.Writer):
         """Write CONECT_ record.
 
         .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
+
         """
         conect = ["%5d" % entry for entry in conect]
         conect = "".join(conect)
@@ -1217,5 +1237,6 @@ class MultiPDBWriter(PrimitivePDBWriter):
        single frames.
 
     .. versionadded:: 0.7.6
+
     """
     _multiframe = True

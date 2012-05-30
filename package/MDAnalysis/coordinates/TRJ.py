@@ -19,8 +19,9 @@
 AMBER trajectories --- :mod:`MDAnalysis.coordinates.TRJ`
 ========================================================
 
-AMBER_ can write ASCII trajectories ("traj") and binary trajectories
-("netcdf"). MDAnalysis supports reading of both formats.
+AMBER_ can write :ref:`ASCII trajectories<ascii-trajectories>` ("traj") and
+:ref:`binary trajectories<netcdf-trajectories>` ("netcdf"). MDAnalysis supports
+reading of both formats and writing for the binary trajectories.
 
 .. Note::
 
@@ -33,6 +34,34 @@ AMBER_ can write ASCII trajectories ("traj") and binary trajectories
 * lengths in Angstrom (Å)
 * time in ps (but see below)
 
+AMBER trajectory coordinate frames are based on a :class:`Timestep`
+object.
+
+.. autoclass:: Timestep
+   :members:
+
+   .. attribute:: _pos
+
+      coordinates of the atoms as a :class:`numpy.ndarray` of shape `(numatoms, 3)`
+
+   .. attribute:: _velocities
+
+      velocities of the atoms as a :class:`numpy.ndarray` of shape `(numatoms, 3)`;
+      only available if the trajectory contains velocities or if the
+      *velocities* = ``True`` keyword has been supplied.
+
+
+.. _ascii-trajectories:
+
+ASCII TRAJ trajectories
+-----------------------
+
+ASCII AMBER_ TRJ coordinate files (as defined in `AMBER TRJ format`_)
+are handled by the :class:`TRJReader`. It is also possible to directly
+read *bzip2* or *gzip* compressed files.
+
+AMBER ASCII trajectories are recognised by the suffix '.trj' or
+'.mdcrd' (possibly with an additional '.gz' or '.bz2').
 
 .. rubric:: Limitations
 
@@ -51,27 +80,12 @@ AMBER_ can write ASCII trajectories ("traj") and binary trajectories
 * If the trajectory contains exactly *one* atom then it is always
   assumed to be non-periodic (for technical reasons).
 
-AMBER trajectory coordinate frames are based on a :class:`Timestep`
-object.
-
-.. autoclass:: Timestep
-   :members:
-
-
-
-ASCII TRAJ trajectories
------------------------
-
-ASCII AMBER_ TRJ coordinate files (as defined in `AMBER TRJ format`_)
-are handled by the :class:`TRJReader`. It is also possible to directly
-read *bzip2* or *gzip* compressed files.
-
-AMBER ASCII trajectories are recognised by the suffix '.trj' or
-'.mdcrd' (possibly with an additional '.gz' or '.bz2').
 
 .. autoclass:: TRJReader
    :members:
 
+
+.. _netcdf-trajectories:
 
 Binary NetCDF trajectories
 --------------------------
@@ -86,6 +100,12 @@ defaults of ångström and picoseconds but at the moment MDAnalysis only support
 those and will raise a :exc:`NotImplementedError` if anything else is detected.
 
 .. autoclass:: NCDFReader
+   :members:
+
+   .. automethod:: __getitem__
+   .. automethod:: __iter__
+
+.. autoclass:: NCDFWriter
    :members:
 
 
@@ -124,13 +144,16 @@ class Timestep(base.Timestep):
         """AMBER trajectory Timestep.
 
         The Timestep can be initialized with *arg* being
+
         1. an integer (the number of atoms) and an optional keyword argument *velocities* to allocate
            space for both coordinates and velocities;
-        2. another :class:`Timetep` instance, in which case a copy is made (If the copied Timestep
+        2. another :class:`Timestep` instance, in which case a copy is made (If the copied Timestep
            does not contain velocities but *velocities* = ``True`` is provided, then space for
            velocities is allocated);
-        3. a :class:`numpy.ndarray` of shape (numatoms, 3) (for positions only) or (numatoms, 6) (for
-           positions and velocities): ``positions = arg[:,:3]``, ``velocities = arg[:3:6]``.
+        3. a :class:`numpy.ndarray` of shape ``(numatoms, 3)`` (for positions only) or
+           ``(numatoms, 6)`` (for positions and velocities): ``positions = arg[:,:3]``,
+           ``velocities = arg[:3:6]``.
+
         """
         # based on TRR Timestep (MDAnalysis.coordinates.xdrfile.TRR.Timestep)
         #
@@ -202,7 +225,7 @@ class Timestep(base.Timestep):
 
                 .. Note::
 
-                   The ASCII AMBER trajectory only contains box lengths
+                   A :ref:`ASCII AMBER trajectory<ascii-trajectories>` only contains box lengths
                    `A,B,C`; we assume an orthorhombic box and set all
                    angles to 90º.
                 """
@@ -455,6 +478,19 @@ class NCDFReader(base.Reader):
         AMBER binary trajectories are automatically recognised by the
         file extension ".ncdf".
 
+        The number of atoms (*numatoms*) does not have to be provided as it can
+        be read from the trajectory. The trajectory reader can randomly access
+        frames and therefore supports direct indexing (with 0-based frame
+        indices) and full-feature trajectory iteration, including slicing.
+
+        Velocities are autodetected and read into the
+        :attr:`Timestep._velocities` attribute.
+
+        Periodic unit cell information is detected and used to populate the
+        :attr:`Timestep.dimensions` attribute. (If no unit cell is available in
+        the trajectory, then :attr:`Timestep.dimensions` will return
+        ``[0,0,0,0,0,0]``.)
+
         Current limitations:
 
         * only trajectories with time in ps and lengths in Angstroem are processed
@@ -462,7 +498,10 @@ class NCDFReader(base.Reader):
 
         .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.html
 
+        .. SeeAlso:: :class:`NCDFWriter`
+
         .. versionadded: 0.7.6
+
         """
 
         format = 'NCDF'
@@ -481,9 +520,9 @@ class NCDFReader(base.Reader):
                 self.trjfile = netcdf.Dataset(self.filename)
 
                 if not ('AMBER' in self.trjfile.Conventions.split(',') or 'AMBER' in self.trjfile.Conventions.split()):
-                        errmsg = "NCDF trajectory %r does not conform to AMBER specifications, "
-                        "http://ambermd.org/netcdf/nctraj.html ('AMBER' must be one of the tokens "
-                        "in attribute Conventions)" % (self.filename,)
+                        errmsg = ("NCDF trajectory {0} does not conform to AMBER specifications, "+
+                                  "http://ambermd.org/netcdf/nctraj.html ('AMBER' must be one of the tokens "+
+                                  "in attribute Conventions)").format(self.filename)
                         logger.fatal(errmsg)
                         raise TypeError(errmsg)
                 if not self.trjfile.ConventionVersion == self.version:
@@ -529,6 +568,8 @@ class NCDFReader(base.Reader):
                 self.ts = self._Timestep(self.numatoms, velocities=self.has_velocities)
 
         def _read_frame(self, frame, ts):
+                if self.trjfile is None:
+                        raise IOError("Trajectory is closed")
                 if numpy.dtype(type(frame)) != numpy.dtype(int):
                         # convention... for netcdf could also be a slice
                         raise TypeError("frame must be a positive integer")
@@ -595,6 +636,7 @@ class NCDFReader(base.Reader):
                 raise ValueError("Type {0} of argument {1} not supported".format(type(i), i))
 
         def __iter__(self):
+                """Iterate over the whole trajectory"""
                 for i in xrange(0, self.numframes):
                         try:
                                 yield self._read_frame(i, self.ts)
@@ -602,7 +644,10 @@ class NCDFReader(base.Reader):
                                 raise StopIteration
 
         def close(self):
-                self.trjfile.close()
+                """Close trajectory; any further access will raise an :exc:`IOError`"""
+                if not self.trjfile is None:
+                        self.trjfile.close()
+                        self.trjfile = None
 
         __del__ = close
 
@@ -645,7 +690,10 @@ class NCDFWriter(base.Writer):
 
         .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.html
 
+        .. SeeAlso:: :class:`NCDFReader`
+
         .. versionadded: 0.7.6
+
         """
 
         format = 'NCDF'
@@ -850,3 +898,5 @@ class NCDFWriter(base.Writer):
                 if not self.trjfile is None:
                         self.trjfile.close()
                         self.trjfile = None
+
+        __del__ = close
