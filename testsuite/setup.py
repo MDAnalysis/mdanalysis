@@ -97,7 +97,7 @@ For details see the report for `Issue 87`_.
                                    ['data/*.psf','data/*.dcd','data/*.pdb',
                                     'data/*.gro', 'data/*.xtc','data/*.trr',
                                     'data/*.crd', 'data/*.xyz',
-                                    'data/*.prmtop', 'data/*.trj', 'data/*.mdcrd',
+                                    'data/*.prmtop', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',
                                     'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
                                     ],
                                },
