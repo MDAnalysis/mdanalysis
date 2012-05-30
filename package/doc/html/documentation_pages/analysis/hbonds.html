@@ -156,7 +156,7 @@ that are not part of the output), stored in
 <p>Using the <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></tt></a> method one can reformat
 the results as a flat &#8220;normalised&#8221; table that is easier to import into a
 database for further processing. <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.save_table()</span></tt></a> saves
-the table to a pickled file. The table itself is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-3503c5f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
+the table to a pickled file. The table itself is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-470c857)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
 </div>
 <div class="section" id="detection-of-hydrogen-bonds">
 <h2>3.6.2. Detection of hydrogen bonds<a class="headerlink" href="#detection-of-hydrogen-bonds" title="Permalink to this headline">¶</a></h2>
@@ -337,7 +337,7 @@ interactions.</p>
 <h2>3.6.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hbonds.</tt><tt class="descname">HydrogenBondAnalysis</tt><big>(</big><em>universe</em>, <em>selection1='protein'</em>, <em>selection2='all'</em>, <em>selection1_type='both'</em>, <em>update_selection1=False</em>, <em>update_selection2=False</em>, <em>filter_first=True</em>, <em>distance=3.0</em>, <em>angle=120.0</em>, <em>donors=None</em>, <em>acceptors=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hbonds.</tt><tt class="descname">HydrogenBondAnalysis</tt><big>(</big><em>universe</em>, <em>selection1='protein'</em>, <em>selection2='all'</em>, <em>selection1_type='both'</em>, <em>update_selection1=False</em>, <em>update_selection2=False</em>, <em>filter_first=True</em>, <em>distance=3.0</em>, <em>angle=120.0</em>, <em>donors=None</em>, <em>acceptors=None</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a hydrogen bond analysis</p>
 <p>The analysis of the trajectory is performed with the
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.run()</span></tt></a> method. The result is stored in
@@ -403,12 +403,28 @@ hydrogen interactions and a possibly better value is 150º.</p>
 <dd><p class="first last">Extra H acceptor atom types (in addition to those in
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS"><tt class="xref py py-attr docutils literal"><span class="pre">DEFAULT_ACCEPTORS</span></tt></a>), must be a sequence.</p>
 </dd>
+<dt><em>verbose</em></dt>
+<dd><p class="first last">If set to true enables per-frame debug logging. This is disabled
+by default because it generates a very large amount of output in
+the log file. (Note that a logger must have been started to see
+the output, e.g. using <a class="reference internal" href="../core/log.html#MDAnalysis.start_logging" title="MDAnalysis.start_logging"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.start_logging()</span></tt></a>.)</p>
+</dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
 <p>The timeseries is accessible as the attribute <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a>.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6.</span></p>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timesteps">
+<tt class="descname">timesteps</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timesteps" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of the times of each timestep. This can be used together with
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">timeseries</span></tt></a> to find the specific time point
+of a hydrogen bond existence, or see <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table"><tt class="xref py py-attr docutils literal"><span class="pre">table</span></tt></a>.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries">
 <tt class="descname">timeseries</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="Permalink to this definition">¶</a></dt>
@@ -431,6 +447,8 @@ part of the output:</p>
     ...
 ]</pre>
 </div>
+<p>The time of each step is not stored with each hydrogen bond frame but in
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timesteps" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timesteps"><tt class="xref py py-attr docutils literal"><span class="pre">timesteps</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -439,7 +457,7 @@ part of the output:</p>
 <dd><p>A normalised table of the data in
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a>, generated by
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></tt></a>. It is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-3503c5f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> with the following columns:</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-470c857)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> with the following columns:</p>
 <blockquote>
 <div><ol class="arabic simple" start="0">
 <li>&#8220;time&#8221;</li>
@@ -492,7 +510,7 @@ Use the keyword <em>donors</em> to add a list of additional donor names.</p>
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table">
 <tt class="descname">generate_table</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a normalised table of the results.</p>
-<p>The table is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-3503c5f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> in the
+<p>The table is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-470c857)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> in the
 attribute <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table"><tt class="xref py py-attr docutils literal"><span class="pre">table</span></tt></a> and can be used
 with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL">recsql</a>.</p>
 <dl class="docutils">
@@ -518,20 +536,22 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run">
 <tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze trajectory and produce timeseries.</p>
-<p>Returns hydrogen bond data per frame. The data are also stored
+<p>Stores the hydrogen bond data per frame
 as <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a> (see there for
 output format).</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></tt></a> for
-another way to access the data.</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></tt></a> for processing
+the data into a different format.</p>
 </div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6.</span></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table">
 <tt class="descname">save_table</tt><big>(</big><em>filename='hbond_table.pickle'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves the table to a pickled file.</p>
+<dd><p>Saves <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table"><tt class="xref py py-attr docutils literal"><span class="pre">table</span></tt></a> to a pickled file.</p>
 <p>Load with</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">cPickle</span>
 <span class="n">table</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
@@ -539,7 +559,7 @@ another way to access the data.</p>
 </div>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference external" href="http://docs.python.org/library/pickle.html#cPickle" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cPickle</span></tt></a> module and <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-3503c5f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a></p>
+<p class="last"><a class="reference external" href="http://docs.python.org/library/pickle.html#cPickle" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cPickle</span></tt></a> module and <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-470c857)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a></p>
 </div>
 </dd></dl>
 

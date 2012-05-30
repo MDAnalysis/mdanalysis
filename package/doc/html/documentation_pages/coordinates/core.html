@@ -152,6 +152,11 @@ format.</p>
 <dd><p class="first last">The number of atoms in the output trajectory; can be ommitted
 for single-frame writers.</p>
 </dd>
+<dt><em>multiframe</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: write a trajectory with multiple frames; <tt class="docutils literal"><span class="pre">False</span></tt>
+only write a single frame snapshot; <tt class="docutils literal"><span class="pre">None</span></tt> first try to get
+a multiframe writer and then fall back to single frame [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first">Keyword arguments for the writer; all trajectory Writers accept
 at least</p>
@@ -182,6 +187,8 @@ and <tt class="xref py py-class docutils literal"><span class="pre">TRRWriter</s
 </tr>
 </tbody>
 </table>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>Added <em>multiframe</em> keyword. See also <a class="reference internal" href="#MDAnalysis.coordinates.core.get_writer_for" title="MDAnalysis.coordinates.core.get_writer_for"><tt class="xref py py-func docutils literal"><span class="pre">get_writer_for()</span></tt></a>.</p>
 </dd></dl>
 
 <p>Helper functions:</p>
@@ -195,7 +202,7 @@ provided.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.core.get_writer_for">
-<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">get_writer_for</tt><big>(</big><em>filename=None</em>, <em>format='DCD'</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.get_writer_for" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">get_writer_for</tt><big>(</big><em>filename=None</em>, <em>format='DCD'</em>, <em>multiframe=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.get_writer_for" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an appropriate trajectory or frame writer class for <em>filename</em>.</p>
 <p>The format is determined by the <em>format</em> argument or the extension
 of <em>filename</em>. The default is to return a dcd writer (<em>format</em> = &#8216;dcd&#8217;).</p>
@@ -212,11 +219,19 @@ the Writer is chosen accordingly.</p>
 <dd><p class="first last">If no <em>filename</em> is supplied then the format can be explicitly set;
 possible values are &#8220;DCD&#8221;, &#8220;XTC&#8221;, &#8220;TRR&#8221;; &#8220;PDB&#8221;, &#8220;CRD&#8221;, &#8220;GRO&#8221;.</p>
 </dd>
+<dt><em>multiframe</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: write multiple frames to the trajectory; <tt class="docutils literal"><span class="pre">False</span></tt>: only
+write a single coordinate frame; <tt class="docutils literal"><span class="pre">None</span></tt>: first try trajectory (multi
+frame writers), then the single frame ones. Default is <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
+</dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>Added <em>multiframe</em> keyword; the default <tt class="docutils literal"><span class="pre">None</span></tt> reflects the previous
+behaviour.</p>
 </dd></dl>
 
 <dl class="function">

@@ -1,0 +1,586 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.6. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS &mdash; MDAnalysis 0.7.6-devel documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.6-devel',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.7.6-devel documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.7.6-devel documentation" href="../../index.html" />
+    <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
+    <link rel="next" title="5.7. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" />
+    <link rel="prev" title="5.5. DCD trajectory I/O — MDAnalysis.coordinates.DCD" href="DCD.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="GRO.html" title="5.7. GRO file format — MDAnalysis.coordinates.GRO"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="DCD.html" title="5.5. DCD trajectory I/O — MDAnalysis.coordinates.DCD"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.6. LAMMPS DCD trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></tt></a><ul>
+<li><a class="reference internal" href="#classes">5.6.1. Classes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="DCD.html"
+                        title="previous chapter">5.5. DCD trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="GRO.html"
+                        title="next chapter">5.7. GRO file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/coordinates/LAMMPS.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.LAMMPS"></span><div class="section" id="lammps-dcd-trajectory-i-o-mdanalysis-coordinates-lammps">
+<h1>5.6. LAMMPS DCD trajectory I/O  &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.LAMMPS" title="MDAnalysis.coordinates.LAMMPS"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></tt></a><a class="headerlink" href="#lammps-dcd-trajectory-i-o-mdanalysis-coordinates-lammps" title="Permalink to this headline">¶</a></h1>
+<p>Classes to read and write <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD binary
+trajectories. Trajectories can be read regardless of system-endianness
+as this is auto-detected.</p>
+<p>LAMMPS can write <a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">DCD</a> trajectories but unlike a <a class="reference external" href="http://www.charmm.org/documentation/c36b1/dynamc.html#%20Trajectory">CHARMM trajectory</a>
+(which is often called a DCD even though CHARMM itself calls them
+&#8220;trj&#8221;) the time unit is not fixed to be the <a class="reference external" href="http://www.charmm.org/documentation/c36b1/usage.html#%20AKMA">AKMA</a> time unit (20 AKMA
+is 0.978 picoseconds or 1 AKMA = 4.888821e-14 s) but can depend on
+settings in LAMMPS. The most common case appears to be that the time
+step is actually recorded in picoseconds. Other cases are unit-less
+Lennard-Jones time units.</p>
+<p>This presents a problem for MDAnalysis because it cannot autodetect
+the unit from the file. By default we are assuming that the unit for
+length is the ångström and for the time is the picosecond. If this is
+not true then the user <em>should supply the appropriate units</em> in the as
+keywords <em>timeunit</em> and/or <em>lengthunit</em> to <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter" title="MDAnalysis.coordinates.LAMMPS.DCDWriter"><tt class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></tt></a> and
+<a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DCDReader" title="MDAnalysis.coordinates.LAMMPS.DCDReader"><tt class="xref py py-class docutils literal"><span class="pre">DCDReader</span></tt></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Lennard-Jones units are not implemented. See
+<a class="reference internal" href="../core/units.html#module-MDAnalysis.core.units" title="MDAnalysis.core.units"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a> for other recognized values.</p>
+</div>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">For further discussion follow the reports for <a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=84">Issue 84</a> and <a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=64">Issue 64</a>.</p>
+</div>
+<div class="section" id="classes">
+<h2>5.6.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.LAMMPS.Timestep">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.LAMMPS.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.Timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>LAMMPS trajectory time step</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.Timestep.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.Timestep.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an independent (&#8220;deep&#8221;) copy of the whole <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.Timestep" title="MDAnalysis.coordinates.LAMMPS.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.Timestep.dimensions">
+<tt class="descname">dimensions</tt><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
+<p>lengths <em>a</em>, <em>b</em>, <em>c</em> are in the MDAnalysis length unit (Å), and
+angles are in degrees.</p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.Timestep.dimensions" title="MDAnalysis.coordinates.LAMMPS.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">dimensions</span></tt></a> is read-only because it transforms the
+actual format of the unitcell (which differs between different
+trajectory formats) to the representation described here,
+which is used everywhere in MDAnalysis.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.Timestep.volume">
+<tt class="descname">volume</tt><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.Timestep.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>volume of the unitcell</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.LAMMPS.</tt><tt class="descname">DCDReader</tt><big>(</big><em>dcdfilename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD trajectory.</p>
+<p>The units can be set from the constructor with the keyword
+arguments <em>timeunit</em> and <em>lengthunit</em>. The defaults are &#8220;ps&#8221; and
+&#8220;Angstrom&#8221;. See <a class="reference internal" href="../core/units.html#module-MDAnalysis.core.units" title="MDAnalysis.core.units"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a> for other recognized
+values.</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.OtherWriter">
+<tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a writer appropriate for <em>filename</em>.</p>
+<p>Sets the default keywords <em>start</em>, <em>step</em> and <em>delta</em> (if
+available). <em>numatoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.numatoms</span></tt>.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">Reader.Writer()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.Writer">
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a DCDWriter for <em>filename</em> with the same parameters as this DCD.</p>
+<p>All values can be changed through keyword arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">filename of the output DCD trajectory</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<dt><em>numatoms</em></dt>
+<dd><p class="first last">number of atoms</p>
+</dd>
+<dt><em>start</em></dt>
+<dd><p class="first last">number of the first recorded MD step</p>
+</dd>
+<dt><em>step</em></dt>
+<dd><p class="first last">indicate that <em>step</em> MD steps (!) make up one trajectory frame</p>
+</dd>
+<dt><em>delta</em></dt>
+<dd><p class="first last">MD integrator time step (!), in AKMA units</p>
+</dd>
+<dt><em>remarks</em></dt>
+<dd><p class="first last">string that is stored in the DCD header [XXX &#8211; max length?]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter" title="MDAnalysis.coordinates.LAMMPS.DCDWriter"><tt class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The keyword arguments set the low-level attributes of the DCD
+according to the CHARMM format. The time between two frames would be
+<em>delta</em> * <em>step</em> !</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.close_trajectory">
+<tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.close_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specific implementation of trajectory closing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.convert_pos_from_native">
+<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array x from native units to base units.</p>
+<p>By default, the input <em>x</em> is modified in place and also returned.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.convert_pos_to_native">
+<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array x from base units to native units.</p>
+<p>By default, the input <em>x</em> is modified in place and also returned.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.convert_time_from_native">
+<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from native units to base units.</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned (although note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.convert_time_to_native">
+<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from base units to native units.</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned. (Also note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.convert_velocities_from_native">
+<tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array <em>v</em> from native units to base units.</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.convert_velocities_to_native">
+<tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.correl">
+<tt class="descname">correl</tt><big>(</big><em>timeseries</em>, <em>start=0</em>, <em>stop=-1</em>, <em>skip=1</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.correl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populate a TimeseriesCollection object with timeseries computed from the trajectory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>timeseries</em></dt>
+<dd><p class="first last"><a class="reference internal" href="../core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection" title="MDAnalysis.core.Timeseries.TimeseriesCollection"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.Timeseries.TimeseriesCollection</span></tt></a></p>
+</dd>
+<dt><em>start, stop, skip</em></dt>
+<dd><p class="first last">subset of trajectory to use, with start and stop being inclusive</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.dt">
+<tt class="descname">dt</tt><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time between two trajectory frames in picoseconds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.frame">
+<tt class="descname">frame</tt><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frame number of the current time step.</p>
+<p>This is a simple short cut to <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.frame</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.next">
+<tt class="descname">next</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward one step to next frame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.rewind">
+<tt class="descname">rewind</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.rewind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Position at beginning of trajectory</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.time">
+<tt class="descname">time</tt><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time of the current frame in MDAnalysis time units (typically ps).</p>
+<p>time = <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.frame</span></tt> * <tt class="xref py py-attr docutils literal"><span class="pre">Reader.dt</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.timeseries">
+<tt class="descname">timeseries</tt><big>(</big><em>asel</em>, <em>start=0</em>, <em>stop=-1</em>, <em>skip=1</em>, <em>format='afc'</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a subset of coordinate data for an AtomGroup</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>asel</em></dt>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> object</p>
+</dd>
+<dt><em>start, stop, skip</em></dt>
+<dd><p class="first last">range of trajectory to access, start and stop are inclusive</p>
+</dd>
+<dt><em>format</em></dt>
+<dd><p class="first last">the order/shape of the return data array, corresponding
+to (a)tom, (f)rame, (c)oordinates all six combinations
+of &#8216;a&#8217;, &#8216;f&#8217;, &#8216;c&#8217; are allowed ie &#8220;fac&#8221; - return array
+where the shape is (frame, number of atoms,
+coordinates)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.totaltime">
+<tt class="descname">totaltime</tt><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.totaltime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total length of the trajectory numframes * dt.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.LAMMPS.</tt><tt class="descname">DCDWriter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD trajectory.</p>
+<p>The units can be set from the constructor with the keyword
+arguments <em>timeunit</em> and <em>lengthunit</em>. The defaults are &#8220;ps&#8221; and
+&#8220;Angstrom&#8221;. See <a class="reference internal" href="../core/units.html#module-MDAnalysis.core.units" title="MDAnalysis.core.units"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a> for other recognized
+values.</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close trajectory and flush buffers.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.close_trajectory">
+<tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.close_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specific implementation of trajectory closing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_dimensions_to_unitcell">
+<tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read dimensions from timestep <em>ts</em> and return appropriate unitcell</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_pos_from_native">
+<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array x from native units to base units.</p>
+<p>By default, the input <em>x</em> is modified in place and also returned.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_pos_to_native">
+<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array x from base units to native units.</p>
+<p>By default, the input <em>x</em> is modified in place and also returned.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_time_from_native">
+<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from native units to base units.</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned (although note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_time_to_native">
+<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from base units to native units.</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned. (Also note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_velocities_from_native">
+<tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array <em>v</em> from native units to base units.</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_velocities_to_native">
+<tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.has_valid_coordinates">
+<tt class="descname">has_valid_coordinates</tt><big>(</big><em>criteria</em>, <em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.has_valid_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if all values are within limit values of their formats.</p>
+<p>Due to rounding, the test is asymmetric (and <em>min</em> is supposed to be negative):</p>
+<blockquote>
+<div>min &lt; x &lt;= max</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>criteria</em></dt>
+<dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
+</dd>
+<dt><em>x</em></dt>
+<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-470c857)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.write">
+<tt class="descname">write</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write current timestep, using the supplied <em>obj</em>.</p>
+<p>The argument should be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or
+a <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> or a <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.Timestep" title="MDAnalysis.coordinates.LAMMPS.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The size of the <em>obj</em> must be the same as the number of atom
+provided when setting up the trajectory.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.write_next_timestep">
+<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>write a new timestep to the dcd file</p>
+<p><em>ts</em> - timestep object containing coordinates to be written to dcd file</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Raises <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> instead of generic <tt class="xref py py-exc docutils literal"><span class="pre">Exception</span></tt>
+if wrong number of atoms supplied and <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt>
+if no coordinates to be written.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="GRO.html" title="5.7. GRO file format — MDAnalysis.coordinates.GRO"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="DCD.html" title="5.5. DCD trajectory I/O — MDAnalysis.coordinates.DCD"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
+    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,225 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.15. pdb.extensions – Extensions to Bio.PDB &mdash; MDAnalysis 0.7.6-devel documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.6-devel',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.7.6-devel documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.7.6-devel documentation" href="../../index.html" />
+    <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
+    <link rel="next" title="5.16. The Gromacs xtc/trr library libxdrfile" href="libxdrfile.html" />
+    <link rel="prev" title="5.14. XYZ trajectory reader — MDAnalysis.coordinates.XYZ" href="XYZ.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="libxdrfile.html" title="5.16. The Gromacs xtc/trr library libxdrfile"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="XYZ.html" title="5.14. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.15. <tt class="docutils literal"><span class="pre">pdb.extensions</span></tt> &#8211; Extensions to <tt class="docutils literal"><span class="pre">Bio.PDB</span></tt></a><ul>
+<li><a class="reference internal" href="#module-content">5.15.1. Module content</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="XYZ.html"
+                        title="previous chapter">5.14. XYZ trajectory reader &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="libxdrfile.html"
+                        title="next chapter">5.16. The Gromacs xtc/trr library <tt class="docutils literal docutils literal"><span class="pre">libxdrfile</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/coordinates/pdbextensions.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.pdb.extensions"></span><div class="section" id="pdb-extensions-extensions-to-bio-pdb">
+<h1>5.15. <tt class="xref py py-mod docutils literal"><span class="pre">pdb.extensions</span></tt> &#8211; Extensions to <tt class="xref py py-mod docutils literal"><span class="pre">Bio.PDB</span></tt><a class="headerlink" href="#pdb-extensions-extensions-to-bio-pdb" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Oliver Beckstein</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2009</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">License:</th><td class="field-body">Biopython</td>
+</tr>
+</tbody>
+</table>
+<p>Extension to <tt class="xref py py-mod docutils literal"><span class="pre">Bio.PDB</span></tt> to handle large pdb files.</p>
+<p>Partly published on <a class="reference external" href="http://biopython.org/wiki/Reading_large_PDB_files">http://biopython.org/wiki/Reading_large_PDB_files</a>
+and more code at
+<a class="reference external" href="http://github.com/orbeckst/GromacsWrapper/tree/master/edPDB/">http://github.com/orbeckst/GromacsWrapper/tree/master/edPDB/</a></p>
+<div class="section" id="module-content">
+<h2>5.15.1. Module content<a class="headerlink" href="#module-content" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">SloppyStructureBuilder</tt><big>(</big><em>verbose=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cope with resSeq &lt; 10,000 limitation by just incrementing internally.</p>
+<p>Solves the follwing problem with <tt class="xref py py-class docutils literal"><span class="pre">Bio.PDB.StructureBuilder.StructureBuilder</span></tt>:
+Q: What&#8217;s wrong here??</p>
+<blockquote>
+<div>Some atoms or residues will be missing in the data structure.
+WARNING: Residue (&#8216; &#8216;, 8954, &#8216; &#8216;) redefined at line 74803.
+PDBConstructionException: Blank altlocs in duplicate residue SOL (&#8216; &#8216;, 8954, &#8216; &#8216;) at line 74803.</div></blockquote>
+<p>A: resSeq only goes to 9999 &#8211;&gt; goes back to 0 (PDB format is not really good here)</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">H and W records are probably not handled yet (don&#8217;t have examples to test)</p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.pdb.extensions.SloppyPDBIO">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">SloppyPDBIO</tt><big>(</big><em>use_model_flag=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.SloppyPDBIO" title="Permalink to this definition">¶</a></dt>
+<dd><p>PDBIO class that can deal with large pdb files as used in MD simulations.</p>
+<ul class="simple">
+<li>resSeq simply wrap and are printed modulo 10,000.</li>
+<li>atom numbers wrap at 99,999 and are printed modulo 100,000</li>
+</ul>
+<p>&#64;param use_model_flag: if 1, force use of the MODEL record in output.
+&#64;type use_model_flag: int</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.coordinates.pdb.extensions.get_structure">
+<tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">get_structure</tt><big>(</big><em>pdbfile</em>, <em>pdbid='system'</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.get_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the <em>pdbfilename</em>  and return a Bio.PDB structure.</p>
+<p>This function ignores duplicate atom numbers and resids from the
+file and simply increments them.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The call signature is reversed compared to the one of
+<tt class="xref py py-meth docutils literal"><span class="pre">Bio.PDB.PDBParser.get_structure()</span></tt>.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.coordinates.pdb.extensions.write_pdb">
+<tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">write_pdb</tt><big>(</big><em>structure</em>, <em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.write_pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write Bio.PDB molecule <em>structure</em> to <em>filename</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>structure</em></dt>
+<dd><p class="first last">Bio.PDB structure instance</p>
+</dd>
+<dt><em>filename</em></dt>
+<dd><p class="first last">pdb file</p>
+</dd>
+<dt><em>selection</em></dt>
+<dd><p class="first last">Bio.PDB.Selection</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="libxdrfile.html" title="5.16. The Gromacs xtc/trr library libxdrfile"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="XYZ.html" title="5.14. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
+    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>

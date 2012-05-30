@@ -26,6 +26,7 @@ Programmers and anyone trying to implement new functionality should read the
    coordinates/core
    coordinates/CRD
    coordinates/DCD
+   coordinates/LAMMPS
    coordinates/GRO
    coordinates/PDB
    coordinates/PDBQT	
@@ -34,4 +35,5 @@ Programmers and anyone trying to implement new functionality should read the
    coordinates/TRR
    coordinates/XTC
    coordinates/XYZ
+   coordinates/pdbextensions
    coordinates/libxdrfile
