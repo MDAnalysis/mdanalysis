@@ -58,11 +58,14 @@ Supported coordinate formats
 ----------------------------
 
 The table below lists the coordinate file formats understood by MDAnalysis. The
-emphasis is on formats that are used in popular molecular dynamics
-codes. MDAnalysis figures out formats by looking at the extension. Thus, a DCD
-file always has to end with ".dcd" to be recognized as such. (A number of files
-are also recognized when they are compressed with :program:`gzip` or
-:program:`bzip2` such as ".xyz.bz2".)
+emphasis is on formats that are used in popular molecular dynamics codes. By
+default, MDAnalysis figures out formats by looking at the extension. Thus, a
+DCD file always has to end with ".dcd" to be recognized as such unless the
+format is explicitly specified with the *format* keyword to
+:class:`~MDAnalysis.core.AtomGroup.Universe` or
+:meth:`~MDAnalysis.core.AtomGroup.Universe.load_new`.  A number of files are
+also recognized when they are compressed with :program:`gzip` or
+:program:`bzip2` such as ".xyz.bz2".
 
 .. _Supported coordinate formats:
 
@@ -72,9 +75,13 @@ are also recognized when they are compressed with :program:`gzip` or
    |Name           | extension |  IO   | remarks                                              |
    +===============+===========+=======+======================================================+
    | CHARMM,       | dcd       |  r/w  | standard CHARMM binary trajectory; endianness is     |
-   | NAMD,         |           |       | autodetected. Fixed atoms may not be handled         |
-   | LAMMPS        |           |       | correctly (requires testing). Module                 |
+   | NAMD          |           |       | autodetected. Fixed atoms may not be handled         |
+   |               |           |       | correctly (requires testing). Module                 |
    |               |           |       | :mod:`MDAnalysis.coordinates.DCD`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | LAMMPS        | dcd       |  r/w  | CHARMM-style binary trajectory; endianness is        |
+   |               |           |       | autodetected. Units are appropriate for LAMMPS.      |
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.LAMMPS`          |
    +---------------+-----------+-------+------------------------------------------------------+
    | Gromacs       | xtc       |  r/w  | Compressed (lossy) xtc trajectory format. Module     |
    |               |           |       | :mod:`MDAnalysis.coordinates.XTC`                    |
@@ -87,9 +94,13 @@ are also recognized when they are compressed with :program:`gzip` or
    |               |           |       | compressed (gzip or bzip2). Module                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | Amber         | trj,      |  r    | formatted (ASCII) trajectories; the presence of a    |
+   | AMBER         | trj,      |  r    | formatted (ASCII) trajectories; the presence of a    |
    |               | mdcrd     |       | periodic box is autodetected (*experimental*).       |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.TRJ`             |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | AMBER         | ncdf      |  r/w  | binary (NetCDF) trajectories are fully supported with|
+   |               |           |       | optional `netcdf4-python`_ module (coordinates and   |
+   |               |           |       | velocities). Module :mod:`MDAnalysis.coordinates.TRJ`|
    +---------------+-----------+-------+------------------------------------------------------+
    | Brookhaven    | pdb       |  r/w  | a simplified PDB format (as used in MD simulations)  |
    | [#a]_         |           |       | is read by default; the full format can be read by   |
@@ -119,6 +130,7 @@ are also recognized when they are compressed with :program:`gzip` or
    full :mod:`~MDAnalysis.core.AtomGroup.Universe` by simply
    providing a file of this format: ``u = Universe(filename)``
 
+.. _`netcdf4-python`: http://code.google.com/p/netcdf4-python/
 
 .. _Trajectory API:
 
@@ -522,7 +534,7 @@ PDB). In theses cases, the kind of writer is selected with the
 
 __all__ = ['reader', 'writer']
 
-import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS  #, NETCDF
+import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS
 import base
 from core import reader, writer
 
@@ -536,9 +548,9 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'PDBQT': PDBQT.PDBQTReader,
                        'CRD': CRD.CRDReader,
                        'GRO': GRO.GROReader,
-                       'TRJ':TRJ.TRJReader,     # Amber text
-                       'MDCRD':TRJ.TRJReader,   # Amber text
-                       #'NETCDF':NETCDFReader,  # Amber netcdf
+                       'TRJ': TRJ.TRJReader,     # AMBER text
+                       'MDCRD': TRJ.TRJReader,   # AMBER text
+                       'NCDF': TRJ.NCDFReader,   # AMBER netcdf
                        'PQR': PQR.PQRReader,
                        'LAMMPS': LAMMPS.DCDReader,
                        'CHAIN': base.ChainReader,
@@ -588,5 +600,6 @@ _trajectory_writers = {'DCD': DCD.DCDWriter,
                        'TRR': TRR.TRRWriter,
                        'LAMMPS': LAMMPS.DCDWriter,
                        'PDB': PDB.MultiPDBWriter,
+                       'NCDF': TRJ.NCDFWriter,
                        }
 

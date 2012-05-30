@@ -185,13 +185,20 @@ Required python packages
 In order to use the library in your own python code you will need at least
 
     * numpy of version 1.0.3 or greater (http://numpy.scipy.org/)
+    * scipy (http://www.scipy.org/)
     * BioPython's Bio.PDB (http://biopython.org)
-
-Optional python packages (used in MDAnalysis.analysis):
-
     * networkx (http://networkx.lanl.gov/) --- for analysis of lipid 
       leaflets via MDAnalysis.analysis.leaflet
     * GridDataFormats (http://pypi.python.org/pypi/GridDataFormats)
+
+If you want to operate on AMBER binary trajectories (NetCDF) then you
+will need to have working NetCDF support based on the netcdf4-python
+package:
+
+    * netcdf4-python (http://code.google.com/p/netcdf4-python/)
+
+Optional python packages (used in MDAnalysis.analysis):
+
     * nose (http://somethingaboutorange.com/mrl/projects/nose/) -- for testing
     * ScientificPython http://dirac.cnrs-orleans.fr/plone/software/scientificpython/
       Scientific.IO.FortranFormat (experimental LAMMPS parser)
@@ -202,19 +209,17 @@ Running test cases
 
 If you want to check that your installation works correctly you can
 run the test suite. It requires that you have a recent version of
-NumPy, the Python package 'nose', and the MDAnalysisTestData (a
-collection of structures and trajectories that we use as test input).
+NumPy, the Python package 'nose', and the MDAnalysisTests (the test
+code and a collection of structures and trajectories that are used as
+test input).
 
 Download and install MDAnalysisTestData from 
 
   http://code.google.com/p/mdanalysis/downloads/list
 
-Pick a file named `MDAnalysisTestData-X.Y.Z.tar.gz` where the release
-number X.Y.Z should either match or be smaller than the release number
-of MDAnalysis itself. E.g. For MDAnalysis-0.7.4 you would get
-MDAnalysisTestData-0.7.4, and for MDAnalysis-0.7.5 you would also
-install MDAnalysisTestData-0.7.4 (unless MDAnalysisTestData-0.7.5
-existed).
+Pick a file named `MDAnalysisTests-X.Y.Z.tar.gz` where the release
+number X.Y.Z should match the release number of MDAnalysis
+itself. E.g. For MDAnalysis-0.7.6 you would get MDAnalysisTests-0.7.6.
 
 For more details on the test cases see
 http://code.google.com/p/mdanalysis/wiki/UnitTests

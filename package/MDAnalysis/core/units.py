@@ -102,7 +102,7 @@ References
 #: Conversion factors between the base unit and other lengthUnits *x* are stored.
 #: Conversions follow `L/x = L/Angstrom * lengthUnit_factor[x]`.
 #: *x* can be *nm*/*nanometer* or *fm*.
-lengthUnit_factor = {'Angstrom': 1.0, 'A': 1.0, 'Å': 1.0,
+lengthUnit_factor = {'Angstrom': 1.0, 'A': 1.0, 'Å': 1.0, 'angstrom': 1.0,
                      'nm': 1.0/10, 'nanometer': 1.0/10,
                      'pm': 1e2, 'picometer': 1e2,
                      'fm': 1e5, 'femtometer': 1e5,
@@ -143,16 +143,16 @@ densityUnit_factor = {
 
 #: For *time*, the basic unit is ps; in particular CHARMM's
 #: 1 AKMA_ time unit = 4.888821E-14 sec is supported.
-timeUnit_factor = {'ps': 1.0,   # 1/1.0
-                   'fs': 1e3,   # 1/1e-3,
-                   'ns': 1e-3,  # 1/1e3,
+timeUnit_factor = {'ps': 1.0, 'picosecond': 1.0,    # 1/1.0
+                   'fs': 1e3, 'femtosecond': 1e3,   # 1/1e-3,
+                   'ns': 1e-3, 'nanosecond': 1e-3,  # 1/1e3,
                    'second': 1e-12, 'sec':  1e-12, 's':  1e-12, # 1/1e12,
                    'AKMA': 1/4.888821e-2,
                    }
 # getting the factor f:  1200ps * f = 1.2 ns  ==> f = 1/1000 ns/ps
 
 #: For *speed*, the basic unit is Angstrom/ps.
-speedUnit_factor = {'Angstrom/ps': 1.0, 'A/ps': 1.0, 'Å/ps': 1.0, 'Angstrom/picosecond': 1.0,  # 1
+speedUnit_factor = {'Angstrom/ps': 1.0, 'A/ps': 1.0, 'Å/ps': 1.0, 'Angstrom/picosecond': 1.0,  'angstrom/picosecond': 1.0, # 1
                     'Angstrom/AKMA': 4.888821e-2,
                     'nm/ps': 0.1, 'nanometer/ps': 0.1, 'nanometer/picosecond': 0.1,       # 1/10
                     'nm/ns': 0.1/1e-3,

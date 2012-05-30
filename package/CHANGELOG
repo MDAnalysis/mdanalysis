@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/12 orbeckst
+??/??/12 orbeckst, joshua.adelman
 
   * 0.7.6 (in development)
 
@@ -18,6 +18,8 @@ The rules for this file:
 
   * new AtomGroup.moveto() method
   * PrimitivePDBReader can be sliced
+  * AMBER NetCDF (binary trajectory) reader and writer, supporting
+    coordinates and velocities; requires netcdf4-python (Issue 109)
   
   Changes
 
