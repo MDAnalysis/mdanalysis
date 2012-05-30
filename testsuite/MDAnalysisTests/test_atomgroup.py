@@ -154,11 +154,7 @@ class TestAtomGroup(TestCase):
 
     def test_index_slice_empty(self):
         u = self.universe
-        def do_empty_selection():
-            return u.atoms[0:0]
-        # at the moment, empty AtomGroups are not allowed but
-        # we need to check that this is trying to make a AG
-        assert_raises(MDAnalysis.NoDataError, do_empty_selection)
+        assert_array_equal(u.atoms[0:0], [], "making an empty AtomGroup failed")
 
     def test_index_advancedslice(self):
         u = self.universe
@@ -267,6 +263,10 @@ class TestAtomGroup(TestCase):
         assert_equal(ag.coordinates()[0], x,
                      "failed to move atom 42 to new position")
 
+def test_empty_AtomGroup():
+    """Test that a empty AtomGroup can be constructed (Issue 12)"""
+    ag = MDAnalysis.core.AtomGroup.AtomGroup([])
+    assert_equal(len(ag), 0)
 
 class _WriteAtoms(TestCase):
     """Set up the standard AdK system in implicit solvent."""

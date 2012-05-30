@@ -134,7 +134,7 @@ Classes and functions
 .. autofunction:: asUniverse
 .. autoexception:: SelectionError
 .. autoexception:: SelectionWarning
-
+.. autoexception:: NoDataError
 
 .. _atomic mass units: http://physics.nist.gov/cgi-bin/cuu/Value?u
 .. _electron charges: http://physics.nist.gov/cgi-bin/cuu/Value?e
@@ -238,7 +238,8 @@ class AtomGroup(object):
 
     The AtomGroup contains a list of atoms; typically, a AtomGroup is generated
     from a selection. It is build from any list-like collection of
-    :class:`Atom` instances.
+    :class:`Atom` instances. It is also possible to create an empty AtomGroup
+    from an empty list.
 
     An AtomGroup can be indexed and sliced like a list::
 
@@ -286,19 +287,26 @@ class AtomGroup(object):
        difficult to use the feature consistently in scripts but it is
        much better for interactive work.
 
+    .. versionchanged:: 0.7.6
+       An empty AtomGroup can be created and no longer raises a
+       :exc:`NoDataError`.
     """
     def __init__(self, atoms):
-        if len(atoms) < 1: raise NoDataError("No atoms defined for AtomGroup")
-        # __atoms property is effectively readonly
-        # check that atoms is indexable:
-        try:
-            atoms[0]
-            self.__atoms = atoms
-        except TypeError:
-            self.__atoms = list(atoms)
-        # sanity check
-        if not isinstance(self.__atoms[0], Atom):
-            raise TypeError("atoms must be a Atom or a list of Atoms.")
+        if len(atoms) > 0:
+            # __atoms property is effectively readonly
+            # check that atoms is indexable:
+            try:
+                atoms[0]
+                self.__atoms = atoms
+            except TypeError:
+                self.__atoms = list(atoms)
+            # sanity check
+            if not isinstance(self.__atoms[0], Atom):
+                raise TypeError("atoms must be a Atom or a list of Atoms.")
+        else:
+            # empty AtomGroup
+            self.__atoms = []
+
         # managed timestep object
         self.__ts = None
 

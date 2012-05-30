@@ -107,8 +107,8 @@ class TestSelections(TestCase):
     # and also for selection keywords such as 'nucleic'
 
     def test_empty_selection(self):
-        """Test empty selection: raises Excption but might be subject to change (see Issue 12)"""
-        assert_raises(Exception, self.universe.selectAtoms, 'resname TRP')  # no Trp in AdK
+        """Test that empty selection can be processed (see Issue 12)"""
+        assert_equal(len(self.universe.selectAtoms('resname TRP')), 0)  # no Trp in AdK
 
     def test_parenthesized_expression(self):
         sel = self.universe.selectAtoms('( name CA or name CB ) and resname LEU')

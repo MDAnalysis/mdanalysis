@@ -33,7 +33,9 @@ The rules for this file:
   * PrimitivePDBWriter: special segid SYSTEM is translated to empty
     chainID
   * In order to write multi frame PDB files, the multiframe=True
-    keyword must be supplied or use the MultiPDBWriter    
+    keyword must be supplied or use the MultiPDBWriter 
+  * empty AtomGroup can be constructed or can result from a selection
+    without matches; it does *not* raise NoDataError anymore (Issue 12)
 
   Fixes
 
