@@ -41,8 +41,11 @@ The rules for this file:
 
   * HydrogenBondAnalysis: NH1 and NH2 were not recognized
   * GROWriter: enforce maximum resname and atomname length of 5 chars
-  * Universe.load_new() raised a NameError (thanks to Jiyong)
+  * Universe.load_new() raised a NameError (thanks to JiyongPark.77)
   * fixed Issue 105 (trajectory snapshots could not be written to PDB)
+  * fixed Issue 107 (NAMD/VMD space delimited files can be
+    autodetected and read); important when using CGENFF atom types
+    (thanks to JiyongPark.77 for initial patch)
 
 
 02/16/12 sebastien.buchoux
