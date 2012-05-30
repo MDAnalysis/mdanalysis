@@ -241,6 +241,24 @@ class _TRJReaderTest(TestCase):
         assert_almost_equal(total, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
 
+    def test_initial_frame_is_1(self):
+        assert_equal(self.universe.trajectory.ts.frame, 1,
+                     "initial frame is not 1 but {0}".format(self.universe.trajectory.ts.frame))
+
+    def test_starts_with_first_frame(self):
+        """Test that coordinate arrays are filled as soon as the trajectory has been opened."""
+        assert_(np.any(self.universe.atoms.coordinates() > 0),
+                "Reader does not populate coordinates() right away.")
+
+    def test_rewind(self):
+        trj = self.universe.trajectory
+        trj.next(); trj.next()    # for readers that do not support indexing
+        assert_equal(trj.ts.frame, 3, "failed to forward to frame 3 (frameindex 2)")
+        trj.rewind()
+        assert_equal(trj.ts.frame, 1, "failed to rewind to first frame")
+        assert_(np.any(self.universe.atoms.coordinates() > 0),
+                "Reader does not populate coordinates() after rewinding.")
+
 
 class TestTRJReader(_TRJReaderTest, RefACHE):
     def setUp(self):
@@ -272,6 +290,7 @@ class TestNCDFReader(_TRJReaderTest, RefVGV):
         data = self.universe.trajectory.trjfile
         assert_equal(data.Conventions, 'AMBER')
         assert_equal(data.ConventionVersion, '1.0')
+
 
 class TestNCDFWriter(TestCase, RefVGV):
     def setUp(self):

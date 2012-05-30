@@ -567,6 +567,9 @@ class NCDFReader(base.Reader):
 
                 self.ts = self._Timestep(self.numatoms, velocities=self.has_velocities)
 
+                # load first data frame
+                self._read_frame(0, self.ts)
+
         def _read_frame(self, frame, ts):
                 if self.trjfile is None:
                         raise IOError("Trajectory is closed")
