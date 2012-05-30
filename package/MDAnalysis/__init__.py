@@ -204,6 +204,9 @@ class MissingDataWarning(Warning):
 class ConversionWarning(Warning):
     """Warning indicating a problem with converting between units."""
 
+class FileFormatWarning(Warning):
+    """Warning indicating possible problems with a file format."""
+
 # Bring some often used objects into the current namespace
 from core import Timeseries
 from core.AtomGroup import Universe, asUniverse
