@@ -1025,7 +1025,15 @@ class TestDCDWriter(TestCase):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
 
-
+    def test_single_frame(self):
+        u = MDAnalysis.Universe(PSF, CRD)
+        W = MDAnalysis.Writer(self.outfile, u.atoms.numberOfAtoms())
+        W.write(u.atoms)
+        W.close()
+        w = MDAnalysis.Universe(PSF, self.outfile)
+        assert_equal(w.trajectory.numframes, 1, "single frame trajectory has wrong number of frames")
+        assert_almost_equal(w.atoms.coordinates(), u.atoms.coordinates(), 3,
+                            err_msg="coordinates do not match")
 
 class TestDCDWriter_Issue59(TestCase):
     def setUp(self):
@@ -1487,6 +1495,7 @@ class TestXTCNoConversion(_XDRNoConversion):
 class TestTRRNoConversion(_XDRNoConversion):
     filename = TRR
 
+
 class _GromacsWriter(TestCase):
     infilename = None  # XTC or TRR
     Writers = {'.trr': MDAnalysis.coordinates.TRR.TRRWriter,
@@ -1542,6 +1551,8 @@ class _GromacsWriter(TestCase):
         assert_equal(ts.time, time,  err_msg="Time in Timestep was modified by writer.")
 
 
+
+
 class TestXTCWriter(_GromacsWriter):
     infilename = XTC
 
@@ -1561,6 +1572,56 @@ class TestTRRWriter(_GromacsWriter):
         for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
             assert_array_almost_equal(written_ts._velocities, orig_ts._velocities, 3,
                                       err_msg="velocities mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+
+class _GromacsWriterIssue101(TestCase):
+    Writers = {'.trr': MDAnalysis.coordinates.TRR.TRRWriter,
+               '.xtc': MDAnalysis.coordinates.XTC.XTCWriter,
+               }
+    ext = None  # set to '.xtc' or '.trr'
+    prec = 3
+
+    def setUp(self):
+        fd, self.outfile = tempfile.mkstemp(suffix=self.ext)
+        self.Writer = self.Writers[self.ext]
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+        del self.Writer
+
+    @dec.slow
+    @attr('issue')
+    def test_single_frame_GRO(self):
+        self._single_frame(GRO)
+
+    @dec.slow
+    @attr('issue')
+    def test_single_frame_PDB(self):
+        self._single_frame(PDB)
+
+    @attr('issue')
+    def test_single_frame_CRD(self):
+        self._single_frame(CRD)
+
+    def _single_frame(self, filename):
+        u = MDAnalysis.Universe(filename)
+        W = self.Writer(self.outfile, u.atoms.numberOfAtoms())
+        W.write(u.atoms)
+        W.close()
+        w = MDAnalysis.Universe(filename, self.outfile)
+        assert_equal(w.trajectory.numframes, 1, "single frame trajectory has wrong number of frames")
+        assert_almost_equal(w.atoms.coordinates(), u.atoms.coordinates(), self.prec,
+                            err_msg="coordinates do not match for %r" % filename)
+
+class TestXTCWriterSingleFrame(_GromacsWriterIssue101):
+    ext = ".xtc"
+    prec = 2
+
+class TestTRRWriterSingleFrame(_GromacsWriterIssue101):
+    ext = ".trr"
+
 
 @attr('issue')
 def test_triclinic_box():
