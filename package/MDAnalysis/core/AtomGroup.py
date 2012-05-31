@@ -1129,6 +1129,8 @@ class AtomGroup(object):
         import os.path
         import MDAnalysis.coordinates
 
+        kwargs.setdefault("multiframe", False)  # for PDB, True makes little sense here
+
         trj = self.universe.trajectory    # unified trajectory API
         frame = trj.ts.frame
 
@@ -1138,6 +1140,7 @@ class AtomGroup(object):
         filename = util.filename(filename,ext=format.lower(),keep=True)
         framewriter = MDAnalysis.coordinates.writer(filename, **kwargs)
         framewriter.write(self)         # wants a atomgroup
+        framewriter.close()         # always close single frames (eg PDB writer writes END)
 
     # TODO: This is _almost_ the same code as write() --- should unify!
     def write_selection(self,filename=None,format="vmd",filenamefmt="%(trjname)s_%(frame)d",
