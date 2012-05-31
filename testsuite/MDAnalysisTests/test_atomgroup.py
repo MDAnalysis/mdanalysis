@@ -62,9 +62,26 @@ class TestAtom(TestCase):
         a = self.atom
         assert_equal(a.name, 'CG')
         assert_equal(a.resname, 'LEU')
-        assert_almost_equal(a.pos, array([  3.94543672, -12.4060812 ,  -7.26820087], dtype=float32))
+        
+        known_pos = array([  3.94543672, -12.4060812 ,  -7.26820087], dtype=float32)
+
+        # old pos property
+        assert_almost_equal(a.pos, known_pos) 
+
+        # new position property
+        assert_almost_equal(a.position, known_pos) 
+        pos = a.position + 3.14
+        a.position = pos
+        assert_equal(a.position, pos)
+
+        # set it back
+        a.position = known_pos
+        
         asel =  u.selectAtoms('atom 4AKE 67 CG').atoms[0]
         assert_equal(a, asel)
+
+        
+        
 
     def test_hierarchy(self):
         u = self.universe
@@ -262,6 +279,24 @@ class TestAtomGroup(TestCase):
         ag.moveto(x)
         assert_equal(ag.coordinates()[0], x,
                      "failed to move atom 42 to new position")
+
+    def test_positions(self):
+        ag = self.universe.selectAtoms("bynum 12:42")
+        pos = ag.positions + 3.14
+        ag.positions = pos
+
+        # shoud work
+        assert_equal(ag.coordinates(), pos,
+                     "failed to update atoms 12:42 position to new position")
+
+        # create wrong size array
+        badarr = numpy.random.random((pos.shape[0] - 1, pos.shape[1] - 1))
+        try:
+            ag.positions = badarr
+            raise AssertionError('positions update should have failed with wrong sized array')
+        except ValueError:
+            pass
+
 
 def test_empty_AtomGroup():
     """Test that a empty AtomGroup can be constructed (Issue 12)"""
