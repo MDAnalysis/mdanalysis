@@ -199,8 +199,28 @@ class Atom(object):
 
     @property
     def pos(self):
-        """Current cartesian coordinates of the atom."""
+        """
+        deprecated, use position,
+        get the Current cartesian coordinates of the atom.
+        """
+        return self.position
+    
+    @property
+    def position(self):
+        """
+        Get the current cartesian coordinates of the atom.
+        @return: a numpy 1x3 array
+        """
         return self.universe.coord[self.number] # internal numbering starts at 0
+    
+    @position.setter
+    def position(self,coords):
+        """
+        Set the current cartesian coordinates of the atom.
+        @param coords: a 1x3 numpy array of {x,y,z} coordinates, or optionally
+            a single scalar if you should want to set all coordinates to the same value. 
+        """
+        self.universe.coord._pos[self.number,:] = coords # internal numbering starts at 0
 
     @property
     def velocity(self):
@@ -912,12 +932,35 @@ class AtomGroup(object):
         indices = numpy.argsort(eigenval)
         # Return transposed in more logical form. See Issue 33.
         return eigenvec[:,indices].T
-
+    
     def coordinates(self, ts=None, copy=False, dtype=numpy.float32):
-        """NumPy array of the coordinates."""
+        """
+        NumPy array of the coordinates.
+        deprecated
+        """
+        return self.get_positions(ts, copy, dtype)
+    
+    def get_positions(self, ts=None, copy=False, dtype=numpy.float32):
+        """
+        get a NumPy array of the coordinates.
+        this used to be function 'coordinates', now it is a get/set property.
+        access to the all the arguments is available as atomGroup.get_positions(...)
+        """
         if ts == None:
             ts = self.universe.trajectory.ts
         return numpy.array(ts[self.indices()], copy=copy, dtype=dtype)
+    
+    def set_positions(self,coords,ts=None):
+        """
+        Set the positions for this AtomGroup.
+        @param coords: a Nx3 numpy array where N is the number of atoms in this atom group.
+        @param ts: time step, defaults to None, the current time step is used. 
+        """ 
+        if ts == None:
+            ts = self.universe.trajectory.ts
+        ts._pos[self.indices(),:]=coords
+        
+    positions = property(get_positions, set_positions)
 
     def velocities(self, ts=None, copy=False, dtype=numpy.float32):
         """NumPy array of the velocities.
