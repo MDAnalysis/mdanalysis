@@ -271,7 +271,10 @@ def triclinic_box(x,y,z):
 def triclinic_vectors(dimensions):
     """Convert `[A,B,C,alpha,beta,gamma]` to a triclinic box representation.
 
-    Original `code by Tsjerk Wassenaar`_ posted on the Gromacs mailinglist
+    Original `code by Tsjerk Wassenaar`_ posted on the Gromacs mailinglist.
+
+    If *dimensions* indicates a non-periodic system (i.e. all lengths
+    0) then null-vectors are returned.
 
     .. _code by Tsjerk Wassenaar:
        http://www.mail-archive.com/gmx-users@gromacs.org/msg28032.html
@@ -288,9 +291,16 @@ def triclinic_vectors(dimensions):
 
        The first vector is always pointing along the X-axis
        i.e. parallel to (1,0,0).
+
+    .. versionchanged:: 0.7.6
+       Null-vectors are returned for non-periodic (or missing) unit cell.
+
     """
     B = numpy.zeros((3,3), dtype=numpy.float32)
     x, y, z, a, b, c = dimensions[:6]
+
+    if numpy.all(dimensions[:3] == 0):
+        return B
 
     B[0][0] = x
     if a == 90. and b == 90. and c == 90.:
