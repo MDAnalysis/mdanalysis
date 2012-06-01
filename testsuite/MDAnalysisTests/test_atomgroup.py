@@ -273,13 +273,6 @@ class TestAtomGroup(TestCase):
     # - rotate
     # - rotateby
 
-    def test_moveto(self):
-        x = numpy.array([-100., 20, 0.])
-        ag = self.universe.selectAtoms("bynum 42")
-        ag.moveto(x)
-        assert_equal(ag.coordinates()[0], x,
-                     "failed to move atom 42 to new position")
-
     def test_positions(self):
         ag = self.universe.selectAtoms("bynum 12:42")
         pos = ag.positions + 3.14
