@@ -936,9 +936,6 @@ class AtomGroup(object):
     def get_positions(self, ts=None, copy=False, dtype=numpy.float32):
         """Get a NumPy array of the coordinates.
 
-        This method is identical with :meth:`~AtomGroup.coordinates` but named
-        differently for symmetry with with :meth:`~AtomGroup.set_positions`.
-
         :Keywords:
            *ts*
                If *ts* is provided then positions are read from that
@@ -957,9 +954,14 @@ class AtomGroup(object):
                entirely appropriate. Most C-code actually requires the
                default  [:class:`numpy.float32`]
 
-        .. SeeAlso::
-           Coordinates can be directly set with
-           :meth:`AtomGroup.set_positions`.
+        Coordinates can also be directly obtained from the attribute
+        :attr:`~AtomGroup.positions`.
+
+        Coordinates can be directly set with :meth:`~AtomGroup.set_positions` or
+        by assigning to :attr:`~AtomGroup.positions`.
+
+        This method is identical with :meth:`~AtomGroup.coordinates` but named
+        differently for symmetry with with :meth:`~AtomGroup.set_positions`.
 
         .. versionadded:: 0.7.6
         """
@@ -970,17 +972,16 @@ class AtomGroup(object):
     coordinates = get_positions
     """NumPy array of the coordinates.
 
-    .. SeeAlso:: :attr:`AtomGroup.positions` and :meth:`AtomGroup.get_positions`
+    .. SeeAlso:: :attr:`~AtomGroup.positions` and :meth:`~AtomGroup.get_positions`
 
     .. deprecated:: 0.7.6
-       In new scripts use :meth:`AtomGroup.get_positions`.
-
+       In new scripts use :meth:`AtomGroup.get_positions` preferrably.
     """
-    # should not be removed as it has been used in many scripts, MDAnalysis itself,
-    # and in the paper
+    # coordinates() should NOT be removed as it has been used in many scripts,
+    # MDAnalysis itself, and in the paper
 
     def set_positions(self, coords, ts=None):
-        """Set the positions for this AtomGroup in the time step.
+        """Set the positions for all atoms in the group.
 
         :Arguments:
            *coords*
@@ -990,19 +991,37 @@ class AtomGroup(object):
         :Keywords:
            *ts*
               :class:`~MDAnalysis.coordinates.base.Timestep`, defaults
-              to ``None`` and the current time step is used.
+              to ``None`` and then the current time step is used.
 
-        .. SeeAlso:: :meth:`AtomGroup.set_positions`
+        .. Note::
+
+           If the group contains N atoms and *coord* is a single point (i.e. an
+           array of length 3) then all N atom positions are set to *coord* (due
+           to NumPy's broadcasting rules), as described for
+           :attr:`~AtomGroup.positions`.
+
+        See also :meth:`~AtomGroup.get_positions` and attribute access through
+        :attr:`~AtomGroup.positions`.
 
         .. versionadded:: 0.7.6
-
         """
         if ts == None:
             ts = self.universe.trajectory.ts
         ts._pos[self.indices(),:] = coords
 
     positions = property(get_positions, set_positions,
-                         doc="""Coordinates of the atoms in the AtomGroup.\n\n.. versionadded:: 0.7.6\n""")
+                         doc="""
+                Coordinates of the atoms in the AtomGroup.
+
+                The positions can be changed by assigning an array of the appropriate
+                shape, i.e. either Nx3 to assign individual coordinates or 3, to assign
+                the *same* coordinate to all atoms (e.g. ``ag.positions = array([0,0,0])``
+                will move all particles to the origin).
+
+                For more control use the :meth:`~AtomGroup.get_positions` and
+                :meth:`~AtomGroup.set_positions` methods.
+
+                .. versionadded:: 0.7.6""")
 
     def get_velocities(self, ts=None, copy=False, dtype=numpy.float32):
         """NumPy array of the velocities.
@@ -1011,7 +1030,10 @@ class AtomGroup(object):
         :class:`~MDAnalysis.coordinates.base.Timestep` does not contain
         :attr:`~MDAnalysis.coordinates.base.Timestep._velocities`.
 
-        .. SeeAlso:: :meth:`AtomGroup.set_velocities` and :attr:`AtomGroup.velocities`
+        See also :meth:`AtomGroup.set_velocities` and attribute access through
+        :attr:`AtomGroup.velocities`.
+
+        .. versionadded:: 0.7.6
         """
         if ts == None:
             ts = self.universe.trajectory.ts
@@ -1027,7 +1049,10 @@ class AtomGroup(object):
         :class:`~MDAnalysis.coordinates.base.Timestep` does not contain
         :attr:`~MDAnalysis.coordinates.base.Timestep._velocities`.
 
-        .. SeeAlso:: :meth:`AtomGroup.get_velocities` and :attr:`AtomGroup.velocities`
+        See also :meth:`AtomGroup.get_velocities` and :attr:`AtomGroup.velocities` for
+        attribute access.
+
+        .. versionadded:: 0.7.6
         """
         if ts == None:
             ts = self.universe.trajectory.ts
@@ -1037,7 +1062,7 @@ class AtomGroup(object):
             raise NoDataError("Timestep does not contain velocities")
 
     def velocities(self, **kwargs):
-        """NumPy array of the velocities.
+        """NumPy array of the velocities of the atoms in the group.
 
         If the trajectory does not contain velocity information then a
         :exc:`~MDAnalysis.NoDataError` is raised.
@@ -1054,30 +1079,13 @@ class AtomGroup(object):
     # TODO for 0.8
     #velocities = property(get_velocities, set_velocities, doc="velocities of the atoms\n\n.. versionchanged:: 0.8")
 
-
-    def moveto(self, x):
-        """Move atom(s) to position *x*.
-
-        *x* should be a 3N array, which determines the N new
-        coordinates for the N members of the AtomGroup.
-
-        .. Note::
-
-           If the AtomGroup contains N atoms but *x* is a single point
-           (i.e. an array of length 3) then **all N atom positions are
-           set to *x*.**
-
-        .. versionadded:: 0.7.6
-        """
-        self.universe.trajectory.ts._pos[self.indices(),:] = x
-
     def transform(self, M):
         """Apply homogenous transformation matrix *M* to the coordinates.
 
         The matrix *M* must be a 4x4 matrix, with the rotation in
         ``M[:3,:3]`` and the translation in ``M[:3,3]``.
 
-        The rotation is applied before the translation:
+        The rotation is applied before the translation::
 
            x' = R.x + t
 
@@ -1099,7 +1107,7 @@ class AtomGroup(object):
           >>> AtomGroup.translate((A, B))
 
         The method applies a translation to the AtomGroup from current
-        coordinates x to new coordinates x':
+        coordinates x to new coordinates x'::
 
             x' = x + t
 
