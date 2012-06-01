@@ -682,10 +682,10 @@ provide a unified interface to querying properties:
 <dd><p>NumPy array of the coordinates.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.positions" title="MDAnalysis.core.AtomGroup.AtomGroup.positions"><tt class="xref py py-attr docutils literal"><span class="pre">AtomGroup.positions</span></tt></a> and <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_positions" title="MDAnalysis.core.AtomGroup.AtomGroup.get_positions"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.get_positions()</span></tt></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.positions" title="MDAnalysis.core.AtomGroup.AtomGroup.positions"><tt class="xref py py-attr docutils literal"><span class="pre">positions</span></tt></a> and <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_positions" title="MDAnalysis.core.AtomGroup.AtomGroup.get_positions"><tt class="xref py py-meth docutils literal"><span class="pre">get_positions()</span></tt></a></p>
 </div>
 <p class="deprecated">
-<span class="versionmodified">Deprecated since version 0.7.6: </span>In new scripts use <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_positions" title="MDAnalysis.core.AtomGroup.AtomGroup.get_positions"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.get_positions()</span></tt></a>.</p>
+<span class="versionmodified">Deprecated since version 0.7.6: </span>In new scripts use <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_positions" title="MDAnalysis.core.AtomGroup.AtomGroup.get_positions"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.get_positions()</span></tt></a> preferrably.</p>
 </dd></dl>
 
 <dl class="method">
@@ -748,8 +748,6 @@ removed. Use <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.get_positions">
 <tt class="descname">get_positions</tt><big>(</big><em>ts=None</em>, <em>copy=False</em>, <em>dtype=&lt;type 'numpy.float32'&gt;</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a NumPy array of the coordinates.</p>
-<p>This method is identical with <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.coordinates" title="MDAnalysis.core.AtomGroup.AtomGroup.coordinates"><tt class="xref py py-meth docutils literal"><span class="pre">coordinates()</span></tt></a> but named
-differently for symmetry with with <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_positions" title="MDAnalysis.core.AtomGroup.AtomGroup.set_positions"><tt class="xref py py-meth docutils literal"><span class="pre">set_positions()</span></tt></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -779,11 +777,12 @@ default  [<tt class="xref py py-class docutils literal"><span class="pre">numpy.
 </tr>
 </tbody>
 </table>
-<div class="admonition-see-also admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Coordinates can be directly set with
-<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_positions" title="MDAnalysis.core.AtomGroup.AtomGroup.set_positions"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.set_positions()</span></tt></a>.</p>
-</div>
+<p>Coordinates can also be directly obtained from the attribute
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.positions" title="MDAnalysis.core.AtomGroup.AtomGroup.positions"><tt class="xref py py-attr docutils literal"><span class="pre">positions</span></tt></a>.</p>
+<p>Coordinates can be directly set with <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_positions" title="MDAnalysis.core.AtomGroup.AtomGroup.set_positions"><tt class="xref py py-meth docutils literal"><span class="pre">set_positions()</span></tt></a> or
+by assigning to <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.positions" title="MDAnalysis.core.AtomGroup.AtomGroup.positions"><tt class="xref py py-attr docutils literal"><span class="pre">positions</span></tt></a>.</p>
+<p>This method is identical with <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.coordinates" title="MDAnalysis.core.AtomGroup.AtomGroup.coordinates"><tt class="xref py py-meth docutils literal"><span class="pre">coordinates()</span></tt></a> but named
+differently for symmetry with with <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_positions" title="MDAnalysis.core.AtomGroup.AtomGroup.set_positions"><tt class="xref py py-meth docutils literal"><span class="pre">set_positions()</span></tt></a>.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.6.</span></p>
 </dd></dl>
@@ -795,10 +794,10 @@ default  [<tt class="xref py py-class docutils literal"><span class="pre">numpy.
 <p>Raises a <a class="reference internal" href="#MDAnalysis.core.AtomGroup.NoDataError" title="MDAnalysis.core.AtomGroup.NoDataError"><tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt></a> if the underlying
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> does not contain
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep._velocities" title="MDAnalysis.coordinates.base.Timestep._velocities"><tt class="xref py py-attr docutils literal"><span class="pre">_velocities</span></tt></a>.</p>
-<div class="admonition-see-also admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_velocities" title="MDAnalysis.core.AtomGroup.AtomGroup.set_velocities"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.set_velocities()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.velocities" title="MDAnalysis.core.AtomGroup.AtomGroup.velocities"><tt class="xref py py-attr docutils literal"><span class="pre">AtomGroup.velocities</span></tt></a></p>
-</div>
+<p>See also <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_velocities" title="MDAnalysis.core.AtomGroup.AtomGroup.set_velocities"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.set_velocities()</span></tt></a> and attribute access through
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.velocities" title="MDAnalysis.core.AtomGroup.AtomGroup.velocities"><tt class="xref py py-attr docutils literal"><span class="pre">AtomGroup.velocities</span></tt></a>.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.6.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -841,22 +840,6 @@ selection of atoms and thus the user input!</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.AtomGroup.AtomGroup.moveto">
-<tt class="descname">moveto</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.moveto" title="Permalink to this definition">¶</a></dt>
-<dd><p>Move atom(s) to position <em>x</em>.</p>
-<p><em>x</em> should be a 3N array, which determines the N new
-coordinates for the N members of the AtomGroup.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If the AtomGroup contains N atoms but <em>x</em> is a single point
-(i.e. an array of length 3) then <strong>all N atom positions are
-set to *x*.</strong></p>
-</div>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
-</dd></dl>
-
-<dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.names">
 <tt class="descname">names</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of atom names.</p>
@@ -884,6 +867,12 @@ set to *x*.</strong></p>
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.positions">
 <tt class="descname">positions</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Coordinates of the atoms in the AtomGroup.</p>
+<p>The positions can be changed by assigning an array of the appropriate
+shape, i.e. either Nx3 to assign individual coordinates or 3, to assign
+the <em>same</em> coordinate to all atoms (e.g. <tt class="docutils literal"><span class="pre">ag.positions</span> <span class="pre">=</span> <span class="pre">array([0,0,0])</span></tt>
+will move all particles to the origin).</p>
+<p>For more control use the <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_positions" title="MDAnalysis.core.AtomGroup.AtomGroup.get_positions"><tt class="xref py py-meth docutils literal"><span class="pre">get_positions()</span></tt></a> and
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_positions" title="MDAnalysis.core.AtomGroup.AtomGroup.set_positions"><tt class="xref py py-meth docutils literal"><span class="pre">set_positions()</span></tt></a> methods.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.6.</span></p>
 </dd></dl>
@@ -1056,7 +1045,7 @@ and the translation vectort M[:3,3].</p>
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_positions">
 <tt class="descname">set_positions</tt><big>(</big><em>coords</em>, <em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_positions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the positions for this AtomGroup in the time step.</p>
+<dd><p>Set the positions for all atoms in the group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1072,17 +1061,22 @@ atoms in this atom group.</p>
 <tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>ts</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>, defaults
-to <tt class="docutils literal"><span class="pre">None</span></tt> and the current time step is used.</p>
+to <tt class="docutils literal"><span class="pre">None</span></tt> and then the current time step is used.</p>
 </dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition-see-also admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_positions" title="MDAnalysis.core.AtomGroup.AtomGroup.set_positions"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.set_positions()</span></tt></a></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the group contains N atoms and <em>coord</em> is a single point (i.e. an
+array of length 3) then all N atom positions are set to <em>coord</em> (due
+to NumPy&#8217;s broadcasting rules), as described for
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.positions" title="MDAnalysis.core.AtomGroup.AtomGroup.positions"><tt class="xref py py-attr docutils literal"><span class="pre">positions</span></tt></a>.</p>
 </div>
+<p>See also <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_positions" title="MDAnalysis.core.AtomGroup.AtomGroup.get_positions"><tt class="xref py py-meth docutils literal"><span class="pre">get_positions()</span></tt></a> and attribute access through
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.positions" title="MDAnalysis.core.AtomGroup.AtomGroup.positions"><tt class="xref py py-attr docutils literal"><span class="pre">positions</span></tt></a>.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.6.</span></p>
 </dd></dl>
@@ -1157,10 +1151,10 @@ selectors.</p>
 <p>Raises a <a class="reference internal" href="#MDAnalysis.core.AtomGroup.NoDataError" title="MDAnalysis.core.AtomGroup.NoDataError"><tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt></a> if the underlying
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> does not contain
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep._velocities" title="MDAnalysis.coordinates.base.Timestep._velocities"><tt class="xref py py-attr docutils literal"><span class="pre">_velocities</span></tt></a>.</p>
-<div class="admonition-see-also admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_velocities" title="MDAnalysis.core.AtomGroup.AtomGroup.get_velocities"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.get_velocities()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.velocities" title="MDAnalysis.core.AtomGroup.AtomGroup.velocities"><tt class="xref py py-attr docutils literal"><span class="pre">AtomGroup.velocities</span></tt></a></p>
-</div>
+<p>See also <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_velocities" title="MDAnalysis.core.AtomGroup.AtomGroup.get_velocities"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.get_velocities()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.velocities" title="MDAnalysis.core.AtomGroup.AtomGroup.velocities"><tt class="xref py py-attr docutils literal"><span class="pre">AtomGroup.velocities</span></tt></a> for
+attribute access.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.6.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -1182,8 +1176,8 @@ selectors.</p>
 <p>The matrix <em>M</em> must be a 4x4 matrix, with the rotation in
 <tt class="docutils literal"><span class="pre">M[:3,:3]</span></tt> and the translation in <tt class="docutils literal"><span class="pre">M[:3,3]</span></tt>.</p>
 <p>The rotation is applied before the translation:</p>
-<blockquote>
-<div>x&#8217; = R.x + t</div></blockquote>
+<div class="highlight-python"><pre>x' = R.x + t</pre>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1196,8 +1190,8 @@ selectors.</p>
 </div>
 <p>The method applies a translation to the AtomGroup from current
 coordinates x to new coordinates x&#8217;:</p>
-<blockquote>
-<div>x&#8217; = x + t</div></blockquote>
+<div class="highlight-python"><pre>x' = x + t</pre>
+</div>
 <p>The translation can also be given as a tuple of two MDAnalysis objects
 such as two selections <cite>(selA, selB)</cite>, i.e. two <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>, or
 two <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>. The translation vector is computed as the
@@ -1231,7 +1225,7 @@ changes).</p>
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.velocities">
 <tt class="descname">velocities</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.velocities" title="Permalink to this definition">¶</a></dt>
-<dd><p>NumPy array of the velocities.</p>
+<dd><p>NumPy array of the velocities of the atoms in the group.</p>
 <p>If the trajectory does not contain velocity information then a
 <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt> is raised.</p>
 <p class="versionadded">
