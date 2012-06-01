@@ -204,7 +204,7 @@ class Atom(object):
         get the Current cartesian coordinates of the atom.
         """
         return self.position
-    
+
     @property
     def position(self):
         """
@@ -212,13 +212,13 @@ class Atom(object):
         @return: a numpy 1x3 array
         """
         return self.universe.coord[self.number] # internal numbering starts at 0
-    
+
     @position.setter
     def position(self,coords):
         """
         Set the current cartesian coordinates of the atom.
         @param coords: a 1x3 numpy array of {x,y,z} coordinates, or optionally
-            a single scalar if you should want to set all coordinates to the same value. 
+            a single scalar if you should want to set all coordinates to the same value.
         """
         self.universe.coord._pos[self.number,:] = coords # internal numbering starts at 0
 
@@ -932,43 +932,86 @@ class AtomGroup(object):
         indices = numpy.argsort(eigenval)
         # Return transposed in more logical form. See Issue 33.
         return eigenvec[:,indices].T
-    
-    def coordinates(self, ts=None, copy=False, dtype=numpy.float32):
-        """
-        NumPy array of the coordinates.
-        deprecated
-        """
-        return self.get_positions(ts, copy, dtype)
-    
+
     def get_positions(self, ts=None, copy=False, dtype=numpy.float32):
-        """
-        get a NumPy array of the coordinates.
-        this used to be function 'coordinates', now it is a get/set property.
-        access to the all the arguments is available as atomGroup.get_positions(...)
+        """Get a NumPy array of the coordinates.
+
+        This method is identical with :meth:`~AtomGroup.coordinates` but named
+        differently for symmetry with with :meth:`~AtomGroup.set_positions`.
+
+        :Keywords:
+           *ts*
+               If *ts* is provided then positions are read from that
+               :class:`~MDAnalysis.coordinates.base.Timestep` instead of
+               the one from the current trajectory belonging to this universe.
+               The *ts* is indexed with the indices returned by
+               :meth:`~AtomGroup.indices` and it is the user's responsibility
+               to provide a time step that has the appropriate dimensions.
+           *copy*
+               ``True``: always make a copy (slow), ``False``: Try to
+               return a array view or reference (faster); note that for
+               passing coordinates to C-code it can be necessary to use
+               a copy [``False``]
+           *dtype*
+               NumPy Data type of the array; the default is usually
+               entirely appropriate. Most C-code actually requires the
+               default  [:class:`numpy.float32`]
+
+        .. SeeAlso::
+           Coordinates can be directly set with
+           :meth:`AtomGroup.set_positions`.
+
+        .. versionadded:: 0.7.6
         """
         if ts == None:
             ts = self.universe.trajectory.ts
         return numpy.array(ts[self.indices()], copy=copy, dtype=dtype)
-    
-    def set_positions(self,coords,ts=None):
+
+    coordinates = get_positions
+    """NumPy array of the coordinates.
+
+    .. SeeAlso:: :attr:`AtomGroup.positions` and :meth:`AtomGroup.get_positions`
+
+    .. deprecated:: 0.7.6
+       In new scripts use :meth:`AtomGroup.get_positions`.
+
+    """
+    # should not be removed as it has been used in many scripts, MDAnalysis itself,
+    # and in the paper
+
+    def set_positions(self, coords, ts=None):
+        """Set the positions for this AtomGroup in the time step.
+
+        :Arguments:
+           *coords*
+               a Nx3 NumPy :class:`numpy.ndarray` where N is the number of
+               atoms in this atom group.
+
+        :Keywords:
+           *ts*
+              :class:`~MDAnalysis.coordinates.base.Timestep`, defaults
+              to ``None`` and the current time step is used.
+
+        .. SeeAlso:: :meth:`AtomGroup.set_positions`
+
+        .. versionadded:: 0.7.6
+
         """
-        Set the positions for this AtomGroup.
-        @param coords: a Nx3 numpy array where N is the number of atoms in this atom group.
-        @param ts: time step, defaults to None, the current time step is used. 
-        """ 
         if ts == None:
             ts = self.universe.trajectory.ts
-        ts._pos[self.indices(),:]=coords
-        
-    positions = property(get_positions, set_positions)
+        ts._pos[self.indices(),:] = coords
 
-    def velocities(self, ts=None, copy=False, dtype=numpy.float32):
+    positions = property(get_positions, set_positions,
+                         doc="""Coordinates of the atoms in the AtomGroup.\n\n.. versionadded:: 0.7.6\n""")
+
+    def get_velocities(self, ts=None, copy=False, dtype=numpy.float32):
         """NumPy array of the velocities.
 
-        If the trajectory does not contain velocity information then a
-        :exc:`~MDAnalysis.NoDataError` is raised.
+        Raises a :exc:`NoDataError` if the underlying
+        :class:`~MDAnalysis.coordinates.base.Timestep` does not contain
+        :attr:`~MDAnalysis.coordinates.base.Timestep._velocities`.
 
-        .. versionadded:: 0.7.5
+        .. SeeAlso:: :meth:`AtomGroup.set_velocities` and :attr:`AtomGroup.velocities`
         """
         if ts == None:
             ts = self.universe.trajectory.ts
@@ -976,6 +1019,41 @@ class AtomGroup(object):
             return numpy.array(ts._velocities[self.indices()], copy=copy, dtype=dtype)
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
+
+    def set_velocities(self, v, ts=None):
+        """Assign the velocities *v* to the timestep.
+
+        Raises a :exc:`NoDataError` if the underlying
+        :class:`~MDAnalysis.coordinates.base.Timestep` does not contain
+        :attr:`~MDAnalysis.coordinates.base.Timestep._velocities`.
+
+        .. SeeAlso:: :meth:`AtomGroup.get_velocities` and :attr:`AtomGroup.velocities`
+        """
+        if ts == None:
+            ts = self.universe.trajectory.ts
+        try:
+            ts._velocities[self.indices(), :] = v
+        except AttributeError:
+            raise NoDataError("Timestep does not contain velocities")
+
+    def velocities(self, **kwargs):
+        """NumPy array of the velocities.
+
+        If the trajectory does not contain velocity information then a
+        :exc:`~MDAnalysis.NoDataError` is raised.
+
+        .. versionadded:: 0.7.5
+        .. deprecated:: 0.7.6
+           In 0.8 this will become an attribute! You can already use :meth:`get_velocities`
+           and :meth:`set_velocities`.
+        """
+        warnings.warn("velocities() will become an attribute 'velocities' in 0.8",
+                      category=DeprecationWarning)
+        return self.get_velocities(**kwargs)
+
+    # TODO for 0.8
+    #velocities = property(get_velocities, set_velocities, doc="velocities of the atoms\n\n.. versionchanged:: 0.8")
+
 
     def moveto(self, x):
         """Move atom(s) to position *x*.
