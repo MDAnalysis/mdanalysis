@@ -10,12 +10,13 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/12 orbeckst, joshua.adelman
+??/??/12 orbeckst, joshua.adelman, tyler.je.reddy
 
   * 0.7.6 (in development)
 
   Enhancements
-
+  * GRO file velocities may be accessed as AtomGroup.velocities()
+    or Atom.velocity (Issue 102)
   * new AtomGroup.moveto() method
   * PrimitivePDBReader can be sliced
   * AMBER NetCDF (binary trajectory) reader and writer, supporting

@@ -117,7 +117,7 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | and radius information. Module                       |
    |               |           |       | :mod:`MDAnalysis.coordinates.PQR`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | GROMOS96      | gro       |  r/w  | basic GROMOS96 format (without velocities). Module   |
+   | GROMOS96      | gro       |  r/w  | basic GROMOS96 format (velocities as well). Module   |
    | [#a]_         |           |       | :mod:`MDAnalysis.coordinates.GRO`                    |
    +---------------+-----------+-------+------------------------------------------------------+
    | CHARMM [#a]_  | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
@@ -163,6 +163,7 @@ History
 - 2011-04-20 added volume to Timestep
 - 2012-02-11 added _velocities to Timestep
 - 2012-05-24 multiframe keyword to distinguish trajectory from single frame writers
+- 2012-06-03 added velocities to the gro file reader [tyler.je.reddy]
 
 .. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
 

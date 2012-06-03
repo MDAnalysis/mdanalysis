@@ -212,7 +212,7 @@ class Atom(object):
         .. versionadded:: 0.7.5
         """
         try:
-            return self.universe.trajectory.ts._velocities[self.number]
+            return numpy.array(self.universe.trajectory.ts._velocities[self.number],dtype=numpy.float32)
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
 

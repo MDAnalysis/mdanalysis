@@ -68,8 +68,9 @@ class Timestep(base.Timestep):
                 return triclinic_box(x,y,z)
 
 class GROReader(base.Reader):
+        '''Now reads in velocities as well, if available.'''
         format = 'GRO'
-        units = {'time': None, 'length': 'nm'}
+        units = {'time': None, 'length': 'nm', 'velocity': 'nm/ps'}
         _Timestep = Timestep
 
         def __init__(self,grofilename,convert_units=None,**kwargs):
@@ -80,6 +81,7 @@ class GROReader(base.Reader):
                 self.convert_units = convert_units  # convert length and time to base units
 
                 coords_list = []
+                velocities_list = []
 
                 with open(grofilename , 'r') as grofile:
                         # Read first two lines to get number of atoms
@@ -90,6 +92,8 @@ class GROReader(base.Reader):
                                 # Should work with any precision
                                 if linenum not in (0,1,total_atnums+2):
                                         coords_list.append( numpy.array( map( float , line[20:].split()[0:3] ) ) )
+                                        if len(line[20:].split()) >= 6: #if there are enough data columns to include velocities
+                                            velocities_list.append( numpy.array( map( float , line[20:].split()[3:6] ) ) )
                                 # Unit cell footer
                                 elif linenum == total_atnums+2:
                                         unitcell = numpy.array( map( float , line.split() ) )
@@ -97,6 +101,10 @@ class GROReader(base.Reader):
                 self.numatoms = len(coords_list)
                 coords_list = numpy.array(coords_list)
                 self.ts = self._Timestep(coords_list)
+                if velocities_list: #perform this operation only if velocities are present in coord file  
+                    velocities_list = numpy.array(velocities_list) 
+                    self.ts._velocities = velocities_list
+                    self.convert_velocities_from_native(self.ts._velocities) #converts nm/ps to A/ps units
                 # ts._unitcell layout is format dependent; Timestep.dimensions does the conversion
                 # behind the scene
                 self.ts._unitcell = numpy.zeros(9, dtype=numpy.float32)   # GRO has 9 entries
