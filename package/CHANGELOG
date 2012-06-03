@@ -10,7 +10,8 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/12 orbeckst, joshua.adelman, tyler.je.reddy
+=======
+??/??/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy
 
   * 0.7.6 (in development)
 
@@ -21,6 +22,10 @@ The rules for this file:
   * PrimitivePDBReader can be sliced
   * AMBER NetCDF (binary trajectory) reader and writer, supporting
     coordinates and velocities; requires netcdf4-python (Issue 109)
+  * additional attributes and methods for AtomGroup to consolidate
+    the interface to the Timestep: attribute 'positions' and 
+    'get_positions()' can be used instead of the 'coordinates()' 
+    method. get/set methods for both positions and velocities.
   
   Changes
 
@@ -47,7 +52,7 @@ The rules for this file:
   * fixed Issue 107 (NAMD/VMD space delimited files can be
     autodetected and read); important when using CGENFF atom types
     (thanks to JiyongPark.77 for initial patch)
-
+  * fixed Issue 101 (could not write single frame to trr file)
 
 02/16/12 sebastien.buchoux
 

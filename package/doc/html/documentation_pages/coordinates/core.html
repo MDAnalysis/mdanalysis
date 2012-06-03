@@ -264,7 +264,9 @@ individual packages (e.g. as static methods).</p>
 <dt id="MDAnalysis.coordinates.core.triclinic_vectors">
 <tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">triclinic_vectors</tt><big>(</big><em>dimensions</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.triclinic_vectors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert <cite>[A,B,C,alpha,beta,gamma]</cite> to a triclinic box representation.</p>
-<p>Original <a class="reference external" href="http://www.mail-archive.com/gmx-users&#64;gromacs.org/msg28032.html">code by Tsjerk Wassenaar</a> posted on the Gromacs mailinglist</p>
+<p>Original <a class="reference external" href="http://www.mail-archive.com/gmx-users&#64;gromacs.org/msg28032.html">code by Tsjerk Wassenaar</a> posted on the Gromacs mailinglist.</p>
+<p>If <em>dimensions</em> indicates a non-periodic system (i.e. all lengths
+0) then null-vectors are returned.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -288,6 +290,8 @@ B[1] = second vector, B[2] third box vector.</p>
 <p class="last">The first vector is always pointing along the X-axis
 i.e. parallel to (1,0,0).</p>
 </div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>Null-vectors are returned for non-periodic (or missing) unit cell.</p>
 </dd></dl>
 
 <dl class="function">
@@ -347,7 +351,7 @@ B[1] = second vector, B[2] third box vector.</p>
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
+    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
