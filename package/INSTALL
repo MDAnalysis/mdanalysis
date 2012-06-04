@@ -197,6 +197,11 @@ package:
 
     * netcdf4-python (http://code.google.com/p/netcdf4-python/)
 
+      If you get a 'ValueError: did not find HDF5 headers' during
+      installation then you should install the hdf5 development
+      package through your package manager (see below for some hints
+      on how to do this for Linux and Mac OS X).
+
 Optional python packages (used in MDAnalysis.analysis):
 
     * nose (http://somethingaboutorange.com/mrl/projects/nose/) -- for testing
@@ -263,9 +268,15 @@ Linux
 
   Install packages needed for full functionality
 
-    sudo aptitude install python-scipy python-matplotlib python-biopython
+    sudo aptitude install python-scipy python-matplotlib  python-biopython \
+                          python-netcdf4  libhdf5-dev 
 
-
+  (The netcdf and libhdf5-dev packages are only required if you want
+  to be able to process AMBER netcdf (binary) trajectories. If you
+  don't have netcdf4 available from your package manager (eg Ubuntu
+  10.04) then follow the instructions for installing netcdf4 given at
+  http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html
+  and http://code.google.com/p/mdanalysis/wiki/netcdf)
 
 
 Mac OS X
@@ -275,19 +286,16 @@ OS specific notes
 
 * Tested with Mac OS X 10.4.11+fink and 10.6.2+MacPorts. 
 
-* fink hints:
-  Install prerequisite packages using fink::
-
-     fink install cython-py25 scipy-core-py25 scipy-py25
-
-  Install packages needed for full functionality::
-
-     fink install  matplotlib-py25 biopython-py25
-
 * MacPorts hints::
 
      port install  py26-numpy  py26-cython
-     port install  py26-scipy  py26-matplotlib py26-biopython
+     port install  py26-scipy  py26-matplotlib py26-biopython hdf5 netcdf+dap+netcdf4
+
+  (The netcdf and libhdf5-dev packages are only required if you want
+  to be able to process AMBER netcdf (binary) trajectories.)
+
+* fink also worked in the past but the developers have not had any
+  recent experience with fink and MDAnalysis
 
 * NOTE: Use the Apple-provided gcc, not the fink provided
   one. Apparently, only Apple's gcc has the -arch flag that appears to
