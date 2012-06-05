@@ -122,6 +122,21 @@ class TestXYZReader(TestCase, Ref2r9r):
         assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
 
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
+        # for whenever full slicing is implemented ...
+        #frames = [ts.frame-1 for ts in trj_iter()]
+        #assert_equal(frames, np.arange(self.universe.trajectory.numframes, step=2))
+
+
 
 class TestCompressedXYZReader(TestCase, Ref2r9r):
     def setUp(self):
@@ -150,6 +165,16 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
 
         assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
+
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
 
 
 class RefACHE(object):
@@ -225,6 +250,16 @@ class _TRJReaderTest(TestCase):
         assert_almost_equal(total, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
 
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
 
 class TestTRJReader(_TRJReaderTest, RefACHE):
     def setUp(self):
@@ -289,6 +324,17 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         d = atom_distance(NTERM, CTERM)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="distance between M1:N and G214:C")
+
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
 
 class TestPDBReader(_SingleFrameReader):
     def setUp(self):
@@ -534,6 +580,17 @@ class TestGROReader(TestCase, RefAdK):
         # test_volume: reduce precision for Gromacs comparison to 0 decimals (A**3 <--> nm**3!)
         assert_almost_equal(self.ts.volume, self.ref_volume, 0,
                             err_msg="wrong volume for unitcell (rhombic dodecahedron)")
+
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
 
 class TestGROReaderNoConversion(TestCase, RefAdK):
     def setUp(self):
@@ -1090,6 +1147,17 @@ class TestChainReader(TestCase):
         for (ts_orig, ts_new) in izip(self.universe.trajectory, u.trajectory):
             assert_almost_equal(ts_orig._pos, ts_new._pos, self.prec,
                                 err_msg="Coordinates disagree at frame %d" % ts_orig.frame)
+
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
 
 class _GromacsReader(TestCase):
     # This base class assumes same lengths and dt for XTC and TRR test cases!

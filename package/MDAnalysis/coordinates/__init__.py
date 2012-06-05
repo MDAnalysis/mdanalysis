@@ -149,6 +149,7 @@ History
 - 2011-04-18 added time and frame managed attributes to Reader
 - 2011-04-20 added volume to Timestep
 - 2012-02-11 added _velocities to Timestep
+- 2012-06-04 missing implementations of Reader.__getitem__ should raise :exc:`TypeError`
 
 .. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
 
@@ -325,6 +326,15 @@ deal with missing methods gracefully.
      trajectory reader and if it can implement random access to frames. In many
      cases this is not easily (or reliably) implementable and thus one is
      restricted to sequential iteration.
+
+     If the Reader is not able to provide random access to frames then it
+     should raise :exc:`TypeError` on indexing. It is possible to partially
+     implement ``__getitem__`` (as done on
+     :class:`MDAnalysis.coordinates.base.Reader.__getitem__` where slicing the
+     full trajectory is equivalent to
+     :class:`MDAnalysis.coordinates.base.Reader.__iter__` (which is always
+     implemented) and other slices raise :exc:`TypeError`.
+
 
  ``Writer(filename, **kwargs)``
      returns a :class:`~MDAnalysis.coordinates.base.Writer` which is set up with
