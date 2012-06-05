@@ -101,9 +101,10 @@ class GROReader(base.Reader):
                 self.numatoms = len(coords_list)
                 coords_list = numpy.array(coords_list)
                 self.ts = self._Timestep(coords_list)
-                if velocities_list: #perform this operation only if velocities are present in coord file  
-                    velocities_list = numpy.array(velocities_list) 
-                    self.ts._velocities = velocities_list
+                self.ts.frame = 1  # 1-based frame number
+                if velocities_list: #perform this operation only if velocities are present in coord file
+                    # TODO: use a Timestep that knows about velocities such as TRR.Timestep or better, TRJ.Timestep
+                    self.ts._velocities = numpy.array(velocities_list, dtype=numpy.float32)
                     self.convert_velocities_from_native(self.ts._velocities) #converts nm/ps to A/ps units
                 # ts._unitcell layout is format dependent; Timestep.dimensions does the conversion
                 # behind the scene
@@ -140,17 +141,18 @@ class GROReader(base.Reader):
                 """
                 return GROWriter(filename, **kwargs)
 
-        def __len__(self):
-                return self.numframes
         def __iter__(self):
                 yield self.ts  # Just a single frame
                 raise StopIteration
-        def __getitem__(self, frame):
+
+        def _read_frame(self, frame):
                 if frame != 0:
-                        raise IndexError('GROReader can only read a single frame at index 0')
+                        raise IndexError("GROReader only handles a single frame at frame index 0")
                 return self.ts
+
         def _read_next_timestep(self):
-                raise Exception, "GROReader can only read a single frame"
+                # CRD files only contain a single frame
+                raise IOError
 
 class GROWriter(base.Writer):
         """GRO Writer that conforms to the Trajectory API.

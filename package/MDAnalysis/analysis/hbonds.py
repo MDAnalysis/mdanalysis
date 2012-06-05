@@ -669,7 +669,7 @@ class HydrogenBondAnalysis(object):
 
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
                     (self.traj_slice.start or 0),
-                    (self.traj_slice.stop or self.u.trajectory.numframes-1), self.traj_slice.step or 1)
+                    (self.traj_slice.stop or self.u.trajectory.numframes), self.traj_slice.step or 1)
 
         for ts in self.u.trajectory[self.traj_slice]:
             frame_results = []

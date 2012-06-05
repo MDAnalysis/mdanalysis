@@ -289,26 +289,39 @@ class _TRJReaderTest(TestCase):
         frames = [ts.frame-1 for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.numframes))
 
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return self.universe.trajectory[::2]
-        assert_raises(TypeError, trj_iter)
-
 
 class TestTRJReader(_TRJReaderTest, RefACHE):
     def setUp(self):
         self.universe = mda.Universe(PRM, TRJ)
         self.prec = 3
 
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
+
 class TestBzippedTRJReader(TestTRJReader):
     def setUp(self):
         self.universe = mda.Universe(PRM, TRJ_bz2)
         self.prec = 3
 
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
+
 class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
     def setUp(self):
         self.universe = mda.Universe(PRMpbc, TRJpbc_bz2)
         self.prec = 3
+
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
 
 class TestNCDFReader(_TRJReaderTest, RefVGV):
     def setUp(self):
@@ -423,7 +436,16 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         assert_equal(self.universe.trajectory.time, 0.0, "wrong time of the frame")
 
     def test_frame(self):
-        assert_equal(self.universe.trajectory.frame, 0, "wrong frame number")
+        assert_equal(self.universe.trajectory.frame, 1, "wrong frame number (1-based, should be 1 for single frame readers)")
+
+    def test_frame_index_0(self):
+        self.universe.trajectory[0]
+        assert_equal(self.universe.trajectory.ts.frame, 1, "frame number for frame index 0 should be 1")
+
+    def test_frame_index_1_raises_IndexError(self):
+        def go_to_2(traj=self.universe.trajectory):
+            traj[1]
+        assert_raises(IndexError, go_to_2)
 
     def test_dt(self):
         """testing that accessing universe.trajectory.dt raises a KeyError for single frame readers"""
@@ -447,6 +469,12 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         frames = [ts.frame-1 for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.numframes))
 
+    def test_last_slice(self):
+        trj_iter = self.universe.trajectory[-1:]  # should be same as above: only 1 frame!
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
+
 
 class TestPDBReader(_SingleFrameReader):
     def setUp(self):
@@ -456,21 +484,15 @@ class TestPDBReader(_SingleFrameReader):
         self.universe = mda.Universe(PDB_small, permissive=False)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return self.universe.trajectory[::2]
-        assert_raises(TypeError, trj_iter)
+    def test_uses_Biopython(self):
+        from MDAnalysis.coordinates.PDB import PDBReader
+        assert_(isinstance(self.universe.trajectory, PDBReader), "failed to choose Biopython PDBReader")
 
 
 class TestPSF_CRDReader(_SingleFrameReader):
     def setUp(self):
         self.universe = mda.Universe(PSF, CRD)
         self.prec = 5  # precision in CRD (at least we are writing %9.5f)
-
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return self.universe.trajectory[::2]
-        assert_raises(TypeError, trj_iter)
 
 
 class TestPSF_PDBReader(TestPDBReader):
@@ -479,10 +501,9 @@ class TestPSF_PDBReader(TestPDBReader):
         self.universe = mda.Universe(PSF, PDB_small, permissive=False)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return self.universe.trajectory[::2]
-        assert_raises(TypeError, trj_iter)
+    def test_uses_Biopython(self):
+        from MDAnalysis.coordinates.PDB import PDBReader
+        assert_(isinstance(self.universe.trajectory, PDBReader), "failed to choose Biopython PDBReader")
 
 
 class TestPrimitivePDBReader(_SingleFrameReader):
@@ -750,7 +771,7 @@ class TestGROReader(TestCase, RefAdK):
         assert_equal(self.universe.trajectory.time, 0.0, "wrong time of the frame")
 
     def test_frame(self):
-        assert_equal(self.universe.trajectory.frame, 0, "wrong frame number")
+        assert_equal(self.universe.trajectory.frame, 1, "wrong frame number (should be 1 for 1-based ts.frame)")
 
     def test_dt(self):
         """testing that accessing universe.trajectory.dt raises a KeyError for single frame readers"""
@@ -787,11 +808,6 @@ class TestGROReader(TestCase, RefAdK):
         trj_iter = self.universe.trajectory[:]
         frames = [ts.frame-1 for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.numframes))
-
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return self.universe.trajectory[::2]
-        assert_raises(TypeError, trj_iter)
 
 
 class TestGROReaderNoConversion(TestCase, RefAdK):
@@ -939,7 +955,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
 
     @dec.slow
     def test_frame(self):
-        assert_equal(self.universe.trajectory.frame, 0, "wrong frame number")
+        assert_equal(self.universe.trajectory.frame, 1, "wrong frame number")
 
     @dec.slow
     def test_dt(self):
@@ -1320,10 +1336,15 @@ class TestChainReader(TestCase):
         print self.trajectory.ts, self.trajectory.ts.frame
         assert_equal(self.trajectory.ts.frame, self.trajectory.numframes, "indexing last frame with trajectory[-1]")
 
-    @dec.knownfailureif(True, "slicing not implemented for chained reader")
+    @dec.knownfailureif(True, "full slicing not implemented for chained reader")
     def test_slice_trajectory(self):
         frames = [ts.frame for ts in self.trajectory[5:17:3]]
         assert_equal(frames, [6, 9, 12, 15], "slicing dcd [5:17:3]")
+
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
 
     def test_frame_numbering(self):
         self.trajectory[98]  # index is 0-based but frames are 1-based
@@ -1357,16 +1378,6 @@ class TestChainReader(TestCase):
         for (ts_orig, ts_new) in izip(self.universe.trajectory, u.trajectory):
             assert_almost_equal(ts_orig._pos, ts_new._pos, self.prec,
                                 err_msg="Coordinates disagree at frame %d" % ts_orig.frame)
-
-    def test_full_slice(self):
-        trj_iter = self.universe.trajectory[:]
-        frames = [ts.frame-1 for ts in trj_iter]
-        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
-
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return self.universe.trajectory[::2]
-        assert_raises(TypeError, trj_iter)
 
 
 class _GromacsReader(TestCase):

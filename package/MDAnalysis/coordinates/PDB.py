@@ -264,6 +264,7 @@ class PDBReader(base.Reader):
         self.skip_timestep = 1
         #self.ts._unitcell[:] = ??? , from CRYST1?
         self.ts = self._Timestep(pos)
+        self.ts.frame = 1
         del pos
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)             # in-place !
@@ -299,17 +300,18 @@ class PDBReader(base.Reader):
         kwargs.pop('universe', None)           # always linked to this reader, don't bother with Universe
         return PDBWriter(filename, **kwargs)
 
-    def __len__(self):
-        return self.numframes
     def __iter__(self):
-        def iterPDB():
-            yield self.ts   # just a single frame available
-            raise StopIteration
-        return iterPDB()
-    def __getitem__(self, frame):
+        yield self.ts   # just a single frame available
+        raise StopIteration
+
+    def _read_frame(self, frame):
         if frame != 0:
-            raise IndexError('PDBReader only contains a single frame at index 0')
+            raise IndexError("CRD only contains a single frame at frame index 0")
         return self.ts
+
+    def _read_next_timestep(self):
+        # PDB file only contains a single frame
+        raise IOError
 
 
 class PDBWriter(base.Writer):
@@ -530,6 +532,7 @@ class PrimitivePDBReader(base.Reader):
         self.remarks = remarks
         self.numatoms = len(coords)
         self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
+        self.ts.frame = 1  # 1-based frame number as starting frame
         self.ts._unitcell[:] = unitcell
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)             # in-place !
@@ -541,7 +544,6 @@ class PrimitivePDBReader(base.Reader):
 
         self.frames = frames
         self.numframes = len(frames) if frames else 1
-        self.ts.frame = 0
         self.fixed = 0
         self.skip = 1
         self.periodic = False

@@ -497,7 +497,7 @@ class Reader(IObase):
                 raise TypeError("Reader does not support slicing.")
             def _iter(start=start, stop=stop, step=step):
                 for i in xrange(start, stop, step):
-                    yield self[0]
+                    yield self[i]
         return _iter()
 
     def _check_slice_indices(self, start, stop, step):
@@ -704,8 +704,8 @@ class ChainReader(Reader):
         """Reader instance from which frames are being read."""
         return self.readers[self.__active_reader_index]
 
-    def _jump_to_frame(self, frame):
-        """Position trajectory at frame index *frame*.
+    def _read_frame(self, frame):
+        """Position trajectory at frame index *frame* and return :class:`Timestep`.
 
         The frame is translated to the corresponding reader and local
         frame index and the Timestep instance in
@@ -725,6 +725,7 @@ class ChainReader(Reader):
         # update Timestep
         self.ts = self.active_reader.ts
         self.ts.frame = frame + 1  # continuous frames, 1-based
+        return self.ts
 
     def _chained_iterator(self):
         """Iterator that presents itself as a chained trajectory."""
@@ -762,24 +763,6 @@ class ChainReader(Reader):
         self.__chained_trajectories_iter = self._chained_iterator()  # start from first frame
         for ts in self.__chained_trajectories_iter:
             yield ts
-
-    def __getitem__(self, frame):
-        """Index with 0-based frame index to jump to a frame.
-
-        Updates timestep; slices will be implemented in the future.
-        """
-        if numpy.dtype(type(frame)) != numpy.dtype(int) and type(frame) != slice:
-            raise TypeError("frames (0-based) must be int or a slice")
-        if numpy.dtype(type(frame)) == numpy.dtype(int):
-            if frame < 0:
-                # Interpret similar to a sequence
-                frame = len(self) + frame
-            if frame < 0 or frame >= len(self):
-                raise IndexError("frame index out of bounds")
-            self._jump_to_frame(frame)  # updates ts
-            return self.ts
-        elif type(frame) == slice: # if frame is a slice object
-            raise NotImplementedError("Slices not implemented for ChainReader")
 
     def __repr__(self):
         return "< %s %r with %d frames of %d atoms (%d fixed) >" % \

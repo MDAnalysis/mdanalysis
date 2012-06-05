@@ -228,7 +228,7 @@ Attributes
   ``numatoms``
       number of atoms in the frame
   ``frame``
-      current frame number
+      current frame number (1-based)
   ``dimensions``
       system box dimensions (`x, y, z, alpha, beta, gamma`)
       (typically implemented as a property because it needs to translate whatever is in the
@@ -349,6 +349,14 @@ deal with missing methods gracefully.
      :class:`MDAnalysis.coordinates.base.Reader.__iter__` (which is always
      implemented) and other slices raise :exc:`TypeError`.
 
+     .. Note::
+
+        ``__getitem__`` uses 0-based indices for frames so that indexing and
+        slicing works exactly as in Python. However, the ``Timestep.frame``
+        attribute (the "frame number") is 1-based. Thus, the first frame in a
+        trajectory can be accessed as ``trajectory[0]`` (frame index 0) and the
+        corresponding frame number is 1 (``trajectory.ts.frame == 1``).
+
 
  ``Writer(filename, **kwargs)``
      returns a :class:`~MDAnalysis.coordinates.base.Writer` which is set up with
@@ -410,7 +418,7 @@ Attributes
  ``time``
      time of the current time step, in MDAnalysis time units (ps)
  ``frame``
-     frame number of the current time step
+     frame number of the current time step (1-based)
 
 **Optional attributes**
 
@@ -464,7 +472,7 @@ Attributes
  ``filename``
      name of the trajectory file
  ``start, stop, step``
-     first and last frame and step
+     first and last frame number (1-based) and step
  ``units``
      dictionary with keys *time*, *length*, *speed*, *force* and the
      appropriate unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and
@@ -554,7 +562,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'XTC': XTC.XTCReader,
                        'XYZ': XYZ.XYZReader,
                        'TRR': TRR.TRRReader,
-                       'PDB': PDB.PrimitivePDBReader,
+                       'PDB': PDB.PDBReader,
                        'PDBQT': PDBQT.PDBQTReader,
                        'CRD': CRD.CRDReader,
                        'GRO': GRO.GROReader,
