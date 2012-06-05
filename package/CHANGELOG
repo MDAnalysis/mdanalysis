@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-06/30/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy
+06/30/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy, lukas.grossar
 
   * 0.7.6 (in development)
 
@@ -26,13 +26,17 @@ The rules for this file:
     the interface to the Timestep: attribute 'positions' and 
     'get_positions()' can be used instead of the 'coordinates()' 
     method. get/set methods for both positions and velocities.
+  * almost all Readers now support some form of slicing; unsupported
+    slicing operations will raise a TypeError  
   
   Changes
 
-  * HydrogenBondAnalysis: run() does not return the results anymore;
-    they are simply stored as attribute timeseries (similar to other
-    analysis tools); also only write per-frame debugging messages to
-    the logfile when the new verbose keyword is set to True
+  * HydrogenBondAnalysis: multiple enhancements and changes (Issue 103)
+    - many new analysis functions (see docs)
+    - run() does not return the results anymore; results are simply
+      stored as attribute timeseries (similar to other analysis tools)
+    - only write per-frame debugging messages to the logfile when the 
+      new verbose keyword is set to True
   * removed CHO and EAM (formyl and ethanol termini of gA in CHARMM)
     from the set of residues recognized as protein (collision with
     commonly used CHO for cholesterol)
@@ -42,6 +46,9 @@ The rules for this file:
     keyword must be supplied or use the MultiPDBWriter 
   * empty AtomGroup can be constructed or can result from a selection
     without matches; it does *not* raise NoDataError anymore (Issue 12)
+  * all single frame readers denote the first (and only) frame as 
+    frame number 1 (i.e. ts.frame == 1); it used to be 0 but 1 is
+    consistent with the way this is is handled with real trajectories
 
   Fixes
 
@@ -53,6 +60,9 @@ The rules for this file:
     autodetected and read); important when using CGENFF atom types
     (thanks to JiyongPark.77 for initial patch)
   * fixed Issue 101 (could not write single frame to trr file)
+  * fixed: permissive=True flag was ignored in Universe and hence the
+    PrimitivePDBReader was always selected even if the Biopython one
+    was desired
 
 02/16/12 sebastien.buchoux
 
