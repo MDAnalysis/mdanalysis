@@ -435,18 +435,73 @@ class Reader(IObase):
     def __iter__(self):
         raise NotImplementedError("BUG: Override __iter__() in the trajectory reader!")
 
-    def _check_slice_indices(self, start, stop, skip):
+    def __getitem__(self, frame):
+        if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
+            raise TypeError("The frame index (0-based) must be either an integer or a slice")
+        if (numpy.dtype(type(frame)) == numpy.dtype(int)):
+            if (frame < 0):
+                # Interpret similar to a sequence
+                frame = len(self) + frame
+            if (frame < 0) or (frame >= len(self)):
+                raise IndexError("Index %d exceeds length of trajectory (%d)." % (frame, len(self)))
+            return self._read_frame(frame)  # REPLACE WITH APPROPRIATE IMPLEMENTATION
+        elif type(frame) == slice: # if frame is a slice object
+            if not (((type(frame.start) == int) or (frame.start == None)) and
+                    ((type(frame.stop) == int) or (frame.stop == None)) and
+                    ((type(frame.step) == int) or (frame.step == None))):
+                raise TypeError("Slice indices are not integers")
+            return self._sliced_iter(frame)
+
+    def _read_frame(self, frame):
+        """Move to *frame* and fill timestep with data."""
+        raise TypeError("Reader does not support direct frame indexing.""")
+        # Example implementation in the DCDReader:
+        #self._jump_to_frame(frame)
+        #ts = self.ts
+        #ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1) # XXX required!!
+        #return ts
+
+    def _sliced_iter(self, frames):
+        """Generator for slicing a trajectory.
+
+        *frames* must be a :class:`slice` object or behave like one.
+
+        If *frames* corresponds to the whole trajectory then the
+        standard iterator is used; this should work for any trajectory
+        reader. A :exc:`TypeError` is raised if random access to
+        frames is not implemented.
+        """
+        # override with an appropriate implementation e.g. using self[i] might
+        # be much slower than skipping steps in a next() loop
+        start, stop, step = self._check_slice_indices(frames.start, frames.stop, frames.step)
+        if start == 0 and stop == len(self) and step == 1:
+            # standard iterator (always implemented)
+            _iter = self.__iter__
+        else:
+            # real slicing
+            try:
+                # Test if the iterator will work: need to do this here so that code can
+                # immediately know if slicing works, even before running through the iterator.
+                self[0]  # should raise TypeError if it cannot do random access
+            except TypeError:
+                raise TypeError("Reader does not support slicing.")
+            def _iter(start=start, stop=stop, step=step):
+                for i in xrange(start, stop, step):
+                    yield self[0]
+        return _iter()
+
+    def _check_slice_indices(self, start, stop, step):
         if start == None: start = 0
         if stop == None: stop = len(self)
-        if skip == None: skip = 1
+        if step == None: step = 1
         if (start < 0): start += len(self)
         if (stop < 0): stop += len(self)
         elif (stop > len(self)): stop = len(self)
-        if skip > 0 and stop <= start:
+        if step > 0 and stop <= start:
             raise IndexError("Stop frame is lower than start frame")
         if ((start < 0) or (start >= len(self)) or (stop < 0) or (stop > len(self))):
             raise IndexError("Frame start/stop outside of the range of the trajectory.")
-        return (start, stop, skip)
+        return (start, stop, step)
 
     def __repr__(self):
         return "< %s %r with %d frames of %d atoms (%d fixed) >" % \
