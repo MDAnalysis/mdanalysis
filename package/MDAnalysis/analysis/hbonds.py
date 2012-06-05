@@ -406,7 +406,9 @@ class HydrogenBondAnalysis(object):
             Extra H acceptor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS`), must be a sequence.
           *start*
-            starting frame for analysis, ``None`` is the first one, 1 [``None``]
+            starting frame-index for analysis, ``None`` is the first one, 0.
+            *start* and *stop* are 0-based frame indices and are used to slice
+            the trajectory (if supported) [``None``]
           *stop*
             last trajectory frame for analysis, ``None`` is the last one [``None``]
           *step*
@@ -461,12 +463,9 @@ class HydrogenBondAnalysis(object):
         self.filter_first = filter_first
         self.distance = distance
         self.angle = angle
-        if (start is not None and start < 1) or (stop is not None and stop < 1) or (step is not None and step < 1):
-            # would need to do some fancier processing to get negative index behavior right
-            raise NotImplementedError("Only start/stop/step > 1 supported")
-        self.traj_slice = (start-1 if isinstance(start, int) else None, # internal frames are 0 based
-                           stop-1 if isinstance(stop, int) else None,
-                           step)
+        self.traj_slice = slice(start if isinstance(start, int) else None, # internal frames are 0 based
+                                stop if isinstance(stop, int) else None,
+                                step)
 
         # set up the donors/acceptors lists
         if donors is None:
@@ -647,8 +646,13 @@ class HydrogenBondAnalysis(object):
         self.timesteps = []
 
         logger.info("checking trajectory...")  # numframes can take a while!
-        # TODO: ProgressMeter not correct for slices
-        pm = ProgressMeter(self.u.trajectory.numframes,
+        try:
+            frames = numpy.arange(self.u.trajectory.numframes)[self.traj_slice]
+        except:
+            logger.error("Problem reading trajectory or trajectory slice incompatible.")
+            logger.exception()
+            raise
+        pm = ProgressMeter(len(frames),
                            format="HBonds frame %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r")
 
         try:
@@ -663,13 +667,11 @@ class HydrogenBondAnalysis(object):
             logger.warn("HBond analysis is recording frame number instead of time step")
 
 
-        logger.info("Starting analysis (start=%d stop=%d, step=%d)",
-                    (self.traj_slice[0] or 0)+1,
-                    (self.traj_slice[1] or self.u.trajectory.numframes), self.traj_slice[2] or 1)
-        # TODO: check if the trajectory can deal with slices. If not then raise an error and
-        #       tell the user.
-        #for ts in self.u.trajectory[slice(*self.traj_slice)]:
-        for ts in self.u.trajectory:
+        logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
+                    (self.traj_slice.start or 0),
+                    (self.traj_slice.stop or self.u.trajectory.numframes-1), self.traj_slice.step or 1)
+
+        for ts in self.u.trajectory[self.traj_slice]:
             frame_results = []
 
             frame = ts.frame
