@@ -436,6 +436,16 @@ class Reader(IObase):
         raise NotImplementedError("BUG: Override __iter__() in the trajectory reader!")
 
     def __getitem__(self, frame):
+        """Return the Timestep corresponding to *frame*.
+
+        If *frame* is a integer then the corresponding frame is
+        returned. Negative numbers are counted from the end.
+
+        If frame is a :class:`slice` then an iterator is returned that
+        allows iteration over that part of the trajectory.
+
+        .. Note:: *frame* is a 0-based frame index.
+        """
         if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
             raise TypeError("The frame index (0-based) must be either an integer or a slice")
         if (numpy.dtype(type(frame)) == numpy.dtype(int)):

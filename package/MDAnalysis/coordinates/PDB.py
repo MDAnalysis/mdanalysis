@@ -537,7 +537,7 @@ class PrimitivePDBReader(base.Reader):
 
         # No 'MODEL' entries
         if len(frames) == 0:
-          frames[0] = None
+            frames[0] = 0
 
         self.frames = frames
         self.numframes = len(frames) if frames else 1
@@ -589,20 +589,14 @@ class PrimitivePDBReader(base.Reader):
         kwargs.setdefault('multiframe', self.numframes > 1)
         return PrimitivePDBWriter(filename, **kwargs)
 
-    def __del__(self):
-        pass
-
     def close(self):
         pass
 
-    def rewind(self):
-        self[0]
+    __del__ = close
 
     def next(self):
-        self._read_next_timestep()
-
-    def __len__(self):
-        return self.numframes
+        """Read the next time step."""
+        return self._read_next_timestep()
 
     def __iter__(self):
         for i in xrange(0, self.numframes):
@@ -620,37 +614,6 @@ class PrimitivePDBReader(base.Reader):
         frame = self.frame + 1
         return self._read_frame(frame)
 
-    def __getitem__(self, frame):
-        """Return the Timestep corresponding to *frame*.
-
-        If *frame* is a integer then the corresponding frame is
-        returned. Negative numbers are counted from the end.
-
-        If frame is a :class:`slice` then an iterator is returned that
-        allows iteration over that part of the trajectory.
-
-        .. Note:: *frame* is a 0-based frame index.
-        """
-        if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
-            raise TypeError("Can only index PDB trajectory with int or a slice.")
-        if (numpy.dtype(type(frame)) == numpy.dtype(int)):
-            if (frame < 0):
-                # Interpret similar to a sequence
-                frame = len(self) + frame
-            if (frame < 0) or (frame >= len(self)):
-                raise IndexError
-            return self._read_frame(frame)
-        elif type(frame) == slice: # if frame is a slice object
-            if not (((type(frame.start) == int) or (frame.start == None)) and
-                    ((type(frame.stop) == int) or (frame.stop == None)) and
-                    ((type(frame.step) == int) or (frame.step == None))):
-                raise TypeError("Slice indices are not integers")
-            def iterPDB(start=frame.start, stop=frame.stop, step=frame.step):
-                start, stop, step = self._check_slice_indices(start, stop, step)
-                for i in xrange(start, stop, step):
-                    yield self._read_frame(i)
-            return iterPDB()
-
     def _read_frame(self, frame):
         if numpy.dtype(type(frame)) != numpy.dtype(int):
             raise TypeError("frame must be a integer")
@@ -659,7 +622,9 @@ class PrimitivePDBReader(base.Reader):
         except KeyError:
             raise IOError
         if line is None:
-          return
+            # single frame file, we already have the timestep
+            return self.ts
+
         coords = []
         atoms = []
         unitcell = numpy.zeros(6, dtype=numpy.float32)

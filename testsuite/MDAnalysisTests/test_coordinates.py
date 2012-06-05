@@ -447,11 +447,6 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         frames = [ts.frame-1 for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.numframes))
 
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return self.universe.trajectory[::2]
-        assert_raises(TypeError, trj_iter)
-
 
 class TestPDBReader(_SingleFrameReader):
     def setUp(self):
@@ -461,16 +456,34 @@ class TestPDBReader(_SingleFrameReader):
         self.universe = mda.Universe(PDB_small, permissive=False)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
+
 class TestPSF_CRDReader(_SingleFrameReader):
     def setUp(self):
         self.universe = mda.Universe(PSF, CRD)
         self.prec = 5  # precision in CRD (at least we are writing %9.5f)
+
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
 
 class TestPSF_PDBReader(TestPDBReader):
     def setUp(self):
         # mda.core.flags['permissive_pdb_reader'] = False
         self.universe = mda.Universe(PSF, PDB_small, permissive=False)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
 
 class TestPrimitivePDBReader(_SingleFrameReader):
     def setUp(self):
