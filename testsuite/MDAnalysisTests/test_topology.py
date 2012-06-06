@@ -17,7 +17,7 @@
 
 import MDAnalysis
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
-from MDAnalysis.tests.datafiles import PRMpbc, PSF, PSF_NAMD
+from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD
 
 from numpy.testing import *
 
@@ -162,9 +162,20 @@ class RefCappedAla(object):
     ref_numresidues = 1686
     ref_proteinatoms = 22
 
+class RefAMBER12(object):
+    """Fixture data for testing AMBER12 reading (Issue 100)"""
+    topology = PRM12
+    ref_numatoms = 8923
+    ref_numresidues = 2861
+    ref_proteinatoms = 0
+
+
 class TestAMBER(_TestTopology, RefCappedAla):
     """Testing AMBER PRMTOP parser (Issue 76)"""
     # note: hard to test the issue because one needs a very specifi datafile
     #       so this test really checks that we did not break the parser for the
     #       existing test cases
+
+class TestAMBER12(_TestTopology, RefAMBER12):
+    """Testing AMBER 12 PRMTOP parser (Issue 100)"""
 
