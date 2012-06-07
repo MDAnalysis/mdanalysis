@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-06/30/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy, lukas.grossar
+06/30/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy, lukas.grossar, denniej0
 
   * 0.7.6 (in development)
 
@@ -27,7 +27,11 @@ The rules for this file:
     method. get/set methods for both positions and velocities.
   * almost all Readers now support some form of slicing; unsupported
     slicing operations will raise a TypeError  
-  
+  * additional analysis for Nucleic Acid order parameters 
+    (MDAnalysis.analysis.nuclinfo) 
+  * AMBER TOPParser now able to do both amber10 and amber12 formats 
+    (Issue 100)
+ 
   Changes
 
   * HydrogenBondAnalysis: multiple enhancements and changes (Issue 103)
