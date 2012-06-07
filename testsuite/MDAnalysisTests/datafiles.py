@@ -38,6 +38,7 @@ __all__ = ["PSF", "DCD", "CRD",                 # CHARMM
            "XYZ", "XYZ_psf", "XYZ_bz2",         # XYZ
            "PRM", "TRJ", "TRJ_bz2",             # Amber (no periodic box)
            "PRMpbc", "TRJpbc_bz2",              # Amber (periodic box)
+           "PRM12", "TRJ12_bz2",                # Amber (v12 format, Issue 100)
            "PRMncdf", "TRJncdf", "NCDF",        # Amber (netcdf)
            "PQR",                               # PQR
            "PDBQT_input",                       # PDBQT
@@ -77,6 +78,9 @@ TRJpbc_bz2 = resource_filename(__name__, 'data/capped-ala.mdcrd.bz2')
 PRMncdf = resource_filename(__name__, 'data/bala.prmtop')
 TRJncdf = resource_filename(__name__, 'data/bala.trj')
 NCDF = resource_filename(__name__, 'data/bala.ncdf')
+
+PRM12 = resource_filename(__name__, 'data/anti.top')
+TRJ12_bz2 = resource_filename(__name__, 'data/anti_md1.mdcrd.bz2')
 
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
 
