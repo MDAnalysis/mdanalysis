@@ -28,7 +28,6 @@ import numpy
 import MDAnalysis 
 
 from MDAnalysis.analysis import nuclinfo 
-from MDAnalysis import Universe
 from MDAnalysis.tests.datafiles import NUCL
  
 from numpy.testing import *
@@ -38,15 +37,20 @@ from nose.plugins.attrib import attr
 class TestNucl(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(NUCL)
+    def tearDown(self):
+        del self.universe
+    def test_wc_pair(self):
         wc = numpy.array(nuclinfo.wc_pair(self.universe,4,20),dtype=numpy.float32)
+        assert_almost_equal(wc, 2.9810174, err_msg="Watson-Crick distance does not match expected value.")
+    def test_major_pair(self):
         maj = numpy.array(nuclinfo.major_pair(self.universe,4,20),dtype=numpy.float32)
+        assert_almost_equal(maj, 2.9400151, err_msg="Watson-Crick distance does not match expected value.")
+    def test_minor_pair(self):
         minor = numpy.array(nuclinfo.minor_pair(self.universe,4,20),dtype=numpy.float32)
- 
-        expected_dist = numpy.array([2.9810174,  2.9400151,  3.7739358],dtype=numpy.float32)
-        assert_almost_equal(numpy.array([wc,maj,minor]), expected_dist, 7, "Watson-Crick distance does not match expected value.")
-
+        assert_almost_equal(minor, 3.7739358, err_msg="Watson-Crick distance does not match expected value.")
+    def test_torsions(self):
         nucl_acid = numpy.array(nuclinfo.tors(self.universe,"RNAA",4),dtype=numpy.float32)
         expected_nucl_acid = numpy.array([296.45596313,  177.79353333,   48.67910767,   81.81109619,  205.58882141,  286.37353516,  198.09187317], dtype=numpy.float32)
-        assert_almost_equal(nucl_acid, expected_nucl_acid, 32, err_msg="Backbone torsion does not have expected values for alpha, beta, gamma, epsilon, zeta, chi.")
+        assert_almost_equal(nucl_acid, expected_nucl_acid, err_msg="Backbone torsion does not have expected values for alpha, beta, gamma, epsilon, zeta, chi.")
 
 
