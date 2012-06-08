@@ -16,13 +16,18 @@
 #
 
 """
-Amber PRMTOP topology parser
+AMBER PRMTOP topology parser
 ============================
 
-Reads a Amber top file to build the system. It uses atom types,
+Reads a  AMBER top file to build the system. It uses atom types,
 partial charges and masses from the PRMTOP file.
 
 The format is defined in `PARM parameter/topology file specification`_.
+The reader tries to detect if it is a newer (AMBER 12?) file format
+by looking for the flag "ATOMIC_NUMBER".
+
+The parser raises a :exc:`TOPParserError` if it fails to read
+the topology file.
 
 .. Note::
 
@@ -33,7 +38,7 @@ The format is defined in `PARM parameter/topology file specification`_.
 .. _`PARM parameter/topology file specification`:
    http://ambermd.org/formats.html#topology
 
-.. VERSIONCHANGED:: 0.7.6 
+.. versionchanged:: 0.7.6 
    parses both amber10 and amber12 formats
 
 """
