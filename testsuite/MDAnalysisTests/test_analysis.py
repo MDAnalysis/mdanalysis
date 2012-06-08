@@ -27,7 +27,7 @@ from nose.plugins.attrib import attr
 import os
 import tempfile
 
-from MDAnalysis.tests.datafiles import PSF,DCD,CRD
+from MDAnalysis.tests.datafiles import PSF,DCD,CRD,FASTA
 
 class TestContactMatrix(TestCase):
     def setUp(self):
@@ -159,3 +159,14 @@ class TestHydrogenBondAnalysisHeuristic(TestHydrogenBondAnalysis):
     def setUp(self):
         super(TestHydrogenBondAnalysisHeuristic, self).setUp()
         self.detect_hydrogens = "heuristic"
+
+class TestAlignmentProcessing(TestCase):
+    def setUp(self):
+        self.seq = FASTA
+
+    @attr('issue')
+    def test_fasta2select_aligned(self):
+        from MDAnalysis.analysis.align import fasta2select
+        sel = fasta2select(self.seq, is_aligned=True)
+        assert_equal(len(sel['reference']), 30623, "selection string has unexpected length")
+        assert_equal(len(sel['mobile']), 30623, "selection string has unexpected length")

@@ -16,6 +16,7 @@ The rules for this file:
   * 0.7.6 (in development)
 
   Enhancements
+
   * GRO file velocities may be accessed as AtomGroup.velocities()
     or Atom.velocity (Issue 102)
   * PrimitivePDBReader can be sliced
@@ -48,6 +49,7 @@ The rules for this file:
   * all single frame readers denote the first (and only) frame as 
     frame number 1 (i.e. ts.frame == 1); it used to be 0 but 1 is
     consistent with the way this is is handled with real trajectories
+  * requires Biopython >= 1.51 (fixes for Issue 112 and Issue 113)
 
   Fixes
 
@@ -62,6 +64,9 @@ The rules for this file:
   * fixed: permissive=True flag was ignored in Universe and hence the
     PrimitivePDBReader was always selected even if the Biopython one
     was desired
+  * fixed Issue 112 (used removed Biopython constructs in 
+    MDAnalysis.analysis.align.fasta2select; thanks to francesco.oteri
+    for a test case and fix)
 
 02/16/12 sebastien.buchoux
 

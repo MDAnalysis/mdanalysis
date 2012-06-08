@@ -99,6 +99,7 @@ For details see the report for `Issue 87`_.
                                     'data/*.crd', 'data/*.xyz',
                                     'data/*.prmtop', 'data/*.top', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',
                                     'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
+                                    'data/*.fasta',
                                     ],
                                },
           classifiers       = CLASSIFIERS,

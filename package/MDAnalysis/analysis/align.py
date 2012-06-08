@@ -563,15 +563,10 @@ def fasta2select(fastafilename,is_aligned=False,
     import numpy
 
     if is_aligned:
-        import Bio.SeqIO, Bio.Alphabet
+        import Bio.SeqIO, Bio.AlignIO, Bio.Alphabet
         protein_gapped = Bio.Alphabet.Gapped(Bio.Alphabet.IUPAC.protein)
-        fasta = open(fastafilename)
-        try:
-            alignment = Bio.SeqIO.to_alignment(
-                Bio.SeqIO.FastaIO.FastaIterator(fasta,alphabet=protein_gapped),
-                alphabet=protein_gapped)
-        finally:
-            fasta.close()
+        with open(fastafilename) as fasta:
+            alignment = Bio.AlignIO.read(fasta, "fasta", alphabet=protein_gapped)
         logger.info("Using provided alignment, %s", fastafilename)
     else:
         import Bio.Clustalw
@@ -584,7 +579,7 @@ def fasta2select(fastafilename,is_aligned=False,
         alignment = Bio.Clustalw.do_alignment(cline)
         logger.info("Using clustalw sequence alignment, %s.\n" % alnfilename)
 
-    nseq = len(alignment._records)    # the stupid class should provide __len__ !
+    nseq = len(alignment)
     if nseq != 2:
         raise ValueError("Only two sequences in the alignment can be processed.")
 
@@ -633,7 +628,7 @@ def fasta2select(fastafilename,is_aligned=False,
         necessary.
         """
         # could maybe use Bio.PDB.StructureAlignment instead?
-        nseq = len(alignment._records)
+        nseq = len(alignment)
         t = numpy.zeros((nseq,alignment.get_alignment_length()),dtype=int)
         for iseq,a in enumerate(alignment):
             GAP = a.seq.alphabet.gap_char
@@ -641,7 +636,7 @@ def fasta2select(fastafilename,is_aligned=False,
                         numpy.array(list(a.seq))==GAP,0,1)) - 1]
             # -1 because seq2resid is index-1 based (resids start at 1)
 
-        def resid(nseq,ipos):
+        def resid(nseq,ipos,t=t):
             return t[nseq,ipos]
         return resid
     resid = resid_factory(alignment,seq2resids)
@@ -651,9 +646,11 @@ def fasta2select(fastafilename,is_aligned=False,
     # then post-process and use ranges for continuous stretches, eg
     # ( resid 1:35 and ( backbone or name CB ) ) or ( resid 36 and backbone ) ...
 
-    GAP = alignment.get_seq_by_num(0).alphabet.gap_char # should be same for all seqs
+    GAP = alignment[0].seq.alphabet.gap_char        # should be the same for both seqs
+    if GAP != alignment[1].seq.alphabet.gap_char:
+        raise ValueError("Different gap characters in sequence 'target' and 'mobile'.")
     for ipos in xrange(alignment.get_alignment_length()):
-        aligned = list(alignment.get_column(ipos))
+        aligned = list(alignment[:, ipos])
         if GAP in aligned:
             continue       # skip residue
         template = "resid %i"
