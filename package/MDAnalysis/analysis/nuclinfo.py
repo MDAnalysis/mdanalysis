@@ -116,7 +116,7 @@ def wc_pair(universe, i,bp):
        *bp*
            resid of the second base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DT","U","C","T","CYT","THY","URA"]:
           a1,a2 = "N3","N1"
@@ -140,7 +140,7 @@ def minor_pair(universe,i,bp):
        *bp*
            resid of the second base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DT","U","C","T","CYT","THY","URA"]:
           a1,a2 = "O2","C2"
@@ -163,7 +163,7 @@ def major_pair(universe,i,bp):
        *bp* 
            resid of the second base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DG","C","G","CYT","GUA"]:
           a1,a2 = "O6","N4"
@@ -183,10 +183,12 @@ def phase_cp(universe,seg,i):
      :Arguments:
        *universe* 
            :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+        *segid*
+           segment identity of resid
        *i*
            resid of the base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      atom1 = universe.selectAtoms(" atom %s %s O4\' "%(seg,i))
      atom2 = universe.selectAtoms(" atom %s %s C1\' "%(seg,i))
@@ -250,8 +252,7 @@ def phase_cp(universe,seg,i):
 
 
 def phase_as(universe,seg,i):
-     """Pseudo-angle describing the phase of the ribose pucker for residue *i*
-      using the AS method
+     """Pseudo-angle describing the phase of the ribose pucker for residue *i* using the AS method
      
      The angle is computed by the position vector of atoms in the ribose ring
      
@@ -263,7 +264,7 @@ def phase_as(universe,seg,i):
        *i*
            resid of the base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      angle1 = universe.selectAtoms(" atom %s %s C1\' "%(seg,i)," atom %s %s C2\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s C4\' "%(seg,i))
      angle2 = universe.selectAtoms(" atom %s %s C2\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s O4\' "%(seg,i))
@@ -309,7 +310,7 @@ def tors(universe,seg,i):
        *i*
            resid of the base
       
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      a = universe.selectAtoms(" atom %s %s O3\' "%(seg,i-1)," atom %s %s P  "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i))
      b = universe.selectAtoms(" atom %s %s P    "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i))
@@ -357,7 +358,7 @@ def tors_alpha(universe,seg,i):
        *i*
            resid of the base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      a = universe.selectAtoms(" atom %s %s O3\' "%(seg,i-1)," atom %s %s P  "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i))
      alpha = a.dihedral()
@@ -378,7 +379,7 @@ def tors_beta(universe,seg,i):
        *i*
            resid of the base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      b = universe.selectAtoms(" atom %s %s P    "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i))
      beta = b.dihedral()
@@ -399,7 +400,7 @@ def tors_gamma(universe,seg,i):
        *i*
            resid of the base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      g = universe.selectAtoms(" atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i))
      gamma = g.dihedral()
@@ -420,7 +421,7 @@ def tors_delta(universe,seg,i):
        *i*
            resid of the base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      d = universe.selectAtoms(" atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i))
      delta = d.dihedral()
@@ -441,7 +442,7 @@ def tors_eps(universe,seg,i):
        *i*
            resid of the base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      e = universe.selectAtoms(" atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i)," atom %s %s P    "%(seg,i+1))
      epsilon = e.dihedral()
@@ -462,7 +463,7 @@ def tors_zeta(universe,seg,i):
        *i*
            resid of the base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      z = universe.selectAtoms(" atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i)," atom %s %s P    "%(seg,i+1)," atom %s %s O5\' "%(seg,i+1))
      zeta = z.dihedral()
@@ -483,7 +484,7 @@ def tors_chi(universe,seg,i):
        *i*
            resid of the base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      try:
           c = universe.selectAtoms(" atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s N1 "%(seg,i)," atom %s %s C2  "%(seg,i))
@@ -510,7 +511,7 @@ def hydroxyl(universe,seg,i):
        *i*
            resid of the base
 
-     .. versionaddedd:: 0.7.6
+     .. versionadded:: 0.7.6
      """
      h = universe.selectAtoms(" atom %s %s C1\' "%(seg,i)," atom %s %s C2\' "%(seg,i)," atom %s %s O2\' "%(seg,i)," atom %s %s H2\'\' "%(seg,i))
      hydr = h.dihedral()
