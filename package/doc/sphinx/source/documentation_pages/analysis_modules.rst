@@ -47,6 +47,8 @@ has to import them from :mod:`MDAnalysis.analysis`, for instance ::
    analysis/hbonds
    analysis/helanal
    analysis/leaflet
+   analysis/nuclinfo
+
 
    
 

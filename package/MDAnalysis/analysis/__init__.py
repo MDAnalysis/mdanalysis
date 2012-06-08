@@ -57,11 +57,16 @@ Available analysis modules
 :mod:`~MDAnalysis.analysis.hbonds`
     Analyze hydrogen bonds.
 
+:mod:`~MDAnalysis.analysis.nuclinfo`
+    Analyse the nucleic acid for the backbone dihedrals, chi, sugar
+    pucker, and watson-crick distance (minor and major groove    
+    distances).
+
 .. _GridDataFormats: https://github.com/orbeckst/GridDataFormats
 .. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 
 """
 __all__ = ['align', 'contacts', 'density', 'distances',
-           'helanal', 'hbonds', 'leaflet',
+           'helanal', 'hbonds', 'leaflet', 'nuclinfo' ,
            ]
 

@@ -29,10 +29,10 @@ Note that the files are actually located in a separate package,
 
  from MDAnalysisTestData.datafiles import *
 """
-__all__ = ["PSF", "DCD", "CRD",                 # CHARMM
+__all__ = ["PSF", "DCD", "CRD",               # CHARMM
            "DCD_empty",
            "PSF_NAMD", "PDB_NAMD",            # NAMD
-           "PDB_small",                         # PDB
+           "PDB_small","NUCL",                   # PDB
            "PDB_multiframe",
            "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",   # Gromacs
            "XYZ", "XYZ_psf", "XYZ_bz2",         # XYZ
@@ -57,6 +57,7 @@ PSF_NAMD = resource_filename(__name__, 'data/namd_cgenff.psf')
 PDB_NAMD = resource_filename(__name__, 'data/namd_cgenff.pdb')
 
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
+NUCL =  resource_filename(__name__, 'data/1k5i.pdb')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
