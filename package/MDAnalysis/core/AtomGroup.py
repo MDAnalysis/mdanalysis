@@ -106,7 +106,11 @@ Classes and functions
 
    .. attribute::        type
 
-      string or number (from force field), describing the atom type
+      string or number (from force field), describing the atom type;
+      stored as a string.
+
+      .. versionchanged:: 0.7.6
+         The :attr:`Atom.type` attribute is always stored as a string.
 
    .. attribute::        mass
 
@@ -161,6 +165,7 @@ class Atom(object):
     For performance reasons, only a predefined number of attributes
     are included (and thus it is not possible to add attributes "on
     the fly"; they have to be included in the class definition).
+
     """
 
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
@@ -171,7 +176,7 @@ class Atom(object):
                  residue=None, segment=None, radius=None, bfactor=None, resnum=None):
         self.number = number
         self.name = name
-        self.type = type        # numeric or string
+        self.type = str(type)   # always a string (needed for selections)
         self.resname = resname
         self.resid = resid
         self.resnum = resnum

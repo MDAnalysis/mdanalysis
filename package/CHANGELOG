@@ -54,6 +54,7 @@ The rules for this file:
     frame number 1 (i.e. ts.frame == 1); it used to be 0 but 1 is
     consistent with the way this is is handled with real trajectories
   * requires Biopython >= 1.51 (fixes for Issue 112 and Issue 113)
+  * Atom.type is always stored as a string.
 
   Fixes
 
@@ -71,6 +72,8 @@ The rules for this file:
   * fixed Issue 112 (used removed Biopython constructs in 
     MDAnalysis.analysis.align.fasta2select; thanks to francesco.oteri
     for a test case and fix)
+  * fixed failing 'type' selection for topology formats that read an
+    atom type as an integer (such as the AMBER parser)
 
 02/16/12 sebastien.buchoux
 
