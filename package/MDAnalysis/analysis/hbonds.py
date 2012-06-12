@@ -343,7 +343,7 @@ class HydrogenBondAnalysis(object):
     #: default heavy atom names whose hydrogens are treated as *donors*
     #: (see :ref:`Default atom names for hydrogen bonding analysis`)
     #: Use the keyword *donors* to add a list of additional donor names.
-    DEFAULT_DONORS = {'CHARMM27': tuple(set(['N', 'OH2', 'OW', 'NE', 'NH1' 'NH2', 'ND2', 'SG', 'NE2',
+    DEFAULT_DONORS = {'CHARMM27': tuple(set(['N', 'OH2', 'OW', 'NE', 'NH1', 'NH2', 'ND2', 'SG', 'NE2',
                                 'ND1', 'NZ', 'OG', 'OG1', 'NE1', 'OH'])),
                       'GLYCAM06': tuple(set(['N','NT','N3','OH','OW'])),
                       'other':  tuple(set([]))}
