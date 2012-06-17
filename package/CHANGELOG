@@ -74,6 +74,7 @@ The rules for this file:
     for a test case and fix)
   * fixed failing 'type' selection for topology formats that read an
     atom type as an integer (such as the AMBER parser)
+  * fixed Issue 111 (NAN in pycpqrot and RMSD calculation)
 
 02/16/12 sebastien.buchoux
 
