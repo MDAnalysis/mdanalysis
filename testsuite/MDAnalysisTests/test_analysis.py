@@ -163,10 +163,32 @@ class TestHydrogenBondAnalysisHeuristic(TestHydrogenBondAnalysis):
 class TestAlignmentProcessing(TestCase):
     def setUp(self):
         self.seq = FASTA
+        fd, self.alnfile = tempfile.mkstemp(suffix=".aln")
+        fd, self.treefile = tempfile.mkstemp(suffix=".dnd")
+
+    def tearDown(self):
+        for f in self.alnfile, self.treefile:
+            try:
+                os.unlink(f)
+            except OSError:
+                pass
 
     @attr('issue')
     def test_fasta2select_aligned(self):
+        """test align.fasta2select() on aligned FASTA (Issue 112)"""
         from MDAnalysis.analysis.align import fasta2select
         sel = fasta2select(self.seq, is_aligned=True)
-        assert_equal(len(sel['reference']), 30623, "selection string has unexpected length")
-        assert_equal(len(sel['mobile']), 30623, "selection string has unexpected length")
+        # length of the output strings, not residues or anything real...
+        assert_equal(len(sel['reference']), 30623, err_msg="selection string has unexpected length")
+        assert_equal(len(sel['mobile']), 30623, err_msg="selection string has unexpected length")
+
+    @attr('issue')
+    def test_fasta2select_ClustalW(self):
+        """test align.fasta2select() with calling ClustalW (Issue 113)"""
+        # note: will fail if clustalw is not installed
+        from MDAnalysis.analysis.align import fasta2select
+        sel = fasta2select(self.seq, is_aligned=False, alnfilename=self.alnfile, treefilename=self.treefile)
+        # numbers computed from alignment with clustalw 2.1 on Mac OS X [orbeckst]
+        # length of the output strings, not residues or anything real...
+        assert_equal(len(sel['reference']), 23080, err_msg="selection string has unexpected length")
+        assert_equal(len(sel['mobile']), 23090, err_msg="selection string has unexpected length")
