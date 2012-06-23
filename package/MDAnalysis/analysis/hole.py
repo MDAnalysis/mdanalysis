@@ -425,6 +425,9 @@ class HOLE(object):
                 logger.error("Executable %(program)r not found, should have been %(path)r.",
                              vars())
 
+        # results
+        self.profiles = {}
+
 
     def check_and_fix_long_filename(self, filename, tmpdir=os.path.curdir):
         """Return *filename* suitable for HOLE.
@@ -556,8 +559,7 @@ class HOLE(object):
 
         The method saves the result as :attr:`HOLE.profiles`, a dictionary
         indexed by the frame number. Each entry is a
-        :class:`numpy.recarray`. This dictionary is also returned by the method
-        for convenience.
+        :class:`numpy.recarray`.
 
         If the keyword *outdir* is supplied (e.g. ".") then each profile is
         saved to a gzipped data file.
@@ -657,7 +659,91 @@ class HOLE(object):
             logger.info("Collected HOLE radius profiles for %d frames", len(self.profiles))
         else:
             logger.warn("Missing data: Found %d HOLE profiles from %d frames.", len(self.profiles), length)
-        return self.profiles
+        ##return self.profiles
+
+    def plot(self, **kwargs):
+        """Plot profiles in a 1D graph.
+
+        Lines are coloured according to the colour map *cmap*.
+
+        :Keywords:
+           *step*
+              only plot every *step* profile [1]
+           *cmap*
+              matplotlib color map [jet]
+           *yshift*
+              displace each R(zeta) profile by *yshift* in the
+              y-direction [0]
+        """
+        import matplotlib.pyplot as plt
+        import matplotlib.colors
+        from itertools import izip
+        cmap = kwargs.pop('cmap', matplotlib.cm.jet)
+        frames = numpy.sort(self.profiles.keys()[::kwargs.pop('step', 1)])
+        yshift = kwargs.pop('yshift', 0.0)
+        normalize = matplotlib.colors.normalize(vmin=frames[0],vmax=frames[-1])
+        colors = cmap(normalize(frames))
+        for iplot,(frame,color) in enumerate(izip(frames,colors)):
+            kwargs['color'] = color
+            dy = iplot * yshift
+            profile = self.profiles[frame]
+            plt.plot(profile.rxncoord, profile.radius + dy, **kwargs)
+
+    def plot3D(self, **kwargs):
+        """Stacked graph of profiles.
+
+        Lines are coloured according to the colour map *cmap*.
+
+        :Keywords:
+           *step*
+              only plot every *step* profile [1]
+           *cmap*
+              matplotlib color map [jet]
+           *rmax*
+              only display radii up to *rmax* [``None``]
+
+        Based on Stack Overflow post `3d plots using matplotlib`_.
+
+        .. _`3d plots using matplotlib`:
+           http://stackoverflow.com/questions/9053255/3d-plots-using-matplotlib
+
+        """
+        import matplotlib.pyplot as plt
+        import matplotlib.colors
+        import mpl_toolkits.mplot3d.axes3d as axes3d
+        from itertools import izip
+
+        cmap = kwargs.pop('cmap', matplotlib.cm.jet)
+        frames = numpy.sort(self.profiles.keys()[::kwargs.pop('step', 1)])
+
+        rmax = kwargs.pop('rmax', None)
+
+        normalize = matplotlib.colors.normalize(vmin=frames[0],vmax=frames[-1])
+        colors = cmap(normalize(frames))
+
+        fig = plt.figure(figsize=kwargs.pop('figsize', (6,6)))
+        ax = fig.add_subplot(1, 1, 1, projection='3d')
+
+        for frame,color in izip(frames,colors):
+            kwargs['color'] = color
+            profile = self.profiles[frame]
+            if rmax is None:
+                radius = profile.radius
+                rxncoord = profile.rxncoord
+            else:
+                # does not seem to work with masked arrays but with nan hack!
+                # http://stackoverflow.com/questions/4913306/python-matplotlib-mplot3d-how-do-i-set-a-maximum-value-for-the-z-axis
+                #radius = numpy.ma.masked_greater(profile.radius, rmax)
+                #rxncoord = numpy.ma.array(profile.rxncoord, mask=radius.mask)
+                rxncoord = profile.rxncoord
+                radius = profile.radius.copy()
+                radius[radius>rmax] = numpy.nan
+            ax.plot(rxncoord, frame*numpy.ones_like(rxncoord), radius, **kwargs)
+
+        ax.set_xlabel(r"pore coordinate $z$")
+        ax.set_ylabel("frame")
+        ax.set_zlabel(r"HOLE radius $r$")
+        plt.draw()
 
     def __del__(self):
         for f in self.tempfiles:
