@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis 0.7.6-devel documentation</title>
+    <title>5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis 0.7.6 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6-devel',
+        VERSION:     '0.7.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.6-devel documentation"
+          title="Search within MDAnalysis 0.7.6 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.6-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.6 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.2. Base classes — MDAnalysis.coordinates.base" href="base.html" />
     <link rel="prev" title="5. Coordinates modules" href="../coordinates_modules.html" /> 
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="../coordinates_modules.html" title="5. Coordinates modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -260,7 +260,7 @@ and radius information. Module
 <a class="footnote-reference" href="#a" id="id5">[1]</a></td>
 <td>gro</td>
 <td>r/w</td>
-<td>basic GROMOS96 format (without velocities). Module
+<td>basic GROMOS96 format (velocities as well). Module
 <a class="reference internal" href="GRO.html#module-MDAnalysis.coordinates.GRO" title="MDAnalysis.coordinates.GRO"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></td>
 </tr>
 <tr class="row-odd"><td>CHARMM <a class="footnote-reference" href="#a" id="id6">[1]</a></td>
@@ -306,6 +306,7 @@ I/O code can be written in C or python or a mixture thereof.</p>
 <li>2011-04-20 added volume to Timestep</li>
 <li>2012-02-11 added _velocities to Timestep</li>
 <li>2012-05-24 multiframe keyword to distinguish trajectory from single frame writers</li>
+<li>2012-06-04 missing implementations of Reader.__getitem__ should raise <tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt></li>
 </ul>
 </div>
 <div class="section" id="registry">
@@ -343,7 +344,7 @@ different ways:</p>
 <dd>empty Timestep for <em>arg</em> atoms (allocate arrays etc)</dd>
 <dt><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></dt>
 <dd>makes a deep copy of the <em>arg</em></dd>
-<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-470c857)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
+<dt><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-36681eb)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></dt>
 <dd>update the Timesteps positions array with the contents of <em>arg</em></dd>
 </dl>
 </div></blockquote>
@@ -369,7 +370,7 @@ coordinate array</dd>
 <dt><tt class="docutils literal"><span class="pre">numatoms</span></tt></dt>
 <dd>number of atoms in the frame</dd>
 <dt><tt class="docutils literal"><span class="pre">frame</span></tt></dt>
-<dd>current frame number</dd>
+<dd>current frame number (1-based)</dd>
 <dt><tt class="docutils literal"><span class="pre">dimensions</span></tt></dt>
 <dd>system box dimensions (<cite>x, y, z, alpha, beta, gamma</cite>)
 (typically implemented as a property because it needs to translate whatever is in the
@@ -478,10 +479,25 @@ trajectory:</p>
 </div>
 <p>The last example starts reading the trajectory at frame 1000 and
 reads every 100th frame until the end.</p>
-<p class="last">The performance of the <tt class="docutils literal"><span class="pre">__getitem__()</span></tt> method depends on the underlying
+<p>The performance of the <tt class="docutils literal"><span class="pre">__getitem__()</span></tt> method depends on the underlying
 trajectory reader and if it can implement random access to frames. In many
 cases this is not easily (or reliably) implementable and thus one is
 restricted to sequential iteration.</p>
+<p>If the Reader is not able to provide random access to frames then it
+should raise <tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt> on indexing. It is possible to partially
+implement <tt class="docutils literal"><span class="pre">__getitem__</span></tt> (as done on
+<tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.Reader.__getitem__</span></tt> where slicing the
+full trajectory is equivalent to
+<tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.Reader.__iter__</span></tt> (which is always
+implemented) and other slices raise <tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt>.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal"><span class="pre">__getitem__</span></tt> uses 0-based indices for frames so that indexing and
+slicing works exactly as in Python. However, the <tt class="docutils literal"><span class="pre">Timestep.frame</span></tt>
+attribute (the &#8220;frame number&#8221;) is 1-based. Thus, the first frame in a
+trajectory can be accessed as <tt class="docutils literal"><span class="pre">trajectory[0]</span></tt> (frame index 0) and the
+corresponding frame number is 1 (<tt class="docutils literal"><span class="pre">trajectory.ts.frame</span> <span class="pre">==</span> <span class="pre">1</span></tt>).</p>
+</div>
 </dd>
 <dt><tt class="docutils literal"><span class="pre">Writer(filename,</span> <span class="pre">**kwargs)</span></tt></dt>
 <dd><p class="first">returns a <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Writer" title="MDAnalysis.coordinates.base.Writer"><tt class="xref py py-class docutils literal"><span class="pre">Writer</span></tt></a> which is set up with
@@ -542,7 +558,7 @@ unit for time (pico seconds by default)</dd>
 <dt><tt class="docutils literal"><span class="pre">time</span></tt></dt>
 <dd>time of the current time step, in MDAnalysis time units (ps)</dd>
 <dt><tt class="docutils literal"><span class="pre">frame</span></tt></dt>
-<dd>frame number of the current time step</dd>
+<dd>frame number of the current time step (1-based)</dd>
 </dl>
 </div></blockquote>
 <p><strong>Optional attributes</strong></p>
@@ -600,7 +616,7 @@ unitcell representation of the format</dd>
 <dt><tt class="docutils literal"><span class="pre">filename</span></tt></dt>
 <dd>name of the trajectory file</dd>
 <dt><tt class="docutils literal"><span class="pre">start,</span> <span class="pre">stop,</span> <span class="pre">step</span></tt></dt>
-<dd>first and last frame and step</dd>
+<dd>first and last frame number (1-based) and step</dd>
 <dt><tt class="docutils literal"><span class="pre">units</span></tt></dt>
 <dd>dictionary with keys <em>time</em>, <em>length</em>, <em>speed</em>, <em>force</em> and the
 appropriate unit (e.g. &#8216;AKMA&#8217; and &#8216;Angstrom&#8217; for Charmm dcds, &#8216;ps&#8217; and
@@ -672,7 +688,7 @@ PDB). In theses cases, the kind of writer is selected with the
 (or the writer itself).</p>
 <dl class="data">
 <dt id="MDAnalysis.coordinates.__init__._trajectory_readers">
-<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_trajectory_readers</tt><em class="property"> = {'TRJ': &lt;class 'MDAnalysis.coordinates.TRJ.TRJReader'&gt;, 'MDCRD': &lt;class 'MDAnalysis.coordinates.TRJ.TRJReader'&gt;, 'XTC': &lt;class 'MDAnalysis.coordinates.xdrfile.XTC.XTCReader'&gt;, 'CRD': &lt;class 'MDAnalysis.coordinates.CRD.CRDReader'&gt;, 'GRO': &lt;class 'MDAnalysis.coordinates.GRO.GROReader'&gt;, 'TRR': &lt;class 'MDAnalysis.coordinates.xdrfile.TRR.TRRReader'&gt;, 'PDB': &lt;class 'MDAnalysis.coordinates.PDB.PrimitivePDBReader'&gt;, 'CHAIN': &lt;class 'MDAnalysis.coordinates.base.ChainReader'&gt;, 'LAMMPS': &lt;class 'MDAnalysis.coordinates.LAMMPS.DCDReader'&gt;, 'DCD': &lt;class 'MDAnalysis.coordinates.DCD.DCDReader'&gt;, 'PDBQT': &lt;class 'MDAnalysis.coordinates.PDBQT.PDBQTReader'&gt;, 'PQR': &lt;class 'MDAnalysis.coordinates.PQR.PQRReader'&gt;, 'XYZ': &lt;class 'MDAnalysis.coordinates.XYZ.XYZReader'&gt;, 'NCDF': &lt;class 'MDAnalysis.coordinates.TRJ.NCDFReader'&gt;}</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._trajectory_readers" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_trajectory_readers</tt><em class="property"> = {'TRJ': &lt;class 'MDAnalysis.coordinates.TRJ.TRJReader'&gt;, 'MDCRD': &lt;class 'MDAnalysis.coordinates.TRJ.TRJReader'&gt;, 'XTC': &lt;class 'MDAnalysis.coordinates.xdrfile.XTC.XTCReader'&gt;, 'CRD': &lt;class 'MDAnalysis.coordinates.CRD.CRDReader'&gt;, 'GRO': &lt;class 'MDAnalysis.coordinates.GRO.GROReader'&gt;, 'TRR': &lt;class 'MDAnalysis.coordinates.xdrfile.TRR.TRRReader'&gt;, 'PDB': &lt;class 'MDAnalysis.coordinates.PDB.PDBReader'&gt;, 'CHAIN': &lt;class 'MDAnalysis.coordinates.base.ChainReader'&gt;, 'LAMMPS': &lt;class 'MDAnalysis.coordinates.LAMMPS.DCDReader'&gt;, 'DCD': &lt;class 'MDAnalysis.coordinates.DCD.DCDReader'&gt;, 'PDBQT': &lt;class 'MDAnalysis.coordinates.PDBQT.PDBQTReader'&gt;, 'PQR': &lt;class 'MDAnalysis.coordinates.PQR.PQRReader'&gt;, 'XYZ': &lt;class 'MDAnalysis.coordinates.XYZ.XYZReader'&gt;, 'NCDF': &lt;class 'MDAnalysis.coordinates.TRJ.NCDFReader'&gt;}</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._trajectory_readers" title="Permalink to this definition">¶</a></dt>
 <dd><p>standard trajectory readers (dict with identifier as key and reader class as value)</p>
 </dd></dl>
 
@@ -746,7 +762,7 @@ Signature:</p>
         <li class="right" >
           <a href="../coordinates_modules.html" title="5. Coordinates modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>

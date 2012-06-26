@@ -62,7 +62,8 @@ class DCDWriter(base.Writer):
            comments to annotate dcd file
          *convert_units*
            units are converted to the MDAnalysis base format; ``None`` selects
-           the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
+           the value of :data:`MDAnalysis.core.flags` ['convert_gromacs_lengths'].
+           (see :ref:`flags-label`)
         """
         if numatoms == 0:
             raise ValueError("DCDWriter: no atoms in output trajectory")

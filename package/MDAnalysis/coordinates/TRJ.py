@@ -722,7 +722,8 @@ class NCDFWriter(base.Writer):
                     timestep
                   *convert_units*
                     ``True``: units are converted to the AMBER base format; ``None`` selects
-                    the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
+                    the value of :data:`MDAnalysis.core.flags` ['convert_gromacs_lengths'].
+                    (see :ref:`flags-label`)
                   *zlib*
                     compress data [``False``]
                   *cmplevel*

@@ -51,6 +51,7 @@ class SloppyStructureBuilder(Bio.PDB.StructureBuilder.StructureBuilder):
     """Cope with resSeq < 10,000 limitation by just incrementing internally.
 
     Solves the follwing problem with :class:`Bio.PDB.StructureBuilder.StructureBuilder`:
+    
     Q: What's wrong here??
        Some atoms or residues will be missing in the data structure.
        WARNING: Residue (' ', 8954, ' ') redefined at line 74803.

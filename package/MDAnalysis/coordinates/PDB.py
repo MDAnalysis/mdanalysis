@@ -60,15 +60,15 @@ Implementations
 Two different implementations of PDB I/O are available: the ":ref:`permissive<permissive>`"
 and the ":ref:`strict<strict>`" Reader/Writers. The default are the "permissive" ones
 but this can be changed by setting the flag "permissive_pdb_reader" in
-:data:`MDAnalysis.flags` (see :ref:`flags-label`) to ``False``::
+:data:`MDAnalysis.core.flags` (see :ref:`flags-label`) to ``False``::
 
-   MDAnalysis.flags["permissive_pdb_reader"] = False
+   MDAnalysis.core.flags["permissive_pdb_reader"] = False
 
 The *default for MDAnalysis* is to use the
 ":ref:`permissive<permissive>`" :class:`PrimitivePDBReader` and
 :class:`PrimitivePDBWriter`, corresponding to ::
 
-   MDAnalysis.flags["permissive_pdb_reader"] = True
+   MDAnalysis.core.flags["permissive_pdb_reader"] = True
 
 On a case-by-case basis one kind of reader can be selected with the
 *permissive* keyword to :class:`~MDAnalysis.core.AtomGroup.Universe`, e.g. ::
@@ -290,7 +290,7 @@ class PDBReader(base.Reader):
            This :class:`PDBWriter` 's :meth:`~PDBWriter.write` method
            always requires a :class:`Timestep` as an argument (it is
            not optional anymore when the Writer is obtained through
-           this method of :class:`PDBReader`.)
+           this method of :class:`PDBReader` .)
         """
         # This is messy; we cannot get a universe from the Reader, which would be
         # also needed to be fed to the PDBWriter (which is a total mess...).
@@ -325,12 +325,12 @@ class PDBWriter(base.Writer):
     sophistiocated writer is employed).
 
     .. Note::
-
-      The standard PDBWriter can only write the *whole system*.  In
-      order to write a selection, use the :class:`PrimitivePDBWriter`,
-      which happens automatically when the
-      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of a
-      :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance is used.
+    
+       The standard PDBWriter can only write the *whole system*.  In
+       order to write a selection, use the :class:`PrimitivePDBWriter` ,
+       which happens automatically when the
+       :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of a
+       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance is used.
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
@@ -344,12 +344,15 @@ class PDBWriter(base.Writer):
 
     def __init__(self, pdbfilename, universe=None, multi=False, **kwargs):
         """pdbwriter = PDBWriter(<pdbfilename>,universe=universe,**kwargs)
+        
         :Arguments:
-        pdbfilename     filename; if multi=True, embed a %%d formatstring
-                        so that write_next_timestep() can insert the frame number
-        universe        supply a universe [really REQUIRED; optional only for compatibility]
-        multi           False: write a single structure to a single pdb
-                        True: write all frames to multiple pdb files
+          pdbfilename     filename; if multi=True, embed a %%d formatstring
+                          so that write_next_timestep() can insert the frame number
+                        
+          universe        supply a universe [really REQUIRED; optional only for compatibility]
+        
+          multi           False: write a single structure to a single pdb
+                          True: write all frames to multiple pdb files
         """
         import Bio.PDB.Structure
         self.universe = universe
@@ -669,7 +672,7 @@ class PrimitivePDBReader(base.Reader):
 
 
 class PrimitivePDBWriter(base.Writer):
-    """PDB writer that implements a subset of the `PDB 3.2 standard`_.
+    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
     altLoc is written.
@@ -750,7 +753,7 @@ class PrimitivePDBWriter(base.Writer):
            characters) being wrapped.
          *convert_units*
            units are converted to the MDAnalysis base format; ``None`` selects
-           the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
+           the value of :data:`MDAnalysis.core.flags` ['convert_gromacs_lengths']
          *bonds*
            write bonds to the PDB file as CONECT_ records [``False``]
 
@@ -1246,7 +1249,7 @@ class PrimitivePDBWriter(base.Writer):
 
 
 class MultiPDBWriter(PrimitivePDBWriter):
-    """PDB writer that implements a subset of the `PDB 3.2 standard`_.
+    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
     is written.
@@ -1257,6 +1260,7 @@ class MultiPDBWriter(PrimitivePDBWriter):
 
     .. _`PDB 3.2 standard`:
        http://www.wwpdb.org/documentation/format32/v3.2.html
+       
     .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
     .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
     .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT

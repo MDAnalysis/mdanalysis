@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.15. pdb.extensions – Extensions to Bio.PDB &mdash; MDAnalysis 0.7.6-devel documentation</title>
+    <title>5.15. pdb.extensions – Extensions to Bio.PDB &mdash; MDAnalysis 0.7.6 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6-devel',
+        VERSION:     '0.7.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.6-devel documentation"
+          title="Search within MDAnalysis 0.7.6 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.6-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.6 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.16. The Gromacs xtc/trr library libxdrfile" href="libxdrfile.html" />
     <link rel="prev" title="5.14. XYZ trajectory reader — MDAnalysis.coordinates.XYZ" href="XYZ.html" /> 
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="XYZ.html" title="5.14. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -123,12 +123,13 @@ and more code at
 <dt id="MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">SloppyStructureBuilder</tt><big>(</big><em>verbose=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cope with resSeq &lt; 10,000 limitation by just incrementing internally.</p>
-<p>Solves the follwing problem with <tt class="xref py py-class docutils literal"><span class="pre">Bio.PDB.StructureBuilder.StructureBuilder</span></tt>:
-Q: What&#8217;s wrong here??</p>
-<blockquote>
-<div>Some atoms or residues will be missing in the data structure.
+<p>Solves the follwing problem with <tt class="xref py py-class docutils literal"><span class="pre">Bio.PDB.StructureBuilder.StructureBuilder</span></tt>:</p>
+<dl class="docutils">
+<dt>Q: What&#8217;s wrong here??</dt>
+<dd>Some atoms or residues will be missing in the data structure.
 WARNING: Residue (&#8216; &#8216;, 8954, &#8216; &#8216;) redefined at line 74803.
-PDBConstructionException: Blank altlocs in duplicate residue SOL (&#8216; &#8216;, 8954, &#8216; &#8216;) at line 74803.</div></blockquote>
+PDBConstructionException: Blank altlocs in duplicate residue SOL (&#8216; &#8216;, 8954, &#8216; &#8216;) at line 74803.</dd>
+</dl>
 <p>A: resSeq only goes to 9999 &#8211;&gt; goes back to 0 (PDB format is not really good here)</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -210,7 +211,7 @@ file and simply increments them.</p>
         <li class="right" >
           <a href="XYZ.html" title="5.14. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
