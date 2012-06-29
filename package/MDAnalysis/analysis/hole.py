@@ -57,7 +57,7 @@ Utilities
 
 .. autofunction:: write_simplerad2
 .. autofunction:: seq2str
-
+.. autoclass:: ApplicationError
 
 
 """
@@ -78,7 +78,8 @@ import subprocess
 import tempfile
 import textwrap
 
-from MDAnalysis.core.util import which, realpath
+from MDAnalysis import ApplicationError
+from MDAnalysis.core.util import which, realpath, asiterable
 
 import logging
 logger = logging.getLogger("MDAnalysis.analysis.hole")
@@ -154,6 +155,8 @@ class HOLE(object):
     :attr:`HOLE.HOLE_MAX_LENGTH`). This class tries to work around them by
     creating temporary symlinks to files when needed.
 
+    .. versionadded:: 0.8
+
     .. _`HOLE control parameters`:
        http://d2o.bioch.ox.ac.uk:38080/doc/hole_d03.html
     """
@@ -219,6 +222,21 @@ class HOLE(object):
                reading of the file can be controlled by the *step* keyword
                and/or setting :attr:`HOLE.dcd_iniskip` to the number of frames
                to be skipped initially.
+
+               HOLE is very picky and does not read all DCD-like formats. If in
+               doubt, look into the *logfile* for error diagnostics. (At the
+               moment, DCDs generated with MDANalysis are not accepted by
+               HOLE.)
+
+          *logfile*
+
+               name of the file collecting HOLE's output (which can be parsed
+               using :meth:`HOLE.collect` ["hole.out"]
+
+          *sphpdb*
+
+               name of the HOLE sph file, a PDB-like file containig the coordinates
+               of the pore centers ["hole.sph"]
 
           *step*
 
@@ -424,10 +442,8 @@ class HOLE(object):
             if path is None or which(path) is None:
                 logger.error("Executable %(program)r not found, should have been %(path)r.",
                              vars())
-
         # results
         self.profiles = {}
-
 
     def check_and_fix_long_filename(self, filename, tmpdir=os.path.curdir):
         """Return *filename* suitable for HOLE.
@@ -496,14 +512,14 @@ class HOLE(object):
         with open(outname, "r") as output:
             # HOLE is not very good at setting returncodes so check ourselves
             for line in output:
-                if line.strip().startswith('*** ERROR ***'):
+                if line.strip().startswith(('*** ERROR ***', 'ERROR')):
                     hole.returncode = 255
                     break
         if hole.returncode != 0:
             logger.fatal("HOLE Failure (%d). Check output %r", hole.returncode, outname)
             if stderr is not None:
                 logger.fatal(stderr)
-            raise OSError(hole.returncode, "HOLE %r failed. Check output %r." % (self.exe['hole'], outname))
+            raise ApplicationError(hole.returncode, "HOLE %r failed. Check output %r." % (self.exe['hole'], outname))
         logger.info("HOLE finished: output file %(outname)r", vars())
 
     def create_vmd_surface(self, filename="hole.vmd", **kwargs):
@@ -601,8 +617,6 @@ class HOLE(object):
                 raise ValueError("Glob pattern %r did not find any files." % (self.filename,))
             logger.info("Found %d input files based on glob pattern %s", length, self.filename)
         if self.dcd:
-            # TODO: does not work if 'COORD  input*.pdb' wildcard is used!
-            # try to get rid of this...
             from MDAnalysis import Universe
             u = Universe(self.filename, self.dcd)
             length = int((u.trajectory.numframes - self.dcd_iniskip)/(self.dcd_step+1))
@@ -659,7 +673,37 @@ class HOLE(object):
             logger.info("Collected HOLE radius profiles for %d frames", len(self.profiles))
         else:
             logger.warn("Missing data: Found %d HOLE profiles from %d frames.", len(self.profiles), length)
-        ##return self.profiles
+
+    def _process_plot_kwargs(self, kwargs):
+        import matplotlib.colors
+        from itertools import cycle
+
+        kw = {}
+
+        frames = kwargs.pop('frames', None)
+        if frames is None:
+            frames = numpy.sort(self.profiles.keys()[::kwargs.pop('step', 1)])
+        else:
+            frames = asiterable(frames)
+        kw['frames'] = frames
+
+        kw['yshift'] = kwargs.pop('yshift', 0.0)
+
+        kw['rmax'] = kwargs.pop('rmax', None)
+
+        color = kwargs.pop('color', None)
+        if color is None:
+            cmap = kwargs.pop('cmap', matplotlib.cm.jet)
+            normalize = matplotlib.colors.normalize(vmin=numpy.min(frames),vmax=numpy.max(frames))
+            colors = cmap(normalize(frames))
+        else:
+            colors = cycle(asiterable(color))
+        kw['colors'] = colors
+
+        kw['linestyles'] = cycle(asiterable(kwargs.pop('linestyle', '-')))
+
+        return kw, kwargs
+
 
     def plot(self, **kwargs):
         """Plot profiles in a 1D graph.
@@ -670,24 +714,44 @@ class HOLE(object):
            *step*
               only plot every *step* profile [1]
            *cmap*
-              matplotlib color map [jet]
+              matplotlib color map to continuously color graphs [jet]
+           *color*
+              color or iterable of colors to specify graph colors;
+              ``None`` will use *cmap* instead [``None``]
+           *linestyle*
+              linestyle supported by :func:`matplotlib.pyplot.plot`;
+              an iterable will be applied in turn ['-']
            *yshift*
               displace each R(zeta) profile by *yshift* in the
               y-direction [0]
+           *frames*
+              integer or list: only plot these specific frame(s);
+              the default is to plot everything (see also *step*).
+              [``None``]
+           *ax*
+              :class:`matplotlib.axes.Axes` instance to plot into
+              [``None``]
+
+        All other *kwargs* are passed to :func:`matplotlib.pyplot.plot`.
         """
         import matplotlib.pyplot as plt
-        import matplotlib.colors
         from itertools import izip
-        cmap = kwargs.pop('cmap', matplotlib.cm.jet)
-        frames = numpy.sort(self.profiles.keys()[::kwargs.pop('step', 1)])
-        yshift = kwargs.pop('yshift', 0.0)
-        normalize = matplotlib.colors.normalize(vmin=frames[0],vmax=frames[-1])
-        colors = cmap(normalize(frames))
-        for iplot,(frame,color) in enumerate(izip(frames,colors)):
+
+        kw, kwargs = self._process_plot_kwargs(kwargs)
+
+        ax = kwargs.pop('ax', plt.subplot(111))
+        for iplot,(frame,color,linestyle) in enumerate(izip(kw['frames'],kw['colors'],kw['linestyles'])):
             kwargs['color'] = color
-            dy = iplot * yshift
+            kwargs['linestyle'] = linestyle
+            kwargs['zorder'] = -frame
+            kwargs['label'] = str(frame)
+            dy = iplot * kw['yshift']
             profile = self.profiles[frame]
-            plt.plot(profile.rxncoord, profile.radius + dy, **kwargs)
+            ax.plot(profile.rxncoord, profile.radius + dy, **kwargs)
+            #logger.debug("Plotted frame %d with color %r and linestyle %r", frame, color, linestyle)
+        ax.set_xlabel(r"pore coordinate $\zeta$ ($\AA$)")
+        ax.set_ylabel(r"HOLE radius $r$ ($\AA$)")
+        ax.legend(loc="best")
 
     def plot3D(self, **kwargs):
         """Stacked graph of profiles.
@@ -709,23 +773,18 @@ class HOLE(object):
 
         """
         import matplotlib.pyplot as plt
-        import matplotlib.colors
         import mpl_toolkits.mplot3d.axes3d as axes3d
         from itertools import izip
 
-        cmap = kwargs.pop('cmap', matplotlib.cm.jet)
-        frames = numpy.sort(self.profiles.keys()[::kwargs.pop('step', 1)])
-
-        rmax = kwargs.pop('rmax', None)
-
-        normalize = matplotlib.colors.normalize(vmin=frames[0],vmax=frames[-1])
-        colors = cmap(normalize(frames))
+        kw, kwargs = self._process_plot_kwargs(kwargs)
+        rmax = kw.pop('rmax', None)
 
         fig = plt.figure(figsize=kwargs.pop('figsize', (6,6)))
         ax = fig.add_subplot(1, 1, 1, projection='3d')
-
-        for frame,color in izip(frames,colors):
+        for frame,color,linestyle in izip(kw['frames'],kw['colors'],kw['linestyles']):
             kwargs['color'] = color
+            kwargs['linestyle'] = linestyle
+            kwargs['zorder'] = -frame
             profile = self.profiles[frame]
             if rmax is None:
                 radius = profile.radius
