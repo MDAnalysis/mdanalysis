@@ -17,14 +17,14 @@
 
 import MDAnalysis
 import MDAnalysis.core.Selection
-from MDAnalysis.tests.datafiles import PSF,DCD
+from MDAnalysis.tests.datafiles import PSF,DCD,PRMpbc,TRJpbc_bz2,PSF_NAMD,PDB_NAMD,GRO
 
 from numpy.testing import *
 from numpy import array, float32
 from nose.plugins.attrib import attr
 
 
-class TestSelections(TestCase):
+class TestSelectionsCHARMM(TestCase):
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
@@ -37,6 +37,7 @@ class TestSelections(TestCase):
         assert_equal(sel.numberOfAtoms(), 3341, "failed to select segment 4AKE")
         assert_equal(sel._atoms, self.universe.s4AKE._atoms,
                      "selected segment 4AKE is not the same as auto-generated segment s4AKE")
+
     def test_protein(self):
         sel = self.universe.selectAtoms('protein')
         assert_equal(sel.numberOfAtoms(), 3341, "failed to select protein")
@@ -89,6 +90,10 @@ class TestSelections(TestCase):
         assert_array_almost_equal(sel.coordinates(),
                                   array([[ 20.38685226,  -3.44224262,  -5.92158318]], dtype=float32))
 
+    def test_type(self):
+        sel = self.universe.selectAtoms("type 1")
+        assert_equal(len(sel), 253)
+
     def test_and(self):
         sel = self.universe.selectAtoms('resname GLY and resid 100')
         assert_equal(len(sel), 7)
@@ -107,8 +112,8 @@ class TestSelections(TestCase):
     # and also for selection keywords such as 'nucleic'
 
     def test_empty_selection(self):
-        """Test empty selection: raises Excption but might be subject to change (see Issue 12)"""
-        assert_raises(Exception, self.universe.selectAtoms, 'resname TRP')  # no Trp in AdK
+        """Test that empty selection can be processed (see Issue 12)"""
+        assert_equal(len(self.universe.selectAtoms('resname TRP')), 0)  # no Trp in AdK
 
     def test_parenthesized_expression(self):
         sel = self.universe.selectAtoms('( name CA or name CB ) and resname LEU')
@@ -130,3 +135,90 @@ class TestSelections(TestCase):
         phi151 = E151.selectAtoms('name HN', 'name N', 'name CA', 'name CB')
         assert_equal(len(phi151), 4)
         assert_equal(phi151[0].name, 'HN', "wrong ordering in selection, should be HN-N-CA-CB")
+
+
+class TestSelectionsAMBER(TestCase):
+    def setUp(self):
+        """Set up AMBER system"""
+        self.universe = MDAnalysis.Universe(PRMpbc, TRJpbc_bz2)
+
+    def tearDown(self):
+        del self.universe
+
+    def test_protein(self):
+        sel = self.universe.selectAtoms('protein')
+        assert_equal(sel.numberOfAtoms(), 22, "failed to select protein")
+
+    def test_backbone(self):
+        sel = self.universe.selectAtoms('backbone')
+        assert_equal(sel.numberOfAtoms(), 7)
+
+    def test_resid_single(self):
+        sel = self.universe.selectAtoms('resid 3')
+        assert_equal(sel.numberOfAtoms(), 6)
+        assert_equal(sel.resnames(), ['NME'])
+
+    def test_type(self):
+        sel = self.universe.selectAtoms('type 1')
+        assert_equal(len(sel), 6)
+        assert_equal(sel.names(), ['HH31', 'HH32', 'HH33', 'HB1', 'HB2', 'HB3'])
+
+
+class TestSelectionsNAMD(TestCase):
+    def setUp(self):
+        """Set up NAMD system"""
+        self.universe = MDAnalysis.Universe(PSF_NAMD, PDB_NAMD)
+
+    def tearDown(self):
+        del self.universe
+
+    def test_protein(self):
+        sel = self.universe.selectAtoms('protein or resname HAO or resname ORT')  # must include non-standard residues
+        assert_equal(sel.numberOfAtoms(), self.universe.atoms.numberOfAtoms(), "failed to select peptide")
+        assert_equal(sel.numberOfResidues(), 6, "failed to select all peptide residues")
+
+    def test_resid_single(self):
+        sel = self.universe.selectAtoms('resid 12')
+        assert_equal(sel.numberOfAtoms(), 26)
+        assert_equal(sel.resnames(), ['HAO'])
+
+    def test_type(self):
+        sel = self.universe.selectAtoms('type H')
+        assert_equal(len(sel), 5)
+        assert_array_equal(sel.names(), ['HN', 'HN', 'HN', 'HH', 'HN'])  # note 4th HH
+
+
+class TestSelectionsGRO(TestCase):
+    def setUp(self):
+        """Set up GRO system (implicit types, charges, masses, ...)"""
+        self.universe = MDAnalysis.Universe(GRO)
+
+    @dec.slow
+    def test_protein(self):
+        sel = self.universe.selectAtoms('protein')
+        assert_equal(sel.numberOfAtoms(), 3341, "failed to select protein")
+
+    @dec.slow
+    def test_backbone(self):
+        sel = self.universe.selectAtoms('backbone')
+        assert_equal(sel.numberOfAtoms(), 855)
+
+    @dec.slow
+    def test_type(self):
+        sel = self.universe.selectAtoms('type H')
+        assert_equal(len(sel), 23853)
+        sel = self.universe.selectAtoms('type S')
+        assert_equal(len(sel), 7)
+        assert_equal(sel.resnames(),  self.universe.selectAtoms("resname CYS or resname MET").resnames())
+
+    @dec.slow
+    def test_resid_single(self):
+        sel = self.universe.selectAtoms('resid 100')
+        assert_equal(sel.numberOfAtoms(), 7)
+        assert_equal(sel.resnames(), ['GLY'])
+
+    @dec.slow
+    def test_atom(self):
+        sel = self.universe.selectAtoms('atom SYSTEM 100 CA')
+        assert_equal(len(sel), 1)
+        assert_equal(sel.resnames(), ['GLY'])

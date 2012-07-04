@@ -45,16 +45,19 @@ class Timestep(base.Timestep):
         def dimensions(self):
                 """unitcell dimensions (A, B, C, alpha, beta, gamma)
 
-                GRO:
-                8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085
+                GRO::
 
-                PDB:
-                CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1
+                  8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085
 
-                XTC: c.trajectory.ts._unitcell
-                array([[ 80.00515747,   0.        ,   0.        ],
-                       [  0.        ,  80.00515747,   0.        ],
-                       [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)
+                PDB::
+
+                  CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1
+
+                XTC: c.trajectory.ts._unitcell::
+
+                  array([[ 80.00515747,   0.        ,   0.        ],
+                         [  0.        ,  80.00515747,   0.        ],
+                         [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)
                 """
                 # unit cell line (from http://manual.gromacs.org/current/online/gro.html)
                 # v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)
@@ -65,8 +68,9 @@ class Timestep(base.Timestep):
                 return triclinic_box(x,y,z)
 
 class GROReader(base.Reader):
+        '''Now reads in velocities as well, if available.'''
         format = 'GRO'
-        units = {'time': None, 'length': 'nm'}
+        units = {'time': None, 'length': 'nm', 'velocity': 'nm/ps'}
         _Timestep = Timestep
 
         def __init__(self,grofilename,convert_units=None,**kwargs):
@@ -77,6 +81,7 @@ class GROReader(base.Reader):
                 self.convert_units = convert_units  # convert length and time to base units
 
                 coords_list = []
+                velocities_list = []
 
                 with open(grofilename , 'r') as grofile:
                         # Read first two lines to get number of atoms
@@ -87,6 +92,8 @@ class GROReader(base.Reader):
                                 # Should work with any precision
                                 if linenum not in (0,1,total_atnums+2):
                                         coords_list.append( numpy.array( map( float , line[20:].split()[0:3] ) ) )
+                                        if len(line[20:].split()) >= 6: #if there are enough data columns to include velocities
+                                            velocities_list.append( numpy.array( map( float , line[20:].split()[3:6] ) ) )
                                 # Unit cell footer
                                 elif linenum == total_atnums+2:
                                         unitcell = numpy.array( map( float , line.split() ) )
@@ -94,6 +101,11 @@ class GROReader(base.Reader):
                 self.numatoms = len(coords_list)
                 coords_list = numpy.array(coords_list)
                 self.ts = self._Timestep(coords_list)
+                self.ts.frame = 1  # 1-based frame number
+                if velocities_list: #perform this operation only if velocities are present in coord file
+                    # TODO: use a Timestep that knows about velocities such as TRR.Timestep or better, TRJ.Timestep
+                    self.ts._velocities = numpy.array(velocities_list, dtype=numpy.float32)
+                    self.convert_velocities_from_native(self.ts._velocities) #converts nm/ps to A/ps units
                 # ts._unitcell layout is format dependent; Timestep.dimensions does the conversion
                 # behind the scene
                 self.ts._unitcell = numpy.zeros(9, dtype=numpy.float32)   # GRO has 9 entries
@@ -129,17 +141,18 @@ class GROReader(base.Reader):
                 """
                 return GROWriter(filename, **kwargs)
 
-        def __len__(self):
-                return self.numframes
         def __iter__(self):
                 yield self.ts  # Just a single frame
                 raise StopIteration
-        def __getitem__(self, frame):
+
+        def _read_frame(self, frame):
                 if frame != 0:
-                        raise IndexError('GROReader can only read a single frame at index 0')
+                        raise IndexError("GROReader only handles a single frame at frame index 0")
                 return self.ts
+
         def _read_next_timestep(self):
-                raise Exception, "GROReader can only read a single frame"
+                # CRD files only contain a single frame
+                raise IOError
 
 class GROWriter(base.Writer):
         """GRO Writer that conforms to the Trajectory API.
@@ -196,6 +209,9 @@ class GROWriter(base.Writer):
                 The GRO format only allows 5 digits for resid and atom
                 number. If these number become larger than 99,999 then this
                 routine will chop off the leading digits.
+
+                .. versionchanged:: 0.7.6
+                   resName and atomName are truncated to a maximum of 5 characters
                 """
                 # write() method that complies with the Trajectory API
                 u = selection.universe
@@ -227,8 +243,8 @@ class GROWriter(base.Writer):
                                 c = coordinates[atom_index]
                                 output_line = self.fmt['xyz'] % \
                                     (str(atom.resid)[-5:],     # truncate highest digits on overflow
-                                     atom.resname.strip(),     # XXX: truncate resname and atomname to be sure??
-                                     atom.name.strip(),
+                                     atom.resname.strip()[:5],
+                                     atom.name.strip()[:5],
                                      str(atom.number+1)[-5:],  # number (1-based), truncate highest digits on overflow
                                      c[0], c[1], c[2],         # coords - outputted with 3 d.p.
                                      )

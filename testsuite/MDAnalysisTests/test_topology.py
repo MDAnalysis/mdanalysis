@@ -17,7 +17,7 @@
 
 import MDAnalysis
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
-from MDAnalysis.tests.datafiles import PRMpbc
+from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD
 
 from numpy.testing import *
 
@@ -114,6 +114,41 @@ class TestMagnesium(_TestGuessAtomType):
 # add more...
 
 # specific topology readers
+# add more!
+
+# CHARMM and NAMD PSF
+
+class _TestTopology(TestCase):
+    def test_parser(self):
+        U = MDAnalysis.Universe(self.topology)
+        assert_equal(U.atoms.numberOfAtoms(), self.ref_numatoms, "wrong number of atoms in topology")
+        assert_equal(U.atoms.numberOfResidues(), self.ref_numresidues, "wrong number of residues in topology")
+
+class RefAdKSmall(object):
+    """Mixin class to provide comparison numbers.
+
+    Based on small PDB with AdK (:data:`PDB_small`).
+    """
+    topology = PSF
+    ref_numatoms = 3341
+    ref_numresidues = 214
+
+class TestPSF_CHARMM_STANDARD(_TestTopology, RefAdKSmall):
+    """Testing CHARMM standard PSF file format"""
+
+class RefNAMD_CGENFF(object):
+    """Testfiles provided by JiyongPark77.
+
+    NAMD/VMD XPLOR-style PSF file (using CGENFF residues/atoms).
+
+    http://code.google.com/p/mdanalysis/issues/detail?id=107
+    """
+    topology = PSF_NAMD
+    ref_numatoms = 130
+    ref_numresidues = 6
+
+class TestPSF_NAMD_CGENFF(_TestTopology, RefNAMD_CGENFF):
+    """Testing NAMD PSF file (with CGENFF atom types, Issue 107)"""
 
 # AMBER
 
@@ -122,16 +157,25 @@ class RefCappedAla(object):
 
     Capped Ala in water
     """
-    PRM = PRMpbc
+    topology = PRMpbc
     ref_numatoms = 5071
+    ref_numresidues = 1686
     ref_proteinatoms = 22
 
-class TestAmber(TestCase, RefCappedAla):
-    def test_TOPParser(self):
-        """Testing AMBER PRMTOP parser (Issue 76)"""
-        # note: hard to test the issue because one needs a very specifi datafile
-        #       so this test really checks that we did not break the parser for the
-        #       existing test cases
-        U = MDAnalysis.Universe(self.PRM)
-        assert_equal(len(U.atoms), self.ref_numatoms, "load topology from PRM")
+class RefAMBER12(object):
+    """Fixture data for testing AMBER12 reading (Issue 100)"""
+    topology = PRM12
+    ref_numatoms = 8923
+    ref_numresidues = 2861
+    ref_proteinatoms = 0
+
+
+class TestAMBER(_TestTopology, RefCappedAla):
+    """Testing AMBER PRMTOP parser (Issue 76)"""
+    # note: hard to test the issue because one needs a very specifi datafile
+    #       so this test really checks that we did not break the parser for the
+    #       existing test cases
+
+class TestAMBER12(_TestTopology, RefAMBER12):
+    """Testing AMBER 12 PRMTOP parser (Issue 100)"""
 

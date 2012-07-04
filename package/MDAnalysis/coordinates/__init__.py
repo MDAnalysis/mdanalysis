@@ -58,11 +58,14 @@ Supported coordinate formats
 ----------------------------
 
 The table below lists the coordinate file formats understood by MDAnalysis. The
-emphasis is on formats that are used in popular molecular dynamics
-codes. MDAnalysis figures out formats by looking at the extension. Thus, a DCD
-file always has to end with ".dcd" to be recognized as such. (A number of files
-are also recognized when they are compressed with :program:`gzip` or
-:program:`bzip2` such as ".xyz.bz2".)
+emphasis is on formats that are used in popular molecular dynamics codes. By
+default, MDAnalysis figures out formats by looking at the extension. Thus, a
+DCD file always has to end with ".dcd" to be recognized as such unless the
+format is explicitly specified with the *format* keyword to
+:class:`~MDAnalysis.core.AtomGroup.Universe` or
+:meth:`~MDAnalysis.core.AtomGroup.Universe.load_new`.  A number of files are
+also recognized when they are compressed with :program:`gzip` or
+:program:`bzip2` such as ".xyz.bz2".
 
 .. _Supported coordinate formats:
 
@@ -72,9 +75,13 @@ are also recognized when they are compressed with :program:`gzip` or
    |Name           | extension |  IO   | remarks                                              |
    +===============+===========+=======+======================================================+
    | CHARMM,       | dcd       |  r/w  | standard CHARMM binary trajectory; endianness is     |
-   | NAMD,         |           |       | autodetected. Fixed atoms may not be handled         |
-   | LAMMPS        |           |       | correctly (requires testing). Module                 |
+   | NAMD          |           |       | autodetected. Fixed atoms may not be handled         |
+   |               |           |       | correctly (requires testing). Module                 |
    |               |           |       | :mod:`MDAnalysis.coordinates.DCD`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | LAMMPS        | dcd       |  r/w  | CHARMM-style binary trajectory; endianness is        |
+   |               |           |       | autodetected. Units are appropriate for LAMMPS.      |
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.LAMMPS`          |
    +---------------+-----------+-------+------------------------------------------------------+
    | Gromacs       | xtc       |  r/w  | Compressed (lossy) xtc trajectory format. Module     |
    |               |           |       | :mod:`MDAnalysis.coordinates.XTC`                    |
@@ -87,15 +94,20 @@ are also recognized when they are compressed with :program:`gzip` or
    |               |           |       | compressed (gzip or bzip2). Module                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | Amber         | trj,      |  r    | formatted (ASCII) trajectories; the presence of a    |
+   | AMBER         | trj,      |  r    | formatted (ASCII) trajectories; the presence of a    |
    |               | mdcrd     |       | periodic box is autodetected (*experimental*).       |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.TRJ`             |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | AMBER         | ncdf      |  r/w  | binary (NetCDF) trajectories are fully supported with|
+   |               |           |       | optional `netcdf4-python`_ module (coordinates and   |
+   |               |           |       | velocities). Module :mod:`MDAnalysis.coordinates.TRJ`|
    +---------------+-----------+-------+------------------------------------------------------+
    | Brookhaven    | pdb       |  r/w  | a simplified PDB format (as used in MD simulations)  |
    | [#a]_         |           |       | is read by default; the full format can be read by   |
    |               |           |       | supplying the `permissive=False` flag to             |
-   |               |           |       | :class:`MDAnalysis.Universe`. Module                 |
-   |               |           |       | :mod:`MDAnalysis.coordinates.PDB`                    |
+   |               |           |       | :class:`MDAnalysis.Universe`. Multiple frames (MODEL)|
+   |               |           |       | are supported but require the *multiframe* keyword.  |
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.PDB`             |
    +---------------+-----------+-------+------------------------------------------------------+
    | PDBQT [#a]_   | pdbqt     | r/w   | file format used by AutoDock with atom types *t*     |
    |               |           |       | and partial charges *q*. Module:                     |
@@ -105,7 +117,7 @@ are also recognized when they are compressed with :program:`gzip` or
    |               |           |       | and radius information. Module                       |
    |               |           |       | :mod:`MDAnalysis.coordinates.PQR`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | GROMOS96      | gro       |  r/w  | basic GROMOS96 format (without velocities). Module   |
+   | GROMOS96      | gro       |  r/w  | basic GROMOS96 format (velocities as well). Module   |
    | [#a]_         |           |       | :mod:`MDAnalysis.coordinates.GRO`                    |
    +---------------+-----------+-------+------------------------------------------------------+
    | CHARMM [#a]_  | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
@@ -118,6 +130,7 @@ are also recognized when they are compressed with :program:`gzip` or
    full :mod:`~MDAnalysis.core.AtomGroup.Universe` by simply
    providing a file of this format: ``u = Universe(filename)``
 
+.. _`netcdf4-python`: http://code.google.com/p/netcdf4-python/
 
 .. _Trajectory API:
 
@@ -148,7 +161,9 @@ History
 - 2011-03-30 optional Writer() method for Readers
 - 2011-04-18 added time and frame managed attributes to Reader
 - 2011-04-20 added volume to Timestep
-- 2012-02-11 added _velocities to Timestep 
+- 2012-02-11 added _velocities to Timestep
+- 2012-05-24 multiframe keyword to distinguish trajectory from single frame writers
+- 2012-06-04 missing implementations of Reader.__getitem__ should raise :exc:`TypeError`
 
 .. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
 
@@ -213,7 +228,7 @@ Attributes
   ``numatoms``
       number of atoms in the frame
   ``frame``
-      current frame number
+      current frame number (1-based)
   ``dimensions``
       system box dimensions (`x, y, z, alpha, beta, gamma`)
       (typically implemented as a property because it needs to translate whatever is in the
@@ -326,6 +341,23 @@ deal with missing methods gracefully.
      cases this is not easily (or reliably) implementable and thus one is
      restricted to sequential iteration.
 
+     If the Reader is not able to provide random access to frames then it
+     should raise :exc:`TypeError` on indexing. It is possible to partially
+     implement ``__getitem__`` (as done on
+     :class:`MDAnalysis.coordinates.base.Reader.__getitem__` where slicing the
+     full trajectory is equivalent to
+     :class:`MDAnalysis.coordinates.base.Reader.__iter__` (which is always
+     implemented) and other slices raise :exc:`TypeError`.
+
+     .. Note::
+
+        ``__getitem__`` uses 0-based indices for frames so that indexing and
+        slicing works exactly as in Python. However, the ``Timestep.frame``
+        attribute (the "frame number") is 1-based. Thus, the first frame in a
+        trajectory can be accessed as ``trajectory[0]`` (frame index 0) and the
+        corresponding frame number is 1 (``trajectory.ts.frame == 1``).
+
+
  ``Writer(filename, **kwargs)``
      returns a :class:`~MDAnalysis.coordinates.base.Writer` which is set up with
      the same parameters as the trajectory that is being read (e.g. time step,
@@ -386,7 +418,7 @@ Attributes
  ``time``
      time of the current time step, in MDAnalysis time units (ps)
  ``frame``
-     frame number of the current time step
+     frame number of the current time step (1-based)
 
 **Optional attributes**
 
@@ -398,7 +430,7 @@ Trajectory Writer class
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Trajectory readers are derived from
-:class:`MDAnalysis.coordinates.base.Writer`. They are use to write
+:class:`MDAnalysis.coordinates.base.Writer`. They are used to write
 multiple frames to a trajectory file. Every time the
 :meth:`~MDAnalysis.coordinates.base.Writer.write` method is called,
 another frame is appended to the trajectory.
@@ -429,7 +461,7 @@ Methods
  ``convert_dimensions_to_unitcell(timestep)``
      take the dimensions from the timestep and convert to the native
      unitcell representation of the format
- ``close_trajectory()``
+ ``close()``
      close file and finish I/O
  ``__del__()``
      ensures that close() is called
@@ -440,7 +472,7 @@ Attributes
  ``filename``
      name of the trajectory file
  ``start, stop, step``
-     first and last frame and step
+     first and last frame number (1-based) and step
  ``units``
      dictionary with keys *time*, *length*, *speed*, *force* and the
      appropriate unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and
@@ -504,6 +536,11 @@ format identifiers. They are documented for programmers who want to
 enhance MDAnalysis; the casual user is unlikely to access them
 directly.
 
+Some formats can either write single frames or trajectories (such as
+PDB). In theses cases, the kind of writer is selected with the
+*multiframe* keyword to :func:`MDAnalysis.coordinates.core.get_writer`
+(or the writer itself).
+
 .. autodata:: _trajectory_readers
 .. autodata:: _topology_coordinates_readers
 .. autodata:: _trajectory_readers_permissive
@@ -515,7 +552,7 @@ directly.
 
 __all__ = ['reader', 'writer']
 
-import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS  #, NETCDF
+import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS
 import base
 from core import reader, writer
 
@@ -525,13 +562,13 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'XTC': XTC.XTCReader,
                        'XYZ': XYZ.XYZReader,
                        'TRR': TRR.TRRReader,
-                       'PDB': PDB.PrimitivePDBReader,
+                       'PDB': PDB.PDBReader,
                        'PDBQT': PDBQT.PDBQTReader,
                        'CRD': CRD.CRDReader,
                        'GRO': GRO.GROReader,
-                       'TRJ':TRJ.TRJReader,     # Amber text
-                       'MDCRD':TRJ.TRJReader,   # Amber text
-                       #'NETCDF':NETCDFReader,  # Amber netcdf
+                       'TRJ': TRJ.TRJReader,     # AMBER text
+                       'MDCRD': TRJ.TRJReader,   # AMBER text
+                       'NCDF': TRJ.NCDFReader,   # AMBER netcdf
                        'PQR': PQR.PQRReader,
                        'LAMMPS': LAMMPS.DCDReader,
                        'CHAIN': base.ChainReader,
@@ -580,6 +617,7 @@ _trajectory_writers = {'DCD': DCD.DCDWriter,
                        'XTC': XTC.XTCWriter,
                        'TRR': TRR.TRRWriter,
                        'LAMMPS': LAMMPS.DCDWriter,
-                       'PDB': PDB.PrimitivePDBWriter,
+                       'PDB': PDB.MultiPDBWriter,
+                       'NCDF': TRJ.NCDFWriter,
                        }
 

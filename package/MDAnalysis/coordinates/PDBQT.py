@@ -200,6 +200,7 @@ class PDBQTReader(base.Reader):
         self.numatoms = len(coords)
         self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
         self.ts._unitcell[:] = unitcell
+        self.ts.frame = 1  # 1-based frame number
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)             # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)
@@ -250,17 +251,19 @@ class PDBQTReader(base.Reader):
         """
         return PDBQTWriter(filename, **kwargs)
 
-    def __len__(self):
-        return self.numframes
     def __iter__(self):
         yield self.ts  # Just a single frame
         raise StopIteration
-    def __getitem__(self, frame):
+
+    def _read_frame(self, frame):
         if frame != 0:
-            raise IndexError('PDBQTReader can only read a single frame at index 0')
+            raise IndexError("PDBQT only contains a single frame at frame index 0")
         return self.ts
+
     def _read_next_timestep(self):
-        raise IndexError("PDBQTReader can only read a single frame")
+        # PDBQT file only contains a single frame
+        raise IOError
+
 
 class PDBQTWriter(base.Writer):
     """PDBQT writer that implements a subset of the PDB_ 3.2 standard and the PDBQT_ spec.

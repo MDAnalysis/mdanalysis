@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.1. Core functions of MDAnalysis &mdash; MDAnalysis v0.7.5.1 documentation</title>
+    <title>7.1. Core functions of MDAnalysis &mdash; MDAnalysis 0.7.6 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5.1',
+        VERSION:     '0.7.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5.1 documentation"
+          title="Search within MDAnalysis 0.7.6 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.6 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup" href="AtomGroup.html" />
     <link rel="prev" title="7. Core modules" href="../core_modules.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="../core_modules.html" title="7. Core modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -73,7 +76,7 @@
                         title="previous chapter">7. Core modules</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="AtomGroup.html"
-                        title="next chapter">7.2. Fundamental building blocks &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a></p>
+                        title="next chapter">7.2. Fundamental building blocks &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/init.txt"
@@ -82,7 +85,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -126,7 +129,7 @@ obtain the coordinates as a numpy array</p>
 </div>
 <p>and write your own Python code.</p>
 <div class="section" id="flags">
-<h2>7.1.1. Flags<a class="headerlink" href="#flags" title="Permalink to this headline">¶</a></h2>
+<span id="flags-label"></span><h2>7.1.1. Flags<a class="headerlink" href="#flags" title="Permalink to this headline">¶</a></h2>
 <p>(This is an advanced topic and can probably be skipped by most people.)</p>
 <p>There are a number flags that influence how MDAnalysis behaves. They are accessible
 through the pseudo-dictionary <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt>.</p>
@@ -204,7 +207,7 @@ mistakes; see <tt class="xref py py-mod docutils literal"><span class="pre">Bio.
 known to read some simulation system PDB files <strong>incompletely</strong>; a
 sure sign of problems is a warning that an atom has appeared twice
 in a residue.</p>
-<p>Therefore, the default for the PDB reader is <tt class="xref docutils literal"><span class="pre">True</span></tt>, which
+<p>Therefore, the default for the PDB reader is <tt class="docutils literal"><span class="pre">True</span></tt>, which
 selects the &#8220;primitive&#8221; (or &#8220;permissive&#8221;) reader
 <a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.PDB.PrimitivePDBReader</span></tt></a>, which
 essentially just reads ATOM and HETATM lines and puts atoms in a
@@ -226,8 +229,8 @@ keyword to <tt class="xref py py-class docutils literal"><span class="pre">MDAna
 </pre></div>
 </div>
 <p>Gromacs trajectories are in nm, MDAnalysis in Angstroem. If
-<tt class="xref docutils literal"><span class="pre">True</span></tt> then coordinates are automatically converted, with
-<tt class="xref docutils literal"><span class="pre">False</span></tt> the coordinate values are presented as read from the
+<tt class="docutils literal"><span class="pre">True</span></tt> then coordinates are automatically converted, with
+<tt class="docutils literal"><span class="pre">False</span></tt> the coordinate values are presented as read from the
 trajectories.</p>
 </div></blockquote>
 <p><strong>speed_unit</strong> = <em>&#8216;Angstrom/ps&#8217;</em></p>
@@ -301,7 +304,7 @@ instance as an argument.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em></dt>
 <dd><p class="first last">name of the flag, must be a legal python name</p>
 </dd>
@@ -310,7 +313,7 @@ instance as an argument.</p>
 </dd>
 <dt><em>mapping</em></dt>
 <dd><p class="first last">dict that maps allowed input values to canonical values;
-if <tt class="xref docutils literal"><span class="pre">None</span></tt> then no argument checking will be performed and
+if <tt class="docutils literal"><span class="pre">None</span></tt> then no argument checking will be performed and
 all values are directly set.</p>
 </dd>
 <dt><em>doc</em></dt>
@@ -330,7 +333,7 @@ all values are directly set.</p>
 <dl class="method">
 <dt id="MDAnalysis.core.__init__.Flag.prop">
 <tt class="descname">prop</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flag.prop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use this for property(<a href="#id1"><span class="problematic" id="id2">**</span></a>flag.prop())</p>
+<dd><p>Use this for <tt class="docutils literal"><span class="pre">property(**flag.prop())</span></tt></p>
 </dd></dl>
 
 </dd></dl>
@@ -360,7 +363,7 @@ all values are directly set.</p>
         <li class="right" >
           <a href="../core_modules.html" title="7. Core modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -368,8 +371,8 @@ all values are directly set.</p>
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

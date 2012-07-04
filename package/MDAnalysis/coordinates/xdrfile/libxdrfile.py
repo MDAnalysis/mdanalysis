@@ -189,6 +189,7 @@ The advantage of XTC over TRR is its significantly reduced size.
                    which is updated with the coordinates from the frame
 
               :Returns: The function returns a tuple containing
+              
                 *status*
                    integer status (0 = exdrOK), see `Status symbols`_ for other
                    values)
@@ -219,8 +220,10 @@ The advantage of XTC over TRR is its significantly reduced size.
                 *precision*
                    precision of the lossy xtc format (typically 1000.0)
 
-              :Returns: *status*, integer status (0 = OK), see the ``libxdrfile.exdr*`` 
-                        constants under `Status symbols`_ for other values)
+              :Returns:
+                *status*
+                   integer status (0 = OK), see the ``libxdrfile.exdr*`` 
+                   constants under `Status symbols`_ for other values)
 
 TRR functions
 ~~~~~~~~~~~~~
@@ -275,6 +278,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
                    which is updated with the **forces** from the frame
 
               :Returns: The function returns a tuple containing
+              
                 *status*
                    integer status (0 = exdrOK), see the ``libxdrfile.exdr*`` constants 
                    under `Status symbols`_ for other values)
@@ -311,8 +315,10 @@ calculations. Velocities and forces are optional in the sense that they can be a
                    numpy ``array((natoms, DIM),dtype=nump.float32)``
                    which contains the **forces** from the frame
  
-              :Returns: *status*, integer status (0 = OK), see the ``libxdrfile.exdr*`` 
-                        constants under `Status symbols`_ for other values)
+              :Returns:
+                *status*
+                   integer status (0 = OK), see the ``libxdrfile.exdr*`` 
+                   constants under `Status symbols`_ for other values)
 
 
 """

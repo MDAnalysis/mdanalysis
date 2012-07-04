@@ -25,7 +25,7 @@ from numpy.testing import *
 from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small, PDB_multiframe, PDB,CRD,XTC,TRR,GRO, \
-    XYZ,XYZ_bz2,XYZ_psf, PRM,TRJ,TRJ_bz2, PRMpbc, TRJpbc_bz2, PQR
+    XYZ,XYZ_bz2,XYZ_psf, PRM,TRJ,TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR
 
 import os
 import tempfile
@@ -122,6 +122,21 @@ class TestXYZReader(TestCase, Ref2r9r):
         assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
 
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
+        # for whenever full slicing is implemented ...
+        #frames = [ts.frame-1 for ts in trj_iter()]
+        #assert_equal(frames, np.arange(self.universe.trajectory.numframes, step=2))
+
+
 
 class TestCompressedXYZReader(TestCase, Ref2r9r):
     def setUp(self):
@@ -150,6 +165,16 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
 
         assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
+
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
 
 
 class RefACHE(object):
@@ -196,6 +221,22 @@ class RefCappedAla(object):
     ref_numframes = 11
     ref_periodic = True
 
+class RefVGV(object):
+    """Mixin class to provide comparison numbers.
+
+    Computed from bala.trj::
+
+      w = MDAnalysis.Universe(PRMncdf, TRJncdf)
+      ref_numatoms = len(w.atoms)
+      ref_proteinatoms = len(w.selectAtoms("protein"))
+      ref_sum_centre_of_geometry = np.sum([protein.centerOfGeometry() for ts in w.trajectory])
+    """
+    ref_numatoms = 2661
+    ref_proteinatoms = 50
+    ref_sum_centre_of_geometry = 1552.9125
+    ref_numframes = 30
+    ref_periodic = True
+
 
 class _TRJReaderTest(TestCase):
     # use as a base class (override setUp()) and mixin a reference
@@ -225,21 +266,145 @@ class _TRJReaderTest(TestCase):
         assert_almost_equal(total, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
 
+    def test_initial_frame_is_1(self):
+        assert_equal(self.universe.trajectory.ts.frame, 1,
+                     "initial frame is not 1 but {0}".format(self.universe.trajectory.ts.frame))
+
+    def test_starts_with_first_frame(self):
+        """Test that coordinate arrays are filled as soon as the trajectory has been opened."""
+        assert_(np.any(self.universe.atoms.coordinates() > 0),
+                "Reader does not populate coordinates() right away.")
+
+    def test_rewind(self):
+        trj = self.universe.trajectory
+        trj.next(); trj.next()    # for readers that do not support indexing
+        assert_equal(trj.ts.frame, 3, "failed to forward to frame 3 (frameindex 2)")
+        trj.rewind()
+        assert_equal(trj.ts.frame, 1, "failed to rewind to first frame")
+        assert_(np.any(self.universe.atoms.coordinates() > 0),
+                "Reader does not populate coordinates() after rewinding.")
+
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
 
 class TestTRJReader(_TRJReaderTest, RefACHE):
     def setUp(self):
         self.universe = mda.Universe(PRM, TRJ)
         self.prec = 3
 
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
+
 class TestBzippedTRJReader(TestTRJReader):
     def setUp(self):
         self.universe = mda.Universe(PRM, TRJ_bz2)
         self.prec = 3
 
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
+
 class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
     def setUp(self):
         self.universe = mda.Universe(PRMpbc, TRJpbc_bz2)
         self.prec = 3
+
+    def test_slice_raises_TypeError(self):
+        def trj_iter():
+            return self.universe.trajectory[::2]
+        assert_raises(TypeError, trj_iter)
+
+
+class TestNCDFReader(_TRJReaderTest, RefVGV):
+    def setUp(self):
+        self.universe = mda.Universe(PRMncdf, NCDF)
+        self.prec = 3
+
+    def test_slice_iteration(self):
+        frames = [ts.frame-1 for ts in self.universe.trajectory[4:-2:4]]
+        assert_equal(frames,
+                     np.arange(self.universe.trajectory.numframes)[4:-2:4],
+                     err_msg="slicing did not produce the expected frames")
+
+    def test_metadata(self):
+        data = self.universe.trajectory.trjfile
+        assert_equal(data.Conventions, 'AMBER')
+        assert_equal(data.ConventionVersion, '1.0')
+
+
+class TestNCDFWriter(TestCase, RefVGV):
+    def setUp(self):
+        self.universe = mda.Universe(PRMncdf, NCDF)
+        self.prec = 6
+        ext = ".ncdf"
+        fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        self.Writer = MDAnalysis.coordinates.TRJ.NCDFWriter
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.universe
+        del self.Writer
+
+    def test_write_trajectory(self):
+        t = self.universe.trajectory
+        W = self.Writer(self.outfile, t.numatoms, delta=t.delta)
+        self._copy_traj(W)
+
+    def test_OtherWriter(self):
+        t = self.universe.trajectory
+        W = t.OtherWriter(self.outfile)
+        self._copy_traj(W)
+
+    def _copy_traj(self, writer):
+        for ts in self.universe.trajectory:
+            writer.write_next_timestep(ts)
+        writer.close()
+
+        uw = mda.Universe(PRMncdf, self.outfile)
+
+        # check that the trajectories are identical for each time step
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
+                                      err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+            # not a good test because in the example trajectory all times are 0
+            assert_almost_equal(orig_ts.time, written_ts.time, self.prec,
+                                err_msg="Time for step {0} are not the same.".format(orig_ts.frame))
+            assert_array_almost_equal(written_ts.dimensions, orig_ts.dimensions, self.prec,
+                                      err_msg="unitcells are not identical")
+
+    @attr('slow')
+    def test_TRR2NCDF(self):
+        trr = MDAnalysis.Universe(GRO, TRR)
+        W = self.Writer(self.outfile, trr.trajectory.numatoms)
+        for ts in trr.trajectory:
+            W.write_next_timestep(ts)
+        W.close()
+
+        uw = MDAnalysis.Universe(GRO, self.outfile)
+
+        for orig_ts, written_ts in itertools.izip(trr.trajectory, uw.trajectory):
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
+                                      err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+            assert_array_almost_equal(written_ts._velocities, orig_ts._velocities, self.prec,
+                                      err_msg="velocity mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+            assert_almost_equal(orig_ts.time, written_ts.time, self.prec,
+                                err_msg="Time for step {0} are not the same.".format(orig_ts.frame))
+            assert_array_almost_equal(written_ts.dimensions, orig_ts.dimensions, self.prec,
+                                      err_msg="unitcells are not identical")
+        del trr
+
+
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
     # see TestPDBReader how to set up!
@@ -271,7 +436,16 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         assert_equal(self.universe.trajectory.time, 0.0, "wrong time of the frame")
 
     def test_frame(self):
-        assert_equal(self.universe.trajectory.frame, 0, "wrong frame number")
+        assert_equal(self.universe.trajectory.frame, 1, "wrong frame number (1-based, should be 1 for single frame readers)")
+
+    def test_frame_index_0(self):
+        self.universe.trajectory[0]
+        assert_equal(self.universe.trajectory.ts.frame, 1, "frame number for frame index 0 should be 1")
+
+    def test_frame_index_1_raises_IndexError(self):
+        def go_to_2(traj=self.universe.trajectory):
+            traj[1]
+        assert_raises(IndexError, go_to_2)
 
     def test_dt(self):
         """testing that accessing universe.trajectory.dt raises a KeyError for single frame readers"""
@@ -290,6 +464,18 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="distance between M1:N and G214:C")
 
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
+    def test_last_slice(self):
+        trj_iter = self.universe.trajectory[-1:]  # should be same as above: only 1 frame!
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
+
+
 class TestPDBReader(_SingleFrameReader):
     def setUp(self):
         ##mda.core.flags['permissive_pdb_reader'] = False # enable Bio.PDB reader!!
@@ -298,16 +484,27 @@ class TestPDBReader(_SingleFrameReader):
         self.universe = mda.Universe(PDB_small, permissive=False)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
+    def test_uses_Biopython(self):
+        from MDAnalysis.coordinates.PDB import PDBReader
+        assert_(isinstance(self.universe.trajectory, PDBReader), "failed to choose Biopython PDBReader")
+
+
 class TestPSF_CRDReader(_SingleFrameReader):
     def setUp(self):
         self.universe = mda.Universe(PSF, CRD)
         self.prec = 5  # precision in CRD (at least we are writing %9.5f)
+
 
 class TestPSF_PDBReader(TestPDBReader):
     def setUp(self):
         # mda.core.flags['permissive_pdb_reader'] = False
         self.universe = mda.Universe(PSF, PDB_small, permissive=False)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+
+    def test_uses_Biopython(self):
+        from MDAnalysis.coordinates.PDB import PDBReader
+        assert_(isinstance(self.universe.trajectory, PDBReader), "failed to choose Biopython PDBReader")
+
 
 class TestPrimitivePDBReader(_SingleFrameReader):
     def setUp(self):
@@ -322,72 +519,106 @@ class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
 class TestPrimitivePDBWriter(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True)
-        self.multiverse = mda.Universe(PDB_multiframe, premissive=True)
+        self.universe2 = mda.Universe(PSF, DCD, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         ext = ".pdb"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
-        fd, self.outfile3 = tempfile.mkstemp(suffix=ext)
 
     def tearDown(self):
         try:
             os.unlink(self.outfile)
         except OSError:
             pass
-        try:
-            os.unlink(self.outfile2)
-        except OSError:
-            pass
-        try:
-            os.unlink(self.outfile3)
-        except OSError:
-            pass
-        del self.universe, self.multiverse
+        del self.universe, self.universe2
 
     def test_writer(self):
+        "Test writing from a single frame PDB file to a PDB file."""
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(PSF, self.outfile, permissive=True)
         assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec,
                             err_msg="Writing PDB file with PrimitivePDBWriter does not reproduce original coordinates")
 
-    def test_multiframe_writer(self):
-        """
-        Test if multiframe writer can write selected frames for an atomselection.
-        """
-        u = self.multiverse
+    @attr('issue')
+    def test_write_single_frame_Writer(self):
+        """Test writing a single frame from a DCD trajectory to a PDB using MDAnalysis.Writer (Issue 105)"""
+        u = self.universe2
+        W = mda.Writer(self.outfile)
+        u.trajectory[50]
+        W.write(u.selectAtoms('all'))
+        W.close()
+        u2 = mda.Universe(self.outfile)
+        assert_equal(u2.trajectory.numframes, 1, err_msg="The number of frames should be 1.")
 
-        group  = u.selectAtoms('name CA', 'name C')
+    @attr('issue')
+    def test_write_single_frame_AtomGroup(self):
+        """Test writing a single frame from a DCD trajectory to a PDB using AtomGroup.write() (Issue 105)"""
+        u = self.universe2
+        u.trajectory[50]
+        u.atoms.write(self.outfile)
+        u2 = MDAnalysis.Universe(PSF, self.outfile)
+        assert_equal(u2.trajectory.numframes, 1, err_msg="Output PDB should only contain a single frame")
+        assert_almost_equal(u2.atoms.coordinates(), u.atoms.coordinates(), self.prec,
+                            err_msg="Written coordinates do not agree with original coordinates from frame %d" % u.trajectory.frame)
 
-        desired_group = 56
+    @attr('issue')
+    def test_check_coordinate_limits_min(self):
+        """Test that illegal PDB coordinates (x <= -999.9995 A) are caught with ValueError (Issue 57)"""
+        # modify coordinates so we need our own copy or we could mess up parallel tests
+        u = mda.Universe(PSF, PDB_small, permissive=True)
+        u.atoms[2000].pos[1] = -999.9995
+        assert_raises(ValueError, u.atoms.write, self.outfile)
+        del u
 
-        desired_frames = 6
+    @attr('issue')
+    def test_check_coordinate_limits_max(self):
+        """Test that illegal PDB coordinates (x > 9999.9995 A) are caught with ValueError (Issue 57)"""
+        # modify coordinates so we need our own copy or we could mess up parallel tests
+        u = mda.Universe(PSF, PDB_small, permissive=True)
+        u.atoms[1000].pos[1] =  9999.9996   # OB: 9999.99951 is not caught by '<=' ?!?
+        assert_raises(ValueError, u.atoms.write, self.outfile)
+        del u
 
-        group.write(self.outfile, start=12, step=2)
-
-        u = mda.Universe(self.outfile)
-
-        assert_equal(len(u.atoms), desired_group, err_msg="PrimitivePDBWriter trajectory written for an AtomGroup contains %d atoms, it should contain %d" % (len(u.atoms), desired_group))
-
-        assert_equal(len(u.trajectory), desired_frames, err_msg = "PrimitivePDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
-
+class TestMultiPDBReader(TestCase):
+    def setUp(self):
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
 
     def test_numframes(self):
-        u = self.multiverse
-        desired = 24
-        assert_equal(u.trajectory.numframes, desired,
-                            err_msg="Test PDB contains %d frames, trajectory contains only %d" % (desired, u.trajectory.numframes))
+        assert_equal(self.multiverse.trajectory.numframes, 24, "Wrong number of frames read from PDB muliple model file")
 
     def test_numatoms_frame(self):
         u = self.multiverse
-
         desired = 392
-
-        # rewind after previous test, otherwise the iterator is NoneType and next() cannot be called
-
         for frame in u.trajectory:
+            assert_equal(len(u.atoms), desired, err_msg="The number of atoms in the Universe (%d) does not match the number of atoms in the test case (%d) at frame %d" % (len(u.atoms), desired, u.trajectory.frame))
 
-          assert_equal(len(u.atoms), desired, err_msg="The number of atoms in the Universe (%d) does not match the number of atoms in the test case (%d) at frame %d" % (len(u.atoms), desired, u.trajectory.frame))
+    def test_rewind(self):
+        u = self.multiverse
+        u.trajectory[11]
+        assert_equal(u.trajectory.ts.frame, 12, "Failed to forward to 12th frame (frame index 11)")
+        u.trajectory.rewind()
+        assert_equal(u.trajectory.ts.frame, 1, "Failed to rewind to first frame (frame index 0)")
 
+    def test_iteration(self):
+        u = self.multiverse
+        frames = []
+        for frame in u.trajectory:
+            pass
+        # should rewind after previous test
+        # problem was: the iterator is NoneType and next() cannot be called
+        for ts in u.trajectory:
+            frames.append(ts)
+        assert_equal(len(frames), u.trajectory.numframes,
+                     "iterated number of frames %d is not the expected number %d; "
+                     "trajectory iterator fails to rewind" % (len(frames), u.trajectory.numframes))
+
+    def test_slice_iteration(self):
+        u = self.multiverse
+        frames = []
+        for ts in u.trajectory[4:-2:4]:
+            frames.append(ts)
+        assert_equal(np.array([ts.frame-1 for ts in frames]),
+                     np.arange(u.trajectory.numframes)[4:-2:4],
+                     err_msg="slicing did not produce the expected frames")
 
     def test_numconnections(self):
         u = self.multiverse
@@ -423,23 +654,68 @@ class TestPrimitivePDBWriter(TestCase):
         assert_equal(u._psf['_bonds'], desired,
                                 err_msg="The bond list does not match the test reference; len(actual) is %d, len(desired) is %d " % (len(u._psf['_bonds']), len(desired)))
 
-    @attr('issue')
-    def test_check_coordinate_limits_min(self):
-        """Test that illegal PDB coordinates (x <= -999.9995 A) are caught with ValueError (Issue 57)"""
-        # modify coordinates so we need our own copy or we could mess up parallel tests
-        u = mda.Universe(PSF, PDB_small, permissive=True)
-        u.atoms[2000].pos[1] = -999.9995
-        assert_raises(ValueError, u.atoms.write, self.outfile2)
-        del u
 
-    @attr('issue')
-    def test_check_coordinate_limits_max(self):
-        """Test that illegal PDB coordinates (x > 9999.9995 A) are caught with ValueError (Issue 57)"""
-        # modify coordinates so we need our own copy or we could mess up parallel tests
-        u = mda.Universe(PSF, PDB_small, permissive=True)
-        u.atoms[1000].pos[1] =  9999.9996   # OB: 9999.99951 is not caught by '<=' ?!?
-        assert_raises(ValueError, u.atoms.write, self.outfile2)
-        del u
+class TestMultiPDBWriter(TestCase):
+    def setUp(self):
+        self.universe = mda.Universe(PSF, PDB_small, permissive=True)
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
+        self.universe2 = mda.Universe(PSF, DCD, permissive=True)
+        self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+        ext = ".pdb"
+        fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        try:
+            os.unlink(self.outfile2)
+        except OSError:
+            pass
+        del self.universe, self.multiverse, self.universe2
+
+    def test_write_atomselection(self):
+        """Test if multiframe writer can write selected frames for an atomselection."""
+        u = self.multiverse
+        group = u.selectAtoms('name CA', 'name C')
+        desired_group = 56
+        desired_frames = 6
+        pdb = MDAnalysis.Writer(self.outfile, multiframe=True, start=12, step=2)
+        for ts in u.trajectory[-6:]:
+            pdb.write(group)
+        pdb.close()
+        u2 = mda.Universe(self.outfile)
+        assert_equal(len(u2.atoms), desired_group, err_msg="MultiPDBWriter trajectory written for an AtomGroup contains %d atoms, it should contain %d" % (len(u2.atoms), desired_group))
+
+        assert_equal(len(u2.trajectory), desired_frames, err_msg="MultiPDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
+
+    def test_write_all_timesteps(self):
+        """
+        Test write_all_timesteps() of the  multiframe writer (selected frames for an atomselection)
+        """
+        u = self.multiverse
+        group = u.selectAtoms('name CA', 'name C')
+        desired_group = 56
+        desired_frames = 6
+        pdb = MDAnalysis.Writer(self.outfile, multiframe=True, start=12, step=2)
+        pdb.write_all_timesteps(group)
+        u2 = mda.Universe(self.outfile)
+        assert_equal(len(u2.atoms), desired_group, err_msg="MultiPDBWriter trajectory written for an AtomGroup contains %d atoms, it should contain %d" % (len(u2.atoms), desired_group))
+
+        assert_equal(len(u2.trajectory), desired_frames, err_msg="MultiPDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
+
+    def test_write_atoms(self):
+        u = self.universe2
+        W = mda.Writer(self.outfile, multiframe=True)
+        # 2 frames expceted
+        for ts in u.trajectory[-2:]:
+            W.write(u.atoms)
+        W.close()
+        u0 = mda.Universe(self.outfile)
+        assert_equal(u0.trajectory.numframes, 2, err_msg="The number of frames should be 3.")
+
 
 class TestPQRReader(_SingleFrameReader):
     def setUp(self):
@@ -495,7 +771,7 @@ class TestGROReader(TestCase, RefAdK):
         assert_equal(self.universe.trajectory.time, 0.0, "wrong time of the frame")
 
     def test_frame(self):
-        assert_equal(self.universe.trajectory.frame, 0, "wrong frame number")
+        assert_equal(self.universe.trajectory.frame, 1, "wrong frame number (should be 1 for 1-based ts.frame)")
 
     def test_dt(self):
         """testing that accessing universe.trajectory.dt raises a KeyError for single frame readers"""
@@ -527,6 +803,12 @@ class TestGROReader(TestCase, RefAdK):
         # test_volume: reduce precision for Gromacs comparison to 0 decimals (A**3 <--> nm**3!)
         assert_almost_equal(self.ts.volume, self.ref_volume, 0,
                             err_msg="wrong volume for unitcell (rhombic dodecahedron)")
+
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
 
 class TestGROReaderNoConversion(TestCase, RefAdK):
     def setUp(self):
@@ -673,7 +955,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
 
     @dec.slow
     def test_frame(self):
-        assert_equal(self.universe.trajectory.frame, 0, "wrong frame number")
+        assert_equal(self.universe.trajectory.frame, 1, "wrong frame number")
 
     @dec.slow
     def test_dt(self):
@@ -829,7 +1111,15 @@ class TestDCDWriter(TestCase):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
 
-
+    def test_single_frame(self):
+        u = MDAnalysis.Universe(PSF, CRD)
+        W = MDAnalysis.Writer(self.outfile, u.atoms.numberOfAtoms())
+        W.write(u.atoms)
+        W.close()
+        w = MDAnalysis.Universe(PSF, self.outfile)
+        assert_equal(w.trajectory.numframes, 1, "single frame trajectory has wrong number of frames")
+        assert_almost_equal(w.atoms.coordinates(), u.atoms.coordinates(), 3,
+                            err_msg="coordinates do not match")
 
 class TestDCDWriter_Issue59(TestCase):
     def setUp(self):
@@ -1046,10 +1336,15 @@ class TestChainReader(TestCase):
         print self.trajectory.ts, self.trajectory.ts.frame
         assert_equal(self.trajectory.ts.frame, self.trajectory.numframes, "indexing last frame with trajectory[-1]")
 
-    @dec.knownfailureif(True, "slicing not implemented for chained reader")
+    @dec.knownfailureif(True, "full slicing not implemented for chained reader")
     def test_slice_trajectory(self):
         frames = [ts.frame for ts in self.trajectory[5:17:3]]
         assert_equal(frames, [6, 9, 12, 15], "slicing dcd [5:17:3]")
+
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame-1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
 
     def test_frame_numbering(self):
         self.trajectory[98]  # index is 0-based but frames are 1-based
@@ -1083,6 +1378,7 @@ class TestChainReader(TestCase):
         for (ts_orig, ts_new) in izip(self.universe.trajectory, u.trajectory):
             assert_almost_equal(ts_orig._pos, ts_new._pos, self.prec,
                                 err_msg="Coordinates disagree at frame %d" % ts_orig.frame)
+
 
 class _GromacsReader(TestCase):
     # This base class assumes same lengths and dt for XTC and TRR test cases!
@@ -1291,6 +1587,7 @@ class TestXTCNoConversion(_XDRNoConversion):
 class TestTRRNoConversion(_XDRNoConversion):
     filename = TRR
 
+
 class _GromacsWriter(TestCase):
     infilename = None  # XTC or TRR
     Writers = {'.trr': MDAnalysis.coordinates.TRR.TRRWriter,
@@ -1346,6 +1643,8 @@ class _GromacsWriter(TestCase):
         assert_equal(ts.time, time,  err_msg="Time in Timestep was modified by writer.")
 
 
+
+
 class TestXTCWriter(_GromacsWriter):
     infilename = XTC
 
@@ -1365,6 +1664,56 @@ class TestTRRWriter(_GromacsWriter):
         for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
             assert_array_almost_equal(written_ts._velocities, orig_ts._velocities, 3,
                                       err_msg="velocities mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+
+class _GromacsWriterIssue101(TestCase):
+    Writers = {'.trr': MDAnalysis.coordinates.TRR.TRRWriter,
+               '.xtc': MDAnalysis.coordinates.XTC.XTCWriter,
+               }
+    ext = None  # set to '.xtc' or '.trr'
+    prec = 3
+
+    def setUp(self):
+        fd, self.outfile = tempfile.mkstemp(suffix=self.ext)
+        self.Writer = self.Writers[self.ext]
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+        del self.Writer
+
+    @dec.slow
+    @attr('issue')
+    def test_single_frame_GRO(self):
+        self._single_frame(GRO)
+
+    @dec.slow
+    @attr('issue')
+    def test_single_frame_PDB(self):
+        self._single_frame(PDB)
+
+    @attr('issue')
+    def test_single_frame_CRD(self):
+        self._single_frame(CRD)
+
+    def _single_frame(self, filename):
+        u = MDAnalysis.Universe(filename)
+        W = self.Writer(self.outfile, u.atoms.numberOfAtoms())
+        W.write(u.atoms)
+        W.close()
+        w = MDAnalysis.Universe(filename, self.outfile)
+        assert_equal(w.trajectory.numframes, 1, "single frame trajectory has wrong number of frames")
+        assert_almost_equal(w.atoms.coordinates(), u.atoms.coordinates(), self.prec,
+                            err_msg="coordinates do not match for %r" % filename)
+
+class TestXTCWriterSingleFrame(_GromacsWriterIssue101):
+    ext = ".xtc"
+    prec = 2
+
+class TestTRRWriterSingleFrame(_GromacsWriterIssue101):
+    ext = ".trr"
+
 
 @attr('issue')
 def test_triclinic_box():

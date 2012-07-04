@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.10. Setting up logging — MDAnalysis.core.log &mdash; MDAnalysis v0.7.5.1 documentation</title>
+    <title>7.10. Setting up logging — MDAnalysis.core.log &mdash; MDAnalysis 0.7.6 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5.1',
+        VERSION:     '0.7.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5.1 documentation"
+          title="Search within MDAnalysis 0.7.6 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.6 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="8. KDTree module" href="../KDTree_modules.html" />
     <link rel="prev" title="7.9. Helper functions — MDAnalysis.core.util" href="util.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="util.html" title="7.9. Helper functions — MDAnalysis.core.util"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -79,7 +82,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -194,14 +197,14 @@ lines will be printed on top of each other.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>numsteps</em></dt>
 <dd><p class="first last">total number of steps</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>interval</em></dt>
 <dd><p class="first last">only calculate progress every <em>interval</em> steps [10]</p>
 </dd>
@@ -218,8 +221,8 @@ values:</p>
 <p>The last call to <tt class="xref py py-meth docutils literal"><span class="pre">ProgressMeter.print()</span></tt> will automatically
 issue a newline <tt class="docutils literal"><span class="pre">\n</span></tt> if the last character is the carriage
 return <tt class="docutils literal"><span class="pre">\r</span></tt>.</p>
-<p class="last">If <em>format</em> is <tt class="xref docutils literal"><span class="pre">None</span></tt> then the default is used.
-[&#8220;Step %(step)5d/%(numsteps)d [%(percentage)5.1%%]r&#8221;]</p>
+<p class="last">If <em>format</em> is <tt class="docutils literal"><span class="pre">None</span></tt> then the default is used.
+[&#8220;Step %(step)5d/%(numsteps)d [%(percentage)5.1f%%]r&#8221;]</p>
 </dd>
 <dt><em>offset</em></dt>
 <dd><p class="first last">number to add to <em>step</em>; e.g. if <em>step</em> is 0-based then one would
@@ -304,7 +307,7 @@ console.</p>
         <li class="right" >
           <a href="util.html" title="7.9. Helper functions — MDAnalysis.core.util"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -312,8 +315,8 @@ console.</p>
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

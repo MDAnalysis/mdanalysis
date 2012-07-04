@@ -200,11 +200,12 @@ class SelectionWriter(object):
         """Translate atoms into a list of native selection terms.
 
         - build list of ALL selection terms as if this was a single line, e.g.
-          ['index 12 |', 'index 22 |', 'index 33']
+          ``['index 12 |', 'index 22 |', 'index 33']``
         - only one term per atom!!
         - terms *must* be strings
         - something like::
              " ".join(terms)
+             
           must work
         """
         raise NotImplementedError

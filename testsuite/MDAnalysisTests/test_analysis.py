@@ -27,7 +27,7 @@ from nose.plugins.attrib import attr
 import os
 import tempfile
 
-from MDAnalysis.tests.datafiles import PSF,DCD,CRD
+from MDAnalysis.tests.datafiles import PSF,DCD,CRD,FASTA,PDB_helix
 
 class TestContactMatrix(TestCase):
     def setUp(self):
@@ -123,33 +123,77 @@ class TestAlign(TestCase):
 
 class TestHydrogenBondAnalysis(TestCase):
     def setUp(self):
-        self.universe = MDAnalysis.Universe(PSF, CRD)  # just single frame for speed
+        self.universe = u = MDAnalysis.Universe(PDB_helix)
+        self.detect_hydrogens = "distance"
+        # ideal helix with 1 proline:
+        self.num_bb_hbonds = u.atoms.numberOfResidues() - u.SYSTEM.PRO.numberOfResidues() - 4
 
-    def test_HBondAnalysis_Protein(self):
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'protein', 'protein', distance=3.0, angle=120.0)
+    def _run(self):
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'protein', 'protein',
+                                                            distance=3.0, angle=150.0, detect_hydrogens=self.detect_hydrogens)
         h.run()
-        h.generate_table()
+        return h
 
-        # very quick check that it keeps producing the same results
-        assert_equal(len(h.table), 528)
-        assert_almost_equal(h.table.distance.mean(), 2.2033853110941974, 6)
-        assert_almost_equal(h.table.distance.std(), 0.36265632018642174, 6)
-        assert_almost_equal(h.table.angle.mean(), 153.70618863539264, 6)
-        assert_almost_equal(h.table.angle.std(), 15.186319943288213, 6)
-        del h
+    def test_helix_backbone(self):
+        h = self._run()
+        assert_equal(len(h.timeseries[0]), self.num_bb_hbonds, "wrong number of backbone hydrogen bonds")
+        assert_equal(h.timesteps, [0.0])
 
-    def test_HBondAnalysis_Backbone(self):
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'backbone', 'protein', distance=3.0, angle=120.0)
-        h.run()
-        h.generate_table()
+    # TODO: Expand tests because the following ones are a bit superficial
+    #       because we should really run them on a trajectory
 
-        # very quick check that it keeps producing the same results
-        assert_equal(len(h.table), 404)
-        assert_almost_equal(h.table.distance.mean(), 2.2072176254621825, 6)
-        assert_almost_equal(h.table.distance.std(),  0.32159687889930633, 6)
-        assert_almost_equal(h.table.angle.mean(), 154.67867707734061, 6)
-        assert_almost_equal(h.table.angle.std(), 14.417728937653131, 6)
-        del h
+    def test_count_by_time(self):
+        h = self._run()
+        c = h.count_by_time()
+        assert_equal(c.tolist(), [(0.0, self.num_bb_hbonds)])
+
+    def test_count_by_type(self):
+        h = self._run()
+        c = h.count_by_type()
+        assert_equal(c.frequency, self.num_bb_hbonds * [1.0])
+
+    def test_count_by_type(self):
+        h = self._run()
+        t = h.timesteps_by_type()
+        assert_equal(t.time, self.num_bb_hbonds * [0.0])
 
     def tearDown(self):
         del self.universe
+
+class TestHydrogenBondAnalysisHeuristic(TestHydrogenBondAnalysis):
+    def setUp(self):
+        super(TestHydrogenBondAnalysisHeuristic, self).setUp()
+        self.detect_hydrogens = "heuristic"
+
+class TestAlignmentProcessing(TestCase):
+    def setUp(self):
+        self.seq = FASTA
+        fd, self.alnfile = tempfile.mkstemp(suffix=".aln")
+        fd, self.treefile = tempfile.mkstemp(suffix=".dnd")
+
+    def tearDown(self):
+        for f in self.alnfile, self.treefile:
+            try:
+                os.unlink(f)
+            except OSError:
+                pass
+
+    @attr('issue')
+    def test_fasta2select_aligned(self):
+        """test align.fasta2select() on aligned FASTA (Issue 112)"""
+        from MDAnalysis.analysis.align import fasta2select
+        sel = fasta2select(self.seq, is_aligned=True)
+        # length of the output strings, not residues or anything real...
+        assert_equal(len(sel['reference']), 30623, err_msg="selection string has unexpected length")
+        assert_equal(len(sel['mobile']), 30623, err_msg="selection string has unexpected length")
+
+    @attr('issue')
+    def test_fasta2select_ClustalW(self):
+        """test align.fasta2select() with calling ClustalW (Issue 113)"""
+        # note: will fail if clustalw is not installed
+        from MDAnalysis.analysis.align import fasta2select
+        sel = fasta2select(self.seq, is_aligned=False, alnfilename=self.alnfile, treefilename=self.treefile)
+        # numbers computed from alignment with clustalw 2.1 on Mac OS X [orbeckst]
+        # length of the output strings, not residues or anything real...
+        assert_equal(len(sel['reference']), 23080, err_msg="selection string has unexpected length")
+        assert_equal(len(sel['mobile']), 23090, err_msg="selection string has unexpected length")

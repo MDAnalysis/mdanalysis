@@ -2,8 +2,10 @@
 *.py[c|o]
 *.[oa]
 *~
+*.bak
 *.so
 MDAnalysis.egg-info
+MDAnalysisTests.egg-info
 # Ignore build dir
 build/
 temp/

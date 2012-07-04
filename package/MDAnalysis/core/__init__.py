@@ -18,6 +18,7 @@
 """
 Core functions of MDAnalysis
 ============================
+
 The basic class is an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`;
 the whole simulation is called the
 :class:`~MDAnalysis.core.AtomGroup.Universe`. Selections are computed
@@ -44,6 +45,8 @@ obtain the coordinates as a numpy array ::
 
 and write your own Python code.
 
+
+.. _flags-label:
 
 Flags
 -----
@@ -193,7 +196,7 @@ class Flag(object):
                 raise ValueError("flag must be None or one of "+str(self.mapping.keys()))
         return self.get()
     def prop(self):
-        """Use this for property(**flag.prop())"""
+        """Use this for ``property(**flag.prop())``"""
         return {'fget':self.get, 'fset':self.set, 'doc':self.__doc__}
     def __repr__(self):
         return """Flag('%(name)s',%(value)r)""" % self.__dict__

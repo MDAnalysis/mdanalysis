@@ -59,7 +59,7 @@ if sys.version_info[:2] < (2, 5):
 
 
 if __name__ == '__main__':
-    RELEASE = "0.7.5.1"         # this must be in-sync with MDAnalysis
+    RELEASE = "0.7.6"         # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
@@ -97,8 +97,9 @@ For details see the report for `Issue 87`_.
                                    ['data/*.psf','data/*.dcd','data/*.pdb',
                                     'data/*.gro', 'data/*.xtc','data/*.trr',
                                     'data/*.crd', 'data/*.xyz',
-                                    'data/*.prmtop', 'data/*.trj', 'data/*.mdcrd',
+                                    'data/*.prmtop', 'data/*.top', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',
                                     'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
+                                    'data/*.fasta',
                                     ],
                                },
           classifiers       = CLASSIFIERS,

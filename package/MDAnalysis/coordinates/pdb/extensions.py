@@ -18,12 +18,12 @@
 # pdb.extensions
 # original file: edPDB.xpdb but only kept content needed for MDAnalysis
 """
+:mod:`pdb.extensions` -- Extensions to :mod:`Bio.PDB`
+=====================================================
+
 :Author:  Oliver Beckstein
 :Year:    2009
 :License: Biopython
-
-:mod:`pdb.extensions` -- Extensions to :mod:`Bio.PDB`
-=====================================================
 
 Extension to :mod:`Bio.PDB` to handle large pdb files.
 
@@ -51,6 +51,7 @@ class SloppyStructureBuilder(Bio.PDB.StructureBuilder.StructureBuilder):
     """Cope with resSeq < 10,000 limitation by just incrementing internally.
 
     Solves the follwing problem with :class:`Bio.PDB.StructureBuilder.StructureBuilder`:
+    
     Q: What's wrong here??
        Some atoms or residues will be missing in the data structure.
        WARNING: Residue (' ', 8954, ' ') redefined at line 74803.

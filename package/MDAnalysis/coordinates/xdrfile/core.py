@@ -150,7 +150,8 @@ class TrjWriter(base.Writer):
              accuracy for lossy XTC format [1000]
           *convert_units*
              ``True``: units are converted to the MDAnalysis base format; ``None`` selects
-             the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
+             the value of :data:`MDAnalysis.core.flags` ['convert_gromacs_lengths'].
+             (see :ref:`flags-label`)
         '''
         assert self.format in ('XTC', 'TRR')
 
@@ -239,7 +240,7 @@ class TrjWriter(base.Writer):
                 velocities = ts._velocities = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
             if not hasattr(ts, '_forces'):
                 ts._forces = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
-            status = libxdrfile.write_trr(self.xdrfile, ts.step, ts.time, ts.lmbda, unitcell,
+            status = libxdrfile.write_trr(self.xdrfile, ts.step, time, ts.lmbda, unitcell,
                                           pos, velocities, ts._forces)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)

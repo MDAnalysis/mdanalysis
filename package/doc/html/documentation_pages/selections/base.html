@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.5. Base classes for the selection writers &mdash; MDAnalysis v0.7.5.1 documentation</title>
+    <title>6.5. Base classes for the selection writers &mdash; MDAnalysis 0.7.6 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5.1',
+        VERSION:     '0.7.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5.1 documentation"
+          title="Search within MDAnalysis 0.7.6 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.6 documentation" href="../../index.html" />
     <link rel="up" title="6. Selection exporters" href="../selections_modules.html" />
     <link rel="next" title="7. Core modules" href="../core_modules.html" />
     <link rel="prev" title="6.4. CHARMM selections" href="charmm.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="charmm.html" title="6.4. CHARMM selections"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../selections_modules.html" accesskey="U">6. Selection exporters</a> &raquo;</li> 
       </ul>
     </div>
@@ -70,7 +73,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -110,7 +113,7 @@ format.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">output file</p>
 </dd>
@@ -121,7 +124,7 @@ file, or overwrite an existing file and then append (&#8220;wa&#8221;) [&#8220;w
 <dt><em>numterms</em></dt>
 <dd><p class="first last">number of individual index numbers per line for output
 formats that write multiple entries in one line. If set
-to 0 or <tt class="xref docutils literal"><span class="pre">False</span></tt> then no special formatting is done  [8]</p>
+to 0 or <tt class="docutils literal"><span class="pre">False</span></tt> then no special formatting is done  [8]</p>
 </dd>
 <dt><em>preamble</em></dt>
 <dd><p class="first last">string that is written as a comment at the top of the file []</p>
@@ -142,7 +145,7 @@ to 0 or <tt class="xref docutils literal"><span class="pre">False</span></tt> th
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">output file</p>
 </dd>
@@ -153,7 +156,7 @@ file, or overwrite an existing file and then append (&#8220;wa&#8221;) [&#8220;w
 <dt><em>numterms</em></dt>
 <dd><p class="first last">number of individual index numbers per line for output
 formats that write multiple entries in one line. If set
-to 0 or <tt class="xref docutils literal"><span class="pre">False</span></tt> then no special formatting is done  [8]</p>
+to 0 or <tt class="docutils literal"><span class="pre">False</span></tt> then no special formatting is done  [8]</p>
 </dd>
 <dt><em>preamble</em></dt>
 <dd><p class="first last">string that is written as a comment at the top of the file []</p>
@@ -176,22 +179,22 @@ to 0 or <tt class="xref docutils literal"><span class="pre">False</span></tt> th
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>selection</em></dt>
 <dd><p class="first last">a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a></p>
 </dd>
 <dt><em>number</em></dt>
 <dd><p class="first last">selection will be named &#8220;mdanalysis&lt;number&gt;&#8221;
-(<tt class="xref docutils literal"><span class="pre">None</span></tt> auto increments between writes; useful
-when appending) [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+(<tt class="docutils literal"><span class="pre">None</span></tt> auto increments between writes; useful
+when appending) [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>name</em></dt>
 <dd><p class="first last">selection will be named <em>name</em> (instead of numbered)
-[<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+[<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>frame</em></dt>
 <dd><p class="first last">write selection of this frame (or the current one if
-<tt class="xref docutils literal"><span class="pre">None</span></tt> [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<tt class="docutils literal"><span class="pre">None</span></tt> [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -206,7 +209,7 @@ when appending) [<tt class="xref docutils literal"><span class="pre">None</span>
 <dd><p>Translate atoms into a list of native selection terms.</p>
 <ul>
 <li><p class="first">build list of ALL selection terms as if this was a single line, e.g.
-[&#8216;index 12 <a href="#id1"><span class="problematic" id="id2">|</span></a>&#8216;, &#8216;index 22 <a href="#id3"><span class="problematic" id="id4">|</span></a>&#8216;, &#8216;index 33&#8217;]</p>
+<tt class="docutils literal"><span class="pre">['index</span> <span class="pre">12</span> <span class="pre">|',</span> <span class="pre">'index</span> <span class="pre">22</span> <span class="pre">|',</span> <span class="pre">'index</span> <span class="pre">33']</span></tt></p>
 </li>
 <li><p class="first">only one term per atom!!</p>
 </li>
@@ -283,7 +286,7 @@ comments into the file.</p>
         <li class="right" >
           <a href="charmm.html" title="6.4. CHARMM selections"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../selections_modules.html" >6. Selection exporters</a> &raquo;</li> 
       </ul>
     </div>
@@ -291,8 +294,8 @@ comments into the file.</p>
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

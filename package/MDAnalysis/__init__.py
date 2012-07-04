@@ -154,7 +154,7 @@ the OPLS/AA force field.
                 394 (2009), 160--176, doi:10.1016/j.jmb.2009.09.009
 """
 
-__version__ = "0.7.5.1"  # NOTE: keep in sync with RELEASE in setup.py
+__version__ = "0.7.6"  # NOTE: keep in sync with RELEASE in setup.py
 
 __all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
 
@@ -203,6 +203,9 @@ class MissingDataWarning(Warning):
 
 class ConversionWarning(Warning):
     """Warning indicating a problem with converting between units."""
+
+class FileFormatWarning(Warning):
+    """Warning indicating possible problems with a file format."""
 
 # Bring some often used objects into the current namespace
 from core import Timeseries

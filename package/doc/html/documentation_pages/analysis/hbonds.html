@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis v0.7.5.1 documentation</title>
+    <title>3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis 0.7.6 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5.1',
+        VERSION:     '0.7.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5.1 documentation"
+          title="Search within MDAnalysis 0.7.6 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.6 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.7. HELANAL — analysis of protein helices" href="helanal.html" />
     <link rel="prev" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="gnm.html" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -81,7 +84,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -105,11 +108,11 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Author:</th><td class="field-body">David Caplan</td>
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">David Caplan, Lukas Grossar, Oliver Beckstein</td>
 </tr>
-<tr class="field"><th class="field-name">Year:</th><td class="field-body">2010-2011</td>
+<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2010-2012</td>
 </tr>
-<tr class="field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
+<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
 </tr>
 </tbody>
 </table>
@@ -121,17 +124,20 @@ HBONDS plugin</a>.</p>
 <dl class="docutils">
 <dt>Options:</dt>
 <dd><ul class="first last simple">
-<li><em>update_selections</em> (<tt class="xref docutils literal"><span class="pre">True</span></tt>): update selections at each frame?</li>
+<li><em>update_selections</em> (<tt class="docutils literal"><span class="pre">True</span></tt>): update selections at each frame?</li>
 <li><em>selection_1_type</em> (&#8220;both&#8221;): selection 1 is the: &#8220;donor&#8221;, &#8220;acceptor&#8221;, &#8220;both&#8221;</li>
 <li>donor-acceptor <em>distance</em> (Å): 3.0</li>
 <li>Angle <em>cutoff</em> (degrees): 120.0</li>
+<li><em>forcefield</em> to switch between default values for different force fields</li>
 <li><em>donors</em> and <em>acceptors</em> atom types (to add additional atom names)</li>
 </ul>
 </dd>
 </dl>
 <div class="section" id="output">
 <span id="analysis-output"></span><h2>3.6.1. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
-<p>The results are hydrogen bond data per frame (# indicates comments that are not part of the output):</p>
+<p>The results are hydrogen bond data per frame (# indicates comments
+that are not part of the output), stored in
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a>:</p>
 <div class="highlight-python"><pre>results = [
     [ # frame 1
        [ # hbond 1
@@ -148,10 +154,18 @@ HBONDS plugin</a>.</p>
     ...
 ]</pre>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For historic reasons, the <em>donor index</em> and <em>acceptor index</em> are a 1-based
+indices. To get the <tt class="xref py py-attr docutils literal"><span class="pre">Atom.number</span></tt> (the 0-based index typically used in
+MDAnalysis simply subtract 1. For instance, to find an atom in
+<tt class="xref py py-attr docutils literal"><span class="pre">Universe.atoms</span></tt> by <em>index</em> from the output one would use
+<tt class="docutils literal"><span class="pre">u.atoms[index-1]</span></tt>.</p>
+</div>
 <p>Using the <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></tt></a> method one can reformat
 the results as a flat &#8220;normalised&#8221; table that is easier to import into a
 database for further processing. <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.save_table()</span></tt></a> saves
-the table to a pickled file. The table itself is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
+the table to a pickled file. The table itself is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-36681eb)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
 </div>
 <div class="section" id="detection-of-hydrogen-bonds">
 <h2>3.6.2. Detection of hydrogen bonds<a class="headerlink" href="#detection-of-hydrogen-bonds" title="Permalink to this headline">¶</a></h2>
@@ -165,11 +179,26 @@ the table to a pickled file. The table itself is a <a class="reference external"
 <p>The cut-off values <em>angle</em> and <em>distance</em> can be set as keywords to
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">HydrogenBondAnalysis</span></tt></a>.</p>
 <p>Donor and acceptor heavy atoms are detected from atom names. The current
-defaults are appropriate for the CHARMM27 force field as defined in Table
-<a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis">Default atom names for hydrogen bonding analysis</a>. Hydrogen atoms are
-searched for as atom names following in sequence and starting with &#8216;H&#8217;.</p>
+defaults are appropriate for the CHARMM27 and GLYCAM06 force fields as defined
+in Table <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis">Default atom names for hydrogen bonding analysis</a>.</p>
+<p>Hydrogen atoms bonded to a donor are searched with one of two algorithms,
+selected with the <em>detect_hydrogens</em> keyword.</p>
+<p><em>distance</em></p>
+<blockquote>
+<div>Searches for all hydrogens (name &#8220;H*&#8221; or name &#8220;[123]H&#8221; or type &#8220;H&#8221;) in the
+same residue as the donor atom within a cut-off distance of 1.2 Å.</div></blockquote>
+<p><em>heuristic</em></p>
+<blockquote>
+<div>Looks at the next three atoms in the list of atoms following the donor and
+selects any atom whose name matches (name &#8220;H*&#8221; or name &#8220;[123]H&#8221;). For</div></blockquote>
+<p>The <em>distance</em> search is more rigorous but slower and is set as the
+default. Until release 0.7.6, only the heuristic search was implemented.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>Distance search added (see
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens_dist" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens_dist"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis._get_bonded_hydrogens_dist()</span></tt></a>) and heuristic
+search improved (<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens_list" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens_list"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis._get_bonded_hydrogens_list()</span></tt></a>)</p>
 <table border="1" class="docutils" id="default-atom-names-for-hydrogen-bonding-analysis">
-<caption>Default heavy atom names for hydrogen bonding analysis.</caption>
+<caption>Default heavy atom names for CHARMM27 force field.</caption>
 <colgroup>
 <col width="15%" />
 <col width="19%" />
@@ -177,126 +206,159 @@ searched for as atom names following in sequence and starting with &#8216;H&#821
 <col width="50%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">group</th>
+<tr class="row-odd"><th class="head">group</th>
 <th class="head">donor</th>
 <th class="head">acceptor</th>
 <th class="head">comments</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>main chain</td>
+<tr class="row-even"><td>main chain</td>
 <td>N</td>
 <td>O</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>water</td>
+<tr class="row-odd"><td>water</td>
 <td>OH2, OW</td>
 <td>OH2, OW</td>
 <td>SPC, TIP3P, TIP4P (CHARMM27,Gromacs)</td>
 </tr>
-<tr><td>ARG</td>
+<tr class="row-even"><td>ARG</td>
 <td>NE, NH1, NH2</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>ASN</td>
+<tr class="row-odd"><td>ASN</td>
 <td>ND2</td>
 <td>OD1</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>ASP</td>
+<tr class="row-even"><td>ASP</td>
 <td>&nbsp;</td>
 <td>OD1, OD2</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>CYS</td>
+<tr class="row-odd"><td>CYS</td>
 <td>SG</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>CYH</td>
+<tr class="row-even"><td>CYH</td>
 <td>&nbsp;</td>
 <td>SG</td>
 <td>possible false positives for CYS</td>
 </tr>
-<tr><td>GLN</td>
+<tr class="row-odd"><td>GLN</td>
 <td>NE2</td>
 <td>OE1</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>GLU</td>
+<tr class="row-even"><td>GLU</td>
 <td>&nbsp;</td>
 <td>OE1, OE2</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>HIS</td>
+<tr class="row-odd"><td>HIS</td>
 <td>ND1, NE2</td>
 <td>ND1, NE2</td>
 <td>presence of H determines if donor</td>
 </tr>
-<tr><td>HSD</td>
+<tr class="row-even"><td>HSD</td>
 <td>ND1</td>
 <td>NE2</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>HSE</td>
+<tr class="row-odd"><td>HSE</td>
 <td>NE2</td>
 <td>ND1</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>HSP</td>
+<tr class="row-even"><td>HSP</td>
 <td>ND1, NE2</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>LYS</td>
+<tr class="row-odd"><td>LYS</td>
 <td>NZ</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>MET</td>
+<tr class="row-even"><td>MET</td>
 <td>&nbsp;</td>
 <td>SD</td>
 <td>see e.g. <a class="reference internal" href="#gregoret1991">[Gregoret1991]</a></td>
 </tr>
-<tr><td>SER</td>
+<tr class="row-odd"><td>SER</td>
 <td>OG</td>
 <td>OG</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>THR</td>
+<tr class="row-even"><td>THR</td>
 <td>OG1</td>
 <td>OG1</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>TRP</td>
+<tr class="row-odd"><td>TRP</td>
 <td>NE1</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>TYR</td>
+<tr class="row-even"><td>TYR</td>
 <td>OH</td>
 <td>OH</td>
 <td>&nbsp;</td>
 </tr>
 </tbody>
 </table>
-<p>Donor and acceptor names are based on the CHARMM27 force field but will also
-work for e.g. OPLS/AA (tested in Gromacs) . Residue names in the table are for
-information only and are not taken into account when determining acceptors and
-donors. This can potentially lead to some ambiguity in the assignment of
+<table border="1" class="docutils">
+<caption>Heavy atom types for GLYCAM06 force field.</caption>
+<colgroup>
+<col width="28%" />
+<col width="28%" />
+<col width="45%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">element</th>
+<th class="head">donor</th>
+<th class="head">acceptor</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>N</td>
+<td>N,NT,N3</td>
+<td>N,NT</td>
+</tr>
+<tr class="row-odd"><td>O</td>
+<td>OH,OW</td>
+<td>O,O2,OH,OS,OW,OY</td>
+</tr>
+<tr class="row-even"><td>S</td>
+<td>&nbsp;</td>
+<td>SM</td>
+</tr>
+</tbody>
+</table>
+<p>Donor and acceptor names for the CHARMM27 force field will also work for e.g.
+OPLS/AA (tested in Gromacs). Residue names in the table are for information
+only and are not taken into account when determining acceptors and donors.
+This can potentially lead to some ambiguity in the assignment of
 donors/acceptors for residues such as histidine or cytosine.</p>
+<p>For more information about the naming convention in GLYCAM06 have a look at the
+<cite>Carbohydrate Naming Convention in Glycam</cite>.</p>
 <p>The lists of donor and acceptor names can be extended by providing lists of
 atom names in the <em>donors</em> and <em>acceptors</em> keywords to
-<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">HydrogenBondAnalysis</span></tt></a>. If the lists are entirely inapprpriate
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">HydrogenBondAnalysis</span></tt></a>. If the lists are entirely inappropriate
 (e.g. when analysing simulations done with a force field that uses very
-different atom names or when analysing non-protein system) then one can derive
-a new class and set the default lists oneself:</p>
-<div class="highlight-python"><pre>class HydrogenBondAnalysis_OtherFF(HydrogenBondAnalysis):
-      DEFAULT_DONORS = (....)      # add donor heavy atoms here
-      DEFAULT_ACCEPTORS = (....)   # add acceptor heavy atoms here</pre>
+different atom names) then one should either use the value &#8220;other&#8221; for <em>forcefield</em>
+to set no default values, or derive a new class and set the default list oneself:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">HydrogenBondAnalysis_OtherFF</span><span class="p">(</span><span class="n">HydrogenBondAnalysis</span><span class="p">):</span>
+      <span class="n">DEFAULT_DONORS</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;OtherFF&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="o">...</span><span class="p">]))}</span>
+      <span class="n">DEFAULT_ACCEPTORS</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;OtherFF&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="o">...</span><span class="p">]))}</span>
+</pre></div>
 </div>
-<p>Then simply use the new class instead of the parent class.</p>
+<p>Then simply use the new class instead of the parent class and call it with
+<em>forcefield</em> = &#8220;OtherFF&#8221;. Please also consider to contribute the list of heavy
+atom names to MDAnalysis.</p>
 <p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="gregoret1991" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -314,11 +376,12 @@ F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">PDB</span><span class="p">,</span> <span class="n">permissive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="n">h</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">hbonds</span><span class="o">.</span><span class="n">HydrogenBondAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s">&#39;protein&#39;</span><span class="p">,</span> <span class="s">&#39;resname TIP3&#39;</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">)</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">h</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>The results are also stored as the attribute <tt class="xref py py-attr docutils literal"><span class="pre">h.timeseries</span></tt>; see
-<a class="reference internal" href="#analysis-output"><em>Output</em></a> for the format and further options.</p>
+<p>The results are stored as the attribute
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a>; see <a class="reference internal" href="#analysis-output"><em>Output</em></a>
+for the format and further options.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Due to the way <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">HydrogenBondAnalysis</span></tt></a> is implemented, it is
@@ -332,32 +395,47 @@ interactions.</p>
 <h2>3.6.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hbonds.</tt><tt class="descname">HydrogenBondAnalysis</tt><big>(</big><em>universe</em>, <em>selection1='protein'</em>, <em>selection2='all'</em>, <em>selection1_type='both'</em>, <em>update_selection1=False</em>, <em>update_selection2=False</em>, <em>filter_first=True</em>, <em>distance=3.0</em>, <em>angle=120.0</em>, <em>donors=None</em>, <em>acceptors=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hbonds.</tt><tt class="descname">HydrogenBondAnalysis</tt><big>(</big><em>universe</em>, <em>selection1='protein'</em>, <em>selection2='all'</em>, <em>selection1_type='both'</em>, <em>update_selection1=False</em>, <em>update_selection2=False</em>, <em>filter_first=True</em>, <em>distance=3.0</em>, <em>angle=120.0</em>, <em>forcefield='CHARMM27'</em>, <em>donors=None</em>, <em>acceptors=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>verbose=False</em>, <em>detect_hydrogens='distance'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a hydrogen bond analysis</p>
 <p>The analysis of the trajectory is performed with the
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.run()</span></tt></a> method. The result is stored in
-<tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>. See
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a>. See
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">run()</span></tt></a> for the format.</p>
-<p>The default atom names are taken from the CHARMM 27 force field files but
-also work for e.g. OPLS/AA in Gromacs.</p>
+<p>The default atom names are taken from the CHARMM 27 force field files, which
+will also work for e.g. OPLS/AA in Gromacs, and GLYCAM06.</p>
 <dl class="docutils">
 <dt><em>Donors</em> (associated hydrogens are deduced from topology)</dt>
+<dd><dl class="first last docutils">
+<dt><em>CHARMM 27</em></dt>
 <dd>N of the main chain, water OH2/OW, ARG NE/NH1/NH2, ASN ND2, HIS ND1/NE2,
 SER OG, TYR OH, CYS SG, THR OG1, GLN NE2, LYS NZ, TRP NE1</dd>
+<dt><em>GLYCAM06</em></dt>
+<dd>N,NT,N3,OH,OW</dd>
+</dl>
+</dd>
 <dt><em>Acceptors</em></dt>
+<dd><dl class="first last docutils">
+<dt><em>CHARMM 27</em></dt>
 <dd>O of the main chain, water OH2/OW, ASN OD1, ASP OD1/OD2, CYH SG, GLN OE1,
 GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH</dd>
+<dt><em>GLYCAM06</em></dt>
+<dd>N,NT,O,O2,OH,OS,OW,OY,P,S,SM</dd>
+</dl>
+</dd>
 </dl>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last">Table <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default heavy atom names for hydrogen bonding analysis.</em></a></p>
+<p class="last">Table <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default heavy atom names for CHARMM27 force field.</em></a></p>
 </div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between
+default values for different force fields.</p>
 <p>Set up calculation of hydrogen bonds between two selections in a universe.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last">Universe object</p>
 </dd>
@@ -380,10 +458,19 @@ GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH</dd>
 <dd><p class="first last">Filter selection 2 first to only atoms 3*distance away</p>
 </dd>
 <dt><em>distance</em></dt>
-<dd><p class="first last">Distance cutoff for hydrogen bonds</p>
+<dd><p class="first last">Distance cutoff for hydrogen bonds; only interactions with a H-A distance
+&lt;= <em>distance</em> (and the appropriate D-H-A angle, see <em>angle</em>) are
+recorded.</p>
 </dd>
 <dt><em>angle</em></dt>
-<dd><p class="first last">Angle cutoff for hydrogen bonds</p>
+<dd><p class="first last">Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
+180º.  A hydrogen bond is only recorded if the D-H-A angle is
+&gt;=  <em>angle</em>. The default of 120º also finds fairly non-specific
+hydrogen interactions and a possibly better value is 150º.</p>
+</dd>
+<dt><em>forcefield</em></dt>
+<dd><p class="first last">Name of the forcefield used. Switches between different DEFAULT_DONORS and DEFAULT_ACCEPTORS values.
+Available values: &#8220;CHARMM27&#8221;, &#8220;GLYCAM06&#8221;, &#8220;other&#8221;</p>
 </dd>
 <dt><em>donors</em></dt>
 <dd><p class="first last">Extra H donor atom types (in addition to those in
@@ -393,25 +480,203 @@ GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH</dd>
 <dd><p class="first last">Extra H acceptor atom types (in addition to those in
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS"><tt class="xref py py-attr docutils literal"><span class="pre">DEFAULT_ACCEPTORS</span></tt></a>), must be a sequence.</p>
 </dd>
+<dt><em>start</em></dt>
+<dd><p class="first last">starting frame-index for analysis, <tt class="docutils literal"><span class="pre">None</span></tt> is the first one, 0.
+<em>start</em> and <em>stop</em> are 0-based frame indices and are used to slice
+the trajectory (if supported) [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+<dt><em>stop</em></dt>
+<dd><p class="first last">last trajectory frame for analysis, <tt class="docutils literal"><span class="pre">None</span></tt> is the last one [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+<dt><em>step</em></dt>
+<dd><p class="first last">read every <em>step</em> between <em>start</em> and <em>stop</em>, <tt class="docutils literal"><span class="pre">None</span></tt> selects 1.
+Note that not all trajectory readers perform well with a step different
+from 1 [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+<dt><em>verbose</em></dt>
+<dd><p class="first last">If set to true enables per-frame debug logging. This is disabled
+by default because it generates a very large amount of output in
+the log file. (Note that a logger must have been started to see
+the output, e.g. using <a class="reference internal" href="../core/log.html#MDAnalysis.start_logging" title="MDAnalysis.start_logging"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.start_logging()</span></tt></a>.)</p>
+</dd>
+<dt><em>detect_hydrogens</em></dt>
+<dd><p class="first last">Determine the algorithm to find hydrogens connected to donor
+atoms. Can be &#8220;distance&#8221; (default; finds all hydrogens in the
+donor&#8217;s residue within a cutoff of the donor) or &#8220;heuristic&#8221;
+(looks for the next few atoms in the atom list). &#8220;distance&#8221; should
+always give the correct answer but &#8220;heuristic&#8221; is faster,
+especially when the donor list is updated each
+selection. [&#8220;distance&#8221;]</p>
+</dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
-<p>The timeseries is accessible as the attribute <tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>.</p>
+<p>The timeseries is accessible as the attribute <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a>.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>New <em>verbose</em> keyword (and per-frame debug logging disable by
+default).<p>New <em>detect_hydrogens</em> keyword to switch between two different
+algorithms to detect hydrogens bonded to donor. &#8220;distance&#8221; is a new,
+rigorous distance search within the residue of the donor atom,
+&#8220;heuristic&#8221; is the previous list scan (improved with an additional
+distance check).</p>
+<p>New <em>forcefield</em> keyword to switch between different values of
+DEFAULT_DONORS/ACCEPTORS to accomodate different force fields.
+Also has an option &#8220;other&#8221; for no default values.</p>
+</p>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timesteps">
+<tt class="descname">timesteps</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timesteps" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of the times of each timestep. This can be used together with
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">timeseries</span></tt></a> to find the specific time point
+of a hydrogen bond existence, or see <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table"><tt class="xref py py-attr docutils literal"><span class="pre">table</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries">
+<tt class="descname">timeseries</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Results of the hydrogen bond analysis, stored for each frame. In
+the following description, # indicates comments that are not
+part of the output:</p>
+<div class="highlight-python"><pre>results = [
+    [ # frame 1
+       [ # hbond 1
+          &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
+       ],
+       [ # hbond 2
+          &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
+       ],
+       ....
+    ],
+    [ # frame 2
+      [ ... ], [ ... ], ...
+    ],
+    ...
+]</pre>
+</div>
+<p>The time of each step is not stored with each hydrogen bond frame but in
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timesteps" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timesteps"><tt class="xref py py-attr docutils literal"><span class="pre">timesteps</span></tt></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <em>index</em> is a 1-based index. To get the <tt class="xref py py-attr docutils literal"><span class="pre">Atom.number</span></tt> (the
+0-based index typically used in MDAnalysis simply subtract 1. For
+instance, to find an atom in <tt class="xref py py-attr docutils literal"><span class="pre">Universe.atoms</span></tt> by <em>index</em> one
+would use <tt class="docutils literal"><span class="pre">u.atoms[index-1]</span></tt>.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table">
+<tt class="descname">table</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table" title="Permalink to this definition">¶</a></dt>
+<dd><p>A normalised table of the data in
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a>, generated by
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></tt></a>. It is a
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-36681eb)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> with the following columns:</p>
+<blockquote>
+<div><ol class="arabic simple" start="0">
+<li>&#8220;time&#8221;</li>
+<li>&#8220;donor_idx&#8221;</li>
+<li>&#8220;acceptor_idx&#8221;</li>
+<li>&#8220;donor_resnm&#8221;</li>
+<li>&#8220;donor_resid&#8221;</li>
+<li>&#8220;donor_atom&#8221;</li>
+<li>&#8220;acceptor_resnm&#8221;</li>
+<li>&#8220;acceptor_resid&#8221;</li>
+<li>&#8220;acceptor_atom&#8221;</li>
+<li>&#8220;distance&#8221;</li>
+<li>&#8220;angle&#8221;</li>
+</ol>
+</div></blockquote>
+<p>It takes up more space than
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">timeseries</span></tt></a> but it is easier to
+analyze and to import into databases (e.g. using <a class="reference external" href="http://pypi.python.org/pypi/RecSQL">recsql</a>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <em>index</em> is a 1-based index. To get the <tt class="xref py py-attr docutils literal"><span class="pre">Atom.number</span></tt> (the
+0-based index typically used in MDAnalysis simply subtract 1. For
+instance, to find an atom in <tt class="xref py py-attr docutils literal"><span class="pre">Universe.atoms</span></tt> by <em>index</em> one
+would use <tt class="docutils literal"><span class="pre">u.atoms[index-1]</span></tt>.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens">
+<tt class="descname">_get_bonded_hydrogens</tt><big>(</big><em>atom</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find hydrogens bonded to <em>atom</em>.</p>
+<p>This method is typically not called by a user but it is documented to
+facilitate understanding of the internals of
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">HydrogenBondAnalysis</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">list of hydrogens (can be a
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>) or empty list
+<tt class="docutils literal"><span class="pre">[]</span></tt> if none were found.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens_dist" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens_dist"><tt class="xref py py-meth docutils literal"><span class="pre">_get_bonded_hydrogens_dist()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens_list" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens_list"><tt class="xref py py-meth docutils literal"><span class="pre">_get_bonded_hydrogens_list()</span></tt></a></p>
+</div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>Can switch algorithm by using the <em>detect_hydrogens</em> keyword to the
+constructor. <em>kwargs</em> can be used to supply arguments for algorithm.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens_dist">
+<tt class="descname">_get_bonded_hydrogens_dist</tt><big>(</big><em>atom</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find hydrogens bonded within <em>cutoff</em> to <em>atom</em>.</p>
+<ul class="simple">
+<li>hydrogens are detected by either name (&#8220;H*&#8221;, &#8220;[123]H*&#8221;) or type
+(&#8220;H&#8221;); this is not fool-proof as the atom type is not always a
+character but the name pattern should catch most typical occurrences.</li>
+<li>The distance from <em>atom</em> is calculated for all hydrogens in the
+residue and only those within a cutoff are kept. The cutoff depends
+on the heavy atom (more precisely, on its element, which is taken as
+the first letter of its name <tt class="docutils literal"><span class="pre">atom.name[0]</span></tt>) and is parameterized
+in <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.r_cov" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.r_cov"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.r_cov</span></tt></a>. If no match is found then the
+default of 1.5 Å is used.</li>
+</ul>
+<p>The performance of this implementation could be improved once the
+topology always contains bonded information; it currently uses the
+selection parser with an &#8220;around&#8221; selection.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.6.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens_list">
+<tt class="descname">_get_bonded_hydrogens_list</tt><big>(</big><em>atom</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find &#8220;bonded&#8221; hydrogens to the donor <em>atom</em>.</p>
+<p>At the moment this relies on the <strong>assumption</strong> that the
+hydrogens are listed directly after the heavy atom in the
+topology. If this is not the case then this function will
+fail.</p>
+<p>Hydrogens are detected by name <tt class="docutils literal"><span class="pre">H*</span></tt>, <tt class="docutils literal"><span class="pre">[123]H*</span></tt> and they have to be
+within a maximum distance from the heavy atom. The cutoff distance
+depends on the heavy atom and is parameterized in
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.r_cov" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.r_cov"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.r_cov</span></tt></a>.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6.</span></p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
-<tt class="descname">DEFAULT_ACCEPTORS</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">DEFAULT_ACCEPTORS</tt><em class="property"> = {'GLYCAM06': ('SM', 'OH', 'NT', 'O', 'N', 'OY', 'OW', 'OS', 'O2'), 'other': (), 'CHARMM27': ('OH', 'OG', 'OD1', 'OD2', 'OG1', 'O', 'ND1', 'NE2', 'OE2', 'OW', 'SG', 'OE1', 'OH2', 'SD')}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
-(see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default heavy atom names for hydrogen bonding analysis.</em></a>)
+(see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default heavy atom names for CHARMM27 force field.</em></a>)
 Use the keyword <em>acceptors</em> to add a list of additional acceptor names.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_DONORS">
-<tt class="descname">DEFAULT_DONORS</tt><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">DEFAULT_DONORS</tt><em class="property"> = {'GLYCAM06': ('OW', 'N3', 'NT', 'OH', 'N'), 'other': (), 'CHARMM27': ('OH', 'OG', 'NE2', 'OG1', 'NE', 'N', 'ND1', 'NZ', 'NH1', 'NH2', 'OW', 'ND2', 'SG', 'OH2', 'NE1')}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
-(see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default heavy atom names for hydrogen bonding analysis.</em></a>)
+(see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default heavy atom names for CHARMM27 force field.</em></a>)
 Use the keyword <em>donors</em> to add a list of additional donor names.</p>
 </dd></dl>
 
@@ -428,11 +693,44 @@ Use the keyword <em>donors</em> to add a list of additional donor names.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.count_by_time">
+<tt class="descname">count_by_time</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.count_by_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Counts the number of hydrogen bonds per timestep.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">a class:<cite>numpy.recarray</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.count_by_type">
+<tt class="descname">count_by_type</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.count_by_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Counts the frequency of hydrogen bonds of a specific type.</p>
+<p>Processes <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a> and returns
+a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-36681eb)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> containing atom indices, residue
+names, residue numbers (for donors and acceptors) and the
+fraction of the total time during which the hydrogen bond was
+detected.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">a class:<cite>numpy.recarray</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table">
 <tt class="descname">generate_table</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a normalised table of the results.</p>
-<p>The table is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> in the
-attribute <tt class="xref py py-attr docutils literal"><span class="pre">table</span></tt> and can be used
+<p>The table is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-36681eb)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> in the
+attribute <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table"><tt class="xref py py-attr docutils literal"><span class="pre">table</span></tt></a> and can be used
 with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL">recsql</a>.</p>
 <dl class="docutils">
 <dt>Columns:</dt>
@@ -453,34 +751,37 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
 </dl>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.r_cov">
+<tt class="descname">r_cov</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x541e578&gt;, {'P': 1.58, 'S': 1.55, 'O': 1.31, 'N': 1.31})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference external" href="http://docs.python.org/library/collections.html#collections.defaultdict" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">collections.defaultdict</span></tt></a> of covalent radii of common donors
+(used in :meth`_get_bonded_hydrogens_list` to check if a hydrogen is
+sufficiently close to its donor heavy atom). Values are stored for
+N, O, P, and S. Any other heavy atoms are assumed to have hydrogens
+covalently bound at a maximum distance of 1.5 Å.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run">
 <tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze trajectory and produce timeseries.</p>
-<p>Returns hydrogen bond data per frame (# indicates comments that are not part of the output):</p>
-<div class="highlight-python"><pre>results = [
-    [ # frame 1
-       [ # hbond 1
-          &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
-       ],
-       [ # hbond 2
-          &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
-       ],
-       ....
-    ],
-    [ # frame 2
-      [ ... ], [ ... ], ...
-    ],
-    ...
-]</pre>
+<p>Stores the hydrogen bond data per frame
+as <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a> (see there for
+output format).</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.generate_table"><tt class="xref py py-meth docutils literal"><span class="pre">HydrogenBondAnalysis.generate_table()</span></tt></a> for processing
+the data into a different format.</p>
 </div>
-<p>The data are also stored as <tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt>.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>Results are not returned, only stored in
+<a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">timeseries</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table">
 <tt class="descname">save_table</tt><big>(</big><em>filename='hbond_table.pickle'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.save_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves the table to a pickled file.</p>
+<dd><p>Saves <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.table"><tt class="xref py py-attr docutils literal"><span class="pre">table</span></tt></a> to a pickled file.</p>
 <p>Load with</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">cPickle</span>
 <span class="n">table</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
@@ -488,8 +789,26 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
 </div>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference external" href="http://docs.python.org/library/pickle.html#cPickle" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cPickle</span></tt></a> module and <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v2.0.dev-c4482f5)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a></p>
+<p class="last"><a class="reference external" href="http://docs.python.org/library/pickle.html#cPickle" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cPickle</span></tt></a> module and <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-36681eb)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a></p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timesteps_by_type">
+<tt class="descname">timesteps_by_type</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timesteps_by_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frames during which each hydrogen bond existed, sorted by hydrogen bond.</p>
+<p>Processes <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a> and returns
+a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7.dev-36681eb)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a> containing atom indices, residue
+names, residue numbers (for donors and acceptors) and a list
+of timesteps at which the hydrogen bond was detected.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">a class:<cite>numpy.recarray</cite></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -518,7 +837,7 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
         <li class="right" >
           <a href="gnm.html" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -526,8 +845,8 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

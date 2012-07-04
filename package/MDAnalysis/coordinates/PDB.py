@@ -24,17 +24,174 @@ data such as B-factors. It is also possible to substitute a PDB file
 instead of PSF file in order to define the list of atoms (but no
 connectivity information will be  available in this case).
 
-The :mod:`PDB` module makes heavy use of Biopython's :mod:`Bio.PDB`:
+PDB files contain both coordinate and atom information. It is also possible to
+write trajectories as multi-frame (or multi-model) PDB files. This is not very
+space efficient but is sometimes the lowest common denominator for exchanging
+trajectories. Single frame and multi-frame PDB files are automatically
+recognized; the only difference is thath the single-frame PDB is represented as
+a trajectory with only one frame.
 
-  Hamelryck, T., Manderick, B. (2003) PDB parser and structure class
-  implemented in Python. Bioinformatics, 19, 2308-2310.
+In order to write a selection to a PDB file one typically uses the
+:meth:`MDAnalysis.core.AtomGroup.AtomGroup.write` method of the selection::
 
-  http://biopython.org
+  calphas = universe.selectAtoms("name CA")
+  calphas.write("calpha_only.pdb")
 
-but replaces the standard PDB file parser with one that uses the
-:class:`MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder`
-to cope with very large pdb files as commonly encountered in MD
-simulations.
+This uses the coordinates from the current timestep of the trajectory.
+
+In order to write a PDB trajectory one needs to first obtain a multi-frame
+writer (keyword *multiframe* = ``True``) and then iterate through the
+trajectory, while writing each frame::
+
+  calphas = universe.selectAtoms("name CA")
+  W = MDAnalysis.Writer("calpha_traj.pdb", multiframe=True)
+  for ts in u.trajectory:
+      W.write(calphas)
+  W.close()
+
+It is important to *always close the trajectory* when done because only at this
+step is the final END_ record written, which is required by the `PDB
+standard`_.
+
+
+Implementations
+---------------
+
+Two different implementations of PDB I/O are available: the ":ref:`permissive<permissive>`"
+and the ":ref:`strict<strict>`" Reader/Writers. The default are the "permissive" ones
+but this can be changed by setting the flag "permissive_pdb_reader" in
+:data:`MDAnalysis.core.flags` (see :ref:`flags-label`) to ``False``::
+
+   MDAnalysis.core.flags["permissive_pdb_reader"] = False
+
+The *default for MDAnalysis* is to use the
+":ref:`permissive<permissive>`" :class:`PrimitivePDBReader` and
+:class:`PrimitivePDBWriter`, corresponding to ::
+
+   MDAnalysis.core.flags["permissive_pdb_reader"] = True
+
+On a case-by-case basis one kind of reader can be selected with the
+*permissive* keyword to :class:`~MDAnalysis.core.AtomGroup.Universe`, e.g. ::
+
+  u = MDAnalysis.Universe(PDB, permissive=False)
+
+would select :class:`PDBReader` instead of the default
+:class:`PrimitivePDBReader`.
+
+All classes make use of the :class:`Timestep` class, which represents the
+current timestep.
+
+.. autoclass:: Timestep
+   :members:
+
+.. _permissive:
+
+Simple (permissive) PDB Reader and Writer
+-----------------------------------------
+
+A pure-Python implementation for PDB files commonly encountered in MD
+simulations comes under the names :class:`PrimitivePDBReader` and
+:class:`PrimitivePDBWriter`. It only implements a subset of the `PDB standard`_
+(for instance, it does not deal with insertion codes) and also allows some
+typical enhancements such as 4-letter resids (introduced by CHARMM/NAMD). The
+"primitive PDB Reader/Writer" are the *default* in MDAnalysis (equivalent to
+supplying the *permissive* = ``True`` keyword to
+:class:`~MDAnalysis.core.AtomGroup.Universe`).
+
+The :class:`PrimitivePDBReader` can read multi-frame PDB files and represents
+them as a trajectory. The :class:`PrimitivePDBWriter` can write single and
+multi-frame PDB files as specified by the *multiframe* keyword. By default, it
+writes single frames. On the other hand, the :class:`MultiPDBWriter` is set up
+to write a PDB trajectory by default (equivalent to using *multiframe* =
+``True``).
+
+Examples
+~~~~~~~~
+
+In order to write a **multi-frame PDB trajectory** from a universe *u* one can
+do the following::
+
+  pdb = MDAnalysis.Writer("all.pdb", multiframe=True)
+  for ts in u.trajectory:
+      pdb.write(u)
+  pdb.close()
+
+Similarly, writing only a protein::
+
+  pdb = MDAnalysis.Writer("protein.pdb", multiframe=True)
+  protein = u.selectAtoms("protein")
+  for ts in u.trajectory:
+      pdb.write(protein)
+  pdb.close()
+
+A single frame can be written with the
+:meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of any
+:class:`~MDAnalysis.core.AtomGroup.AtomGroup`::
+
+   protein = u.selectAtoms("protein")
+   protein.write("protein.pdb")
+
+Alternatively, get the single frame writer and supply the
+:class:`~MDAnalysis.core.AtomGroup.AtomGroup`::
+
+  pdb = MDAnalysis.Writer("protein.pdb")
+  protein = u.selectAtoms("protein")
+  pdb.write(protein)
+  pdb.close()
+
+
+Classes
+~~~~~~~
+
+.. autoclass:: PrimitivePDBReader
+   :members:
+
+.. autoclass:: PrimitivePDBWriter
+   :members:
+
+   .. automethod:: _check_pdb_coordinates
+   .. automethod:: _write_pdb_bonds
+   .. automethod:: _update_frame
+   .. automethod:: _write_timestep
+
+.. autoclass:: MultiPDBWriter
+   :members:
+
+.. _strict:
+
+Biopython (strict) PDB Reader and Writer
+----------------------------------------
+
+The :mod:`PDB` module can make use of Biopython's :mod:`Bio.PDB`
+[Hamelryck2003]_ but replaces the standard PDB file parser with one that uses
+the :class:`MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder` to
+cope with very large pdb files as commonly encountered in MD simulations. The
+Biopython-based :class:`PDBReader` has the advantage that it implements the
+`PDB standard`_ rigorously but this comes at the cost of flexibility and
+performance. It is also difficult to write out selections using this
+implementation (:class:`PDBWriter`) and multi frame PDB files are not
+implemented. The Biopython Reader/Writer can be selected when loading data into
+a :class:`~MDAnalysis.core.AtomGroup.Universe` by providing the keyword
+*permissive* = ``False``.
+
+Classes
+~~~~~~~
+
+.. autoclass:: PDBReader
+   :members:
+
+.. autoclass:: PDBWriter
+   :members:
+
+References
+----------
+
+.. [Hamelryck2003]  Hamelryck, T., Manderick, B. (2003) PDB parser and structure class
+                    implemented in Python. Bioinformatics, 19, 2308-2310. http://biopython.org
+
+.. _PDB standard: http://www.wwpdb.org/documentation/format32/v3.2.html
+.. _END: http://www.wwpdb.org/documentation/format32/sect11.html#END
+
 """
 from __future__ import with_statement
 
@@ -46,6 +203,7 @@ except ImportError:
     raise ImportError("No full-feature PDB I/O functionality. Install biopython.")
 
 import os, errno
+import textwrap
 import numpy
 
 import MDAnalysis.core
@@ -56,7 +214,12 @@ import pdb.extensions
 from MDAnalysis.topology.core import guess_atom_element
 from MDAnalysis.core.AtomGroup import Universe, AtomGroup
 
+from MDAnalysis import NoDataError
+
 import warnings
+
+import logging
+logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 
 class Timestep(base.Timestep):
         @property
@@ -101,6 +264,7 @@ class PDBReader(base.Reader):
         self.skip_timestep = 1
         #self.ts._unitcell[:] = ??? , from CRYST1?
         self.ts = self._Timestep(pos)
+        self.ts.frame = 1
         del pos
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)             # in-place !
@@ -126,7 +290,7 @@ class PDBReader(base.Reader):
            This :class:`PDBWriter` 's :meth:`~PDBWriter.write` method
            always requires a :class:`Timestep` as an argument (it is
            not optional anymore when the Writer is obtained through
-           this method of :class:`PDBReader`.)
+           this method of :class:`PDBReader` .)
         """
         # This is messy; we cannot get a universe from the Reader, which would be
         # also needed to be fed to the PDBWriter (which is a total mess...).
@@ -136,17 +300,18 @@ class PDBReader(base.Reader):
         kwargs.pop('universe', None)           # always linked to this reader, don't bother with Universe
         return PDBWriter(filename, **kwargs)
 
-    def __len__(self):
-        return self.numframes
     def __iter__(self):
-        def iterPDB():
-            yield self.ts   # just a single frame available
-            raise StopIteration
-        return iterPDB()
-    def __getitem__(self, frame):
+        yield self.ts   # just a single frame available
+        raise StopIteration
+
+    def _read_frame(self, frame):
         if frame != 0:
-            raise IndexError('PDBReader only contains a single frame at index 0')
+            raise IndexError("CRD only contains a single frame at frame index 0")
         return self.ts
+
+    def _read_next_timestep(self):
+        # PDB file only contains a single frame
+        raise IOError
 
 
 class PDBWriter(base.Writer):
@@ -160,12 +325,12 @@ class PDBWriter(base.Writer):
     sophistiocated writer is employed).
 
     .. Note::
-
-      The standard PDBWriter can only write the *whole system*.  In
-      order to write a selection, use the :class:`PrimitivePDBWriter`,
-      which happens automatically when the
-      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of a
-      :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance is used.
+    
+       The standard PDBWriter can only write the *whole system*.  In
+       order to write a selection, use the :class:`PrimitivePDBWriter` ,
+       which happens automatically when the
+       :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of a
+       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance is used.
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
@@ -179,12 +344,15 @@ class PDBWriter(base.Writer):
 
     def __init__(self, pdbfilename, universe=None, multi=False, **kwargs):
         """pdbwriter = PDBWriter(<pdbfilename>,universe=universe,**kwargs)
+        
         :Arguments:
-        pdbfilename     filename; if multi=True, embed a %%d formatstring
-                        so that write_next_timestep() can insert the frame number
-        universe        supply a universe [really REQUIRED; optional only for compatibility]
-        multi           False: write a single structure to a single pdb
-                        True: write all frames to multiple pdb files
+          pdbfilename     filename; if multi=True, embed a %%d formatstring
+                          so that write_next_timestep() can insert the frame number
+                        
+          universe        supply a universe [really REQUIRED; optional only for compatibility]
+        
+          multi           False: write a single structure to a single pdb
+                          True: write all frames to multiple pdb files
         """
         import Bio.PDB.Structure
         self.universe = universe
@@ -239,11 +407,15 @@ class PDBWriter(base.Writer):
 class PrimitivePDBReader(base.Reader):
     """PDBReader that reads a PDB-formatted file, no frills.
 
-    Records read:
+    Records read (see `PDB coordinate section`_ for details):
      - CRYST1 for unitcell A,B,C, alpha,beta,gamm
-     - ATOM. HETATM for x,y,z
+     - ATOM or HETATM for x,y,z
+     - HEADER, TITLE, COMPND
 
-    http://www.wwpdb.org/documentation/format32/sect9.html
+    Reads multi-`MODEL`_ PDB files as trajectories.
+
+    .. _PDB coordinate section: http://www.wwpdb.org/documentation/format32/sect9.html
+    .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
 
     =============  ============  ===========  =============================================
     COLUMNS        DATA  TYPE    FIELD        DEFINITION
@@ -273,6 +445,10 @@ class PrimitivePDBReader(base.Reader):
     77 - 78        LString(2)    element      Element symbol, right-justified. IGNORED
     79 - 80        LString(2)    charge       Charge  on the atom. IGNORED
     =============  ============  ===========  =============================================
+
+
+    .. SeeAlso:: :class:`PrimitivePDBWriter`
+
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
@@ -300,7 +476,7 @@ class PrimitivePDBReader(base.Reader):
 
         header = ""
         compound = []
-        remark = []
+        remarks = []
 
         frames = {}
         coords = []
@@ -328,7 +504,7 @@ class PrimitivePDBReader(base.Reader):
                     continue
                 elif line[:6] == 'REMARK':
                     content = line[6:-1]
-                    remark.append(content)
+                    remarks.append(content)
                 elif line[:5] == 'MODEL':
                     frameno = int(line.split()[1])
                     if frameno == 0:
@@ -356,9 +532,10 @@ class PrimitivePDBReader(base.Reader):
                     continue
         self.header = header
         self.compound = compound
-        self.remark = remark
+        self.remarks = remarks
         self.numatoms = len(coords)
         self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
+        self.ts.frame = 1  # 1-based frame number as starting frame
         self.ts._unitcell[:] = unitcell
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)             # in-place !
@@ -366,11 +543,10 @@ class PrimitivePDBReader(base.Reader):
 
         # No 'MODEL' entries
         if len(frames) == 0:
-          frames[0] = None
+            frames[0] = 0
 
         self.frames = frames
         self.numframes = len(frames) if frames else 1
-        self.ts.frame = 0
         self.fixed = 0
         self.skip = 1
         self.periodic = False
@@ -415,49 +591,45 @@ class PrimitivePDBReader(base.Reader):
         :Returns: :class:`PrimitivePDBWriter`
 
         """
+        kwargs.setdefault('multiframe', self.numframes > 1)
         return PrimitivePDBWriter(filename, **kwargs)
-
-    def __del__(self):
-        pass
 
     def close(self):
         pass
 
-    def rewind(self):
-        #self._currentframe = -1
-        self.ts.frame = -1
-        self._read_next_timestep()
+    __del__ = close
 
     def next(self):
-        self._read_next_timestep()
+        """Read the next time step."""
+        return self._read_next_timestep()
 
-    def __len__(self):
-        return self.numframes
     def __iter__(self):
-        def iterPDB():
-            for i in xrange(0, self.numframes, self.skip):  # FIXME: skip is not working!!!
-                try: yield self._read_next_timestep()
-                except IOError: raise StopIteration
-        return iterPDB()
+        for i in xrange(0, self.numframes):
+            try:
+                yield self._read_frame(i)
+            except IOError:
+                raise StopIteration
 
-    def _read_next_timestep(self):
-        #frame = self._currentframe + 1
+    def _read_next_timestep(self, ts=None):
+        if ts is None:
+            ts = self.ts
+        else:
+            # TODO: cleanup _read_frame() to use a "free" Timestep
+            raise NotImplementedError("PrimitivePDBReader cannot assign to a timestep")
         frame = self.frame + 1
-        if not self.frames.has_key(frame):
-            return False
-        self.__getitem__(frame)
-        #self._currentframe = frame
-        self.ts.frame = frame
-        return True
+        return self._read_frame(frame)
 
-    def __getitem__(self, frame):
+    def _read_frame(self, frame):
         if numpy.dtype(type(frame)) != numpy.dtype(int):
-            raise TypeError
-        if not self.frames.has_key(frame):
-            IndexError('PrimitivePDBReader found only %d frames in this trajectory' % len(self.frames))
-        line = self.frames[frame]
+            raise TypeError("frame must be a integer")
+        try:
+            line = self.frames[frame]
+        except KeyError:
+            raise IOError
         if line is None:
-          return
+            # single frame file, we already have the timestep
+            return self.ts
+
         coords = []
         atoms = []
         unitcell = numpy.zeros(6, dtype=numpy.float32)
@@ -465,41 +637,71 @@ class PrimitivePDBReader(base.Reader):
         def _c(start, stop, typeclass=float):
             return self._col(line, start, stop, typeclass=typeclass)
 
+        # TODO: only open file once and leave the file open; then seek back and forth;
+        #       should improve performance substantially
         with util.openany(self.filename, 'r') as f:
             for i in xrange(line):
                 f.next()        # forward to frame
             for line in f:
-              if line.split()[0] == 'ENDMDL':
-                  break
-              elif line[:6] == 'CRYST1':
-                  A, B, C = _c(7, 15), _c(16, 24), _c(25, 33)
-                  alpha, beta, gamma = _c(34, 40), _c(41, 47), _c(48, 54)
-                  unitcell[:] = A, B, C, alpha, beta, gamma
-                  continue
-              elif line[:6] in ('ATOM  ', 'HETATM'):
-                  # we only care about coordinates
-                  x, y, z = _c(31, 38), _c(39, 46), _c(47, 54)
-                  # TODO import occupancy, bfactors - might these change?
-                  # OB: possibly, at least that would be a useful feature of a PDB trajectory
-                  coords.append((x, y, z))
-                  continue
+                if line[:6] == 'ENDMDL':
+                    break
+                elif line[:6] == 'CRYST1':
+                    A, B, C = _c(7, 15), _c(16, 24), _c(25, 33)
+                    alpha, beta, gamma = _c(34, 40), _c(41, 47), _c(48, 54)
+                    unitcell[:] = A, B, C, alpha, beta, gamma
+                    continue
+                elif line[:6] in ('ATOM  ', 'HETATM'):
+                    # we only care about coordinates
+                    x, y, z = _c(31, 38), _c(39, 46), _c(47, 54)
+                    # TODO import occupancy, bfactors - might these change?
+                    # OB: possibly, at least that would be a useful feature of a PDB trajectory
+                    coords.append((x, y, z))
+                    continue
 
-        # check if atom number chaneged
+        # check if atom number changed
         if len(coords) != len(self.ts._pos):
-            raise Exception("PrimitivePDBReader assumes that the number of atoms remains unchanged between frames; the current frame has %d, the next frame has %d atoms" % (len(self.ts._pos), len(coords)))
+            raise ValueError("PrimitivePDBReader assumes that the number of atoms remains unchanged between frames; the current frame has %d, the next frame has %d atoms" % (len(self.ts._pos), len(coords)))
 
         self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
         self.ts._unitcell[:] = unitcell
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)             # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)
-
-        self.ts.frame = frame
+        self.ts.frame = frame+1   # frame labels are 1-based (confusing ...)
+        return self.ts
 
 
 class PrimitivePDBWriter(base.Writer):
-    """PDB writer that implements a subset of the PDB 3.2 standard.
-    http://www.wwpdb.org/documentation/format32/v3.2.html
+    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
+
+    PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
+    altLoc is written.
+
+    The :class:`PrimitivePDBWriter` can be used to either a dump a coordinate
+    set to a PDB file (operating as a "single frame writer", selected with the
+    constructor keyword *multiframe* = ``False``, the default) or by writing a
+    PDB "movie" (multi frame mode, *multiframe* = ``True``), consisting of
+    multiple models (using the MODEL_ and ENDMDL_ records).
+
+    .. _`PDB 3.2 standard`:
+       http://www.wwpdb.org/documentation/format32/v3.2.html
+    .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
+    .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
+    .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
+
+    .. SeeAlso::
+       This class is identical to :class:`MultiPDBWriter` with the one
+       exception that it defaults to writing single-frame PDB files as if
+       *multiframe* = ``False`` was selected.
+
+    .. versionchanged:: 0.7.5
+       Initial support for multi-frame PDB files.
+
+    .. versionchanged:: 0.7.6
+       The *multiframe* keyword was added to select the writing mode. The writing
+       of bond information (CONECT_ records) is now disabled by default but can be
+       enabled with the *bonds* keyword.
+
     """
     #          1         2         3         4         5         6         7         8
     # 123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
@@ -514,21 +716,27 @@ class PrimitivePDBWriter(base.Writer):
     #fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
     # PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc ignored
     fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(segID)-4s%(element)2s%(charge)2d\n",
-           'REMARK': "REMARK%s\n",
-           'COMPND': "COMPND%s\n",
-           'HEADER': "HEADER%s\n",
-           'TITLE':  "TITLE    %s\n",
-           'MODEL' : "MODEL %8d\n",
-           'ENDMDL' : "ENDMDL\n",
-           'END'    : "END",
+           'REMARK': "REMARK     %s\n",
+           'COMPND': "COMPND    %s\n",
+           'HEADER': "HEADER    %s\n",
+           'TITLE' : "TITLE     %s\n",
+           'MODEL' : "MODEL     %5d\n",
+           'NUMMDL': "NUMMDL    %5d\n",
+           'ENDMDL': "ENDMDL\n",
+           'END'   : "END\n",
            'CRYST1': "CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %-11s%4d\n",
            'CONECT': "CONECT%s\n"
            }
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
     pdb_coor_limits = {"min":-999.9995, "max":9999.9995}
+    #: wrap comments into REMARK records that are not longer than
+    # :attr:`remark_max_length` characters.
+    remark_max_length = 66
+    _multiframe = False
 
-    def __init__(self, filename, numatoms, start=0, step=1, remarks="Created by PrimitvePDBWriter", convert_units=None):
+    def __init__(self, filename, numatoms=None, start=0, step=1, remarks="Created by PrimitivePDBWriter",
+                 convert_units=None, bonds=False, multiframe=None):
         """Create a new PDBWriter
 
         :Arguments:
@@ -539,111 +747,187 @@ class PrimitivePDBWriter(base.Writer):
          *step*
            skip between subsequent timesteps
          *remarks*
-           comments to annotate pdb file
+           comments to annotate pdb file (added to the TITLE record); note that
+           any remarks from the trajectory that serves as input are
+           written to REMARK records with lines longer than :attr:`remark_max_length` (66
+           characters) being wrapped.
          *convert_units*
            units are converted to the MDAnalysis base format; ``None`` selects
-           the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
+           the value of :data:`MDAnalysis.core.flags` ['convert_gromacs_lengths']
+         *bonds*
+           write bonds to the PDB file as CONECT_ records [``False``]
+
+           .. Note::
+
+              Currently only works when writing a whole :class:`Universe` and
+              if bond information is available in the topology. (For selections
+              smaller than the whole :class:`Universe`, the atom numbering in
+              the CONECT_ records would not match the numbering of the atoms in
+              the new PDB file and therefore a :exc:`NotImplementedError` is
+              raised.)
+
+         *multiframe*
+           ``False``: write a single frame to the file; ``True``: create a
+           multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
+           records. If ``None``, then the class default is chosen.    [``None``]
+
+        .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
+        .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
+        .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
+
         """
+        # numatoms = None : dummy keyword argument
+        # (not used, but Writer() always provides numatoms as the second argument)
+
+        # TODO: - remarks should be a list of lines and written to REMARK
+        #       - additional title keyword could contain line for TITLE
 
         self.filename = filename
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
         self.convert_units = convert_units  # convert length and time to base units
+        self.multiframe = self._multiframe if multiframe is None else multiframe
+        self.bonds = bonds
 
         self.frames_written = 0
+        if start < 0:
+          raise ValueError, "'Start' must be a positive value"
+
         self.start = start
         self.step = step
-        self.pdbfile = file(self.filename, 'w')  # open file on init
         self.remarks = remarks
-        self._write_pdb_title(start, step, remarks)
 
-    def __del__(self):
+        self.pdbfile = file(self.filename, 'w')  # open file on init
+        self.has_END = False
+
+    def close(self):
+        """Close PDB file and write END record"""
         if hasattr(self, 'pdbfile') and self.pdbfile is not None:
-            self.close()
-
-    def close_trajectory(self):
-        # Do i really need this?
-        self.pdbfile.write("END")
-        self.pdbfile.close()
+            if not self.has_END:
+                self.END()
+            else:
+                logger.warn("END record has already been written before the final closing of the file")
+            self.pdbfile.close()
         self.pdbfile = None
 
-    def _write_pdb_title(self, start, step, remarks):
-        self.TITLE("FRAME(S) FORM %d, SKIP %d; %s" % (start, step, remarks))
+    __del__ = close
+
+    def _write_pdb_title(self):
+        if self.multiframe:
+            self.TITLE("MDANALYSIS FRAMES FROM %d, SKIP %d: %s" % (self.start, self.step, self.remarks))
+        else:
+            self.TITLE("MDANALYSIS FRAME %d: %s" % (self.start, self.remarks))
 
     def _write_pdb_header(self):
         if not self.obj or not hasattr(self.obj, 'universe'):
-          return
+            self._write_pdb_title(self)
+            return
+
         u = self.obj.universe
         self.HEADER(u.trajectory)
+        self._write_pdb_title()
         self.COMPND(u.trajectory)
-        self.REMARK(u.trajectory)
+        try:
+            # currently inconsistent: DCDReader gives a string, PDB*Reader a list, so always get a list
+            # split long single lines into chunks of 66 chars
+            remarks = []
+            for line in util.asiterable(u.trajectory.remarks):
+                remarks.extend(textwrap.wrap(line, self.remark_max_length))
+            self.REMARK(*remarks)
+        except AttributeError:
+            pass
         self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
 
     def _check_pdb_coordinates(self):
+        """Check if the coordinate values fall within the range allowed for PDB files.
+
+        Deletes the output file if this is the first frame or if frames have
+        already been written (in multi-frame mode) adds a REMARK instead of the
+        coordinates and closes the file.
+
+        Raises :exc:`ValueError` if the coordinates fail the check.
         """
-        Check if the coordinate values fall within the range allowed for PDB files.
-        Raises :exc:`ValueError` if not and attempts to delete the output file.
-        """
-        atoms = self.obj.atoms    # make sure to use atoms (Issue 46)
+        atoms = self.obj.atoms     # make sure to use atoms (Issue 46)
         coor = atoms.coordinates() # can write from selection == Universe (Issue 49)
 
         # check if any coordinates are illegal (coordinates are already in Angstroem per package default)
         if self.has_valid_coordinates(self.pdb_coor_limits, coor):
           return True
         # note the precarious close() here: we know that the file is open and we now
-        # prepare to remove what we have already written (header and such)
-        self.close()
-        try:
-            os.remove(self.filename)
-        except OSError, err:
-            if err.errno == errno.ENOENT:
-                pass
-        raise ValueError("PDB files must have coordinate values between %.3f and %.3f Angstroem: No file was written." %
+        # prepare to remove what we have already written (header and such) or add a REMARK
+        # (which allows the user to look at the previously written frames)
+        if self.frames_written > 1:
+            self.REMARK("Incomplete multi-frame trajectory.",
+                        "Coordinates for the current frame cannot be represented in the PDB format.")
+            self.close()
+        else:
+            self.close()
+            try:
+                os.remove(self.filename)
+            except OSError, err:
+                if err.errno == errno.ENOENT:
+                    pass
+        raise ValueError("PDB files must have coordinate values between %.3f and %.3f Angstroem: file writing was aborted." %
                          (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
 
     def _write_pdb_bonds(self):
-        """
-        Writes out all the bond records; works only for Universe objects.
-        """
-        """
-        TODO all bonds are written out, using the old atom numbers - this is
-        incorrect. Once a selection is made, the atom numbers have to be updated
-        (currently they are unmodified) and bonds have to be seleceted for,
-        only if all the atoms for a bond are still present.
+        """Writes out all the bond records; works only for Universe objects.
 
-        The bonds should not be a list of ints, as are now, but a list of
-        Atom objects.
+        .. Warning::
+
+           All bonds are written out, using the old atom numbers - this is
+           incorrect. Once a selection is made, the atom numbers have to be
+           updated (currently they are unmodified) and bonds have to be
+           selected for, only if all the atoms for a bond are still present.
+
+           Therefore, this method raises a :exc:`NotImplementedError` if CONECT
+           records for anything smaller than the :class:`Universe` are written.
+
+        .. versionchanged:: 0.7.6
+           Only write CONECT records if :attr:`PrimitivePDBWriter.bonds` ``== True``.
+           Raises :exc:`NotImplementedError` if it would produce wrong output.
+
         """
 
-        if not self.obj or not hasattr(self.obj, 'universe'):
-          return
+        # TODO: The bonds should not be a list of ints, as are now, but a list
+        #       of Atom objects.
 
-        if not hasattr(self.obj.universe, 'bonds'):
-          return
+        if not self.bonds:
+            return
 
-        bonds = self.obj.universe.bonds
-        for i, conect in enumerate(bonds):
+        if not self.obj or not hasattr(self.obj, 'universe') or not hasattr(self.obj.universe, 'bonds'):
+            return
+
+        if self.obj.atoms.numberOfAtoms() != self.obj.universe.atoms.numberOfAtoms():
+            logger.error("PDB CONECT records not written because this only works correctly for a whole Universe.")
+            raise NotImplementedError("PDB CONECT records not written because this only works correctly for a whole Universe.")
+
+        for conect in self.obj.universe.bonds:
+            # TODO: could add logic here to re-number (need a dict converting between atom numbers in Universe/bonds
+            #       and in the selection)
             self.CONECT(conect)
 
-    def write(self, obj):
-        """Write selection at current trajectory frame to file.
+    def _update_frame(self, obj):
+        """Method to initialize important attributes in writer from a AtomGroup or Universe *obj*.
 
-        write(selection,frame=FRAME)
+        Attributes initialized/updated:
 
-        :Arguments:
-          *selection*
-            a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
-          *frame*
-            optionally move to frame *FRAME*
+        * :attr:`PrimitivePDBWriter.obj` (the entity that provides topology information *and*
+          coordinates, either a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or a whole
+          :class:`~MDAnalysis.core.AtomGroup.Universe`)
+        * :attr:`PrimitivePDBWriter.trajectory` (the underlying trajectory
+          :class:`~MDAnalysis.coordinates.base.Reader`)
+        * :attr:`PrimitivePDBWriter.timestep` (the underlying trajectory
+          :class:`~MDAnalysis.coordinates.base.Timestep`)
 
-        .. Note::
-
-           The first letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid`
-           is used as the PDB chainID.
+        Before calling :meth:`write_next_timestep` this method **must** be
+        called at least once to enable extracting topology information from the
+        current frame.
         """
 
         if isinstance(obj, Timestep):
             raise TypeError("PrimitivePDBWriter cannot write Timestep objects directly, since they lack topology information (atom names and types) required in PDB files")
+
         self.obj = obj  # remember obj for some of other methods  --- NOTE: this is an evil/lazy hack...
         ts, traj = None, None
         if hasattr(obj, 'universe') and not isinstance(obj, Universe):
@@ -658,47 +942,127 @@ class PrimitivePDBWriter(base.Writer):
         if not (ts and traj):
             raise AssertionError("PrimitivePDBWriter couldn't extract trajectory and timestep information from an object; inheritance problem.")
 
-        self._check_pdb_coordinates()
-        self.trajectory, self.timestep = traj, ts
-        self._write_pdb_header()
-        self.write_all_timesteps()
-        self._write_pdb_bonds()
-        self.END()
+        self.trajectory = traj    # update trajectory (used by other methods)
+        self.ts = ts              # update timestep (used by other methods)
+        return traj, ts
 
-    def write_all_timesteps(self):
+    def write(self, obj):
+        """Write object *obj* at current trajectory frame to file.
+
+        *obj* can be a selection (i.e. a
+        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`) or a whole
+        :class:`~MDAnalysis.core.AtomGroup.Universe`.
+
+        The last letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid` is
+        used as the PDB chainID (but see :meth:`~PrimitivePDBWriter.ATOM` for
+        details).
+
+        :Arguments:
+          *obj*
+            :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or
+            :class:`~MDAnalysis.core.AtomGroup.Universe`
+        """
+
+        self._update_frame(obj)
+        self._write_pdb_header()
+        # Issue 105: with write() ONLY write a single frame; use write_all_timesteps() to dump
+        # everything in one go, or do the traditional loop over frames
+        self.write_next_timestep(self.ts, multiframe=self.multiframe)
+        self._write_pdb_bonds()
+        # END record is written when file is being close()d
+
+    def write_all_timesteps(self, obj):
+        """Write all timesteps associated with *obj* to the PDB file.
+
+        *obj* can be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+        or a :class:`~MDAnalysis.core.AtomGroup.Universe`.
+
+        The method writes the frames from the one specified as *start* until
+        the end, using a step of *skip* (*start* and *skip* are set in the
+        constructor). Thus, if *u* is a Universe then ::
+
+           u.trajectory[-2]
+           pdb = PrimitivePDBWriter("out.pdb", u.atoms.numberOfAtoms())
+           pdb.write_all_timesteps(u)
+
+        will write a PDB trajectory containing the last 2 frames and ::
+
+           pdb = PrimitivePDBWriter("out.pdb", u.atoms.numberOfAtoms(), start=12, skip=2)
+           pdb.write_all_timesteps(u)
+
+        will be writing frames 12, 14, 16, ...
+        """
+
+        self._update_frame(obj)
+        self._write_pdb_header()
+
         start, step = self.start, self.step
         traj = self.trajectory
+
+        # Start from trajectory[0]/frame 1, if there are more than 1 frame.
+        # If there is onyl 1 frame, the traj.frames is not like a python list:
+        # accessing trajectory[-1] raises key error.
+        if not start and traj.numframes > 1:
+          start = traj.frame - 1
+
         for framenumber in xrange(start, len(traj), step):
             traj[framenumber]
-            ts = self.timestep
-            self.write_next_timestep(ts)
+            self.write_next_timestep(self.ts, multiframe=True)
+
+        self._write_pdb_bonds()
+        self.close()
+
         # Set the trajectory to the starting position
         traj[start]
 
-    def write_next_timestep(self, ts=None):
-        ''' write a new timestep to the PDB file
+    def write_next_timestep(self, ts=None, **kwargs):
+        '''write a new timestep to the PDB file
 
-            ts - timestep object containing coordinates to be written to dcd file
+        :Keywords:
+          *ts*
+             :class:`Timestep` object containing coordinates to be written to trajectory file;
+             if ``None`` then :attr:`PrimitivePDBWriter.ts`` is tried.
+          *multiframe*
+             ``False``: write a single frame (default); ``True`` behave as a trajectory writer
+
+        .. Note::
+
+           Before using this method with another :class:`Timestep` in the *ts*
+           argument, :meth:`PrimitivePDBWriter._update_frame` *must* be called
+           with the :class:`~MDAnalysis.core.AtomGroup.AtomGroup.Universe` as
+           its argument so that topology information can be gathered.
         '''
         if ts is None:
             if not hasattr(self, "ts"):
-                raise Exception("PBDWriter: no coordinate data to write to trajectory file")
+                raise NoDataError("PBDWriter: no coordinate data to write to trajectory file")
             else:
                 ts = self.ts
+        self._check_pdb_coordinates()
+        self._write_timestep(ts, **kwargs)
 
-        self._write_timestep(ts)
+    def _write_timestep(self, ts, multiframe=False):
+        """Write a new timestep *ts* to file
 
-    def _write_timestep(self, ts):
-        """Write a new timestep to file
+        Does unit conversion if necessary.
 
-        - does unit conversion if necessary
-        - writes MODEL_ ... ENDMDL_ records to represent trajectory frames
+        By setting *multiframe* = ``True``, MODEL_ ... ENDMDL_ records are
+        written to represent trajectory frames in a multi-model PDB file. (At
+        the moment we do *not* write the NUMMDL_ record.)
 
-        .. Note:: At the moment we do *not* write the NUMMDL_ record.
+        The *multiframe* = ``False`` keyword signals that the
+        :class:`PrimitivePDBWriter` is in single frame mode and no MODEL_
+        records are written.
 
         .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
         .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
         .. _NUMMDL: http://www.wwpdb.org/documentation/format32/sect2.html#NUMMDL
+
+        .. versionchanged:: 0.7.6
+           The *multiframe* keyword was added, which completely determines if
+           MODEL records are written. (Previously, this was decided based on the
+           underlying trajectory and only if ``len(traj) > 1`` would MODEL records
+           have been written.)
+
         """
 
         traj = self.trajectory
@@ -711,8 +1075,7 @@ class PrimitivePDBWriter(base.Writer):
         if len(atoms) != len(coor):
             raise ValueError("Length of the atoms array is %d, this is different form the Timestep coordinate array %d" % (len(atoms), len(ts._pos)))
 
-        # dont write model records, if only one frame
-        if len(traj) > 1:
+        if multiframe:
             self.MODEL(self.frames_written + 1)
 
         for i, atom in enumerate(atoms):
@@ -725,8 +1088,7 @@ class PrimitivePDBWriter(base.Writer):
                       x=coor[i, 0], y=coor[i, 1], z=coor[i, 2])
             # get bfactor, too, and add to output?
             # 'element' is auto-guessed from atom.name in ATOM()
-        # dont write model records, if only one frame
-        if len(traj) > 1:
+        if multiframe:
             self.ENDMDL()
         self.frames_written += 1
 
@@ -734,6 +1096,7 @@ class PrimitivePDBWriter(base.Writer):
         """Write HEADER_ record.
 
         .. _HEADER: http://www.wwpdb.org/documentation/format32/sect2.html#HEADER
+
         """
         if not hasattr(trajectory, 'header'):
           return
@@ -744,24 +1107,25 @@ class PrimitivePDBWriter(base.Writer):
         """Write TITLE_ record.
 
         .. _TITLE: http://www.wwpdb.org/documentation/format32/sect2.html
+
         """
-        line = " ".join(title)    # should do continuation automatically
+        line = " ".join(title)    # TODO: should do continuation automatically
         self.pdbfile.write(self.fmt['TITLE'] % line)
 
-    def REMARK(self, trajectory):
+    def REMARK(self, *remarks):
         """Write generic REMARK_ record (without number).
+
+        Each string provided in *remarks* is written as a separate REMARK_
+        record.
 
         See also `REMARK (update)`_.
 
         .. _REMARK: http://www.wwpdb.org/documentation/format32/remarks1.html
         .. _REMARK (update): http://www.wwpdb.org/documentation/format32/remarks2.html
-        """
-        if not hasattr(trajectory, 'remark'):
-          return
-        remarks = trajectory.remark
 
+        """
         for remark in remarks:
-          self.pdbfile.write(self.fmt['REMARK'] % (remark))
+            self.pdbfile.write(self.fmt['REMARK'] % (remark))
 
     def COMPND(self, trajectory):
         if not hasattr(trajectory, 'compound'):
@@ -774,6 +1138,7 @@ class PrimitivePDBWriter(base.Writer):
         """Write CRYST1_ record.
 
         .. _CRYST1: http://www.wwpdb.org/documentation/format32/sect8.html
+
         """
         self.pdbfile.write(self.fmt['CRYST1'] % (tuple(dimensions) + (spacegroup, zvalue)))
 
@@ -781,20 +1146,30 @@ class PrimitivePDBWriter(base.Writer):
         """Write the MODEL_ record.
 
         .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
+
         """
         self.pdbfile.write(self.fmt['MODEL'] % modelnumber)
 
     def END(self):
         """Write END_ record.
 
+        Only a single END record is written. Calling END multiple times has no
+        effect. Because :meth:`~PrimitivePDBWriter.close` also calls this
+        method right before closing the file it is recommended to *not* call
+        :meth:`~PrimitivePDBWriter.END` explicitly.
+
         .. _END: http://www.wwpdb.org/documentation/format32/sect11.html#END
+
         """
-        self.pdbfile.write(self.fmt['END'])
+        if not self.has_END:
+            self.pdbfile.write(self.fmt['END'])    # only write a single END record
+        self.has_END = True
 
     def ENDMDL(self):
         """Write the ENDMDL_ record.
 
         .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
+
         """
         self.pdbfile.write(self.fmt['ENDMDL'])
 
@@ -803,16 +1178,25 @@ class PrimitivePDBWriter(base.Writer):
              segID=None, element=None, charge=0):
         """Write ATOM_ record.
 
-        Only some keword args are optional (altLoc, iCode, chainID), for some defaults are set.
+        Only some keword args are optional (*altLoc*, *iCode*, *chainID*), for
+        some defaults are set.
 
-        All inputs are cut to the maximum allowed length. For integer
-        numbers the highest-value digits are chopped (so that the
-        serial and reSeq wrap); for strings the trailing characters
-        are chopped.
+        All inputs are cut to the maximum allowed length. For integer numbers
+        the highest-value digits are chopped (so that the *serial* and *reSeq*
+        wrap); for strings the trailing characters are chopped. The *last*
+        character of *chainID* becomes the PDB *chainID* (unless it has the
+        special value "SYSTEM" (assigned by MDAnalysis if neither *segID* nor
+        *chainID* were available), in which case the PDB will have an empty
+        *chainID*).
 
         .. Warning: Floats are not checked and can potentially screw up the format.
 
         .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
+
+        .. versionchanged:: 0.7.6
+           If the *chainID* has the special value "SYSTEM" (case insensitive)
+           then the chain is set to the empty string "".
+
         """
 
         # TODO Jan: PDBReader sets the bfactor value corretly to 0.0 if not
@@ -842,6 +1226,7 @@ class PrimitivePDBWriter(base.Writer):
         altLoc = altLoc[:1]
         resName = resName[:4]
         chainID = chainID or ""   # or should we provide a chainID such as 'A'?
+        chainID = chainID if not chainID.upper() == "SYSTEM" else ""  # special case, new in 0.7.6
         chainID = chainID.strip()[-1:] # take the last character
         resSeq = int(str(resSeq)[-4:]) # check for overflow here?
         iCode = iCode or ""
@@ -856,8 +1241,37 @@ class PrimitivePDBWriter(base.Writer):
         """Write CONECT_ record.
 
         .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
+
         """
         conect = ["%5d" % entry for entry in conect]
         conect = "".join(conect)
         self.pdbfile.write(self.fmt['CONECT'] % conect)
 
+
+class MultiPDBWriter(PrimitivePDBWriter):
+    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
+
+    PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
+    is written.
+
+    By default, :class:`MultiPDBWriter` writes a PDB "movie" (multi frame mode,
+    *multiframe* = ``True``), consisting of multiple models (using the MODEL_
+    and ENDMDL_ records).
+
+    .. _`PDB 3.2 standard`:
+       http://www.wwpdb.org/documentation/format32/v3.2.html
+       
+    .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
+    .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
+    .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
+
+
+    .. SeeAlso::
+       This class is identical to :class:`PrimitivePDBWriter` with the one
+       exception that it defaults to writing multi-frame PDB files instead of
+       single frames.
+
+    .. versionadded:: 0.7.6
+
+    """
+    _multiframe = True

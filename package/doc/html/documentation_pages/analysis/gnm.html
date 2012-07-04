@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm &mdash; MDAnalysis v0.7.5.1 documentation</title>
+    <title>3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm &mdash; MDAnalysis 0.7.6 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.5.1',
+        VERSION:     '0.7.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis v0.7.5.1 documentation"
+          title="Search within MDAnalysis 0.7.6 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis v0.7.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.6 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds" href="hbonds.html" />
     <link rel="prev" title="3.4. Generating densities from trajectories — MDAnalysis.analysis.density" href="density.html" /> 
@@ -47,7 +50,7 @@
         <li class="right" >
           <a href="density.html" title="3.4. Generating densities from trajectories — MDAnalysis.analysis.density"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -79,7 +82,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -99,6 +102,18 @@
             
   <span class="target" id="module-MDAnalysis.analysis.gnm"></span><div class="section" id="elastic-network-analysis-of-md-trajectories-mdanalysis-analysis-gnm">
 <h1>3.5. Elastic network analysis of MD trajectories &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.gnm" title="MDAnalysis.analysis.gnm"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a><a class="headerlink" href="#elastic-network-analysis-of-md-trajectories-mdanalysis-analysis-gnm" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Benjamin Hall &lt;<a class="reference external" href="mailto:benjamin&#46;a&#46;hall&#37;&#52;&#48;ucl&#46;ac&#46;uk">benjamin<span>&#46;</span>a<span>&#46;</span>hall<span>&#64;</span>ucl<span>&#46;</span>ac<span>&#46;</span>uk</a>&gt;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2011</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v2 or later</td>
+</tr>
+</tbody>
+</table>
 <p>Analyse a trajectory using elastic network models, following the approach of <a class="reference internal" href="#hall2007">[Hall2007]</a>.</p>
 <p>An example is provided in <tt class="file docutils literal"><span class="pre">examples/GNMExample.py</span></tt>. The basic
 approach is to pass a trajectory to <a class="reference internal" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="MDAnalysis.analysis.gnm.GNMAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">GNMAnalysis</span></tt></a> and then run
@@ -225,7 +240,7 @@ Observed a 6x speed up for a smallish protein with ~300 residues; this should ge
         <li class="right" >
           <a href="density.html" title="3.4. Generating densities from trajectories — MDAnalysis.analysis.density"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis v0.7.5.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -233,8 +248,8 @@ Observed a 6x speed up for a smallish protein with ~300 residues; this should ge
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

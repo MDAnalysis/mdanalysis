@@ -508,7 +508,8 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
 
 def fasta2select(fastafilename,is_aligned=False,
                  ref_resids=None, target_resids=None,
-                 ref_offset=0,target_offset=0,verbosity=3):
+                 ref_offset=0,target_offset=0,verbosity=3,
+                 alnfilename=None, treefilename=None, clustalw="clustalw2"):
     """Return selection strings that will select equivalent residues.
 
     The function aligns two sequences provided in a FASTA file and
@@ -542,7 +543,7 @@ def fasta2select(fastafilename,is_aligned=False,
          second the one to be aligned (ORDER IS IMPORTANT!)
       *is_aligned*
          False: run clustalw for sequence alignment; True: use
-         the alignment in the file (e.g. from STAMP)
+         the alignment in the file (e.g. from STAMP) [``False``]
       *ref_offset*
          add this number to the column number in the FASTA file
          to get the original residue number
@@ -552,6 +553,18 @@ def fasta2select(fastafilename,is_aligned=False,
          sequence of resids as they appear in the reference structure
       *target_resids*
          sequence of resids as they appear in the target
+      *alnfilename*
+         filename of ClustalW alignment (clustal format) that is
+         produced by *clustalw* when *is_aligned* = ``False``.
+         ``None`` uses the name and path of *fastafilename* and
+         subsititutes the suffix with '.aln'.[``None``]
+      *treefilename*
+         filename of ClustalW guide tree (Newick format);
+         if ``None``  the the filename is generated from *alnfilename*
+         with the suffix '.dnd' instead of '.aln' [``None``]
+      *clustalw*
+         path to the ClustalW (or ClustalW2) binary; only
+         needed for *is_aligned* = ``False`` ["clustalw2"]
 
     :Returns:
       *select_dict*
@@ -559,37 +572,44 @@ def fasta2select(fastafilename,is_aligned=False,
           that can be used immediately in :func:`rms_fit_trj` as
           ``select=select_dict``.
     """
-    import Bio
+    import Bio.SeqIO, Bio.AlignIO, Bio.Alphabet
     import numpy
 
+    protein_gapped = Bio.Alphabet.Gapped(Bio.Alphabet.IUPAC.protein)
     if is_aligned:
-        import Bio.SeqIO, Bio.Alphabet
-        protein_gapped = Bio.Alphabet.Gapped(Bio.Alphabet.IUPAC.protein)
-        fasta = open(fastafilename)
-        try:
-            alignment = Bio.SeqIO.to_alignment(
-                Bio.SeqIO.FastaIO.FastaIterator(fasta,alphabet=protein_gapped),
-                alphabet=protein_gapped)
-        finally:
-            fasta.close()
-        logger.info("Using provided alignment, %s", fastafilename)
+        logger.info("Using provided alignment %r", fastafilename)
+        with open(fastafilename) as fasta:
+            alignment = Bio.AlignIO.read(fasta, "fasta", alphabet=protein_gapped)
     else:
-        import Bio.Clustalw
+        from Bio.Align.Applications import ClustalwCommandline
         import os.path
-        filepath,ext = os.path.splitext(fastafilename)
-        alnfilename = filepath + '.aln'
-        cline = Bio.Clustalw.MultipleAlignCL(fastafilename)
-        cline.set_output(alnfilename)
-        cline.set_type('protein')
-        alignment = Bio.Clustalw.do_alignment(cline)
-        logger.info("Using clustalw sequence alignment, %s.\n" % alnfilename)
+        if alnfilename is None:
+            filepath,ext = os.path.splitext(fastafilename)
+            alnfilename = filepath + '.aln'
+        if treefilename is None:
+            filepath,ext = os.path.splitext(alnfilename)
+            treefilename = filepath + '.dnd'
+        run_clustalw = ClustalwCommandline(clustalw, infile=fastafilename, type="protein",
+                                           align=True, outfile=alnfilename, newtree=treefilename)
+        logger.debug("Aligning sequences in %(fastafilename)r with %(clustalw)r.", vars())
+        logger.debug("ClustalW commandline: %r", str(run_clustalw))
+        try:
+            stdout, stderr = run_clustalw()
+        except:
+            logger.exception("ClustalW %(clustalw)r failed", vars())
+            logger.info("(You can get clustalw2 from http://www.clustal.org/clustal2/)")
+            raise
+        with open(alnfilename) as aln:
+            alignment = Bio.AlignIO.read(aln, "clustal", alphabet=protein_gapped)
+        logger.info("Using clustalw sequence alignment %r" % alnfilename)
+        logger.info("ClustalW Newick guide tree was also produced: %r" % treefilename)
 
-    nseq = len(alignment._records)    # the stupid class should provide __len__ !
+    nseq = len(alignment)
     if nseq != 2:
         raise ValueError("Only two sequences in the alignment can be processed.")
 
     orig_resids = [ref_resids,target_resids] # implict assertion that
-                                             # we only have to sequenceses in the alignment
+                                             # we only have two sequences in the alignment
     offsets = [ref_offset,target_offset]
     for iseq,a in enumerate(alignment):      # need iseq index to change orig_resids
         if orig_resids[iseq] is None:
@@ -633,7 +653,7 @@ def fasta2select(fastafilename,is_aligned=False,
         necessary.
         """
         # could maybe use Bio.PDB.StructureAlignment instead?
-        nseq = len(alignment._records)
+        nseq = len(alignment)
         t = numpy.zeros((nseq,alignment.get_alignment_length()),dtype=int)
         for iseq,a in enumerate(alignment):
             GAP = a.seq.alphabet.gap_char
@@ -641,7 +661,7 @@ def fasta2select(fastafilename,is_aligned=False,
                         numpy.array(list(a.seq))==GAP,0,1)) - 1]
             # -1 because seq2resid is index-1 based (resids start at 1)
 
-        def resid(nseq,ipos):
+        def resid(nseq,ipos,t=t):
             return t[nseq,ipos]
         return resid
     resid = resid_factory(alignment,seq2resids)
@@ -651,9 +671,11 @@ def fasta2select(fastafilename,is_aligned=False,
     # then post-process and use ranges for continuous stretches, eg
     # ( resid 1:35 and ( backbone or name CB ) ) or ( resid 36 and backbone ) ...
 
-    GAP = alignment.get_seq_by_num(0).alphabet.gap_char # should be same for all seqs
+    GAP = alignment[0].seq.alphabet.gap_char        # should be the same for both seqs
+    if GAP != alignment[1].seq.alphabet.gap_char:
+        raise ValueError("Different gap characters in sequence 'target' and 'mobile'.")
     for ipos in xrange(alignment.get_alignment_length()):
-        aligned = list(alignment.get_column(ipos))
+        aligned = list(alignment[:, ipos])
         if GAP in aligned:
             continue       # skip residue
         template = "resid %i"

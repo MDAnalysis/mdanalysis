@@ -126,10 +126,14 @@ Users will typically use the :func:`CalcRMSDRotationalMatrix` function.
 import numpy as np
 cimport numpy as np
 
+import cython
+
 cdef extern from "math.h":
     double sqrt(double x)
     double fabs(double x)
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
                  np.ndarray[np.float64_t,ndim=2] coords1,
                  np.ndarray[np.float64_t,ndim=2] coords2,
@@ -228,6 +232,8 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
 
     return (G1 + G2) * 0.5
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.float64_t,ndim=1] A, double E0, int N):
     """
     Calculate the RMSD, and/or the optimal rotation matrix.
@@ -328,7 +334,8 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.f
     #if (i == 50):
     #   print "\nMore than %d iterations needed!\n" % (i)
 
-    rms = sqrt(2.0 * (E0 - mxEigenV)/N)
+    # the fabs() is to guard against extremely small, but *negative* numbers due to floating point error
+    rms = sqrt(fabs(2.0 * (E0 - mxEigenV)/N))
 
     if (rot == None):
         return rms # Don't bother with rotation.
@@ -440,7 +447,7 @@ def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,
 
     .. Note:: All arrays *must* be of type `numpy.float64`.
     """
-    cdef double E0
+    cdef double E0, rmsd
     cdef np.ndarray[np.float64_t,ndim=1] A = np.zeros(9,)
 
     E0 = InnerProduct(A,conf,ref,N,weights)

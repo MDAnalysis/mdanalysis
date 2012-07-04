@@ -85,6 +85,7 @@ class CRDReader(base.Reader):
         self.delta = 0
         self.skip_timestep = 1
         self.ts = self._Timestep(numpy.array(coords_list))
+        self.ts.frame = 1  # 1-based frame number
         # if self.convert_units:
         #    self.convert_pos_from_native(self.ts._pos)             # in-place !
 
@@ -105,17 +106,18 @@ class CRDReader(base.Reader):
         """
         return CRDWriter(filename, **kwargs)
 
-    def __len__(self):
-        return self.numframes
     def __iter__(self):
         yield self.ts  # Just a single frame
         raise StopIteration
-    def __getitem__(self, frame):
+
+    def _read_frame(self, frame):
         if frame != 0:
-            raise IndexError('PrimitivePDBReader can only read a single frame at index 0')
+            raise IndexError("CRD only contains a single frame at frame index 0")
         return self.ts
+
     def _read_next_timestep(self):
-        raise IndexError("PrimitivePDBReader can only read a single frame")
+        # CRD files only contain a single frame
+        raise IOError
 
 class CRDWriter(base.Writer):
     """CRD writer that implements the CHARMM CRD coordinate format.
