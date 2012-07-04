@@ -41,6 +41,8 @@ The rules for this file:
       stored as attribute timeseries (similar to other analysis tools)
     - only write per-frame debugging messages to the logfile when the 
       new verbose keyword is set to True
+    - more reliable detection of hydrogens bonded to heavy atoms  
+    - remove duplicate hydrogen bonds from the output
   * removed CHO and EAM (formyl and ethanol termini of gA in CHARMM)
     from the set of residues recognized as protein (collision with
     commonly used CHO for cholesterol)
