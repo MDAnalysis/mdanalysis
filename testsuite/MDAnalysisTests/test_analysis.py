@@ -27,7 +27,7 @@ from nose.plugins.attrib import attr
 import os
 import tempfile
 
-from MDAnalysis.tests.datafiles import PSF,DCD,CRD,FASTA
+from MDAnalysis.tests.datafiles import PSF,DCD,CRD,FASTA,PDB_helix
 
 class TestContactMatrix(TestCase):
     def setUp(self):
@@ -123,34 +123,39 @@ class TestAlign(TestCase):
 
 class TestHydrogenBondAnalysis(TestCase):
     def setUp(self):
-        self.universe = MDAnalysis.Universe(PSF, CRD)  # just single frame for speed
+        self.universe = u = MDAnalysis.Universe(PDB_helix)
         self.detect_hydrogens = "distance"
+        # ideal helix with 1 proline:
+        self.num_bb_hbonds = u.atoms.numberOfResidues() - u.SYSTEM.PRO.numberOfResidues() - 4
 
-    def test_HBondAnalysis_Protein(self):
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'protein', 'protein', distance=3.0, angle=120.0, detect_hydrogens=self.detect_hydrogens)
+    def _run(self):
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'protein', 'protein',
+                                                            distance=3.0, angle=150.0, detect_hydrogens=self.detect_hydrogens)
         h.run()
-        h.generate_table()
+        return h
 
-        # very quick check that it keeps producing the same results
-        assert_equal(len(h.table), 568)
-        assert_almost_equal(h.table.distance.mean(), 2.1991129786195889, 6)
-        assert_almost_equal(h.table.distance.std(), 0.37473417587495145, 6)
-        assert_almost_equal(h.table.angle.mean(), 153.78905771819637, 6)
-        assert_almost_equal(h.table.angle.std(), 15.21139191089444, 6)
-        del h
+    def test_helix_backbone(self):
+        h = self._run()
+        assert_equal(len(h.timeseries[0]), self.num_bb_hbonds, "wrong number of backbone hydrogen bonds")
+        assert_equal(h.timesteps, [0.0])
 
-    def test_HBondAnalysis_Backbone(self):
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'backbone', 'protein', distance=3.0, angle=120.0, detect_hydrogens=self.detect_hydrogens)
-        h.run()
-        h.generate_table()
+    # TODO: Expand tests because the following ones are a bit superficial
+    #       because we should really run them on a trajectory
 
-        # very quick check that it keeps producing the same results
-        assert_equal(len(h.table), 412)
-        assert_almost_equal(h.table.distance.mean(), 2.2104265446801787, 6)
-        assert_almost_equal(h.table.distance.std(), 0.32393998023538711, 6)
-        assert_almost_equal(h.table.angle.mean(), 154.66375137995749, 6)
-        assert_almost_equal(h.table.angle.std(), 14.294215839366531, 6)
-        del h
+    def test_count_by_time(self):
+        h = self._run()
+        c = h.count_by_time()
+        assert_equal(c.tolist(), [(0.0, self.num_bb_hbonds)])
+
+    def test_count_by_type(self):
+        h = self._run()
+        c = h.count_by_type()
+        assert_equal(c.frequency, self.num_bb_hbonds * [1.0])
+
+    def test_count_by_type(self):
+        h = self._run()
+        t = h.timesteps_by_type()
+        assert_equal(t.time, self.num_bb_hbonds * [0.0])
 
     def tearDown(self):
         del self.universe
