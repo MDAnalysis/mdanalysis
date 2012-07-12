@@ -29,6 +29,58 @@ separately.
 
 .. _HOLE: http://hole.biop.ox.ac.uk/hole
 
+Example
+-------
+
+Gramicidin A (gA) channel::
+   from MDAnalysis.analysis.hole import HOLE, HOLEtraj
+   from MDAnalysis.tests.datafiles import PDB_HOLE
+
+   H = HOLE(PDB_HOLE, executable="~/hole2/bin/hole")  # set path to your hole binary
+   H.run()
+   H.collect()
+   H.plot(linewidth=3, color="black", label=False)
+
+
+Analyzing a trajectory::
+
+  u = MDAnalysis.Universe(psf, trajectory)
+  H = HOLEtraj(u, orderparameters="rmsd.dat", ...)
+  H.run()
+  H.plot3D()
+
+"rmsd.dat" is file with orderparameters, one for each frame in the
+trajectory. The profiles are available as the attribute
+:attr:`HOLEtraj.profiles` (``H.profiles`` in the example).
+
+
+Data structures
+---------------
+
+A profile is stored as a :class:`numpy.recarray`::
+
+   frame   rxncoord   radius
+
+frame
+   integer frame number (only important when HOLE itself reads a
+   trajectory)
+rxncoord
+   the distance along the pore axis, in Å
+radius
+   the pore radius, in Å
+
+The :attr:`HOLE.profiles` or :attr:`HOLEtraj.profiles` dictionary
+holds one profile for each key. By default the keys are the frame
+numbers but :class:`HOLEtraj` can take the optional *orderparameters*
+keyword argument and load an arbitrary order parameter for each
+frame. In that case, the key becomes the orderparameter.
+
+.. Note::
+   The profiles dict is not ordered and hence one typically needs to manually
+   order the keys first. Furthermore, duplicate keys are not possible:
+   In the case of *duplicate orderparameters*, the last one read will
+   be stored in the dict.
+
 
 .. rubric:: References
 
@@ -46,8 +98,22 @@ Analysis
 .. autoclass:: HOLE
    :members:
 
-.. autoclass:: HOLEAnalysis
+   .. attribute:: profiles
+
+      After running :meth:`HOLE.collect`, this dict contains all the
+      HOLE profiles, indexed by the frame number. If only a single
+      frame was analyzed then this will be ``HOLE.profiles[0]``. Note
+      that the order is random; one needs to sort the keys first.
+
+.. autoclass:: HOLEtraj
    :members:
+
+   .. attribute:: profiles
+
+      After running :meth:`HOLE.collect`, this dict contains all the
+      HOLE profiles, indexed by the frame number or the order
+      parameter (if *orderparameters* was supplied). Note that the
+      order is random; one needs to sort the keys first.
 
 .. autodata:: SIMPLE2_RAD
 
@@ -71,6 +137,7 @@ import glob
 import os
 import errno
 import shutil
+import warnings
 
 import numpy as np
 import os.path
@@ -128,10 +195,14 @@ BOND ???? 0.85
 """
 
 def write_simplerad2(filename="simple2.rad"):
-    """Write the built-in radii to *filename*"""
-    with open(filename, "w") as rad:
-        rad.write(SIMPLE2_RAD + "\n")
-    logger.debug("Created simple radii file %(filename)r", vars())
+    """Write the built-in radii to *filename*.
+
+    Does nothing if *filename* already exists.
+    """
+    if not os.path.exists(filename):
+        with open(filename, "w") as rad:
+            rad.write(SIMPLE2_RAD + "\n")
+        logger.debug("Created simple radii file %(filename)r", vars())
     return filename
 
 def seq2str(v):
@@ -143,8 +214,144 @@ def seq2str(v):
         return ""
     return " ".join([str(x) for x in v])
 
+class PlotHOLE(object):
+    """Baseclass for HOLE analysis, providing plotting"""
 
-class HOLE(object):
+    def _process_plot_kwargs(self, kwargs):
+        import matplotlib.colors
+        from itertools import cycle
+
+        kw = {}
+        frames = kwargs.pop('frames', None)
+        if frames is None:
+            frames = numpy.sort(self.profiles.keys()[::kwargs.pop('step', 1)])
+        else:
+            frames = asiterable(frames)
+        kw['frames'] = frames
+        kw['yshift'] = kwargs.pop('yshift', 0.0)
+        kw['rmax'] = kwargs.pop('rmax', None)
+        kw['label'] = kwargs.pop('label', True)
+        if kw['label'] == "_nolegend_":
+            kw['label'] = False
+        elif kw['label'] is None:
+            kw['label'] = True
+        color = kwargs.pop('color', None)
+        if color is None:
+            cmap = kwargs.pop('cmap', matplotlib.cm.jet)
+            normalize = matplotlib.colors.normalize(vmin=numpy.min(frames),vmax=numpy.max(frames))
+            colors = cmap(normalize(frames))
+        else:
+            colors = cycle(asiterable(color))
+        kw['colors'] = colors
+        kw['linestyles'] = cycle(asiterable(kwargs.pop('linestyle', '-')))
+        return kw, kwargs
+
+    def plot(self, **kwargs):
+        """Plot profiles in a 1D graph.
+
+        Lines are coloured according to the colour map *cmap*.
+
+        :Keywords:
+           *step*
+              only plot every *step* profile [1]
+           *cmap*
+              matplotlib color map to continuously color graphs [jet]
+           *color*
+              color or iterable of colors to specify graph colors;
+              ``None`` will use *cmap* instead [``None``]
+           *linestyle*
+              linestyle supported by :func:`matplotlib.pyplot.plot`;
+              an iterable will be applied in turn ['-']
+           *yshift*
+              displace each R(zeta) profile by *yshift* in the
+              y-direction [0]
+           *frames*
+              integer or list: only plot these specific frame(s);
+              the default is to plot everything (see also *step*).
+              [``None``]
+           *label*
+              ignored and replaced with the frame number; if it
+              is set to "_nolegend_" or ``False`` then no
+              legend is displayed
+           *ax*
+              :class:`matplotlib.axes.Axes` instance to plot into
+              [``None``]
+
+        All other *kwargs* are passed to :func:`matplotlib.pyplot.plot`.
+        """
+        import matplotlib.pyplot as plt
+        from itertools import izip
+
+        kw, kwargs = self._process_plot_kwargs(kwargs)
+
+        ax = kwargs.pop('ax', plt.subplot(111))
+        for iplot,(frame,color,linestyle) in enumerate(izip(kw['frames'],kw['colors'],kw['linestyles'])):
+            kwargs['color'] = color
+            kwargs['linestyle'] = linestyle
+            kwargs['zorder'] = -frame
+            kwargs['label'] = str(frame)
+            dy = iplot * kw['yshift']
+            profile = self.profiles[frame]
+            ax.plot(profile.rxncoord, profile.radius + dy, **kwargs)
+            #logger.debug("Plotted frame %d with color %r and linestyle %r", frame, color, linestyle)
+        ax.set_xlabel(r"pore coordinate $\zeta$ ($\AA$)")
+        ax.set_ylabel(r"HOLE radius $r$ ($\AA$)")
+        if kw['label']:
+            ax.legend(loc="best")
+
+    def plot3D(self, **kwargs):
+        """Stacked graph of profiles.
+
+        Lines are coloured according to the colour map *cmap*.
+
+        :Keywords:
+           *step*
+              only plot every *step* profile [1]
+           *cmap*
+              matplotlib color map [jet]
+           *rmax*
+              only display radii up to *rmax* [``None``]
+
+        Based on Stack Overflow post `3d plots using matplotlib`_.
+
+        .. _`3d plots using matplotlib`:
+           http://stackoverflow.com/questions/9053255/3d-plots-using-matplotlib
+
+        """
+        import matplotlib.pyplot as plt
+        import mpl_toolkits.mplot3d.axes3d as axes3d
+        from itertools import izip
+
+        kw, kwargs = self._process_plot_kwargs(kwargs)
+        rmax = kw.pop('rmax', None)
+
+        fig = plt.figure(figsize=kwargs.pop('figsize', (6,6)))
+        ax = fig.add_subplot(1, 1, 1, projection='3d')
+        for frame,color,linestyle in izip(kw['frames'],kw['colors'],kw['linestyles']):
+            kwargs['color'] = color
+            kwargs['linestyle'] = linestyle
+            kwargs['zorder'] = -frame
+            profile = self.profiles[frame]
+            if rmax is None:
+                radius = profile.radius
+                rxncoord = profile.rxncoord
+            else:
+                # does not seem to work with masked arrays but with nan hack!
+                # http://stackoverflow.com/questions/4913306/python-matplotlib-mplot3d-how-do-i-set-a-maximum-value-for-the-z-axis
+                #radius = numpy.ma.masked_greater(profile.radius, rmax)
+                #rxncoord = numpy.ma.array(profile.rxncoord, mask=radius.mask)
+                rxncoord = profile.rxncoord
+                radius = profile.radius.copy()
+                radius[radius>rmax] = numpy.nan
+            ax.plot(rxncoord, frame*numpy.ones_like(rxncoord), radius, **kwargs)
+
+        ax.set_xlabel(r"pore coordinate $z$")
+        ax.set_ylabel("frame")
+        ax.set_zlabel(r"HOLE radius $r$")
+        plt.draw()
+
+
+class HOLE(PlotHOLE):
     """Run HOLE on a single frame or a DCD trajectory.
 
     Only a subset of all `HOLE control parameters`_ is supported and can be set
@@ -153,7 +360,17 @@ class HOLE(object):
     HOLE (as a FORTRAN77 program) has a number of limitations when it comes to
     filename lengths (must be shorter than the empirically found
     :attr:`HOLE.HOLE_MAX_LENGTH`). This class tries to work around them by
-    creating temporary symlinks to files when needed.
+    creating temporary symlinks to files when needed but this can still fail
+    when permissions are not correctly set on the current directory.
+
+    Running HOLE with the :class:`HOLE` class is a 3-step process:
+
+    # set up the class with all desired parameters
+    # run HOLE with :meth:`HOLE.run`
+    # collect the data from the output file with :meth:`HOLE.collect`
+
+    The class also provides some simple plotting functions of the collected
+    data such as :meth:`HOLE.plot` or :meth:`HOLE.plot3D`.
 
     .. versionadded:: 0.8
 
@@ -174,23 +391,23 @@ class HOLE(object):
 
           *filename*
 
-               The input coordinate file ("COORD" card). This specifies the
-               name of a co-ordinate file to be used. This must be in
-               Brookhaven protein databank format or something closely
-               approximating this. Both ATOM and HETATM records are read. Note
-               that if water molecules or ions are present in the channel these
-               can be ignored on read by the use of the *ignore_residues*
-               keyword.
+               The *filename* is used as input for HOLE in the "COORD" card of
+               the input file.  It specifies the name of a PDB co-ordinate file
+               to be used. This must be in Brookhaven protein databank format
+               or something closely approximating this. Both ATOM and HETATM
+               records are read. Note that if water molecules or ions are
+               present in the channel these can be ignored on read by the use
+               of the *ignore_residues* keyword.
 
-               A new feature (in release 2.1 of HOLE) was the option to include
-               a wild card (``*``) in the filename. e.g., *filename* =
-               `"ab*.pdb"` will apply hole to all files in the directory whose
-               name starts with ``ab`` and ends with ``.pdb``. This is intended
-               to aid the analysis of multiple copies of the same molecule -
-               produced during molecular dynamics or other method. The hole
-               procedure will be applied to each file in turn with the same
-               setup conditions (initial point, sampling distance
-               etc.). Graphics files will contain a combination of the
+               **Wildcard pattern**. A new feature (in release 2.1 of HOLE) was
+               the option to include a wild card (``*``) in the filename. e.g.,
+               *filename* = `"ab*.pdb"` will apply hole to all files in the
+               directory whose name starts with ``ab`` and ends with
+               ``.pdb``. This is intended to aid the analysis of multiple
+               copies of the same molecule - produced during molecular dynamics
+               or other method. The hole procedure will be applied to each file
+               in turn with the same setup conditions (initial point, sampling
+               distance etc.). Graphics files will contain a combination of the
                individual runs, one after another. Note that the pdb files are
                read independently so that they need not have an identical
                number of atoms or atom order etc. (though they should be
@@ -464,11 +681,11 @@ class HOLE(object):
         if len(filename) <= self.HOLE_MAX_LENGTH:
             return filename
 
-        logger.warn("path check: HOLE will not read %r because it has more than %d characters.", filename, self.HOLE_MAX_LENGTH)
+        logger.debug("path check: HOLE will not read %r because it has more than %d characters.", filename, self.HOLE_MAX_LENGTH)
         # try a relative path
         newname = os.path.relpath(filename)
         if len(newname) <= self.HOLE_MAX_LENGTH:
-            logger.warn("path check: Using relative path: %r --> %r", filename, newname)
+            logger.debug("path check: Using relative path: %r --> %r", filename, newname)
             return newname
 
         # shorten path by creating a symlink inside a safe temp dir
@@ -481,8 +698,7 @@ class HOLE(object):
             logger.fatal("path check: Failed to shorten filename %r --> %r", filename, newname)
             raise RuntimeError("Failed to shorten filename %r --> %r", filename, newname)
         os.symlink(filename, newname)
-        logger.warn("path check: Using symlink: %r --> %r", filename, newname)
-
+        logger.debug("path check: Using symlink: %r --> %r", filename, newname)
         return newname
 
     def run(self, **kwargs):
@@ -628,6 +844,7 @@ class HOLE(object):
 
         logger.info("Run %s: Reading %d HOLE profiles from %r", run, length, hole_output)
         hole_profile_no = 0
+        records = []
         with open(hole_output, "r") as hole:
             read_data = False
             for line in hole:
@@ -640,6 +857,7 @@ class HOLE(object):
                     continue
                 if line.startswith(" cenxyz.cvec"):
                     read_data = True
+                    logger.debug("Started reading data")
                     continue
                 if read_data:
                     if len(line.strip()) != 0:
@@ -655,6 +873,7 @@ class HOLE(object):
                         # end of records (empty line)
                         read_data = False
                         frame_hole_output = numpy.rec.fromrecords(records, formats="i4,f8,f8", names="frame,rxncoord,radius")
+                        # store the profile
                         self.profiles[hole_profile_no] = frame_hole_output
                         logger.debug("Collected HOLE profile for frame %d (%d datapoints)",
                                      hole_profile_no, len(frame_hole_output))
@@ -674,136 +893,6 @@ class HOLE(object):
         else:
             logger.warn("Missing data: Found %d HOLE profiles from %d frames.", len(self.profiles), length)
 
-    def _process_plot_kwargs(self, kwargs):
-        import matplotlib.colors
-        from itertools import cycle
-
-        kw = {}
-
-        frames = kwargs.pop('frames', None)
-        if frames is None:
-            frames = numpy.sort(self.profiles.keys()[::kwargs.pop('step', 1)])
-        else:
-            frames = asiterable(frames)
-        kw['frames'] = frames
-
-        kw['yshift'] = kwargs.pop('yshift', 0.0)
-
-        kw['rmax'] = kwargs.pop('rmax', None)
-
-        color = kwargs.pop('color', None)
-        if color is None:
-            cmap = kwargs.pop('cmap', matplotlib.cm.jet)
-            normalize = matplotlib.colors.normalize(vmin=numpy.min(frames),vmax=numpy.max(frames))
-            colors = cmap(normalize(frames))
-        else:
-            colors = cycle(asiterable(color))
-        kw['colors'] = colors
-
-        kw['linestyles'] = cycle(asiterable(kwargs.pop('linestyle', '-')))
-
-        return kw, kwargs
-
-
-    def plot(self, **kwargs):
-        """Plot profiles in a 1D graph.
-
-        Lines are coloured according to the colour map *cmap*.
-
-        :Keywords:
-           *step*
-              only plot every *step* profile [1]
-           *cmap*
-              matplotlib color map to continuously color graphs [jet]
-           *color*
-              color or iterable of colors to specify graph colors;
-              ``None`` will use *cmap* instead [``None``]
-           *linestyle*
-              linestyle supported by :func:`matplotlib.pyplot.plot`;
-              an iterable will be applied in turn ['-']
-           *yshift*
-              displace each R(zeta) profile by *yshift* in the
-              y-direction [0]
-           *frames*
-              integer or list: only plot these specific frame(s);
-              the default is to plot everything (see also *step*).
-              [``None``]
-           *ax*
-              :class:`matplotlib.axes.Axes` instance to plot into
-              [``None``]
-
-        All other *kwargs* are passed to :func:`matplotlib.pyplot.plot`.
-        """
-        import matplotlib.pyplot as plt
-        from itertools import izip
-
-        kw, kwargs = self._process_plot_kwargs(kwargs)
-
-        ax = kwargs.pop('ax', plt.subplot(111))
-        for iplot,(frame,color,linestyle) in enumerate(izip(kw['frames'],kw['colors'],kw['linestyles'])):
-            kwargs['color'] = color
-            kwargs['linestyle'] = linestyle
-            kwargs['zorder'] = -frame
-            kwargs['label'] = str(frame)
-            dy = iplot * kw['yshift']
-            profile = self.profiles[frame]
-            ax.plot(profile.rxncoord, profile.radius + dy, **kwargs)
-            #logger.debug("Plotted frame %d with color %r and linestyle %r", frame, color, linestyle)
-        ax.set_xlabel(r"pore coordinate $\zeta$ ($\AA$)")
-        ax.set_ylabel(r"HOLE radius $r$ ($\AA$)")
-        ax.legend(loc="best")
-
-    def plot3D(self, **kwargs):
-        """Stacked graph of profiles.
-
-        Lines are coloured according to the colour map *cmap*.
-
-        :Keywords:
-           *step*
-              only plot every *step* profile [1]
-           *cmap*
-              matplotlib color map [jet]
-           *rmax*
-              only display radii up to *rmax* [``None``]
-
-        Based on Stack Overflow post `3d plots using matplotlib`_.
-
-        .. _`3d plots using matplotlib`:
-           http://stackoverflow.com/questions/9053255/3d-plots-using-matplotlib
-
-        """
-        import matplotlib.pyplot as plt
-        import mpl_toolkits.mplot3d.axes3d as axes3d
-        from itertools import izip
-
-        kw, kwargs = self._process_plot_kwargs(kwargs)
-        rmax = kw.pop('rmax', None)
-
-        fig = plt.figure(figsize=kwargs.pop('figsize', (6,6)))
-        ax = fig.add_subplot(1, 1, 1, projection='3d')
-        for frame,color,linestyle in izip(kw['frames'],kw['colors'],kw['linestyles']):
-            kwargs['color'] = color
-            kwargs['linestyle'] = linestyle
-            kwargs['zorder'] = -frame
-            profile = self.profiles[frame]
-            if rmax is None:
-                radius = profile.radius
-                rxncoord = profile.rxncoord
-            else:
-                # does not seem to work with masked arrays but with nan hack!
-                # http://stackoverflow.com/questions/4913306/python-matplotlib-mplot3d-how-do-i-set-a-maximum-value-for-the-z-axis
-                #radius = numpy.ma.masked_greater(profile.radius, rmax)
-                #rxncoord = numpy.ma.array(profile.rxncoord, mask=radius.mask)
-                rxncoord = profile.rxncoord
-                radius = profile.radius.copy()
-                radius[radius>rmax] = numpy.nan
-            ax.plot(rxncoord, frame*numpy.ones_like(rxncoord), radius, **kwargs)
-
-        ax.set_xlabel(r"pore coordinate $z$")
-        ax.set_ylabel("frame")
-        ax.set_zlabel(r"HOLE radius $r$")
-        plt.draw()
-
     def __del__(self):
         for f in self.tempfiles:
             try:
@@ -814,11 +903,45 @@ class HOLE(object):
             shutil.rmtree(d, ignore_errors=True)
 
 
-class HOLEAnalysis(object):
+class HOLEtraj(PlotHOLE):
+    """Analyze all frames in a trajectory.
+
+    The :class:`HOLE` class provides a direct interface to HOLE. HOLE itself
+    has limited support for analysing trajectories but cannot deal with all the
+    trajectory formats understood by MDAnalysis. This class can take any
+    universe and feed it to HOLE. By default it sequentially creates a PDB for
+    each frame and runs HOLE on the frame.
+    """
     def __init__(self, universe, **kwargs):
+        """Set up the class.
+
+        :Arguments:
+
+          *universe*
+               The input trajectory as part of a
+               :class:`~MDAnalysis.core.AtomGroup.Universe`. trajectory is
+               converted to a sequence of PDB files and HOLE is run on each
+               individual file. (Use the *start*, *stop*, and *step* keywords
+               to slice the trajectory.)
+
+          *orderparameters*
+               Text file with list of numbers corresponding to the frames in the
+               trajectory.
+        """
         self.universe = universe
         self.selection = kwargs.pop("selection", "protein")
-        self.cpoint = self.guess_cpoint(selection=self.selection)
+        self.orderparametersfile = kwargs.pop("orderparameters", None)
+
+        self.start = kwargs.pop('start', None)
+        self.stop = kwargs.pop('stop', None)
+        self.step = kwargs.pop('step', None)
+
+        self.cpoint = kwargs.pop('cpoint', self.guess_cpoint(selection=self.selection))
+
+        self.hole_kwargs = kwargs
+
+        # processing
+        self.orderparameters = self._read_orderparameters(self.orderparametersfile)
 
     def guess_cpoint(self, **kwargs):
         """Guess a point inside the pore.
@@ -828,30 +951,65 @@ class HOLEAnalysis(object):
         """
         return self.universe.selectAtoms(kwargs.get("selection", "protein")).centerOfGeometry()
 
+    def _read_orderparameters(self, filename):
+        """Read orderparameters from *filename* or assign frame numbers from trajectory"""
+        if filename is not None:
+            z = numpy.loadtxt(filename)
+        else:
+            # frame numbers
+            z = numpy.arange(1, self.universe.trajectory.numframes+1)
+        if len(z) != self.universe.trajectory.numframes:
+            errmsg = "Not same number of orderparameters ({0}) as trajectory frames ({1})".format(
+                len(z), self.universe.trajectory.numframes)
+            logger.error(errmsg)
+            raise ValueError(errmsg)
+        return z
+
     def run(self, **kwargs):
         """Run HOLE on each specified frame."""
-        start = kwargs.pop('start', None)
-        stop = kwargs.pop('stop', None)
-        step = kwargs.pop('step', None)
+        from itertools import izip
+
+        start = kwargs.pop('start', self.start)
+        stop = kwargs.pop('stop', self.stop)
+        step = kwargs.pop('step', self.step)
+        hole_kw = self.hole_kwargs.copy()
+        hole_kw.update(kwargs)
+
+        profiles = {}  # index by orderparameters: NOTE: can overwrite!
 
         # better: if not a DCD, convert to DCD because HOLE can read it (does it need a PSF?)
-        # ... maybe faster than splitting
-        # into PDBs...
+        # ... maybe faster than splittinginto PDBs...
+        # but currently HOLE chokes on MDAnalysis-generated DCDs (header comment wrong/too long?)
+
+        # probably slow (especially with additional linking for filename length) --
+        # can't we do this in memory?? Or at least check that we can get a local tmp dir
+
+        # TODO: alternatively, dump all frames with leading framenumber and use a wildcard
+        #       (although the file renaming might create problems...)
         protein = self.universe.selectAtoms(self.selection)
-        for ts in u.trajectory[start:stop:step]:
+        for zeta,ts in izip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
+            logger.info("HOLE analysis frame %4d (orderparameter %g)", ts.frame, zeta)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             try:
                 protein.write(pdbfile)
-                # how to store output etc..., input requirid?
-                self.run_hole(pdbfile)
+                hole_profiles = self.run_hole(pdbfile, **hole_kw)
             finally:
                 try:
                     os.unlink(pdbfile)
                 except OSError:
                     pass
+            if len(hole_profiles) != 1:
+                err_msg = "Got {0} profiles ({1}) --- should be 1 (time step {2})".format(
+                    len(hole_profiles), hole_profiles.keys(), ts)
+                logger.error(err_msg)
+                warnings.warn(err_msg)
+            profiles[zeta] = hole_profiles.values()[0]
+        self.profiles = profiles
 
     def run_hole(self, pdbfile, **kwargs):
         """Run HOLE on a single PDB file *pdbfile*."""
-        raise NotImplementedError
-
+        H = HOLE(pdbfile, **kwargs)
+        H.run()
+        H.collect()
+        return H.profiles
 
