@@ -23,12 +23,12 @@ from MDAnalysis.tests.datafiles import GRO_velocity
 class TestGROVelocities(TestCase):
     def setUp(self):
         #reference velocities for the full 6-atom test case:
-        self.reference_velocities = numpy.array([[  1.227     ,  -0.57999998,   0.43399999],
+        self.reference_velocities = numpy.array([[  1.227     ,  -0.57999998,   0.43400002],
                [  8.08500004,   3.19099998,  -7.79099989],
-                      [ -9.04500008, -26.46899986,  13.18000031],
-                             [  2.51900005,   3.1400001 ,  -1.73399997],
-                                    [-10.64099979, -11.34899998,   0.257     ],
-                                           [ 19.42700005,  -8.2159996 ,  -0.244     ]], dtype=numpy.float32)
+                      [ -9.04500008, -26.46899986,  13.17999935],
+                             [  2.51899981,   3.1400001 ,  -1.73399997],
+                                    [-10.64100075, -11.34899998,   0.257     ],
+                                           [ 19.42700005,  -8.21600056 ,  -0.24399999 ]], dtype=numpy.float32)
         
 
     def testParse_velocities(self):
