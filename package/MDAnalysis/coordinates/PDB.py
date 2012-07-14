@@ -174,6 +174,14 @@ implemented. The Biopython Reader/Writer can be selected when loading data into
 a :class:`~MDAnalysis.core.AtomGroup.Universe` by providing the keyword
 *permissive* = ``False``.
 
+The Biopython PDB parser :class:`Bio.PDB.PDBParser` is fairly strict and even
+in its own permissive mode (which MDAnalysis employs) typically warns about
+missing element names with a
+:exc:`Bio.PDB.PDBExceptions.PDBConstructionWarning` . Such warnings, however,
+are generally harmless and therefore are filtered (and ignored) by MDAnalysis
+with the help of :func:`warnings.filterwarnings`.
+
+
 Classes
 ~~~~~~~
 
@@ -198,6 +206,11 @@ from __future__ import with_statement
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
     import Bio.PDB
+    import pdb.extensions
+    # disable PDBConstructionWarning from picky builder
+    import warnings
+    warnings.filterwarnings("ignore", category=Bio.PDB.PDBExceptions.PDBConstructionWarning,
+                            message="Could not assign element|Used element .* for Atom")
 except ImportError:
     # TODO: fall back to PrimitivePDBReader
     raise ImportError("No full-feature PDB I/O functionality. Install biopython.")
@@ -209,7 +222,6 @@ import numpy
 import MDAnalysis.core
 import MDAnalysis.core.util as util
 import base
-import pdb.extensions
 
 from MDAnalysis.topology.core import guess_atom_element
 from MDAnalysis.core.AtomGroup import Universe, AtomGroup
@@ -325,7 +337,7 @@ class PDBWriter(base.Writer):
     sophistiocated writer is employed).
 
     .. Note::
-    
+
        The standard PDBWriter can only write the *whole system*.  In
        order to write a selection, use the :class:`PrimitivePDBWriter` ,
        which happens automatically when the
@@ -344,13 +356,13 @@ class PDBWriter(base.Writer):
 
     def __init__(self, pdbfilename, universe=None, multi=False, **kwargs):
         """pdbwriter = PDBWriter(<pdbfilename>,universe=universe,**kwargs)
-        
+
         :Arguments:
           pdbfilename     filename; if multi=True, embed a %%d formatstring
                           so that write_next_timestep() can insert the frame number
-                        
+
           universe        supply a universe [really REQUIRED; optional only for compatibility]
-        
+
           multi           False: write a single structure to a single pdb
                           True: write all frames to multiple pdb files
         """
@@ -1260,7 +1272,7 @@ class MultiPDBWriter(PrimitivePDBWriter):
 
     .. _`PDB 3.2 standard`:
        http://www.wwpdb.org/documentation/format32/v3.2.html
-       
+
     .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
     .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
     .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
