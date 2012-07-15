@@ -83,6 +83,18 @@ except ImportError:
     use_cython = False
     cmdclass = {}
 
+# Handle cython version, has to be >=0.16 to support cython.parallel
+import subprocess
+try:
+    required_version = "0.16"
+    p = subprocess.Popen(['cython','-V'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    e, o = p.communicate()
+    v = o.split()[-1]
+    if not  int(v.replace(".","")) >= int(required_version.replace(".", "")): raise Exception()
+except Exception:
+    raise ImportError("Cython version %s (found %s) is required because it offers a handy parallelisation module" % (required_version, v, ))
+
+
 if __name__ == '__main__':
     RELEASE = "0.7.7-devel"     # NOTE: keep in sync with MDAnalysis.version in __init__.py
     with open("SUMMARY.txt") as summary:
@@ -143,6 +155,10 @@ if __name__ == '__main__':
                                      'src/xdrfile/xdrfile_trr.c',
                                      'src/xdrfile/xdrfile_xtc.c'],
                             include_dirs = include_dirs),
+                  Extension("analysis.cython.distances", 
+                            ["MDAnalysis/analysis/cython/distances.pyx"], 
+                            extra_compile_args=['-fopenmp'], 
+                            extra_link_args=['-fopenmp'],)
                   ]
 
     setup(name              = 'MDAnalysis',

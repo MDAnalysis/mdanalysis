@@ -68,5 +68,6 @@ Available analysis modules
 """
 __all__ = ['align', 'contacts', 'density', 'distances',
            'helanal', 'hbonds', 'leaflet', 'nuclinfo' ,
+           'cython',
            ]
 

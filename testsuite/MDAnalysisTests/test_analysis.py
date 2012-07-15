@@ -17,11 +17,14 @@
 
 import MDAnalysis
 import MDAnalysis.analysis.distances
+from MDAnalysis.analysis.cython.distances import distance_array, distance_array_serial
+from MDAnalysis.core.distances import distance_array as distance_array_reference
 import MDAnalysis.analysis.align
 import MDAnalysis.analysis.hbonds
 
 import numpy as np
 from numpy.testing import *
+from numpy.ma.testutils import assert_allclose
 from nose.plugins.attrib import attr
 
 import os
@@ -45,6 +48,25 @@ class TestContactMatrix(TestCase):
         del self.universe
         del self.dcd
 
+    def test_distance_array(self):
+        """
+        Test if cython (serial and parallel) distance matrices are the same as
+        MDAnalysis.core.distances.distance_array
+        """
+        # Create two random sets of 3N coordinates, in the same format
+        # as delivered by MDAnalysis coordinate readers
+        coord0 = np.random.random((100,3)).astype(np.float32)
+        coord1 = np.random.random((100,3)).astype(np.float32)
+        #U = self.universe
+        
+        cython_parallel = distance_array(coord0, coord1)
+        cython_serial = distance_array_serial(coord0, coord1)
+        cython_c = distance_array_reference(coord0, coord1)
+        
+        assert_allclose(cython_parallel, cython_c,  rtol=1e-6, atol=0, err_msg= "Cython parallel distance matrix does not match C")
+        assert_allclose(cython_serial, cython_c,  rtol=1e-6, atol=0,  err_msg= "Cython serial distance matrix does not match C")
+        
+        
     def test_numpy(self):
         U = self.universe
         self.dcd.rewind()
