@@ -97,6 +97,7 @@ Analysis
 
 .. autoclass:: HOLE
    :members:
+   :inherited-members:
 
    .. attribute:: profiles
 
@@ -107,6 +108,7 @@ Analysis
 
 .. autoclass:: HOLEtraj
    :members:
+   :inherited-members:
 
    .. attribute:: profiles
 
@@ -155,6 +157,7 @@ logger = logging.getLogger("MDAnalysis.analysis.hole")
 #: van der Waals radii are AMBER united atom from Weiner et al. (1984), JACS, vol 106 pp765-768.
 #: *Simple* - Only use one value for each element C O H etc.
 #: Added radii for K+, NA+, CL- (Pauling hydration radius from Hille 2002).
+#: The data file can be written with the convenience function :func:`write_simplerad2`.
 SIMPLE2_RAD = """
 remark: Time-stamp: <2005-11-21 13:57:55 oliver> [OB]
 remark: van der Waals radii: AMBER united atom
@@ -214,8 +217,19 @@ def seq2str(v):
         return ""
     return " ".join([str(x) for x in v])
 
-class PlotHOLE(object):
-    """Baseclass for HOLE analysis, providing plotting"""
+class BaseHOLE(object):
+    """Baseclass for HOLE analysis, providing plotting and utility functions"""
+
+    def save(self, filename="hole.pickle"):
+        """Save :attr:`profiles` as a Python pickle file *filename*.
+
+        Load profiles dictionary with ::
+           import cPickle
+           profiles = cPickle.load(open(filename))
+
+        """
+        import cPickle
+        cPickle.dump(self.profiles, open(filename, "wb"), cPickle.HIGHEST_PROTOCOL)
 
     def _process_plot_kwargs(self, kwargs):
         import matplotlib.colors
@@ -351,7 +365,7 @@ class PlotHOLE(object):
         plt.draw()
 
 
-class HOLE(PlotHOLE):
+class HOLE(BaseHOLE):
     """Run HOLE on a single frame or a DCD trajectory.
 
     Only a subset of all `HOLE control parameters`_ is supported and can be set
@@ -545,7 +559,7 @@ class HOLE(PlotHOLE):
                [ ["SOL","WAT", "TIP", "HOH", "K  ", "NA ", "CL "] ]
 
           *radius*
-               Path to the radii; if set to None then a set of default radii
+               Path to the radii; if set to None then a set of default radii, :data:`SIMPLE2_RAD`,
                is used (an extension of ``simple.rad`` from the HOLE distribution)
 
                This specifies the name for the file specifying van der Waals
@@ -903,7 +917,7 @@ class HOLE(PlotHOLE):
             shutil.rmtree(d, ignore_errors=True)
 
 
-class HOLEtraj(PlotHOLE):
+class HOLEtraj(BaseHOLE):
     """Analyze all frames in a trajectory.
 
     The :class:`HOLE` class provides a direct interface to HOLE. HOLE itself
@@ -987,8 +1001,8 @@ class HOLEtraj(PlotHOLE):
         # TODO: alternatively, dump all frames with leading framenumber and use a wildcard
         #       (although the file renaming might create problems...)
         protein = self.universe.selectAtoms(self.selection)
-        for zeta,ts in izip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
-            logger.info("HOLE analysis frame %4d (orderparameter %g)", ts.frame, zeta)
+        for q,ts in izip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
+            logger.info("HOLE analysis frame %4d (orderparameter %g)", ts.frame, q)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             try:
                 protein.write(pdbfile)
@@ -1003,7 +1017,7 @@ class HOLEtraj(PlotHOLE):
                     len(hole_profiles), hole_profiles.keys(), ts)
                 logger.error(err_msg)
                 warnings.warn(err_msg)
-            profiles[zeta] = hole_profiles.values()[0]
+            profiles[q] = hole_profiles.values()[0]
         self.profiles = profiles
 
     def run_hole(self, pdbfile, **kwargs):
