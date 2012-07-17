@@ -83,17 +83,13 @@ except ImportError:
     use_cython = False
     cmdclass = {}
 
-# Handle cython version, has to be >=0.16 to support cython.parallel
-import subprocess
-try:
+if use_cython:
+    # cython has to be >=0.16 to support cython.parallel
+    import Cython
     required_version = "0.16"
-    p = subprocess.Popen(['cython','-V'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    e, o = p.communicate()
-    v = o.split()[-1]
-    if not  int(v.replace(".","")) >= int(required_version.replace(".", "")): raise Exception()
-except Exception:
-    raise ImportError("Cython version %s (found %s) is required because it offers a handy parallelisation module" % (required_version, v, ))
-
+    if not int(Cython.__version__.replace(".","")) >= int(required_version.replace(".", "")):
+        raise ImportError("Cython version %s (found %s) is required because it offers a handy parallelisation module" % (required_version, Cython.__version__))
+    del Cython
 
 if __name__ == '__main__':
     RELEASE = "0.7.7-devel"     # NOTE: keep in sync with MDAnalysis.version in __init__.py
@@ -135,9 +131,15 @@ if __name__ == '__main__':
                             libraries = ['m'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
+                  Extension("core.parallel.distances",
+                            ['src/numtools/distances_parallel.%s' % ("pyx" if use_cython else "c")],
+                            include_dirs=include_dirs,
+                            libraries = ['m'],
+                            extra_compile_args=['-fopenmp'],
+                            extra_link_args=['-fopenmp']),
                   Extension('core.qcprot', ['src/pyqcprot/pyqcprot.%s' % ("pyx" if use_cython else "c")],
                             include_dirs=include_dirs,
-                            extra_compile_args=["-O3","-ffast-math"]),
+                            extra_compile_args=["-O3", "-ffast-math"]),
                   Extension('core._transformations', ['src/transformations/transformations.c'],
                             libraries = ['m'],
                             define_macros=define_macros,
@@ -155,10 +157,6 @@ if __name__ == '__main__':
                                      'src/xdrfile/xdrfile_trr.c',
                                      'src/xdrfile/xdrfile_xtc.c'],
                             include_dirs = include_dirs),
-                  Extension("analysis.cython.distances", 
-                            ["MDAnalysis/analysis/cython/distances.pyx"], 
-                            extra_compile_args=['-fopenmp'], 
-                            extra_link_args=['-fopenmp'],)
                   ]
 
     setup(name              = 'MDAnalysis',
@@ -172,7 +170,10 @@ if __name__ == '__main__':
                                'GridDataFormats'],
           provides          = ['MDAnalysis'],
           license           = 'GPL 2',
-          packages          = [ 'MDAnalysis', 'MDAnalysis.core', 'MDAnalysis.topology',
+          packages          = [ 'MDAnalysis',
+                                'MDAnalysis.core',
+                                'MDAnalysis.core.parallel',
+                                'MDAnalysis.topology',
                                 'MDAnalysis.selections',
                                 'MDAnalysis.coordinates',
                                 'MDAnalysis.coordinates.xdrfile',
