@@ -21,7 +21,7 @@ Generation and Analysis of HOLE pore profiles --- :mod:`MDAnalysis.analysis.hole
 
 :Author: Lukas, Stelzl, Oliver Beckstein
 :Year: 2011-2012
-:Copyright: GNU Public License v3
+:Copyright: GNU Public License v2
 
 With the help of this module, HOLE_ can be run on frames in a trajectory. Data
 can be combined and analyzed. HOLE_ [Smart1993]_ [Smart1996]_ must be installed
@@ -29,8 +29,11 @@ separately.
 
 .. _HOLE: http://hole.biop.ox.ac.uk/hole
 
-Example
--------
+Examples
+--------
+
+Single structure
+~~~~~~~~~~~~~~~~
 
 Gramicidin A (gA) channel::
    from MDAnalysis.analysis.hole import HOLE, HOLEtraj
@@ -42,6 +45,9 @@ Gramicidin A (gA) channel::
    H.plot(linewidth=3, color="black", label=False)
 
 
+Trajectory
+~~~~~~~~~~
+
 Analyzing a trajectory::
 
   u = MDAnalysis.Universe(psf, trajectory)
@@ -52,6 +58,37 @@ Analyzing a trajectory::
 "rmsd.dat" is file with orderparameters, one for each frame in the
 trajectory. The profiles are available as the attribute
 :attr:`HOLEtraj.profiles` (``H.profiles`` in the example).
+
+
+Trajectory with RMSD as order parameter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In order to classify the HOLE profiles the RMSD to a reference structure is
+calculated for each tracjectory frame. Then the HOLE profiles can be ordered by
+the RMSD, which acts as an order parameter. ::
+
+  import MDAnalysis.analysis.hole
+  import MDAnalysis.analysis.rms
+  MDAnalysis.start_logging()
+  ref = MDAnalysis.Universe("ref.psf", "ref.pdb")         # reference structure
+  u = MDAnalysis.Universe("ref.psf", "traj.xtc")          # trajectory
+
+  # calculate RMSD
+  R = MDAnalysis.analysis.rms.RMSD(u, reference=ref, select="protein", mass_weighted=True)
+  R.run()
+
+  # HOLE analysis with order parameters
+  H = MDAnalysis.analysis.hole.HOLEtraj(u, cvect=[0,0,1], orderparameters=R.rmsd[:,2])
+  H.run()
+
+The :attr:`HOLEtraj.profiles` dictionary will have the order parameter as key
+for each frame. The plot functions will automatically sort the profiles by
+ascending order parameter. To access the individual profiles one can simply
+iterate over the sorted profiles (see :meth:`HOLEtraj.sorted_profiles_iter`) ::
+
+  for q, profile in H:
+     print "orderparameter = %g" % q
+     print "min(R) = %g" % profile.R.min()
 
 
 Data structures
@@ -363,6 +400,18 @@ class BaseHOLE(object):
         ax.set_ylabel("frame")
         ax.set_zlabel(r"HOLE radius $r$")
         plt.draw()
+
+    def sorted_profile_iter(self):
+        """Return an iterator over profiles sorted by frame/order parameter *q*.
+
+        The iterator produces tuples ``(q, profile)``.
+        """
+        if self.profiles is None:
+            raise StopIteration
+        for q in sorted(self.profiles):
+            yield (q, self.profiles[q])
+
+    __iter__ = sorted_profile_iter
 
 
 class HOLE(BaseHOLE):
@@ -939,8 +988,8 @@ class HOLEtraj(BaseHOLE):
                to slice the trajectory.)
 
           *orderparameters*
-               Text file with list of numbers corresponding to the frames in the
-               trajectory.
+               Sequence or text file with list of numbers corresponding to the
+               frames in the trajectory.
         """
         self.universe = universe
         self.selection = kwargs.pop("selection", "protein")
@@ -955,7 +1004,7 @@ class HOLEtraj(BaseHOLE):
         self.hole_kwargs = kwargs
 
         # processing
-        self.orderparameters = self._read_orderparameters(self.orderparametersfile)
+        self.orderparameters = self._process_orderparameters(self.orderparametersfile)
 
     def guess_cpoint(self, **kwargs):
         """Guess a point inside the pore.
@@ -965,19 +1014,29 @@ class HOLEtraj(BaseHOLE):
         """
         return self.universe.selectAtoms(kwargs.get("selection", "protein")).centerOfGeometry()
 
-    def _read_orderparameters(self, filename):
-        """Read orderparameters from *filename* or assign frame numbers from trajectory"""
-        if filename is not None:
-            z = numpy.loadtxt(filename)
-        else:
+    def _process_orderparameters(self, data):
+        """Read orderparameters from *data*
+
+        * If *data* is a string: Read orderparameters from *filename*.
+        * If data is a array/list: use as is
+        * If ``None``: assign frame numbers from trajectory
+        """
+        if isinstance(data, basestring):
+            q = numpy.loadtxt(data)
+        elif data is None:
             # frame numbers
-            z = numpy.arange(1, self.universe.trajectory.numframes+1)
-        if len(z) != self.universe.trajectory.numframes:
+            q = numpy.arange(1, self.universe.trajectory.numframes+1)
+        else:
+            q = numpy.asarray(data)
+
+        if len(q.shape) != 1:
+            raise TypeError("Order parameter array must be 1D.")
+        if len(q) != self.universe.trajectory.numframes:
             errmsg = "Not same number of orderparameters ({0}) as trajectory frames ({1})".format(
-                len(z), self.universe.trajectory.numframes)
+                len(q), self.universe.trajectory.numframes)
             logger.error(errmsg)
             raise ValueError(errmsg)
-        return z
+        return q
 
     def run(self, **kwargs):
         """Run HOLE on each specified frame."""
