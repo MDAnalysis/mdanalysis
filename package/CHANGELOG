@@ -11,13 +11,19 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/?? orbeckst
+??/??/?? danny.parton, jandom, orbeckst
 
   * 0.8 (?)
 
   Enhancements
 
+  * multithreaded distance_array() (Issue 80, experimental); see the 
+    new core.parallel.distance module
   * MDAnalysis.analysis.rms for simple RMSD analysis
+
+  Fixes
+
+  * fixed Issue 115 (GROReader now uses fixed-column width format to read GRO files)
 
 
 06/30/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy, lukas.grossar, denniej0, danny.parton
@@ -87,7 +93,7 @@ The rules for this file:
     atom type as an integer (such as the AMBER parser)
   * fixed Issue 111 (NAN in pycpqrot and RMSD calculation)
   * fixed Issue 113 (replaced outdated Biopython to call ClustalW)
-  * fixed Issue 115 (GROReader now uses fixed-column width format to read GRO files)
+
 
 02/16/12 sebastien.buchoux
 
