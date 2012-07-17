@@ -49,6 +49,7 @@ has to import them from :mod:`MDAnalysis.analysis`, for instance ::
    analysis/hole
    analysis/leaflet
    analysis/nuclinfo
+   analysis/rms
 
 
    
