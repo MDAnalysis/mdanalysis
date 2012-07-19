@@ -22,11 +22,13 @@ The :mod:`MDAnalysis.core.parallel` module contains implementations of
 standard functions that can make use of parallelization available on
 modern multi-core processors.
 
-.. Note::
+.. Warning::
 
    Using parallel code is under active development in MDAnalysis and
    it is possible that the parallel code has some bugs or
    incompatibilities or less features than the serial code.
+
+.. automodule:: MDAnalysis.core.parallel.distances
 
 """
 

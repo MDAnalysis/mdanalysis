@@ -16,20 +16,24 @@
 #
 
 """
-Fast parallel distance array computation
-========================================
+Fast parallel distance array computation --- :mod:`MDAnalysis.core.parallel.distances`
+======================================================================================
 
 :Author:  Jan Domański
 :Year:    2012
 :Licence: GPL
-.. versionadded:: 0.8
 
 A fast, parallel :func:`distance_array` function as a substitute for
 :func:`MDAnalysis.core.distances.distance_array`; implemented with
-`Cython Parallelism`_.
+`Cython Parallelism`_. For development notes see the comments for
+`Issue 80`_.
 
-.. Cython Parallelism:
-   http://docs.cython.org/src/userguide/parallelism.html
+.. _Cython Parallelism: http://docs.cython.org/src/userguide/parallelism.html
+.. _Issue 80: https://code.google.com/p/mdanalysis/issues/detail?id=80
+
+Load the module with ::
+
+  import MDAnalysis.core.parallel.distances
 
 
 .. function:: distance_array(ref,conf)

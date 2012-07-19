@@ -126,8 +126,9 @@ function and then feed the resulting dictionary to :func:`rms_fit_trj`::
 
    :mod:`MDAnalysis.core.qcprot`
         implements the fast RMSD algorithm.
-   :mod:`MDAnalysis.core.rms`
-        contains functions to compute RMSD
+   :mod:`MDAnalysis.analysis.rms`
+        contains functions to compute RMSD (when structural alignment is not
+        required)
 
 
 Functions
