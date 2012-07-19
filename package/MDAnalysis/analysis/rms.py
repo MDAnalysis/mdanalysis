@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
@@ -28,12 +28,21 @@ Calculating root mean square quantities --- :mod:`MDAnalysis.analysis.rms`
 The module contains code to analyze root mean square quantities such
 as the RMSD or RMSF (not implemented yet).
 
+This module uses the fast QCP algorithm [Theobald2005]_ to calculate
+the root mean square distance (RMSD) between two coordinate sets (as
+implemented in
+:func:`MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix`).
+
+When using this module in published work please cite [Theobald2005]_.
+
 .. SeeAlso::
 
    :mod:`MDAnalysis.analysis.align`
        aligning structures based on RMSD
    :mod:`MDAnalysis.core.qcprot`
         implements the fast RMSD algorithm.
+
+
 
 Functions
 ---------
@@ -44,6 +53,12 @@ Analysis classes
 ----------------
 
 .. autoclass:: RMSD
+   :members:
+
+   .. attribute:: rmsd
+
+      Results are stored in this N×3 :class:`numpy.ndarray` array,
+      (frame, time (ps), RMSD (Å)).
 
 """
 
@@ -72,6 +87,9 @@ def rmsd(a,b, weights=None):
 
     The *weights* can be an array of length N, containing e.g. masses
     for a weighted RMSD calculation.
+
+    The function uses Douglas Theobald's fast QCP algorithm
+    [Theobald2005]_ to calculate the RMSD.
 
     Example::
      >>> u = Universe(PSF,DCD)
@@ -141,6 +159,10 @@ class RMSD(object):
 
        frame    time (ps)    RMSD (A)
 
+    This class uses Douglas Theobald's fast QCP algorithm
+    [Theobald2005]_ to calculate the RMSD.
+
+    .. versionadded:: 0.8
     """
     def __init__(self, traj, reference=None, select='all', filename="rmsd.dat", mass_weighted=False, tol_mass=0.1,
                  ref_frame=0):
@@ -157,6 +179,8 @@ class RMSD(object):
              reference coordinates; :class:`MDAnalysis.Universe` object; if ``None``
              the *traj* is used (uses the current time step of the object) [``None``]
           *select*
+             The selection to operate on; can be one of:
+
              1. any valid selection string for
                 :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
                 selections in *mobile* and *reference*; or
@@ -253,8 +277,7 @@ class RMSD(object):
             weight = None
 
         # reference centre of mass system
-        # (compatibility with pre 1.0 numpy: explicitly cast coords to float32)
-        ref_com = self.ref_atoms.centerOfMass().astype(numpy.float32)
+        ref_com = self.ref_atoms.centerOfMass()
         current_frame = self.reference.trajectory.ts.frame - 1
         try:
             self.reference.trajectory[ref_frame]
@@ -280,6 +303,7 @@ class RMSD(object):
             traj_coordinates[:] = traj_atoms.coordinates() - x_com
 
             rmsd[k,:2] = ts.frame, trajectory.time
+            # only calculate RMSD by setting the Rmatrix to None
             rmsd[k,2] = qcp.CalcRMSDRotationalMatrix(ref_coordinates_T_64,
                                                      traj_coordinates.T.astype(numpy.float64),
                                                      natoms, None, weight)

@@ -61,8 +61,9 @@ When using MDAnalysis in published work, please cite
 
 .. rubric:: Included algorithms
 
-If you use the RMSD alignment code (:mod:`MDAnalysis.analysis.align`)
-that uses the :mod:`~MDAnalysis.core.qcprot` module please also cite
+If you use the RMSD calculation (:mod:`MDAnalysis.analysis.rms`) or
+alignment code (:mod:`MDAnalysis.analysis.align`) that uses the
+:mod:`~MDAnalysis.core.qcprot` module please also cite
 
 *   Douglas L. Theobald. Rapid calculation of RMSD using a
     quaternion-based characteristic polynomial. *Acta

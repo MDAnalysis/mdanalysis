@@ -25,19 +25,30 @@ Coordinate fitting and alignment --- :mod:`MDAnalysis.analysis.align`
 
 The module contains functions to fit a target structure to a reference
 structure. They use the fast QCP algorithm to calculate the root mean
-square distance (RMSD) between two coordinate sets and the rotation
-matrix *R* that minimizes the RMSD.
+square distance (RMSD) between two coordinate sets [Theobald2005]_ and
+the rotation matrix *R* that minimizes the RMSD [Liu2010]_. (Please
+cite these references when using this module.).
 
 Typically, one selects a group of atoms (such as the C-alphas),
-calculate the RMSD and transformation matrix, and apply the
+calculates the RMSD and transformation matrix, and applys the
 transformation to the current frame of a trajectory to obtain the
 rotated structure. The :func:`alignto` and :func:`rms_fit_trj`
 functions can be used to do this for individual frames and
 trajectories respectively.
 
-The RMS-fitting tutorial below shows how to do the individual steps
+The :ref:`RMS-fitting-tutorial` shows how to do the individual steps
 manually and explains the intermediate steps.
 
+.. SeeAlso::
+
+   :mod:`MDAnalysis.analysis.rms`
+        contains functions to compute RMSD (when structural alignment is not
+        required)
+   :mod:`MDAnalysis.core.qcprot`
+        implements the fast RMSD algorithm.
+
+
+.. _RMS-fitting-tutorial:
 
 RMS-fitting tutorial
 --------------------
@@ -121,14 +132,6 @@ function and then feed the resulting dictionary to :func:`rms_fit_trj`::
    >>> rms_fit_trj(trj, ref, filename='rmsfit.dcd', select=seldict)
 
 (See the documentation of the functions for this advanced usage.)
-
-.. SeeAlso::
-
-   :mod:`MDAnalysis.core.qcprot`
-        implements the fast RMSD algorithm.
-   :mod:`MDAnalysis.analysis.rms`
-        contains functions to compute RMSD (when structural alignment is not
-        required)
 
 
 Functions

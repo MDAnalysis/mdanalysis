@@ -92,20 +92,22 @@ A full description of the method, along with the original C implementation can
 be found at http://theobald.brandeis.edu/qcp/
 
 .. SeeAlso:: The :func:`CalcRMSDRotationalMatrix` function is used in
-             :mod:`MDAnalysis.analysis.align`.
+             :mod:`MDAnalysis.analysis.align` and
+             :mod:`MDAnalysis.analysis.rmsd`.
 
 References
 ----------
 
-If you use this QCP rotation calculation method in a publication, please reference:
+If you use this QCP rotation calculation method in a publication, please
+reference:
 
 .. [Theobald2005] Douglas L. Theobald (2005)
-   "Rapid calculation of RMSD using a quaternion-based characteristic polynomial."
-   Acta Crystallographica A 61(4):478-480.
+   "Rapid calculation of RMSD using a quaternion-based characteristic
+   polynomial."  Acta Crystallographica A 61(4):478-480.
 
 .. [Liu2010] Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald (2010)
-   "Fast determination of the optimal rotational matrix for macromolecular superpositions."
-   J. Comput. Chem. 31, 1561-1563.
+   "Fast determination of the optimal rotational matrix for macromolecular
+   superpositions."  J. Comput. Chem. 31, 1561-1563.
 
 .. _PyQCPROT: https://github.com/synapticarbors/pyqcprot
 
