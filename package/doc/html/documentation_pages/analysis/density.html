@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.4. Generating densities from trajectories — MDAnalysis.analysis.density &mdash; MDAnalysis 0.7.6 documentation</title>
+    <title>3.3. Generating densities from trajectories — MDAnalysis.analysis.density &mdash; MDAnalysis 0.7.7-devel documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.7-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,13 +26,13 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.6 documentation"
+          title="Search within MDAnalysis 0.7.7-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.6 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.7-devel documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
-    <link rel="next" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" />
-    <link rel="prev" title="3.3. Distance analysis — MDAnalysis.distances" href="distances.html" /> 
+    <link rel="next" title="3.4. Distance analysis — MDAnalysis.distances" href="distances.html" />
+    <link rel="prev" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts" href="contacts.html" /> 
   </head>
   <body>
     <div class="related">
@@ -45,12 +45,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="gnm.html" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
+          <a href="distances.html" title="3.4. Distance analysis — MDAnalysis.distances"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="distances.html" title="3.3. Distance analysis — MDAnalysis.distances"
+          <a href="contacts.html" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -61,19 +61,19 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">3.4. Generating densities from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a><ul>
-<li><a class="reference internal" href="#generating-a-density-from-a-md-trajectory">3.4.1. Generating a density from a MD trajectory</a></li>
-<li><a class="reference internal" href="#classes-and-functions">3.4.2. Classes and Functions</a></li>
+<li><a class="reference internal" href="#">3.3. Generating densities from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a><ul>
+<li><a class="reference internal" href="#generating-a-density-from-a-md-trajectory">3.3.1. Generating a density from a MD trajectory</a></li>
+<li><a class="reference internal" href="#classes-and-functions">3.3.2. Classes and Functions</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="distances.html"
-                        title="previous chapter">3.3. Distance analysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
+  <p class="topless"><a href="contacts.html"
+                        title="previous chapter">3.2. Native contacts analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="gnm.html"
-                        title="next chapter">3.5. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></p>
+  <p class="topless"><a href="distances.html"
+                        title="next chapter">3.4. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/analysis/density.txt"
@@ -101,7 +101,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.analysis.density"></span><div class="section" id="generating-densities-from-trajectories-mdanalysis-analysis-density">
-<h1>3.4. Generating densities from trajectories &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.density" title="MDAnalysis.analysis.density"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a><a class="headerlink" href="#generating-densities-from-trajectories-mdanalysis-analysis-density" title="Permalink to this headline">¶</a></h1>
+<h1>3.3. Generating densities from trajectories &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.density" title="MDAnalysis.analysis.density"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a><a class="headerlink" href="#generating-densities-from-trajectories-mdanalysis-analysis-density" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -117,7 +117,7 @@
 <p>The module provides classes and functions to represent volumetric data, in
 particular densities.</p>
 <div class="section" id="generating-a-density-from-a-md-trajectory">
-<h2>3.4.1. Generating a density from a MD trajectory<a class="headerlink" href="#generating-a-density-from-a-md-trajectory" title="Permalink to this headline">¶</a></h2>
+<h2>3.3.1. Generating a density from a MD trajectory<a class="headerlink" href="#generating-a-density-from-a-md-trajectory" title="Permalink to this headline">¶</a></h2>
 <p>As an input a trajectory is required that</p>
 <ol class="arabic simple">
 <li>Has been centered on the protein of interest.</li>
@@ -146,7 +146,7 @@ as a NumPy array in <tt class="xref py py-attr docutils literal"><span class="pr
 any manner.</p>
 </div>
 <div class="section" id="classes-and-functions">
-<h2>3.4.2. Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
+<h2>3.3.2. Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.density.Density">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">Density</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density" title="Permalink to this definition">¶</a></dt>
@@ -164,7 +164,7 @@ rest should work for an array of any dimension.</p>
 <p>If the input histogram consists of counts per cell then the
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><tt class="xref py py-meth docutils literal"><span class="pre">Density.make_density()</span></tt></a> method converts the grid to a physical density. For
 a probability density, divide it by <tt class="xref py py-meth docutils literal"><span class="pre">Density.grid.sum()</span></tt> or use <tt class="docutils literal"><span class="pre">normed=True</span></tt>
-right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.7.dev-36681eb)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
+right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.8.dev-436a28f)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
 <p>The user <em>should</em> set the <em>parameters</em> keyword (see docs for the
 constructor); in particular, if the data are already a density, one must
 set <em>isDensity</em> == <tt class="docutils literal"><span class="pre">True</span></tt> because there is no reliable way to detect if
@@ -229,7 +229,7 @@ that the length- and the density unit correspond to each other.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>grid</em></dt>
-<dd><p class="first last">histogram or density, typically a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-36681eb)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></p>
+<dd><p class="first last">histogram or density, typically a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8.dev-436a28f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></p>
 </dd>
 <dt><em>edges</em></dt>
 <dd><p class="first last">list of arrays, the lower and upper bin edges along the axes</p>
@@ -904,12 +904,12 @@ regenerated from the saved data with</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="gnm.html" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
+          <a href="distances.html" title="3.4. Distance analysis — MDAnalysis.distances"
              >next</a> |</li>
         <li class="right" >
-          <a href="distances.html" title="3.3. Distance analysis — MDAnalysis.distances"
+          <a href="contacts.html" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -918,7 +918,7 @@ regenerated from the saved data with</p>
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.9. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo &mdash; MDAnalysis 0.7.6 documentation</title>
+    <title>3.10. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo &mdash; MDAnalysis 0.7.7-devel documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.7-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,13 +26,13 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.6 documentation"
+          title="Search within MDAnalysis 0.7.7-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.6 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.7-devel documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
-    <link rel="next" title="4. Topology modules" href="../topology_modules.html" />
-    <link rel="prev" title="3.8. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" /> 
+    <link rel="next" title="3.11. Calculating root mean square quantities — MDAnalysis.analysis.rms" href="rms.html" />
+    <link rel="prev" title="3.9. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" /> 
   </head>
   <body>
     <div class="related">
@@ -45,12 +45,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../topology_modules.html" title="4. Topology modules"
+          <a href="rms.html" title="3.11. Calculating root mean square quantities — MDAnalysis.analysis.rms"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="leaflet.html" title="3.8. Leaflet identification — MDAnalysis.analysis.leaflet"
+          <a href="leaflet.html" title="3.9. Leaflet identification — MDAnalysis.analysis.leaflet"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -61,20 +61,20 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">3.9. Nucleic acid analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a><ul>
-<li><a class="reference internal" href="#distances">3.9.1. Distances</a></li>
-<li><a class="reference internal" href="#phases">3.9.2. Phases</a></li>
-<li><a class="reference internal" href="#dihedral-angles">3.9.3. Dihedral angles</a></li>
+<li><a class="reference internal" href="#">3.10. Nucleic acid analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a><ul>
+<li><a class="reference internal" href="#distances">3.10.1. Distances</a></li>
+<li><a class="reference internal" href="#phases">3.10.2. Phases</a></li>
+<li><a class="reference internal" href="#dihedral-angles">3.10.3. Dihedral angles</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="leaflet.html"
-                        title="previous chapter">3.8. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
+                        title="previous chapter">3.9. Leaflet identification &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../topology_modules.html"
-                        title="next chapter">4. Topology modules</a></p>
+  <p class="topless"><a href="rms.html"
+                        title="next chapter">3.11. Calculating root mean square quantities &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/analysis/nuclinfo.txt"
@@ -102,7 +102,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.analysis.nuclinfo"></span><div class="section" id="nucleic-acid-analysis-mdanalysis-analysis-nuclinfo">
-<h1>3.9. Nucleic acid analysis &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.nuclinfo" title="MDAnalysis.analysis.nuclinfo"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a><a class="headerlink" href="#nucleic-acid-analysis-mdanalysis-analysis-nuclinfo" title="Permalink to this headline">¶</a></h1>
+<h1>3.10. Nucleic acid analysis &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.nuclinfo" title="MDAnalysis.analysis.nuclinfo"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a><a class="headerlink" href="#nucleic-acid-analysis-mdanalysis-analysis-nuclinfo" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -146,7 +146,7 @@ doi: <a class="reference external" href="http://dx.doi.org/10.1021/ja211328g">10
 </tbody>
 </table>
 <div class="section" id="distances">
-<h2>3.9.1. Distances<a class="headerlink" href="#distances" title="Permalink to this headline">¶</a></h2>
+<h2>3.10.1. Distances<a class="headerlink" href="#distances" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.wc_pair">
 <tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">wc_pair</tt><big>(</big><em>universe</em>, <em>i</em>, <em>bp</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.wc_pair" title="Permalink to this definition">¶</a></dt>
@@ -234,7 +234,7 @@ resid of the first base</p>
 
 </div>
 <div class="section" id="phases">
-<h2>3.9.2. Phases<a class="headerlink" href="#phases" title="Permalink to this headline">¶</a></h2>
+<h2>3.10.2. Phases<a class="headerlink" href="#phases" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.phase_cp">
 <tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">phase_cp</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.phase_cp" title="Permalink to this definition">¶</a></dt>
@@ -298,7 +298,7 @@ using the CP method</p>
 
 </div>
 <div class="section" id="dihedral-angles">
-<h2>3.9.3. Dihedral angles<a class="headerlink" href="#dihedral-angles" title="Permalink to this headline">¶</a></h2>
+<h2>3.10.3. Dihedral angles<a class="headerlink" href="#dihedral-angles" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.tors">
 <tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">tors</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors" title="Permalink to this definition">¶</a></dt>
@@ -575,12 +575,12 @@ as documented by charmm force field parameters.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../topology_modules.html" title="4. Topology modules"
+          <a href="rms.html" title="3.11. Calculating root mean square quantities — MDAnalysis.analysis.rms"
              >next</a> |</li>
         <li class="right" >
-          <a href="leaflet.html" title="3.8. Leaflet identification — MDAnalysis.analysis.leaflet"
+          <a href="leaflet.html" title="3.9. Leaflet identification — MDAnalysis.analysis.leaflet"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -589,7 +589,7 @@ as documented by charmm force field parameters.</p>
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

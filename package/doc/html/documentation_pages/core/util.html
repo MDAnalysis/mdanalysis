@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis 0.7.6 documentation</title>
+    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis 0.7.7-devel documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.7-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.6 documentation"
+          title="Search within MDAnalysis 0.7.7-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.6 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.7-devel documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.10. Setting up logging — MDAnalysis.core.log" href="log.html" />
     <link rel="prev" title="7.8. Constants and unit conversion — MDAnalysis.core.units" href="units.html" /> 
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -167,6 +167,21 @@
 <dt id="MDAnalysis.core.util.greedy_splitext">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">greedy_splitext</tt><big>(</big><em>p</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.greedy_splitext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split extension in path <em>p</em> at the left-most separator.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.util.which">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">which</tt><big>(</big><em>program</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.which" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine full path of executable <em>program</em> on <span class="target" id="index-0"></span><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt>.</p>
+<p>(Jay at <a class="reference external" href="http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python">http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python</a>)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.util.realpath">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">realpath</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.realpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join all args and return the real path, rooted at /.</p>
+<p>Expands &#8216;~&#8217;, &#8216;~user&#8217;, and environment variables such as $HOME.</p>
+<p>Returns <tt class="docutils literal"><span class="pre">None</span></tt> if any of the args is <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
 </dd></dl>
 
 </div>
@@ -331,7 +346,7 @@ aa codes are converted to 3-letter codes</td>
 <dt id="MDAnalysis.core.util.norm">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">norm</tt><big>(</big><em>v</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the length of a vector, <tt class="docutils literal"><span class="pre">sqrt(v.v)</span></tt>.</p>
-<p>Faster than <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v1.7.dev-36681eb)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></tt></a> because no frills.</p>
+<p>Faster than <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v1.8.dev-436a28f)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></tt></a> because no frills.</p>
 </dd></dl>
 
 <dl class="function">
@@ -378,7 +393,7 @@ aa codes are converted to 3-letter codes</td>
         <li class="right" >
           <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -387,7 +402,7 @@ aa codes are converted to 3-letter codes</td>
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
