@@ -195,6 +195,14 @@ class NoDataError(ValueError):
 class FormatError(EnvironmentError):
     """Raised when there appears to be a problem with format of input files."""
 
+class ApplicationError(OSError):
+    """Raised when an external application failed.
+
+    The error code is specific for the application.
+
+    .. versionadded:: 0.8
+    """
+
 class SelectionWarning(Warning):
     """Warning indicating a possible problem with a selection."""
 

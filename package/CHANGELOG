@@ -19,6 +19,7 @@ The rules for this file:
 
   * multithreaded distance_array() (Issue 80, experimental); see the 
     new core.parallel.distance module
+  * MDAnalysis.analysis.rms for simple RMSD analysis
 
   Fixes
 

@@ -34,6 +34,9 @@ Files and directories
 
 .. autofunction:: greedy_splitext
 
+.. autofunction:: which
+
+.. autofunction:: realpath
 
 Containers and lists
 --------------------
@@ -189,6 +192,37 @@ def greedy_splitext(p):
         if not ext:
             break
     return root, extension
+
+def which(program):
+    """Determine full path of executable *program* on :envvar:`PATH`.
+
+    (Jay at http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python)
+    """
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+    fpath, fname = os.path.split(program)
+    if fpath:
+        real_program = realpath(program)
+        if is_exe(real_program):
+            return real_program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+    return None
+
+def realpath(*args):
+    """Join all args and return the real path, rooted at /.
+
+    Expands '~', '~user', and environment variables such as $HOME.
+
+    Returns ``None`` if any of the args is ``None``.
+    """
+    if None in args:
+        return None
+    return os.path.realpath(os.path.expanduser(os.path.expandvars(os.path.join(*args))))
+
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""

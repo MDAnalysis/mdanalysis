@@ -32,15 +32,22 @@ Available analysis modules
     Fitting and aligning of coordinate frames, including the option to
     use a sequence alignment to define equivalent atoms to fit on.
 
-:mod:`~MDAnalysis.analysis.distances`
-    Functions to calculate distances between atoms and selections; it
-    contains the often-used
-    :func:`~MDAnalysis.analysis.distances.distance_array` function.
+:mod:`~MDAnalysis.analysis.contacts`
+    Analyse the number of native contacts relative to a reference
+    state, also known as a "q1-q2" analysis.
 
 :mod:`~MDAnalysis.analysis.density`
     Creating and manipulating densities such as the density ow water
     molecules around a protein. Makes use of the external
     GridDataFormats_ package.
+
+:mod:`~MDAnalysis.analysis.distances`
+    Functions to calculate distances between atoms and selections; it
+    contains the often-used
+    :func:`~MDAnalysis.analysis.distances.distance_array` function.
+
+:mod:`~MDAnalysis.analysis.hbonds`
+    Analyze hydrogen bonds.
 
 :mod:`~MDAnalysis.analysis.helanal`
     Analysis of helices with the HELANAL_ algorithm.
@@ -50,17 +57,13 @@ Available analysis modules
     a bilayer; the algorithm can deal with any deformations as long as
     the two leaflets are topologically distinct.
 
-:mod:`~MDAnalysis.analysis.contacts`
-    Analyse the number of native contacts relative to a reference
-    state, also known as a "q1-q2" analysis.
-
-:mod:`~MDAnalysis.analysis.hbonds`
-    Analyze hydrogen bonds.
-
 :mod:`~MDAnalysis.analysis.nuclinfo`
     Analyse the nucleic acid for the backbone dihedrals, chi, sugar
-    pucker, and watson-crick distance (minor and major groove    
+    pucker, and Watson-Crick distance (minor and major groove
     distances).
+
+:mod:`~MDAnalysis.analysis.rms`
+    Calculation of RMSD and RMSF.
 
 .. _GridDataFormats: https://github.com/orbeckst/GridDataFormats
 .. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
@@ -68,6 +71,6 @@ Available analysis modules
 """
 __all__ = ['align', 'contacts', 'density', 'distances',
            'helanal', 'hbonds', 'leaflet', 'nuclinfo' ,
-           'cython',
+           'rms',
            ]
 

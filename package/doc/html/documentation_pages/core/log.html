@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.10. Setting up logging — MDAnalysis.core.log &mdash; MDAnalysis 0.7.6 documentation</title>
+    <title>7.10. Setting up logging — MDAnalysis.core.log &mdash; MDAnalysis 0.7.7-devel documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.7-devel',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,12 +26,12 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.6 documentation"
+          title="Search within MDAnalysis 0.7.7-devel documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.6 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.7-devel documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
-    <link rel="next" title="8. KDTree module" href="../KDTree_modules.html" />
+    <link rel="next" title="7.11. Parallel algorithms for MDAnalysis" href="parallel.html" />
     <link rel="prev" title="7.9. Helper functions — MDAnalysis.core.util" href="util.html" /> 
   </head>
   <body>
@@ -45,12 +45,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../KDTree_modules.html" title="8. KDTree module"
+          <a href="parallel.html" title="7.11. Parallel algorithms for MDAnalysis"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="util.html" title="7.9. Helper functions — MDAnalysis.core.util"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -72,8 +72,8 @@
   <p class="topless"><a href="util.html"
                         title="previous chapter">7.9. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../KDTree_modules.html"
-                        title="next chapter">8. KDTree module</a></p>
+  <p class="topless"><a href="parallel.html"
+                        title="next chapter">7.11. Parallel algorithms for MDAnalysis</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/log.txt"
@@ -190,8 +190,25 @@ Step   200/10000 [  2.0%]
 <div class="highlight-python"><div class="highlight"><pre><span class="s">&quot;Step </span><span class="si">%(step)5d</span><span class="s">/</span><span class="si">%(numsteps)d</span><span class="s"> [</span><span class="si">%(percentage)5.1f%%</span><span class="s">]</span><span class="se">\r</span><span class="s">&quot;</span>
 </pre></div>
 </div>
-<p>ends with a carriage return <cite>r</cite> and not a newline <cite>n</cite>, the
+<p>ends with a carriage return <tt class="docutils literal"><span class="pre">\r</span></tt> and not a newline <tt class="docutils literal"><span class="pre">\n</span></tt>, the
 lines will be printed on top of each other.</p>
+<p>It is possible to embed (almost) arbitrary additional data in the
+format string, for example a current RMSD value:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>pm = ProgressMeter(u.trajectory.numframes, interval=100,</dt>
+<dd>&#8220;RMSD %(rmsd)5.2f at %(step)5d/%(numsteps)d [%(percentage)5.1f%%]r&#8221;)</dd>
+<dt>for ts in u.trajectory:</dt>
+<dd>pm.echo(ts.frame, rmsd=current_rmsd)
+...</dd>
+</dl>
+</div></blockquote>
+<dl class="docutils">
+<dt>This will print something like</dt>
+<dd>RMSD   1.02 at  100/10000 [  1.0%]
+RMSD   1.89 at  200/10000 [  2.0%]
+...</dd>
+</dl>
 <p>Set up the ProgressMeter</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -235,7 +252,7 @@ set <em>offset</em> = 1 [0]</p>
 </table>
 <dl class="method">
 <dt id="MDAnalysis.core.log.ProgressMeter.echo">
-<tt class="descname">echo</tt><big>(</big><em>step</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter.echo" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">echo</tt><big>(</big><em>step</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter.echo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the state to stderr, but only every <em>interval</em> steps.</p>
 <ol class="arabic simple">
 <li>calls <a class="reference internal" href="#MDAnalysis.core.log.ProgressMeter.update" title="MDAnalysis.core.log.ProgressMeter.update"><tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt></a></li>
@@ -244,12 +261,16 @@ using the format string (in <tt class="xref py py-attr docutils literal"><span c
 </ol>
 <p>The last step is always shown, even if not on an <em>interval</em>, and a
 carriage return is replaced with a new line for a cleaner display.</p>
+<p><em>kwargs</em> are additional attributes that can be references in
+the format string.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.log.ProgressMeter.update">
-<tt class="descname">update</tt><big>(</big><em>step</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the state of the ProgressMeter</p>
+<tt class="descname">update</tt><big>(</big><em>step</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the state of the ProgressMeter.</p>
+<p><em>kwargs</em> are additional attributes that can be references in
+the format string.</p>
 </dd></dl>
 
 </dd></dl>
@@ -302,12 +323,12 @@ console.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../KDTree_modules.html" title="8. KDTree module"
+          <a href="parallel.html" title="7.11. Parallel algorithms for MDAnalysis"
              >next</a> |</li>
         <li class="right" >
           <a href="util.html" title="7.9. Helper functions — MDAnalysis.core.util"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -316,7 +337,7 @@ console.</p>
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
     Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
