@@ -545,6 +545,9 @@ class ChainReader(Reader):
                contain the same number of atoms in the same order
                (i.e. they all must belong to the same topology). The trajectory
                format is deduced from the extension of *filename*.
+
+               Extension: filenames are either single filename or list of file names in either plain file names format or (filename,format) tuple combination
+
            *skip*
                skip step (also passed on to the individual trajectory
                readers); must be same for all trajectories
@@ -687,7 +690,7 @@ class ChainReader(Reader):
         values = numpy.array(self._get(attr))
         value = values[0]
         if not numpy.all(values == value):
-            bad_traj = numpy.array(self.filenames)[values != value]
+            bad_traj = numpy.array([self.get_flname(fn) for fn in self.filenames])[values != value]
             raise ValueError("The following trajectories do not have the correct %s "
                              " (%d):\n%r" % (attr, value, bad_traj))
         return value
@@ -764,10 +767,13 @@ class ChainReader(Reader):
         for ts in self.__chained_trajectories_iter:
             yield ts
 
+    def get_flname(self, filename): #retrieve the actual filename of the list element
+        return filename[0] if isinstance(filename,tuple) else filename
+
     def __repr__(self):
         return "< %s %r with %d frames of %d atoms (%d fixed) >" % \
             (self.__class__.__name__,
-             [os.path.basename(fn) for fn in self.filenames],
+             [os.path.basename(self.get_flname(fn)) for fn in self.filenames],
              self.numframes, self.numatoms, self.fixed)
 
 

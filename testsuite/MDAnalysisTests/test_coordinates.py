@@ -24,8 +24,9 @@ import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
-from MDAnalysis.tests.datafiles import PSF,DCD,DCD_empty,PDB_small, PDB_multiframe, PDB,CRD,XTC,TRR,GRO, \
-    XYZ,XYZ_bz2,XYZ_psf, PRM,TRJ,TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR
+from MDAnalysis.tests.datafiles import PSF, DCD, DCD_empty, PDB_small, PDB_closed, PDB_multiframe, \
+    PDB, CRD, XTC, TRR, GRO, \
+    XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR
 
 import os
 import tempfile
@@ -1378,6 +1379,25 @@ class TestChainReader(TestCase):
         for (ts_orig, ts_new) in izip(self.universe.trajectory, u.trajectory):
             assert_almost_equal(ts_orig._pos, ts_new._pos, self.prec,
                                 err_msg="Coordinates disagree at frame %d" % ts_orig.frame)
+
+
+class TestChainReaderFormats(TestCase):
+    """Test of ChainReader with explicit formats (Issue 76)."""
+
+    @attr('issue')
+    def test_set_all_format_tuples(self):
+        universe = MDAnalysis.Universe(GRO, [(PDB,'pdb'), (XTC,'xtc'), (TRR,'trr')])
+        assert_equal(universe.trajectory.numframes, 21)
+
+    @attr('issue')
+    def test_set_one_format_tuple(self):
+        universe = MDAnalysis.Universe(PSF, [(PDB_small,'pdb'), DCD])
+        assert_equal(universe.trajectory.numframes, 99)
+
+    @attr('issue')
+    def test_set_all_formats(self):
+        universe = MDAnalysis.Universe(PSF, [PDB_small, PDB_closed], format='pdb')
+        assert_equal(universe.trajectory.numframes, 2)
 
 
 class _GromacsReader(TestCase):

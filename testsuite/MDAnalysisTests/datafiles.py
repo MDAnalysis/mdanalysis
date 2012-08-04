@@ -33,6 +33,7 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM
            "DCD_empty",
            "PSF_NAMD", "PDB_NAMD",            # NAMD
            "PDB_small","NUCL",                # PDB
+           "PDB_closed",
            "PDB_multiframe",
            "PDB_helix",
            "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",   # Gromacs
@@ -59,6 +60,8 @@ PSF_NAMD = resource_filename(__name__, 'data/namd_cgenff.psf')
 PDB_NAMD = resource_filename(__name__, 'data/namd_cgenff.pdb')
 
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
+PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
+
 NUCL =  resource_filename(__name__, 'data/1k5i.pdb')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')

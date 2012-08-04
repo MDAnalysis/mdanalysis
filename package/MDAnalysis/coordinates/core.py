@@ -90,8 +90,12 @@ def reader(filename, **kwargs):
        *kwargs*
            Keyword arguments for the selected Reader class.
     """
-    Reader = get_reader_for(filename, permissive=kwargs.pop('permissive', False))
-    return Reader(filename, **kwargs)
+    if isinstance(filename,tuple):
+        Reader = get_reader_for(filename[0],permissive=kwargs.pop('permissive', False),format=filename[1])
+        return Reader(filename[0], **kwargs)
+    else:
+        Reader = get_reader_for(filename, permissive=kwargs.pop('permissive', False))
+        return Reader(filename, **kwargs)
 
 def get_writer_for(filename=None, format='DCD', multiframe=None):
     """Return an appropriate trajectory or frame writer class for *filename*.
@@ -213,7 +217,12 @@ def guess_format(filename, format=None):
             format = check_compressed_format(root, ext)
     else:
         # internally, formats are all uppercase
-        format = str(format).upper()
+        # enable chain reader with explicit format
+        if MDAnalysis.core.util.iterable(filename):
+            # list of filenames, handled by ChainReader
+            format = 'CHAIN'
+        else:
+            format = str(format).upper()
 
     # sanity check
     if format != 'CHAIN' and not format in MDAnalysis.coordinates._trajectory_readers:
