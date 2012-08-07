@@ -34,10 +34,24 @@ class TestDistances(TestCase):
             np.random.random((100,3)).astype(np.float32),
             ]
         self.ref = distance_array_reference(self.coord[0], self.coord[1])
+        self.box = (np.random.random((3)) * np.random.random()).astype(np.float32)
+        self.ref_pbc = distance_array_reference(self.coord[0], self.coord[1], box=self.box)
+        
 
     def test_distance_array_parallel(self):
         cython_parallel = distance_array(self.coord[0], self.coord[1])
         assert_allclose(cython_parallel, self.ref, rtol=1e-6, atol=0,
+                        err_msg="Cython parallel distance matrix does not match C")
+
+    def test_distance_array_parallel_results(self):
+        result = np.empty((self.coord[0].shape[0], self.coord[0].shape[0])).astype(np.float32)
+        cython_parallel = distance_array(self.coord[0], self.coord[1], result=result)
+        assert_allclose(cython_parallel, self.ref, rtol=1e-6, atol=0,
+                        err_msg="Cython parallel distance matrix does not match C")
+
+    def test_distance_array_parallel_pbc(self):
+        cython_parallel = distance_array(self.coord[0], self.coord[1], box=self.box)
+        assert_allclose(cython_parallel, self.ref_pbc, rtol=1e-6, atol=0,
                         err_msg="Cython parallel distance matrix does not match C")
 
     def test_distance_array_serial(self):
@@ -46,3 +60,13 @@ class TestDistances(TestCase):
         assert_allclose(cython_serial, self.ref, rtol=1e-6, atol=0,
                         err_msg="Cython serial distance matrix does not match C")
 
+    def test_distance_array_serial_results(self):
+        result = np.empty((self.coord[0].shape[0], self.coord[0].shape[0])).astype(np.float32)
+        cython_parallel = distance_array_serial(self.coord[0], self.coord[1], result=result)
+        assert_allclose(cython_parallel, self.ref, rtol=1e-6, atol=0,
+                        err_msg="Cython parallel distance matrix does not match C")
+
+    def test_distance_array_serial_pbc(self):
+        cython_parallel = distance_array_serial(self.coord[0], self.coord[1], box=self.box)
+        assert_allclose(cython_parallel, self.ref_pbc, rtol=1e-6, atol=0,
+                        err_msg="Cython parallel distance matrix does not match C")
