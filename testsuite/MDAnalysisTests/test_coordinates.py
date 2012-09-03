@@ -1735,6 +1735,51 @@ class TestTRRWriterSingleFrame(_GromacsWriterIssue101):
     ext = ".trr"
 
 
+class _GromacsWriterIssue117(TestCase):
+    """Issue 117: Cannot write XTC or TRR from AMBER NCDF"""
+    ext = None
+    prec = 5
+
+    def setUp(self):
+        self.universe = mda.Universe(PRMncdf, NCDF)
+        fd, self.outfile = tempfile.mkstemp(suffix=self.ext)
+        self.Writer = MDAnalysis.Writer(self.outfile, numatoms=self.universe.atoms.numberOfAtoms(),
+                                        delta=self.universe.trajectory.delta,
+                                        step=self.universe.trajectory.skip_timestep)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+        del self.universe
+        del self.Writer
+
+    @attr('issue')
+    def test_write_trajectory(self):
+        """Test writing Gromacs trajectories from AMBER NCDF (Issue 117)"""
+        t = self.universe.trajectory
+        for ts in self.universe.trajectory:
+            self.Writer.write_next_timestep(ts)
+        self.Writer.close()
+
+        uw = MDAnalysis.Universe(PRMncdf, self.outfile)
+
+        # check that the coordinates are identical for each time step
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
+                                      err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+
+
+class TestXTCWriterIssue117(_GromacsWriterIssue117):
+    ext = ".xtc"
+    prec = 2
+
+class TestTRRWriterIssue117(_GromacsWriterIssue117):
+    ext = ".trr"
+
+
+
 @attr('issue')
 def test_triclinic_box():
     """Test coordinates.core.triclinic_box() (Issue 61)"""

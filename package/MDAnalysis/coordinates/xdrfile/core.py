@@ -225,7 +225,7 @@ class TrjWriter(base.Writer):
 
         # (2) have to treat XTC and TRR somewhat differently
         if self.format == 'XTC':
-            status = libxdrfile.write_xtc(self.xdrfile, ts.step, time, unitcell, pos, self.precision)
+            status = libxdrfile.write_xtc(self.xdrfile, int(ts.step), float(time), unitcell, pos, self.precision)
         elif self.format == 'TRR':
             if not hasattr(ts, 'lmbda'):
                 ts.lmbda = 1.0
@@ -240,7 +240,7 @@ class TrjWriter(base.Writer):
                 velocities = ts._velocities = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
             if not hasattr(ts, '_forces'):
                 ts._forces = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
-            status = libxdrfile.write_trr(self.xdrfile, ts.step, time, ts.lmbda, unitcell,
+            status = libxdrfile.write_trr(self.xdrfile, int(ts.step), float(time), float(ts.lmbda), unitcell,
                                           pos, velocities, ts._forces)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
