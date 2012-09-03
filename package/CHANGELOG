@@ -28,6 +28,7 @@ The rules for this file:
   Fixes
 
   * fixed Issue 115 (GROReader now uses fixed-column width format to read GRO files)
+  * fixed Issue 116 (Failed to write AMBER netcdf trajectory from AtomGroup)
   * fixed Issue 117 (could not write Gromacs XTC/TRR from AMBER netcdf)
 
 

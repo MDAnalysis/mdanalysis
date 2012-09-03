@@ -206,6 +206,9 @@ class Timestep(base.Timestep):
                                 self._velocities = arg[:,DIM:2*DIM].copy('C')    # C-order
                         elif arg.shape[1] == DIM and velocities:
                                 self._velocities = numpy.zeros_like(self._pos)
+                        elif arg.shape[1] == DIM:
+                                # only positions
+                                pass
                         else:
                                 raise ValueError("AMBER timestep has no second dimension 3 or 6: shape=%r" % (arg.shape,))
                 else:
