@@ -34,6 +34,10 @@ The rules for this file:
  
   Changes
 
+  * selectAtoms: updated *nucleic* and *nucleicxstal* selection definition
+    *nucleic* includes the two-letter NA code that follows gromacs topolgy
+    format and *nucleicxstal* allows for the one-letter NA code that follows
+    the PDB Database code.
   * HydrogenBondAnalysis: multiple enhancements and changes (Issue 103)
     - many new analysis functions (see docs)
     - run() does not return the results anymore; results are simply
