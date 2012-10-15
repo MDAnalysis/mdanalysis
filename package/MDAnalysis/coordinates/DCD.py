@@ -145,6 +145,13 @@ class DCDWriter(base.Writer):
             pos = self.convert_pos_to_native(ts._pos, inplace=False)  # possibly make a copy to avoid changing the trajectory
         self._write_next_frame(pos[:,0], pos[:,1], pos[:,2], unitcell)
         self.frames_written += 1
+    def convert_dimensions_to_unitcell(self, ts, _ts_order=[0,3,1,4,5,2]):
+        """Read dimensions from timestep *ts* and return appropriate unitcell
+           as [A,alpha,B,beta,gamma,C]"""
+        unitcell = super(DCDWriter, self).convert_dimensions_to_unitcell(ts)
+        # unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level
+        # DCD routines
+        return numpy.take(unitcell, _ts_order)
     def close(self):
         """Close trajectory and flush buffers."""
         self._finish_dcd_write()
