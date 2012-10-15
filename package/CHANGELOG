@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/?? danny.parton, jandom, orbeckst, jjlights03, jphillips
+??/??/?? danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal
 
   * 0.8 (?)
 
@@ -30,6 +30,7 @@ The rules for this file:
   * fixed Issue 115 (GROReader now uses fixed-column width format to read GRO files)
   * fixed Issue 116 (Failed to write AMBER netcdf trajectory from AtomGroup)
   * fixed Issue 117 (could not write Gromacs XTC/TRR from AMBER netcdf)
+  * fixed DCDWriter: wrote wrong unitcell information
 
 
 06/30/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy, lukas.grossar, denniej0, danny.parton

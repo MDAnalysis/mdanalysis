@@ -1202,6 +1202,39 @@ class TestDCDWriter_Issue59(TestCase):
         assert_array_almost_equal(dcd.atoms.coordinates(), xtc.atoms.coordinates(), 2,
                                   err_msg="DCD -> XTC: coordinates are messed up (frame %d)" % dcd.trajectory.frame)
 
+class TestNCDF2DCD(TestCase):
+    def setUp(self):
+        self.u = MDAnalysis.Universe(PRMncdf, NCDF)
+        # create the DCD
+        fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
+        DCD = MDAnalysis.Writer(self.dcd, numatoms=self.u.atoms.numberOfAtoms())
+        for ts in self.u.trajectory:
+            DCD.write(ts)
+        DCD.close()
+        self.w = MDAnalysis.Universe(PRMncdf, self.dcd)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.dcd)
+        except (AttributeError, OSError):
+            pass
+        del self.u
+        del self.w
+
+    @attr('issue')
+    def test_unitcell(self):
+        """Test that DCDWriter correctly writes the CHARMM unit cell"""
+        from itertools import izip
+        for ts_orig, ts_copy in izip(self.u.trajectory, self.w.trajectory):
+            assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 3,
+                                err_msg="NCDF->DCD: unit cell dimensions wrong at frame %d" % ts_orig.frame)
+
+    def test_coordinates(self):
+        from itertools import izip
+        for ts_orig, ts_copy in izip(self.u.trajectory, self.w.trajectory):
+            assert_almost_equal(self.u.atoms.positions, self.w.atoms.positions, 3,
+                                err_msg="NCDF->DCD: coordinates wrong at frame %d" % ts_orig.frame)
+
 
 class TestDCDCorrel(_TestDCD):
     def setUp(self):
