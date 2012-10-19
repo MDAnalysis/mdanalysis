@@ -130,6 +130,8 @@ except ImportError:
         def deg2rad(x):             # no need for the numpy out=[] argument
                 return x*numpy.pi/180.0
 
+import MDAnalysis
+
 def center(coordinates):
         """Return the geometric center (centroid) of the coordinates.
 
