@@ -134,23 +134,41 @@ incompatibilities or less features than the serial code.</p>
 </div>
 <dl class="function">
 <dt id="MDAnalysis.core.parallel.distances.distance_array">
-<tt class="descclassname">MDAnalysis.core.parallel.distances.</tt><tt class="descname">distance_array</tt><big>(</big><em>ref</em>, <em>conf</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.parallel.distances.distance_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate all distances d_ij between the coordinates ref[i] and
-conf[j] in the numpy arrays <em>ref</em> and <em>conf</em>.</p>
-<p>Parallel version that will automatically decide on how many threads
-to run.</p>
+<tt class="descclassname">MDAnalysis.core.parallel.distances.</tt><tt class="descname">distance_array</tt><big>(</big><em>ref</em>, <em>conf</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.parallel.distances.distance_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate all distances d_ij between the coordinates <tt class="docutils literal"><span class="pre">ref[i]</span></tt> and
+<tt class="docutils literal"><span class="pre">conf[j]</span></tt> in the numpy arrays <em>ref</em> and <em>conf</em>.</p>
+<p>This is a parallelized version that will automatically decide on
+how many threads to run.</p>
+<p>Periodic boundary conditions can be taken into account if the box
+vectors are provided in the 3x3 matrix <em>box</em>. The default <tt class="docutils literal"><span class="pre">None</span></tt>
+calculates simple distances.</p>
+<p>A pre-allocated array can be supplied as <em>results</em>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Only orthorhombic boxes are supported for <em>box</em>, anything else will
+produce wrong results.</p>
+</div>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.parallel.distances.distance_array_serial">
-<tt class="descclassname">MDAnalysis.core.parallel.distances.</tt><tt class="descname">distance_array_serial</tt><big>(</big><em>ref</em>, <em>conf</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.parallel.distances.distance_array_serial" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.parallel.distances.</tt><tt class="descname">distance_array_serial</tt><big>(</big><em>ref</em>, <em>conf</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.parallel.distances.distance_array_serial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate all distances d_ij between the coordinates ref[i] and
 conf[j] in the numpy arrays <em>ref</em> and <em>conf</em>.</p>
+<p>Periodic boundary conditions can be taken into account if the box
+vectors are provided in the 3x3 matrix <em>box</em>. The default <tt class="docutils literal"><span class="pre">None</span></tt>
+calculates simple distances.</p>
+<p>A pre-allocated array can be supplied as <em>results</em>.</p>
 <p>Serial version (to check the parallel version). This version is
 slightly slower than the regular serial (pure C)
 <a class="reference internal" href="distances.html#MDAnalysis.core.distances.distance_array" title="MDAnalysis.core.distances.distance_array"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.core.distances.distance_array()</span></tt></a> function.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Only orthorhombic boxes are supported for <em>box</em>, anything else will
+produce wrong results.</p>
+</div>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
@@ -186,8 +204,9 @@ slightly slower than the regular serial (pure C)
     <div class="footer">
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+    and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

@@ -70,7 +70,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="contacts.html"
-                        title="previous chapter">3.2. Native contacts analysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></p>
+                        title="previous chapter">3.2. Native contacts analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="distances.html"
                         title="next chapter">3.4. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
@@ -164,7 +164,7 @@ rest should work for an array of any dimension.</p>
 <p>If the input histogram consists of counts per cell then the
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><tt class="xref py py-meth docutils literal"><span class="pre">Density.make_density()</span></tt></a> method converts the grid to a physical density. For
 a probability density, divide it by <tt class="xref py py-meth docutils literal"><span class="pre">Density.grid.sum()</span></tt> or use <tt class="docutils literal"><span class="pre">normed=True</span></tt>
-right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.8.dev-436a28f)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
+right away in <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.6)"><tt class="xref py py-func docutils literal"><span class="pre">histogramdd()</span></tt></a>.</p>
 <p>The user <em>should</em> set the <em>parameters</em> keyword (see docs for the
 constructor); in particular, if the data are already a density, one must
 set <em>isDensity</em> == <tt class="docutils literal"><span class="pre">True</span></tt> because there is no reliable way to detect if
@@ -229,7 +229,7 @@ that the length- and the density unit correspond to each other.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>grid</em></dt>
-<dd><p class="first last">histogram or density, typically a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8.dev-436a28f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></p>
+<dd><p class="first last">histogram or density, typically a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a></p>
 </dd>
 <dt><em>edges</em></dt>
 <dd><p class="first last">list of arrays, the lower and upper bin edges along the axes</p>
@@ -916,8 +916,9 @@ regenerated from the saved data with</p>
     <div class="footer">
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+    and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

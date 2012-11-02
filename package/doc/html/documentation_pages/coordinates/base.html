@@ -130,7 +130,7 @@ correspond to atom indices,
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.Timestep._pos">
 <tt class="descname">_pos</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._pos" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8.dev-436a28f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt> of shape
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt> of shape
 (<em>numatoms</em>, 3) and internal FORTRAN order, holding the raw
 cartesian coordinates (in MDAnalysis units, i.e. Å).</p>
 <div class="admonition note">
@@ -150,7 +150,7 @@ trajectory frame is loaded, then <em>all</em> contents of
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.Timestep._velocities">
 <tt class="descname">_velocities</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._velocities" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8.dev-436a28f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt>. of shape
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt>. of shape
 (<em>numatoms</em>, 3), holding the raw velocities (in MDAnalysis
 units, i.e. typically Å/ps).</p>
 <div class="admonition note">
@@ -390,12 +390,13 @@ properly set, though</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filenames</em></dt>
-<dd><p class="first last">file name or list of file names; the reader will open
+<dd><p class="first">file name or list of file names; the reader will open
 all file names and provide frames in the order of
 trajectories from the list. Each trajectory must
 contain the same number of atoms in the same order
 (i.e. they all must belong to the same topology). The trajectory
 format is deduced from the extension of <em>filename</em>.</p>
+<p class="last">Extension: filenames are either single filename or list of file names in either plain file names format or (filename,format) tuple combination</p>
 </dd>
 <dt><em>skip</em></dt>
 <dd><p class="first last">skip step (also passed on to the individual trajectory
@@ -471,7 +472,7 @@ the required attributes and methods.</p>
 <dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
 </dd>
 <dt><em>x</em></dt>
-<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8.dev-436a28f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
+<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
 </dd>
 </dl>
 </td>
@@ -528,8 +529,9 @@ provided when setting up the trajectory.</p>
     <div class="footer">
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+    and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

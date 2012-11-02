@@ -295,6 +295,13 @@ the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAn
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell">
+<tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts, _ts_order=[0, 3, 1, 4, 5, 2]</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read dimensions from timestep <em>ts</em> and return appropriate unitcell
+as [A,alpha,B,beta,gamma,C]</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep">
 <tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>write a new timestep to the dcd file</p>
@@ -337,8 +344,9 @@ if no coordinates to be written.</p>
     <div class="footer">
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+    and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

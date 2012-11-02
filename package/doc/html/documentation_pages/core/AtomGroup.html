@@ -464,7 +464,7 @@ whereas the slice</p>
 </div>
 <p>returns every second element, corresponding to indices 0, 2, and 4.</p>
 <p>It also supports &#8220;advanced slicing&#8221; when the argument is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8.dev-436a28f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aslice</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">ag</span><span class="p">[</span><span class="n">aslice</span><span class="p">]</span>
 </pre></div>
@@ -496,6 +496,16 @@ new <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" ti
 difficult to use the feature consistently in scripts but it is
 much better for interactive work.</p>
 </div>
+<p class="rubric">References for analysis methods</p>
+<table class="docutils citation" frame="void" id="dima2004" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Dima2004]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Dima, R. I., &amp; Thirumalai, D. (2004). Asymmetry in the
+shapes of folded and denatured states of proteins. <em>J
+Phys Chem B</em>, 108(21),
+6564-6570. doi:<a class="reference external" href="http://dx.doi.org/10.1021/jp037128y">10.1021/jp037128y</a></td></tr>
+</tbody>
+</table>
 <p class="versionchanged">
 <span class="versionmodified">Changed in version 0.7.6: </span>An empty AtomGroup can be created and no longer raises a
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.NoDataError" title="MDAnalysis.core.AtomGroup.NoDataError"><tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt></a>.</p>
@@ -575,6 +585,15 @@ i.e. <em>axis</em> = 0) with the z-axis:</p>
 </div>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.3.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.asphericity">
+<tt class="descname">asphericity</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.asphericity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asphericity.</p>
+<p>See <a class="reference internal" href="#dima2004">[Dima2004]</a> for background information.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1052,7 +1071,7 @@ and the translation vectort M[:3,3].</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>coords</em></dt>
-<dd><p class="first last">a Nx3 NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8.dev-436a28f)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> where N is the number of
+<dd><p class="first last">a Nx3 NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> where N is the number of
 atoms in this atom group.</p>
 </dd>
 </dl>
@@ -1155,6 +1174,15 @@ selectors.</p>
 attribute access.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.6.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.shapeParameter">
+<tt class="descname">shapeParameter</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.shapeParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shape parameter.</p>
+<p>See <a class="reference internal" href="#dima2004">[Dima2004]</a> for background information.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -1720,8 +1748,9 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
     <div class="footer">
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+    and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
