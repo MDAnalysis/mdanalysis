@@ -314,10 +314,10 @@ class AtomGroup(object):
 
     .. rubric:: References for analysis methods
 
-    [Dima2004] Dima, R. I., & Thirumalai, D. (2004). Asymmetry in the
-               shapes of folded and denatured states of proteins. *J
-               Phys Chem B*, 108(21),
-               6564-6570. doi:`10.1021/jp037128y`_
+    .. [Dima2004] Dima, R. I., & Thirumalai, D. (2004). Asymmetry in the
+                  shapes of folded and denatured states of proteins. *J
+                  Phys Chem B*, 108(21),
+                  6564-6570. doi:`10.1021/jp037128y`_
 
     .. _10.1021/jp037128y: http://dx.doi.org/10.1021/jp037128y
 
