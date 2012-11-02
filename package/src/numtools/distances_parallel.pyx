@@ -36,24 +36,44 @@ Load the module with ::
   import MDAnalysis.core.parallel.distances
 
 
-.. function:: distance_array(ref,conf)
+.. function:: distance_array(ref, conf[, box[, result]])
 
-   Calculate all distances d_ij between the coordinates ref[i] and
-   conf[j] in the numpy arrays *ref* and *conf*.
+   Calculate all distances d_ij between the coordinates ``ref[i]`` and
+   ``conf[j]`` in the numpy arrays *ref* and *conf*.
 
-   Parallel version that will automatically decide on how many threads
-   to run.
+   This is a parallelized version that will automatically decide on
+   how many threads to run.
+
+   Periodic boundary conditions can be taken into account if the box
+   vectors are provided in the 3x3 matrix *box*. The default ``None``
+   calculates simple distances.
+
+   A pre-allocated array can be supplied as *results*.
+
+   .. warning::
+      Only orthorhombic boxes are supported for *box*, anything else will
+      produce wrong results.
 
    .. versionadded:: 0.8
 
-.. function:: distance_array_serial(ref,conf)
+.. function:: distance_array_serial(ref, conf[, box[, result]])
 
    Calculate all distances d_ij between the coordinates ref[i] and
    conf[j] in the numpy arrays *ref* and *conf*.
+
+   Periodic boundary conditions can be taken into account if the box
+   vectors are provided in the 3x3 matrix *box*. The default ``None``
+   calculates simple distances.
+
+   A pre-allocated array can be supplied as *results*.
 
    Serial version (to check the parallel version). This version is
    slightly slower than the regular serial (pure C)
    :func:`MDAnalysis.core.distances.distance_array` function.
+
+   .. warning::
+      Only orthorhombic boxes are supported for *box*, anything else will
+      produce wrong results.
 
    .. versionadded:: 0.8
 """
@@ -77,18 +97,27 @@ def distance_array_serial(np.ndarray[DTYPE_t, ndim=2] coordA, \
                           np.ndarray[DTYPE_t, ndim=2] coordB, \
                           np.ndarray[DTYPE_t, ndim=1] box = None, \
                           np.ndarray[DTYPE_t, ndim=2] result = None):
-    """distance_array_serial(ref,conf)
+    """distance_array_serial(ref,conf[,box[,result]])
 
     Calculate all distances d_ij between the coordinates ref[i] and
     conf[j] in the numpy arrays *ref* and *conf*.
 
+    Periodic boundary conditions can be taken into account if the box
+    vectors are provided in the 3x3 matrix *box*.
+
+    A pre-allocated array can be supplied as *results*.
+
     Serial version (to check the parallel version). This version is
     slightly slower than the regular serial (pure C)
     :func:`MDAnalysis.core.distances.distance_array` function.
+
+    .. warning::
+       Only orthorhombic boxes are supported, anything else will
+       produce wrong results.
     """
     cdef DTYPE_t x, y, z, dist
     cdef Py_ssize_t i, j
-    
+
     cdef np.ndarray[DTYPE_t, ndim=1] box_half
 
     cdef char has_box = 0
@@ -97,7 +126,7 @@ def distance_array_serial(np.ndarray[DTYPE_t, ndim=2] coordA, \
     if box != None:
       has_box = 1
       box_half = box / 2
-      
+
       box_x = box[0]
       box_y = box[1]
       box_z = box[2]
@@ -106,15 +135,15 @@ def distance_array_serial(np.ndarray[DTYPE_t, ndim=2] coordA, \
       box_half_y = box_half[1]
       box_half_z = box_half[2]
 
-    
+
     rows = coordA.shape[0];
     cols = coordB.shape[0];
-    assert rows == cols, """Coordinate arrays of the same length must be used. 
+    assert rows == cols, """Coordinate arrays of the same length must be used.
     Distance matrix must be square: number of rows (%d) must be the same as the number of columns (%d)""" % (rows, cols)
 
     if result == None:
       result = np.empty((rows, cols), dtype=DTYPE)
-    else: 
+    else:
       assert result.shape[0] == rows, "Results array should have %d rows, has %d" % (rows, result.shape[0])
       assert result.shape[1] == cols, "Results array should have %d columns, has %d" % (cols, result.shape[1])
 
@@ -138,7 +167,7 @@ def distance_array_serial(np.ndarray[DTYPE_t, ndim=2] coordA, \
                     else: y = y - box_y
                 if fabs(z) > box_half_z:
                     if z < 0.0: z = z + box_z
-                    else: z = z - box_z  
+                    else: z = z - box_z
 
             dist = sqrt((x*x)+(y*y)+(z*z));
 
@@ -146,18 +175,18 @@ def distance_array_serial(np.ndarray[DTYPE_t, ndim=2] coordA, \
 
     return result
 
-# Jan: minimum_image has been dopted from calc_distances.h - there it's using 
+# Jan: minimum_image has been dopted from calc_distances.h - there it's using
 # doubles for positions and floats for box/box_half, while I've used float32 for
 # both; I'll be happy to change, if there is a convention.
 
-    
+
 
 @cython.boundscheck(False)
 def distance_array(np.ndarray[DTYPE_t, ndim=2] coordA, \
                    np.ndarray[DTYPE_t, ndim=2] coordB, \
                    np.ndarray[DTYPE_t, ndim=1] box = None, \
                    np.ndarray[DTYPE_t, ndim=2] result = None):
-                   
+
     """distance_array(ref,conf,box=None,result=None)
 
     Calculate all distances d_ij between the coordinates ref[i] and
@@ -168,7 +197,7 @@ def distance_array(np.ndarray[DTYPE_t, ndim=2] coordA, \
     """
     cdef DTYPE_t x, y, z, dist
     cdef Py_ssize_t i, j
-    
+
     cdef np.ndarray[DTYPE_t, ndim=1] box_half
 
     cdef char has_box = 0
@@ -177,7 +206,7 @@ def distance_array(np.ndarray[DTYPE_t, ndim=2] coordA, \
     if box != None:
       has_box = 1
       box_half = box / 2
-      
+
       box_x = box[0]
       box_y = box[1]
       box_z = box[2]
@@ -192,19 +221,19 @@ def distance_array(np.ndarray[DTYPE_t, ndim=2] coordA, \
 
     if result == None:
       result = np.empty((rows, cols), dtype=DTYPE)
-    else: 
+    else:
       assert result.shape[0] == rows, "Results array should have %d rows, has %d" % (rows, result.shape[0])
       assert result.shape[1] == cols, "Results array should have %d columns, has %d" % (cols, result.shape[1])
-    
+
     with nogil, parallel():
         # The two loops are independent, let's use
         for i in prange(rows, schedule="dynamic", chunksize=50) :
             for j in range(cols) :
-                
+
                 x = coordA[i,0] - coordB[j,0];
                 y = coordA[i,1] - coordB[j,1];
                 z = coordA[i,2] - coordB[j,2];
-                
+
                 # Python objects, including np.ndarrays (even when defined)
                 # cannot be indexed. This has been changed in Cython 0.17-beta1
                 #
@@ -217,8 +246,8 @@ def distance_array(np.ndarray[DTYPE_t, ndim=2] coordA, \
                         else: y = y - box_y
                     if fabs(z) > box_half_z:
                         if z < 0.0: z = z + box_z
-                        else: z = z - box_z                        
-                
+                        else: z = z - box_z
+
                 # FIXME this might not be the optimal thing to do
                 #
                 dist = sqrt((x*x)+(y*y)+(z*z));
