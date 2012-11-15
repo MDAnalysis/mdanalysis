@@ -1,0 +1,483 @@
+#!/usr/bin/env python
+
+# Some constants
+STRLEN = 4096
+BIG_STRLEN = 1048576
+DIM = 3
+NR_RBDIHS = 6                  # include/types/idef.h
+egcNR = 10                     # include/types/topolog.h
+tpx_version = 73               # src/kernel/tpxio.c
+tpx_generation = 23            # src/kernel/tpxio.c
+
+# <gromacs_dir>/include/idef.h
+F_BONDS = 0
+F_G96BONDS = 1
+F_MORSE = 2
+F_CUBICBONDS = 3
+F_CONNBONDS = 4
+F_HARMONIC = 5
+F_FENEBONDS = 6
+F_TABBONDS = 7
+F_TABBONDSNC = 8
+F_RESTRBONDS = 9
+F_ANGLES = 10
+F_G96ANGLES = 11
+F_CROSS_BOND_BONDS = 12
+F_CROSS_BOND_ANGLES = 13
+F_UREY_BRADLEY = 14
+F_QUARTIC_ANGLES = 15
+F_TABANGLES = 16
+F_PDIHS = 17
+F_RBDIHS = 18
+F_FOURDIHS = 19
+F_IDIHS = 20
+F_PIDIHS = 21
+F_TABDIHS = 22
+F_CMAP = 23
+F_GB12 = 24
+F_GB13 = 25
+F_GB14 = 26
+F_GBPOL = 27
+F_NPSOLVATION = 28
+F_LJ14 = 29
+F_COUL14 = 30
+F_LJC14_Q = 31
+F_LJC_PAIRS_NB = 32
+F_LJ = 33
+F_BHAM = 34
+F_LJ_LR = 35
+F_BHAM_LR = 36
+F_DISPCORR = 37
+F_COUL_SR = 38
+F_COUL_LR = 39
+F_RF_EXCL = 40
+F_COUL_RECIP = 41
+F_DPD = 42
+F_POLARIZATION = 43
+F_WATER_POL = 44
+F_THOLE_POL = 45
+F_POSRES = 46
+F_DISRES = 47
+F_DISRESVIOL = 48
+F_ORIRES = 49
+F_ORIRESDEV = 50
+F_ANGRES = 51
+F_ANGRESZ = 52
+F_DIHRES = 53
+F_DIHRESVIOL = 54
+F_CONSTR = 55
+F_CONSTRNC = 56
+F_SETTLE = 57
+F_VSITE2 = 58
+F_VSITE3 = 59
+F_VSITE3FD = 60
+F_VSITE3FAD = 61
+F_VSITE3OUT = 62
+F_VSITE4FD = 63
+F_VSITE4FDN = 64
+F_VSITEN = 65
+F_COM_PULL = 66
+F_EQM = 67
+F_EPOT = 68
+F_EKIN = 69
+F_ETOT = 70
+F_ECONSERVED = 71
+F_TEMP = 72
+F_VTEMP = 73
+F_PDISPCORR = 74
+F_PRES = 75
+F_DVDL = 76
+F_DKDL = 77
+F_DHDL_CON = 78
+F_NRE   = 79
+
+# <gromacs_dir>src/gmxlib/tpxio.c
+ftupd = [
+  (20, F_CUBICBONDS),
+  (20, F_CONNBONDS),
+  (20, F_HARMONIC),
+  (34, F_FENEBONDS),
+  (43, F_TABBONDS),
+  (43, F_TABBONDSNC),
+  (70, F_RESTRBONDS),
+  (30, F_CROSS_BOND_BONDS),
+  (30, F_CROSS_BOND_ANGLES),
+  (30, F_UREY_BRADLEY),
+  (34, F_QUARTIC_ANGLES),
+  (43, F_TABANGLES),
+  (26, F_FOURDIHS),
+  (26, F_PIDIHS),
+  (43, F_TABDIHS),
+  (65, F_CMAP),
+  (60, F_GB12),
+  (61, F_GB13),
+  (61, F_GB14),
+  (72, F_GBPOL),
+  (72, F_NPSOLVATION),
+  (41, F_LJC14_Q),
+  (41, F_LJC_PAIRS_NB),
+  (32, F_BHAM_LR),
+  (32, F_RF_EXCL),
+  (32, F_COUL_RECIP),
+  (46, F_DPD),
+  (30, F_POLARIZATION),
+  (36, F_THOLE_POL),
+  (22, F_DISRESVIOL),
+  (22, F_ORIRES),
+  (22, F_ORIRESDEV),
+  (26, F_DIHRES),
+  (26, F_DIHRESVIOL),
+  (49, F_VSITE4FDN),
+  (50, F_VSITEN),
+  (46, F_COM_PULL),
+  (20, F_EQM),
+  (46, F_ECONSERVED),
+  (69, F_VTEMP),
+  (66, F_PDISPCORR),
+  (54, F_DHDL_CON),
+];
+
+# <gromacs_dir>/gmxlib/ifunc.c
+interaction_types = [
+    ("BONDS",                    "Bond",                    2),
+    ("G96BONDS",		 "G96Bond",		    2),
+    ("MORSE",			 "Morse",		    2),
+    ("CUBICBONDS",		 "Cubic Bonds",		    2),
+    ("CONNBONDS",		 "Connect Bonds",	    2),
+    ("HARMONIC",		 "Harmonic Pot.",	    2),
+    ("FENEBONDS",		 "FENE Bonds",		    2),
+    ("TABBONDS",		 "Tab. Bonds",		    2),
+    ("TABBONDSNC",		 "Tab. Bonds NC",	    2),
+    ("RESTRAINTPOT",		 "Restraint Pot.",	    2),
+    ("ANGLES",			 "Angle",   		    3),
+    ("G96ANGLES",		 "G96Angle",		    3),
+    ("CROSS_BOND_BOND",		 "Bond-Cross",		    3),
+    ("CROSS_BOND_ANGLE",	 "BA-Cross",		    3),
+    ("UREY_BRADLEY",		 "U-B",			    3),
+    ("QANGLES",			 "Quartic Angles",	    3),
+    ("TABANGLES",		 "Tab. Angles",		    3),
+    ("PDIHS",			 "Proper Dih.",		    4),
+    ("RBDIHS",			 "Ryckaert-Bell.",	    4),
+    ("FOURDIHS",		 "Fourier Dih.",	    4),
+    ("IDIHS",			 "Improper Dih.",	    4),
+    ("PIDIHS",			 "Improper Dih.",	    4),
+    ("TABDIHS",			 "Tab. Dih.",		    4),
+    ("CMAP",			 "CMAP Dih.",		    5),
+    ("GB12",			 "GB 1-2 Pol.",		    2),
+    ("GB13",			 "GB 1-3 Pol.",		    2),
+    ("GB14",			 "GB 1-4 Pol.",		    2),
+    ("GBPOL",			 "GB Polarization",	    None),	    
+    ("NPSOLVATION",		 "Nonpolar Sol.",	    None),	    
+    ("LJ14",			 "LJ-14",  	 	    2),
+    ("COUL14",			 "Coulomb-14",		    None),	
+    ("LJC14_Q",			 "LJC-14 q",		    2),
+    ("LJC_NB",			 "LJC Pairs NB",	    2),
+    ("LJ_SR",			 "LJ (SR)", 		    2),
+    ("BHAM",			 "Buck.ham (SR)",	    2),
+    ("LJ_LR",			 "LJ (LR)", 		    None),			    
+    ("BHAM_LR",			 "Buck.ham (LR)",	    None),			    
+    ("DISPCORR",		 "Disper. corr.",	    None),			    
+    ("COUL_SR",			 "Coulomb (SR)",	    None),			    
+    ("COUL_LR",			 "Coulomb (LR)",	    None),			    
+    ("RF_EXCL",			 "RF excl.",		    None),			    
+    ("COUL_RECIP",		 "Coul. recip.",	    None),			    
+    ("DPD",			 "DPD",			    None),			    
+    ("POLARIZATION",		 "Polarization",	    2),
+    ("WATERPOL",		 "Water Pol.",		    5),
+    ("THOLE",			 "Thole Pol.",		    4),
+    ("POSRES",			 "Position Rest.",	    1),
+    ("DISRES",			 "Dis. Rest.",		    2),
+    ("DRVIOL",			 "D.R.Viol. (nm)",	    None), 
+    ("ORIRES",			 "Orient. Rest.",	    2),
+    ("ORDEV",			 "Ori. R. RMSD",	    None), 
+    ("ANGRES",			 "Angle Rest.",		    4),
+    ("ANGRESZ",			 "Angle Rest. Z",	    2),
+    ("DIHRES",			 "Dih. Rest.",		    4),
+    ("DIHVIOL",			 "Dih. Rest. viol.", 	    None), 
+    ("CONSTR",			 "Constraint",		    2),
+    ("CONSTRNC",		 "Constr. No Conn.",	    2),
+    ("SETTLE",			 "Settle",   		    1),
+    ("VSITE2",			 "Virtual site 2", 	    3),
+    ("VSITE3",			 "Virtual site 3", 	    4),
+    ("VSITE3FD",		 "Virtual site 3fd",  	    4),
+    ("VSITE3FAD",		 "Virtual site 3fad", 	    4),
+    ("VSITE3OUT",		 "Virtual site 3out", 	    4),
+    ("VSITE4FD",		 "Virtual site 4fd",  	    5),
+    ("VSITE4FDN",		 "Virtual site 4fdn", 	    5),
+    ("VSITEN",			 "Virtual site N",    	    2),
+    ("COM_PULL",		 "COM Pullg En.",	    None),	 
+    ("EQM",			 "Quantum En.",		    None),	 
+    ("EPOT",			 "Potential",		    None),	 
+    ("EKIN",			 "Kinetic En.",		    None),	 
+    ("ETOT",			 "Total Energy",	    None),	 
+    ("ECONS",			 "Conserved En.",	    None),	 
+    ("TEMP",			 "Temperature",		    None),	 
+    ("VTEMP",			 "Vir. Temp.",		    None),	 
+    ("PDISPCORR",		 "Pres. DC",		    None),  
+    ("PRES",			 "Pressure",		    None),
+    ("DV/DL",			 "dVpot/dlambda",	    None),
+    ("DK/DL",			 "dEkin/dlambda",	    None),
+    ("DH/DL_CON",		 "dH/dl constr.",	    None)
+]
+
+def ndo_int(data, n):
+    """mimic of gmx_fio_ndo_real in gromacs"""
+    return [data.unpack_int() for i in range(n)]
+
+def ndo_real(data, n):
+    """mimic of gmx_fio_ndo_real in gromacs"""
+    return [data.unpack_float() for i in range(n)]
+
+def ndo_rvec(data, n):
+    """mimic of gmx_fio_ndo_rvec in gromacs"""
+    return [data.unpack_farray(DIM, data.unpack_float) for i in range(n)]
+
+def ndo_ivec(data, n):
+    """mimic of gmx_fio_ndo_rvec in gromacs"""
+    return [data.unpack_farray(DIM, data.unpack_int) for i in range(n)]
+
+
+def do_inputrec(data):
+    data.unpack_int()                                  # ir_eI
+    data.unpack_int()                                  # ir_nsteps = idum
+    data.unpack_int()                                  # ir_init_step = idum = 
+
+    data.unpack_int()                                       # simulation_part 
+    # not relevant here
+    # ir_nstcalcenergy = 1
+
+    data.unpack_int()                                       # ir_ns_type
+    data.unpack_int()                                       # ir_nslist
+    data.unpack_int()                                       # ir_ndelta
+
+    data.unpack_float()                                     # ir_rtpi
+    data.unpack_int()                                       # ir_nstcomm
+    abs(data.unpack_int())                                  # ir_comm_mode
+
+    data.unpack_int()                                       # ir_nstcheckpoint
+    data.unpack_int()                                       # ir_nstcgsteep
+    data.unpack_int()                                       # ir_nbfgscorr
+    
+    data.unpack_int()                                       # ir_nstlog
+    data.unpack_int()                                       # ir_nstxout
+    data.unpack_int()                                       # ir_nstvout
+    data.unpack_int()                                       # ir_nstfout
+    data.unpack_int()                                       # ir_nstenergy
+    data.unpack_int()                                       # ir_nstxtcout
+
+    data.unpack_float()                              # ir_init_t = rdum =
+    data.unpack_float()                              # ir_delta_t = rdum = 
+
+    data.unpack_float()                                     # ir_xtcprec
+    ir_rlist = data.unpack_float()
+    
+    data.unpack_int()                                       # ir_coulombtype
+    data.unpack_float()                                     # ir_rcoulomb_switch
+    ir_rcoulomb = data.unpack_float()
+
+    data.unpack_int()                                       # ir_rvdwtype
+    data.unpack_float()                                     # ir_rvdw_switch
+    ir_rvdw = data.unpack_float()
+
+    max(ir_rlist, max(ir_rvdw, ir_rcoulomb))                # ir_rlistlong
+
+    data.unpack_int()                                       # ir_eDispCorr
+    data.unpack_float()                                     # ir_epsilon_r
+    data.unpack_float()                                     # ir_epsilon_rf
+
+    data.unpack_float()                                     # ir_tabext
+
+    data.unpack_int()                                       # ir_gb_algorithm
+    data.unpack_int()                                       # ir_nstgbradii
+    data.unpack_float()                                     # ir_rgbradii
+    data.unpack_float()                                     # ir_gb_saltconc
+    data.unpack_int()                                       # ir_implicit_solvent
+
+    data.unpack_float()                                     # ir_gb_epsilon_solvent
+    data.unpack_float()                                     # ir_gb_obc_alpha
+    data.unpack_float()                                     # ir_gb_obc_beta
+    data.unpack_float()                                     # ir_gb_obc_gamma
+
+    # not relevant here
+    # ir_gb_dielectric_offset = 0.009
+    # ir_sa_algorithm = 0                                     # esaAPPROX
+
+    data.unpack_float()                             # ir_sa_surface_tension
+
+    data.unpack_int()                                       # ir_nkx
+    data.unpack_int()                                       # ir_nky
+    data.unpack_int()                                       # ir_nkz
+    data.unpack_int()                                       # ir_pme_order
+    data.unpack_float()                                     # ir_ewald_rtol
+    data.unpack_int()                                       # ir_ewald_geometry
+
+    data.unpack_float()                                     # ir_epsilon_surface
+
+    data.unpack_bool()                                      # ir_bOptFFT
+    data.unpack_bool()                                      # ir_bContinuation
+    data.unpack_int()                                       # ir_etc
+
+    # not relevant here
+    # ir_nsttcouple = ir_nstcalcenergy
+
+    data.unpack_int()                                 # ir_epcpressure coupling
+    data.unpack_int()                                 # ir_epctepctype, e.g. isotropic
+
+    # not relevant here
+    # ir_nstpcouple = ir_nstcalcenergy
+    data.unpack_float()                                     # tau_p
+
+    data.unpack_farray(DIM, data.unpack_float)              # ir_ref_p_XX
+    data.unpack_farray(DIM, data.unpack_float)              # ir_ref_p_YY
+    data.unpack_farray(DIM, data.unpack_float)              # ir_ref_p_ZZ
+
+    data.unpack_farray(DIM, data.unpack_float)              # ir_compress_XX
+    data.unpack_farray(DIM, data.unpack_float)              # ir_compress_YY
+    data.unpack_farray(DIM, data.unpack_float)              # ir_compress_ZZ
+
+    data.unpack_int()                                       # ir_refcoord_scaling
+    data.unpack_farray(DIM, data.unpack_float)              # ir_posres_com
+    data.unpack_farray(DIM, data.unpack_float)             # ir_posres_comB
+
+    data.unpack_int()                                       # ir_andersen_seed
+    data.unpack_float()                                     # ir_shake_tol
+    data.unpack_int()                                       # ir_efep
+
+    data.unpack_float()                             # ir_init_lambda = rdum = 
+    data.unpack_float()                             # ir_delta_lambda = rdum = 
+
+    # Not relevant here
+    # ir_n_flambda = 0
+    # ir_flambda   = None
+
+    data.unpack_float()                                     # ir_sc_alpha
+    data.unpack_int()                                       # ir_sc_power
+    data.unpack_float()                                     # ir_sc_sigma
+
+    # not relevant here
+    # ir_sc_sigma_min = 0
+    # ir_nstdhdl = 1
+    # ir_separate_dhdl_file  = 0                            # epdhdlfileYES;
+    # ir_dhdl_derivatives = 0                               # dhdlderivativesYES 
+    # ir_dh_hist_size    = 0
+    # ir_dh_hist_spacing = 0.1
+
+    data.unpack_int()                                       # ir_eDisre
+    data.unpack_int()                                       # ir_eDisre_weighting
+    data.unpack_bool()                                      # ir_bDisreMixed
+
+    data.unpack_float()                                     # ir_dr_fc
+    data.unpack_float()                                     # ir_dr_tau
+    data.unpack_int()                                       # ir_nstdisreout
+
+    data.unpack_float()                                     # ir_orires_fc
+    data.unpack_float()                                     # ir_orires_tau
+    data.unpack_int()                                       # ir_nstorireout
+
+    data.unpack_float()                                     # ir_dihre_fc
+
+    data.unpack_float()                                     # ir_em_stepsize
+    data.unpack_float()                                     # ir_em_tol
+
+    data.unpack_bool()                                      # ir_bShakeSOR
+    data.unpack_int()                                       # ir_niter
+
+    data.unpack_float()                                     # ir_fc_stepsize
+
+    data.unpack_int()                                       # ir_eConstrAlg
+    data.unpack_int()                                       # ir_nProjOrder
+    data.unpack_float()                                     # ir_LincsWarnAngle
+    data.unpack_int()                                       # ir_nLincsIter
+
+    data.unpack_float()                                     # ir_bd_fric
+    data.unpack_int()                                       # ir_ld_seed
+
+    ndo_rvec(data, DIM)                                     # ir_deform
+
+    data.unpack_float()                                 # ir_cos_accel
+
+    data.unpack_int()                                   # ir_userint1
+    data.unpack_int()                                   # ir_userint2
+    data.unpack_int()                                   # ir_userint3
+    data.unpack_int()                                   # ir_userint4
+    data.unpack_float()                                 # ir_userreal1
+    data.unpack_float()                                 # ir_userreal2
+    data.unpack_float()                                 # ir_userreal3
+    data.unpack_float()                                 # ir_userreal4
+
+    # pull_stuff
+    data.unpack_int()                                       # ir_ePull
+    
+    # grpopts stuff
+    ir_opts_ngtc = data.unpack_int()
+    # not relevant here
+    # ir_opts_nhchainlength = 1
+
+    ir_opts_ngacc = data.unpack_int()
+    ir_opts_ngfrz = data.unpack_int()
+    ir_opts_ngener = data.unpack_int()
+
+    ndo_real(data, ir_opts_ngtc)                                  # ir_nrdf
+    ndo_real(data, ir_opts_ngtc)                                  # ir_ref_t
+    ndo_real(data, ir_opts_ngtc)                                  # ir_tau_t
+    
+    if ir_opts_ngfrz > 0:
+        ndo_ivec(data, ir_opts_ngfrz)                       # ir_opts_nFreeze
+
+    if ir_opts_ngacc > 0:
+        ndo_rvec(data, ir_opts_ngacc)                       # ir_opts_acc
+
+    ndo_int(data, ir_opts_ngener ** 2)                      # ir_opts_egp_flags
+    ndo_int(data, ir_opts_ngtc)                             # ir_opts_annealing
+    ir_opts_anneal_npoints = ndo_int(data, ir_opts_ngtc)
+
+    ir_opts_anneal_time = []
+    ir_opts_anneal_temp = []
+    for j in range(ir_opts_ngtc):
+        k = ir_opts_anneal_npoints[j]
+        ir_opts_anneal_time.append(ndo_int(data, k))
+        ir_opts_anneal_temp.append(ndo_int(data, k))
+
+    # Walls
+    data.unpack_int()                                   # ir_nwall
+    data.unpack_int()                                   # ir_nwall_type
+    data.unpack_float()                                 # ir_wall_r_linpot
+
+    # ir->wall_atomtype[0], ir->wall_atomtype[1]
+    ir_wall_atomtype = []
+    ir_wall_atomtype.append(data.unpack_int())
+    ir_wall_atomtype.append(data.unpack_int())
+
+    # ir->wall_density[0], ir->wall_density[1]
+    ir_wall_density = []
+    ir_wall_density.append(data.unpack_float())
+    ir_wall_density.append(data.unpack_float())
+
+    data.unpack_float()                                    # ir_wall_ewald_zfac
+
+    # cosine stuff for electric fields
+    ir_ex_n, ir_et_n, ir_ex_a, ir_ex_phi, ir_et_a, ir_et_phi = [], [], [], [], [], []
+    for j in range(DIM):
+        x = data.unpack_int()
+        ir_ex_n.append(x)
+        y = data.unpack_int()
+        ir_et_n.append(y)
+
+        ir_ex_a.append(ndo_real(data, x))
+        ir_ex_phi.append(ndo_real(data, x))
+        ir_et_a.append(ndo_real(data, y))
+        ir_et_phi.append(ndo_real(data, y))
+
+    # QMM stuff
+    data.unpack_bool()                                  # ir_bQMMM
+    data.unpack_int()                                   # ir_bQMMMscheme
+    data.unpack_float()                                 # ir_scalefactor
+    data.unpack_int()                                   # ir_opts_ngQM
+
+    # if ir_opts_ngQM > 0:
+        # do_something
+
+    # indicating the parsing finishes properly
+    data.done()
+
+
