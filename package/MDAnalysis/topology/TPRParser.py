@@ -341,11 +341,14 @@ def do_mtop(data, fver):
     atoms, bonds, angles, dihe, impr = [], [], [], [], []
     atom_start_ndx = 0
     res_start_ndx = 0
+
     for i in range(nmolblock):
-        segid = molecule_types[i].name # seg ~ block, grouped by molecule types
         # molb_type is just an index for moltypes/molecule_types
         (molb_type, molb_nmol, molb_natoms_mol, 
          molb_nposres_xA, molb_nposres_xB) = do_molblock(data)
+        # segment is made to correspond to the molblock as in gromacs, the
+        # naming is kind of arbitrary
+        segid = "seg_{0}_{1}".format(i, molecule_types[molb_type].name)
         for j in xrange(molb_nmol):
             mt = molecule_types[molb_type]                  # mt: molecule type
             for atomkind in mt.atomkinds:
@@ -433,4 +436,5 @@ def parse(tprfile):
     return structure
 
 if __name__ == "__main__":
-    parse("../../../../md.tpr")
+    parse("/Users/zyxue/Dropbox/help_printing/final.tpr")
+    # parse("../../../../md.tpr")
