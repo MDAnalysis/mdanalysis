@@ -17,7 +17,7 @@
 
 import MDAnalysis
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
-from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD
+from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, TPR
 
 from numpy.testing import *
 
@@ -179,3 +179,16 @@ class TestAMBER(_TestTopology, RefCappedAla):
 class TestAMBER12(_TestTopology, RefAMBER12):
     """Testing AMBER 12 PRMTOP parser (Issue 100)"""
 
+
+class RefTPRv58(object):
+    """
+    only for tpx file_version 58. could use 
+        gmxdump -s data/adk_oplsaa.tpr > /dev/null
+    to check the version fo tpr file."""
+    topology = TPR
+    ref_numatoms = 47681
+    ref_numresidues = 11302
+    ref_proteinatoms = 3341
+
+class TestTPRv58(_TestTopology, RefTPRv58):
+    """Testing TPR version 58"""
