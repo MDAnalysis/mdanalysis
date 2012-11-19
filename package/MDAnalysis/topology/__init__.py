@@ -73,7 +73,7 @@ a system.
 .. SeeAlso:: :ref:`Coordinates` with the :ref:`Supported coordinate formats`
 """
 
-__all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser', 'CRDParser','TOPParser', 'PDBQTParser']
+__all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser', 'CRDParser','TOPParser', 'PDBQTParser', 'TPRParser']
 
 import core
 import PSFParser, TOPParser, \
