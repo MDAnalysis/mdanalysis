@@ -17,7 +17,7 @@
 
 import MDAnalysis
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
-from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, TPR
+from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, V58TPR, V73TPR
 
 from numpy.testing import *
 
@@ -121,8 +121,12 @@ class TestMagnesium(_TestGuessAtomType):
 class _TestTopology(TestCase):
     def test_parser(self):
         U = MDAnalysis.Universe(self.topology)
-        assert_equal(U.atoms.numberOfAtoms(), self.ref_numatoms, "wrong number of atoms in topology")
-        assert_equal(U.atoms.numberOfResidues(), self.ref_numresidues, "wrong number of residues in topology")
+        assert_equal(U.atoms.numberOfAtoms(), 
+                     self.ref_numatoms, 
+                     "wrong number of atoms in topology")
+        assert_equal(U.atoms.numberOfResidues(), 
+                     self.ref_numresidues,
+                     "wrong number of residues in topology")
 
 class RefAdKSmall(object):
     """Mixin class to provide comparison numbers.
@@ -179,16 +183,26 @@ class TestAMBER(_TestTopology, RefCappedAla):
 class TestAMBER12(_TestTopology, RefAMBER12):
     """Testing AMBER 12 PRMTOP parser (Issue 100)"""
 
-
+@dec.slow
 class RefTPRv58(object):
     """
     only for tpx file_version 58. could use 
         gmxdump -s data/adk_oplsaa.tpr > /dev/null
     to check the version fo tpr file."""
-    topology = TPR
+    topology = V58TPR
     ref_numatoms = 47681
     ref_numresidues = 11302
     ref_proteinatoms = 3341
 
 class TestTPRv58(_TestTopology, RefTPRv58):
+    """Testing TPR version 58"""
+
+@dec.slow
+class RefTPRv73(object):
+    topology = V73TPR
+    ref_numatoms = 47681
+    ref_numresidues = 11302
+    ref_proteinatoms = 3341
+
+class TestTPRv73(_TestTopology, RefTPRv73):
     """Testing TPR version 58"""

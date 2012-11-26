@@ -36,7 +36,7 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM
            "PDB_closed",
            "PDB_multiframe",
            "PDB_helix",
-           "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",   # Gromacs
+           "PDB", "GRO", "XTC", "TRR", "V58TPR", "V73TPR", "GRO_velocity",   # Gromacs
            "XYZ", "XYZ_psf", "XYZ_bz2",         # XYZ
            "PRM", "TRJ", "TRJ_bz2",             # Amber (no periodic box)
            "PRMpbc", "TRJpbc_bz2",              # Amber (periodic box)
@@ -71,7 +71,8 @@ GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
 PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
-TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
+V58TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
+V73TPR = resource_filename(__name__, 'data/gmxv73.tpr')
 
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
