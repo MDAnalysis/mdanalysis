@@ -436,5 +436,5 @@ def parse(tprfile):
     return structure
 
 if __name__ == "__main__":
-    parse("/Users/zyxue/Dropbox/help_printing/final.tpr")
-    # parse("../../../../md.tpr")
+    # parse("../../../testsuite/MDAnalysisTests/data/adk_oplsaa.tpr")
+    parse("../../../testsuite/MDAnalysisTests/data/gmxv73.tpr")
