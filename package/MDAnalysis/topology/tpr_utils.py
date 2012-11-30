@@ -9,6 +9,7 @@ from MDAnalysis.topology.core import guess_atom_type
 
 import tpr_obj as obj
 import tpr_setting as S
+# import tpr_utils_bk as UB
 
 class NotImplementedError(Exception):
     """This code only works for certain features in certain version of tpr files""" 
@@ -37,7 +38,7 @@ def err(fver):
     if fver not in [58, 73]:
         raise NotImplementedError(
             "Your tpx version is {0}, which this parser does not support, yet ".format(fver))
-    
+
 def read_tpxheader(data):
     """this function is now compatible with do_tpxheader in tpxio.c"""
     number = data.unpack_int()                     # ?
@@ -90,58 +91,59 @@ def do_mtop(data, fver):
     # mtop: the topology of the whole system
     symtab = do_symtab(data)
     do_symstr(data, symtab)                                 # system_name
-
-    do_ffparams(data, fver)
+    do_ffparams(data, fver)                                 # params 
 
     nmoltype = data.unpack_int()
-    molecule_types = []                                      # non-gromacs
+    moltypes = []                                     # non-gromacs
     for i in range(nmoltype):
         moltype = do_moltype(data, symtab, fver)
-        molecule_types.append(moltype)
+        moltypes.append(moltype)
 
     nmolblock = data.unpack_int()
 
-    atoms, bonds, angles, dihe, impr = [], [], [], [], []
+    Mtop = namedtuple("Mtop", "nmoltype moltypes nmolblock")
+    mtop = Mtop(nmoltype, moltypes, nmolblock)
+
+    TPRTopology = namedtuple("TPRTopology", "atoms, bonds, angles, dihe, impr")
+    ttop = TPRTopology(*[[] for i in range(5)])
+
     atom_start_ndx = 0
     res_start_ndx = 0
-
-    for i in range(nmolblock):
+    for i in range(mtop.nmolblock):
         # molb_type is just an index for moltypes/molecule_types
-        (molb_type, molb_nmol, molb_natoms_mol, 
-         molb_nposres_xA, molb_nposres_xB) = do_molblock(data)
+        mb = do_molblock(data)
         # segment is made to correspond to the molblock as in gromacs, the
         # naming is kind of arbitrary
-        segid = "seg_{0}_{1}".format(i, molecule_types[molb_type].name)
-        for j in xrange(molb_nmol):
-            mt = molecule_types[molb_type]                  # mt: molecule type
+        segid = "seg_{0}_{1}".format(i, mtop.moltypes[mb.molb_type].name)
+        for j in xrange(mb.molb_nmol):
+            mt = mtop.moltypes[mb.molb_type]                  # mt: molecule type
             for atomkind in mt.atomkinds:
-                atoms.append(Atom(atomkind.id + atom_start_ndx, 
-                                  atomkind.name,
-                                  atomkind.type,
-                                  atomkind.resname,
-                                  atomkind.resid + res_start_ndx,
-                                  segid,
-                                  atomkind.mass,
-                                  atomkind.charge))
+                ttop.atoms.append(Atom(atomkind.id + atom_start_ndx, 
+                                       atomkind.name,
+                                       atomkind.type,
+                                       atomkind.resname,
+                                       atomkind.resid + res_start_ndx,
+                                       segid,
+                                       atomkind.mass,
+                                       atomkind.charge))
             # remap_ method returns [blah, blah, ..] or []
-            bonds.extend(mt.remap_bonds(atom_start_ndx))
-            angles.extend(mt.remap_angles(atom_start_ndx))
-            dihe.extend(mt.remap_dihe(atom_start_ndx))
-            impr.extend(mt.remap_impr(atom_start_ndx))
+            ttop.bonds.extend(mt.remap_bonds(atom_start_ndx))
+            ttop.angles.extend(mt.remap_angles(atom_start_ndx))
+            ttop.dihe.extend(mt.remap_dihe(atom_start_ndx))
+            ttop.impr.extend(mt.remap_impr(atom_start_ndx))
 
             atom_start_ndx += mt.number_of_atoms()
             res_start_ndx += mt.number_of_residues()
 
-    data.unpack_int()                         # mtop_natoms
-    do_atomtypes(data)
-
     # not useful here
+
+    # data.unpack_int()                         # mtop_natoms
+    # do_atomtypes(data)
     # mtop_ffparams_cmap_grid_ngrid        = 0
     # mtop_ffparams_cmap_grid_grid_spacing = 0.1
     # mtop_ffparams_cmap_grid_cmapdata     = 'NULL'
-
-    do_groups(data, symtab)
-    return atoms, bonds, angles, dihe, impr
+    # do_groups(data, symtab)
+    return ttop
 
 def do_symstr(data, symtab):
     #do_symstr: get a string based on index from the symtab 
@@ -163,27 +165,25 @@ def do_ffparams(data, fver):
         data.unpack_int()                                   # idum
     ntypes = data.unpack_int()
     functype = ndo_int(data, ntypes)
-    reppow = data.unpack_float() if fver >= 66 else 12.0
+    reppow = data.unpack_double() if fver >= 66 else 12.0
     if fver >= 57:
         fudgeQQ = data.unpack_float()
 
     # mimicing the c code,
     # remapping the functype due to inconsistency in different versions
-    for k in range(len(functype)):
-        for j in S.ftupd:
+    for i in range(len(functype)):
+        for k in S.ftupd:
             # j[0]: tpx_version, j[1] funtype
-            if fver < j[0] and functype[k] >= j[1]:
-                functype[k] += 1
+            if fver < k[0] and functype[i] >= k[1]:
+                functype[i] += 1
                 
     # parameters for different functions, None returned for now since not sure
     # what is iparams
     iparams = do_iparams(data, functype, fver)
 
     Params = namedtuple("Params", "atnr ntypes functype reppow fudgeQQ iparams")
-    p = Params(atnr, ntypes, functype, reppow, fudgeQQ, iparams)
-    print p
-    sys.exit(1)
-    return p
+    params = Params(atnr, ntypes, functype, reppow, fudgeQQ, iparams)
+    return params
 
 def do_harm(data):
     data.unpack_float()                                     # rA
@@ -381,109 +381,174 @@ def do_iparams(data, functypes, fver):
     return 
 
 def do_moltype(data, symtab, fver):
-    molname = do_symstr(data, symtab)
+    if fver >= 57:
+        molname = do_symstr(data, symtab)
+
     # key info: about atoms
-    atomkinds = do_atoms(data, symtab)
+    atoms_obj = do_atoms(data, symtab, fver)
+
+    #### start: MDAnalysis specific
+    atomkinds = []
+    for k, a in enumerate(atoms_obj.atoms):
+        atomkinds.append(obj.AtomKind(
+                k,
+                atoms_obj.atomnames[k],
+                atoms_obj.type[k],
+                a.resind,
+                atoms_obj.resnames[a.resind],
+                a.m,
+                a.q))
+    #### end: MDAnalysis specific
+
     # key info: about bonds, angles, dih, improp dih.
-    zip_ilists = do_ilists(data, fver)
+    ilists = do_ilists(data, fver)
+
+    #### start: MDAnalysis specific
     # these may not be available for certain molecules, e.g. tip4p
     bonds, angles, dihs, impr = None, None, None, None
-    for zip_ilist in zip_ilists:
-        nr = zip_ilist[0]
-        if nr:
-            itrt_t, atoms_ndx = zip_ilist[1:]   # interaction_type, atoms index
-            itrt_type = obj.InteractionType(*itrt_t)
+    for ilist in ilists:
+        if ilist.nr > 0:
+            ik_obj = obj.InteractionKind(*ilist.ik)
+            ias = ilist.iatoms
+
             # the following if..elif..else statement needs to be updated as new
             # type of interactions become interested
-            if itrt_type.name in ['LJ14']:
-                bonds = list(itrt_type.process(atoms_ndx))
-            elif itrt_type.name in ['ANGLES']:
-                angles = list(itrt_type.process(atoms_ndx))
-            elif itrt_type.name in ['RBDIHS']:
-                dihs = list(itrt_type.process(atoms_ndx))
-            elif itrt_type.name in ['PDIHS', 'VSITE3']:
+            if ik_obj.name in ['LJ14']:
+                bonds = list(ik_obj.process(ias))
+            elif ik_obj.name in ['ANGLES']:
+                angles = list(ik_obj.process(ias))
+            elif ik_obj.name in ['RBDIHS']:
+                dihs = list(ik_obj.process(ias))
+            elif ik_obj.name in ['PDIHS', 'VSITE3']:
                 # this is possible a bug in gromacs, the so-named Proper Dih is
                 # actually Improper Dih
-                impr = list(itrt_type.process(atoms_ndx))
+                impr = list(ik_obj.process(ias))
             else:
                 # other interaction types are not interested at the moment
                 pass
-    molecule_type = obj.MoleculeType(molname, atomkinds, bonds, angles, dihs, impr)
 
-    # info in do_block and do_blocka is not interested
+    moltype = obj.MoleculeKind(molname, atomkinds, bonds, angles, dihs, impr)
+    #### end: MDAnalysis specific
+
+    # info in do_block and do_blocka is not interested, but has to be parsed
+    # here so that all moltypes can be parsed properly
     do_block(data)
     do_blocka(data)
-    return molecule_type
+    return moltype
 
-def do_atoms(data, symtab):
+def do_atoms(data, symtab, fver):
     # do_atoms
-    atoms_nr = data.unpack_int()
-    atoms_nres = data.unpack_int()
+    nr = data.unpack_int()     # number of atoms in a particular molecule
+    nres = data.unpack_int() # number of residues in a particular molecule
 
-    (m, q, mB, qB, type, typeB, ptype, resind, atomnumber) = (
-        [], [], [], [], [], [], [], [], [])
+    if fver < 57:
+        err(fver)
 
-    for i in range(atoms_nr):
-        m_, q_, mB_, qB_, type_, typeB_, ptype_, resind_, atomnumber_ = do_atom(data)
-        m.append(m_)
-        q.append(q_)
-        mB.append(mB_)
-        qB.append(qB_)
-        type.append(type_)
-        typeB.append(typeB_)
-        ptype.append(ptype_)            # regular atom, virtual site or others
-        resind.append(resind_)          # index of residue
-        atomnumber.append(atomnumber)   # index of atom type
+    atoms = []
+    for i in range(nr):
+        A = do_atom(data, fver)
+        atoms.append(A)
 
     # do_strstr
-    atomnames = [symtab[i] for i in ndo_int(data, atoms_nr)]
-    ndo_int(data, atoms_nr) # list of ndx, type    : symtab[ndx], e.g. opls_111
-    ndo_int(data, atoms_nr) # list of ndx, typeB   : symtab[ndx]
-    resnames = [symtab[i] for i in ndo_int(data, atoms_nres)]
+    atomnames = [symtab[i] for i in ndo_int(data, nr)]
 
-    atom_resnames = [resnames[i] for i in resind]
-    types = [guess_atom_type(i) for i in atomnames]
+    if fver <= 20:
+        err(fver)
+    else:
+        type  = [symtab[i] for i in ndo_int(data, nr)]      # e.g. opls_111
+        typeB = [symtab[i] for i in ndo_int(data, nr)]
+    resnames = do_resinfo(data, symtab, fver, nres)
 
-    # since atomtype has already been used
-    atomkinds = [obj.AtomKind(i, *v) for i, v in
-                 enumerate(zip(atomnames, types, resind, atom_resnames, m, q))]
-    return atomkinds
+    if fver < 57:
+        err(fver)
 
-def do_atom(data):
-    atom_m = data.unpack_float()
-    atom_q = data.unpack_float()
-    atom_mB = data.unpack_float()
-    atom_qB = data.unpack_float()
-    atom_type = data.unpack_uint()
-    atom_typeB = data.unpack_uint()
-    atom_ptype = data.unpack_int()
-    atom_resind = data.unpack_int()
-    atomnumber = data.unpack_int()
-    return (atom_m, atom_q, atom_mB, atom_qB, atom_type, 
-            atom_typeB, atom_ptype, atom_resind, atomnumber)
+    Atoms = namedtuple("Atoms", "atoms nr nres type typeB atomnames resnames")
+    return Atoms(atoms, nr, nres, type, typeB, atomnames, resnames)
+
+def do_resinfo(data, symtab, fver, nres):
+    if fver < 63:
+        resnames = [symtab[i] for i in ndo_int(data, nres)]
+    else:
+        resnames = []
+        for i in range(nres):
+            resnames.append(symtab[data.unpack_int()])
+            # assume the uchar in gmx is 8 byte, seems right
+            data.unpack_fstring(8) 
+    return resnames
+
+def do_atom(data, fver):
+    m = data.unpack_float()                                 # mass
+    q = data.unpack_float()                                 # charge
+    mB = data.unpack_float()
+    qB = data.unpack_float()
+    tp = data.unpack_uint()                       # type is a keyword in python
+    typeB = data.unpack_uint()
+    ptype = data.unpack_int()       # regular atom, virtual site or others
+    resind = data.unpack_int()      # index of residue
+
+    if fver >= 52:
+        atomnumber = data.unpack_int()       # index of atom type
+
+    if fver < 23 or fver < 39  or  fver < 57:
+        err(fver)
+
+    attrs = ["m", "q", "mB", "qB", "tp", "typeB",
+             "ptype", "resind", "atomnumber"]
+    Atom = namedtuple("Atom", attrs)
+    return Atom(m, q, mB, qB, tp, typeB, ptype, resind, atomnumber)
 
 def do_ilists(data, fver):
-    ilist_nr = []                                           # number of ilist
-    ilist_iatoms = []
-    for j in range(S.F_NRE):                   # total number of energies
+    nr = []                   # number of ilist
+    iatoms = []               # atoms involved in a particular interaction type
+    for j in range(S.F_NRE):  # total number of energies (i.e. interaction types)
         bClear = False
         for k in S.ftupd:
             if fver < k[0] and j == k[1]:
                 bClear = True
         if bClear:
-            ilist_nr.append(0)
-            ilist_iatoms.append(None)
+            nr.append(0)
+            iatoms.append(None)
         else:
+            if fver < 44:
+                err(fver)
             # do_ilist
             n = data.unpack_int()
-            ilist_nr.append(n)
+            nr.append(n)
             l_ = []
             for i in range(n):
                 l_.append(data.unpack_int())
-            ilist_iatoms.append(l_)
+            iatoms.append(l_)
 
-    return zip(ilist_nr, S.interaction_types, ilist_iatoms)
-    # print "lengths of ilist_iatoms: {0}".format([len(i) for i in ilist_iatoms if i])
+    Ilist = namedtuple("Ilist", "nr ik, iatoms")
+    return [Ilist(n, it, i) for n, it, i in 
+            zip(nr, S.interaction_types, iatoms)]
+
+def do_molblock(data):
+    molb_type = data.unpack_int()
+    molb_nmol = data.unpack_int()            # number of moles in the molblock
+    molb_natoms_mol = data.unpack_int()      # number of atoms in a molecule
+    molb_nposres_xA = data.unpack_int()
+    if molb_nposres_xA > 0:
+        ndo_rvec(data, molb_nposres_xA)
+    molb_nposres_xB = data.unpack_int() # The number of posres coords for top B
+    if molb_nposres_xB > 0:
+        ndo_rvec(data, molb_nposres_xB)
+
+    attrs = ["molb_type", "molb_nmol", "molb_natoms_mol",
+             "molb_nposres_xA", "molb_nposres_xB"]
+    Molblock = namedtuple("Molblock", attrs)
+    return Molblock(molb_type, molb_nmol, molb_natoms_mol, 
+                    molb_nposres_xA, molb_nposres_xB)
+
+def do_atomtypes(data):
+    at_nr = data.unpack_int()                               # at: atomtype
+    at_radius = ndo_real(data, at_nr)
+    at_vol = ndo_real(data, at_nr)
+    at_surftens = ndo_real(data, at_nr)
+    at_atomnumber = ndo_int(data, at_nr)
+    return at_radius, at_vol, at_surftens, at_atomnumber
+
+##############UTILS FOR INFORMATION NOT INTERESTED AT THE MOMENT###############
 
 def do_block(data):
     block_nr = data.unpack_int()                       # for cgs: charge groups
@@ -497,26 +562,6 @@ def do_blocka(data):
     ndo_int(data, block_nr + 1)
     ndo_int(data, block_nra)
     return block_nr, block_nra
-
-def do_molblock(data):
-    molb_type = data.unpack_int()
-    molb_nmol = data.unpack_int()            # number of moles in the molblock
-    molb_natoms_mol = data.unpack_int()      # number of atoms in a molecule
-    molb_nposres_xA = data.unpack_int()
-    if molb_nposres_xA > 0:
-        ndo_rvec(data, molb_nposres_xA)
-    molb_nposres_xB = data.unpack_int() # The number of posres coords for top B
-    if molb_nposres_xB > 0:
-        ndo_rvec(data, molb_nposres_xB)
-    return molb_type, molb_nmol, molb_natoms_mol, molb_nposres_xA, molb_nposres_xB
-
-def do_atomtypes(data):
-    at_nr = data.unpack_int()                               # at: atomtype
-    at_radius = ndo_real(data, at_nr)
-    at_vol = ndo_real(data, at_nr)
-    at_surftens = ndo_real(data, at_nr)
-    at_atomnumber = ndo_int(data, at_nr)
-    return at_radius, at_vol, at_surftens, at_atomnumber
 
 def do_grps(data):
     grps_nr = []
