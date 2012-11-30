@@ -17,7 +17,8 @@
 
 import MDAnalysis
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
-from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, V58TPR, V73TPR
+from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, TPR, \
+    TPR405, TPR455
 
 from numpy.testing import *
 
@@ -184,25 +185,33 @@ class TestAMBER12(_TestTopology, RefAMBER12):
     """Testing AMBER 12 PRMTOP parser (Issue 100)"""
 
 @dec.slow
-class RefTPRv58(object):
+class RefTPR(object):
     """
-    only for tpx file_version 58. could use 
-        gmxdump -s data/adk_oplsaa.tpr > /dev/null
-    to check the version fo tpr file."""
-    topology = V58TPR
+    this test the data/adk_oplsaa.tpr which is of tpx version 58
+    """
+    topology = TPR
     ref_numatoms = 47681
     ref_numresidues = 11302
     ref_proteinatoms = 3341
 
-class TestTPRv58(_TestTopology, RefTPRv58):
+class TestTPR(_TestTopology, RefTPR):
     """Testing TPR version 58"""
+
+class TPRBase(object):
+    ref_numatoms = 2263
+    ref_numresidues = 230
+    ref_proteinatoms = 1962
 
 @dec.slow
-class RefTPRv73(object):
-    topology = V73TPR
-    ref_numatoms = 47681
-    ref_numresidues = 11302
-    ref_proteinatoms = 3341
+class TPR405(TPRBase):
+    topology = TPR405
 
-class TestTPRv73(_TestTopology, RefTPRv73):
+class TestTPR405(_TestTopology, TPR405):
     """Testing TPR version 58"""
+
+class TPR455(TPRBase):
+    topology = TPR455
+
+class TestTPR455(_TestTopology, TPR455):
+    """Testing TPR version 58"""
+
