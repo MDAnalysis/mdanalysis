@@ -43,11 +43,24 @@ ndo_real = U.ndo_real
 ndo_rvec = U.ndo_rvec
 ndo_ivec = U.ndo_ivec
 
+def print_header(th):
+    print "#" * 79
+    print "Gromacs version   : {0}".format(th.ver_str)
+    print "tpx     version   : {0}".format(th.fver)
+    print "tpx     generation: {0}".format(th.fgen)
+    print "#" * 79
+
 def parse(tprfile):
     tprf = open(tprfile).read()
     data = xdrlib.Unpacker(tprf)
-    th = U.read_tpxheader(data)                    # tpxheader
-    print th
+    try:
+        th = U.read_tpxheader(data)                    # tpxheader
+    except EOFError:
+        print "{0}\nInvalid tpr file or cannot be recognized\n".format(tprfile)
+        raise
+
+    print_header(th)
+
     V = th.fver                                    # since it's used very often
 
     state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c
@@ -104,6 +117,8 @@ def parse(tprfile):
 if __name__ == "__main__":
     try:
         parse(sys.argv[1])
+    except EOFError:
+        print "{0}\nInvalid tpr file or cannot be recognized\n".format(sys.argv[1])
     except IndexError:
         print "Please feed an tpr file or use this file as a module"
 
