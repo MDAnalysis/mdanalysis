@@ -17,7 +17,7 @@
 
 import MDAnalysis
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
-from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD
+from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PDB_NAMD
 
 from numpy.testing import *
 
@@ -179,3 +179,18 @@ class TestAMBER(_TestTopology, RefCappedAla):
 class TestAMBER12(_TestTopology, RefAMBER12):
     """Testing AMBER 12 PRMTOP parser (Issue 100)"""
 
+class TestPrimitivePDBParser(TestCase):
+    """
+    Testing the code responsible for bond list generation from a PDB file. 
+    The code is guessing connectivity from distances between atoms.
+    """
+    def setUp(self):
+        self.pdb = MDAnalysis.Universe(PDB_NAMD, guess_bonds=True)
+        self.psf = MDAnalysis.Universe(PSF_NAMD, format="PSF")
+
+    def test_namd_number_of_bonds(self):
+        assert_equal(len(self.pdb.bonds), len(self.psf.bonds))
+
+    def tearDown(self):
+        del self.pdb
+        del self.psf
