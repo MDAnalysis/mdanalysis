@@ -28,9 +28,9 @@ http://code.google.com/p/mdanalysis/wiki/TPRReaderDevelopment
 functions with name starting at read_ or do_ is trying to be similar to those
 in gmxdump.c or tpxio.c, those with extract_ is new
 
-Wherever err(fver) is used, meaning the version difference issue haven't be
-completely resolved for some version
-
+Wherever err(fver) is used in this and other tpr_*.py files, it means the tpx
+version problem haven't be resolved for those other than 58 and 73 (or gromacs
+version before 4.x)
 """
 
 import sys
@@ -65,7 +65,7 @@ def parse(tprfile):
 
     state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c
     if th.bBox:
-        U.get_box_info(data, V)
+        U.extract_box_info(data, V)
 
     if state_ngtc > 0 and V >= 28:
         if V < 69:                      # redundancy due to  different versions

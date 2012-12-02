@@ -18,6 +18,8 @@ class TestTPR(_TestTopology, RefTPR):
     """Testing TPR version 58"""
 
 # The follow test the same system grompped by different version of gromacs
+# FORMAT: TPRABC, where numbers ABC indicates the version of gromacs that
+# generates the corresponding tpr file
 
 class TPRBase(object):
     ref_numatoms = 2263
@@ -76,29 +78,29 @@ class TestTPR450(_TestTopology, TPR450):
 class TPR451(TPRBase):
     topology = TPR451
 class TestTPR451(_TestTopology, TPR451):
-    """Testing TPR version 58"""
+    """Testing TPR version 73"""
 
 @dec.slow
 class TPR452(TPRBase):
     topology = TPR452
 class TestTPR452(_TestTopology, TPR452):
-    """Testing TPR version 58"""
+    """Testing TPR version 73"""
 
 @dec.slow
 class TPR453(TPRBase):
     topology = TPR453
 class TestTPR453(_TestTopology, TPR453):
-    """Testing TPR version 58"""
+    """Testing TPR version 73"""
 
 @dec.slow
 class TPR454(TPRBase):
     topology = TPR454
 class TestTPR454(_TestTopology, TPR454):
-    """Testing TPR version 58"""
+    """Testing TPR version 73"""
 
 @dec.slow
 class TPR455(TPRBase):
     topology = TPR455
 class TestTPR455(_TestTopology, TPR455):
-    """Testing TPR version 58"""
+    """Testing TPR version 73"""
 

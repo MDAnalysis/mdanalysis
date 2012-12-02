@@ -1,7 +1,19 @@
-"""Wherever err(fver) is used, meaning the version difference issue haven't be
-completely resolved for some version"""
+"""
+Function calling order:
 
-import sys
+(TPRParser.py call do_mtop)
+do_mtop -> do_symtab
+        -> do_ffparams -> do_iparams
+        -> do_moltype  -> do_atoms  -> do_atom
+                                    -> do_resinfo
+                       -> do_ilists
+                       -> do_block
+                       -> do_blocka
+        -> do_molblock
+
+Then compose the stuffs in the format MDAnalysis.Universe reads in
+"""
+
 from collections import namedtuple
 
 from MDAnalysis.core.AtomGroup import Atom
@@ -77,7 +89,7 @@ def read_tpxheader(data):
                    bIr, bTop, bX, bV, bF, bBox)
     return th
 
-def get_box_info(data, fver):
+def extract_box_info(data, fver):
     box = ndo_rvec(data, S.DIM)
     box_rel = ndo_rvec(data, S.DIM) if fver >= 51 else 0
     box_v = ndo_rvec(data, S.DIM) if fver >= 28 else None
@@ -192,6 +204,7 @@ def do_harm(data):
     data.unpack_float()                                     # krB
 
 def do_iparams(data, functypes, fver):
+    # Not all elif cases in this function has been used and tested
     for k, i in enumerate(functypes):
         if i in [S.F_ANGLES, S.F_G96ANGLES, 
                    S.F_BONDS, S.F_G96BONDS, 
@@ -437,7 +450,6 @@ def do_moltype(data, symtab, fver):
     return moltype
 
 def do_atoms(data, symtab, fver):
-    # do_atoms
     nr = data.unpack_int()     # number of atoms in a particular molecule
     nres = data.unpack_int() # number of residues in a particular molecule
 
@@ -540,16 +552,6 @@ def do_molblock(data):
     return Molblock(molb_type, molb_nmol, molb_natoms_mol, 
                     molb_nposres_xA, molb_nposres_xB)
 
-def do_atomtypes(data):
-    at_nr = data.unpack_int()                               # at: atomtype
-    at_radius = ndo_real(data, at_nr)
-    at_vol = ndo_real(data, at_nr)
-    at_surftens = ndo_real(data, at_nr)
-    at_atomnumber = ndo_int(data, at_nr)
-    return at_radius, at_vol, at_surftens, at_atomnumber
-
-##############UTILS FOR INFORMATION NOT INTERESTED AT THE MOMENT###############
-
 def do_block(data):
     block_nr = data.unpack_int()                       # for cgs: charge groups
     # starting or ending atom indices, based on which cgs are grouped
@@ -562,6 +564,8 @@ def do_blocka(data):
     ndo_int(data, block_nr + 1)
     ndo_int(data, block_nra)
     return block_nr, block_nra
+
+##############UTILS FOR INFORMATION NOT INTERESTED AT THE MOMENT###############
 
 def do_grps(data):
     grps_nr = []
@@ -596,3 +600,11 @@ def do_groups(data, symtab):
     # print ngrpnr
     # print [len(i) for i in grpnr if i]
     return
+
+def do_atomtypes(data):
+    at_nr = data.unpack_int()                               # at: atomtype
+    at_radius = ndo_real(data, at_nr)
+    at_vol = ndo_real(data, at_nr)
+    at_surftens = ndo_real(data, at_nr)
+    at_atomnumber = ndo_int(data, at_nr)
+    return at_radius, at_vol, at_surftens, at_atomnumber
