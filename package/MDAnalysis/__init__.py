@@ -200,7 +200,7 @@ class ApplicationError(OSError):
 
     The error code is specific for the application.
 
-    .. versionadded:: 0.8
+    .. versionadded:: 0.7.7
     """
 
 class SelectionWarning(Warning):
