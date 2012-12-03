@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/?? danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, zhuyi.xue
+??/??/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, zhuyi.xue
 
   * 0.7.7
 
@@ -24,8 +24,7 @@ The rules for this file:
     tuples (Issue 76) 
   * new AtomGroup.asphericity() and AtomGroup.shapeParameter()   
     methods to compute shape descriptors.
-
-  * EXPERIMENTAL TPR parser (currently limited to version 58 of the
+  * EXPERIMENTAL TPR parser (currently limited to version 58 and 73 of the
     Gromacs TPR format, see Issue 2)
 
   Fixes

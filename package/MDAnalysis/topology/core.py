@@ -73,16 +73,29 @@ class Bond(object):
     def __init__(self, a1, a2):
         self.atom1 = a1
         self.atom2 = a2
+        a1.bonds.append(self)
+        a2.bonds.append(self)         
+        self.is_guessed = False
     def partner(self, atom):
         if atom is self.atom1:
             return self.atom2
         else: return self.atom1
+    def set_is_guessed(self, b):
+        self.is_guessed = b
+    def get_is_guessed(self):
+        return self.is_guessed 
     def length(self):
         """Length of the bond."""
         bond = self.atom1.pos - self.atom2.pos
         import math
         return math.sqrt((bond[0]**2)+(bond[1]**2)+(bond[2]**2))
+    def __repr__(self):
+        a1 = self.atom1
+        a2 = self.atom2
+        return "< Bond between: Atom %d (%s of %s-%d) and Atom %s (%s of %s-%d), length %.2f A >" % \
+          (a1.number+1, a1.name, a1.resname, a1.resid, a2.number+1, a2.name, a2.resname, a2.resid, self.length())
 
+                
 def build_bondlists(atoms, bonds):
     """Construct the bond list of each :class:`~MDAnalysis.core.AtomGroup.Atom`.
 
