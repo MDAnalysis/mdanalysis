@@ -12,3 +12,4 @@ dist/
 temp/
 examples/eigenvalues.dat
 examples/output.txt
+_export.sh
