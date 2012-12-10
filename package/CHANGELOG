@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal
+??/??/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi
 
   * 0.7.7
 
@@ -24,6 +24,10 @@ The rules for this file:
     tuples (Issue 76) 
   * new AtomGroup.asphericity() and AtomGroup.shapeParameter()   
     methods to compute shape descriptors.
+  * access to forces (AtomGroup.forces with get_forces() and set_forces();
+    the default unit for force is kJ/(mol*A) and it is automatically 
+    converted from/to native). Currently, only the TRR Reader/Writer
+    support forces.
 
   Fixes
 

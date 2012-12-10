@@ -238,7 +238,7 @@ class IObase(object):
         return x
 
     def convert_velocities_from_native(self, v, inplace=True):
-        """In-place conversion of coordinate array *v* from native units to base units.
+        """In-place conversion of velocities array *v* from native units to base units.
 
         By default, the input *v* is modified in place and also returned.
 
@@ -251,6 +251,21 @@ class IObase(object):
             return f*v
         v *= f
         return v
+
+    def convert_forces_from_native(self, force, inplace=True):
+        """In-place conversion of forces array *force* from native units to base units.
+
+        By default, the input *force* is modified in place and also returned.
+
+        .. versionadded:: 0.7.7
+        """
+        f = units.get_conversion_factor('force', self.units['force'], MDAnalysis.core.flags['force_unit'])
+        if f == 1.:
+            return force
+        if not inplace:
+            return f*force
+        force *= f
+        return force
 
     def convert_time_from_native(self, t, inplace=True):
         """Convert time *t* from native units to base units.
@@ -309,6 +324,21 @@ class IObase(object):
             return f*v
         v *= f
         return v
+
+    def convert_forces_to_native(self, force, inplace=True):
+        """In-place conversion of force array *force* from base units to native units.
+
+        By default, the input *force* is modified in place and also returned.
+
+        .. versionadded:: 0.7.7
+        """
+        f = units.get_conversion_factor('force', MDAnalysis.core.flags['force_unit'], self.units['force'])
+        if f == 1.:
+            return force
+        if not inplace:
+            return f*force
+        force *= f
+        return force
 
     def convert_time_to_native(self, t, inplace=True):
         """Convert time *t* from base units to native units.
