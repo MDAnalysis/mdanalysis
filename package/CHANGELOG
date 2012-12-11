@@ -28,6 +28,7 @@ The rules for this file:
     the default unit for force is kJ/(mol*A) and it is automatically 
     converted from/to native). Currently, only the TRR Reader/Writer
     support forces.
+  * all element masses
 
   Fixes
 
