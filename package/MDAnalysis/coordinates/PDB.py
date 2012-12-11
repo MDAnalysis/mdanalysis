@@ -564,6 +564,7 @@ class PrimitivePDBReader(base.Reader):
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1
+        # hack for PrimitivePDBParser:
         self._atoms = numpy.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,segID,element")
 
     def _col(self, line, start, stop, typeclass=float):

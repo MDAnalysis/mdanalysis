@@ -187,7 +187,6 @@ class Atom(object):
         self.charge = charge
         self.radius = radius
         self.bfactor = bfactor
-        self.bonds = []
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
                repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'
@@ -1820,6 +1819,12 @@ class Universe(object):
         #    setattr(self, data, struc[data])
         self.atoms = AtomGroup(struc["_atoms"])
 
+        # TODO wrap-around in a BondGroup class, translating bonds to lists of Atom objects; otherwise indexing becomes a pain
+        # TODO move to universe._psf.bonds
+
+        if struc.has_key("_bonds"):
+          self.bonds = struc["_bonds"]
+
         # XXX: add H-bond information here if available from psf (or other sources)
         # segment instant selectors
         self._build_segments()
@@ -1830,45 +1835,13 @@ class Universe(object):
         self.residues = self.atoms.residues
         self.universe = self    # for Writer.write(universe), see Issue 49
 
+        #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
         # Let atoms access the universe
         for a in self.atoms:
             a.universe = self
 
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
-
-        # TODO wrap-around in a BondGroup class, translating bonds to lists of Atom objects; otherwise indexing becomes a pain
-        # TODO move to universe._psf.bonds
-        #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
-        # FIXME JD: bonds generated from connect records are different than those 
-        # guessed from atom distances it'd be good to keep a record of weather a bond
-        # is guessed or created 
-        # FIXME by OB: the CONECT bonds should take priority over the guessed bonds 
-        #bonds.extend(guessed_bonds)                
-        from MDAnalysis.topology import PrimitivePDBParser
-        if kwargs.get('guess_bonds', False) and parser is PrimitivePDBParser.parse:    
-            guessed_bonds = PrimitivePDBParser._guess_bonds(self.atoms, self.atoms.coordinates())
-            struc["_guessed_bonds"] = guessed_bonds
-        
-        self.bonds = set()
-        from MDAnalysis.topology.core import Bond
-
-        putative_bonds = set()
-        if struc.has_key("_bonds"):
-            putative_bonds = putative_bonds.union(struc["_bonds"])
-        if struc.has_key("_guessed_bonds"):
-            putative_bonds = putative_bonds.union(struc["_guessed_bonds"])        
-        
-        for i, j in putative_bonds:
-            a1, a2 = self.atoms[i-1],self.atoms[j-1]
-            bond = Bond(a1, a2)
-            if struc.has_key("_guessed_bonds") and \
-                    set([i,j]) in struc["_guessed_bonds"] and \
-                    set([i,j]) not in struc["_bonds"]:
-                bond.set_is_guessed(True)
-            self.bonds.add(bond)
-        self.bonds = list(self.bonds)
-
 
     def _build_segments(self):
         """Parse topology into segments and create the segid instant selectors.
