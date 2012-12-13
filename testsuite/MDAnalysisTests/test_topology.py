@@ -17,9 +17,10 @@
 
 import MDAnalysis
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
-from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD
+from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid
 
 from numpy.testing import *
+from nose.plugins.attrib import attr
 
 def check_atom_type(atype, aname):
     assert_equal(guess_atom_type(aname), atype)
@@ -149,6 +150,16 @@ class RefNAMD_CGENFF(object):
 
 class TestPSF_NAMD_CGENFF(_TestTopology, RefNAMD_CGENFF):
     """Testing NAMD PSF file (with CGENFF atom types, Issue 107)"""
+
+class TestPSF_Issue121(TestCase):
+    @attr('issue')
+    def test_nosegid(self):
+        try:
+            u = MDAnalysis.Universe(PSF_nosegid)
+        except IndexError:
+            raise AssertionError("Issue 121 not fixed: cannot load PSF with empty SEGID")
+        assert_equal(u.atoms.numberOfAtoms(), 98)
+        assert_equal(u.atoms.segids(), ["SYSTEM"])
 
 # AMBER
 

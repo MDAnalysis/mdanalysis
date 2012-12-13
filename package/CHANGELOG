@@ -36,7 +36,7 @@ The rules for this file:
   * fixed Issue 116 (Failed to write AMBER netcdf trajectory from AtomGroup)
   * fixed Issue 117 (could not write Gromacs XTC/TRR from AMBER netcdf)
   * fixed Issue 120 (DCDWriter: wrote wrong unitcell information)
-
+  * fixed Issue 121 (PSFParser would fail with IndexError for files without SEGID)
 
 06/30/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy, lukas.grossar, denniej0, danny.parton
 
