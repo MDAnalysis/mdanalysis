@@ -18,6 +18,8 @@
 import MDAnalysis
 import numpy
 from numpy.testing import *
+from nose.plugins.attrib import attr
+
 from MDAnalysis.tests.datafiles import GRO_velocity, PDB_xvf, TRR_xvf
 
 class TestGROVelocities(TestCase):
@@ -62,12 +64,13 @@ class TestTRRForces(TestCase):
         # native units: kJ/(mol*nm)
         self.reference_mean_protein_force_native = numpy.array([3.4609879271822823, -0.63302345167392804, -1.0587882545813336], dtype=numpy.float32)
         # MDAnalysis units of kJ/(mol*A)
-        self.reference_mean_protein_force = 10. * self.reference_mean_protein_force_native
-        self.prec = 5
+        self.reference_mean_protein_force = self.reference_mean_protein_force_native/10
+        self.prec = 6
 
     def tearDown(self):
         del self.universe
 
+    @attr('slow')
     def testForces(self):
         protein = self.universe.selectAtoms("protein")
         assert_equal(len(protein), 918)
@@ -78,10 +81,9 @@ class TestTRRForces(TestCase):
 class TestTRRForcesNativeUnits(TestTRRForces):
     def setUp(self):
         super(TestTRRForcesNativeUnits, self).setUp()
-
         # get universe without conversion
         self.universe = MDAnalysis.Universe(PDB_xvf, TRR_xvf, convert_units=False)
         # native Gromacs TRR units kJ/(mol*nm)
         self.reference_mean_protein_force = self.reference_mean_protein_force_native
-        self.prec = 6
+
 

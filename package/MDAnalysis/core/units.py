@@ -122,7 +122,7 @@ N_Avogadro = 6.02214179e+23  # mol**-1
 #:    TIP4P   1.001(1)
 #:    exp     0.997
 #:  ======== =========
-#: 
+#:
 #: and molar mass 18.016 g mol**-1.
 water = {'exp':0.997, 'SPC':0.985, 'TIP3P':1.002, 'TIP4P':1.001,  # in g cm**-3
          'MolarMass': 18.016,                                     # in g mol**-1
@@ -164,8 +164,8 @@ speedUnit_factor = {'Angstrom/ps': 1.0, 'A/ps': 1.0, 'Å/ps': 1.0, 'Angstrom/pic
 # (TODO: build this combinatorically from lengthUnit and timeUnit)
 
 #: For *force* the basic unit is kJ/(mol*Angstrom).
-forceUnit_factor = {'kJ/(mol*Angstrom)': 1.0,
-                    'kJ/(mol*nm)': 0.1,
+forceUnit_factor = {'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*A)': 1.0, 'kJ/(mol*Å)': 1.0,
+                    'kJ/(mol*nm)': 10.0,
                     }
 # (TODO: build this combinatorically from lengthUnit and ... a new energyUnit)
 
