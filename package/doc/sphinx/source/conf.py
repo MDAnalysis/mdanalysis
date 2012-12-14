@@ -180,7 +180,7 @@ html_favicon = "logos/mdanalysis-logo.ico"
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
 # base URL from which the finished HTML is served.
-html_use_opensearch = 'http://mdanalysis.googlecode.com/svn/trunk/doc/html'
+html_use_opensearch = 'http://packages.python.org/MDAnalysis/'
 
 # This is the file name suffix for HTML files (e.g. ".xhtml").
 #html_file_suffix = None
@@ -243,8 +243,8 @@ man_pages = [
 # Bibliographic Dublin Core info.
 epub_title = u'MDAnalysis'
 epub_author = authors
-epub_publisher = 'University of Oxford, Oxford, UK'
-epub_copyright = u'2011, '+authors
+epub_publisher = 'Arizona State University, Tempe, Arizona, USA'
+epub_copyright = u'2012, '+authors
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
