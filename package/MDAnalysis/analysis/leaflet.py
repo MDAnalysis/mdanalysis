@@ -97,8 +97,7 @@ class LeafletFinder(object):
                  take periodic boundary conditions into account (only works
                  for orthorhombic boxes) [``False``]
         """
-        if type(universe) is str:
-            universe = MDAnalysis.Universe(universe)
+        universe = MDAnalysis.asUniverse(universe)
         self.universe = universe
         self.selectionstring = selectionstring
         self.selection = universe.selectAtoms(selectionstring)
