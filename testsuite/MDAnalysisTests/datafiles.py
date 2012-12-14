@@ -32,6 +32,7 @@ Note that the files are actually located in a separate package,
 __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
            "DCD_empty",
            "PSF_NAMD", "PDB_NAMD",            # NAMD
+           "PSF_nosegid",                     # psf without a segid, Issue 121
            "PDB_small","NUCL",                # PDB
            "PDB_closed",
            "PDB_multiframe",
@@ -59,6 +60,8 @@ CRD = resource_filename(__name__, 'data/adk_open.crd')
 
 PSF_NAMD = resource_filename(__name__, 'data/namd_cgenff.psf')
 PDB_NAMD = resource_filename(__name__, 'data/namd_cgenff.pdb')
+
+PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
 
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
