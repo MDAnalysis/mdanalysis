@@ -1,6 +1,6 @@
 /* -*- mode: c; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- 
  *
- * $Id$
+ * $Id: xdrfile.h,v 1.1 2010/10/08 11:53:37 spoel Exp spoel $
  *
  * Copyright (c) Erik Lindahl, David van der Spoel 2003,2004.
  * Coordinate compression (c) by Frans van Hoesel. 
@@ -58,7 +58,7 @@
 #ifndef _XDRFILE_H_
 #define _XDRFILE_H_
 
-#ifdef CPLUSPLUS
+#ifdef __cplusplus
 extern "C" 
 {
 #endif
@@ -608,7 +608,7 @@ extern "C"
 
 
 
-#ifdef CPLUSPLUS
+#ifdef __cplusplus
 }
 #endif
 

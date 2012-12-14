@@ -14,7 +14,7 @@
 #ifndef _xdrfile_trr_h
 #define _xdrfile_trr_h
 
-#ifdef CPLUSPLUS
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -40,7 +40,7 @@ extern "C" {
 		       matrix box,rvec *x,rvec *v,rvec *f);
 
   
-#ifdef CPLUSPLUS
+#ifdef __cplusplus
 }
 #endif
 
