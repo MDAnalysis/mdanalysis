@@ -16,7 +16,7 @@ The Gromacs xtc/trr library :mod:`libxdrfile`
 =============================================
 
 :mod:`libxdrfile` provides an interface to some high-level functions in the
-Gromacs_ `XTC Library`_ version 1.1. Only functions required for reading and
+Gromacs_ `XTC Library`_ version 1.1.1. Only functions required for reading and
 processing whole trajectories are exposed at the moment; low-level routines to
 read individual numbers are not provided.
 

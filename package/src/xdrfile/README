@@ -2,8 +2,15 @@ libxdrfile
 ==========
 
 This library allows to read GROMACS trr and xtc files and also to
-convert from one format to another.
+convert from one format to another. The actual `libxdr library`_ was
+written by the Gromacs developers. For MDAnalysis we added Python
+bindings (generated with SWIG_).
 
+
+.. _`libxdr library`: 
+   http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
+.. _SWIG: 
+   http://www.swig.org/
 
 Python bindings
 ===============
