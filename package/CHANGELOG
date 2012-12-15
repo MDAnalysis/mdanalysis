@@ -29,6 +29,7 @@ The rules for this file:
     converted from/to native). Currently, only the TRR Reader/Writer
     support forces.
   * all element masses
+  * logger reports current version when starting
 
   Fixes
 
