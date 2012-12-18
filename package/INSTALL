@@ -27,8 +27,8 @@ the following packages:
 
 Note 1: Dependencies such python-numpy or python-biopython will also be installed (if needed).
 
-Note 2: Not-required (but yet recommended) packages such as python-networkx or
-        python-scipy will not be installed automatically!
+Note 2: Not-required (but yet recommended) packages such as netCDF4,
+        matplotlib or python-scipy will not be installed automatically!
 
 Requirements for installing from source
 =======================================
@@ -160,9 +160,11 @@ required packages if you have not been able to install them through
 your package manager (always preferred!). For instance,
 
   cd mdanalysis
-  easy_install . mdanalysis[analysis]
+  easy_install [options] . mdanalysis[AMBER,analysis]
 
-should also install packages required for analysis.
+should also install packages required for analysis and the AMBER
+netcdf reader/writer (but see below for hints on the packages required
+to make AMBER work).
 
 
 
@@ -201,6 +203,9 @@ package:
       installation then you should install the hdf5 development
       package through your package manager (see below for some hints
       on how to do this for Linux and Mac OS X).
+
+      See also https://code.google.com/p/mdanalysis/wiki/netcdf for
+      notes on how to compile HDF5 and netcdf.
 
 Optional python packages (used in MDAnalysis.analysis):
 

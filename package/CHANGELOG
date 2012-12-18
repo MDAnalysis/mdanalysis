@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi
+12/??/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi
 
   * 0.7.7
 
@@ -38,6 +38,10 @@ The rules for this file:
   * fixed Issue 117 (could not write Gromacs XTC/TRR from AMBER netcdf)
   * fixed Issue 120 (DCDWriter: wrote wrong unitcell information)
   * fixed Issue 121 (PSFParser would fail with IndexError for files without SEGID)
+  * Issue 122 (made installation of netCDF4 library optional, which
+    means that users of the AMBER netcdf Reader/Writer will have to
+    manually install the library and its dependencies netcdf and HDF5, 
+    see https://code.google.com/p/mdanalysis/wiki/netcdf)
 
 06/30/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy, lukas.grossar, denniej0, danny.parton
 
