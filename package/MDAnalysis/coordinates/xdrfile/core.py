@@ -238,10 +238,17 @@ class TrjWriter(base.Writer):
                 # 0-velocities (no need to convert those); add it to ts as a sideeffect
                 # so that we don't have to reallocate next time
                 velocities = ts._velocities = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
-            if not hasattr(ts, '_forces'):
-                ts._forces = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
+            if hasattr(ts, '_forces'):
+                if self.convert_units:
+                    forces = self.convert_forces_to_native(ts._forces, inplace=False)
+                else:
+                    forces = ts._velocities                
+            else:
+                # 0-forces (no need to convert those); add it to ts as a sideeffect
+                # so that we don't have to reallocate next time
+                forces = ts._forces = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
             status = libxdrfile.write_trr(self.xdrfile, int(ts.step), float(time), float(ts.lmbda), unitcell,
-                                          pos, velocities, ts._forces)
+                                          pos, velocities, forces)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return status
@@ -479,6 +486,7 @@ class TrjReader(base.Reader):
             ts.time = self.convert_time_from_native(ts.time)  # in-place does not work with scalars
             if self.format == 'TRR':
                 self.convert_velocities_from_native(ts._velocities) # in-place
+                self.convert_forces_from_native(ts._forces)     # in-place
         ts.frame += 1
         return ts
 

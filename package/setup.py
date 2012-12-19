@@ -194,12 +194,13 @@ if __name__ == '__main__':
                               'biopython>=1.51',# required for standard PDB reader and sequence alignment
                               'networkx>=1.0',  # LeafletFinder
                               'GridDataFormats>=0.2.2', # volumes and densities
-                              'netCDF4>=1.0',   # for AMBER netcdf, also needs HDF5 and netcdf-4
                               ],
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
           # packaging system
           extras_require = {
+                'AMBER':    ['netCDF4>=1.0',   # for AMBER netcdf, also needs HDF5 and netcdf-4
+                             ],
                 'analysis': ['matplotlib',
                              'scipy',          # sparse contact matrix
                              ],

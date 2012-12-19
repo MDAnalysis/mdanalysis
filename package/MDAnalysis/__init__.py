@@ -176,7 +176,7 @@ def start_logging(logfile="MDAnalysis.log"):
     """
     import core.log
     core.log.create("MDAnalysis", logfile=logfile)
-    logging.getLogger("MDAnalysis").info("MDAnalysis STARTED logging to %r", logfile)
+    logging.getLogger("MDAnalysis").info("MDAnalysis %s STARTED logging to %r", __version__, logfile)
 
 def stop_logging():
     """Stop logging to logfile and console."""
@@ -200,7 +200,7 @@ class ApplicationError(OSError):
 
     The error code is specific for the application.
 
-    .. versionadded:: 0.8
+    .. versionadded:: 0.7.7
     """
 
 class SelectionWarning(Warning):

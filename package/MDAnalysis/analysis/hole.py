@@ -442,7 +442,7 @@ class HOLE(BaseHOLE):
     The class also provides some simple plotting functions of the collected
     data such as :meth:`HOLE.plot` or :meth:`HOLE.plot3D`.
 
-    .. versionadded:: 0.8
+    .. versionadded:: 0.7.7
 
     .. _`HOLE control parameters`:
        http://d2o.bioch.ox.ac.uk:38080/doc/hole_d03.html

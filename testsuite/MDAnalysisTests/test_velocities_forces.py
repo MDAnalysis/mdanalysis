@@ -18,7 +18,9 @@
 import MDAnalysis
 import numpy
 from numpy.testing import *
-from MDAnalysis.tests.datafiles import GRO_velocity
+from nose.plugins.attrib import attr
+
+from MDAnalysis.tests.datafiles import GRO_velocity, PDB_xvf, TRR_xvf
 
 class TestGROVelocities(TestCase):
     def setUp(self):
@@ -52,3 +54,36 @@ class TestGROVelocities(TestCase):
                             err_msg="problem reading .gro file velocities")
         assert_almost_equal(all_atoms[5].velocity,self.reference_velocities[5], self.prec,
                             err_msg="problem reading .gro file velocities")
+
+
+class TestTRRForces(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PDB_xvf, TRR_xvf)
+        # extracted protein forces with g_traj into cobrotoxin_protein_forces.xvg.bz2
+        # and manually averaged over 918 atoms and 3 time steps
+        # native units: kJ/(mol*nm)
+        self.reference_mean_protein_force_native = numpy.array([3.4609879271822823, -0.63302345167392804, -1.0587882545813336], dtype=numpy.float32)
+        # MDAnalysis units of kJ/(mol*A)
+        self.reference_mean_protein_force = self.reference_mean_protein_force_native/10
+        self.prec = 6
+
+    def tearDown(self):
+        del self.universe
+
+    @attr('slow')
+    def testForces(self):
+        protein = self.universe.selectAtoms("protein")
+        assert_equal(len(protein), 918)
+        mean_F = numpy.mean([protein.forces.mean(axis=0) for ts in self.universe.trajectory], axis=0)
+        assert_almost_equal(mean_F, self.reference_mean_protein_force, self.prec,
+                            err_msg="mean force on protein over whole trajectory does not match")
+
+class TestTRRForcesNativeUnits(TestTRRForces):
+    def setUp(self):
+        super(TestTRRForcesNativeUnits, self).setUp()
+        # get universe without conversion
+        self.universe = MDAnalysis.Universe(PDB_xvf, TRR_xvf, convert_units=False)
+        # native Gromacs TRR units kJ/(mol*nm)
+        self.reference_mean_protein_force = self.reference_mean_protein_force_native
+
+

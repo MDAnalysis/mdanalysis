@@ -29,18 +29,18 @@ Note that the files are actually located in a separate package,
 
  from MDAnalysisTestData.datafiles import *
 """
-__all__ = ["PSF", "DCD", "CRD",               # CHARMM
+__all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
            "DCD_empty",
            "PSF_NAMD", "PDB_NAMD",            # NAMD
+           "PSF_nosegid",                     # psf without a segid, Issue 121
            "PDB_small","NUCL",                # PDB
            "PDB_closed",
            "PDB_multiframe",
            "PDB_helix",
-           "PDB", "GRO", "XTC", "TRR", "GRO_velocity", "TPR",  # Gromacs
-
+           "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",   # Gromacs (AdK)
+           "PDB_xvf", "TPR_xvf", "TRR_xvf",     # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
            "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
-           "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", 
-
+           "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455",
            "XYZ", "XYZ_psf", "XYZ_bz2",         # XYZ
            "PRM", "TRJ", "TRJ_bz2",             # Amber (no periodic box)
            "PRMpbc", "TRJpbc_bz2",              # Amber (periodic box)
@@ -63,6 +63,8 @@ CRD = resource_filename(__name__, 'data/adk_open.crd')
 PSF_NAMD = resource_filename(__name__, 'data/namd_cgenff.psf')
 PDB_NAMD = resource_filename(__name__, 'data/namd_cgenff.pdb')
 
+PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
+
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
 
@@ -76,6 +78,10 @@ PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
 TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
+
+PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
+TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
+TRR_xvf = resource_filename(__name__, 'data/cobrotoxin.trr')
 
 # number is the gromacs version
 TPR400 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.0.tpr')

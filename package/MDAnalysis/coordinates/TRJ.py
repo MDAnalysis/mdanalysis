@@ -130,15 +130,20 @@ import MDAnalysis
 import base
 import MDAnalysis.core.util as util
 
-try:
-        import netCDF4 as netcdf
-except ImportError:
-        warnings.warn("Failed to import netCDF4; AMBER NETCDFReader/Writer will not work.\n"
-                      "Install netCDF4 from http://code.google.com/p/netcdf4-python/.")
-
 import errno
 import logging
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
+
+try:
+        import netCDF4 as netcdf
+except ImportError:
+        # Just to notify the user; the module will still load. However, NCDFReader and NCDFWriter
+        # will raise a proper ImportError if they are called without the netCDF4 library present.
+        # See Issue 122 for a discussion.
+        logger.debug("Failed to import netCDF4; AMBER NETCDFReader/Writer will not work. "
+                     "Install netCDF4 from http://code.google.com/p/netcdf4-python/.")
+        logger.debug("See also https://code.google.com/p/mdanalysis/wiki/netcdf")
+
 
 class Timestep(base.Timestep):
         """AMBER trajectory Timestep.
@@ -455,17 +460,13 @@ class TRJReader(base.Reader):
                 self.trjfile.close()
                 self.trjfile = None
 
-
         def rewind(self):
                 """Reposition at the beginning of the trajectory"""
                 self._reopen()
                 self.next()
 
-
         def __iter__(self):
                 self._reopen()
-                #yield self.ts
-                #raise StopIteration
                 self.ts.frame = 0  # start at 0 so that the first frame becomes 1
                 while True:
                         try:
@@ -512,7 +513,14 @@ class NCDFReader(base.Reader):
         units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps'}
         _Timestep = Timestep
         def __init__(self, filename, numatoms=None, **kwargs):
-                import netCDF4 as netcdf
+                try:
+                        import netCDF4 as netcdf
+                except ImportError:
+                        logger.fatal("netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf Reader.")
+                        logger.fatal("See installation instructions at https://code.google.com/p/mdanalysis/wiki/netcdf")
+                        raise ImportError("netCDF4 package missing.\n"
+                                          "netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf Reader.\n"
+                                          "See installation instructions at https://code.google.com/p/mdanalysis/wiki/netcdf")
 
                 self.filename = filename
                 convert_units = kwargs.pop('convert_units', None)
@@ -770,7 +778,14 @@ class NCDFWriter(base.Writer):
                 .. _`netcdf4storage.py`:
                    http://code.google.com/p/mdanalysis/issues/attachmentText?id=109&aid=1090002000&name=netcdf4storage.py
                 """
-                import netCDF4 as netcdf
+                try:
+                        import netCDF4 as netcdf
+                except ImportError:
+                        logger.fatal("netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf Writer.")
+                        logger.fatal("See installation instructions at https://code.google.com/p/mdanalysis/wiki/netcdf")
+                        raise ImportError("netCDF4 package missing.\n"
+                                          "netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf Writer.\n"
+                                          "See installation instructions at https://code.google.com/p/mdanalysis/wiki/netcdf")
 
                 if not self.__first_frame:
                         raise IOError(errno.EIO, "Attempt to write to closed file {0}".format(self.filename))

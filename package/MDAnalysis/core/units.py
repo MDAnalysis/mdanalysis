@@ -21,7 +21,7 @@ Constants and unit conversion --- :mod:`MDAnalysis.core.units`
 
 The base units of MDAnalysis are *Angstrom* for *length* (1 Angstrom =
 0.1 nm = 10^-10 m) and *ps* (pico second) for *time* (1 ps = 10^-12
-sec).
+sec). For *force* we adopted kJ/(mol*Angstrom).
 
 All conversions: the conversion factor f to a unit b' for a quantity X
 (whose numeric value relative to the base unit b is stored in the
@@ -82,6 +82,7 @@ Data
 .. autodata:: densityUnit_factor
 .. autodata:: timeUnit_factor
 .. autodata:: speedUnit_factor
+.. autodata:: forceUnit_factor
 .. autodata:: chargeUnit_factor
 .. autodata:: conversion_factor
 .. autodata:: unit_types
@@ -121,7 +122,7 @@ N_Avogadro = 6.02214179e+23  # mol**-1
 #:    TIP4P   1.001(1)
 #:    exp     0.997
 #:  ======== =========
-#: 
+#:
 #: and molar mass 18.016 g mol**-1.
 water = {'exp':0.997, 'SPC':0.985, 'TIP3P':1.002, 'TIP4P':1.001,  # in g cm**-3
          'MolarMass': 18.016,                                     # in g mol**-1
@@ -162,6 +163,12 @@ speedUnit_factor = {'Angstrom/ps': 1.0, 'A/ps': 1.0, 'Å/ps': 1.0, 'Angstrom/pic
                     }
 # (TODO: build this combinatorically from lengthUnit and timeUnit)
 
+#: For *force* the basic unit is kJ/(mol*Angstrom).
+forceUnit_factor = {'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*A)': 1.0, 'kJ/(mol*Å)': 1.0,
+                    'kJ/(mol*nm)': 10.0,
+                    }
+# (TODO: build this combinatorically from lengthUnit and ... a new energyUnit)
+
 #: *Charge* is measured in multiples of the `electron charge`_
 #: *e* =  1.602176487 x 10**(-19) C.
 chargeUnit_factor = {'e': 1.0,
@@ -177,6 +184,7 @@ conversion_factor = {'length': lengthUnit_factor,
                      'time': timeUnit_factor,
                      'charge': chargeUnit_factor,
                      'speed': speedUnit_factor,
+                     'force': forceUnit_factor,
                      }
 
 #: Generated lookup table (dict): returns the type of unit for a known input unit.

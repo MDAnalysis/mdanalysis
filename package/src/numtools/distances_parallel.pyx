@@ -54,7 +54,7 @@ Load the module with ::
       Only orthorhombic boxes are supported for *box*, anything else will
       produce wrong results.
 
-   .. versionadded:: 0.8
+   .. versionadded:: 0.7.7
 
 .. function:: distance_array_serial(ref, conf[, box[, result]])
 
@@ -75,7 +75,7 @@ Load the module with ::
       Only orthorhombic boxes are supported for *box*, anything else will
       produce wrong results.
 
-   .. versionadded:: 0.8
+   .. versionadded:: 0.7.7
 """
 
 cimport numpy as np

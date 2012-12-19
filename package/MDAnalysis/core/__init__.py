@@ -309,6 +309,18 @@ _flags = [
 
          """
          ),
+    _Flag('force_unit',
+         'kJ/(mol*Angstrom)',
+         {'kJ/(mol*Angstrom)': 'kJ/(mol*Angstrom)', 'kJ/(mol*A)': 'kJ/(mol*Angstrom)', 
+          'kJ/(mol*nm)': 'kJ/(mol*nm)',
+          },
+         """
+            Base unit for forces (in particular forces in trajectories)
+
+            >>> flags['%(name)s'] = value
+
+         """
+         ),
     _Flag('charge_unit',
          'e',
          {'e': 'e', 'electron charge': 'e',

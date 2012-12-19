@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, zhuyi.xue
+12/??/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, zhuyi.xue, andy.somogyi
 
   * 0.7.7
 
@@ -26,6 +26,12 @@ The rules for this file:
     methods to compute shape descriptors.
   * EXPERIMENTAL TPR parser (currently limited to version 58 and 73 of the
     Gromacs TPR format, see Issue 2)
+  * access to forces (AtomGroup.forces with get_forces() and set_forces();
+    the default unit for force is kJ/(mol*A) and it is automatically 
+    converted from/to native). Currently, only the TRR Reader/Writer
+    support forces.
+  * all element masses
+  * logger reports current version when starting
 
   Fixes
 
@@ -33,7 +39,11 @@ The rules for this file:
   * fixed Issue 116 (Failed to write AMBER netcdf trajectory from AtomGroup)
   * fixed Issue 117 (could not write Gromacs XTC/TRR from AMBER netcdf)
   * fixed Issue 120 (DCDWriter: wrote wrong unitcell information)
-
+  * fixed Issue 121 (PSFParser would fail with IndexError for files without SEGID)
+  * Issue 122 (made installation of netCDF4 library optional, which
+    means that users of the AMBER netcdf Reader/Writer will have to
+    manually install the library and its dependencies netcdf and HDF5, 
+    see https://code.google.com/p/mdanalysis/wiki/netcdf)
 
 06/30/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy, lukas.grossar, denniej0, danny.parton
 

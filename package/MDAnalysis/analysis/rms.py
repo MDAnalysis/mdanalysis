@@ -23,7 +23,7 @@ Calculating root mean square quantities --- :mod:`MDAnalysis.analysis.rms`
 :Year: 2012
 :Copyright: GNU Public License v2
 
-.. versionadded:: 0.8
+.. versionadded:: 0.7.7
 
 The module contains code to analyze root mean square quantities such
 as the RMSD or RMSF (not implemented yet).
@@ -162,7 +162,7 @@ class RMSD(object):
     This class uses Douglas Theobald's fast QCP algorithm
     [Theobald2005]_ to calculate the RMSD.
 
-    .. versionadded:: 0.8
+    .. versionadded:: 0.7.7
     """
     def __init__(self, traj, reference=None, select='all', filename="rmsd.dat", mass_weighted=False, tol_mass=0.1,
                  ref_frame=0):

@@ -22,6 +22,7 @@
 #include <math.h>
 #include <limits.h>
 
+#define _FILE_OFFSET_BITS  64
 
 /* get fixed-width types if we are using ANSI C99 */
 #ifdef HAVE_STDINT_H

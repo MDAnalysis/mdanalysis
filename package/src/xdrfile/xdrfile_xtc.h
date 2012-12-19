@@ -14,7 +14,7 @@
 #ifndef _xdrfile_xtc_h
 #define _xdrfile_xtc_h
 
-#ifdef CPLUSPLUS
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -39,7 +39,7 @@ extern "C" {
 		       int natoms,int step,float time,
 		       matrix box,rvec *x,float prec);
   
-#ifdef CPLUSPLUS
+#ifdef __cplusplus
 }
 #endif
 
