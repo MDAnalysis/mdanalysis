@@ -159,7 +159,7 @@ import MDAnalysis
 import MDAnalysis.core.qcprot as qcp
 from MDAnalysis import SelectionError
 from MDAnalysis.core.log import ProgressMeter
-from MDAnalysis.core.util import asiterable
+#from MDAnalysis.core.util import asiterable # unused
 from MDAnalysis.analysis.rms import rmsd, _process_selection
 
 import os.path

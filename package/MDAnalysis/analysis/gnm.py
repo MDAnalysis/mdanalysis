@@ -76,12 +76,14 @@ directly needed to perform the analysis.
 """
 
 from __future__ import with_statement
-import copy
+# import copy #unused
 
 import numpy
 from numpy import linalg
 
-import warnings
+import os
+
+#import warnings #unused
 import logging
 logger = logging.getLogger('MDAnalysis.analysis.GNM')
 

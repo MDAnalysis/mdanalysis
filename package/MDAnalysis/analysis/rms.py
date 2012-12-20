@@ -71,12 +71,13 @@ from MDAnalysis import SelectionError, NoDataError
 from MDAnalysis.core.log import ProgressMeter
 from MDAnalysis.core.util import asiterable
 
-import os.path
+# import os.path #unused
 
 
 import logging
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
 
+import warnings
 
 def rmsd(a,b, weights=None):
     """Returns RMSD between two coordinate sets *a* and *b*.
