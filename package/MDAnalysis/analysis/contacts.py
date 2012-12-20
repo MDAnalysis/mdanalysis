@@ -672,7 +672,7 @@ class ContactAnalysis1(object):
         colorbar()
 
         if not filename is None:
-            saevfig(filename)
+            savefig(filename)
 
 
     def plot_qavg(self, filename=None, **kwargs):

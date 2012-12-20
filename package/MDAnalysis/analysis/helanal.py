@@ -244,7 +244,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
                 # two atoms
                 ref_axis = numpy.asarray(ref_axis)
 
-        if start is None and stop is None:
+        if start is None and end is None:
                 pass
         else:
                 if start is None:
@@ -475,7 +475,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
         """
 
         universe = MDAnalysis.Universe(pdbfile, permissive=permissive)
-        if start is None and stop is None:
+        if start is None and end is None:
                 pass
         else:
                 if start is None:

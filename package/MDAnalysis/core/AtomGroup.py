@@ -148,7 +148,7 @@ Classes and functions
 import warnings
 
 import numpy
-from math import *  # TODO: OB -- get rid of this
+from math import sqrt, acos, pi
 from MDAnalysis import SelectionError, NoDataError, SelectionWarning
 from MDAnalysis.core.util import normal, angle, stp
 
@@ -246,15 +246,16 @@ class Atom(object):
         # centroid exists for compatibility with AtomGroup
         return self.pos
 
-    def universe():
-        doc = "a pointer back to the Universe"
-        def fget(self):
-            if not self.__universe == None: return self.__universe
-            else: raise AttributeError("Atom "+repr(self.number)+" is not assigned to a Universe")
-        def fset(self, universe):
-            self.__universe = universe
-        return locals()
-    universe = property(**universe())
+    @property
+    def universe(self):
+        """a pointer back to the Universe"""
+        if not self.__universe == None: return self.__universe
+        else: raise AttributeError("Atom "+repr(self.number)+" is not assigned to a Universe")
+
+    @universe.setter
+    def universe(self, universe):
+        self.__universe = universe
+
 
 class AtomGroup(object):
     """A group of atoms.
@@ -371,7 +372,7 @@ class AtomGroup(object):
         .. versionadded:: 0.7.5
         """
         # If the number of atoms is very large, create a dictionary cache for lookup
-        if len(atoms) > 10000:
+        if len(self._atoms) > 10000:
             self.__cache['atoms'] = dict(((x,None) for x in self.__atoms))
         # indices
         self.__cache['indices'] = numpy.array([atom.number for atom in self._atoms])
@@ -664,7 +665,7 @@ class AtomGroup(object):
         .. versionadded:: 0.7.4
         """
         self._set_atoms("charge", float(charge))
-    def set_radius(self, charge):
+    def set_radius(self, radius):
         """Set the atom radius to float *radius* for **all atoms** in the AtomGroup.
 
         .. versionadded:: 0.7.4
@@ -1681,14 +1682,16 @@ class Segment(ResidueGroup):
             res.segment = self
             for atom in res:
                 atom.segment = self
-    def id():
-        doc = """Segment id (alias for :attr:`Segment.name`)"""
-        def fget(self):
-            return self.name
-        def fset(self,x):
-            self.name = x
-        return locals()
-    id = property(**id())
+
+    @property
+    def id(self):
+        """Segment id (alias for :attr:`Segment.name`)"""
+        return self.name
+
+    @id.setter
+    def id_setter(self,x):
+        self.name = x
+
 
     def __getattr__(self, attr):
         if attr[0] == 'r':
@@ -2139,16 +2142,16 @@ class Universe(object):
         """
         return self.trajectory.ts
 
-    def trajectory():
-        doc = "Reference to trajectory reader object containing trajectory data."
-        def fget(self):
-            if not self.__trajectory == None: return self.__trajectory
-            else: raise AttributeError("No trajectory loaded into Universe")
-        def fset(self, value):
-            del self.__trajectory  # guarantees that files are closed (?)
-            self.__trajectory = value
-        return locals()
-    trajectory = property(**trajectory())
+    @property
+    def trajectory(self):
+        """Reference to trajectory reader object containing trajectory data."""
+        if not self.__trajectory == None: return self.__trajectory
+        else: raise AttributeError("No trajectory loaded into Universe")
+
+    @trajectory.setter
+    def trajectory(self, value):
+        del self.__trajectory  # guarantees that files are closed (?)
+        self.__trajectory = value
 
 def asUniverse(*args, **kwargs):
     """Return a universe from the input arguments.

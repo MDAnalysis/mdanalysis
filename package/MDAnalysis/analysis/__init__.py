@@ -74,3 +74,13 @@ __all__ = ['align', 'contacts', 'density', 'distances',
            'rms',
            ]
 
+import align
+import contacts
+import density
+import distances
+import helanal
+import hbonds
+import leaflet
+import nuclinfo
+import rms
+

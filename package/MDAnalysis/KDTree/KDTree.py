@@ -95,7 +95,7 @@ class KDTree:
         """
         coords = numpy.asarray(coords, dtype=numpy.float32, order='C')  # required for C++ code
         if numpy.any(coords.min()<=-1e6) or numpy.any(coords.max()>=1e6):
-            raise ValuError("Points should lie between -1e6 and 1e6")
+            raise ValueError("Points should lie between -1e6 and 1e6")
         if len(coords.shape)!=2 or coords.shape[1]!=self.dim:
             raise ValueError("Expected a Nx%i Numeric array" % self.dim)
         self.kdt.set_data(coords, coords.shape[0])
