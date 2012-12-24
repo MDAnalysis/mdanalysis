@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.7.7-devel documentation</title>
+    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.7.7 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.7-devel',
+        VERSION:     '0.7.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.7-devel documentation"
+          title="Search within MDAnalysis 0.7.7 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.7-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.7 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
     <link rel="prev" title="7.1. Core functions of MDAnalysis" href="init.html" /> 
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -593,7 +593,7 @@ i.e. <em>axis</em> = 0) with the z-axis:</p>
 <dd><p>Asphericity.</p>
 <p>See <a class="reference internal" href="#dima2004">[Dima2004]</a> for background information.</p>
 <p class="versionadded">
-<span class="versionmodified">New in version 0.8.</span></p>
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -761,6 +761,62 @@ removed. Use <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.dimensions">
 <tt class="descname">dimensions</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.dimensions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dimensions of the Universe to which the group belongs, at the current time step.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.forces">
+<tt class="descname">forces</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.forces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forces on the atoms in the AtomGroup.</p>
+<p>The forces can be changed by assigning an array of the appropriate
+shape, i.e. either Nx3 to assign individual force or 3, to assign
+the <em>same</em> force to all atoms (e.g. <tt class="docutils literal"><span class="pre">ag.forces</span> <span class="pre">=</span> <span class="pre">array([0,0,0])</span></tt>
+will set all forces to (0.,0.,0.)).</p>
+<p>For more control use the <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_forces" title="MDAnalysis.core.AtomGroup.AtomGroup.get_forces"><tt class="xref py py-meth docutils literal"><span class="pre">get_forces()</span></tt></a> and
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_forces" title="MDAnalysis.core.AtomGroup.AtomGroup.set_forces"><tt class="xref py py-meth docutils literal"><span class="pre">set_forces()</span></tt></a> methods.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.get_forces">
+<tt class="descname">get_forces</tt><big>(</big><em>ts=None</em>, <em>copy=False</em>, <em>dtype=&lt;type 'numpy.float32'&gt;</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_forces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a NumPy array of the atomic forces (if available).
+Currently only supported for Gromacs .trr trajectories.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>ts</em></dt>
+<dd><p class="first last">If <em>ts</em> is provided then positions are read from that
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instead of
+the one from the current trajectory belonging to this universe.
+The <em>ts</em> is indexed with the indices returned by
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.indices" title="MDAnalysis.core.AtomGroup.AtomGroup.indices"><tt class="xref py py-meth docutils literal"><span class="pre">indices()</span></tt></a> and it is the user&#8217;s responsibility
+to provide a time step that has the appropriate dimensions.</p>
+</dd>
+<dt><em>copy</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: always make a copy (slow), <tt class="docutils literal"><span class="pre">False</span></tt>: Try to
+return a array view or reference (faster); note that for
+passing coordinates to C-code it can be necessary to use
+a copy [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+<dt><em>dtype</em></dt>
+<dd><p class="first last">NumPy Data type of the array; the default is usually
+entirely appropriate. Most C-code actually requires the
+default  [<tt class="xref py py-class docutils literal"><span class="pre">numpy.float32</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Forces can also be directly obtained from the attribute
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.forces" title="MDAnalysis.core.AtomGroup.AtomGroup.forces"><tt class="xref py py-attr docutils literal"><span class="pre">forces</span></tt></a>.</p>
+<p>Forces can be directly set with <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_forces" title="MDAnalysis.core.AtomGroup.AtomGroup.set_forces"><tt class="xref py py-meth docutils literal"><span class="pre">set_forces()</span></tt></a> or
+by assigning to <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.forces" title="MDAnalysis.core.AtomGroup.AtomGroup.forces"><tt class="xref py py-attr docutils literal"><span class="pre">forces</span></tt></a>.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -1046,6 +1102,45 @@ and the translation vectort M[:3,3].</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_forces">
+<tt class="descname">set_forces</tt><big>(</big><em>forces</em>, <em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_forces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the forces for all atoms in the group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>forces</em></dt>
+<dd><p class="first last">a Nx3 NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> where N is the number of
+atoms in this atom group.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>ts</em></dt>
+<dd><p class="first last"><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>, defaults
+to <tt class="docutils literal"><span class="pre">None</span></tt> and then the current time step is used.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the group contains N atoms and <em>force</em> is a single point (i.e. an
+array of length 3) then all N atom positions are set to <em>force</em> (due
+to NumPy&#8217;s broadcasting rules), as described for
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.forces" title="MDAnalysis.core.AtomGroup.AtomGroup.forces"><tt class="xref py py-attr docutils literal"><span class="pre">forces</span></tt></a>.</p>
+</div>
+<p>See also <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_forces" title="MDAnalysis.core.AtomGroup.AtomGroup.get_forces"><tt class="xref py py-meth docutils literal"><span class="pre">get_forces()</span></tt></a> and attribute access through
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.forces" title="MDAnalysis.core.AtomGroup.AtomGroup.forces"><tt class="xref py py-attr docutils literal"><span class="pre">forces</span></tt></a>.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_mass">
 <tt class="descname">set_mass</tt><big>(</big><em>mass</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the atom mass to float <em>mass</em> for <strong>all atoms</strong> in the AtomGroup.</p>
@@ -1102,7 +1197,7 @@ to NumPy&#8217;s broadcasting rules), as described for
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_radius">
-<tt class="descname">set_radius</tt><big>(</big><em>charge</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_radius" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_radius</tt><big>(</big><em>radius</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_radius" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the atom radius to float <em>radius</em> for <strong>all atoms</strong> in the AtomGroup.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
@@ -1182,7 +1277,7 @@ attribute access.</p>
 <dd><p>Shape parameter.</p>
 <p>See <a class="reference internal" href="#dima2004">[Dima2004]</a> for background information.</p>
 <p class="versionadded">
-<span class="versionmodified">New in version 0.8.</span></p>
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -1636,6 +1731,12 @@ chain identifier when loaded from a PDB</td>
 <dd><p>Segment id (alias for <tt class="xref py py-attr docutils literal"><span class="pre">Segment.name</span></tt>)</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Segment.id_setter">
+<tt class="descname">id_setter</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Segment.id_setter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Segment id (alias for <tt class="xref py py-attr docutils literal"><span class="pre">Segment.name</span></tt>)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -1741,7 +1842,7 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -1751,7 +1852,7 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
     Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>
