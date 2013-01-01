@@ -247,3 +247,4 @@ might expect::
  >>> print list(universe.selectAtoms("segid DMPC and ( resid 3 or resid 2 ) and name P"))
  [< Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>,
  < Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>]
+ 

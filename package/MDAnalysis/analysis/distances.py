@@ -242,7 +242,8 @@ def between(group, A, B, distance):
   .. versionadded: 0.7.5
   """
   from MDAnalysis.KDTree.NeighborSearch import AtomNeighborSearch
+  from MDAnalysis.core.AtomGroup import AtomGroup
   ns_group = AtomNeighborSearch(group)
-  resA = set(ns_group.search_list(A, cutoff))
-  resB = set(ns_group.search_list(B, cutoff))
-  return MDAnalysis.core.AtomGroup.AtomGroup(resB.intersection(resA))
+  resA = set(ns_group.search_list(A, distance))
+  resB = set(ns_group.search_list(B, distance))
+  return AtomGroup(resB.intersection(resA))

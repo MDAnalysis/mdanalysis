@@ -18,8 +18,8 @@
 """ LAMMPSParser - reads a lammps data file to build system
 """
 
-import Numeric
-from Scientific.IO.FortranFormat import FortranFormat, FortranLine
+import numpy
+# from Scientific.IO.FortranFormat import FortranFormat, FortranLine #unused
 
 class Atom(object):
     __slots__ = ("index", "name", "type", "chainid", "charge", "mass", "_positions")
@@ -102,7 +102,7 @@ class LAMMPSData(object):
             file = open(filename, 'r')
             file_iter = file.xreadlines()
             # Create coordinate array
-            positions = Numeric.zeros((headers['atoms'], 3), Numeric.Float64)
+            positions = numpy.zeros((headers['atoms'], 3), numpy.Float64)
             sections = self.sections
             for l in file_iter:
                 line = l.strip()
@@ -134,7 +134,7 @@ class LAMMPSData(object):
                         a = Atom(index=index, name=fields[2], type=int(fields[2]), chain_id=int(fields[1]), charge=float(fields[3]))
                         a._positions = positions
                         data.append(a)
-                        positions[index] = Numeric.array([float(fields[4]), float(fields[5]), float(fields[6])])
+                        positions[index] = numpy.array([float(fields[4]), float(fields[5]), float(fields[6])])
                     sections[line] = data
                 elif line == "Masses":
                     file_iter.next()
