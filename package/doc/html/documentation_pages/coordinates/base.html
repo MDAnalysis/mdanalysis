@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.2. Base classes — MDAnalysis.coordinates.base &mdash; MDAnalysis 0.7.7-devel documentation</title>
+    <title>5.2. Base classes — MDAnalysis.coordinates.base &mdash; MDAnalysis 0.7.7 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.7-devel',
+        VERSION:     '0.7.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.7-devel documentation"
+          title="Search within MDAnalysis 0.7.7 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.7-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.7 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.3. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" />
     <link rel="prev" title="5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates" href="init.html" /> 
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="init.html" title="5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -220,6 +220,24 @@ which is used everywhere in MDAnalysis.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.coordinates.base.IObase.convert_forces_from_native">
+<tt class="descname">convert_forces_from_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of forces array <em>force</em> from native units to base units.</p>
+<p>By default, the input <em>force</em> is modified in place and also returned.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.IObase.convert_forces_to_native">
+<tt class="descname">convert_forces_to_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of force array <em>force</em> from base units to native units.</p>
+<p>By default, the input <em>force</em> is modified in place and also returned.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_pos_from_native">
 <tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
@@ -276,7 +294,7 @@ returned.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_velocities_from_native">
 <tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>In-place conversion of coordinate array <em>v</em> from native units to base units.</p>
+<dd><p>In-place conversion of velocities array <em>v</em> from native units to base units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.5.</span></p>
@@ -522,7 +540,7 @@ provided when setting up the trajectory.</p>
         <li class="right" >
           <a href="init.html" title="5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -532,7 +550,7 @@ provided when setting up the trajectory.</p>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
     Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

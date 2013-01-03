@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.16. The Gromacs xtc/trr library libxdrfile &mdash; MDAnalysis 0.7.7-devel documentation</title>
+    <title>5.16. The Gromacs xtc/trr library libxdrfile &mdash; MDAnalysis 0.7.7 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.7-devel',
+        VERSION:     '0.7.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.7-devel documentation"
+          title="Search within MDAnalysis 0.7.7 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.7-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.7 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="6. Selection exporters" href="../selections_modules.html" />
     <link rel="prev" title="5.15. pdb.extensions – Extensions to Bio.PDB" href="pdbextensions.html" /> 
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="pdbextensions.html" title="5.15. pdb.extensions – Extensions to Bio.PDB"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -109,7 +109,7 @@
   <span class="target" id="module-MDAnalysis.coordinates.xdrfile.libxdrfile"></span><div class="section" id="the-gromacs-xtc-trr-library-libxdrfile">
 <h1>5.16. The Gromacs xtc/trr library <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt><a class="headerlink" href="#the-gromacs-xtc-trr-library-libxdrfile" title="Permalink to this headline">¶</a></h1>
 <p><tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt> provides an interface to some high-level functions in the
-<a class="reference external" href="http://www.gromacs.org">Gromacs</a> <a class="reference external" href="http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library">XTC Library</a> version 1.1. Only functions required for reading and
+<a class="reference external" href="http://www.gromacs.org">Gromacs</a> <a class="reference external" href="http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library">XTC Library</a> version 1.1.1. Only functions required for reading and
 processing whole trajectories are exposed at the moment; low-level routines to
 read individual numbers are not provided.</p>
 <p>The functions querying the numbers of atoms in a trajectory frame
@@ -321,12 +321,13 @@ which is updated with the coordinates from the frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The function returns a tuple containing</p>
-<dl class="last docutils">
-<dt><em>status</em></dt>
-<dd><p class="first last">integer status (0 = exdrOK), see <a class="reference internal" href="#status-symbols">Status symbols</a> for other
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The function returns a tuple containing
+<em>status</em></p>
+<blockquote>
+<div><p>integer status (0 = exdrOK), see <a class="reference internal" href="#status-symbols">Status symbols</a> for other
 values)</p>
-</dd>
+</div></blockquote>
+<dl class="last docutils">
 <dt><em>step</em></dt>
 <dd><p class="first last">simulation step</p>
 </dd>
@@ -375,12 +376,8 @@ which contains the coordinates from the frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>status</em></dt>
-<dd><p class="first last">integer status (0 = OK), see the <tt class="docutils literal"><span class="pre">libxdrfile.exdr*</span></tt> 
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>status</em>, integer status (0 = OK), see the <tt class="docutils literal"><span class="pre">libxdrfile.exdr*</span></tt> 
 constants under <a class="reference internal" href="#status-symbols">Status symbols</a> for other values)</p>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -473,12 +470,13 @@ which is updated with the <strong>forces</strong> from the frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The function returns a tuple containing</p>
-<dl class="last docutils">
-<dt><em>status</em></dt>
-<dd><p class="first last">integer status (0 = exdrOK), see the <tt class="docutils literal"><span class="pre">libxdrfile.exdr*</span></tt> constants 
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The function returns a tuple containing
+<em>status</em></p>
+<blockquote>
+<div><p>integer status (0 = exdrOK), see the <tt class="docutils literal"><span class="pre">libxdrfile.exdr*</span></tt> constants 
 under <a class="reference internal" href="#status-symbols">Status symbols</a> for other values)</p>
-</dd>
+</div></blockquote>
+<dl class="last docutils">
 <dt><em>step</em></dt>
 <dd><p class="first last">simulation step</p>
 </dd>
@@ -535,12 +533,8 @@ which contains the <strong>forces</strong> from the frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>status</em></dt>
-<dd><p class="first last">integer status (0 = OK), see the <tt class="docutils literal"><span class="pre">libxdrfile.exdr*</span></tt> 
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>status</em>, integer status (0 = OK), see the <tt class="docutils literal"><span class="pre">libxdrfile.exdr*</span></tt> 
 constants under <a class="reference internal" href="#status-symbols">Status symbols</a> for other values)</p>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -572,7 +566,7 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
         <li class="right" >
           <a href="pdbextensions.html" title="5.15. pdb.extensions – Extensions to Bio.PDB"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -582,7 +576,7 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
     Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>
