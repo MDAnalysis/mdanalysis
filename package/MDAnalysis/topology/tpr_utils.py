@@ -36,7 +36,7 @@ def ndo_real(data, n):
     return [data.unpack_float() for i in range(n)]
 
 def do_rvec(data):
-    return data.unpack_farray(S.DIM, data.unpack)
+    return data.unpack_farray(S.DIM, data.unpack_float)
 
 def ndo_rvec(data, n):
     """mimic of gmx_fio_ndo_rvec in gromacs"""
