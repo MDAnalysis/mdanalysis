@@ -49,6 +49,7 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "PDBQT_querypdb",
            "FASTA",                             # sequence alignment, Issue 112 + 113
            "PDB_HOLE",                          # gramicidin A
+           "DMS",                               # DHFR
            ]
 
 from pkg_resources import resource_filename
@@ -107,3 +108,5 @@ PDBQT_querypdb = resource_filename(__name__, 'data/pdbqt_querypdb.pdb')
 FASTA = resource_filename(__name__, 'data/test.fasta')
 
 PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
+
+DMS = resource_filename(__name__, 'data/adk_closed.dms')
