@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
@@ -293,14 +293,35 @@ class PrincipleAxis(Timeseries):
         return [a.principleAxes for a in self.atoms]
 
 class WaterDipole(Timeseries):
-    ''' Create a Timeseries that returns a timeseries for the dipole vector of a 3-site water
+    ''' Create a Timeseries that returns a timeseries for the bisector vector of a 3-site water
 
            t = WaterDipole(atoms)
 
-        atoms must contain 3 Atoms, either as a list or an AtomGroup; the first one MUST be
-        the oxygen, the other two are the hydrogens. The vector is calculated as
+        The vector, multiplied by the partial charge on the oxygen
+        atom (e.g. q=-0.0.834 for TIP3P water), gives the actual
+        dipole moment.
 
-           d = xO + (xH1 - xH2)/2
+        atoms must contain 3 Atoms, either as a list or an AtomGroup;
+        the first one *must* be the oxygen, the other two are the
+        hydrogens. The vector is calculated from the positions of the
+        oygen atom (xO) and the two hydrogen atoms (xH1, xH2) as
+
+           d = xO - (xH1 + xH2)/2
+
+        and the dipole moment is
+
+           µ = qO d
+
+        .. Note::
+
+           This will only work for water models that have half of the
+           oxygen charge on each hydrogen. The vector d has the
+           opposite direction of the dipole moment; multiplying with
+           the oxygen charge (<0!) will flip the direction.
+
+           There are no sanity checks; if the first atom in a water
+           molecule is not oxygen then results will be wrong.
+
     '''
     def __init__(self, atoms):
         if not len(atoms) == 3:
