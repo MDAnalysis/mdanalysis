@@ -57,7 +57,7 @@ Timeseries of observables
 import AtomGroup
 
 class TimeseriesCollection(object):
-    ''' A collection of timeseries objects.
+    '''A collection of timeseries objects.
 
     The collection of timeseries (such as Atom, Bond, Dihedral...)  can be
     computed from a trajectory in one go, foregoing the need to iterate through
@@ -87,16 +87,21 @@ class TimeseriesCollection(object):
         else: suffix = ''
         return '<'+self.__class__.__name__+' with %d timeseries object%s>'%(len(self), suffix)
     def addTimeseries(self, ts):
-        ''' add a Timeseries object to the collection'''
+        '''add a Timeseries object to the collection'''
         if not isinstance(ts, Timeseries): raise Exception("Can only add Timeseries objects to TimeseriesCollection")
         self.timeseries.append(ts)
     def clear(self):
-        ''' clear the timeseries collection'''
+        '''clear the timeseries collection'''
         self.timeseries = []
     def compute(self, trj, start=0, stop=-1, skip=1):
-        ''' trj - dcd trajectory object (ie universe.dcd)
-            start, stop, skip and self explanatory, although it is important to note that
-            start and stop are inclusive
+        '''Iterate through the trajectory *trj* and compute the time series.
+
+         *trj*
+            dcd trajectory object (i.e. :attr:`Universe.trajectory`)
+
+         *start, stop, skip*
+            Frames to calculate parts of the trajectory. It is important to
+            note that *start* and *stop* are inclusive
         '''
         self.data = trj.correl(self,start,stop,skip)
         # Now remap the timeseries data to each timeseries
@@ -140,7 +145,7 @@ class TimeseriesCollection(object):
         return auxData
 
 class Timeseries(object):
-    ''' Base timeseries class - define subclasses for specific timeseries computations
+    '''Base timeseries class - define subclasses for specific timeseries computations
     '''
     def __init__(self, code, atoms, dsize):
         if isinstance(atoms, AtomGroup.AtomGroup):
@@ -149,7 +154,7 @@ class Timeseries(object):
             self.atoms = atoms
         elif isinstance(atoms, AtomGroup.Atom):
             self.atoms = [atoms]
-        else: raise Exception("Invalid atoms passed to %s timeseries"%self.__class__.__name__)
+        else: raise TypeError("Invalid atoms passed to %s timeseries"%self.__class__.__name__)
         self.code = code
         self.numatoms = len(self.atoms)
         self.dsize = dsize
@@ -180,12 +185,18 @@ class Timeseries(object):
         return [0.]*self.numatoms
 
 class Atom(Timeseries):
-    ''' Create a timeseries that returns coordinate data for an atom or group of atoms
+    '''Create a timeseries that returns coordinate data for an atom or group of atoms ::
 
            t = Atom(code, atoms)
 
-        code is one of 'x', 'y', 'z', or 'v' ('vector', which returns all three dimensions)
-        atoms can be a single Atom object, a list of Atom objects, or an AtomGroup
+        *code*
+          is one of 'x', 'y', 'z', or 'v' ('vector', which returns all three
+          dimensions)
+
+        *atoms*
+          can be a single :class:`~MDAnalysis.core.AtomGroup.Atom` object,
+          a list of :class:`~MDAnalysis.core.AtomGroup.Atom` objects, or an
+          :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
     '''
     def __init__(self, code, atoms):
         if code not in ('x', 'y', 'z', 'v', 'w'):
@@ -204,11 +215,11 @@ class Atom(Timeseries):
         return [1,]*self.numatoms
 
 class Bond(Timeseries):
-    ''' Create a timeseries that returns a timeseries for a bond
+    '''Create a timeseries that returns a timeseries for a bond
 
            t = Bond(atoms)
 
-        atoms must contain 2 Atoms, either as a list or an AtomGroup
+        *atoms* must contain 2 :class:`~MDAnalysis.core.AtomGroup.Atom` instances, either as a list or an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
     '''
     def __init__(self, atoms):
         if not len(atoms) == 2:
@@ -216,11 +227,11 @@ class Bond(Timeseries):
         Timeseries.__init__(self, 'r', atoms, 1)
 
 class Angle(Timeseries):
-    ''' Create a timeseries that returns a timeseries for an angle
+    '''Create a timeseries that returns a timeseries for an angle
 
            t = Angle(atoms)
 
-        atoms must contain 3 Atoms, either as a list or an AtomGroup
+        atoms must contain 3 :class:`~MDAnalysis.core.AtomGroup.Atom` instances, either as a list or an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
     '''
     def __init__(self, atoms):
         if not len(atoms) == 3:
@@ -228,11 +239,11 @@ class Angle(Timeseries):
         Timeseries.__init__(self, 'a', atoms, 1)
 
 class Dihedral(Timeseries):
-    ''' Create a timeseries that returns a timeseries for a dihedral angle
+    '''Create a timeseries that returns a timeseries for a dihedral angle
 
            t = Dihedral(atoms)
 
-        atoms must contain 4 Atoms, either as a list or an AtomGroup
+        atoms must contain 4 :class:`~MDAnalysis.core.AtomGroup.Atom` objects, either as a list or an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
     '''
     def __init__(self, atoms):
         if not len(atoms) == 4:
@@ -240,12 +251,12 @@ class Dihedral(Timeseries):
         Timeseries.__init__(self, 'h', atoms, 1)
 
 class Distance(Timeseries):
-    ''' Create a timeseries that returns distances between 2 atoms
+    '''Create a timeseries that returns distances between 2 atoms
 
            t = Distance(code, atoms)
 
         code is one of 'd' (distance vector), or 'r' (scalar distance)
-        atoms must contain 2 Atoms, either as a list or an AtomGroup
+        atoms must contain 2 :class:`~MDAnalysis.core.AtomGroup.Atom` objects, either as a list or an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
     '''
     def __init__(self, code, atoms):
         if code not in ('d', 'r'):
@@ -257,11 +268,12 @@ class Distance(Timeseries):
         Timeseries.__init__(self, code, atoms, size)
 
 class CenterOfGeometry(Timeseries):
-    ''' Create a timeseries that returns the center of geometry of a group of atoms
+    '''Create a timeseries that returns the center of geometry of a group of atoms
 
            t = CenterOfGeometry(atoms)
 
-        atoms can be a list of Atom objects, or an AtomGroup
+        *atoms* can be a list of :class:`~MDAnalysis.core.AtomGroup.Atom`
+        objects, or a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
     '''
     def __init__(self, atoms):
         Timeseries.__init__(self, 'm', atoms, 3)
@@ -269,31 +281,20 @@ class CenterOfGeometry(Timeseries):
         return [1.]*self.numatoms
 
 class CenterOfMass(Timeseries):
-    ''' Create a timeseries that returns the center of mass of a group of atoms
+    '''Create a timeseries that returns the center of mass of a group of atoms
 
            t = CenterOfMass(atoms)
 
-        atoms can be a list of Atom objects, or an AtomGroup
+        *atoms* can be a list of :class:`~MDAnalysis.core.AtomGroup.Atom`
+        objects or a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
     '''
     def __init__(self, atoms):
         Timeseries.__init__(self, 'm', atoms, 3)
     def getAuxData(self):
         return [a.mass for a in self.atoms]
 
-class PrincipleAxis(Timeseries):
-    ''' Create a timeseries that returns the principle axis for a group of atoms
-
-           t = principleAxis(atoms)
-
-        atoms can be a list of Atom objects, or an AtomGroup
-    '''
-    def __init__(self, atoms):
-        Timeseries.__init__(self, 'm', atoms, 3)
-    def getAuxData(self):
-        return [a.principleAxes for a in self.atoms]
-
 class WaterDipole(Timeseries):
-    ''' Create a Timeseries that returns a timeseries for the bisector vector of a 3-site water
+    '''Create a Timeseries that returns a timeseries for the bisector vector of a 3-site water
 
            t = WaterDipole(atoms)
 
@@ -301,7 +302,7 @@ class WaterDipole(Timeseries):
         atom (e.g. q=-0.0.834 for TIP3P water), gives the actual
         dipole moment.
 
-        atoms must contain 3 Atoms, either as a list or an AtomGroup;
+        *atoms* must contain 3 :class:`~MDAnalysis.core.AtomGroup.Atom` objects, either as a list or an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`;
         the first one *must* be the oxygen, the other two are the
         hydrogens. The vector is calculated from the positions of the
         oygen atom (xO) and the two hydrogen atoms (xH1, xH2) as
