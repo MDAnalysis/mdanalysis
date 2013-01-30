@@ -25,7 +25,7 @@ from numpy.testing import *
 from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF, DCD, DCD_empty, PDB_small, PDB_closed, PDB_multiframe, \
-    PDB, CRD, XTC, TRR, GRO, \
+    PDB, CRD, XTC, TRR, GRO, DMS, \
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR
 
 import os
@@ -834,6 +834,31 @@ class TestGROReader(TestCase, RefAdK):
         assert_equal(frames, np.arange(self.universe.trajectory.numframes))
 
 
+class TestDMSReader(TestCase):
+    def setUp(self):
+        self.universe = mda.Universe(DMS)
+        self.ts = self.universe.trajectory.ts
+
+    def tearDown(self):
+        del self.universe
+        del self.ts
+
+    def test_global_cell(self):
+        assert_equal(self.ts.dimensions, [0., 0., 0., 0., 0., 0.])
+      
+    def test_velocities(self):
+        assert_equal(hasattr(self.ts, "_velocities"), False)
+    
+    def test_number_of_coords(self):
+        # Desired value taken from VMD
+        #      Info)    Atoms: 3341
+        assert_equal(len(self.universe.atoms),3341) 
+        
+    def test_coords_atom_0(self):
+        # Desired coordinates taken directly from the SQLite file. Check unit conversion
+        coords_0 = np.array([-11.0530004501343, 26.6800003051758, 12.7419996261597,], dtype=np.float32)
+        assert_array_equal(self.universe.atoms[0].pos, coords_0)
+        
 class TestGROReaderNoConversion(TestCase, RefAdK):
     def setUp(self):
         ##mda.core.flags['convert_gromacs_lengths'] = False

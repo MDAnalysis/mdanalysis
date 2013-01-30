@@ -552,7 +552,7 @@ PDB). In theses cases, the kind of writer is selected with the
 
 __all__ = ['reader', 'writer']
 
-import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS
+import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS, DMS
 import base
 from core import reader, writer
 
@@ -572,6 +572,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'PQR': PQR.PQRReader,
                        'LAMMPS': LAMMPS.DCDReader,
                        'CHAIN': base.ChainReader,
+                       'DMS': DMS.DMSReader,
                        }
 
 #: formats of readers that can also handle gzip or bzip2 compressed files
@@ -585,6 +586,7 @@ _topology_coordinates_readers = {
                        'GRO': GRO.GROReader,
                        'CRD': CRD.CRDReader,
                        'PQR': PQR.PQRReader,
+                       'DMS': DMS.DMSReader,
 }
 
 #: hack: readers that ignore most errors (permissive=True); at the moment

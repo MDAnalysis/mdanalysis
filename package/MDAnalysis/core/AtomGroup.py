@@ -187,6 +187,7 @@ class Atom(object):
         self.charge = charge
         self.radius = radius
         self.bfactor = bfactor
+        self.bonds = list()
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
                repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'
