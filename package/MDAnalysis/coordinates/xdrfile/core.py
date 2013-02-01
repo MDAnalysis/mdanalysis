@@ -285,38 +285,97 @@ class TrjReader(base.Reader):
     #: writer class that matches this reader (override appropriately)
     _Writer = TrjWriter
 
-    def __init__(self, filename, convert_units=None, **kwargs):
+    def __init__(self, filename, convert_units=None, sub=None, **kwargs):
+        """
+        :Arguments:
+            *filename*
+                the name of the trr file.
+            *sub*
+            
+                an numpy integer array of what subset of trajectory atoms to load into
+                the timestep. Intended to work similarly to the 'sub' argument to gromac's trjconv.
+
+                This is usefull when one has a Universe loaded with only an unsolvated protein, and
+                wants to read a solvated trajectory. 
+                
+                The length of this array must be <= to the actual number of atoms in the trajectory, and
+                equal to number of atoms in the Universe.
+            
+        """
         self.filename = filename
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
         self.convert_units = convert_units  # convert length and time to base units on the fly?
         self.xdrfile = None
-        self.__numatoms = None
+
         self.__numframes = None  # takes a long time, avoid accessing self.numframes
         self.skip_timestep = 1   # always 1 for xdr files
         self.__delta = None      # compute from time in first two frames!
         self.fixed = 0           # not relevant for Gromacs xtc/trr
         self.skip = 1
         self.periodic = False
+        
+        # actual number of atoms in the trr file
+        # first time file is opened, exception should be thrown if bad file
+        self.__trr_numatoms = self._read_trj_natoms(self.filename)
+        
+        # logic for handling sub sections of trr: 
+        # this class has some tmp buffers into which the libxdrfile functions read the 
+        # entire frame, then this class copies the relevant sub section into the timestep.
+        # the sub section logic is contained entierly within this class.
+        
+        # check to make sure sub is valid (if given)
+        if sub is not None:
+            # only valid type
+            if not isinstance(sub, numpy.ndarray) or len(sub.shape) != 1 or sub.dtype.kind != 'i':
+                raise TypeError("sub MUST be a single dimensional numpy array of integers")
+            if len(sub) > self.__trr_numatoms:
+                raise ValueError("sub MUST be less than or equal to the number of actual trr atoms, {} in this case".
+                                 format(self.__trr_numatoms))
+            if numpy.max(sub) >= self.__trr_numatoms or numpy.min(sub) < 0:
+                raise IndexError("sub contains out of range elements for the given trajectory")
+            # sub appears to be valid
+            self.__sub = sub
+            
+            # make tmp buffers
+            # C floats and C-order for arrays (see libxdrfile.i)
+            DIM = libxdrfile.DIM    # compiled-in dimension (most likely 3)
+            # both xdr and trr have positions
+            self.__pos_buf = numpy.zeros((self.__trr_numatoms, DIM), dtype=numpy.float32, order='C')
+            if self.format == "TRR":
+                # only trr has velocities and forces
+                self.__velocities_buf = numpy.zeros((self.__trr_numatoms, DIM), dtype=numpy.float32, order='C')
+                self.__forces_buf = numpy.zeros((self.__trr_numatoms, DIM), dtype=numpy.float32, order='C')
+            else:
+                # xdr does not have vel or forces.
+                self.__velocities_buf = None
+                self.__forces_buf = None
+        else:
+            self.__sub = None
+            self.__pos_buf = None
+            self.__velocities_buf = None
+            self.__forces_buf = None
+            
+        # make the timestep, this is ALWAYS the used the public number of atoms 
+        # (same as the calling Universe)
+        # at this time, __trr_numatoms and __sub are set, so self.numatoms has all it needs
+        # to determine number of atoms.
         self.ts = self._Timestep(self.numatoms)
+        
         # Read in the first timestep
         self._read_next_timestep()
 
     @property
     def numatoms(self):
-        """Read the number of atoms from the trajectory.
+        """The number of publically available atoms that this reader will store in the timestep. 
+        
+        If 'sub' was not given in the ctor, then this value will just be the actual 
+        number of atoms in the underlying trajectory file. If however 'sub' was given, then 
+        this value is the number specified by the 'sub' sub-selection. 
 
-        The result is cached. If for any reason the trajectory cannot
-        be read then 0 is returned.
+        If for any reason the trajectory cannot be read then a negative value is returned.
         """
-        if not self.__numatoms is None:   # return cached value
-            return self.__numatoms
-        try:
-            self.__numatoms = self._read_trj_natoms(self.filename)
-        except IOError:
-            return 0
-        else:
-            return self.__numatoms
+        return len(self.__sub) if self.__sub is not None else self.__trr_numatoms
 
     @property
     def numframes(self):
@@ -466,12 +525,24 @@ class TrjReader(base.Reader):
             self.open_trajectory()
 
         if self.format == 'XTC':
-            ts.status, ts.step, ts.time, ts.prec = libxdrfile.read_xtc(self.xdrfile, ts._unitcell, ts._pos)
+            if self.__sub is None:            
+                ts.status, ts.step, ts.time, ts.prec = libxdrfile.read_xtc(self.xdrfile, ts._unitcell, ts._pos)
+            else:
+                ts.status, ts.step, ts.time, ts.prec = libxdrfile.read_xtc(self.xdrfile, ts._unitcell, self.__pos_buf)
+                ts._pos[:] = self.__pos_buf[self.__sub]
         elif self.format == 'TRR':
-            ts.status, ts.step, ts.time, ts.lmbda = libxdrfile.read_trr(self.xdrfile, ts._unitcell, ts._pos,
-                                                                        ts._velocities, ts._forces)
+            if self.__sub is None:
+                ts.status, ts.step, ts.time, ts.lmbda = libxdrfile.read_trr(self.xdrfile, ts._unitcell, ts._pos,
+                                                                            ts._velocities, ts._forces)
+            else:
+                ts.status, ts.step, ts.time, ts.lmbda = libxdrfile.read_trr(self.xdrfile, ts._unitcell, self.__pos_buf,
+                                                                            self.__velocities_buf, self.__forces_buf)
+                ts._pos[:] = self.__pos_buf[self.__sub]
+                ts._velocities[:] = self.__velocities_buf[self.__sub]
+                ts._forces[:] = self.__forces_buf[self.__sub]
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
+        
         if (ts.status == libxdrfile.exdrENDOFFILE) or \
                 (ts.status == libxdrfile.exdrINT and self.format == 'TRR'):
             # seems that trr files can get a exdrINT when reaching EOF (??)

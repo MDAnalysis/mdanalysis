@@ -26,7 +26,8 @@ from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF, DCD, DCD_empty, PDB_small, PDB_closed, PDB_multiframe, \
     PDB, CRD, XTC, TRR, GRO, DMS, \
-    XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR
+    XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
+    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol
 
 import os
 import tempfile
@@ -1479,6 +1480,43 @@ class TestChainReaderFormats(TestCase):
     def test_set_all_formats(self):
         universe = MDAnalysis.Universe(PSF, [PDB_small, PDB_closed], format='pdb')
         assert_equal(universe.trajectory.numframes, 2)
+
+class TestTRRReader_Sub(TestCase):
+    
+    def setUp(self):
+        """ 
+        grab values from selected atoms from full solvated traj, 
+        later compare to using 'sub' 
+        """
+        usol = mda.Universe(PDB_sub_sol, TRR_sub_sol)
+        atoms = usol.selectAtoms("not resname SOL")
+        self.pos = atoms.positions
+        self.vel = atoms.velocities()
+        self.force = atoms.forces
+        self.sub = atoms.indices()
+        # universe from un-solvated protein
+        self.udry = mda.Universe(PDB_sub_dry)
+        
+    def test_load_new_raises_ValueError(self):
+        # should fail if we load universe with a trajectory with different
+        # number of atoms when NOT using sub, same as before. 
+        def load_new_without_sub():
+            self.udry.load_new(TRR_sub_sol)
+        assert_raises(ValueError, load_new_without_sub)
+
+    def test_sub_coordinates(self):
+        """
+        load solvated trajectory into universe with unsolvated protein.
+        """
+        self.udry.load_new(TRR_sub_sol, sub=self.sub)
+        assert_array_almost_equal(self.pos, self.udry.atoms.positions, 
+                                  err_msg="positions differ")
+        assert_array_almost_equal(self.vel, self.udry.atoms.velocities(), 
+                                  err_msg="positions differ")
+        assert_array_almost_equal(self.force, self.udry.atoms.forces, 
+                                  err_msg="positions differ")
+
+        
 
 
 class _GromacsReader(TestCase):
