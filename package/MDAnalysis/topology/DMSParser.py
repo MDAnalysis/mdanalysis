@@ -22,7 +22,7 @@ from __future__ import with_statement
 
 from MDAnalysis.core.AtomGroup import Atom
 from MDAnalysis.topology.core import guess_atom_type, Bond
-import numpy, sqlite3, collections
+import numpy, sqlite3
 
 class DMSParseError(Exception):
         pass
@@ -61,19 +61,18 @@ def parse(filename):
             # p["anum"] contains the atomic number
             atoms = [ (p["id"], Atom(p["id"], p["name"].strip(), guess_atom_type(p["name"].strip()), p["resname"].strip(), p["resid"], p["segid"].strip(), p["mass"], p["charge"]))  for p in particles]
             
-            atoms = collections.OrderedDict(atoms)
+            atoms_dictionary = dictionary(atoms)
             
             cur.execute('SELECT * FROM bond')
             bonds = cur.fetchall()
             
-            bonds = [ Bond(atoms[b["p0"]], 
-                           atoms[b["p1"]], 
+            bonds = [ Bond(atoms_dictionary[b["p0"]], 
+                           atoms_dictionary[b["p1"]], 
                            b["order"] )  for b in bonds]
             
-        assert atoms
         # All the records below besides donors and acceptors can be contained in a DMS file. 
-        # In addition to the coordinates and bonds, DMS contains the entire force-field information (terms+parameters).
-        return {"_atoms": atoms.values(), 
+        # In addition to the coordinates and bonds, DMS may contain the entire force-field information (terms+parameters),
+        return {"_atoms": [ atom[1] for atom in atoms], 
                 "_bonds": bonds,
                 "_angles": [],
                 "_dihe": [],
