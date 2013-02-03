@@ -64,6 +64,10 @@ The following table lists the currently supported topology formats.
    Amber          top         simple Amber format read (only supports a subset of
                   prmtop      flags);
                               :mod:`MDAnalysis.topology.TOPParser`
+
+   DMS            dms         DESRES molecular sturcture reader (only supports a 
+                              the atom and bond records);
+                              :mod:`MDAnalysis.topology.DMSParser`
    =============  ==========  =====================================================
 
 Formats marked with ans asterisk * also hold coordinates and thus can
