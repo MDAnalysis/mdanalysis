@@ -49,7 +49,6 @@ Timeseries of observables
 .. autoclass:: Distance
 .. autoclass:: CenterOfGeometry
 .. autoclass:: CenterOfMass
-.. autoclass:: PrincipleAxis
 .. autoclass:: WaterDipole
 
 """
