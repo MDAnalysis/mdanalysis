@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.12. Gromacs TRR file IO — MDAnalysis.coordinates.TRR &mdash; MDAnalysis 0.7.7 documentation</title>
+    <title>5.13. Gromacs TRR file IO — MDAnalysis.coordinates.TRR &mdash; MDAnalysis 0.7.8-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.7',
+        VERSION:     '0.7.8-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,13 +26,13 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.7 documentation"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.7 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.13. Gromacs XTC file IO — MDAnalysis.coordinates.XTC" href="XTC.html" />
-    <link rel="prev" title="5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ" href="TRJ.html" /> 
+    <link rel="next" title="5.14. Gromacs XTC file IO — MDAnalysis.coordinates.XTC" href="XTC.html" />
+    <link rel="prev" title="5.12. AMBER trajectories — MDAnalysis.coordinates.TRJ" href="TRJ.html" /> 
   </head>
   <body>
     <div class="related">
@@ -45,12 +45,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="XTC.html" title="5.13. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
+          <a href="XTC.html" title="5.14. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="TRJ.html" title="5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ"
+          <a href="TRJ.html" title="5.12. AMBER trajectories — MDAnalysis.coordinates.TRJ"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -61,13 +61,13 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.12. Gromacs TRR file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a><ul>
-<li><a class="reference internal" href="#tips-and-tricks">5.12.1. Tips and Tricks</a><ul>
-<li><a class="reference internal" href="#filling-a-trr-with-pca-modes">5.12.1.1. Filling a TRR with PCA modes</a></li>
+<li><a class="reference internal" href="#">5.13. Gromacs TRR file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a><ul>
+<li><a class="reference internal" href="#tips-and-tricks">5.13.1. Tips and Tricks</a><ul>
+<li><a class="reference internal" href="#filling-a-trr-with-pca-modes">5.13.1.1. Filling a TRR with PCA modes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-MDAnalysis.coordinates.xdrfile.TRR">5.12.2. Module reference</a><ul>
-<li><a class="reference internal" href="#classes">5.12.2.1. Classes</a></li>
+<li><a class="reference internal" href="#module-MDAnalysis.coordinates.xdrfile.TRR">5.13.2. Module reference</a><ul>
+<li><a class="reference internal" href="#classes">5.13.2.1. Classes</a></li>
 </ul>
 </li>
 </ul>
@@ -76,10 +76,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="TRJ.html"
-                        title="previous chapter">5.11. AMBER trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></p>
+                        title="previous chapter">5.12. AMBER trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="XTC.html"
-                        title="next chapter">5.13. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></p>
+                        title="next chapter">5.14. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/TRR.txt"
@@ -107,7 +107,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.TRR"></span><div class="section" id="gromacs-trr-file-io-mdanalysis-coordinates-trr">
-<h1>5.12. Gromacs TRR file IO &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.TRR" title="MDAnalysis.coordinates.TRR"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a><a class="headerlink" href="#gromacs-trr-file-io-mdanalysis-coordinates-trr" title="Permalink to this headline">¶</a></h1>
+<h1>5.13. Gromacs TRR file IO &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.TRR" title="MDAnalysis.coordinates.TRR"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a><a class="headerlink" href="#gromacs-trr-file-io-mdanalysis-coordinates-trr" title="Permalink to this headline">¶</a></h1>
 <p>The Gromacs <a class="reference external" href="http://www.gromacs.org/Documentation/File_Formats/.trr_File">TRR trajectory format</a> is a lossless format like
 e.g. the DCD format (see <a class="reference internal" href="DCD.html#module-MDAnalysis.coordinates.DCD" title="MDAnalysis.coordinates.DCD"><tt class="xref py py-mod docutils literal"><span class="pre">DCD</span></tt></a>) and
 unlike the <a class="reference internal" href="XTC.html#module-MDAnalysis.coordinates.XTC" title="MDAnalysis.coordinates.XTC"><tt class="xref py py-mod docutils literal"><span class="pre">XTC</span></tt></a> format, which stores
@@ -118,9 +118,9 @@ use the TRR format.</p>
 coordinates. It is also used by other Gromacs tools to store and
 process other data such as modes from a principal component analysis.</p>
 <div class="section" id="tips-and-tricks">
-<h2>5.12.1. Tips and Tricks<a class="headerlink" href="#tips-and-tricks" title="Permalink to this headline">¶</a></h2>
+<h2>5.13.1. Tips and Tricks<a class="headerlink" href="#tips-and-tricks" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="filling-a-trr-with-pca-modes">
-<h3>5.12.1.1. Filling a TRR with PCA modes<a class="headerlink" href="#filling-a-trr-with-pca-modes" title="Permalink to this headline">¶</a></h3>
+<h3>5.13.1.1. Filling a TRR with PCA modes<a class="headerlink" href="#filling-a-trr-with-pca-modes" title="Permalink to this headline">¶</a></h3>
 <p>The following <a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=79">recipe by Ramon Crehuet</a> shows how to convert modes
 stored in a NumPy-like array (e.g. from a PCA analysis with <a class="reference external" href="http://dirac.cnrs-orleans.fr/Manuals/MMTK/index.html">MMTK</a>) to
 a TRR usable by Gromacs. The idea is to manually fill a
@@ -161,7 +161,7 @@ for frame,mode in enumerate(modes[4:16]):
 </div>
 </div>
 <div class="section" id="module-MDAnalysis.coordinates.xdrfile.TRR">
-<span id="module-reference"></span><h2>5.12.2. Module reference<a class="headerlink" href="#module-MDAnalysis.coordinates.xdrfile.TRR" title="Permalink to this headline">¶</a></h2>
+<span id="module-reference"></span><h2>5.13.2. Module reference<a class="headerlink" href="#module-MDAnalysis.coordinates.xdrfile.TRR" title="Permalink to this headline">¶</a></h2>
 <p>Reading of <a class="reference external" href="http://www.gromacs.org/Documentation/File_Formats/.trr_File">Gromacs TRR trajectories</a>.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -169,7 +169,7 @@ for frame,mode in enumerate(modes[4:16]):
 bindings to the Gromacs trajectory file formats</p>
 </div>
 <div class="section" id="classes">
-<h3>5.12.2.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<h3>5.13.2.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.Timestep">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="Permalink to this definition">¶</a></dt>
@@ -202,8 +202,30 @@ bindings to the Gromacs trajectory file formats</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">TRRReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">TRRReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>sub=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">the name of the trr file.</p>
+</dd>
+</dl>
+<p><em>sub</em></p>
+<blockquote class="last">
+<div><p>an numpy integer array of what subset of trajectory atoms to load into
+the timestep. Intended to work similarly to the &#8216;sub&#8217; argument to gromac&#8217;s trjconv.</p>
+<p>This is usefull when one has a Universe loaded with only an unsolvated protein, and
+wants to read a solvated trajectory.</p>
+<p>The length of this array must be &lt;= to the actual number of atoms in the trajectory, and
+equal to number of atoms in the Universe.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.OtherWriter">
 <tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
@@ -385,9 +407,11 @@ any reason the trajectory cannot be read then 0 is returned.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.numatoms">
 <tt class="descname">numatoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.numatoms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the number of atoms from the trajectory.</p>
-<p>The result is cached. If for any reason the trajectory cannot
-be read then 0 is returned.</p>
+<dd><p>The number of publically available atoms that this reader will store in the timestep.</p>
+<p>If &#8216;sub&#8217; was not given in the ctor, then this value will just be the actual 
+number of atoms in the underlying trajectory file. If however &#8216;sub&#8217; was given, then 
+this value is the number specified by the &#8216;sub&#8217; sub-selection.</p>
+<p>If for any reason the trajectory cannot be read then a negative value is returned.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -635,8 +659,30 @@ be written to trajectory file</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">TRRReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">TRRReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>sub=None</em>, <em>**kwargs</em><big>)</big></dt>
 <dd><p>Read a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">the name of the trr file.</p>
+</dd>
+</dl>
+<p><em>sub</em></p>
+<blockquote class="last">
+<div><p>an numpy integer array of what subset of trajectory atoms to load into
+the timestep. Intended to work similarly to the &#8216;sub&#8217; argument to gromac&#8217;s trjconv.</p>
+<p>This is usefull when one has a Universe loaded with only an unsolvated protein, and
+wants to read a solvated trajectory.</p>
+<p>The length of this array must be &lt;= to the actual number of atoms in the trajectory, and
+equal to number of atoms in the Universe.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
@@ -709,12 +755,12 @@ the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAn
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="XTC.html" title="5.13. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
+          <a href="XTC.html" title="5.14. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
              >next</a> |</li>
         <li class="right" >
-          <a href="TRJ.html" title="5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ"
+          <a href="TRJ.html" title="5.12. AMBER trajectories — MDAnalysis.coordinates.TRJ"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -724,7 +770,7 @@ the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAn
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
     Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

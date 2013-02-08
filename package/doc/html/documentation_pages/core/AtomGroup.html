@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.7.7 documentation</title>
+    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.7.8-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.7',
+        VERSION:     '0.7.8-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.7 documentation"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.7 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
     <link rel="prev" title="7.1. Core functions of MDAnalysis" href="init.html" /> 
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -726,35 +726,6 @@ between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
 </div>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.0.</span></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.core.AtomGroup.AtomGroup.dihedral_numpy">
-<tt class="descname">dihedral_numpy</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.dihedral_numpy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the dihedral angle in degrees.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Only makes sense for a <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> with exactly 4
-<a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>; anything else will raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>.</p>
-</div>
-<p class="deprecated">
-<span class="versionmodified">Deprecated since version 0.7.3: </span>Do not use this method directly; instead simply use <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.dihedral" title="MDAnalysis.core.AtomGroup.AtomGroup.dihedral"><tt class="xref py py-meth docutils literal"><span class="pre">dihedral()</span></tt></a>
-which is set up to use <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.dihedral_numpy" title="MDAnalysis.core.AtomGroup.AtomGroup.dihedral_numpy"><tt class="xref py py-meth docutils literal"><span class="pre">dihedral_numpy()</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.core.AtomGroup.AtomGroup.dihedral_orig">
-<tt class="descname">dihedral_orig</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.dihedral_orig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the dihedral angle in degrees.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Only makes sense for a <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> with exactly 4
-<a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>; anything else will raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>.</p>
-</div>
-<p class="deprecated">
-<span class="versionmodified">Deprecated since version 0.7.3: </span>This is a slower implementation (without numpy) and will be
-removed. Use <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.dihedral_numpy" title="MDAnalysis.core.AtomGroup.AtomGroup.dihedral_numpy"><tt class="xref py py-meth docutils literal"><span class="pre">dihedral_numpy()</span></tt></a> instead (or simply
-<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.dihedral" title="MDAnalysis.core.AtomGroup.AtomGroup.dihedral"><tt class="xref py py-meth docutils literal"><span class="pre">dihedral()</span></tt></a> which is set up to use <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.dihedral_numpy" title="MDAnalysis.core.AtomGroup.AtomGroup.dihedral_numpy"><tt class="xref py py-meth docutils literal"><span class="pre">dihedral_numpy()</span></tt></a>.)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1842,7 +1813,7 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -1852,7 +1823,7 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
     Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

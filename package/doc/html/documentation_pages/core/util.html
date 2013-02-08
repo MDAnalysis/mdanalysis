@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis 0.7.7 documentation</title>
+    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis 0.7.8-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.7',
+        VERSION:     '0.7.8-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.7 documentation"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.7 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.10. Setting up logging — MDAnalysis.core.log" href="log.html" />
     <link rel="prev" title="7.8. Constants and unit conversion — MDAnalysis.core.units" href="units.html" /> 
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -356,6 +356,23 @@ aa codes are converted to 3-letter codes</td>
 </dd></dl>
 
 <dl class="function">
+<dt id="MDAnalysis.core.util.dihedral">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">dihedral</tt><big>(</big><em>ab</em>, <em>bc</em>, <em>cd</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.dihedral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the dihedral angle in radians between vectors connecting A,B,C,D.</p>
+<p>The dihedral measures the rotation around bc:</p>
+<div class="highlight-python"><pre>  ab
+A----&gt;B
+       \ bc
+       _'
+         C----&gt;D
+           cd</pre>
+</div>
+<p>The dihedral angle is -pi &lt;= x &lt;= pi.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.8.</span></p>
+</dd></dl>
+
+<dl class="function">
 <dt id="MDAnalysis.core.util.stp">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">stp</tt><big>(</big><em>vec1</em>, <em>vec2</em>, <em>vec3</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.stp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes the scalar triple product of three vectors.</p>
@@ -393,7 +410,7 @@ aa codes are converted to 3-letter codes</td>
         <li class="right" >
           <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -403,7 +420,7 @@ aa codes are converted to 3-letter codes</td>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
     Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
