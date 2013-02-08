@@ -16,8 +16,17 @@
 #
 
 """
+DESRES file format --- :mod:`MDAnalysis.coordinates.DMS`
+========================================================
 
+Classes to read DESRES_ Molecular Structure file format (DMS_)
+coordinate files (as used by the Desmond_ MD package).
+
+.. _DESRES: http://www.deshawresearch.com
+.. _Desmond: http://www.deshawresearch.com/resources_desmond.html
+.. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
 """
+
 from __future__ import with_statement
 
 import os, errno
@@ -61,7 +70,7 @@ class Timestep(base.Timestep):
 
 class DMSReader(base.Reader):
         """
-        Reads both coordinates and velocities. 
+        Reads both coordinates and velocities.
         """
         format = 'DMS'
         units = {'time': None, 'length': 'A', 'velocity': 'A/ps'}
@@ -71,17 +80,17 @@ class DMSReader(base.Reader):
         def get_coordinates(self, cur):
             cur.execute('SELECT * FROM particle')
             particles = cur.fetchall()
-            return [ (p['x'], p['y'], p['z'])  for p in particles]   
+            return [ (p['x'], p['y'], p['z'])  for p in particles]
 
         def get_particle_by_columns(self, cur, columns=['x', 'y', 'z']):
             cur.execute('SELECT * FROM particle')
             particles = cur.fetchall()
             return [ tuple([p[c] for c in columns ])  for p in particles]
-                 
+
         def get_global_cell(self, cur):
             cur.execute('SELECT * FROM global_cell')
             rows = cur.fetchall()
-            assert len(rows) == 3 
+            assert len(rows) == 3
             x = [row["x"] for row in rows]
             y = [row["y"] for row in rows]
             z = [row["z"] for row in rows]
@@ -90,22 +99,22 @@ class DMSReader(base.Reader):
         def __init__(self,filename,convert_units=None,**kwargs):
                 if convert_units is None:
                         convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
-                self.convert_units = convert_units  # convert length and time to base units                
+                self.convert_units = convert_units  # convert length and time to base units
 
                 coords_list = None
-                velocities_list = None                
+                velocities_list = None
                 con = sqlite3.connect(filename)
-                
+
                 def dict_factory(cursor, row):
                     d = {}
                     for idx, col in enumerate(cursor.description):
                         d[col[0]] = row[idx]
                     return d
-                
+
                 with con:
                       # This will return dictionaries instead of tuples, when calling cur.fetch() or fetchall()
                       con.row_factory = dict_factory
-                      cur = con.cursor()                    
+                      cur = con.cursor()
                       coords_list = self.get_coordinates(cur)
                       velocities_list = self.get_particle_by_columns(cur, columns=['vx', 'vy', 'vz'])
                       unitcell = self.get_global_cell(cur)
@@ -121,7 +130,7 @@ class DMSReader(base.Reader):
                         self.ts._velocities = velocities_arr
                         self.convert_velocities_from_native(self.ts._velocities) #converts nm/ps to A/ps units
                 # ts._unitcell layout is format dependent; Timestep.dimensions does the conversion
-                self.ts._unitcell = unitcell 
+                self.ts._unitcell = unitcell
                 if self.convert_units:
                         self.convert_pos_from_native(self.ts._pos)             # in-place !
                         self.convert_pos_from_native(self.ts._unitcell)        # in-place ! (all are lengths)
@@ -130,7 +139,7 @@ class DMSReader(base.Reader):
                 self.skip = 1
                 self.periodic = False
                 self.delta = 0
-                self.skip_timestep = 1                  
+                self.skip_timestep = 1
 
         def Writer(self, filename, **kwargs):
                 raise NotImplementedError

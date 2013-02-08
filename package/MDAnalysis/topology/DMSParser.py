@@ -16,8 +16,17 @@
 #
 
 """
+DESRES Molecular Structure file format topology parser
+======================================================
 
+Classes to read a topology from a DESRES_ Molecular Structure file
+format (DMS_) coordinate files (as used by the Desmond_ MD package).
+
+.. _DESRES: http://www.deshawresearch.com
+.. _Desmond: http://www.deshawresearch.com/resources_desmond.html
+.. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
 """
+
 from __future__ import with_statement
 
 from MDAnalysis.core.AtomGroup import Atom
@@ -32,7 +41,7 @@ def parse(filename):
 
         Only reads the list of atoms.
 
-        :Returns: MDAnalysis internal *structure* dict, which contains 
+        :Returns: MDAnalysis internal *structure* dict, which contains
                   Atom and Bond objects
 
         .. SeeAlso:: The *structure* dict is defined in
@@ -40,7 +49,7 @@ def parse(filename):
 
         """
         con = sqlite3.connect(filename)
-        
+
         def dict_factory(cursor, row):
             """
             Fetch SQL records as dictionaries, rather than the default tuples.
@@ -49,34 +58,34 @@ def parse(filename):
             for idx, col in enumerate(cursor.description):
                 d[col[0]] = row[idx]
             return d
-        
+
         atoms = None
         with con:
             # This will return dictionaries instead of tuples, when calling cur.fetch() or fetchall()
             con.row_factory = dict_factory
-            cur = con.cursor()            
+            cur = con.cursor()
             cur.execute('SELECT * FROM particle')
             particles = cur.fetchall()
-            
+
             # p["anum"] contains the atomic number
             atoms = [ (p["id"], Atom(p["id"], p["name"].strip(), guess_atom_type(p["name"].strip()), p["resname"].strip(), p["resid"], p["segid"].strip(), p["mass"], p["charge"]))  for p in particles]
-            
+
             atoms_dictionary = dictionary(atoms)
-            
+
             cur.execute('SELECT * FROM bond')
             bonds = cur.fetchall()
-            
-            bonds = [ Bond(atoms_dictionary[b["p0"]], 
-                           atoms_dictionary[b["p1"]], 
+
+            bonds = [ Bond(atoms_dictionary[b["p0"]],
+                           atoms_dictionary[b["p1"]],
                            b["order"] )  for b in bonds]
-            
-        # All the records below besides donors and acceptors can be contained in a DMS file. 
+
+        # All the records below besides donors and acceptors can be contained in a DMS file.
         # In addition to the coordinates and bonds, DMS may contain the entire force-field information (terms+parameters),
-        return {"_atoms": [ atom[1] for atom in atoms], 
+        return {"_atoms": [ atom[1] for atom in atoms],
                 "_bonds": bonds,
                 "_angles": [],
                 "_dihe": [],
                 "_impr": [],
                 "_donors": [],
                 "_acceptors": [],
-                }            
+                }

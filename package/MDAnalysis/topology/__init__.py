@@ -32,47 +32,50 @@ The following table lists the currently supported topology formats.
 
 .. table:: Table of Supported topology formats
 
-   =============  ==========  =====================================================
-   Name           extension   remarks
-   =============  ==========  =====================================================
-   CHARMM/XPLOR   psf         reads either format, but only atoms and bonds
-                              information is used at the moment;
-                              :mod:`MDAnalysis.topology.PSFParser`
+   ================ ==========  =====================================================
+   Name             extension   remarks
+   ================ ==========  =====================================================
+   CHARMM/XPLOR     psf         reads either format, but only atoms and bonds
+                                information is used at the moment;
+                                :mod:`MDAnalysis.topology.PSFParser`
 
-   CHARMM*        crd         "CARD" coordinate output from CHARMM; deals with
-                              either standard or EXTended format;
-                              :mod:`MDAnalysis.topology.CRDParser`
+   CHARMM [#a]_     crd         "CARD" coordinate output from CHARMM; deals with
+                                either standard or EXTended format;
+                                :mod:`MDAnalysis.topology.CRDParser`
 
-   Brookhaven*    pdb         a simplified PDB format (as used in MD simulations)
-                              is read by default; the full format can be read by
-                              supplying the `permissive=False` flag to
-                              :class:`MDAnalysis.Universe`;
-                              :mod:`MDAnalysis.topology.PrimitivePDBParser` and
-                              :mod:`MDAnalysis.topology.PDBParser`
+   Brookhaven [#a]_ pdb         a simplified PDB format (as used in MD simulations)
+                                is read by default; the full format can be read by
+                                supplying the `permissive=False` flag to
+                                :class:`MDAnalysis.Universe`;
+                                :mod:`MDAnalysis.topology.PrimitivePDBParser` and
+                                :mod:`MDAnalysis.topology.PDBParser`
 
-   PQR*           pqr         PDB-like but whitespace-separated files with charge
-                              and radius information;
-                              :mod:`MDAnalysis.topology.PQRParser`
+   PQR [#a]_        pqr         PDB-like but whitespace-separated files with charge
+                                and radius information;
+                                :mod:`MDAnalysis.topology.PQRParser`
 
-   PDBQT*         pdbqt       file format used by AutoDock with atom types *t*
-                              and partial charges *q*. Module:
-                              :mod:`MDAnalysis.topology.PQBQTParser`
+   PDBQT [#a]_      pdbqt       file format used by AutoDock with atom types *t*
+                                and partial charges *q*. Module:
+                                :mod:`MDAnalysis.topology.PDBQTParser`
 
-   GROMOS96*      gro         GROMOS96 coordinate file;
-                              :mod:`MDAnalysis.topology.GROParser`
+   GROMOS96 [#a]_   gro         GROMOS96 coordinate file;
+                                :mod:`MDAnalysis.topology.GROParser`
 
-   Amber          top         simple Amber format read (only supports a subset of
-                  prmtop      flags);
-                              :mod:`MDAnalysis.topology.TOPParser`
+   AMBER            top,        simple AMBER format reader (only supports a subset
+                    prmtop      of flags);
+                                :mod:`MDAnalysis.topology.TOPParser`
 
-   DMS            dms         DESRES molecular sturcture reader (only supports a 
-                              the atom and bond records);
-                              :mod:`MDAnalysis.topology.DMSParser`
-   =============  ==========  =====================================================
+   DESRES [#a]_     dms         DESRES molecular sturcture reader (only supports
+                                the atom and bond records);
+                                :mod:`MDAnalysis.topology.DMSParser`
+   ================ ==========  =====================================================
 
-Formats marked with ans asterisk * also hold coordinates and thus can
-be used as the sole argument to :class:`MDAnalysis.Universe` to set up
-a system.
+.. [#a] This format can also be used to provide *coordinates* so that
+   it is possible to create a full
+   :mod:`~MDAnalysis.core.AtomGroup.Universe` by simply providing a
+   file of this format as the sole argument to
+   :mod:`~MDAnalysis.core.AtomGroup.Universe`: ``u =
+   Universe(filename)``
 
 .. SeeAlso:: :ref:`Coordinates` with the :ref:`Supported coordinate formats`
 """

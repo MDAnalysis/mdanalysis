@@ -124,7 +124,7 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | either standard or EXTended format. Module           |
    |               |           |       | :mod:`MDAnalysis.coordinates.CRD`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | DESRES [#a]_  | dms       |  r    | DESRES Molecular Structure file format reader. h     |
+   | DESRES [#a]_  | dms       |  r    | DESRES Molecular Structure file format reader.       |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.DMS`             |
    +---------------+-----------+-------+------------------------------------------------------+
 
