@@ -70,7 +70,7 @@ def parse(filename):
             # p["anum"] contains the atomic number
             atoms = [ (p["id"], Atom(p["id"], p["name"].strip(), guess_atom_type(p["name"].strip()), p["resname"].strip(), p["resid"], p["segid"].strip(), p["mass"], p["charge"]))  for p in particles]
 
-            atoms_dictionary = dictionary(atoms)
+            atoms_dictionary = dict(atoms)
 
             cur.execute('SELECT * FROM bond')
             bonds = cur.fetchall()
