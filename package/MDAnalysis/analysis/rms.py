@@ -278,13 +278,15 @@ class RMSD(object):
             weight = None
 
         # reference centre of mass system
-        ref_com = self.ref_atoms.centerOfMass()
         current_frame = self.reference.trajectory.ts.frame - 1
         try:
+            # Move to the ref_frame
             self.reference.trajectory[ref_frame]
+            ref_com = self.ref_atoms.centerOfMass()
             ref_coordinates = self.ref_atoms.coordinates() - ref_com  # makes a copy
         finally:
-            self.reference.trajectory[current_frame]  # reset frame to original
+            # Move back to the original frame
+            self.reference.trajectory[current_frame]
         ref_coordinates_T_64 = ref_coordinates.T.astype(numpy.float64)
 
         # allocate the array for selection atom coords
