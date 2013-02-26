@@ -103,7 +103,7 @@ iterate over the sorted profiles (see :meth:`HOLEtraj.sorted_profiles_iter`) ::
 
   for q, profile in H:
      print "orderparameter = %g" % q
-     print "min(R) = %g" % profile.R.min()
+     print "min(R) = %g" % profile.radius.min()
 
 
 Data structures
@@ -184,7 +184,6 @@ import errno
 import shutil
 import warnings
 
-import numpy as np
 import os.path
 import subprocess
 import tempfile
@@ -369,6 +368,8 @@ class BaseHOLE(object):
               matplotlib color map [jet]
            *rmax*
               only display radii up to *rmax* [``None``]
+           *ylabel*
+              label of the reaction coordinate axis ["frames"]
 
         Based on Stack Overflow post `3d plots using matplotlib`_.
 
@@ -382,6 +383,7 @@ class BaseHOLE(object):
 
         kw, kwargs = self._process_plot_kwargs(kwargs)
         rmax = kw.pop('rmax', None)
+        ylabel = kwargs.pop('ylabel', "frames")
 
         fig = plt.figure(figsize=kwargs.pop('figsize', (6,6)))
         ax = fig.add_subplot(1, 1, 1, projection='3d')
@@ -404,9 +406,17 @@ class BaseHOLE(object):
             ax.plot(rxncoord, frame*numpy.ones_like(rxncoord), radius, **kwargs)
 
         ax.set_xlabel(r"pore coordinate $z$")
-        ax.set_ylabel("frame")
+        ax.set_ylabel(ylabel)
         ax.set_zlabel(r"HOLE radius $r$")
         plt.draw()
+
+    def min_radius(self):
+        """Return the minimum radius over all profiles as a function of q"""
+        f = []
+        for q, profile in self:
+            f.append([q, profile.radius.min()])
+        return numpy.array(f)
+
 
     def sorted_profiles_iter(self):
         """Return an iterator over profiles sorted by frame/order parameter *q*.
