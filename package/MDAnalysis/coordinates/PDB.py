@@ -474,17 +474,23 @@ class PrimitivePDBReader(base.Reader):
         If the pdb file contains multiple MODEL records then it is
         read as a trajectory where the MODEL numbers correspond to
         frame numbers. Therefore, the MODEL numbers must be a sequence
-        of integeres (typically starting at 1 or 0).
+        of integers (typically starting at 1 or 0).
         """
         self.filename = filename
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
-        # add this number to the MODEL number to get frame: typically
-        # PDB starts at 1 but Gromacs trjconv exports starting with
-        # MODEL 0. (MODEL 0 is autodetected in the code, though!)
-        self.model_offset = kwargs.pop("model_offset", -1)
+        # = NOTE to clear up confusion over 0-based vs 1-based frame numbering =
+        # self.frame is 1-based for this Reader, which matches the behavior of
+        # the MODEL record in a typical multi-model PDB file.  If the MODEL
+        # record is 0-based, this is accounted for by __init__.
+        # self._read_frame assumes that it is passed a 0-based frame number, so
+        # that it functions as expected when slicing is used.
+
+        # If MODEL number in the PDB file is 0-based, then this model_offset
+        # will be set to 1 by __init__.
+        self.model_offset = kwargs.pop("model_offset", 0)
 
         header = ""
         compound = []
@@ -521,9 +527,9 @@ class PrimitivePDBReader(base.Reader):
                     frameno = int(line.split()[1])
                     if frameno == 0:
                         # detect if MODEL starts at 0 or at 1; switch model_offset appropriately
-                        # Will break/loose frames if MODELs are renumbered in the PDB file...
-                        self.model_offset = 0
-                    frames[frameno + self.model_offset] = i # 0-based indexing
+                        # Will break/lose frames if MODELs are nonconsecutive in the PDB file...
+                        self.model_offset = 1
+                    frames[frameno + self.model_offset] = i # 1-based indexing
                 elif line[:6] in ('ATOM  ', 'HETATM'):
                     # skip atom/hetatm for frames other than the first - they will be read in when next() is called on the trajectory reader
                     if len(frames) > 1:
@@ -555,7 +561,7 @@ class PrimitivePDBReader(base.Reader):
 
         # No 'MODEL' entries
         if len(frames) == 0:
-            frames[0] = 0
+            frames[1] = 0
 
         self.frames = frames
         self.numframes = len(frames) if frames else 1
@@ -622,18 +628,27 @@ class PrimitivePDBReader(base.Reader):
             except IOError:
                 raise StopIteration
 
+    #def __getitem__(self,frame):
+    #    return self._read_frame(frame+1)
+
     def _read_next_timestep(self, ts=None):
         if ts is None:
             ts = self.ts
         else:
             # TODO: cleanup _read_frame() to use a "free" Timestep
             raise NotImplementedError("PrimitivePDBReader cannot assign to a timestep")
-        frame = self.frame + 1
+        # frame is 1-based. Normally would add 1 to frame before calling
+        # self._read_frame to retrieve the subsequent ts. But self._read_frame
+        # assumes it is being passed a 0-based frame, and adjusts.
+        frame = self.frame
         return self._read_frame(frame)
 
     def _read_frame(self, frame):
         if numpy.dtype(type(frame)) != numpy.dtype(int):
             raise TypeError("frame must be a integer")
+        # Assume _read_frame is passed a 0-based frame number. Convert this to
+        # 1-based.
+        frame += 1
         try:
             line = self.frames[frame]
         except KeyError:
@@ -657,6 +672,8 @@ class PrimitivePDBReader(base.Reader):
             for line in f:
                 if line[:6] == 'ENDMDL':
                     break
+                # NOTE - CRYST1 line won't be found if it comes before the MODEL line,
+                # which is sometimes the case, e.g. output from gromacs trjconv
                 elif line[:6] == 'CRYST1':
                     A, B, C = _c(7, 15), _c(16, 24), _c(25, 33)
                     alpha, beta, gamma = _c(34, 40), _c(41, 47), _c(48, 54)
@@ -679,7 +696,7 @@ class PrimitivePDBReader(base.Reader):
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)             # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)
-        self.ts.frame = frame+1   # frame labels are 1-based (confusing ...)
+        self.ts.frame = frame
         return self.ts
 
 

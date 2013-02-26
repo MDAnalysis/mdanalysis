@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.7. GRO file format — MDAnalysis.coordinates.GRO &mdash; MDAnalysis 0.7.7 documentation</title>
+    <title>5.8. GRO file format — MDAnalysis.coordinates.GRO &mdash; MDAnalysis 0.7.8-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.7',
+        VERSION:     '0.7.8-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,13 +26,13 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.7 documentation"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.7 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.8. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB" href="PDB.html" />
-    <link rel="prev" title="5.6. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS" href="LAMMPS.html" /> 
+    <link rel="next" title="5.9. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB" href="PDB.html" />
+    <link rel="prev" title="5.7. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS" href="LAMMPS.html" /> 
   </head>
   <body>
     <div class="related">
@@ -45,12 +45,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="PDB.html" title="5.8. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
+          <a href="PDB.html" title="5.9. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="LAMMPS.html" title="5.6. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS"
+          <a href="LAMMPS.html" title="5.7. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -61,10 +61,10 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="LAMMPS.html"
-                        title="previous chapter">5.6. LAMMPS DCD trajectory I/O  &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></tt></a></p>
+                        title="previous chapter">5.7. LAMMPS DCD trajectory I/O  &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="PDB.html"
-                        title="next chapter">5.8. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></p>
+                        title="next chapter">5.9. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/GRO.txt"
@@ -92,7 +92,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.GRO"></span><div class="section" id="gro-file-format-mdanalysis-coordinates-gro">
-<h1>5.7. GRO file format &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.GRO" title="MDAnalysis.coordinates.GRO"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a><a class="headerlink" href="#gro-file-format-mdanalysis-coordinates-gro" title="Permalink to this headline">¶</a></h1>
+<h1>5.8. GRO file format &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.GRO" title="MDAnalysis.coordinates.GRO"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a><a class="headerlink" href="#gro-file-format-mdanalysis-coordinates-gro" title="Permalink to this headline">¶</a></h1>
 <p>Classes to read and write <a class="reference external" href="http://www.gromacs.org">Gromacs</a> <a class="reference external" href="http://manual.gromacs.org/current/online/gro.html">GRO</a> coordinate files; see the notes on the
 <a class="reference external" href="http://chembytes.wikidot.com/g-grofile">GRO format</a> which includes a conversion routine for the box.</p>
 <dl class="class">
@@ -211,12 +211,12 @@ routine will chop off the leading digits.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="PDB.html" title="5.8. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
+          <a href="PDB.html" title="5.9. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
              >next</a> |</li>
         <li class="right" >
-          <a href="LAMMPS.html" title="5.6. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS"
+          <a href="LAMMPS.html" title="5.7. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -226,7 +226,7 @@ routine will chop off the leading digits.</p>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
     Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

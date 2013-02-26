@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>1. Overview over MDAnalysis &mdash; MDAnalysis 0.7.7 documentation</title>
+    <title>1. Overview over MDAnalysis &mdash; MDAnalysis 0.7.8-dev documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7.7',
+        VERSION:     '0.7.8-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.7 documentation"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.7 documentation" href="../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../index.html" />
     <link rel="next" title="2. Selection Commands" href="selections.html" />
     <link rel="prev" title="MDAnalysis documentation" href="../index.html" /> 
   </head>
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="../index.html" title="MDAnalysis documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -244,22 +244,23 @@ Open &lt;&#8211;&gt; Closed Transitions. <em>J Mol Biol</em> <strong>394</strong
 </div>
 <div class="section" id="code-snippets">
 <h3>1.2.2. Code snippets<a class="headerlink" href="#code-snippets" title="Permalink to this headline">¶</a></h3>
-<p>The source code distribution comes with a directory <a class="reference external" href="http://code.google.com/p/mdanalysis/source/browse/#svn%2Ftrunk%2Fexamples">examples</a> that
+<p>The source code distribution comes with a directory <a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package#package%2Fexamples">examples</a> that
 contains a number of code snippets that show how to use certain
 aspects of MDAnalysis.</p>
 <p>For instance, there is code that shows how to</p>
 <ul class="simple">
 <li>fit a trajectory to a reference structure using the QCP
 RMSD-alignment code in <a class="reference internal" href="core/qcprot.html#module-MDAnalysis.core.qcprot" title="MDAnalysis.core.qcprot"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></tt></a>
-(<a class="reference external" href="http://code.google.com/p/mdanalysis/source/browse/trunk/examples/rmsfit_qcp.py">rmsfit_qcp.py</a>);</li>
-<li>do a block-averaging error analysis (<a class="reference external" href="http://code.google.com/p/mdanalysis/source/browse/trunk/examples/blocks.py">blocks.py</a>);</li>
-<li>calculate a potential profile across a membrane (<a class="reference external" href="http://code.google.com/p/mdanalysis/source/browse/trunk/examples/potential_profile.py">potential_profile.py</a>);</li>
+(<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/rmsfit_qcp.py">rmsfit_qcp.py</a>);</li>
+<li>do a block-averaging error analysis (<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/blocks.py">blocks.py</a>);</li>
+<li>calculate a potential profile across a membrane (<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/potential_profile.py">potential_profile.py</a>);</li>
+<li>do a native contact analysis using <a class="reference internal" href="analysis/contacts.html#module-MDAnalysis.analysis.contacts" title="MDAnalysis.analysis.contacts"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a> (<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/nativecontacts.py">nativecontacts.py</a>)</li>
 <li>get the lipid composition of the individual leaflets of a bilayer
-using <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.leaflets</span></tt> (<a class="reference external" href="http://code.google.com/p/mdanalysis/source/browse/trunk/examples/membrane-leaflets.py">membrane-leaflets.py</a>);</li>
+using <a class="reference internal" href="analysis/leaflet.html#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a> (<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/membrane-leaflets.py">membrane-leaflets.py</a>);</li>
 <li>define the multimeric states of a number of transmembrane peptides
-via clustering (<a class="reference external" href="http://code.google.com/p/mdanalysis/source/browse/trunk/examples/multimers-analysis.py">multimers-analysis.py</a>);</li>
-<li>convert between trajectory formats;</li>
-<li>use MDAnalysis for simple model building (<a class="reference external" href="http://code.google.com/p/mdanalysis/source/browse/trunk/examples/make_MthK_tetramer.py">make_MthK_tetramer.py</a>);</li>
+via clustering (<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/multimers-analysis.py">multimers-analysis.py</a>);</li>
+<li>convert between trajectory formats (e.g. <a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/dcd2xtc.py">dcd2xtc.py</a> or <a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/amber2dcd.py">amber2dcd.py</a>)</li>
+<li>use MDAnalysis for simple model building (<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/make_MthK_tetramer.py">make_MthK_tetramer.py</a>);</li>
 </ul>
 <p>and more.</p>
 </div>
@@ -287,7 +288,7 @@ via clustering (<a class="reference external" href="http://code.google.com/p/mda
         <li class="right" >
           <a href="../index.html" title="MDAnalysis documentation"
              >previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
@@ -296,7 +297,7 @@ via clustering (<a class="reference external" href="http://code.google.com/p/mda
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
     Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

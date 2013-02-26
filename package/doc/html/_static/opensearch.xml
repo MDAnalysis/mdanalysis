@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
   <ShortName>MDAnalysis</ShortName>
-  <Description>Search MDAnalysis 0.7.7 documentation</Description>
+  <Description>Search MDAnalysis 0.7.8-dev documentation</Description>
   <InputEncoding>utf-8</InputEncoding>
   <Url type="text/html" method="get"
        template="http://packages.python.org/MDAnalysis//search.html?q={searchTerms}&amp;check_keywords=yes&amp;area=default"/>
-  <LongName>MDAnalysis 0.7.7 documentation</LongName>
+  <LongName>MDAnalysis 0.7.8-dev documentation</LongName>
   
 </OpenSearchDescription>

@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.3. Generating densities from trajectories — MDAnalysis.analysis.density &mdash; MDAnalysis 0.7.7 documentation</title>
+    <title>3.3. Generating densities from trajectories — MDAnalysis.analysis.density &mdash; MDAnalysis 0.7.8-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.7',
+        VERSION:     '0.7.8-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.7 documentation"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.7 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.4. Distance analysis — MDAnalysis.distances" href="distances.html" />
     <link rel="prev" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts" href="contacts.html" /> 
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="contacts.html" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -70,7 +70,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="contacts.html"
-                        title="previous chapter">3.2. Native contacts analysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></p>
+                        title="previous chapter">3.2. Native contacts analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="distances.html"
                         title="next chapter">3.4. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
@@ -114,11 +114,11 @@
 </tr>
 </tbody>
 </table>
-<p>The module provides classes and functions to represent volumetric data, in
-particular densities.</p>
+<p>The module provides classes and functions to generate and represent
+volumetric data, in particular densities.</p>
 <div class="section" id="generating-a-density-from-a-md-trajectory">
 <h2>3.3.1. Generating a density from a MD trajectory<a class="headerlink" href="#generating-a-density-from-a-md-trajectory" title="Permalink to this headline">¶</a></h2>
-<p>As an input a trajectory is required that</p>
+<p>An input trajectory is required that</p>
 <ol class="arabic simple">
 <li>Has been centered on the protein of interest.</li>
 <li>Has all molecules made whole that have been broken across periodic
@@ -128,7 +128,8 @@ solute (this is important when using funky unit cells such as
 a dodecahedron or a truncated octahedron).</li>
 </ol>
 <p>To generate the density of water molecules around a protein:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.density</span> <span class="kn">import</span> <span class="n">density_from_Universe</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="n">D</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">atomselection</span><span class="o">=</span><span class="s">&quot;name OH2&quot;</span><span class="p">)</span>
 <span class="n">D</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s">&#39;TIP3P&#39;</span><span class="p">)</span>
 <span class="n">D</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s">&quot;water.dx&quot;</span><span class="p">)</span>
@@ -488,9 +489,7 @@ regenerated from the saved data with</p>
 [&#8220;name OH2&#8221;]</p>
 </dd>
 <dt>delta</dt>
-<dd><p class="first last">approximate bin size for the density grid in Angstroem (same in x,y,z)
-(It is slightly adjusted when the box length is not an integer multiple
-of delta.) [1.0]</p>
+<dd><p class="first last">bin size for the density grid in Angstroem (same in x,y,z) [1.0]</p>
 </dd>
 <dt>metadata</dt>
 <dd><p class="first last">dictionary of additional data to be saved with the object</p>
@@ -536,12 +535,13 @@ in Angstroem [2.0]</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt>psf/pdb/gro</dt>
-<dd><p class="first last">topology file</p>
+<dt>topology file</dt>
+<dd><p class="first last">any topology file understood by MDAnalysis</p>
 </dd>
-<dt>dcd/xtc/trr/pdb</dt>
-<dd><p class="first last">trajectory; if reading a single PDB file it is sufficient to just provide it
-once as a single argument</p>
+<dt>trajectory</dt>
+<dd><p class="first last">any trajectory (coordinate) file understood by MDAnalysis;
+if reading a single PDB file it is sufficient to just
+provide it once as a single argument</p>
 </dd>
 </dl>
 </td>
@@ -552,9 +552,7 @@ once as a single argument</p>
 [&#8220;name OH2&#8221;]</p>
 </dd>
 <dt>delta</dt>
-<dd><p class="first last">approximate bin size for the density grid in Angstroem (same in x,y,z)
-(It is slightly adjusted when the box length is not an integer multiple
-of delta.) [1.0]</p>
+<dd><p class="first last">bin size for the density grid in Angstroem (same in x,y,z) [1.0]</p>
 </dd>
 <dt>metadata</dt>
 <dd><p class="first last">dictionary of additional data to be saved with the object</p>
@@ -623,9 +621,7 @@ records are currently <em>not</em> processed</p>
 [&#8216;resname HOH and name O&#8217;]</p>
 </dd>
 <dt><em>delta</em></dt>
-<dd><p class="first last">approximate bin size for the density grid (same in x,y,z)
-(It is slightly adjusted when the box length is not an integer multiple
-of delta.) [1.0]</p>
+<dd><p class="first last">bin size for the density grid in Angstroem (same in x,y,z) [1.0]</p>
 </dd>
 <dt><em>metadata</em></dt>
 <dd><p class="first last">dictionary of additional data to be saved with the object [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
@@ -695,9 +691,7 @@ that was created with the <cite>permissive</cite> = <tt class="docutils literal"
 <dd><p class="first last">selection string (MDAnalysis syntax) for the species to be analyzed</p>
 </dd>
 <dt>delta</dt>
-<dd><p class="first last">approximate bin size for the density grid (same in x,y,z)
-(It is slightly adjusted when the box length is not an integer multiple
-of delta.)</p>
+<dd><p class="first last">bin size for the density grid in Angstroem (same in x,y,z) [1.0]</p>
 </dd>
 <dt>metadata</dt>
 <dd><p class="first last">dictionary of additional data to be saved with the object</p>
@@ -909,7 +903,7 @@ regenerated from the saved data with</p>
         <li class="right" >
           <a href="contacts.html" title="3.2. Native contacts analysis — MDAnalysis.analysis.contacts"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -919,7 +913,7 @@ regenerated from the saved data with</p>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
     Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

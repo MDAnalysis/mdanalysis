@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.1. Topology readers — MDAnalysis.topology &mdash; MDAnalysis 0.7.7 documentation</title>
+    <title>4.1. Topology readers — MDAnalysis.topology &mdash; MDAnalysis 0.7.8-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.7',
+        VERSION:     '0.7.8-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.7 documentation"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.7 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.2. Common functions for topology building — MDAnalysis.topology.core" href="core.html" />
     <link rel="prev" title="4. Topology modules" href="../topology_modules.html" /> 
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="../topology_modules.html" title="4. Topology modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -64,7 +64,7 @@
                         title="previous chapter">4. Topology modules</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="core.html"
-                        title="next chapter">4.2. Common functions for topology building &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt></a></p>
+                        title="next chapter">4.2. Common functions for topology building &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/topology/init.txt"
@@ -103,9 +103,9 @@ coordinate file and their residue names and numbers.</p>
 <table border="1" class="docutils" id="supported-topology-formats">
 <caption>Table of Supported topology formats</caption>
 <colgroup>
-<col width="17%" />
+<col width="20%" />
 <col width="13%" />
-<col width="70%" />
+<col width="67%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -120,13 +120,13 @@ coordinate file and their residue names and numbers.</p>
 information is used at the moment;
 <a class="reference internal" href="PSFParser.html#module-MDAnalysis.topology.PSFParser" title="MDAnalysis.topology.PSFParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PSFParser</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td>CHARMM*</td>
+<tr class="row-odd"><td>CHARMM <a class="footnote-reference" href="#a" id="id1">[1]</a></td>
 <td>crd</td>
 <td>&#8220;CARD&#8221; coordinate output from CHARMM; deals with
 either standard or EXTended format;
 <a class="reference internal" href="CRDParser.html#module-MDAnalysis.topology.CRDParser" title="MDAnalysis.topology.CRDParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.CRDParser</span></tt></a></td>
 </tr>
-<tr class="row-even"><td>Brookhaven*</td>
+<tr class="row-even"><td>Brookhaven <a class="footnote-reference" href="#a" id="id2">[1]</a></td>
 <td>pdb</td>
 <td>a simplified PDB format (as used in MD simulations)
 is read by default; the full format can be read by
@@ -135,35 +135,49 @@ supplying the <cite>permissive=False</cite> flag to
 <a class="reference internal" href="PrimitivePDBParser.html#module-MDAnalysis.topology.PrimitivePDBParser" title="MDAnalysis.topology.PrimitivePDBParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PrimitivePDBParser</span></tt></a> and
 <a class="reference internal" href="PDBParser.html#module-MDAnalysis.topology.PDBParser" title="MDAnalysis.topology.PDBParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PDBParser</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td>PQR*</td>
+<tr class="row-odd"><td>PQR <a class="footnote-reference" href="#a" id="id3">[1]</a></td>
 <td>pqr</td>
 <td>PDB-like but whitespace-separated files with charge
 and radius information;
 <a class="reference internal" href="PQRParser.html#module-MDAnalysis.topology.PQRParser" title="MDAnalysis.topology.PQRParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PQRParser</span></tt></a></td>
 </tr>
-<tr class="row-even"><td>PDBQT*</td>
+<tr class="row-even"><td>PDBQT <a class="footnote-reference" href="#a" id="id4">[1]</a></td>
 <td>pdbqt</td>
 <td>file format used by AutoDock with atom types <em>t</em>
 and partial charges <em>q</em>. Module:
-<tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PQBQTParser</span></tt></td>
+<a class="reference internal" href="PDBQTParser.html#module-MDAnalysis.topology.PDBQTParser" title="MDAnalysis.topology.PDBQTParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PDBQTParser</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td>GROMOS96*</td>
+<tr class="row-odd"><td>GROMOS96 <a class="footnote-reference" href="#a" id="id5">[1]</a></td>
 <td>gro</td>
 <td>GROMOS96 coordinate file;
 <a class="reference internal" href="GROParser.html#module-MDAnalysis.topology.GROParser" title="MDAnalysis.topology.GROParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.GROParser</span></tt></a></td>
 </tr>
-<tr class="row-even"><td>Amber</td>
-<td>top
+<tr class="row-even"><td>AMBER</td>
+<td>top,
 prmtop</td>
-<td>simple Amber format read (only supports a subset of
-flags);
+<td>simple AMBER format reader (only supports a subset
+of flags);
 <a class="reference internal" href="TOPParser.html#module-MDAnalysis.topology.TOPParser" title="MDAnalysis.topology.TOPParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.TOPParser</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>DESRES <a class="footnote-reference" href="#a" id="id6">[1]</a></td>
+<td>dms</td>
+<td>DESRES molecular sturcture reader (only supports
+the atom and bond records);
+<a class="reference internal" href="DMSParser.html#module-MDAnalysis.topology.DMSParser" title="MDAnalysis.topology.DMSParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.DMSParser</span></tt></a></td>
 </tr>
 </tbody>
 </table>
-<p>Formats marked with ans asterisk * also hold coordinates and thus can
-be used as the sole argument to <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> to set up
-a system.</p>
+<table class="docutils footnote" frame="void" id="a" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>, <a class="fn-backref" href="#id5">5</a>, <a class="fn-backref" href="#id6">6</a>)</em> This format can also be used to provide <em>coordinates</em> so that
+it is possible to create a full
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-mod docutils literal"><span class="pre">Universe</span></tt></a> by simply providing a
+file of this format as the sole argument to
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-mod docutils literal"><span class="pre">Universe</span></tt></a>: <tt class="docutils literal"><span class="pre">u</span> <span class="pre">=</span>
+<span class="pre">Universe(filename)</span></tt></td></tr>
+</tbody>
+</table>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="../coordinates_modules.html#coordinates"><em>Coordinates modules</em></a> with the <a class="reference internal" href="../coordinates/init.html#id1"><em>Table of Supported coordinate formats</em></a></p>
@@ -191,7 +205,7 @@ a system.</p>
         <li class="right" >
           <a href="../topology_modules.html" title="4. Topology modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -201,7 +215,7 @@ a system.</p>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
     Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

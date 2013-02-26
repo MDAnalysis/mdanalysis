@@ -70,9 +70,12 @@ def build_segments(atoms):
 
 class Bond(object):
     """A bond between two :class:`~MDAnalysis.core.AtomGroup.Atom` instances."""
-    def __init__(self, a1, a2):
+    def __init__(self, a1, a2, order=None):
         self.atom1 = a1
         self.atom2 = a2
+        self.order = order
+        [a.bonds.append(self) for a in [a1, a2]] 
+        
     def partner(self, atom):
         if atom is self.atom1:
             return self.atom2

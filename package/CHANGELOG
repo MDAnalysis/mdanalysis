@@ -10,6 +10,15 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
+??/??/13  orbeckst, jandom
+
+  * 0.8
+
+  Changes
+
+  * removed Timeseries.principleAxis (probably was never working)
+  * added support for reading DMS files (DESRES molecular structure?)
+
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux
 

@@ -26,6 +26,7 @@ Programmers and anyone trying to implement new functionality should read the
    coordinates/core
    coordinates/CRD
    coordinates/DCD
+   coordinates/DMS
    coordinates/LAMMPS
    coordinates/GRO
    coordinates/PDB

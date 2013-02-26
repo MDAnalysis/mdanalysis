@@ -39,6 +39,8 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "PDB_helix",
            "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",   # Gromacs (AdK)
            "PDB_xvf", "TPR_xvf", "TRR_xvf",     # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
+           "PDB_sub_sol", "PDB_sub_dry",        # TRRReader sub selection 
+           "TRR_sub_sol",        
            "XYZ", "XYZ_psf", "XYZ_bz2",         # XYZ
            "PRM", "TRJ", "TRJ_bz2",             # Amber (no periodic box)
            "PRMpbc", "TRJpbc_bz2",              # Amber (periodic box)
@@ -49,6 +51,7 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "PDBQT_querypdb",
            "FASTA",                             # sequence alignment, Issue 112 + 113
            "PDB_HOLE",                          # gramicidin A
+           "DMS",                               # DHFR
            ]
 
 from pkg_resources import resource_filename
@@ -76,6 +79,9 @@ PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
 TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
+PDB_sub_dry = resource_filename(__name__, 'data/cobrotoxin_dry_neutral_0.pdb')
+TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
+PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
 
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
@@ -107,3 +113,5 @@ PDBQT_querypdb = resource_filename(__name__, 'data/pdbqt_querypdb.pdb')
 FASTA = resource_filename(__name__, 'data/test.fasta')
 
 PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
+
+DMS = resource_filename(__name__, 'data/adk_closed.dms')
