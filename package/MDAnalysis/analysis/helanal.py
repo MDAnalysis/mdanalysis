@@ -504,7 +504,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
         #calculate local bending matrix(now it is looking at all i, j combinations)
         for i in local_helix_axes:
                 for j in local_helix_axes:
-                        if i == j:
+                        if (i == j).all():
                                 angle = 0.
                         else:
                                 angle = rad2deg(numpy.arccos(vecscaler(i,j)))
