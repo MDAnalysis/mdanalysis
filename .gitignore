@@ -12,4 +12,7 @@ dist/
 temp/
 examples/eigenvalues.dat
 examples/output.txt
-_export.sh
+.project
+.pydevproject
+.settings
+

@@ -10,7 +10,8 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/13  zhuyi.xue
+
+??/??/13  zhuyi.xue, orbeckst, jandom
 
   * 0.8
 
@@ -18,6 +19,11 @@ The rules for this file:
 
   * EXPERIMENTAL TPR parser (currently limited to version 58 and 73 of the
     Gromacs TPR format (Gromacs 4.0 to 4.5.5), see Issue 2)
+
+  Changes
+
+  * removed Timeseries.principleAxis (probably was never working)
+  * added support for reading DMS files (DESRES molecular structure?)
 
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux

@@ -181,32 +181,40 @@ For instance, there is code that shows how to
 
 * calculate a potential profile across a membrane (`potential_profile.py`_);
 
+* do a native contact analysis using :mod:`MDAnalysis.analysis.contacts` (`nativecontacts.py`_)
+
 * get the lipid composition of the individual leaflets of a bilayer
-  using :mod:`MDAnalysis.analysis.leaflets` (`membrane-leaflets.py`_);
+  using :mod:`MDAnalysis.analysis.leaflet` (`membrane-leaflets.py`_);
 
 * define the multimeric states of a number of transmembrane peptides
   via clustering (`multimers-analysis.py`_);
 
-* convert between trajectory formats;
+* convert between trajectory formats (e.g. `dcd2xtc.py`_ or `amber2dcd.py`_)
 
 * use MDAnalysis for simple model building (`make_MthK_tetramer.py`_);
 
 and more.
 
-.. Links to the SVN repository:
+.. Links to the stable git repository:
 
 .. _examples:
-   http://code.google.com/p/mdanalysis/source/browse/#svn%2Ftrunk%2Fexamples 
+   https://code.google.com/p/mdanalysis/source/browse/package#package%2Fexamples
 
 .. _`rmsfit_qcp.py`:
-   http://code.google.com/p/mdanalysis/source/browse/trunk/examples/rmsfit_qcp.py
+   https://code.google.com/p/mdanalysis/source/browse/package/examples/rmsfit_qcp.py
 .. _`blocks.py`:
-   http://code.google.com/p/mdanalysis/source/browse/trunk/examples/blocks.py
+   https://code.google.com/p/mdanalysis/source/browse/package/examples/blocks.py
 .. _`potential_profile.py`:
-   http://code.google.com/p/mdanalysis/source/browse/trunk/examples/potential_profile.py
+   https://code.google.com/p/mdanalysis/source/browse/package/examples/potential_profile.py
+.. _`nativecontacts.py`:
+   https://code.google.com/p/mdanalysis/source/browse/package/examples/nativecontacts.py
 .. _`membrane-leaflets.py`:
-   http://code.google.com/p/mdanalysis/source/browse/trunk/examples/membrane-leaflets.py
+   https://code.google.com/p/mdanalysis/source/browse/package/examples/membrane-leaflets.py
 .. _`multimers-analysis.py`:
-   http://code.google.com/p/mdanalysis/source/browse/trunk/examples/multimers-analysis.py
+   https://code.google.com/p/mdanalysis/source/browse/package/examples/multimers-analysis.py
+.. _`dcd2xtc.py`:
+   https://code.google.com/p/mdanalysis/source/browse/package/examples/dcd2xtc.py
+.. _`amber2dcd.py`:
+   https://code.google.com/p/mdanalysis/source/browse/package/examples/amber2dcd.py
 .. _`make_MthK_tetramer.py`:
-   http://code.google.com/p/mdanalysis/source/browse/trunk/examples/make_MthK_tetramer.py
+   https://code.google.com/p/mdanalysis/source/browse/package/examples/make_MthK_tetramer.py

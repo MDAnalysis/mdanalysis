@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ &mdash; MDAnalysis 0.7.7 documentation</title>
+    <title>5.12. AMBER trajectories — MDAnalysis.coordinates.TRJ &mdash; MDAnalysis 0.7.8-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.7',
+        VERSION:     '0.7.8-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,13 +26,13 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.7 documentation"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.7 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.12. Gromacs TRR file IO — MDAnalysis.coordinates.TRR" href="TRR.html" />
-    <link rel="prev" title="5.10. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" /> 
+    <link rel="next" title="5.13. Gromacs TRR file IO — MDAnalysis.coordinates.TRR" href="TRR.html" />
+    <link rel="prev" title="5.11. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" /> 
   </head>
   <body>
     <div class="related">
@@ -45,12 +45,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="TRR.html" title="5.12. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
+          <a href="TRR.html" title="5.13. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="PQR.html" title="5.10. PQR file format — MDAnalysis.coordinates.PQR"
+          <a href="PQR.html" title="5.11. PQR file format — MDAnalysis.coordinates.PQR"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -61,19 +61,19 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.11. AMBER trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a><ul>
-<li><a class="reference internal" href="#ascii-traj-trajectories">5.11.1. ASCII TRAJ trajectories</a></li>
-<li><a class="reference internal" href="#binary-netcdf-trajectories">5.11.2. Binary NetCDF trajectories</a></li>
+<li><a class="reference internal" href="#">5.12. AMBER trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a><ul>
+<li><a class="reference internal" href="#ascii-traj-trajectories">5.12.1. ASCII TRAJ trajectories</a></li>
+<li><a class="reference internal" href="#binary-netcdf-trajectories">5.12.2. Binary NetCDF trajectories</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="PQR.html"
-                        title="previous chapter">5.10. PQR file format &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></p>
+                        title="previous chapter">5.11. PQR file format &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="TRR.html"
-                        title="next chapter">5.12. Gromacs TRR file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a></p>
+                        title="next chapter">5.13. Gromacs TRR file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/TRJ.txt"
@@ -101,7 +101,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.TRJ"></span><div class="section" id="amber-trajectories-mdanalysis-coordinates-trj">
-<h1>5.11. AMBER trajectories &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.TRJ" title="MDAnalysis.coordinates.TRJ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a><a class="headerlink" href="#amber-trajectories-mdanalysis-coordinates-trj" title="Permalink to this headline">¶</a></h1>
+<h1>5.12. AMBER trajectories &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.TRJ" title="MDAnalysis.coordinates.TRJ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a><a class="headerlink" href="#amber-trajectories-mdanalysis-coordinates-trj" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://ambermd.org">AMBER</a> can write <a class="reference internal" href="#ascii-trajectories"><em>ASCII trajectories</em></a> (&#8220;traj&#8221;) and
 <a class="reference internal" href="#netcdf-trajectories"><em>binary trajectories</em></a> (&#8220;netcdf&#8221;). MDAnalysis supports
 reading of both formats and writing for the binary trajectories.</p>
@@ -168,7 +168,7 @@ angles to 90º.</p>
 </dd></dl>
 
 <div class="section" id="ascii-traj-trajectories">
-<span id="ascii-trajectories"></span><h2>5.11.1. ASCII TRAJ trajectories<a class="headerlink" href="#ascii-traj-trajectories" title="Permalink to this headline">¶</a></h2>
+<span id="ascii-trajectories"></span><h2>5.12.1. ASCII TRAJ trajectories<a class="headerlink" href="#ascii-traj-trajectories" title="Permalink to this headline">¶</a></h2>
 <p>ASCII <a class="reference external" href="http://ambermd.org">AMBER</a> TRJ coordinate files (as defined in <a class="reference external" href="http://ambermd.org/formats.html#trajectory">AMBER TRJ format</a>)
 are handled by the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="MDAnalysis.coordinates.TRJ.TRJReader"><tt class="xref py py-class docutils literal"><span class="pre">TRJReader</span></tt></a>. It is also possible to directly
 read <em>bzip2</em> or <em>gzip</em> compressed files.</p>
@@ -230,7 +230,7 @@ trajectory.</p>
 
 </div>
 <div class="section" id="binary-netcdf-trajectories">
-<span id="netcdf-trajectories"></span><h2>5.11.2. Binary NetCDF trajectories<a class="headerlink" href="#binary-netcdf-trajectories" title="Permalink to this headline">¶</a></h2>
+<span id="netcdf-trajectories"></span><h2>5.12.2. Binary NetCDF trajectories<a class="headerlink" href="#binary-netcdf-trajectories" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference external" href="http://ambermd.org/netcdf/nctraj.html">AMBER netcdf</a> format make use of <a class="reference external" href="http://www.unidata.ucar.edu/software/netcdf">NetCDF</a> (Network Common Data
 Form) format. Such binary trajectories are recognized in MDAnalysis by
 the &#8216;.ncdf&#8217; suffix and read by the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="MDAnalysis.coordinates.TRJ.NCDFReader"><tt class="xref py py-class docutils literal"><span class="pre">NCDFReader</span></tt></a>.</p>
@@ -418,12 +418,12 @@ be written to trajectory file</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="TRR.html" title="5.12. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
+          <a href="TRR.html" title="5.13. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
              >next</a> |</li>
         <li class="right" >
-          <a href="PQR.html" title="5.10. PQR file format — MDAnalysis.coordinates.PQR"
+          <a href="PQR.html" title="5.11. PQR file format — MDAnalysis.coordinates.PQR"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.7 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -433,7 +433,7 @@ be written to trajectory file</p>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
     Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

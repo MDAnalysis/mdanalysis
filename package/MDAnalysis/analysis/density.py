@@ -27,13 +27,13 @@ Generating densities from trajectories --- :mod:`MDAnalysis.analysis.density`
 :Year: 2011
 :Copyright: GNU Public License v3
 
-The module provides classes and functions to represent volumetric data, in
-particular densities.
+The module provides classes and functions to generate and represent
+volumetric data, in particular densities.
 
 Generating a density from a MD trajectory
 -----------------------------------------
 
-As an input a trajectory is required that
+An input trajectory is required that
 
 1. Has been centered on the protein of interest.
 2. Has all molecules made whole that have been broken across periodic
@@ -44,6 +44,7 @@ As an input a trajectory is required that
 
 To generate the density of water molecules around a protein::
 
+  from MDAnalysis.analysis.density import density_from_Universe
   u = Universe(PSF,DCD)
   D = density_from_Universe(u, delta=1.0, atomselection="name OH2")
   D.convert_density('TIP3P')
@@ -383,20 +384,19 @@ def density_from_trajectory(*args,**kwargs):
          density_from_trajectory(PDB, XTC, delta=1.0, atomselection='name OH2', ...) --> density
 
     :Arguments:
-      psf/pdb/gro
-            topology file
-      dcd/xtc/trr/pdb
-            trajectory; if reading a single PDB file it is sufficient to just provide it
-            once as a single argument
+      topology file
+            any topology file understood by MDAnalysis
+      trajectory
+            any trajectory (coordinate) file understood by MDAnalysis;
+            if reading a single PDB file it is sufficient to just
+            provide it once as a single argument
 
     :Keywords:
       atomselection
             selection string (MDAnalysis syntax) for the species to be analyzed
             ["name OH2"]
       delta
-            approximate bin size for the density grid in Angstroem (same in x,y,z)
-            (It is slightly adjusted when the box length is not an integer multiple
-            of delta.) [1.0]
+            bin size for the density grid in Angstroem (same in x,y,z) [1.0]
       metadata
             dictionary of additional data to be saved with the object
       padding
@@ -430,9 +430,7 @@ def density_from_Universe(universe,delta=1.0,atomselection='name OH2',
             selection string (MDAnalysis syntax) for the species to be analyzed
             ["name OH2"]
       delta
-            approximate bin size for the density grid in Angstroem (same in x,y,z)
-            (It is slightly adjusted when the box length is not an integer multiple
-            of delta.) [1.0]
+            bin size for the density grid in Angstroem (same in x,y,z) [1.0]
       metadata
             dictionary of additional data to be saved with the object
       padding
@@ -651,9 +649,7 @@ def density_from_PDB(pdb, **kwargs):
           selection string (MDAnalysis syntax) for the species to be analyzed
           ['resname HOH and name O']
        *delta*
-          approximate bin size for the density grid (same in x,y,z)
-          (It is slightly adjusted when the box length is not an integer multiple
-          of delta.) [1.0]
+          bin size for the density grid in Angstroem (same in x,y,z) [1.0]
        *metadata*
           dictionary of additional data to be saved with the object [``None``]
        *padding*
@@ -710,9 +706,7 @@ class BfactorDensityCreator(object):
           atomselection
             selection string (MDAnalysis syntax) for the species to be analyzed
           delta
-            approximate bin size for the density grid (same in x,y,z)
-            (It is slightly adjusted when the box length is not an integer multiple
-            of delta.)
+            bin size for the density grid in Angstroem (same in x,y,z) [1.0]
           metadata
             dictionary of additional data to be saved with the object
           padding

@@ -50,12 +50,12 @@ copyseries(int frame, char *data, const Py_intptr_t *strides,
       x1 = y1 = z1 = 0.0;
       aux2 = 0;
       for (j=0;j<atomcounts[i];j++) {
-	index1 = atomlist[atomno]-lowerb;
-	aux1 = aux[atomno++];
-	aux2 += aux1;
-	x1 += tempX[index1]*aux1;
-	y1 += tempY[index1]*aux1;
-	z1 += tempZ[index1]*aux1;
+        index1 = atomlist[atomno]-lowerb;
+        aux1 = aux[atomno++];
+        aux2 += aux1;
+        x1 += tempX[index1]*aux1;
+        y1 += tempY[index1]*aux1;
+        z1 += tempZ[index1]*aux1;
       }
       *(double*)(data + dataset++*stride0 + frame*stride1) = x1/aux2;
       *(double*)(data + dataset++*stride0 + frame*stride1) = y1/aux2;
@@ -136,22 +136,22 @@ copyseries(int frame, char *data, const Py_intptr_t *strides,
       // and the sign of the angle
       aux2 = (nx2*x1+ny2*y1+nz2*z1);
       if ((aux2 < 0 && aux1 > 0) || (aux2 > 0 && aux1 < 0)) {
-	aux1 *= -1;
+        aux1 *= -1;
       }
       // Check if the dihedral has wrapped around 2 pi
       aux2 = *(double*)(data + dataset*stride0 + (frame-1)*stride1);
       if (fabs(aux1-aux2) > M_PI) {
-	if (aux1 > 0) { aux1 -= 2*M_PI; }
-	else { aux1 += 2*M_PI; }
+        if (aux1 > 0) { aux1 -= 2*M_PI; }
+        else { aux1 += 2*M_PI; }
       }
       *(double*)(data + dataset++*stride0 + frame*stride1) = aux1;
       break;
     case 'w':
-      /* dipole orientation of 3-site water:                ^ d
+      /* dipole orientation of 3-site water:            ^ d
 	 index1 = oxygen, index2, index3 = hydrogen         | 
 	 returns d                                         ,O,
 	 d = rO - (rH1 + rH2)/2                           H | H
-                                                            |
+                                                        |
       */
       index1 = atomlist[atomno++]-lowerb;  // O
       index2 = atomlist[atomno++]-lowerb;  // H1

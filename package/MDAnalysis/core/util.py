@@ -72,6 +72,7 @@ Mathematics and Geometry
 .. autofunction:: normal
 .. autofunction:: norm
 .. autofunction:: angle
+.. autofunction:: dihedral
 .. autofunction:: stp
 
 """
@@ -451,6 +452,25 @@ def stp(vec1, vec2, vec3):
     :Returns: v3 . (v1 x v2)
     """
     return numpy.dot(vec3, numpy.cross(vec1, vec2))
+
+def dihedral(ab, bc, cd):
+    """Returns the dihedral angle in radians between vectors connecting A,B,C,D.
+
+    The dihedral measures the rotation around bc::
+
+         ab
+       A---->B
+              \ bc
+              _\'
+                C---->D
+                  cd
+
+    The dihedral angle is -pi <= x <= pi.
+
+    .. versionadded:: 0.7.8
+    """
+    x = angle(normal(ab, bc), normal(bc, cd))
+    return (x if stp(ab, bc, cd) <= 0.0 else -x)
 
 
 # String functions

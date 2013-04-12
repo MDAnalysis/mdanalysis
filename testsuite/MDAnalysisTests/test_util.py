@@ -104,3 +104,9 @@ class TestGeometryFunctions(TestCase):
     def testStp(self):
         assert_equal(util.stp(self.e1, self.e2, self.e3), 1.0)
         # add more non-trivial tests
+
+    def testDihedral(self):
+        ab = self.e1
+        bc = ab + self.e2
+        cd = bc + self.e3
+        assert_almost_equal(util.dihedral(ab, bc, cd), -pi/2)

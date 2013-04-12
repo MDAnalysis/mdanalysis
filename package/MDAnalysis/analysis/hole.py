@@ -1012,8 +1012,14 @@ class HOLEtraj(BaseHOLE):
                the group of atoms that is to be analysed by HOLE ["protein"]
 
           *cpoint*
-               *cpoint* is guessed as the :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry`
-               of the *selection*
+               Point inside the pore.
+
+               If set to ``True`` then *cpoint* is guessed as the
+               :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry` of
+               the *selection* from the first frame of the trajectory.
+
+               If *cpoint* is not set or set to ``None`` then HOLE guesses it
+               with its own algorithm (for each individual frame). [``None``]
 
           *kwargs*
                All other keywords are passed on to :class:`HOLE` (see there for description).
@@ -1027,7 +1033,11 @@ class HOLEtraj(BaseHOLE):
         self.stop = kwargs.pop('stop', None)
         self.step = kwargs.pop('step', None)
 
-        self.cpoint = kwargs.pop('cpoint', self.guess_cpoint(selection=self.selection))
+        self.cpoint = kwargs.pop('cpoint', None)
+        if self.cpoint is True:
+            self.cpoint = self.guess_cpoint(selection=self.selection)
+            logger.info("Guessed CPOINT = %r from selection %r", self.cpoint, self.selection)
+        kwargs['cpoint'] = self.cpoint
 
         self.hole_kwargs = kwargs
 
@@ -1037,7 +1047,7 @@ class HOLEtraj(BaseHOLE):
     def guess_cpoint(self, **kwargs):
         """Guess a point inside the pore.
 
-        This method simply uses the center of geometry of the protein seelction
+        This method simply uses the center of geometry of the protein selection
         as a guess. *selection* is "protein" by default.
         """
         return self.universe.selectAtoms(kwargs.get("selection", "protein")).centerOfGeometry()
