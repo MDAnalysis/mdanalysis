@@ -1,6 +1,26 @@
-#!/usr/bin/env python
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
+#     doi:10.1002/jcc.21787
+#
 
-import tpr_utils as U
+# TPR parser and tpr support module
+# Copyright (c) 2011 Zhuyi Xue
+# Released under the  GNU Public Licence, v2
+
+
+import utils as U
 
 # Some constants
 STRLEN = 4096
@@ -12,43 +32,43 @@ tpx_version = 73               # src/kernel/tpxio.c
 tpx_generation = 23            # src/kernel/tpxio.c
 
 # <gromacs_dir>/include/idef.h
-(F_BONDS,		F_G96BONDS,		F_MORSE,		F_CUBICBONDS,	
- F_CONNBONDS,		F_HARMONIC,		F_FENEBONDS,		F_TABBONDS,	
- F_TABBONDSNC,		F_RESTRBONDS,		F_ANGLES,		F_G96ANGLES,	
- F_CROSS_BOND_BONDS,	F_CROSS_BOND_ANGLES,	F_UREY_BRADLEY,		F_QUARTIC_ANGLES,
- F_TABANGLES,		F_PDIHS,		F_RBDIHS,		F_FOURDIHS,	
- F_IDIHS,		F_PIDIHS,		F_TABDIHS,  		F_CMAP,
- F_GB12,		F_GB13,			F_GB14,			F_GBPOL,
- F_NPSOLVATION,		F_LJ14,			F_COUL14,		F_LJC14_Q,	
- F_LJC_PAIRS_NB,	F_LJ,			F_BHAM,			F_LJ_LR,	
- F_BHAM_LR,		F_DISPCORR,		F_COUL_SR,		F_COUL_LR,
- F_RF_EXCL,		F_COUL_RECIP,		F_DPD,			F_POLARIZATION, 
- F_WATER_POL,		F_THOLE_POL,		F_POSRES,		F_DISRES,	
- F_DISRESVIOL,  	F_ORIRES,		F_ORIRESDEV,		F_ANGRES,	
- F_ANGRESZ,		F_DIHRES,		F_DIHRESVIOL,		F_CONSTR,	
- F_CONSTRNC,		F_SETTLE,		F_VSITE2,		F_VSITE3,	
- F_VSITE3FD,		F_VSITE3FAD,		F_VSITE3OUT,		F_VSITE4FD,	
- F_VSITE4FDN,		F_VSITEN,		F_COM_PULL,		F_EQM,		
- F_EPOT,		F_EKIN,			F_ETOT,			F_ECONSERVED,	
- F_TEMP,		F_VTEMP,		F_PDISPCORR,		F_PRES,		
- F_DVDL,		F_DKDL,			F_DHDL_CON,		F_NRE) = range(80)
+(F_BONDS,               F_G96BONDS,             F_MORSE,                F_CUBICBONDS,
+ F_CONNBONDS,           F_HARMONIC,             F_FENEBONDS,            F_TABBONDS,
+ F_TABBONDSNC,          F_RESTRBONDS,           F_ANGLES,               F_G96ANGLES,
+ F_CROSS_BOND_BONDS,    F_CROSS_BOND_ANGLES,    F_UREY_BRADLEY,         F_QUARTIC_ANGLES,
+ F_TABANGLES,           F_PDIHS,                F_RBDIHS,               F_FOURDIHS,
+ F_IDIHS,               F_PIDIHS,               F_TABDIHS,              F_CMAP,
+ F_GB12,                F_GB13,                 F_GB14,                 F_GBPOL,
+ F_NPSOLVATION,         F_LJ14,                 F_COUL14,               F_LJC14_Q,
+ F_LJC_PAIRS_NB,        F_LJ,                   F_BHAM,                 F_LJ_LR,
+ F_BHAM_LR,             F_DISPCORR,             F_COUL_SR,              F_COUL_LR,
+ F_RF_EXCL,             F_COUL_RECIP,           F_DPD,                  F_POLARIZATION,
+ F_WATER_POL,           F_THOLE_POL,            F_POSRES,               F_DISRES,
+ F_DISRESVIOL,          F_ORIRES,               F_ORIRESDEV,            F_ANGRES,
+ F_ANGRESZ,             F_DIHRES,               F_DIHRESVIOL,           F_CONSTR,
+ F_CONSTRNC,            F_SETTLE,               F_VSITE2,               F_VSITE3,
+ F_VSITE3FD,            F_VSITE3FAD,            F_VSITE3OUT,            F_VSITE4FD,
+ F_VSITE4FDN,           F_VSITEN,               F_COM_PULL,             F_EQM,
+ F_EPOT,                F_EKIN,                 F_ETOT,                 F_ECONSERVED,
+ F_TEMP,                F_VTEMP,                F_PDISPCORR,            F_PRES,
+ F_DVDL,                F_DKDL,                 F_DHDL_CON,             F_NRE) = range(80)
 
 # <gromacs_dir>src/gmxlib/tpxio.c
 ftupd = [
-  (20, F_CUBICBONDS),		(20, F_CONNBONDS),		(20, F_HARMONIC),
-  (34, F_FENEBONDS),		(43, F_TABBONDS),		(43, F_TABBONDSNC),
-  (70, F_RESTRBONDS),		(30, F_CROSS_BOND_BONDS),	(30, F_CROSS_BOND_ANGLES),
-  (30, F_UREY_BRADLEY),		(34, F_QUARTIC_ANGLES),		(43, F_TABANGLES),
-  (26, F_FOURDIHS),		(26, F_PIDIHS),			(43, F_TABDIHS),
-  (65, F_CMAP),			(60, F_GB12),			(61, F_GB13),
-  (61, F_GB14),			(72, F_GBPOL),			(72, F_NPSOLVATION),
-  (41, F_LJC14_Q),		(41, F_LJC_PAIRS_NB),		(32, F_BHAM_LR),
-  (32, F_RF_EXCL),		(32, F_COUL_RECIP),		(46, F_DPD),
-  (30, F_POLARIZATION),		(36, F_THOLE_POL),		(22, F_DISRESVIOL),
-  (22, F_ORIRES),		(22, F_ORIRESDEV),		(26, F_DIHRES),
-  (26, F_DIHRESVIOL),		(49, F_VSITE4FDN),		(50, F_VSITEN),
-  (46, F_COM_PULL),		(20, F_EQM),			(46, F_ECONSERVED),
-  (69, F_VTEMP),		(66, F_PDISPCORR),		(54, F_DHDL_CON),
+  (20, F_CUBICBONDS),           (20, F_CONNBONDS),              (20, F_HARMONIC),
+  (34, F_FENEBONDS),            (43, F_TABBONDS),               (43, F_TABBONDSNC),
+  (70, F_RESTRBONDS),           (30, F_CROSS_BOND_BONDS),       (30, F_CROSS_BOND_ANGLES),
+  (30, F_UREY_BRADLEY),         (34, F_QUARTIC_ANGLES),         (43, F_TABANGLES),
+  (26, F_FOURDIHS),             (26, F_PIDIHS),                 (43, F_TABDIHS),
+  (65, F_CMAP),                 (60, F_GB12),                   (61, F_GB13),
+  (61, F_GB14),                 (72, F_GBPOL),                  (72, F_NPSOLVATION),
+  (41, F_LJC14_Q),              (41, F_LJC_PAIRS_NB),           (32, F_BHAM_LR),
+  (32, F_RF_EXCL),              (32, F_COUL_RECIP),             (46, F_DPD),
+  (30, F_POLARIZATION),         (36, F_THOLE_POL),              (22, F_DISRESVIOL),
+  (22, F_ORIRES),               (22, F_ORIRESDEV),              (26, F_DIHRES),
+  (26, F_DIHRESVIOL),           (49, F_VSITE4FDN),              (50, F_VSITEN),
+  (46, F_COM_PULL),             (20, F_EQM),                    (46, F_ECONSERVED),
+  (69, F_VTEMP),                (66, F_PDISPCORR),              (54, F_DHDL_CON),
 ];
 
 # <gromacs_dir>/gmxlib/ifunc.c
@@ -66,16 +86,16 @@ interaction_types = [
     ("IDIHS",             "Improper Dih.",      4),    ("PIDIHS",            "Improper Dih.",      4),
     ("TABDIHS",           "Tab. Dih.",          4),    ("CMAP",              "CMAP Dih.",          5),
     ("GB12",              "GB 1-2 Pol.",        2),    ("GB13",              "GB 1-3 Pol.",        2),
-    ("GB14",              "GB 1-4 Pol.",        2),    ("GBPOL",             "GB Polarization",    None),          
+    ("GB14",              "GB 1-4 Pol.",        2),    ("GBPOL",             "GB Polarization",    None),
     ("NPSOLVATION",       "Nonpolar Sol.",      None), ("LJ14",              "LJ-14",              2),
     ("COUL14",            "Coulomb-14",         None), ("LJC14_Q",           "LJC-14 q",           2),
     ("LJC_NB",            "LJC Pairs NB",       2),    ("LJ_SR",             "LJ (SR)",            2),
-    ("BHAM",              "Buck.ham (SR)",      2),    ("LJ_LR",             "LJ (LR)",            None),                          
-    ("BHAM_LR",           "Buck.ham (LR)",      None), ("DISPCORR",          "Disper. corr.",      None),                          
+    ("BHAM",              "Buck.ham (SR)",      2),    ("LJ_LR",             "LJ (LR)",            None),
+    ("BHAM_LR",           "Buck.ham (LR)",      None), ("DISPCORR",          "Disper. corr.",      None),
     ("COUL_SR",           "Coulomb (SR)",       None), ("COUL_LR",           "Coulomb (LR)",       None),
     ("RFEXCL",            "RF excl.",           None), ("COUL_RECIP",        "Coul. recip.",       None),
     ("DPD",               "DPD",                None), ("POLARIZATION",      "Polarization",       2),
-    ("WATERPOL",          "Water Pol.",         5),    ("THOLE",             "Thole Pol.",         4),     
+    ("WATERPOL",          "Water Pol.",         5),    ("THOLE",             "Thole Pol.",         4),
     ("POSRES",            "Position Rest.",     1),    ("DISRES",            "Dis. Rest.",         2),
     ("DRVIOL",            "D.R.Viol. (nm)",     None), ("ORIRES",            "Orient. Rest.",      2),
     ("ORDEV",             "Ori. R. RMSD",       None), ("ANGRES",            "Angle Rest.",        4),
@@ -98,9 +118,9 @@ interaction_types = [
 def do_inputrec(data):
     data.unpack_int()                                  # ir_eI
     data.unpack_int()                                  # ir_nsteps = idum
-    data.unpack_int()                                  # ir_init_step = idum = 
+    data.unpack_int()                                  # ir_init_step = idum =
 
-    data.unpack_int()                                       # simulation_part 
+    data.unpack_int()                                       # simulation_part
     # not relevant here
     # ir_nstcalcenergy = 1
 
@@ -115,7 +135,7 @@ def do_inputrec(data):
     data.unpack_int()                                       # ir_nstcheckpoint
     data.unpack_int()                                       # ir_nstcgsteep
     data.unpack_int()                                       # ir_nbfgscorr
-    
+
     data.unpack_int()                                       # ir_nstlog
     data.unpack_int()                                       # ir_nstxout
     data.unpack_int()                                       # ir_nstvout
@@ -124,11 +144,11 @@ def do_inputrec(data):
     data.unpack_int()                                       # ir_nstxtcout
 
     data.unpack_float()                              # ir_init_t = rdum =
-    data.unpack_float()                              # ir_delta_t = rdum = 
+    data.unpack_float()                              # ir_delta_t = rdum =
 
     data.unpack_float()                                     # ir_xtcprec
     ir_rlist = data.unpack_float()
-    
+
     data.unpack_int()                                       # ir_coulombtype
     data.unpack_float()                                     # ir_rcoulomb_switch
     ir_rcoulomb = data.unpack_float()
@@ -201,8 +221,8 @@ def do_inputrec(data):
     data.unpack_float()                                     # ir_shake_tol
     data.unpack_int()                                       # ir_efep
 
-    data.unpack_float()                             # ir_init_lambda = rdum = 
-    data.unpack_float()                             # ir_delta_lambda = rdum = 
+    data.unpack_float()                             # ir_init_lambda = rdum =
+    data.unpack_float()                             # ir_delta_lambda = rdum =
 
     # Not relevant here
     # ir_n_flambda = 0
@@ -216,7 +236,7 @@ def do_inputrec(data):
     # ir_sc_sigma_min = 0
     # ir_nstdhdl = 1
     # ir_separate_dhdl_file  = 0                            # epdhdlfileYES;
-    # ir_dhdl_derivatives = 0                               # dhdlderivativesYES 
+    # ir_dhdl_derivatives = 0                               # dhdlderivativesYES
     # ir_dh_hist_size    = 0
     # ir_dh_hist_spacing = 0.1
 
@@ -265,7 +285,7 @@ def do_inputrec(data):
 
     # pull_stuff
     data.unpack_int()                                       # ir_ePull
-    
+
     # grpopts stuff
     ir_opts_ngtc = data.unpack_int()
     # not relevant here
@@ -278,7 +298,7 @@ def do_inputrec(data):
     U.ndo_real(data, ir_opts_ngtc)                                  # ir_nrdf
     U.ndo_real(data, ir_opts_ngtc)                                  # ir_ref_t
     U.ndo_real(data, ir_opts_ngtc)                                  # ir_tau_t
-    
+
     if ir_opts_ngfrz > 0:
         U.ndo_ivec(data, ir_opts_ngfrz)                       # ir_opts_nFreeze
 

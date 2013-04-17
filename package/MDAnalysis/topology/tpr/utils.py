@@ -1,15 +1,36 @@
-"""
-Function calling order:
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
+#     doi:10.1002/jcc.21787
+#
 
-(TPRParser.py call do_mtop)
-do_mtop -> do_symtab
-        -> do_ffparams -> do_iparams
-        -> do_moltype  -> do_atoms  -> do_atom
-                                    -> do_resinfo
-                       -> do_ilists
-                       -> do_block
-                       -> do_blocka
-        -> do_molblock
+# TPR parser and tpr support module
+# Copyright (c) 2011 Zhuyi Xue
+# Released under the  GNU Public Licence, v2
+
+"""
+Function calling order::
+
+   (TPRParser.py call do_mtop)
+   do_mtop -> do_symtab
+           -> do_ffparams -> do_iparams
+           -> do_moltype  -> do_atoms  -> do_atom
+                                       -> do_resinfo
+                          -> do_ilists
+                          -> do_block
+                          -> do_blocka
+           -> do_molblock
 
 Then compose the stuffs in the format MDAnalysis.Universe reads in
 """
@@ -19,32 +40,32 @@ from collections import namedtuple
 from MDAnalysis.core.AtomGroup import Atom
 from MDAnalysis.topology.core import guess_atom_type
 
-import tpr_obj as obj
-import tpr_setting as S
+import obj
+import setting as S
 # import tpr_utils_bk as UB
 
 class NotImplementedError(Exception):
-    """This code only works for certain features in certain version of tpr files""" 
+    """This code only works for certain features in certain version of tpr files"""
     pass
 
 def ndo_int(data, n):
     """mimic of gmx_fio_ndo_real in gromacs"""
-    return [data.unpack_int() for i in range(n)]
+    return [data.unpack_int() for i in xrange(n)]
 
 def ndo_real(data, n):
     """mimic of gmx_fio_ndo_real in gromacs"""
-    return [data.unpack_float() for i in range(n)]
+    return [data.unpack_float() for i in xrange(n)]
 
 def do_rvec(data):
     return data.unpack_farray(S.DIM, data.unpack_float)
 
 def ndo_rvec(data, n):
     """mimic of gmx_fio_ndo_rvec in gromacs"""
-    return [data.unpack_farray(S.DIM, data.unpack_float) for i in range(n)]
+    return [data.unpack_farray(S.DIM, data.unpack_float) for i in xrange(n)]
 
 def ndo_ivec(data, n):
     """mimic of gmx_fio_ndo_rvec in gromacs"""
-    return [data.unpack_farray(S.DIM, data.unpack_int) for i in range(n)]
+    return [data.unpack_farray(S.DIM, data.unpack_int) for i in xrange(n)]
 
 def err(fver):
     if fver not in [58, 73]:
@@ -62,7 +83,7 @@ def read_tpxheader(data):
     fgen = data.unpack_int() if fver >= 26 else 0 # generation of tpx file, e.g. 17
     natoms = data.unpack_int()                    # total number of atoms
     ngtc = data.unpack_int() if fver >= 28 else 0 # number of groups for T-coupling
-    
+
     if fver < 62:
         # not sure what these two are for.
         data.unpack_int()                             # idum
@@ -73,12 +94,12 @@ def read_tpxheader(data):
     lamb = data.unpack_float()
     bIr =  data.unpack_int()                          # has input record or not
     bTop =  data.unpack_int()                         # has topology or not
-    bX =  data.unpack_int()                           # has coordinates or not 
+    bX =  data.unpack_int()                           # has coordinates or not
     bV =  data.unpack_int()                           # has velocity or not
     bF =  data.unpack_int()                           # has force or not
     bBox =  data.unpack_int()                         # has box or not
 
-    attrs = ["number", "ver_str", "precision", 
+    attrs = ["number", "ver_str", "precision",
              "fver", "fgen", "natoms", "ngtc", "lamb",
              "bIr", "bTop", "bX", "bV", "bF", "bBox"]
 
@@ -103,11 +124,11 @@ def do_mtop(data, fver):
     # mtop: the topology of the whole system
     symtab = do_symtab(data)
     do_symstr(data, symtab)                                 # system_name
-    do_ffparams(data, fver)                                 # params 
+    do_ffparams(data, fver)                                 # params
 
     nmoltype = data.unpack_int()
     moltypes = []                                     # non-gromacs
-    for i in range(nmoltype):
+    for i in xrange(nmoltype):
         moltype = do_moltype(data, symtab, fver)
         moltypes.append(moltype)
 
@@ -117,11 +138,11 @@ def do_mtop(data, fver):
     mtop = Mtop(nmoltype, moltypes, nmolblock)
 
     TPRTopology = namedtuple("TPRTopology", "atoms, bonds, angles, dihe, impr")
-    ttop = TPRTopology(*[[] for i in range(5)])
+    ttop = TPRTopology(*[[] for i in xrange(5)])
 
     atom_start_ndx = 0
     res_start_ndx = 0
-    for i in range(mtop.nmolblock):
+    for i in xrange(mtop.nmolblock):
         # molb_type is just an index for moltypes/molecule_types
         mb = do_molblock(data)
         # segment is made to correspond to the molblock as in gromacs, the
@@ -130,7 +151,7 @@ def do_mtop(data, fver):
         for j in xrange(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]                  # mt: molecule type
             for atomkind in mt.atomkinds:
-                ttop.atoms.append(Atom(atomkind.id + atom_start_ndx, 
+                ttop.atoms.append(Atom(atomkind.id + atom_start_ndx,
                                        atomkind.name,
                                        atomkind.type,
                                        atomkind.resname,
@@ -158,14 +179,14 @@ def do_mtop(data, fver):
     return ttop
 
 def do_symstr(data, symtab):
-    #do_symstr: get a string based on index from the symtab 
+    #do_symstr: get a string based on index from the symtab
     ndx = data.unpack_int()
     return symtab[ndx]
 
 def do_symtab(data):
     symtab_nr = data.unpack_int()                           # number of symbols
     symtab = []
-    for i in range(symtab_nr):
+    for i in xrange(symtab_nr):
         j = data.unpack_fstring(1)              # strings are separated by void
         j = data.unpack_string()
         symtab.append(j)
@@ -183,12 +204,12 @@ def do_ffparams(data, fver):
 
     # mimicing the c code,
     # remapping the functype due to inconsistency in different versions
-    for i in range(len(functype)):
+    for i in xrange(len(functype)):
         for k in S.ftupd:
             # j[0]: tpx_version, j[1] funtype
             if fver < k[0] and functype[i] >= k[1]:
                 functype[i] += 1
-                
+
     # parameters for different functions, None returned for now since not sure
     # what is iparams
     iparams = do_iparams(data, functype, fver)
@@ -206,8 +227,8 @@ def do_harm(data):
 def do_iparams(data, functypes, fver):
     # Not all elif cases in this function has been used and tested
     for k, i in enumerate(functypes):
-        if i in [S.F_ANGLES, S.F_G96ANGLES, 
-                   S.F_BONDS, S.F_G96BONDS, 
+        if i in [S.F_ANGLES, S.F_G96ANGLES,
+                   S.F_BONDS, S.F_G96BONDS,
                    S.F_HARMONIC, S.F_IDIHS]:
             do_harm(data)
         elif i in [S.F_FENEBONDS]:
@@ -295,7 +316,7 @@ def do_iparams(data, functypes, fver):
             data.unpack_float()                             # ljcnb.c6
             data.unpack_float()                             # ljcnb.c12
 
-        elif i in [S.F_PIDIHS, S.F_ANGRES, 
+        elif i in [S.F_PIDIHS, S.F_ANGRES,
                    S.F_ANGRESZ, S.F_PDIHS]:
             data.unpack_float()                             # pdihs_phiA
             data.unpack_float()                             # pdihs_cpA
@@ -391,7 +412,7 @@ def do_iparams(data, functypes, fver):
             data.unpack_int()                               # cmap.cmapB
         else:
             raise NotImplementedError("unknown functype: {0}".format(i))
-    return 
+    return
 
 def do_moltype(data, symtab, fver):
     if fver >= 57:
@@ -457,7 +478,7 @@ def do_atoms(data, symtab, fver):
         err(fver)
 
     atoms = []
-    for i in range(nr):
+    for i in xrange(nr):
         A = do_atom(data, fver)
         atoms.append(A)
 
@@ -482,10 +503,10 @@ def do_resinfo(data, symtab, fver, nres):
         resnames = [symtab[i] for i in ndo_int(data, nres)]
     else:
         resnames = []
-        for i in range(nres):
+        for i in xrange(nres):
             resnames.append(symtab[data.unpack_int()])
             # assume the uchar in gmx is 8 byte, seems right
-            data.unpack_fstring(8) 
+            data.unpack_fstring(8)
     return resnames
 
 def do_atom(data, fver):
@@ -512,7 +533,7 @@ def do_atom(data, fver):
 def do_ilists(data, fver):
     nr = []                   # number of ilist
     iatoms = []               # atoms involved in a particular interaction type
-    for j in range(S.F_NRE):  # total number of energies (i.e. interaction types)
+    for j in xrange(S.F_NRE):  # total number of energies (i.e. interaction types)
         bClear = False
         for k in S.ftupd:
             if fver < k[0] and j == k[1]:
@@ -527,12 +548,12 @@ def do_ilists(data, fver):
             n = data.unpack_int()
             nr.append(n)
             l_ = []
-            for i in range(n):
+            for i in xrange(n):
                 l_.append(data.unpack_int())
             iatoms.append(l_)
 
     Ilist = namedtuple("Ilist", "nr ik, iatoms")
-    return [Ilist(n, it, i) for n, it, i in 
+    return [Ilist(n, it, i) for n, it, i in
             zip(nr, S.interaction_types, iatoms)]
 
 def do_molblock(data):
@@ -549,13 +570,13 @@ def do_molblock(data):
     attrs = ["molb_type", "molb_nmol", "molb_natoms_mol",
              "molb_nposres_xA", "molb_nposres_xB"]
     Molblock = namedtuple("Molblock", attrs)
-    return Molblock(molb_type, molb_nmol, molb_natoms_mol, 
+    return Molblock(molb_type, molb_nmol, molb_natoms_mol,
                     molb_nposres_xA, molb_nposres_xB)
 
 def do_block(data):
     block_nr = data.unpack_int()                       # for cgs: charge groups
     # starting or ending atom indices, based on which cgs are grouped
-    ndo_int(data, block_nr + 1) 
+    ndo_int(data, block_nr + 1)
     return do_block
 
 def do_blocka(data):
@@ -570,7 +591,7 @@ def do_blocka(data):
 def do_grps(data):
     grps_nr = []
     myngrps = ngrps = S.egcNR           # remind of version inconsistency
-    for j in range(ngrps):
+    for j in xrange(ngrps):
         if j < myngrps:
             v = data.unpack_int()
             grps_nr.append(v)
@@ -587,14 +608,14 @@ def do_groups(data, symtab):
 
     ngrpnr = []
     grpnr = []
-    for i in range(S.egcNR):
+    for i in xrange(S.egcNR):
         x = data.unpack_int()
         ngrpnr.append(x)
         if x == 0:
             grpnr.append(None)
         else:
             l_ = []
-            for i in range(x):
+            for i in xrange(x):
                 l_.append(data.unpack_uint())
             grpnr.append(l_)
     # print ngrpnr

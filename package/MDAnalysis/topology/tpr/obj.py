@@ -1,5 +1,27 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
+#     doi:10.1002/jcc.21787
+#
+
+# TPR parser and tpr support module
+# Copyright (c) 2011 Zhuyi Xue
+# Released under the  GNU Public Licence, v2
+
+
 class MoleculeKind(object):
-    def __init__(self, name, atomkinds, bonds=None, angles=None, 
+    def __init__(self, name, atomkinds, bonds=None, angles=None,
                  dihe=None, impr=None, donors=None, acceptors=None):
         self.name = name                                 # name of the molecule
         self.atomkinds = atomkinds
@@ -67,12 +89,12 @@ class InteractionKind(object):
         self.name = name
         self.long_name = long_name
         self.natoms = natoms
-        
+
     def process(self, atom_ndx):
         while atom_ndx:
             # format for all info: (type, [atom1, atom2, ...])
-            # yield atom_ndx.pop(0), [atom_ndx.pop(0) for i in range(self.natoms)]
+            # yield atom_ndx.pop(0), [atom_ndx.pop(0) for i in xrange(self.natoms)]
 
             # but currently only [atom1, atom2, ...] is interested
             atom_ndx.pop(0)
-            yield [atom_ndx.pop(0) for i in range(self.natoms)]
+            yield [atom_ndx.pop(0) for i in xrange(self.natoms)]

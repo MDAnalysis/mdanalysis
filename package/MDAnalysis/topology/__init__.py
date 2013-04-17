@@ -68,6 +68,11 @@ The following table lists the currently supported topology formats.
    DESRES [#a]_     dms         DESRES molecular sturcture reader (only supports
                                 the atom and bond records);
                                 :mod:`MDAnalysis.topology.DMSParser`
+
+   TPR              tpr         Gromacs portable run input reader (limited
+                                experimental support for some of the more recent
+                                versions of the file format);
+                                :mod:`MDAnalysis.topology.TPRParser`
    ================ ==========  =====================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
