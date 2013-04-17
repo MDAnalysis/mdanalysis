@@ -50,7 +50,7 @@ class MoleculeKind(object):
             return []
 
     def remap_angles(self, atom_start_ndx):
-        if self.bonds:
+        if self.angles:
             return [[i+atom_start_ndx for i in a] for a in self.angles]
         else:
             return []
