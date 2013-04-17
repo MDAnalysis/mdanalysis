@@ -64,7 +64,7 @@
                         title="previous chapter">5.1. Coordinate/Trajectory Readers and Writers  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="core.html"
-                        title="next chapter">5.3. Common functions for coordinate reading &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
+                        title="next chapter">5.3. Common functions for coordinate reading &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/base.txt"
@@ -130,7 +130,7 @@ correspond to atom indices,
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.Timestep._pos">
 <tt class="descname">_pos</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._pos" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt> of shape
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt> of shape
 (<em>numatoms</em>, 3) and internal FORTRAN order, holding the raw
 cartesian coordinates (in MDAnalysis units, i.e. Å).</p>
 <div class="admonition note">
@@ -150,7 +150,7 @@ trajectory frame is loaded, then <em>all</em> contents of
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.Timestep._velocities">
 <tt class="descname">_velocities</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._velocities" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt>. of shape
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt>. of shape
 (<em>numatoms</em>, 3), holding the raw velocities (in MDAnalysis
 units, i.e. typically Å/ps).</p>
 <div class="admonition note">
@@ -399,7 +399,9 @@ the first trajectory in the list; <tt class="xref py py-attr docutils literal"><
 <tt class="xref py py-attr docutils literal"><span class="pre">ChainReader.numatoms</span></tt>, and <tt class="xref py py-attr docutils literal"><span class="pre">ChainReader.fixed</span></tt> are
 properly set, though</li>
 <li>slicing not implemented</li>
-<li><a class="reference internal" href="#MDAnalysis.coordinates.base.ChainReader.time" title="MDAnalysis.coordinates.base.ChainReader.time"><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt></a> not implemented yet</li>
+<li><a class="reference internal" href="#MDAnalysis.coordinates.base.ChainReader.time" title="MDAnalysis.coordinates.base.ChainReader.time"><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt></a> will not necessarily return the true time but just
+number of frames times a provided time between frames (from the
+keyword <em>delta</em>)</li>
 </ul>
 <p>Set up the chain reader.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -420,6 +422,12 @@ format is deduced from the extension of <em>filename</em>.</p>
 <dd><p class="first last">skip step (also passed on to the individual trajectory
 readers); must be same for all trajectories</p>
 </dd>
+<dt><em>delta</em></dt>
+<dd><p class="first last">The time between frames in MDAnalysis time units if no
+other information is available. If this is not set then
+any call to <a class="reference internal" href="#MDAnalysis.coordinates.base.ChainReader.time" title="MDAnalysis.coordinates.base.ChainReader.time"><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt></a> will raise a
+<tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>.</p>
+</dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">all other keyword arguments are passed on to each
 trajectory reader unchanged</p>
@@ -429,6 +437,8 @@ trajectory reader unchanged</p>
 </tr>
 </tbody>
 </table>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8: </span>The <em>delta</em> keyword was added.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.ChainReader.active_reader">
 <tt class="descname">active_reader</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.ChainReader.active_reader" title="Permalink to this definition">¶</a></dt>
@@ -490,7 +500,7 @@ the required attributes and methods.</p>
 <dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
 </dd>
 <dt><em>x</em></dt>
-<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
+<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
 </dd>
 </dl>
 </td>
