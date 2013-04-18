@@ -38,15 +38,9 @@ Then compose the stuffs in the format MDAnalysis.Universe reads in
 from collections import namedtuple
 
 from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.topology.core import guess_atom_type
 
 import obj
 import setting as S
-# import tpr_utils_bk as UB
-
-class NotImplementedError(Exception):
-    """This code only works for certain features in certain version of tpr files"""
-    pass
 
 def ndo_int(data, n):
     """mimic of gmx_fio_ndo_real in gromacs"""
