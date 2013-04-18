@@ -199,6 +199,3 @@ if __name__ == "__main__":
         print "{0}\nInvalid tpr file or cannot be recognized\n".format(sys.argv[1])
     except IndexError:
         print "Please feed an tpr file or use this file as a module"
-
-    # parse("../../../testsuite/MDAnalysisTests/data/adk_oplsaa.tpr")
-    # parse("../../../testsuite/MDAnalysisTests/data/gmxv73.tpr")
