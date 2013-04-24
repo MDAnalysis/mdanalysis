@@ -10,9 +10,14 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/13  orbeckst, jandom
+??/??/13  orbeckst, jandom, xdeupi
 
   * 0.8
+
+  Enhancements
+
+  * helanal: additional output of local bend and unit twist angles
+    (Issue 133)
 
   Changes
 
