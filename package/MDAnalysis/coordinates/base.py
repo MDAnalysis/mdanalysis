@@ -560,7 +560,9 @@ class ChainReader(Reader):
 
     - slicing not implemented
 
-    - :attr:`time` not implemented yet
+    - :attr:`time` will not necessarily return the true time but just
+      number of frames times a provided time between frames (from the
+      keyword *delta*)
     """
     format = 'CHAIN'
 
@@ -581,15 +583,26 @@ class ChainReader(Reader):
            *skip*
                skip step (also passed on to the individual trajectory
                readers); must be same for all trajectories
+
+           *delta*
+               The time between frames in MDAnalysis time units if no
+               other information is available. If this is not set then
+               any call to :attr:`~ChainReader.time` will raise a
+               :exc:`ValueError`.
+
            *kwargs*
                all other keyword arguments are passed on to each
                trajectory reader unchanged
+
+        .. versionchanged:: 0.8
+           The *delta* keyword was added.
         """
         self.filenames = asiterable(filenames)
         self.readers = [core.reader(filename, **kwargs) for filename in self.filenames]
         self.__active_reader_index = 0   # pointer to "active" trajectory index into self.readers
 
         self.skip = kwargs.get('skip', 1)
+        self._default_delta = kwargs.pop('delta', None)
         self.numatoms = self._get_same('numatoms')
         self.fixed = self._get_same('fixed')
 
@@ -700,7 +713,11 @@ class ChainReader(Reader):
     @property
     def time(self):
         """Cumulative time of the current frame in MDAnalysis time units (typically ps)."""
-        raise NotImplementedError
+        # currently a hack, should really use a list of trajectory lengths and delta * local_frame
+        try:
+            return self.frame * self._default_delta
+        except TypeError:
+            raise ValueError("No timestep information available. Set delta to fake a constant time step.")
 
     def _apply(self, method, **kwargs):
         """Execute *method* with *kwargs* for all readers."""

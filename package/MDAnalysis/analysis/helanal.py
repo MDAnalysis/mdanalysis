@@ -28,8 +28,8 @@
 HELANAL --- analysis of protein helices
 =======================================
 
-:Author:  Benjamin Hall <benjamin.a.hall@ucl.ac.uk>, Oliver Beckstein
-:Year:    2009, 2011
+:Author:  Benjamin Hall <benjamin.a.hall@ucl.ac.uk>, Oliver Beckstein, Xavier Deupi
+:Year:    2009, 2011, 2013
 :License: GNU General Public License v2 (or higher)
 
 The :mod:`MDAnalysis.analysis.helanal` module is a Python implementation of the
@@ -193,6 +193,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
                        matrix_filename="bending_matrix.dat", origin_pdbfile="origin.pdb",
                        summary_filename="summary.txt", screw_filename="screw.xvg",
                        tilt_filename="local_tilt.xvg", fitted_tilt_filename="fit_tilt.xvg",
+                       bend_filename="local_bend.xvg",twist_filename="unit_twist.xvg",
                        prefix="helanal_", ref_axis=None):
         """Perform HELANAL_ helix analysis on all frames in *universe*.
 
@@ -230,6 +231,12 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
            *tilt_filename*
               Output file- tilt of line of best fit applied to origin axes
               ["local_tilt.xvg"]
+           *bend_filename*
+              Output file- local bend angles between successive local helix axes
+              ["local_bend.xvg"]
+           *twist_filename*
+              Output file- local unit twist between successive helix turns
+              ["unit_twist.xvg"]
            *prefix*
               Prefix to add to all output file names; set to ``None`` to disable
               ["helanal__"]
@@ -271,12 +278,16 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
                 screw_filename = prefix + screw_filename
                 tilt_filename = prefix + tilt_filename
                 fitted_tilt_filename = prefix + fitted_tilt_filename
+                bend_filename = prefix + bend_filename
+                twist_filename = prefix + twist_filename
         backup_file(matrix_filename)
         backup_file(origin_pdbfile)
         backup_file(summary_filename)
         backup_file(screw_filename)
         backup_file(tilt_filename)
         backup_file(fitted_tilt_filename)
+        backup_file(bend_filename)
+        backup_file(twist_filename)
 
         global_height = []
         global_twist = []
@@ -321,7 +332,20 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
                 #global_screw.append(local_screw_angles)
                 global_fitted_tilts.append(rad2deg(fit_tilt))
 
+
                 #print out rotations across the helix to a file
+                with open(twist_filename,"a") as twist_output:
+                        print >> twist_output, frame,
+                        for loc_twist in twist:
+                                print >> twist_output, loc_twist,
+                        print >> twist_output, ""
+
+                with open(bend_filename,"a") as bend_output:
+                        print >> bend_output, frame,
+                        for loc_bend in bending_angles:
+                                print >> bend_output, loc_bend,
+                        print >> bend_output, ""
+
                 with open(screw_filename,"a") as rot_output:
                         print >> rot_output, frame,
                         for rotation in local_screw_angles:
@@ -350,6 +374,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
                 formated_frame ="%10d" % frame
 
                 print '\r',formated_time,' ps' , formated_frame,
+
                 sys.stdout.flush()
 
         print '\nComplete'
@@ -504,7 +529,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
         #calculate local bending matrix(now it is looking at all i, j combinations)
         for i in local_helix_axes:
                 for j in local_helix_axes:
-                        if i == j:
+                        if (i == j).all():
                                 angle = 0.
                         else:
                                 angle = rad2deg(numpy.arccos(vecscaler(i,j)))
@@ -537,6 +562,11 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
         for angle in bending_angles:
                 output = "%8.1f\t" % angle
                 print output,
+        print ''
+        print "Unit twist angles:"
+        for twist_ang in twist:
+                outputtwist = "%8.1f\t" % twist_ang
+                print outputtwist,
         print ''
 
         #calculate best fit vector and tilt of said vector
