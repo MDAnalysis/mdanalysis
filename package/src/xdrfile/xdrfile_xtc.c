@@ -87,37 +87,37 @@ int read_xtc_natoms(char *fn,int *natoms)
 	return result;
 }
 
-int read_xtc_numframes(char *fn, int *numframes)
-{
-	XDRFILE *xd;
-	int step, natoms;
-	float time, prec;
-	matrix box;
-	rvec *x;
-	int result; // ???
-	
-	if ((result = read_xtc_natoms(fn,&natoms)) != exdrOK)
-		return result;
-
-	xd = xdrfile_open(fn,"r");
-	if (NULL == xd)
-		return exdrFILENOTFOUND;
-
-	if ((x=(rvec *)malloc(sizeof(rvec)*natoms))==NULL) {
-		fprintf(stderr,"Cannot allocate memory for coordinates.\n");
-		return exdrNOMEM;
-	}
-
-	// loop through all frames :-p
-	*numframes = 0;
-	while (exdrOK == read_xtc(xd, natoms, &step, &time, box, x, &prec)) {
-		(*numframes)++;
-	}
-	free(x);
-	xdrfile_close(xd);
-	
-	return exdrOK;
-}
+//int read_xtc_numframes(char *fn, int *numframes)
+//{
+//	XDRFILE *xd;
+//	int step, natoms;
+//	float time, prec;
+//	matrix box;
+//	rvec *x;
+//	int result; // ???
+//	
+//	if ((result = read_xtc_natoms(fn,&natoms)) != exdrOK)
+//		return result;
+//
+//	xd = xdrfile_open(fn,"r");
+//	if (NULL == xd)
+//		return exdrFILENOTFOUND;
+//
+//	if ((x=(rvec *)malloc(sizeof(rvec)*natoms))==NULL) {
+//		fprintf(stderr,"Cannot allocate memory for coordinates.\n");
+//		return exdrNOMEM;
+//	}
+//
+//	// loop through all frames :-p
+//	*numframes = 0;
+//	while (exdrOK == read_xtc(xd, natoms, &step, &time, box, x, &prec)) {
+//		(*numframes)++;
+//	}
+//	free(x);
+//	xdrfile_close(xd);
+//	
+//	return exdrOK;
+//}
 
 int read_xtc(XDRFILE *xd,
 			 int natoms,int *step,float *time,
@@ -135,6 +135,56 @@ int read_xtc(XDRFILE *xd,
 	return exdrOK;
 }
 
+int read_xtc_numframes(XDRFILE *xd, int *numframes, int64_t **offsets)
+{
+    int framebytes;
+    int64_t filesize;
+    int est_nframes;
+
+    /* Estimation of number of frames, with 20% allowance for error. */
+    xdr_seek(xd, 0L, SEEK_END);
+    filesize = xdr_tell(xd);
+    if (xdr_seek(xd, (int64_t) XTC_HEADER_SIZE, SEEK_SET) != exdrOK)
+        return exdrNR;
+    if (xdrfile_read_int(&framebytes,1,xd) == 0)
+        return exdrENDOFFILE;
+    framebytes = (framebytes + 3) & ~0x03; //Rounding to the next 32-bit boundary
+    est_nframes = (int) (filesize/((int64_t) (framebytes+XTC_HEADER_SIZE)) + 1); // add one because it'd be easy to underestimate low frame numbers. 
+    est_nframes += est_nframes/5;
+
+    /* Allocate memory for the frame index array */
+	if ((*offsets=(int64_t *)malloc(sizeof(int64_t)*est_nframes))==NULL)
+    {
+		return exdrNOMEM;
+    }
+    (*offsets)[0] = 0L;
+    *numframes = 1;
+    while (1)
+    {
+        if (xdr_seek(xd, (int64_t) (framebytes+XTC_HEADER_SIZE), SEEK_CUR) != exdrOK) {
+            free(*offsets);
+            return exdrNR;
+        }
+        if (xdrfile_read_int(&framebytes,1,xd) == 0)
+            break;
+        /* Read was successful; this is another frame */
+        /* Check if we need to enlarge array */
+        if (*numframes == est_nframes){
+            est_nframes += est_nframes/5 + 1; // Increase in 20% stretches
+            if ((*offsets = realloc(*offsets, sizeof(int64_t)*est_nframes))==NULL)
+            {
+                free(*offsets);
+	    	    return exdrNOMEM;
+            }
+        }
+        (*offsets)[*numframes] = xdr_tell(xd) - 4L - (int64_t) (XTC_HEADER_SIZE); //Account for the header and the nbytes bytes we read.
+        (*numframes)++;
+        framebytes = (framebytes + 3) & ~0x03; //Rounding to the next 32-bit boundary
+    }
+	return exdrOK;
+}
+
+
 int write_xtc(XDRFILE *xd,
 			  int natoms,int step,float time,
 			  matrix box,rvec *x,float prec)
@@ -150,3 +200,4 @@ int write_xtc(XDRFILE *xd,
   
 	return exdrOK;
 }
+

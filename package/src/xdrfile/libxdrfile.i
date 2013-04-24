@@ -327,6 +327,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
    See http://mdanalysis.googlecode.com for details.
  */
 #define SWIG_FILE_WITH_INIT
+#include <stdio.h>
 #include "xdrfile.h"
 #include "xdrfile_trr.h"
 #include "xdrfile_xtc.h"
@@ -351,6 +352,9 @@ import_array();
 enum { exdrOK, exdrHEADER, exdrSTRING, exdrDOUBLE, 
        exdrINT, exdrFLOAT, exdrUINT, exdr3DX, exdrCLOSE, exdrMAGIC,
        exdrNOMEM, exdrENDOFFILE, exdrFILENOTFOUND, exdrNR };
+
+/* These com from stdio.h, for file seeking. Gives all the flexibility to _fseek(). */
+enum { SEEK_SET, SEEK_CUR, SEEK_END };
 
 /* open/close xdr files */
 %feature("autodoc", "0") xdrfile_open;
@@ -384,6 +388,7 @@ extern int xdrfile_close(XDRFILE *fp);
   }
 %}
 
+/*
 %feature("autodoc", "0") my_read_xtc_numframes;
 %rename (read_xtc_numframes) my_read_xtc_numframes;
 %exception my_read_xtc_numframes {
@@ -400,6 +405,51 @@ extern int xdrfile_close(XDRFILE *fp);
       return 0;
     }
     return numframes;
+  }
+%}
+*/
+
+%feature("autodoc", "0") my_read_xtc_numframes;
+%rename (read_xtc_numframes) my_read_xtc_numframes;
+%exception my_read_xtc_numframes {
+  $action
+  if (PyErr_Occurred()) SWIG_fail;
+}
+%inline %{
+PyObject * my_read_xtc_numframes(XDRFILE *xd) {
+    int numframes;
+    int64_t *offsets[1];
+    int status, i;
+    status = read_xtc_numframes(xd, &numframes, offsets);
+    if (status != exdrOK) {
+      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by seeking through xtc.", status);
+      return status;
+    }
+    npy_intp nfrms[1];
+    nfrms[0] = (npy_intp) numframes;
+    PyArrayObject *npoffsets = (PyArrayObject *)PyArray_EMPTY(1, nfrms, NPY_INT64, 0);
+    if (npoffsets==NULL)
+    {
+      PyErr_Format(PyExc_IOError, "Error copying frame index into Python.");
+      return 0;
+    }
+    int64_t *npofst_data; 
+    for (i=0; i<numframes; i++)
+    {
+        npofst_data = PyArray_GETPTR1(npoffsets, i);
+        if (npofst_data==NULL)
+        {
+          PyErr_Format(PyExc_IOError, "Error copying frame index into Python.");
+          return 0;
+        }
+        *npofst_data = (*offsets)[i];
+    }
+    free(*offsets);
+    PyObject *tuple = PyTuple_New(2); 
+    PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong((long)numframes));
+    Py_INCREF(npoffsets);
+    PyTuple_SET_ITEM(tuple, 1, (PyObject*)npoffsets);
+    return tuple;
   }
 %}
 
@@ -482,6 +532,28 @@ PyObject * my_read_xtc(XDRFILE *xd, matrix box, int natoms, int _DIM, float *x) 
 }
 %}
 
+/* Quick read an xtc frame */
+/*
+extern int quick_read_xtc(XDRFILE *xd, float *time, int *offset);
+*/
+/*
+%feature("autodoc", "quick_read_xtc(XDRFILE) -> (status, time, offset)") my_quick_read_xtc;
+%rename (quick_read_xtc) my_quick_read_xtc;
+%inline %{
+PyObject * my_quick_read_xtc(XDRFILE *xd) {
+  int status;
+  long long offset;
+  float time;
+  PyObject *tuple = PyTuple_New(3); 
+  status = quick_read_xtc(xd, &time, &offset);
+  PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong((long)status));
+  PyTuple_SET_ITEM(tuple, 1, PyFloat_FromDouble((double)time));
+  PyTuple_SET_ITEM(tuple, 2, PyInt_FromSize_t((long long)offset));
+  return tuple; // return  (status, time, offset)
+}
+%}
+*/
+
 %feature("autodoc", "read_trr(XDRFILE, box, x, v, f) -> (status, step, time, lambda)") my_read_trr;
 %rename (read_trr) my_read_trr;
 %inline %{
@@ -540,6 +612,12 @@ int my_write_trr(XDRFILE *xd, int step, float time, float lmbda, matrix box,
   return write_trr(xd, natoms, step, time, lmbda, box, (rvec *)x, (rvec *)v, (rvec *)f);
 }
 %}
+
+%feature("autodoc", "0") xdr_seek;
+extern int xdr_seek(XDRFILE *xd, long long pos, int whence);
+
+%feature("autodoc", "0") xdr_tell;
+extern long long xdr_tell(XDRFILE *xd);
 
 %clear (matrix box);
 %clear (int natoms,  int _DIM,  float *x);

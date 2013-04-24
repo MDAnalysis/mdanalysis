@@ -312,6 +312,7 @@ class TrjReader(base.Reader):
         self.skip_timestep = 1   # always 1 for xdr files
         self.__delta = None      # compute from time in first two frames!
         self.fixed = 0           # not relevant for Gromacs xtc/trr
+        self.__offsets = None    # storage of offsets in the file
         self.skip = 1
         self.periodic = False
         
@@ -390,7 +391,7 @@ class TrjReader(base.Reader):
         if not self.__numframes is None:   # return cached value
             return self.__numframes
         try:
-            self.__numframes = self._read_trj_numframes(self.filename)
+            self._read_trj_numframes()
         except IOError:
             return 0
         else:
@@ -427,12 +428,25 @@ class TrjReader(base.Reader):
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return numatoms
 
-    def _read_trj_numframes(self, filename):
-        """Generic numer-of-frames extractor with minimum intelligence. Override if necessary."""
+    def _read_trj_numframes(self):
+        """Numer-of-frames extractor with minimum intelligence for TRR (for now), but fast for XTC. Override if necessary."""
         if self.format == 'XTC':
-            numframes = libxdrfile.read_xtc_numframes(self.filename)
+            # No compression and simpler header if fewer than 10 atoms. Framesize is known.
+            if self.numatoms <= 9:
+                filesize = os.path.getsize(self.filename)
+                framesize = 20 + libxdrfile.DIM**2*4 + 12*self.numatoms 
+                self.__numframes = filesize/framesize # Should we raise an exception if framesize doesn't divide filesize?
+                self.__offsets = framesize * numpy.arange(nframes).astype(numpy.int64)
+                return
+            # This is the tough case.
+            else:
+                cur_offset = self._tell() # save stream position 
+                self.__numframes, self.__offsets = libxdrfile.read_xtc_numframes(self.xdrfile) 
+                self._seek(cur_offset) # reposition stream
+                return
+
         elif self.format == 'TRR':
-            numframes = libxdrfile.read_trr_numframes(self.filename)
+            self.__numframes = libxdrfile.read_trr_numframes(self.filename)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return numframes
@@ -588,6 +602,17 @@ class TrjReader(base.Reader):
             if ts.frame-1 >= frameindex:
                 break
 
+    def _goto_frame(self, frame):
+        if self.format == 'TRR':
+            return _forward_to_frame(frame)
+        elif self.format == 'XTC':
+            if self.__offsets is None:
+                self._read_trj_numframes()
+            self._seek(self.__offsets[frame])
+            self._read_next_timestep()
+            self.ts.frame = frame+1
+            return self.ts
+
     def __getitem__(self, frame):
         if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
             raise TypeError
@@ -597,24 +622,37 @@ class TrjReader(base.Reader):
                 frame = len(self) + frame
             if (frame < 0) or (frame >= len(self)):
                 raise IndexError("0 <= frame < len(traj) is outside of trajectory boundaries")
-            self._forward_to_frame(frame)
-            return self.ts
+            return self._goto_frame(frame)
         elif type(frame) == slice: # if frame is a slice object
             if not (((type(frame.start) == int) or (frame.start == None)) and
                     ((type(frame.stop) == int) or (frame.stop == None)) and
                     ((type(frame.step) == int) or (frame.step == None))):
                 raise TypeError("Slice indices are not integers")
             def iterDCD(start=frame.start, stop=frame.stop, step=frame.step):
+                # check_slices implicitly calls len(self), thus setting numframes
                 start, stop, step = self._check_slice_indices(start, stop, step)
-                if step < 0:
-                    raise NotImplementedError("XTC/TRR do not support reverse iterating for performance reasons")
-                for ts in self:
-                    # simple sequential plodding through trajectory --- SLOW!
-                    frameindex = ts.frame - 1
-                    if frameindex < start:  continue
-                    if frameindex >= stop:  break
-                    if (frameindex - start) % step != 0: continue
-                    yield self.ts
+                if step < 0 and stop >= start:
+                    raise IndexError("Stop frame is greater than start frame but step is negative")
+                if step < 0 and self.format == 'TRR':
+                    raise NotImplementedError("TRR do not yet support reverse iterating for performance reasons")
+                if step == 1:
+                    rng = xrange(start+1,stop,step)
+                    yield self._goto_frame(start)
+                    for framenr in rng:
+                        yield self._read_next_timestep()
+                else:
+                    rng = xrange(start,stop,step)
+                    for framenr in rng:
+                        yield self._goto_frame(framenr)
+                #if step < 0:
+                #    raise NotImplementedError("XTC/TRR do not support reverse iterating for performance reasons")
+                #for ts in self:
+                #    # simple sequential plodding through trajectory --- SLOW!
+                #    frameindex = ts.frame - 1
+                #    if frameindex < start:  continue
+                #    if frameindex >= stop:  break
+                #    if (frameindex - start) % step != 0: continue
+                #    yield self.ts
             return iterDCD()
 
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
@@ -624,3 +662,24 @@ class TrjReader(base.Reader):
 
     def __del__(self):
         self.close()
+
+    def _seek(self, pos, rel=False):
+        """Traj seeker"""
+        if self.format == 'XTC' or self.format == 'TRR':
+            if rel:
+                status = libxdrfile.xdr_seek(self.xdrfile, long(pos), libxdrfile.SEEK_CUR)
+            else:
+                status = libxdrfile.xdr_seek(self.xdrfile, long(pos), libxdrfile.SEEK_SET)
+            if status != libxdrfile.exdrOK:
+                raise IOError(errno.EIO, "Problem seeking to offset %d (relative to current = %s) on file %s, status %s" % (pos, rel, self.filename, status))
+        else:
+            raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
+
+    def _tell(self):
+        """Traj pos getter"""
+        if self.format == 'XTC' or self.format == 'TRR':
+            offset = libxdrfile.xdr_tell(self.xdrfile)
+        else:
+            raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
+        return offset
+
