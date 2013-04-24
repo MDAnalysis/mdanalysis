@@ -10,12 +10,13 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/13  orbeckst, jandom, xdeupi
+??/??/13  orbeckst, jandom, xdeupi, manuel.nuno.melo
 
   * 0.8
 
   Enhancements
 
+  * fast XTC seeking (Issue 127)
   * helanal: additional output of local bend and unit twist angles
     (Issue 133)
 
