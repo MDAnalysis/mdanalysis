@@ -3096,27 +3096,22 @@ PyObject * my_read_xtc_numframes(XDRFILE *xd) {
     }
     npy_intp nfrms[1];
     nfrms[0] = (npy_intp) numframes;
-    fprintf(stdout,"Done iterating. About to create np array. Numframes_ptr: %d\n", (int) nfrms);
     PyArrayObject *npoffsets = (PyArrayObject *)PyArray_EMPTY(1, nfrms, NPY_INT64, 0);
     if (npoffsets==NULL)
     {
       PyErr_Format(PyExc_IOError, "Error copying frame index into Python.");
       return 0;
     }
-    fprintf(stdout,"Array created. Numframes: %d. Array pointer at: %d\n", numframes, (int)npoffsets);
     int64_t *npofst_data; 
     for (i=0; i<numframes; i++)
     {
-        fprintf(stdout,"In the loop\n");
         npofst_data = PyArray_GETPTR1(npoffsets, i);
         if (npofst_data==NULL)
         {
           PyErr_Format(PyExc_IOError, "Error copying frame index into Python.");
           return 0;
         }
-        fprintf(stdout,"Got pointer to array data: %d. Contents: %d. Will get %d\n",(int)npofst_data, (int)*npofst_data, (int)(*offsets)[i]);
         *npofst_data = (*offsets)[i];
-        fprintf(stdout,"offset %d: %d -> %d\n", i, (int)(*offsets)[i], (int)*npofst_data);
     }
     free(*offsets);
     PyObject *tuple = PyTuple_New(2); 

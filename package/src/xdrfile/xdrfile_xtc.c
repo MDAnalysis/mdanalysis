@@ -144,7 +144,6 @@ int read_xtc_numframes(XDRFILE *xd, int *numframes, int64_t **offsets)
     /* Estimation of number of frames, with 20% allowance for error. */
     xdr_seek(xd, 0L, SEEK_END);
     filesize = xdr_tell(xd);
-    fprintf(stdout,"In the function.\n");
     if (xdr_seek(xd, (int64_t) XTC_HEADER_SIZE, SEEK_SET) != exdrOK)
         return exdrNR;
     if (xdrfile_read_int(&framebytes,1,xd) == 0)
@@ -152,50 +151,36 @@ int read_xtc_numframes(XDRFILE *xd, int *numframes, int64_t **offsets)
     framebytes = (framebytes + 3) & ~0x03; //Rounding to the next 32-bit boundary
     est_nframes = (int) (filesize/((int64_t) (framebytes+XTC_HEADER_SIZE)) + 1); // add one because it'd be easy to underestimate low frame numbers. 
     est_nframes += est_nframes/5;
-    fprintf(stdout,"Estimated %d frames.\n", est_nframes);
 
     /* Allocate memory for the frame index array */
 	if ((*offsets=(int64_t *)malloc(sizeof(int64_t)*est_nframes))==NULL)
     {
-		fprintf(stderr,"Cannot allocate memory for frame index.\n");
 		return exdrNOMEM;
     }
-    fprintf(stdout,"Memory allocated at %d. (next array position at %d).\n", (int)*offsets, (int)&(*offsets)[1]);
     (*offsets)[0] = 0L;
     *numframes = 1;
     while (1)
     {
-        fprintf(stdout,"Starting loop.\n");
         if (xdr_seek(xd, (int64_t) (framebytes+XTC_HEADER_SIZE), SEEK_CUR) != exdrOK) {
             free(*offsets);
             return exdrNR;
         }
-        fprintf(stdout,"Done seeking, now at pos %d. framebytes at %d\n", (int) xdr_tell(xd), (int) &framebytes);
         if (xdrfile_read_int(&framebytes,1,xd) == 0)
             break;
         /* Read was successful; this is another frame */
-        fprintf(stdout,"Done reading nbytes. Now at frame %d, offset %d\n", *numframes, (int)(*offsets)[*numframes-1]);
         /* Check if we need to enlarge array */
         if (*numframes == est_nframes){
-            fprintf(stdout,"Enlarging frame index array.\n");
             est_nframes += est_nframes/5 + 1; // Increase in 20% stretches
             if ((*offsets = realloc(*offsets, sizeof(int64_t)*est_nframes))==NULL)
             {
-	    	    fprintf(stderr,"Cannot allocate memory for frame index.\n");
                 free(*offsets);
 	    	    return exdrNOMEM;
             }
-            fprintf(stdout,"Enlarged frame index array to %d slots.\n", est_nframes);
         }
-        fprintf(stdout,"About to add new offset to index. %d, pointer at %d. Current value %d\n", (int) (xdr_tell(xd) - (int64_t) XTC_HEADER_SIZE - 4L), (int)*offsets, (int) (*offsets)[*numframes]);
         (*offsets)[*numframes] = xdr_tell(xd) - 4L - (int64_t) (XTC_HEADER_SIZE); //Account for the header and the nbytes bytes we read.
-        fprintf(stdout,"Done adding.\n");
         (*numframes)++;
-        fprintf(stdout,"Done incrementing numframes.\n");
         framebytes = (framebytes + 3) & ~0x03; //Rounding to the next 32-bit boundary
-        fprintf(stdout,"Done rounding framebytes.\n");
     }
-    fprintf(stdout,"Broke out of loop.\n");
 	return exdrOK;
 }
 
