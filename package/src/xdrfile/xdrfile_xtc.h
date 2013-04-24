@@ -27,18 +27,25 @@ extern "C" {
   /* This function returns the number of atoms in the xtc file in *natoms */
   extern int read_xtc_natoms(char *fn,int *natoms);
 
-  /* Read the WHOLE trajectory in order to learn the total number of frames */ 
-  extern int read_xtc_numframes(char *fn, int *numframes);
+  /* Seek through trajectory counting and indexing frames */
+  extern int read_xtc_numframes(XDRFILE *xd, int *numframes, int64_t **offsets);
   
   /* Read one frame of an open xtc file */
   extern int read_xtc(XDRFILE *xd,int natoms,int *step,float *time,
 		      matrix box,rvec *x,float *prec);
+
+  /* Quick read an xtc frame */
+  //extern int quick_read_xtc(XDRFILE *xd, float *time, int64_t *offset);
   
   /* Write a frame to xtc file */
   extern int write_xtc(XDRFILE *xd,
 		       int natoms,int step,float time,
 		       matrix box,rvec *x,float prec);
   
+/* XTC header fields until frame bytes: *** only for trajectories under 9 atoms! ***  */
+/* magic natoms step time DIM*DIM_box_vecs natoms prec DIM_min_xyz DIM_max_xyz smallidx */
+#define XTC_HEADER_SIZE (DIM*DIM*4 + DIM*2 + 46)
+
 #ifdef __cplusplus
 }
 #endif
