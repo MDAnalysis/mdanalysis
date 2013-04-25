@@ -28,21 +28,23 @@ extern "C" {
   extern int read_xtc_natoms(char *fn,int *natoms);
 
   /* Seek through trajectory counting and indexing frames */
-  extern int read_xtc_numframes(XDRFILE *xd, int *numframes, int64_t **offsets);
+  extern int read_xtc_numframes(char *fn, int *numframes, int64_t **offsets);
   
   /* Read one frame of an open xtc file */
   extern int read_xtc(XDRFILE *xd,int natoms,int *step,float *time,
 		      matrix box,rvec *x,float *prec);
 
-  /* Quick read an xtc frame */
-  //extern int quick_read_xtc(XDRFILE *xd, float *time, int64_t *offset);
-  
   /* Write a frame to xtc file */
   extern int write_xtc(XDRFILE *xd,
 		       int natoms,int step,float time,
 		       matrix box,rvec *x,float prec);
   
-/* XTC header fields until frame bytes: *** only for trajectories under 9 atoms! ***  */
+/* XTC header fields until coord floats: *** only for trajectories of less than 10 atoms! ***  */
+/* magic natoms step time DIM*DIM_box_vecs natoms */
+#define XTC_SHORTHEADER_SIZE (20 + DIM*DIM*4)
+/* Short XTCs store each coordinate as a 32-bit float. */
+#define XTC_SHORT_BYTESPERATOM 12
+/* XTC header fields until frame bytes: *** only for trajectories of more than 9 atoms! ***  */
 /* magic natoms step time DIM*DIM_box_vecs natoms prec DIM_min_xyz DIM_max_xyz smallidx */
 #define XTC_HEADER_SIZE (DIM*DIM*4 + DIM*2 + 46)
 
