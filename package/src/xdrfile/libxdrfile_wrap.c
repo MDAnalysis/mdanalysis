@@ -3085,39 +3085,30 @@ SWIG_AsCharPtrAndSize(PyObject *obj, char** cptr, size_t* psize, int *alloc)
   }
 
 
-PyObject * my_read_xtc_numframes(XDRFILE *xd) {
-    int numframes;
+PyObject * my_read_xtc_numframes(char *fn) {
+    int numframes, status;
     int64_t *offsets[1];
-    int status, i;
-    status = read_xtc_numframes(xd, &numframes, offsets);
+    PyObject *npoffsets = NULL;
+    status = read_xtc_numframes(fn, &numframes, offsets);
     if (status != exdrOK) {
-      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by seeking through xtc.", status);
+      free(*offsets);
+      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by seeking through xtc '%s'", status, fn);
       return status;
     }
-    npy_intp nfrms[1];
-    nfrms[0] = (npy_intp) numframes;
-    PyArrayObject *npoffsets = (PyArrayObject *)PyArray_EMPTY(1, nfrms, NPY_INT64, 0);
+    npy_intp nfrms[1] = { numframes };
+    npoffsets = PyArray_SimpleNewFromData(1, nfrms, NPY_INT64, *offsets);
     if (npoffsets==NULL)
     {
+      free(*offsets);
+      Py_XDECREF(npoffsets);
       PyErr_Format(PyExc_IOError, "Error copying frame index into Python.");
       return 0;
     }
-    int64_t *npofst_data; 
-    for (i=0; i<numframes; i++)
-    {
-        npofst_data = PyArray_GETPTR1(npoffsets, i);
-        if (npofst_data==NULL)
-        {
-          PyErr_Format(PyExc_IOError, "Error copying frame index into Python.");
-          return 0;
-        }
-        *npofst_data = (*offsets)[i];
-    }
-    free(*offsets);
+    /* From http://web.archive.org/web/20130304224839/http://blog.enthought.com/python/numpy/simplified-creation-of-numpy-arrays-from-pre-allocated-memory/ */
+    PyArray_BASE(npoffsets) = PyCObject_FromVoidPtr(*offsets, free);
     PyObject *tuple = PyTuple_New(2); 
     PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong((long)numframes));
-    Py_INCREF(npoffsets);
-    PyTuple_SET_ITEM(tuple, 1, (PyObject*)npoffsets);
+    PyTuple_SET_ITEM(tuple, 1, npoffsets);
     return tuple;
   }
 
@@ -3134,15 +3125,31 @@ PyObject * my_read_xtc_numframes(XDRFILE *xd) {
   }
 
 
-  int my_read_trr_numframes(char *fn) {
-    int numframes;
-    int status;
-    status = read_trr_numframes(fn, &numframes);
+PyObject * my_read_trr_numframes(char *fn) {
+    int numframes, status;
+    int64_t *offsets[1];
+    PyObject *npoffsets = NULL;
+    status = read_trr_numframes(fn, &numframes, offsets);
     if (status != exdrOK) {
-      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes from trr '%s'", status, fn);
+      free(*offsets);
+      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by seeking through trr '%s'", status, fn);
+      return status;
+    }
+    npy_intp nfrms[1] = { numframes };
+    npoffsets = PyArray_SimpleNewFromData(1, nfrms, NPY_INT64, *offsets);
+    if (npoffsets==NULL)
+    {
+      free(*offsets);
+      Py_XDECREF(npoffsets);
+      PyErr_Format(PyExc_IOError, "Error copying frame index into Python.");
       return 0;
     }
-    return numframes;
+    /* From http://web.archive.org/web/20130304224839/http://blog.enthought.com/python/numpy/simplified-creation-of-numpy-arrays-from-pre-allocated-memory/ */
+    PyArray_BASE(npoffsets) = PyCObject_FromVoidPtr(*offsets, free);
+    PyObject *tuple = PyTuple_New(2); 
+    PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong((long)numframes));
+    PyTuple_SET_ITEM(tuple, 1, npoffsets);
+    return tuple;
   }
 
 
@@ -3592,15 +3599,18 @@ PyObject * my_read_trr(XDRFILE *xd, matrix box,
 		int vnatoms, int v_DIM, float *v,
 		int fnatoms, int f_DIM, float *f) {
   /* _DIM = 3 always, need to reorder for numpy.i SWIG */
-  int status, step;
+  int status, step, has_prop=0;
   float time, lmbda;
-  PyObject *tuple = PyTuple_New(4); 
-  status = read_trr(xd, natoms, &step, &time, &lmbda, box, (rvec *)x, (rvec *)v, (rvec *)f);
+  PyObject *tuple = PyTuple_New(7); 
+  status = read_trr(xd, natoms, &step, &time, &lmbda, box, (rvec *)x, (rvec *)v, (rvec *)f, &has_prop);
   PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong((long)status));
   PyTuple_SET_ITEM(tuple, 1, PyInt_FromLong((long)step));
   PyTuple_SET_ITEM(tuple, 2, PyFloat_FromDouble((double)time));
   PyTuple_SET_ITEM(tuple, 3, PyFloat_FromDouble((double)lmbda));
-  return tuple; // return  (status, step, time, lmbda)
+  PyTuple_SET_ITEM(tuple, 4, PyBool_FromLong((long)(has_prop & HASX)));
+  PyTuple_SET_ITEM(tuple, 5, PyBool_FromLong((long)(has_prop & HASV)));
+  PyTuple_SET_ITEM(tuple, 6, PyBool_FromLong((long)(has_prop & HASF)));
+  return tuple; // return  (status, step, time, lmbda, has_x, has_v, has_f)
 }
 
 
@@ -3916,25 +3926,28 @@ fail:
 
 SWIGINTERN PyObject *_wrap_read_xtc_numframes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  XDRFILE *arg1 = (XDRFILE *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
+  char *arg1 = (char *) 0 ;
+  int res1 ;
+  char *buf1 = 0 ;
+  int alloc1 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:read_xtc_numframes",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_XDRFILE, 0 |  0 );
+  res1 = SWIG_AsCharPtrAndSize(obj0, &buf1, NULL, &alloc1);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "read_xtc_numframes" "', argument " "1"" of type '" "XDRFILE *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "read_xtc_numframes" "', argument " "1"" of type '" "char *""'");
   }
-  arg1 = (XDRFILE *)(argp1);
+  arg1 = (char *)(buf1);
   {
     result = (PyObject *)my_read_xtc_numframes(arg1);
     if (PyErr_Occurred()) SWIG_fail;
   }
   resultobj = result;
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
   return resultobj;
 fail:
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
   return NULL;
 }
 
@@ -3974,7 +3987,7 @@ SWIGINTERN PyObject *_wrap_read_trr_numframes(PyObject *SWIGUNUSEDPARM(self), Py
   char *buf1 = 0 ;
   int alloc1 = 0 ;
   PyObject * obj0 = 0 ;
-  int result;
+  PyObject *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:read_trr_numframes",&obj0)) SWIG_fail;
   res1 = SWIG_AsCharPtrAndSize(obj0, &buf1, NULL, &alloc1);
@@ -3983,10 +3996,10 @@ SWIGINTERN PyObject *_wrap_read_trr_numframes(PyObject *SWIGUNUSEDPARM(self), Py
   }
   arg1 = (char *)(buf1);
   {
-    result = (int)my_read_trr_numframes(arg1);
+    result = (PyObject *)my_read_trr_numframes(arg1);
     if (PyErr_Occurred()) SWIG_fail;
   }
-  resultobj = SWIG_From_int((int)(result));
+  resultobj = result;
   if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
   return resultobj;
 fail:
@@ -4452,9 +4465,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"xdrfile_open", _wrap_xdrfile_open, METH_VARARGS, (char *)"xdrfile_open(path, mode) -> XDRFILE"},
 	 { (char *)"xdrfile_close", _wrap_xdrfile_close, METH_VARARGS, (char *)"xdrfile_close(fp) -> int"},
 	 { (char *)"read_xtc_natoms", _wrap_read_xtc_natoms, METH_VARARGS, (char *)"read_xtc_natoms(fn) -> int"},
-	 { (char *)"read_xtc_numframes", _wrap_read_xtc_numframes, METH_VARARGS, (char *)"read_xtc_numframes(xd) -> PyObject"},
+	 { (char *)"read_xtc_numframes", _wrap_read_xtc_numframes, METH_VARARGS, (char *)"read_xtc_numframes(fn) -> PyObject"},
 	 { (char *)"read_trr_natoms", _wrap_read_trr_natoms, METH_VARARGS, (char *)"read_trr_natoms(fn) -> int"},
-	 { (char *)"read_trr_numframes", _wrap_read_trr_numframes, METH_VARARGS, (char *)"read_trr_numframes(fn) -> int"},
+	 { (char *)"read_trr_numframes", _wrap_read_trr_numframes, METH_VARARGS, (char *)"read_trr_numframes(fn) -> PyObject"},
 	 { (char *)"read_xtc", _wrap_read_xtc, METH_VARARGS, (char *)"read_xtc(XDRFILE, box, x) -> (status, step, time, precision)"},
 	 { (char *)"read_trr", _wrap_read_trr, METH_VARARGS, (char *)"read_trr(XDRFILE, box, x, v, f) -> (status, step, time, lambda)"},
 	 { (char *)"write_xtc", _wrap_write_xtc, METH_VARARGS, (char *)"write_xtc(XDRFILE, step, time, box, x, prec) -> status"},

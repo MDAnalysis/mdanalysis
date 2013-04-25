@@ -410,7 +410,7 @@ def read_xtc_natoms(*args):
   return _libxdrfile.read_xtc_natoms(*args)
 
 def read_xtc_numframes(*args):
-  """read_xtc_numframes(xd) -> PyObject"""
+  """read_xtc_numframes(fn) -> PyObject"""
   return _libxdrfile.read_xtc_numframes(*args)
 
 def read_trr_natoms(*args):
@@ -418,7 +418,7 @@ def read_trr_natoms(*args):
   return _libxdrfile.read_trr_natoms(*args)
 
 def read_trr_numframes(*args):
-  """read_trr_numframes(fn) -> int"""
+  """read_trr_numframes(fn) -> PyObject"""
   return _libxdrfile.read_trr_numframes(*args)
 DIM = _libxdrfile.DIM
 

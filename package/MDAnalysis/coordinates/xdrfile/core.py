@@ -242,7 +242,7 @@ class TrjWriter(base.Writer):
                 if self.convert_units:
                     forces = self.convert_forces_to_native(ts._forces, inplace=False)
                 else:
-                    forces = ts._velocities                
+                    forces = ts._velocities
             else:
                 # 0-forces (no need to convert those); add it to ts as a sideeffect
                 # so that we don't have to reallocate next time
@@ -291,16 +291,16 @@ class TrjReader(base.Reader):
             *filename*
                 the name of the trr file.
             *sub*
-            
+
                 an numpy integer array of what subset of trajectory atoms to load into
                 the timestep. Intended to work similarly to the 'sub' argument to gromac's trjconv.
 
                 This is usefull when one has a Universe loaded with only an unsolvated protein, and
-                wants to read a solvated trajectory. 
-                
+                wants to read a solvated trajectory.
+
                 The length of this array must be <= to the actual number of atoms in the trajectory, and
                 equal to number of atoms in the Universe.
-            
+
         """
         self.filename = filename
         if convert_units is None:
@@ -315,16 +315,16 @@ class TrjReader(base.Reader):
         self.__offsets = None    # storage of offsets in the file
         self.skip = 1
         self.periodic = False
-        
+
         # actual number of atoms in the trr file
         # first time file is opened, exception should be thrown if bad file
         self.__trr_numatoms = self._read_trj_natoms(self.filename)
-        
-        # logic for handling sub sections of trr: 
-        # this class has some tmp buffers into which the libxdrfile functions read the 
+
+        # logic for handling sub sections of trr:
+        # this class has some tmp buffers into which the libxdrfile functions read the
         # entire frame, then this class copies the relevant sub section into the timestep.
         # the sub section logic is contained entierly within this class.
-        
+
         # check to make sure sub is valid (if given)
         if sub is not None:
             # only valid type
@@ -337,7 +337,7 @@ class TrjReader(base.Reader):
                 raise IndexError("sub contains out of range elements for the given trajectory")
             # sub appears to be valid
             self.__sub = sub
-            
+
             # make tmp buffers
             # C floats and C-order for arrays (see libxdrfile.i)
             DIM = libxdrfile.DIM    # compiled-in dimension (most likely 3)
@@ -356,23 +356,23 @@ class TrjReader(base.Reader):
             self.__pos_buf = None
             self.__velocities_buf = None
             self.__forces_buf = None
-            
-        # make the timestep, this is ALWAYS the used the public number of atoms 
+
+        # make the timestep, this is ALWAYS the used the public number of atoms
         # (same as the calling Universe)
         # at this time, __trr_numatoms and __sub are set, so self.numatoms has all it needs
         # to determine number of atoms.
         self.ts = self._Timestep(self.numatoms)
-        
+
         # Read in the first timestep
         self._read_next_timestep()
 
     @property
     def numatoms(self):
-        """The number of publically available atoms that this reader will store in the timestep. 
-        
-        If 'sub' was not given in the ctor, then this value will just be the actual 
-        number of atoms in the underlying trajectory file. If however 'sub' was given, then 
-        this value is the number specified by the 'sub' sub-selection. 
+        """The number of publically available atoms that this reader will store in the timestep.
+
+        If 'sub' was not given in the ctor, then this value will just be the actual
+        number of atoms in the underlying trajectory file. If however 'sub' was given, then
+        this value is the number specified by the 'sub' sub-selection.
 
         If for any reason the trajectory cannot be read then a negative value is returned.
         """
@@ -391,8 +391,9 @@ class TrjReader(base.Reader):
         if not self.__numframes is None:   # return cached value
             return self.__numframes
         try:
-            self._read_trj_numframes()
+            self._read_trj_numframes(self.filename)
         except IOError:
+            self.__numframes = 0
             return 0
         else:
             return self.__numframes
@@ -421,35 +422,22 @@ class TrjReader(base.Reader):
     def _read_trj_natoms(self, filename):
         """Generic number-of-atoms extractor with minimum intelligence. Override if necessary."""
         if self.format == 'XTC':
-            numatoms = libxdrfile.read_xtc_natoms(self.filename)
+            numatoms = libxdrfile.read_xtc_natoms(filename)
         elif self.format == 'TRR':
-            numatoms = libxdrfile.read_trr_natoms(self.filename)
+            numatoms = libxdrfile.read_trr_natoms(filename)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return numatoms
 
-    def _read_trj_numframes(self):
-        """Numer-of-frames extractor with minimum intelligence for TRR (for now), but fast for XTC. Override if necessary."""
+    def _read_trj_numframes(self, filename):
+        """Number-of-frames extractor/indexer for XTC and TRR."""
         if self.format == 'XTC':
-            # No compression and simpler header if fewer than 10 atoms. Framesize is known.
-            if self.numatoms <= 9:
-                filesize = os.path.getsize(self.filename)
-                framesize = 20 + libxdrfile.DIM**2*4 + 12*self.numatoms 
-                self.__numframes = filesize/framesize # Should we raise an exception if framesize doesn't divide filesize?
-                self.__offsets = framesize * numpy.arange(nframes).astype(numpy.int64)
-                return
-            # This is the tough case.
-            else:
-                cur_offset = self._tell() # save stream position 
-                self.__numframes, self.__offsets = libxdrfile.read_xtc_numframes(self.xdrfile) 
-                self._seek(cur_offset) # reposition stream
-                return
-
+            self.__numframes, self.__offsets = libxdrfile.read_xtc_numframes(filename)
         elif self.format == 'TRR':
-            self.__numframes = libxdrfile.read_trr_numframes(self.filename)
+            self.__numframes, self.__offsets = libxdrfile.read_trr_numframes(filename)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
-        return numframes
+        return
 
     def open_trajectory(self):
         """Open xdr trajectory file.
@@ -470,7 +458,7 @@ class TrjReader(base.Reader):
         ts.frame = 0
         ts.step = 0
         ts.time = 0
-        # additional data for xtc
+        # additional data for XTC
         ts.prec = 0
         # additional data for TRR
         ts.lmbda = 0
@@ -539,7 +527,7 @@ class TrjReader(base.Reader):
             self.open_trajectory()
 
         if self.format == 'XTC':
-            if self.__sub is None:            
+            if self.__sub is None:
                 ts.status, ts.step, ts.time, ts.prec = libxdrfile.read_xtc(self.xdrfile, ts._unitcell, ts._pos)
             else:
                 ts.status, ts.step, ts.time, ts.prec = libxdrfile.read_xtc(self.xdrfile, ts._unitcell, self.__pos_buf)
@@ -556,7 +544,7 @@ class TrjReader(base.Reader):
                 ts._forces[:] = self.__forces_buf[self.__sub]
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
-        
+
         if (ts.status == libxdrfile.exdrENDOFFILE) or \
                 (ts.status == libxdrfile.exdrINT and self.format == 'TRR'):
             # seems that trr files can get a exdrINT when reaching EOF (??)
@@ -566,12 +554,16 @@ class TrjReader(base.Reader):
             raise IOError(errno.EFAULT, "Problem with %s file, status %s" %
                           (self.format, statno.errorcode[ts.status]), self.filename)
         if self.convert_units:
-            self.convert_pos_from_native(ts._pos)             # in-place !
+            # TRRs have the annoying possibility of frames without coordinates/velocities/forces...
+            if self.format == 'XTC' or has_x:
+                self.convert_pos_from_native(ts._pos)         # in-place !
             self.convert_pos_from_native(ts._unitcell)        # in-place ! (note: xtc/trr contain unit vecs!)
             ts.time = self.convert_time_from_native(ts.time)  # in-place does not work with scalars
             if self.format == 'TRR':
-                self.convert_velocities_from_native(ts._velocities) # in-place
-                self.convert_forces_from_native(ts._forces)     # in-place
+                if has_v:
+                    self.convert_velocities_from_native(ts._velocities) # in-place
+                if has_f:
+                    self.convert_forces_from_native(ts._forces)     # in-place
         ts.frame += 1
         return ts
 
@@ -584,34 +576,19 @@ class TrjReader(base.Reader):
         self.close()
         self.open_trajectory()
 
-    def _forward_to_frame(self, frameindex):
-        """Slow implementation: must read sequentially.
-
-        .. Note::
-
-           *frameindex* starts from 0; i.e. *frameindex* = frame - 1.
+    def _goto_frame(self, frame):
+        """ Fast, index-based, random frame access
 
         :TODO: Should we treat frame as 0-based or 1-based??  Right
                now: 0-based (which is inconsistent) but analogous to
                DCDReader
         """
-        self.rewind()
-        if frameindex == 0:
-            return
-        for ts in self:
-            if ts.frame-1 >= frameindex:
-                break
-
-    def _goto_frame(self, frame):
-        if self.format == 'TRR':
-            return _forward_to_frame(frame)
-        elif self.format == 'XTC':
-            if self.__offsets is None:
-                self._read_trj_numframes()
-            self._seek(self.__offsets[frame])
-            self._read_next_timestep()
-            self.ts.frame = frame+1
-            return self.ts
+        if self.__offsets is None:
+            self._read_trj_numframes(self.filename)
+        self._seek(self.__offsets[frame])
+        self._read_next_timestep()
+        self.ts.frame = frame+1
+        return self.ts
 
     def __getitem__(self, frame):
         if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
@@ -628,13 +605,9 @@ class TrjReader(base.Reader):
                     ((type(frame.stop) == int) or (frame.stop == None)) and
                     ((type(frame.step) == int) or (frame.step == None))):
                 raise TypeError("Slice indices are not integers")
-            def iterDCD(start=frame.start, stop=frame.stop, step=frame.step):
+            def _iter(start=frame.start, stop=frame.stop, step=frame.step):
                 # check_slices implicitly calls len(self), thus setting numframes
                 start, stop, step = self._check_slice_indices(start, stop, step)
-                if step < 0 and stop >= start:
-                    raise IndexError("Stop frame is greater than start frame but step is negative")
-                if step < 0 and self.format == 'TRR':
-                    raise NotImplementedError("TRR do not yet support reverse iterating for performance reasons")
                 if step == 1:
                     rng = xrange(start+1,stop,step)
                     yield self._goto_frame(start)
@@ -644,16 +617,27 @@ class TrjReader(base.Reader):
                     rng = xrange(start,stop,step)
                     for framenr in rng:
                         yield self._goto_frame(framenr)
-                #if step < 0:
-                #    raise NotImplementedError("XTC/TRR do not support reverse iterating for performance reasons")
-                #for ts in self:
-                #    # simple sequential plodding through trajectory --- SLOW!
-                #    frameindex = ts.frame - 1
-                #    if frameindex < start:  continue
-                #    if frameindex >= stop:  break
-                #    if (frameindex - start) % step != 0: continue
-                #    yield self.ts
-            return iterDCD()
+            return _iter()
+
+    def _check_slice_indices(self, start, stop, step):
+        if step == None: step = 1
+        if (start < 0) and start is not None: start += len(self)
+        if (stop < 0) and stop is not None: stop += len(self)
+        if step > 0:
+            if start == None: start = 0
+            if stop == None: stop = len(self)
+        else:  # Fixes reverse iteration with default slice. (eg. trajectory[::-1])
+            if start == None: start  = len(self)-1
+            if  stop == None: stop   = -1
+        if stop > len(self): stop = len(self)
+
+        if step > 0 and stop <= start:
+            raise IndexError("Stop frame is lower than start frame")
+        if step == 0:
+            raise IndexError("Iteration step 0.")
+        if start >= len(self):
+            raise IndexError("Frame start outside of the range of the trajectory.")
+        return (start, stop, step)
 
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
         raise NotImplementedError("timeseries not available for Gromacs trajectories")

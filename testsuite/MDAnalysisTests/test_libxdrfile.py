@@ -59,7 +59,7 @@ class TestXTC(TestCase):
         assert_equal(natoms, 47681, "Number of atoms in XTC frame")
 
     def test_numframes(self):
-        numframes = xdr.read_xtc_numframes(XTC)
+        numframes, offsets = xdr.read_xtc_numframes(XTC)
         assert_equal(numframes, 10, "Number of frames in XTC trajectory")
 
 
@@ -69,6 +69,6 @@ class TestTRR(TestCase):
         assert_equal(natoms, 47681, "Number of atoms in TRR frame")
 
     def test_numframes(self):
-        numframes = xdr.read_trr_numframes(TRR)
+        numframes, offsets = xdr.read_trr_numframes(TRR)
         assert_equal(numframes, 10, "Number of frames in TRR trajectory")
 

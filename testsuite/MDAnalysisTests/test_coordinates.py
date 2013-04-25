@@ -1577,7 +1577,6 @@ class _GromacsReader(TestCase):
         assert_equal(frames,  [3, 6, 9], "slicing xdrtrj [2:9:3]")
 
     @dec.slow
-    @dec.knownfailureif(True, "XTC/TRR reverse slicing not implemented for performance reasons")
     def test_reverse_xdrtrj(self):
         frames = [ts.frame for ts in self.trajectory[::-1]]
         assert_equal(frames, range(10,0,-1), "slicing xdrtrj [::-1]")
