@@ -1108,6 +1108,7 @@ class HOLEtraj(BaseHOLE):
             try:
                 protein.write(pdbfile)
                 hole_profiles = self.run_hole(pdbfile, **hole_kw)
+                os.close(fd)
             finally:
                 try:
                     os.unlink(pdbfile)

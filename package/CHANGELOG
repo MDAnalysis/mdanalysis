@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/13  orbeckst, jandom, xdeupi, manuel.nuno.melo
+??/??/13  orbeckst, jandom, xdeupi, tyler.je.reddy, manuel.nuno.melo
 
   * 0.8
 
@@ -25,6 +25,9 @@ The rules for this file:
   * removed Timeseries.principleAxis (probably was never working)
   * added support for reading DMS files (DESRES molecular structure?)
 
+  Fixes
+
+  * fixed Issue 129 (hole.py module pipe/file closure)
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux
 
