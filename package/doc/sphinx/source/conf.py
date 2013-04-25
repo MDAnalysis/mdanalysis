@@ -36,7 +36,8 @@ if os.path.exists(build_path):
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
+              'sphinx.ext.mathjax', 'sphinx.ext.viewcode']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -54,7 +55,7 @@ master_doc = 'index'
 # General information about the project.
 # (take the list from AUTHORS)
 authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
     Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein"""
@@ -283,5 +284,6 @@ epub_copyright = u'2012, '+authors
 intersphinx_mapping = {'http://docs.python.org/': None,
                        'http://docs.scipy.org/doc/numpy/': None,
                        'http://docs.scipy.org/doc/scipy/reference/': None,
-                       # 'http://networkx.lanl.gov/reference/': None,  ## ask them to publish objects.inv
+                       'http://matplotlib.org': None,
+                       'http://networkx.github.io/documentation/latest/': None,
                        }
