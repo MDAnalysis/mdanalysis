@@ -51,6 +51,7 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "PDBQT_querypdb",
            "FASTA",                             # sequence alignment, Issue 112 + 113
            "PDB_HOLE",                          # gramicidin A
+           "XTC_HOLE",                          # gramicidin A, all frames identical, for Issue 129
            "DMS",                               # DHFR
            ]
 
@@ -113,5 +114,6 @@ PDBQT_querypdb = resource_filename(__name__, 'data/pdbqt_querypdb.pdb')
 FASTA = resource_filename(__name__, 'data/test.fasta')
 
 PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
+XTC_HOLE = resource_filename(__name__, 'data/gram_A_identical_frames.xtc')
 
 DMS = resource_filename(__name__, 'data/adk_closed.dms')

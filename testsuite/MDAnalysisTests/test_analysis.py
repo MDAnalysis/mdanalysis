@@ -27,7 +27,7 @@ from nose.plugins.attrib import attr
 import os
 import tempfile
 
-from MDAnalysis.tests.datafiles import PSF,DCD,CRD,FASTA,PDB_helix
+from MDAnalysis.tests.datafiles import PSF,DCD,CRD,FASTA,PDB_helix,PDB_HOLE,XTC_HOLE
 
 class TestContactMatrix(TestCase):
     def setUp(self):
@@ -197,3 +197,23 @@ class TestAlignmentProcessing(TestCase):
         # length of the output strings, not residues or anything real...
         assert_equal(len(sel['reference']), 23080, err_msg="selection string has unexpected length")
         assert_equal(len(sel['mobile']), 23090, err_msg="selection string has unexpected length")
+
+class TestHoleModule(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PDB_HOLE,[XTC_HOLE]*9) #get faster error detection for Issue 129 with more frames/less repeats; basically, just open more temporary PDB files and fail to close their file descriptors for a single Universe object with more frames (so 9X trajectory copies) rather than doing several rounds of trajectory loading with U objects having less frames
+        self.dir_name = tempfile.mkdtemp()
+
+    @dec.slow
+    @attr('issue')
+    def test_hole_module_fd_closure(self):
+        """Issue 129: ensure low level file descriptors to PDB files used by Hole program are properly closed"""
+        #If Issue 129 isn't resolved, this function will produce an OSError on the system, and cause many other tests to fail as well.
+        from MDAnalysis.analysis.hole import HOLEtraj
+        #will need to have the 'hole' command available in the path
+        os.chdir(self.dir_name)
+        H = HOLEtraj(self.universe,cvect=[0,1,0],sample=20.0) 
+        for i in range(2): #pretty unlikely that the code will get through 2 rounds if the MDA issue 129 isn't fixed, although this depends on the file descriptor open limit for the machine in question (so may need to increase the number of rounds in the future)
+            H.run() #will typically get an OSError for too many files being open after about 30 seconds if issue 129 isn't resolved
+
+    def tearDown(self):
+        del self.universe
