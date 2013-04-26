@@ -840,6 +840,7 @@ class HOLE(BaseHOLE):
         kwargs.setdefault("dotden", self.dotden)
 
         fd, tmp_sos = tempfile.mkstemp(suffix=".sos", text=True)
+        os.close(fd)
         try:
             rc = subprocess.call([self.exe["sph_process"], "-sos", "-dotden", str(kwargs['dotden']),
                                   "-color", self.sphpdb, tmp_sos])
