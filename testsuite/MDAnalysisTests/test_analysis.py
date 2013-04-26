@@ -24,7 +24,7 @@ import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
-import os
+import os, errno
 import tempfile
 
 from MDAnalysis.tests.datafiles import PSF,DCD,CRD,FASTA,PDB_helix,PDB_HOLE,XTC_HOLE
@@ -200,20 +200,56 @@ class TestAlignmentProcessing(TestCase):
 
 class TestHoleModule(TestCase):
     def setUp(self):
-        self.universe = MDAnalysis.Universe(PDB_HOLE,[XTC_HOLE]*9) #get faster error detection for Issue 129 with more frames/less repeats; basically, just open more temporary PDB files and fail to close their file descriptors for a single Universe object with more frames (so 9X trajectory copies) rather than doing several rounds of trajectory loading with U objects having less frames
+        self.universe = MDAnalysis.Universe(PDB_HOLE, XTC_HOLE)
         self.dir_name = tempfile.mkdtemp()
+        try:
+            # on Unix we can manipulate our limits: http://docs.python.org/2/library/resource.html
+            import resource
+            self.soft_max_open_files, self.hard_max_open_files = resource.getrlimit(resource.RLIMIT_NOFILE)
+        except ImportError:
+            pass
 
-    @dec.slow
+    @attr('slow')
     @attr('issue')
     def test_hole_module_fd_closure(self):
         """Issue 129: ensure low level file descriptors to PDB files used by Hole program are properly closed"""
-        #If Issue 129 isn't resolved, this function will produce an OSError on the system, and cause many other tests to fail as well.
+        # If Issue 129 isn't resolved, this function will produce an OSError on
+        # the system, and cause many other tests to fail as well.
+        #
+        # Successful test takes ~10 s, failure ~2 s.
+        try:
+            # Hasten failure by setting "ulimit -n 64" (can't go too low because of open modules etc...)
+            import resource
+            resource.setrlimit(resource.RLIMIT_NOFILE, (64, self.hard_max_open_files))
+        except ImportError:
+            raise NotImplementedError("Test cannot be run without the resource module.")
+
         from MDAnalysis.analysis.hole import HOLEtraj
-        #will need to have the 'hole' command available in the path
+        # will need to have the 'hole' command available in the path
         os.chdir(self.dir_name)
-        H = HOLEtraj(self.universe,cvect=[0,1,0],sample=20.0) 
-        for i in range(2): #pretty unlikely that the code will get through 2 rounds if the MDA issue 129 isn't fixed, although this depends on the file descriptor open limit for the machine in question (so may need to increase the number of rounds in the future)
-            H.run() #will typically get an OSError for too many files being open after about 30 seconds if issue 129 isn't resolved
+        H = HOLEtraj(self.universe,cvect=[0,1,0],sample=20.0)
+        # pretty unlikely that the code will get through 2 rounds if the MDA
+        # issue 129 isn't fixed, although this depends on the file descriptor
+        # open limit for the machine in question
+        try:
+            for i in xrange(2):
+                # will typically get an OSError for too many files being open after
+                # about 2 seconds if issue 129 isn't resolved
+                H.run()
+        except OSError, err:
+            if err.errno == errno.EMFILE:
+                raise AssertionError("HOLEtraj does not close file descriptors (Issue 129)")
+            raise
+        finally:
+            # make sure to restore open file limit !!
+            resource.setrlimit(resource.RLIMIT_NOFILE, (self.soft_max_open_files, self.hard_max_open_files))
 
     def tearDown(self):
+        try:
+            import resource
+            resource.setrlimit(resource.RLIMIT_NOFILE, (self.soft_max_open_files, self.hard_max_open_files))
+        except ImportError:
+            pass
         del self.universe
+        import shutil
+        shutil.rmtree(self.dir_name, ignore_errors=True)
