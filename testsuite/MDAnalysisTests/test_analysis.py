@@ -75,6 +75,7 @@ class TestAlign(TestCase):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.reference = MDAnalysis.Universe(PSF, DCD)
         fd, self.outfile = tempfile.mkstemp(suffix=".dcd")  # output is always same as input (=DCD)
+        os.close(fd)
 
     def tearDown(self):
         try:
@@ -169,7 +170,9 @@ class TestAlignmentProcessing(TestCase):
     def setUp(self):
         self.seq = FASTA
         fd, self.alnfile = tempfile.mkstemp(suffix=".aln")
+        os.close(fd)
         fd, self.treefile = tempfile.mkstemp(suffix=".dnd")
+        os.close(fd)
 
     def tearDown(self):
         for f in self.alnfile, self.treefile:

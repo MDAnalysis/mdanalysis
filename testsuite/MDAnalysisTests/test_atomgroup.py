@@ -351,6 +351,7 @@ class _WriteAtoms(TestCase):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         suffix = '.' + self.ext
         fd, self.outfile = tempfile.mkstemp(suffix=suffix)
+        os.close(fd)
 
     def tearDown(self):
         try:
