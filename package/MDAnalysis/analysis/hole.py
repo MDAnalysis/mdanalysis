@@ -840,6 +840,7 @@ class HOLE(BaseHOLE):
         kwargs.setdefault("dotden", self.dotden)
 
         fd, tmp_sos = tempfile.mkstemp(suffix=".sos", text=True)
+        os.close(fd)
         try:
             rc = subprocess.call([self.exe["sph_process"], "-sos", "-dotden", str(kwargs['dotden']),
                                   "-color", self.sphpdb, tmp_sos])
@@ -1105,10 +1106,10 @@ class HOLEtraj(BaseHOLE):
         for q,ts in izip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
             logger.info("HOLE analysis frame %4d (orderparameter %g)", ts.frame, q)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
+            os.close(fd)  # only need an empty file that can be overwritten, close right away (Issue 129)
             try:
                 protein.write(pdbfile)
                 hole_profiles = self.run_hole(pdbfile, **hole_kw)
-                os.close(fd)
             finally:
                 try:
                     os.unlink(pdbfile)
