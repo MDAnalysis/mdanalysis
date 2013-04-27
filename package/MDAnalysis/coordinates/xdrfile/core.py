@@ -534,10 +534,10 @@ class TrjReader(base.Reader):
                 ts._pos[:] = self.__pos_buf[self.__sub]
         elif self.format == 'TRR':
             if self.__sub is None:
-                ts.status, ts.step, ts.time, ts.lmbda = libxdrfile.read_trr(self.xdrfile, ts._unitcell, ts._pos,
+                ts.status, ts.step, ts.time, ts.lmbda, has_x, has_v, has_f = libxdrfile.read_trr(self.xdrfile, ts._unitcell, ts._pos,
                                                                             ts._velocities, ts._forces)
             else:
-                ts.status, ts.step, ts.time, ts.lmbda = libxdrfile.read_trr(self.xdrfile, ts._unitcell, self.__pos_buf,
+                ts.status, ts.step, ts.time, ts.lmbda, has_x, has_v, has_f  = libxdrfile.read_trr(self.xdrfile, ts._unitcell, self.__pos_buf,
                                                                             self.__velocities_buf, self.__forces_buf)
                 ts._pos[:] = self.__pos_buf[self.__sub]
                 ts._velocities[:] = self.__velocities_buf[self.__sub]
