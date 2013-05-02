@@ -348,7 +348,9 @@ class TestNCDFWriter(TestCase, RefVGV):
         self.prec = 6
         ext = ".ncdf"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
         fd, self.outtop = tempfile.mkstemp(suffix=".pdb")
+        os.close(fd)
         self.Writer = MDAnalysis.coordinates.TRJ.NCDFWriter
 
     def tearDown(self):
@@ -548,6 +550,7 @@ class TestPrimitivePDBWriter(TestCase):
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         ext = ".pdb"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
 
     def tearDown(self):
         try:
@@ -688,7 +691,9 @@ class TestMultiPDBWriter(TestCase):
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         ext = ".pdb"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
         fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
 
     def tearDown(self):
         try:
@@ -846,20 +851,20 @@ class TestDMSReader(TestCase):
 
     def test_global_cell(self):
         assert_equal(self.ts.dimensions, [0., 0., 0., 0., 0., 0.])
-      
+
     def test_velocities(self):
         assert_equal(hasattr(self.ts, "_velocities"), False)
-    
+
     def test_number_of_coords(self):
         # Desired value taken from VMD
         #      Info)    Atoms: 3341
-        assert_equal(len(self.universe.atoms),3341) 
-        
+        assert_equal(len(self.universe.atoms),3341)
+
     def test_coords_atom_0(self):
         # Desired coordinates taken directly from the SQLite file. Check unit conversion
         coords_0 = np.array([-11.0530004501343, 26.6800003051758, 12.7419996261597,], dtype=np.float32)
         assert_array_equal(self.universe.atoms[0].pos, coords_0)
-        
+
 class TestGROReaderNoConversion(TestCase, RefAdK):
     def setUp(self):
         ##mda.core.flags['convert_gromacs_lengths'] = False
@@ -914,7 +919,9 @@ class TestGROWriter(TestCase):
         self.prec = 2  # 3 decimals in file in nm but MDAnalysis is in A
         ext = ".gro"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
         fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
 
     def tearDown(self):
         try:
@@ -1121,6 +1128,7 @@ class TestDCDWriter(TestCase):
         self.universe = mda.Universe(PSF, DCD)
         ext = ".dcd"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
         self.Writer = MDAnalysis.coordinates.DCD.DCDWriter
 
     def tearDown(self):
@@ -1176,6 +1184,7 @@ class TestDCDWriter_Issue59(TestCase):
         """Generate input xtc."""
         self.u = MDAnalysis.Universe(PSF,DCD)
         fd, self.xtc = tempfile.mkstemp(suffix='.xtc')
+        os.close(fd)
         wXTC = MDAnalysis.Writer(self.xtc, self.u.atoms.numberOfAtoms())
         for ts in self.u.trajectory:
             wXTC.write(ts);
@@ -1197,6 +1206,7 @@ class TestDCDWriter_Issue59(TestCase):
         """Test writing of XTC to DCD (Issue 59)"""
         xtc = MDAnalysis.Universe(PSF, self.xtc)
         fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
+        os.close(fd)
         wDCD = MDAnalysis.Writer(self.dcd, xtc.atoms.numberOfAtoms())
         for ts in xtc.trajectory:
             wDCD.write(ts);
@@ -1233,6 +1243,7 @@ class TestNCDF2DCD(TestCase):
         self.u = MDAnalysis.Universe(PRMncdf, NCDF)
         # create the DCD
         fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
+        os.close(fd)
         DCD = MDAnalysis.Writer(self.dcd, numatoms=self.u.atoms.numberOfAtoms())
         for ts in self.u.trajectory:
             DCD.write(ts)
@@ -1388,6 +1399,7 @@ class TestChainReader(TestCase):
         self.prec = 3
         # dummy output DCD file
         fd, self.outfile = tempfile.mkstemp(suffix=".dcd")
+        os.close(fd)
 
     def tearDown(self):
         try:
@@ -1482,11 +1494,11 @@ class TestChainReaderFormats(TestCase):
         assert_equal(universe.trajectory.numframes, 2)
 
 class TestTRRReader_Sub(TestCase):
-    
+
     def setUp(self):
-        """ 
-        grab values from selected atoms from full solvated traj, 
-        later compare to using 'sub' 
+        """
+        grab values from selected atoms from full solvated traj,
+        later compare to using 'sub'
         """
         usol = mda.Universe(PDB_sub_sol, TRR_sub_sol)
         atoms = usol.selectAtoms("not resname SOL")
@@ -1496,10 +1508,10 @@ class TestTRRReader_Sub(TestCase):
         self.sub = atoms.indices()
         # universe from un-solvated protein
         self.udry = mda.Universe(PDB_sub_dry)
-        
+
     def test_load_new_raises_ValueError(self):
         # should fail if we load universe with a trajectory with different
-        # number of atoms when NOT using sub, same as before. 
+        # number of atoms when NOT using sub, same as before.
         def load_new_without_sub():
             self.udry.load_new(TRR_sub_sol)
         assert_raises(ValueError, load_new_without_sub)
@@ -1509,14 +1521,14 @@ class TestTRRReader_Sub(TestCase):
         load solvated trajectory into universe with unsolvated protein.
         """
         self.udry.load_new(TRR_sub_sol, sub=self.sub)
-        assert_array_almost_equal(self.pos, self.udry.atoms.positions, 
+        assert_array_almost_equal(self.pos, self.udry.atoms.positions,
                                   err_msg="positions differ")
-        assert_array_almost_equal(self.vel, self.udry.atoms.velocities(), 
+        assert_array_almost_equal(self.vel, self.udry.atoms.velocities(),
                                   err_msg="positions differ")
-        assert_array_almost_equal(self.force, self.udry.atoms.forces, 
+        assert_array_almost_equal(self.force, self.udry.atoms.forces,
                                   err_msg="positions differ")
 
-        
+
 
 
 class _GromacsReader(TestCase):
@@ -1537,6 +1549,7 @@ class _GromacsReader(TestCase):
         # dummy output file
         ext = os.path.splitext(self.filename)[1]
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
 
     def tearDown(self):
         try:
@@ -1737,6 +1750,7 @@ class _GromacsWriter(TestCase):
         self.universe = mda.Universe(GRO, self.infilename)
         ext = os.path.splitext(self.infilename)[1]
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
         self.Writer = self.Writers[ext]
 
     def tearDown(self):
@@ -1813,6 +1827,7 @@ class _GromacsWriterIssue101(TestCase):
 
     def setUp(self):
         fd, self.outfile = tempfile.mkstemp(suffix=self.ext)
+        os.close(fd)
         self.Writer = self.Writers[self.ext]
 
     def tearDown(self):
@@ -1862,6 +1877,7 @@ class _GromacsWriterIssue117(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PRMncdf, NCDF)
         fd, self.outfile = tempfile.mkstemp(suffix=self.ext)
+        os.close(fd)
         self.Writer = MDAnalysis.Writer(self.outfile, numatoms=self.universe.atoms.numberOfAtoms(),
                                         delta=self.universe.trajectory.delta,
                                         step=self.universe.trajectory.skip_timestep)

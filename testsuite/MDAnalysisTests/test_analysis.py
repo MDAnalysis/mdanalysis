@@ -24,10 +24,10 @@ import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
-import os
+import os, errno
 import tempfile
 
-from MDAnalysis.tests.datafiles import PSF,DCD,CRD,FASTA,PDB_helix
+from MDAnalysis.tests.datafiles import PSF,DCD,CRD,FASTA,PDB_helix,PDB_HOLE,XTC_HOLE
 
 class TestContactMatrix(TestCase):
     def setUp(self):
@@ -75,6 +75,7 @@ class TestAlign(TestCase):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.reference = MDAnalysis.Universe(PSF, DCD)
         fd, self.outfile = tempfile.mkstemp(suffix=".dcd")  # output is always same as input (=DCD)
+        os.close(fd)
 
     def tearDown(self):
         try:
@@ -169,7 +170,9 @@ class TestAlignmentProcessing(TestCase):
     def setUp(self):
         self.seq = FASTA
         fd, self.alnfile = tempfile.mkstemp(suffix=".aln")
+        os.close(fd)
         fd, self.treefile = tempfile.mkstemp(suffix=".dnd")
+        os.close(fd)
 
     def tearDown(self):
         for f in self.alnfile, self.treefile:
@@ -197,3 +200,59 @@ class TestAlignmentProcessing(TestCase):
         # length of the output strings, not residues or anything real...
         assert_equal(len(sel['reference']), 23080, err_msg="selection string has unexpected length")
         assert_equal(len(sel['mobile']), 23090, err_msg="selection string has unexpected length")
+
+class TestHoleModule(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PDB_HOLE, XTC_HOLE)
+        self.dir_name = tempfile.mkdtemp()
+        try:
+            # on Unix we can manipulate our limits: http://docs.python.org/2/library/resource.html
+            import resource
+            self.soft_max_open_files, self.hard_max_open_files = resource.getrlimit(resource.RLIMIT_NOFILE)
+        except ImportError:
+            pass
+
+    @attr('slow')
+    @attr('issue')
+    def test_hole_module_fd_closure(self):
+        """Issue 129: ensure low level file descriptors to PDB files used by Hole program are properly closed"""
+        # If Issue 129 isn't resolved, this function will produce an OSError on
+        # the system, and cause many other tests to fail as well.
+        #
+        # Successful test takes ~10 s, failure ~2 s.
+        try:
+            # Hasten failure by setting "ulimit -n 64" (can't go too low because of open modules etc...)
+            import resource
+            resource.setrlimit(resource.RLIMIT_NOFILE, (64, self.hard_max_open_files))
+        except ImportError:
+            raise NotImplementedError("Test cannot be run without the resource module.")
+
+        from MDAnalysis.analysis.hole import HOLEtraj
+        # will need to have the 'hole' command available in the path
+        os.chdir(self.dir_name)
+        H = HOLEtraj(self.universe,cvect=[0,1,0],sample=20.0)
+        # pretty unlikely that the code will get through 2 rounds if the MDA
+        # issue 129 isn't fixed, although this depends on the file descriptor
+        # open limit for the machine in question
+        try:
+            for i in xrange(2):
+                # will typically get an OSError for too many files being open after
+                # about 2 seconds if issue 129 isn't resolved
+                H.run()
+        except OSError, err:
+            if err.errno == errno.EMFILE:
+                raise AssertionError("HOLEtraj does not close file descriptors (Issue 129)")
+            raise
+        finally:
+            # make sure to restore open file limit !!
+            resource.setrlimit(resource.RLIMIT_NOFILE, (self.soft_max_open_files, self.hard_max_open_files))
+
+    def tearDown(self):
+        try:
+            import resource
+            resource.setrlimit(resource.RLIMIT_NOFILE, (self.soft_max_open_files, self.hard_max_open_files))
+        except ImportError:
+            pass
+        del self.universe
+        import shutil
+        shutil.rmtree(self.dir_name, ignore_errors=True)
