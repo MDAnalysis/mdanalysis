@@ -30,7 +30,7 @@ module. They are mostly of use to developers.
 import os.path
 import MDAnalysis.topology
 import tables
-from MDAnalysis.core.distances import distance_array
+from MDAnalysis.core.distances import self_distance_array
 
 def build_segments(atoms):
     """Create all :class:`~MDAnalysis.core.AtomGroup.Segment` instancess from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
@@ -214,12 +214,7 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
     # source code.
     # FIXME this is not the whole periodic table... (eg halogens are missing)
     if not vdwradii:
-      vdwradii = {  "C":     0.15,
-                    "F":     0.12,
-                    "H":     0.04,
-                    "N":     0.110,
-                    "O":     0.105,
-                    "S":     0.16,}
+        vdwradii = tables.vdwradii
     
     assert len([a for a in atoms if a]) == coords.shape[0]
     
@@ -229,20 +224,19 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
         if not a.type in vdwradii.keys(): 
             print a.type + "has no defined vdw radius"
             return bonds()
+
+    # 1-D vector of the upper-triangle of all-to-all distance matrix    
+    dist = self_distance_array(coords)
+    N = len(coords)
     
-    # compute all-2-all distance array
-    # FIXME by JD only the upper rigth triangle of the distance matrix, without 
-    # the diagonal is needed
-    dist = distance_array(coords, coords)
-    
-    # FIXME by JD optimize the code below in cython/scipy.weave
-    for i in range(dist.shape[0]):
-      for j in range(i+1, dist.shape[0]): 
+    pairs = list()
+    [[pairs.append((i,j)) for j in range(i + 1, N)] for i in range(N)]
+       
+    for x, (d, (i, j)) in enumerate(zip(dist, pairs)):
         a1, a2 = atoms[i], atoms[j]
         r1, r2 = vdwradii[a1.type], vdwradii[a2.type] 
-
         # 10 comes from scaling nm to A        
-        if not ((r1 + r2) * 10 * fudge_factor) > dist[i,j] : continue
+        if not ((r1 + r2) * fudge_factor) > dist[x] : continue
         #print "BOND", ((r1 + r2) * 10 * fudge_factor), dist[i,j]
         bonds.add(frozenset([i+1,j+1]))
 
