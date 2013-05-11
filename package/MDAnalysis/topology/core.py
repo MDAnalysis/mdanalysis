@@ -30,6 +30,7 @@ module. They are mostly of use to developers.
 import os.path
 import MDAnalysis.topology
 import tables
+from MDAnalysis.core.distances import distance_array
 
 def build_segments(atoms):
     """Create all :class:`~MDAnalysis.core.AtomGroup.Segment` instancess from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
@@ -73,18 +74,29 @@ class Bond(object):
     def __init__(self, a1, a2, order=None):
         self.atom1 = a1
         self.atom2 = a2
-        self.order = order
-        [a.bonds.append(self) for a in [a1, a2]] 
-        
+        a1.bonds.append(self)
+        a2.bonds.append(self)
+        self.order = order 
+        self.is_guessed = False
     def partner(self, atom):
         if atom is self.atom1:
             return self.atom2
         else: return self.atom1
+    def set_is_guessed(self, b):
+        self.is_guessed = b
+    def get_is_guessed(self):
+        return self.is_guessed
     def length(self):
         """Length of the bond."""
         bond = self.atom1.pos - self.atom2.pos
         import math
         return math.sqrt((bond[0]**2)+(bond[1]**2)+(bond[2]**2))
+    def __repr__(self):
+        a1 = self.atom1
+        a2 = self.atom2
+        return "< Bond between: Atom %d (%s of %s-%d) and Atom %s (%s of %s-%d), length %.2f A >" % \
+          (a1.number+1, a1.name, a1.resname, a1.resid, a2.number+1, a2.name, a2.resname, a2.resid, self.length())
+
 
 def build_bondlists(atoms, bonds):
     """Construct the bond list of each :class:`~MDAnalysis.core.AtomGroup.Atom`.
@@ -102,15 +114,17 @@ def build_bondlists(atoms, bonds):
         atom1.bonds.append(b)
         atom2.bonds.append(b)
 
-def get_parser_for(filename, permissive=False, format=None):
+def get_parser_for(filename, permissive=False, bonds=False, format=None):
     """Return the appropriate topology parser for *filename*.
 
     Automatic detection is disabled when an explicit *format* is
     provided.
     """
     format = guess_format(filename, format=format)
-    if permissive:
+    if permissive and not bonds:
         return MDAnalysis.topology._topology_parsers_permissive[format]
+    if permissive and bonds:
+        return MDAnalysis.topology._topology_parsers_bonds[format]
     return MDAnalysis.topology._topology_parsers[format]
 
 def guess_format(filename, format=None):
@@ -175,6 +189,64 @@ def guess_atom_element(atomname):
             # catch 1HH etc
             return atomname[1]
         return atomname[0]
+
+def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
+    """
+    Bond between two atoms is created, if the two atoms are within R1 * R2 * 0.6
+    of each other, where R1 and R2 are the VdW radii of the atoms and 0.6 is an 
+    ad-hoc factor. This is false (and the reference provided below is wrong).
+    
+    Here the bond is created, when sum of the radii multiplied by some fudge_factor
+    (0.7 by default) is greater than the distance between the two atoms.
+    
+    The VMD radii table is taken from GROMACS (/usr/share/gromacs/top/vdwradii.dat)
+    
+    No check is done after the bonds are guesses to see if Lewis structre is 
+    correct. This is wrong and will burn somebody.
+    
+    The code is also in pure python now, so it's slow. 
+    
+    Reference: http://www.ks.uiuc.edu/Research/vmd/vmd-1.7/ug/node23.html
+    Author: Jan Domanski
+    """
+    # Taken from GROMACS gromacs/top/vdwradii.dat; in nm
+    # FIXME by JD: these should be stored in an asset file, rather than in 
+    # source code.
+    # FIXME this is not the whole periodic table... (eg halogens are missing)
+    if not vdwradii:
+      vdwradii = {  "C":     0.15,
+                    "F":     0.12,
+                    "H":     0.04,
+                    "N":     0.110,
+                    "O":     0.105,
+                    "S":     0.16,}
+    
+    assert len([a for a in atoms if a]) == coords.shape[0]
+    
+    bonds = set()
+    
+    for a in atoms:
+        if not a.type in vdwradii.keys(): 
+            print a.type + "has no defined vdw radius"
+            return bonds()
+    
+    # compute all-2-all distance array
+    # FIXME by JD only the upper rigth triangle of the distance matrix, without 
+    # the diagonal is needed
+    dist = distance_array(coords, coords)
+    
+    # FIXME by JD optimize the code below in cython/scipy.weave
+    for i in range(dist.shape[0]):
+      for j in range(i+1, dist.shape[0]): 
+        a1, a2 = atoms[i], atoms[j]
+        r1, r2 = vdwradii[a1.type], vdwradii[a2.type] 
+
+        # 10 comes from scaling nm to A        
+        if not ((r1 + r2) * 10 * fudge_factor) > dist[i,j] : continue
+        #print "BOND", ((r1 + r2) * 10 * fudge_factor), dist[i,j]
+        bonds.add(frozenset([i+1,j+1]))
+
+    return bonds
 
 def get_atom_mass(element):
     """Return the atomic mass in u for *element*.

@@ -103,3 +103,6 @@ _topology_parsers = {'PSF': PSFParser.parse,
                      }
 _topology_parsers_permissive = _topology_parsers.copy()
 _topology_parsers_permissive['PDB'] = PrimitivePDBParser.parse
+
+_topology_parsers_bonds = _topology_parsers.copy()
+_topology_parsers_bonds['PDB'] = PrimitivePDBParser.parse_bonds

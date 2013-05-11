@@ -52,7 +52,8 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "FASTA",                             # sequence alignment, Issue 112 + 113
            "PDB_HOLE",                          # gramicidin A
            "XTC_HOLE",                          # gramicidin A, all frames identical, for Issue 129
-           "DMS",                               # DHFR
+           "DMS",
+           "CONECT"                             # HIV Reverse Transcriptase with inhibitor
            ]
 
 from pkg_resources import resource_filename
@@ -117,3 +118,5 @@ PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
 XTC_HOLE = resource_filename(__name__, 'data/gram_A_identical_frames.xtc')
 
 DMS = resource_filename(__name__, 'data/adk_closed.dms')
+
+CONECT = resource_filename(__name__, 'data/1hvr.pdb')

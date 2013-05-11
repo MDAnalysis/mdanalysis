@@ -19,6 +19,9 @@ The rules for this file:
   * helanal: additional output of local bend and unit twist angles
     (Issue 133)
   * added support for reading DMS files (DESRES molecular structure?)
+  * bond connectivity information can be guessed from a PDB file if
+    the bond=True keyword is set in Universe (Issue 23)
+
 
   Changes
 
