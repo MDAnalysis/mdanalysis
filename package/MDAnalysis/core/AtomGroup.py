@@ -152,6 +152,7 @@ from math import sqrt, acos, pi
 from MDAnalysis import SelectionError, NoDataError, SelectionWarning
 from MDAnalysis.core.util import angle, dihedral
 
+
 class Atom(object):
     """A class representing a single atom.
 
@@ -170,10 +171,11 @@ class Atom(object):
 
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
                  "mass", "charge", "residue", "segment", "bonds", "__universe",
-                 "radius", "bfactor", "resnum")
+                 "radius", "bfactor", "resnum", "serial")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
-                 residue=None, segment=None, radius=None, bfactor=None, resnum=None):
+                 residue=None, segment=None, radius=None, bfactor=None, 
+                 resnum=None, serial=None):
         self.number = number
         self.name = name
         self.type = str(type)   # always a string (needed for selections)
@@ -187,7 +189,9 @@ class Atom(object):
         self.charge = charge
         self.radius = radius
         self.bfactor = bfactor
-        self.bonds = list()
+        self.serial = serial
+        self.bonds = []
+
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
                repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'
@@ -1289,6 +1293,13 @@ class AtomGroup(object):
           *filenamefmt*
                 format string for default filename; use substitution tokens
                 'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
+          *bonds*
+                how to handle bond information, especially relevant for PDBs
+                ["conect"] - write only the CONECT records defined in the original
+                file
+                "all" - write out all bonds, both the original defined and those
+                      guessed by MDAnalysis
+                None  - do not write out bonds
         """
         import util
         import os.path
@@ -1746,6 +1757,17 @@ class Universe(object):
              keyword has no effect if a list of file names is supplied because
              the "chained" reader has to guess the file format for each
              individual list member. [``None``]
+          *bonds*
+             bond handling for PDB files. The default is to read and store the 
+             CONECT records only. When set to 'True' it will attempt to guess
+             connectivity between all atoms in the Universe. 
+             Each bond knows if it was guessed or was a CONECT record, so when
+             saving out use can specify which ones to write out by ::
+             
+               u = Universe("example.pdb")
+               u.atoms.write("output.pdb", bonds="conect") # default, only CONECT
+               u.atoms.write("output.pdb", bonds="all") 
+               u.atoms.write("output.pdb", bonds=None)
 
 
         This routine tries to do the right thing:
@@ -1796,10 +1818,10 @@ class Universe(object):
 
         # build the topology (or at least a list of atoms)
         try:
-            parser = get_parser_for(topologyfile, permissive=kwargs['permissive'],
+            parser = get_parser_for(topologyfile, permissive=kwargs['permissive'], bonds=kwargs.get('bonds', False),
                                     format=topology_format)
             struc = parser(topologyfile)
-        except TypeError, err:
+        except TypeError, err:   
             raise ValueError("Failed to build a topology from either a psf, pdb or gro (%s)" % err)
 
         self.filename = topologyfile
@@ -1831,6 +1853,41 @@ class Universe(object):
 
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
+
+
+        # TODO wrap-around in a BondGroup class, translating bonds to lists of Atom objects; otherwise indexing becomes a pain
+        # TODO move to universe._psf.bonds
+        #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
+        # FIXME JD: bonds generated from connect records are different than those 
+        # guessed from atom distances it'd be good to keep a record of weather a bond
+        # is guessed or created 
+        # FIXME by OB: the CONECT bonds should take priority over the guessed bonds 
+        #bonds.extend(guessed_bonds)                
+                
+        self.bonds = set()
+        from MDAnalysis.topology.core import Bond
+
+        putative_bonds = set()
+        if struc.has_key("_bonds"):
+            putative_bonds = putative_bonds.union(struc["_bonds"])
+        if struc.has_key("_guessed_bonds"):
+            putative_bonds = putative_bonds.union(struc["_guessed_bonds"])        
+        
+        for bond in putative_bonds:
+            if isinstance(bond, Bond): 
+                self.bonds.add(bond)
+                continue
+            i,j = bond
+            #print i,j
+            a1, a2 = self.atoms[i-1],self.atoms[j-1]
+            bond = Bond(a1, a2)
+            if struc.has_key("_guessed_bonds") and \
+                    set([i,j]) in struc["_guessed_bonds"] and \
+                    set([i,j]) not in struc["_bonds"]:
+                bond.set_is_guessed(True)
+            self.bonds.add(bond)
+        self.bonds = list(self.bonds)
+
 
     def _build_segments(self):
         """Parse topology into segments and create the segid instant selectors.
@@ -2013,7 +2070,9 @@ class Universe(object):
             return atomgrp
 
     def __repr__(self):
-        return '<'+self.__class__.__name__+' with '+repr(len(self.atoms))+' atoms>'
+        return '<'+self.__class__.__name__+' with '+repr(len(self.atoms))+' atoms' \
+                +(" and %d bonds" % len(self.bonds) \
+                  if hasattr(self, "bonds") and self.bonds and len(self.bonds) else '') + '>'
 
     # Properties
     @property
