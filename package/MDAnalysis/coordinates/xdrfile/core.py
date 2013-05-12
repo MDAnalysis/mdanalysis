@@ -439,6 +439,19 @@ class TrjReader(base.Reader):
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return
 
+    def save_offsets(self, filename):
+        """Saves current trajectory offsets into filename (numpy format)."""
+        if self.__offsets is None:
+            self._read_trj_numframes(self.filename)
+        with open(filename, 'w') as OFILE:
+            numpy.save(OFILE, self.__offsets)
+
+    def load_offsets(self, filename):
+        """Loads current trajectory offsets from filename (numpy format)."""
+        with open(filename, 'r') as OFILE:
+            self.__offsets = numpy.load(OFILE)
+        self.__numframes = len(self.__offsets)
+
     def open_trajectory(self):
         """Open xdr trajectory file.
 
