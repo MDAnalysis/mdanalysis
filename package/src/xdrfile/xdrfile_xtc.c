@@ -110,8 +110,7 @@ int read_xtc_numframes(char *fn, int *numframes, int64_t **offsets)
     float time;
     int64_t filesize;
 
-	xd = xdrfile_open(fn,"r");
-	if (NULL == xd)
+	if ((xd = xdrfile_open(fn,"r"))==NULL)
 		return exdrFILENOTFOUND;
 
 	if (xtc_header(xd,&natoms,&step,&time,TRUE) != exdrOK)
@@ -131,19 +130,16 @@ int read_xtc_numframes(char *fn, int *numframes, int64_t **offsets)
     if (natoms < 10)
     {
         int i;
+	    xdrfile_close(xd);
         framebytes = XTC_SHORTHEADER_SIZE + XTC_SHORT_BYTESPERATOM*natoms;
         *numframes = filesize/framebytes; /* Should we complain if framesize doesn't divide filesize? */
         /* Allocate memory for the frame index array */
 	    if ((*offsets=(int64_t *)malloc(sizeof(int64_t)*(*numframes)))==NULL)
-        {
-	        xdrfile_close(xd);
 	    	return exdrNOMEM;
-        }
         for (i=0; i<*numframes; i++)
         {
             (*offsets)[i] = i*framebytes;
         }
-	    xdrfile_close(xd);
 	    return exdrOK;
     }
     else /* No easy way out. We must iterate. */

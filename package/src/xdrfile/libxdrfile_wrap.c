@@ -3091,7 +3091,6 @@ PyObject * my_read_xtc_numframes(char *fn) {
     PyObject *npoffsets = NULL;
     status = read_xtc_numframes(fn, &numframes, offsets);
     if (status != exdrOK) {
-      free(*offsets);
       PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by seeking through xtc '%s'", status, fn);
       return status;
     }
@@ -3131,7 +3130,6 @@ PyObject * my_read_trr_numframes(char *fn) {
     PyObject *npoffsets = NULL;
     status = read_trr_numframes(fn, &numframes, offsets);
     if (status != exdrOK) {
-      free(*offsets);
       PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by seeking through trr '%s'", status, fn);
       return status;
     }

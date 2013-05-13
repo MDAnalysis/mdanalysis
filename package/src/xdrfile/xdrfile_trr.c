@@ -480,8 +480,7 @@ int read_trr_numframes(char *fn, int *numframes, int64_t **offsets)
 	int result, framebytes, est_nframes, totalframebytes;
     int64_t filesize, frame_offset;
 	
-	xd = xdrfile_open(fn,"r");
-	if (NULL == xd)
+	if ((xd = xdrfile_open(fn,"r"))==NULL)
 		return exdrFILENOTFOUND;
     if (xdr_seek(xd, 0L, SEEK_END) != exdrOK)
     {
@@ -496,7 +495,10 @@ int read_trr_numframes(char *fn, int *numframes, int64_t **offsets)
     }
 
 	if ((result = do_trnheader(xd,1,&sh)) != exdrOK)
+    {
+        xdrfile_close(xd);
 		return result;
+    }
 
     framebytes = sh.ir_size + sh.e_size + sh.box_size +
                  sh.vir_size + sh.pres_size + sh.top_size +
@@ -530,7 +532,6 @@ int read_trr_numframes(char *fn, int *numframes, int64_t **offsets)
             est_nframes += est_nframes/5 + 1; // Increase in 20% stretches
             if ((*offsets = realloc(*offsets, sizeof(int64_t)*est_nframes))==NULL)
             {
-                free(*offsets);
                 xdrfile_close(xd);
                 return exdrNOMEM;
             }
