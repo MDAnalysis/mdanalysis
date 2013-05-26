@@ -35,8 +35,6 @@ Function calling order::
 Then compose the stuffs in the format MDAnalysis.Universe reads in
 """
 
-from collections import namedtuple
-
 from MDAnalysis.core.AtomGroup import Atom
 
 import obj
@@ -110,13 +108,7 @@ def read_tpxheader(data):
     bF =  data.unpack_int()                           # has force or not
     bBox =  data.unpack_int()                         # has box or not
 
-    attrs = ["number", "ver_str", "precision",
-             "fver", "fgen", "file_tag", "natoms", "ngtc", "fep_state", "lamb",
-             "bIr", "bTop", "bX", "bV", "bF", "bBox"]
-
-    TpxHeader = namedtuple("TpxHeader", attrs)
-
-    th = TpxHeader(number, ver_str, precision,
+    th = obj.TpxHeader(number, ver_str, precision,
                    fver, fgen, file_tag, natoms, ngtc, fep_state, lamb,
                    bIr, bTop, bX, bV, bF, bBox)
     return th
@@ -128,8 +120,7 @@ def extract_box_info(data, fver):
     if (fver < 56):
         ndo_rvec(data, S.DIM)                         # mdum?
 
-    Box = namedtuple("Box", "size rel v")
-    return Box(box, box_rel, box_v)
+    return obj.Box(box, box_rel, box_v)
 
 def do_mtop(data, fver):
     # mtop: the topology of the whole system
@@ -145,11 +136,10 @@ def do_mtop(data, fver):
 
     nmolblock = data.unpack_int()
 
-    Mtop = namedtuple("Mtop", "nmoltype moltypes nmolblock")
-    mtop = Mtop(nmoltype, moltypes, nmolblock)
+    mtop = obj.Mtop(nmoltype, moltypes, nmolblock)
 
-    TPRTopology = namedtuple("TPRTopology", "atoms, bonds, angles, dihe, impr")
-    ttop = TPRTopology(*[[] for i in xrange(5)])
+
+    ttop = obj.TPRTopology(*[[] for i in xrange(5)])
 
     atom_start_ndx = 0
     res_start_ndx = 0
@@ -225,8 +215,7 @@ def do_ffparams(data, fver):
     # what is iparams
     iparams = do_iparams(data, functype, fver)
 
-    Params = namedtuple("Params", "atnr ntypes functype reppow fudgeQQ iparams")
-    params = Params(atnr, ntypes, functype, reppow, fudgeQQ, iparams)
+    params = obj.Params(atnr, ntypes, functype, reppow, fudgeQQ, iparams)
     return params
 
 def do_harm(data):
@@ -506,8 +495,7 @@ def do_atoms(data, symtab, fver):
     if fver < 57:
         fver_err(fver)
 
-    Atoms = namedtuple("Atoms", "atoms nr nres type typeB atomnames resnames")
-    return Atoms(atoms, nr, nres, type, typeB, atomnames, resnames)
+    return obj.Atoms(atoms, nr, nres, type, typeB, atomnames, resnames)
 
 def do_resinfo(data, symtab, fver, nres):
     if fver < 63:
@@ -535,11 +523,7 @@ def do_atom(data, fver):
 
     if fver < 23 or fver < 39  or  fver < 57:
         fver_err(fver)
-
-    attrs = ["m", "q", "mB", "qB", "tp", "typeB",
-             "ptype", "resind", "atomnumber"]
-    Atom = namedtuple("Atom", attrs)
-    return Atom(m, q, mB, qB, tp, typeB, ptype, resind, atomnumber)
+    return obj.Atom(m, q, mB, qB, tp, typeB, ptype, resind, atomnumber)
 
 def do_ilists(data, fver):
     nr = []                   # number of ilist
@@ -563,8 +547,7 @@ def do_ilists(data, fver):
                 l_.append(data.unpack_int())
             iatoms.append(l_)
 
-    Ilist = namedtuple("Ilist", "nr ik, iatoms")
-    return [Ilist(n, it, i) for n, it, i in
+    return [obj.Ilist(n, it, i) for n, it, i in
             zip(nr, S.interaction_types, iatoms)]
 
 def do_molblock(data):
@@ -578,10 +561,7 @@ def do_molblock(data):
     if molb_nposres_xB > 0:
         ndo_rvec(data, molb_nposres_xB)
 
-    attrs = ["molb_type", "molb_nmol", "molb_natoms_mol",
-             "molb_nposres_xA", "molb_nposres_xB"]
-    Molblock = namedtuple("Molblock", attrs)
-    return Molblock(molb_type, molb_nmol, molb_natoms_mol,
+    return obj.Molblock(molb_type, molb_nmol, molb_natoms_mol,
                     molb_nposres_xA, molb_nposres_xB)
 
 def do_block(data):
