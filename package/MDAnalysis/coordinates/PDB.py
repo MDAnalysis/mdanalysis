@@ -998,7 +998,7 @@ class PrimitivePDBWriter(base.Writer):
         ts, traj = None, None
         if hasattr(obj, 'universe') and not isinstance(obj, Universe):
             # For AtomGroup and children (Residue, ResidueGroup, Segment)
-            ts = obj.ts
+            ts = obj.universe.trajectory.ts
             traj = obj.universe.trajectory
         else:
             # For Universe only
@@ -1137,6 +1137,9 @@ class PrimitivePDBWriter(base.Writer):
             coor = self.convert_pos_to_native(ts._pos, inplace=False)
         else:
             coor = ts._pos
+
+        if hasattr(self.obj, "indices"):
+            coor = coor[self.obj.indices()]
 
         if len(atoms) != len(coor):
             raise ValueError("Length of the atoms array is %d, this is different form the Timestep coordinate array %d" % (len(atoms), len(ts._pos)))
