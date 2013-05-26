@@ -61,10 +61,11 @@ def ndo_ivec(data, n):
     """mimic of gmx_fio_ndo_rvec in gromacs"""
     return [data.unpack_farray(S.DIM, data.unpack_int) for i in xrange(n)]
 
-def err(fver):
-    if fver not in [58, 73]:
+def fver_err(fver):
+    if fver not in [58, 73, 83]:
         raise NotImplementedError(
-            "Your tpx version is {0}, which this parser does not support, yet ".format(fver))
+            "Your tpx version is {0}, which this parser does not support, yet ".format(
+                fver))
 
 def read_tpxheader(data):
     """this function is now compatible with do_tpxheader in tpxio.c"""
@@ -72,9 +73,23 @@ def read_tpxheader(data):
     ver_str = data.unpack_string()                 # version string e.g. VERSION 4.0.5
     precision = data.unpack_int()                  # e.g. 4
     fver = data.unpack_int()                       # version of tpx file
-    err(fver)
+    fver_err(fver)
 
     fgen = data.unpack_int() if fver >= 26 else 0 # generation of tpx file, e.g. 17
+
+    # Versions before 77 don't have the tag, set it to TPX_TAG_RELEASE file_tag
+    # file_tag is used for comparing with tpx_tag. Only tpr files with a
+    # tpx_tag from a lower or the same version of gromacs code can be parsed by
+    # the tpxio.c
+
+    if fver >= 80:
+        data.unpack_int()       # the value is 8, but haven't found the
+                                # corresponding code in the
+                                # <gromacs-4.6.1-dir>/src/gmxlib/tpxio.c yet.
+        file_tag = data.unpack_string()
+    else:
+        file_tag = S.TPX_TAG_RELEASE
+
     natoms = data.unpack_int()                    # total number of atoms
     ngtc = data.unpack_int() if fver >= 28 else 0 # number of groups for T-coupling
 
@@ -82,6 +97,8 @@ def read_tpxheader(data):
         # not sure what these two are for.
         data.unpack_int()                             # idum
         data.unpack_float()                           # rdum
+
+    fep_state = data.unpack_int() if fver > 79 else 0
 
     # actually, it's lambda, not sure what is it. us lamb because lambda is a
     # keywod in python
@@ -94,13 +111,13 @@ def read_tpxheader(data):
     bBox =  data.unpack_int()                         # has box or not
 
     attrs = ["number", "ver_str", "precision",
-             "fver", "fgen", "natoms", "ngtc", "lamb",
+             "fver", "fgen", "file_tag", "natoms", "ngtc", "fep_state", "lamb",
              "bIr", "bTop", "bX", "bV", "bF", "bBox"]
 
-    TpxHeader = namedtuple("TpxHeader", ' '.join(attrs))
+    TpxHeader = namedtuple("TpxHeader", attrs)
 
     th = TpxHeader(number, ver_str, precision,
-                   fver, fgen, natoms, ngtc, lamb,
+                   fver, fgen, file_tag, natoms, ngtc, fep_state, lamb,
                    bIr, bTop, bX, bV, bF, bBox)
     return th
 
@@ -277,7 +294,7 @@ def do_iparams(data, functypes, fver):
             data.unpack_float()                             # polarize.alpha
         elif i in [S.F_WATER_POL]:
             if fver < 31:
-                err(fver)
+                fver_err(fver)
             data.unpack_float()                             # wpol.al_x
             data.unpack_float()                             # wpol.al_y
             data.unpack_float()                             # wpol.al_z
@@ -349,7 +366,7 @@ def do_iparams(data, functypes, fver):
             do_rvec(data)                                   # posres.pos0A
             do_rvec(data)                                   # posres.fcA
             if fver < 27:
-                err(fver)
+                fver_err(fver)
             else:
                 do_rvec(data)                               # posres.pos0B
                 do_rvec(data)                               # posres.fcB
@@ -469,7 +486,7 @@ def do_atoms(data, symtab, fver):
     nres = data.unpack_int() # number of residues in a particular molecule
 
     if fver < 57:
-        err(fver)
+        fver_err(fver)
 
     atoms = []
     for i in xrange(nr):
@@ -480,14 +497,14 @@ def do_atoms(data, symtab, fver):
     atomnames = [symtab[i] for i in ndo_int(data, nr)]
 
     if fver <= 20:
-        err(fver)
+        fver_err(fver)
     else:
         type  = [symtab[i] for i in ndo_int(data, nr)]      # e.g. opls_111
         typeB = [symtab[i] for i in ndo_int(data, nr)]
     resnames = do_resinfo(data, symtab, fver, nres)
 
     if fver < 57:
-        err(fver)
+        fver_err(fver)
 
     Atoms = namedtuple("Atoms", "atoms nr nres type typeB atomnames resnames")
     return Atoms(atoms, nr, nres, type, typeB, atomnames, resnames)
@@ -517,7 +534,7 @@ def do_atom(data, fver):
         atomnumber = data.unpack_int()       # index of atom type
 
     if fver < 23 or fver < 39  or  fver < 57:
-        err(fver)
+        fver_err(fver)
 
     attrs = ["m", "q", "mB", "qB", "tp", "typeB",
              "ptype", "resind", "atomnumber"]
@@ -537,7 +554,7 @@ def do_ilists(data, fver):
             iatoms.append(None)
         else:
             if fver < 44:
-                err(fver)
+                fver_err(fver)
             # do_ilist
             n = data.unpack_int()
             nr.append(n)
