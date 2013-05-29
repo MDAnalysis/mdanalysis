@@ -205,7 +205,7 @@ iterate over the sorted profiles (see <a class="reference internal" href="#MDAna
 </div>
 <div class="section" id="data-structures">
 <h2>3.8.2. Data structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
-<p>A profile is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>:</p>
+<p>A profile is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>:</p>
 <div class="highlight-python"><pre>frame   rxncoord   radius</pre>
 </div>
 <dl class="docutils">
@@ -502,7 +502,7 @@ with the <em>tmpdir</em> keyword (e.g. one can use &#8220;/tmp&#8221;).</p>
 </div>
 <p>The method saves the result as <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE.profiles" title="MDAnalysis.analysis.hole.HOLE.profiles"><tt class="xref py py-attr docutils literal"><span class="pre">HOLE.profiles</span></tt></a>, a dictionary
 indexed by the frame number. Each entry is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
 <p>If the keyword <em>outdir</em> is supplied (e.g. &#8221;.&#8221;) then each profile is
 saved to a gzipped data file.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -687,8 +687,12 @@ frames in the trajectory.</p>
 the group of atoms that is to be analysed by HOLE [&#8220;protein&#8221;]</p>
 </dd>
 <dt><em>cpoint</em></dt>
-<dd><p class="first last"><em>cpoint</em> is guessed as the <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry" title="MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry"><tt class="xref py py-meth docutils literal"><span class="pre">centerOfGeometry()</span></tt></a>
-of the <em>selection</em></p>
+<dd><p class="first">Point inside the pore.</p>
+<p>If set to <tt class="docutils literal"><span class="pre">True</span></tt> then <em>cpoint</em> is guessed as the
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry" title="MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry"><tt class="xref py py-meth docutils literal"><span class="pre">centerOfGeometry()</span></tt></a> of
+the <em>selection</em> from the first frame of the trajectory.</p>
+<p class="last">If <em>cpoint</em> is not set or set to <tt class="docutils literal"><span class="pre">None</span></tt> then HOLE guesses it
+with its own algorithm (for each individual frame). [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">All other keywords are passed on to <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE" title="MDAnalysis.analysis.hole.HOLE"><tt class="xref py py-class docutils literal"><span class="pre">HOLE</span></tt></a> (see there for description).</p>
@@ -711,7 +715,7 @@ order is random; one needs to sort the keys first.</p>
 <dt id="MDAnalysis.analysis.hole.HOLEtraj.guess_cpoint">
 <tt class="descname">guess_cpoint</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.guess_cpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess a point inside the pore.</p>
-<p>This method simply uses the center of geometry of the protein seelction
+<p>This method simply uses the center of geometry of the protein selection
 as a guess. <em>selection</em> is &#8220;protein&#8221; by default.</p>
 </dd></dl>
 

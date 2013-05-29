@@ -39,8 +39,11 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "PDB_helix",
            "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",   # Gromacs (AdK)
            "PDB_xvf", "TPR_xvf", "TRR_xvf",     # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
-           "PDB_sub_sol", "PDB_sub_dry",        # TRRReader sub selection 
-           "TRR_sub_sol",        
+           "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
+           "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455",
+           "TPR460", "TPR461",
+           "PDB_sub_sol", "PDB_sub_dry",        # TRRReader sub selection
+           "TRR_sub_sol",
            "XYZ", "XYZ_psf", "XYZ_bz2",         # XYZ
            "PRM", "TRJ", "TRJ_bz2",             # Amber (no periodic box)
            "PRMpbc", "TRJpbc_bz2",              # Amber (periodic box)
@@ -88,6 +91,23 @@ PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
 TRR_xvf = resource_filename(__name__, 'data/cobrotoxin.trr')
+
+# number is the gromacs version
+TPR400 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.0.tpr')
+TPR402 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.0.2.tpr')
+TPR403 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.0.3.tpr')
+TPR404 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.0.4.tpr')
+TPR405 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.0.5.tpr')
+TPR406 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.0.6.tpr')
+TPR407 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.0.7.tpr')
+TPR450 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.tpr')
+TPR451 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.1.tpr')
+TPR452 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.2.tpr')
+TPR453 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.3.tpr')
+TPR454 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.4.tpr')
+TPR455 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.5.tpr')
+TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
+TPR461 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.1.tpr')
 
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
