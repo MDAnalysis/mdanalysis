@@ -106,7 +106,7 @@ The function :func:`read_tpxheader` is based on the
 ``read_`` or ``do_`` are trying to be similar to those in
 :file:`gmxdump.c` or :file:`tpxio.c`, those with ``extract_`` are new.
 
-Wherever ``fer_err(fver)`` is used, it means the tpx version problem
+Wherever ``fver_err(fver)`` is used, it means the tpx version problem
 haven't be resolved for those other than 58 and 73 (or gromacs version
 before 4.x)
 
@@ -165,7 +165,7 @@ def parse(tprfile):
         ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
 
     if V < 26:
-        U.fer_err(V)
+        U.fver_err(V)
 
     if th.bTop:
         tpr_top = U.do_mtop(data, V)
