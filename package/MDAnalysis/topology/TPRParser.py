@@ -34,40 +34,26 @@ approximate Gromacs release numbers are listed in the table
 
 .. _`TPR-format-table`:
 
-.. table:: TPR format versions read by :func:`MDAnalysis.topology.TPRParser.parse`.
+.. table:: TPR format versions and generations read by :func:`MDAnalysis.topology.TPRParser.parse`.
 
-   ================ ==================== =====
-   TPX format       Gromacs release      read
-   ================ ==================== =====
-   ??               3.3, 3.3.1           no
+   ========== ============== ==================== =====
+   TPX format TPX generation Gromacs release      read
+   ========== ============== ==================== =====
+   ??         ??             3.3, 3.3.1           no
 
-   58               4.0, 4.0.2, 4.0.3,   yes
-                    4.0.4, 4.0.5, 4.0.6,
-                    4.0.7
+   58         17             4.0, 4.0.2, 4.0.3,   yes
+                             4.0.4, 4.0.5, 4.0.6,
+                             4.0.7
 
-   73               4.5.0, 4.5.1, 4.5.2, yes
-                    4.5.3, 4.5.4, 4.5.5
+   73         23             4.5.0, 4.5.1, 4.5.2, yes
+                             4.5.3, 4.5.4, 4.5.5
 
-   83               4.6, 4.6.1           yes
-   ================ ==================== =====
-
-   ================ ==================== =====
-   TPX generation       Gromacs release      read
-   ================ ==================== =====
-   ??               3.3, 3.3.1           no
-
-   17               4.0, 4.0.2, 4.0.3,   yes
-                    4.0.4, 4.0.5, 4.0.6,
-                    4.0.7
-
-   23               4.5.0, 4.5.1, 4.5.2, yes
-                    4.5.3, 4.5.4, 4.5.5
-
-   24               4.6, 4.6.1           yes
-   ================ ==================== =====
+   83         24             4.6, 4.6.1           yes
+   ========== ============== ==================== =====
 
 For further discussion and notes see `Issue 2`_. Also add a comment to
-`Issue 2`_ if a different TPR file format version should be supported.
+`Issue 2`_ if a new or different TPR file format version should be
+supported.
 
 
 Functions
@@ -78,9 +64,11 @@ Functions
 Development notes
 -----------------
 
-Currently the following sections of the topology are parsed:
+The TPR reader is a pure-python implementation of a basic TPR
+parser. Currently the following sections of the topology are parsed:
 
-* Atoms: number, name, type, resname, resid, segid, mass, charge, [residue, segment, radius, bfactor, resnum]
+* Atoms: number, name, type, resname, resid, segid, mass, charge,
+  [residue, segment, radius, bfactor, resnum]
 
 * Bonds:
 

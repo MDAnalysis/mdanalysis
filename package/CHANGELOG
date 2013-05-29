@@ -17,8 +17,8 @@ The rules for this file:
 
   Enhancements
 
-  * EXPERIMENTAL TPR parser (currently limited to version 58 and 73 of the
-    Gromacs TPR format (Gromacs 4.0 to 4.5.5), see Issue 2)
+  * TPR parser (currently limited to versions 58, 73 and 83 of the
+    Gromacs TPR format (Gromacs 4.0 to 4.6.1), see Issue 2)
 
   Changes
 
