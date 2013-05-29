@@ -20,6 +20,9 @@
 # Released under the  GNU Public Licence, v2
 
 """
+Utilities for the TPRParser
+===========================
+
 Function calling order::
 
    (TPRParser.py call do_mtop)
@@ -32,7 +35,8 @@ Function calling order::
                           -> do_blocka
            -> do_molblock
 
-Then compose the stuffs in the format MDAnalysis.Universe reads in
+Then compose the stuffs in the format :class:`MDAnalysis.Universe` reads in.
+
 """
 
 from MDAnalysis.core.AtomGroup import Atom
@@ -60,7 +64,7 @@ def ndo_ivec(data, n):
     return [data.unpack_farray(S.DIM, data.unpack_int) for i in xrange(n)]
 
 def fver_err(fver):
-    if fver not in [58, 73, 83]:
+    if fver not in S.SUPPORTED_VERSIONS:
         raise NotImplementedError(
             "Your tpx version is {0}, which this parser does not support, yet ".format(
                 fver))
@@ -300,10 +304,10 @@ def do_iparams(data, functypes, fver):
             data.unpack_float()                             # lj_c6
             data.unpack_float()                             # lj_c9
         elif i in [S.F_LJ14]:
-             data.unpack_float()                            # lj14_c6A
-             data.unpack_float()                            # lj14_c12A
-             data.unpack_float()                            # lj14_c6B
-             data.unpack_float()                            # lj14_c12B
+            data.unpack_float()                            # lj14_c6A
+            data.unpack_float()                            # lj14_c12A
+            data.unpack_float()                            # lj14_c6B
+            data.unpack_float()                            # lj14_c12B
         elif i in [S.F_LJC14_Q]:
             data.unpack_float()                             # ljc14.fqq
             data.unpack_float()                             # ljc14.qi

@@ -19,8 +19,22 @@
 # Copyright (c) 2011 Zhuyi Xue
 # Released under the  GNU Public Licence, v2
 
+"""
+TPRParser settings
+==================
+
+Definition of constants and reading of the TPR header with
+:func:`do_inputrec`.
+
+The currently read file format versions are defined in
+:data:`SUPPORTED_VERSIONS`.
+
+"""
 
 import utils as U
+
+#: Gromacs TPR file format versions that can be read by the TPRParser.
+SUPPORTED_VERSIONS = (58, 73, 83)
 
 # Some constants
 STRLEN = 4096
@@ -33,7 +47,7 @@ tpx_version = 83               # <gromacs-4.6.1-dir>/src/gmxlib/tpxio.c
 tpx_generation = 24            # <gromacs-4.6.1-dir>/src/gmxlib/tpxio.c
 
 
-# <gromacs_dir>/include/types/idef.h
+#: Function types from ``<gromacs_dir>/include/types/idef.h``
 (F_BONDS,          F_G96BONDS,          F_MORSE,          F_CUBICBONDS,
  F_CONNBONDS,      F_HARMONIC,          F_FENEBONDS,      F_TABBONDS,
  F_TABBONDSNC,     F_RESTRBONDS,        F_ANGLES,         F_G96ANGLES,
@@ -57,7 +71,7 @@ tpx_generation = 24            # <gromacs-4.6.1-dir>/src/gmxlib/tpxio.c
  F_DKDL,           F_DVDL_COUL,         F_DVDL_VDW,             F_DVDL_BONDED,
  F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE,  F_NRE) = range(87)
 
-# <gromacs_dir>/src/gmxlib/tpxio.c
+#: Function types from ``<gromacs_dir>/src/gmxlib/tpxio.c``
 ftupd = [
   (20, F_CUBICBONDS),          (20, F_CONNBONDS),          (20, F_HARMONIC),
   (34, F_FENEBONDS),           (43, F_TABBONDS),           (43, F_TABBONDSNC),
@@ -78,7 +92,7 @@ ftupd = [
   (79, F_DVDL_TEMPERATURE),    (54, F_DHDL_CON)
   ]
 
-# <gromacs_dir>/gmxlib/ifunc.c
+#: Interaction types from ``<gromacs_dir>/gmxlib/ifunc.c``
 interaction_types = [
     ("BONDS",               "Bond",               2),
     ("G96BONDS",            "G96Bond",            2),

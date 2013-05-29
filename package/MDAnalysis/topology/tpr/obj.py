@@ -19,6 +19,12 @@
 # Copyright (c) 2011 Zhuyi Xue
 # Released under the  GNU Public Licence, v2
 
+"""
+Class definitions for the TPRParser
+===================================
+
+"""
+
 from collections import namedtuple
 
 TpxHeader = namedtuple(
@@ -32,7 +38,7 @@ Params = namedtuple("Params", "atnr ntypes functype reppow fudgeQQ iparams")
 Atom = namedtuple("Atom", ["m", "q", "mB", "qB", "tp", "typeB", "ptype", "resind", "atomnumber"])
 Atoms = namedtuple("Atoms", "atoms nr nres type typeB atomnames resnames")
 Ilist = namedtuple("Ilist", "nr ik, iatoms")
-Molblock = namedtuple("Molblock", ["molb_type", "molb_nmol", "molb_natoms_mol", 
+Molblock = namedtuple("Molblock", ["molb_type", "molb_nmol", "molb_natoms_mol",
                                    "molb_nposres_xA", "molb_nposres_xB"])
 
 class MoleculeKind(object):
