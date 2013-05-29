@@ -63,29 +63,30 @@ class MoleculeKind(object):
     def number_of_residues(self):
         return len(set([a.resid for a in self.atomkinds]))
 
-    # remap_ method returns [blah, blah, ..] or []
+    # remap_ method returns [tuple(), tuple(), ..] or []
+    # Note: in MDAnalysis, bonds, angles, etc are represented as tuple and not as list
     def remap_bonds(self, atom_start_ndx):
         if self.bonds:
-            return [[i+atom_start_ndx for i in b] for b in self.bonds]
+            return [tuple(i+atom_start_ndx for i in b) for b in self.bonds]
         else:
             return []
 
     def remap_angles(self, atom_start_ndx):
         if self.angles:
-            return [[i+atom_start_ndx for i in a] for a in self.angles]
+            return [tuple(i+atom_start_ndx for i in a) for a in self.angles]
         else:
             return []
 
     def remap_dihe(self, atom_start_ndx):
         if self.dihe:
-            return [[i+atom_start_ndx for i in a] for a in self.dihe]
+            return [tuple(i+atom_start_ndx for i in a) for a in self.dihe]
         else:
             return []
 
     def remap_impr(self, atom_start_ndx):
         # improper
         if self.impr:
-            return [[i+atom_start_ndx for i in a] for a in self.impr]
+            return [tuple(i+atom_start_ndx for i in a) for a in self.impr]
         else:
             return []
 
