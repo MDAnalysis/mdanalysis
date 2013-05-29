@@ -35,18 +35,10 @@ Function calling order::
 Then compose the stuffs in the format MDAnalysis.Universe reads in
 """
 
-from collections import namedtuple
-
 from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.topology.core import guess_atom_type
 
 import obj
 import setting as S
-# import tpr_utils_bk as UB
-
-class NotImplementedError(Exception):
-    """This code only works for certain features in certain version of tpr files"""
-    pass
 
 def ndo_int(data, n):
     """mimic of gmx_fio_ndo_real in gromacs"""
@@ -67,10 +59,11 @@ def ndo_ivec(data, n):
     """mimic of gmx_fio_ndo_rvec in gromacs"""
     return [data.unpack_farray(S.DIM, data.unpack_int) for i in xrange(n)]
 
-def err(fver):
-    if fver not in [58, 73]:
+def fver_err(fver):
+    if fver not in [58, 73, 83]:
         raise NotImplementedError(
-            "Your tpx version is {0}, which this parser does not support, yet ".format(fver))
+            "Your tpx version is {0}, which this parser does not support, yet ".format(
+                fver))
 
 def read_tpxheader(data):
     """this function is now compatible with do_tpxheader in tpxio.c"""
@@ -78,9 +71,23 @@ def read_tpxheader(data):
     ver_str = data.unpack_string()                 # version string e.g. VERSION 4.0.5
     precision = data.unpack_int()                  # e.g. 4
     fver = data.unpack_int()                       # version of tpx file
-    err(fver)
+    fver_err(fver)
 
     fgen = data.unpack_int() if fver >= 26 else 0 # generation of tpx file, e.g. 17
+
+    # Versions before 77 don't have the tag, set it to TPX_TAG_RELEASE file_tag
+    # file_tag is used for comparing with tpx_tag. Only tpr files with a
+    # tpx_tag from a lower or the same version of gromacs code can be parsed by
+    # the tpxio.c
+
+    if fver >= 80:
+        data.unpack_int()       # the value is 8, but haven't found the
+                                # corresponding code in the
+                                # <gromacs-4.6.1-dir>/src/gmxlib/tpxio.c yet.
+        file_tag = data.unpack_string()
+    else:
+        file_tag = S.TPX_TAG_RELEASE
+
     natoms = data.unpack_int()                    # total number of atoms
     ngtc = data.unpack_int() if fver >= 28 else 0 # number of groups for T-coupling
 
@@ -88,6 +95,8 @@ def read_tpxheader(data):
         # not sure what these two are for.
         data.unpack_int()                             # idum
         data.unpack_float()                           # rdum
+
+    fep_state = data.unpack_int() if fver > 79 else 0
 
     # actually, it's lambda, not sure what is it. us lamb because lambda is a
     # keywod in python
@@ -99,14 +108,8 @@ def read_tpxheader(data):
     bF =  data.unpack_int()                           # has force or not
     bBox =  data.unpack_int()                         # has box or not
 
-    attrs = ["number", "ver_str", "precision",
-             "fver", "fgen", "natoms", "ngtc", "lamb",
-             "bIr", "bTop", "bX", "bV", "bF", "bBox"]
-
-    TpxHeader = namedtuple("TpxHeader", ' '.join(attrs))
-
-    th = TpxHeader(number, ver_str, precision,
-                   fver, fgen, natoms, ngtc, lamb,
+    th = obj.TpxHeader(number, ver_str, precision,
+                   fver, fgen, file_tag, natoms, ngtc, fep_state, lamb,
                    bIr, bTop, bX, bV, bF, bBox)
     return th
 
@@ -117,8 +120,7 @@ def extract_box_info(data, fver):
     if (fver < 56):
         ndo_rvec(data, S.DIM)                         # mdum?
 
-    Box = namedtuple("Box", "size rel v")
-    return Box(box, box_rel, box_v)
+    return obj.Box(box, box_rel, box_v)
 
 def do_mtop(data, fver):
     # mtop: the topology of the whole system
@@ -134,11 +136,10 @@ def do_mtop(data, fver):
 
     nmolblock = data.unpack_int()
 
-    Mtop = namedtuple("Mtop", "nmoltype moltypes nmolblock")
-    mtop = Mtop(nmoltype, moltypes, nmolblock)
+    mtop = obj.Mtop(nmoltype, moltypes, nmolblock)
 
-    TPRTopology = namedtuple("TPRTopology", "atoms, bonds, angles, dihe, impr")
-    ttop = TPRTopology(*[[] for i in xrange(5)])
+
+    ttop = obj.TPRTopology(*[[] for i in xrange(5)])
 
     atom_start_ndx = 0
     res_start_ndx = 0
@@ -214,8 +215,7 @@ def do_ffparams(data, fver):
     # what is iparams
     iparams = do_iparams(data, functype, fver)
 
-    Params = namedtuple("Params", "atnr ntypes functype reppow fudgeQQ iparams")
-    params = Params(atnr, ntypes, functype, reppow, fudgeQQ, iparams)
+    params = obj.Params(atnr, ntypes, functype, reppow, fudgeQQ, iparams)
     return params
 
 def do_harm(data):
@@ -283,7 +283,7 @@ def do_iparams(data, functypes, fver):
             data.unpack_float()                             # polarize.alpha
         elif i in [S.F_WATER_POL]:
             if fver < 31:
-                err(fver)
+                fver_err(fver)
             data.unpack_float()                             # wpol.al_x
             data.unpack_float()                             # wpol.al_y
             data.unpack_float()                             # wpol.al_z
@@ -355,7 +355,7 @@ def do_iparams(data, functypes, fver):
             do_rvec(data)                                   # posres.pos0A
             do_rvec(data)                                   # posres.fcA
             if fver < 27:
-                err(fver)
+                fver_err(fver)
             else:
                 do_rvec(data)                               # posres.pos0B
                 do_rvec(data)                               # posres.fcB
@@ -475,7 +475,7 @@ def do_atoms(data, symtab, fver):
     nres = data.unpack_int() # number of residues in a particular molecule
 
     if fver < 57:
-        err(fver)
+        fver_err(fver)
 
     atoms = []
     for i in xrange(nr):
@@ -486,17 +486,16 @@ def do_atoms(data, symtab, fver):
     atomnames = [symtab[i] for i in ndo_int(data, nr)]
 
     if fver <= 20:
-        err(fver)
+        fver_err(fver)
     else:
         type  = [symtab[i] for i in ndo_int(data, nr)]      # e.g. opls_111
         typeB = [symtab[i] for i in ndo_int(data, nr)]
     resnames = do_resinfo(data, symtab, fver, nres)
 
     if fver < 57:
-        err(fver)
+        fver_err(fver)
 
-    Atoms = namedtuple("Atoms", "atoms nr nres type typeB atomnames resnames")
-    return Atoms(atoms, nr, nres, type, typeB, atomnames, resnames)
+    return obj.Atoms(atoms, nr, nres, type, typeB, atomnames, resnames)
 
 def do_resinfo(data, symtab, fver, nres):
     if fver < 63:
@@ -523,12 +522,8 @@ def do_atom(data, fver):
         atomnumber = data.unpack_int()       # index of atom type
 
     if fver < 23 or fver < 39  or  fver < 57:
-        err(fver)
-
-    attrs = ["m", "q", "mB", "qB", "tp", "typeB",
-             "ptype", "resind", "atomnumber"]
-    Atom = namedtuple("Atom", attrs)
-    return Atom(m, q, mB, qB, tp, typeB, ptype, resind, atomnumber)
+        fver_err(fver)
+    return obj.Atom(m, q, mB, qB, tp, typeB, ptype, resind, atomnumber)
 
 def do_ilists(data, fver):
     nr = []                   # number of ilist
@@ -543,7 +538,7 @@ def do_ilists(data, fver):
             iatoms.append(None)
         else:
             if fver < 44:
-                err(fver)
+                fver_err(fver)
             # do_ilist
             n = data.unpack_int()
             nr.append(n)
@@ -552,8 +547,7 @@ def do_ilists(data, fver):
                 l_.append(data.unpack_int())
             iatoms.append(l_)
 
-    Ilist = namedtuple("Ilist", "nr ik, iatoms")
-    return [Ilist(n, it, i) for n, it, i in
+    return [obj.Ilist(n, it, i) for n, it, i in
             zip(nr, S.interaction_types, iatoms)]
 
 def do_molblock(data):
@@ -567,10 +561,7 @@ def do_molblock(data):
     if molb_nposres_xB > 0:
         ndo_rvec(data, molb_nposres_xB)
 
-    attrs = ["molb_type", "molb_nmol", "molb_natoms_mol",
-             "molb_nposres_xA", "molb_nposres_xB"]
-    Molblock = namedtuple("Molblock", attrs)
-    return Molblock(molb_type, molb_nmol, molb_natoms_mol,
+    return obj.Molblock(molb_type, molb_nmol, molb_natoms_mol,
                     molb_nposres_xA, molb_nposres_xB)
 
 def do_block(data):

@@ -48,7 +48,22 @@ approximate Gromacs release numbers are listed in the table
    73               4.5.0, 4.5.1, 4.5.2, yes
                     4.5.3, 4.5.4, 4.5.5
 
-   ??               4.6, 4.6.1           no
+   83               4.6, 4.6.1           yes
+   ================ ==================== =====
+
+   ================ ==================== =====
+   TPX generation       Gromacs release      read
+   ================ ==================== =====
+   ??               3.3, 3.3.1           no
+
+   17               4.0, 4.0.2, 4.0.3,   yes
+                    4.0.4, 4.0.5, 4.0.6,
+                    4.0.7
+
+   23               4.5.0, 4.5.1, 4.5.2, yes
+                    4.5.3, 4.5.4, 4.5.5
+
+   24               4.6, 4.6.1           yes
    ================ ==================== =====
 
 For further discussion and notes see `Issue 2`_. Also add a comment to
@@ -91,7 +106,7 @@ The function :func:`read_tpxheader` is based on the
 ``read_`` or ``do_`` are trying to be similar to those in
 :file:`gmxdump.c` or :file:`tpxio.c`, those with ``extract_`` are new.
 
-Wherever ``err(fver)`` is used, it means the tpx version problem
+Wherever ``fer_err(fver)`` is used, it means the tpx version problem
 haven't be resolved for those other than 58 and 73 (or gromacs version
 before 4.x)
 
@@ -105,14 +120,13 @@ __author__      = "Zhuyi Xue"
 __copyright__   = "GNU Public Licence, v2"
 
 import sys
-import errno
 import xdrlib
 
 from tpr import utils as U
 
 import logging
 logger = logging.getLogger("MDAnalysis.topology.TPRparser")
-
+logging.basicConfig(level=logging.DEBUG)
 ndo_int = U.ndo_int
 ndo_real = U.ndo_real
 ndo_rvec = U.ndo_rvec
@@ -134,7 +148,8 @@ def parse(tprfile):
         th = U.read_tpxheader(data)                    # tpxheader
     except EOFError:
         logger.exception()
-        raise ValueError("{0}: Invalid tpr file or cannot be recognized".format(tprfile))
+        raise ValueError(
+            "{0}: Invalid tpr file or cannot be recognized".format(tprfile))
 
     log_header(th)
 
@@ -150,7 +165,7 @@ def parse(tprfile):
         ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
 
     if V < 26:
-        U.err(V)
+        U.fer_err(V)
 
     if th.bTop:
         tpr_top = U.do_mtop(data, V)
@@ -199,6 +214,3 @@ if __name__ == "__main__":
         print "{0}\nInvalid tpr file or cannot be recognized\n".format(sys.argv[1])
     except IndexError:
         print "Please feed an tpr file or use this file as a module"
-
-    # parse("../../../testsuite/MDAnalysisTests/data/adk_oplsaa.tpr")
-    # parse("../../../testsuite/MDAnalysisTests/data/gmxv73.tpr")

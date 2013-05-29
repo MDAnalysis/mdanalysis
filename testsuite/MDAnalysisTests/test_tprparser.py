@@ -1,6 +1,7 @@
 from MDAnalysis.tests.datafiles import TPR, \
     TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407, \
-    TPR450, TPR451, TPR452, TPR453, TPR454, TPR455
+    TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, \
+    TPR460, TPR461
 
 from numpy.testing import dec
 from test_topology import _TestTopology
@@ -104,3 +105,19 @@ class TPR455(TPRBase):
 class TestTPR455(_TestTopology, TPR455):
     """Testing TPR version 73"""
 
+class TPR46xBase(object):
+    ref_numatoms = 44052
+    ref_numresidues = 10712
+    ref_proteinatoms = 1885
+
+@dec.slow
+class TPR460(TPR46xBase):
+    topology = TPR460
+class TestTPR460(_TestTopology, TPR460):
+    """Testing TPR version 83"""
+
+@dec.slow
+class TPR461(TPR46xBase):
+    topology = TPR461
+class TestTPR461(_TestTopology, TPR461):
+    """Testing TPR version 83"""

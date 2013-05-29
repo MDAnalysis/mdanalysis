@@ -19,6 +19,21 @@
 # Copyright (c) 2011 Zhuyi Xue
 # Released under the  GNU Public Licence, v2
 
+from collections import namedtuple
+
+TpxHeader = namedtuple(
+    "TpxHeader", ["number", "ver_str", "precision",
+                  "fver", "fgen", "file_tag", "natoms", "ngtc", "fep_state", "lamb",
+                  "bIr", "bTop", "bX", "bV", "bF", "bBox"])
+Box = namedtuple("Box", "size rel v")
+Mtop = namedtuple("Mtop", "nmoltype moltypes nmolblock")
+TPRTopology = namedtuple("TPRTopology", "atoms, bonds, angles, dihe, impr")
+Params = namedtuple("Params", "atnr ntypes functype reppow fudgeQQ iparams")
+Atom = namedtuple("Atom", ["m", "q", "mB", "qB", "tp", "typeB", "ptype", "resind", "atomnumber"])
+Atoms = namedtuple("Atoms", "atoms nr nres type typeB atomnames resnames")
+Ilist = namedtuple("Ilist", "nr ik, iatoms")
+Molblock = namedtuple("Molblock", ["molb_type", "molb_nmol", "molb_natoms_mol", 
+                                   "molb_nposres_xA", "molb_nposres_xB"])
 
 class MoleculeKind(object):
     def __init__(self, name, atomkinds, bonds=None, angles=None,
