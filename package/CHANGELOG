@@ -23,6 +23,7 @@ The rules for this file:
   * added support for reading DMS files (DESRES molecular structure?)
   * bond connectivity information can be guessed from a PDB file if
     the bond=True keyword is set in Universe (Issue 23)
+  * MDAnalysis.analysis.rms.RMSD: calculation of additional RMSDs
 
   Changes
 

@@ -42,6 +42,58 @@ When using this module in published work please cite [Theobald2005]_.
    :mod:`MDAnalysis.core.qcprot`
         implements the fast RMSD algorithm.
 
+Examples
+--------
+
+Calculating RMSD for multiple domains
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In this example we will globally fit a protein to a reference
+structure and investigate the relative movements of domains by
+computing the RMSD of the domains to the reference. The example is a
+DIMS trajectory of adenylate kinase, which samples a large
+closed-to-open transition. The protein consists of the CORE, LID, and
+NMP domain.
+
+* superimpose on the closed structure (frame 0 of the trajectory),
+  using backbone atoms
+
+* calculate the backbone RMSD and RMSD for CORE, LID, NMP (backbone atoms)
+
+The trajectory is included with the test data files. The data in
+:attr:`RMSD.rmsd` is plotted with :func:`matplotlib.pyplot.plot`::
+
+   import MDAnalysis
+   from MDAnalysis.tests.datafiles import PSF,DCD,CRD
+   u = MDAnalysis.Universe(PSF,DCD)
+   ref = MDAnalysis.Universe(PSF,DCD)     # reference closed AdK (1AKE) (with the default ref_frame=0)
+   #ref = MDAnalysis.Universe(PSF,CRD)    # reference open AdK (4AKE)
+
+   import MDAnalysis.analysis.rms
+
+   R = MDAnalysis.analysis.rms.RMSD(u, ref,
+              select="backbone",             # superimpose on whole backbone of the whole protein
+              groupselections=["backbone and (resid 1-29 or resid 60-121 or resid 160-214)",   # CORE
+                               "backbone and resid 122-159",                                   # LID
+                               "backbone and resid 30-59"],                                    # NMP
+              filename="rmsd_all_CORE_LID_NMP.dat")
+   R.run()
+   R.save()
+
+   import matplotlib.pyplot as plt
+   rmsd = R.rmsd.T   # transpose makes it easier for plotting
+   time = rmsd[1]
+   fig = plt.figure(figsize=(4,4))
+   ax = fig.add_subplot(111)
+   ax.plot(time, rmsd[2], 'k-',  label="all")
+   ax.plot(time, rmsd[3], 'k--', label="CORE")
+   ax.plot(time, rmsd[4], 'r--', label="LID")
+   ax.plot(time, rmsd[5], 'b--', label="NMP")
+   ax.legend(loc="best")
+   ax.set_xlabel("time (ps)")
+   ax.set_ylabel(r"RMSD ($\AA$)")
+   fig.savefig("rmsd_all_CORE_LID_NMP_ref1AKE.pdf")
+
 
 
 Functions
@@ -165,8 +217,8 @@ class RMSD(object):
 
     .. versionadded:: 0.7.7
     """
-    def __init__(self, traj, reference=None, select='all', filename="rmsd.dat", mass_weighted=False, tol_mass=0.1,
-                 ref_frame=0):
+    def __init__(self, traj, reference=None, select='all', groupselections=None, filename="rmsd.dat",
+                 mass_weighted=False, tol_mass=0.1, ref_frame=0):
         """Setting up the RMSD analysis.
 
         The RMSD will be computed between *select* and *reference* for
@@ -193,6 +245,12 @@ class RMSD(object):
              When using 2. or 3. with *sel1* and *sel2* then these selections can also each be
              a list of selection strings (to generate a AtomGroup with defined atom order as
              described under :ref:`ordered-selections-label`).
+          *groupselections*
+             A list of selections as described for *select*. Each selection describes additional
+             RMSDs to be computed *after the structures have be superpositioned* according to *select*.
+             The output contains one additional column for each selection. [``None``]
+
+             .. Note:: Experimental feature. Only limited error checking implemented.
           *filename*
              If set, *filename* can be used to write the results with :meth:`RMSD.save` [``None``]
           *mass_weighted*
@@ -205,6 +263,10 @@ class RMSD(object):
 
         .. _ClustalW: http://www.clustal.org/
         .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
+
+        .. versionadded:: 0.7.7
+        .. versionchanged:: 0.8
+           *groupselections* added
         """
         self.universe = traj
         if reference is None:
@@ -212,6 +274,10 @@ class RMSD(object):
         else:
             self.reference = reference
         self.select = _process_selection(select)
+        if groupselections is not None:
+            self.groupselections = [_process_selection(s) for s in groupselections]
+        else:
+            self.groupselections = []
         self.mass_weighted = mass_weighted
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
@@ -221,6 +287,7 @@ class RMSD(object):
         self.traj_atoms = self.universe.selectAtoms(*self.select['mobile'])
         natoms = self.traj_atoms.numberOfAtoms()
         if len(self.ref_atoms) != len(self.traj_atoms):
+            logger.exception()
             raise SelectionError("Reference and trajectory atom selections do not contain "+
                                  "the same number of atoms: N_ref=%d, N_traj=%d" % \
                                  (len(self.ref_atoms), len(self.traj_atoms)))
@@ -238,6 +305,23 @@ class RMSD(object):
             logger.error(errmsg)
             raise SelectionError(errmsg)
         del mass_mismatches
+
+        # TODO:
+        # - make a group comparison a class that contains the checks above
+        # - use this class for the *select* group and the additional *groupselections* groups
+        # each a dict with reference/mobile
+        self.groupselections_atoms = [{'reference': self.reference.selectAtoms(*s['reference']),
+                                       'mobile': self.universe.selectAtoms(*s['mobile']),
+                                       }
+                                      for s in self.groupselections]
+        # sanity check
+        for igroup, (sel, atoms) in enumerate(zip(self.groupselections, self.groupselections_atoms)):
+            if len(atoms['mobile']) != len(atoms['reference']):
+                logger.exception()
+                raise SelectionError("Group selection {0}: {1} | {2}: Reference and trajectory atom selections do not contain "+
+                                     "the same number of atoms: N_ref={3}, N_traj={4}".format(
+                        igroup, sel['reference'], sel['mobile'], len(atoms['reference']), len(atoms['mobile'])))
+
 
         self.rmsd = None
 
@@ -261,6 +345,8 @@ class RMSD(object):
              frame index to select frame from *reference*
 
         """
+        from itertools import izip
+
         start = kwargs.pop('start', None)
         stop = kwargs.pop('stop', None)
         step = kwargs.pop('step', None)
@@ -281,9 +367,13 @@ class RMSD(object):
         current_frame = self.reference.trajectory.ts.frame - 1
         try:
             # Move to the ref_frame
+            # (coordinates MUST be stored in case the ref traj is advanced elsewhere or if ref == mobile universe)
             self.reference.trajectory[ref_frame]
             ref_com = self.ref_atoms.centerOfMass()
-            ref_coordinates = self.ref_atoms.coordinates() - ref_com  # makes a copy
+            ref_coordinates = self.ref_atoms.positions - ref_com  # makes a copy
+            if self.groupselections_atoms:
+                groupselections_ref_coords_T_64 = [
+                    self.reference.selectAtoms(*s['reference']).positions.T.astype(numpy.float64) for s in self.groupselections]
         finally:
             # Move back to the original frame
             self.reference.trajectory[current_frame]
@@ -292,9 +382,19 @@ class RMSD(object):
         # allocate the array for selection atom coords
         traj_coordinates = traj_atoms.coordinates().copy()
 
+        if self.groupselections_atoms:
+            # Only carry out a rotation if we want to calculate secondary RMSDs.
+            # R: rotation matrix that aligns r-r_com, x~-x~com
+            #    (x~: selected coordinates, x: all coordinates)
+            # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
+            rot = numpy.zeros(9,dtype=numpy.float64)      # allocate space for calculation
+            R = numpy.matrix(rot.reshape(3,3))
+        else:
+            rot = None
+
         # RMSD timeseries
         nframes = len(numpy.arange(0,len(trajectory))[start:stop:step])
-        rmsd = numpy.zeros((nframes, 3))
+        rmsd = numpy.zeros((nframes, 3 + len(self.groupselections_atoms)))
 
         percentage = ProgressMeter(nframes, interval=10,
                                    format="RMSD %(rmsd)5.2f A at frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
@@ -306,10 +406,36 @@ class RMSD(object):
             traj_coordinates[:] = traj_atoms.coordinates() - x_com
 
             rmsd[k,:2] = ts.frame, trajectory.time
-            # only calculate RMSD by setting the Rmatrix to None
-            rmsd[k,2] = qcp.CalcRMSDRotationalMatrix(ref_coordinates_T_64,
-                                                     traj_coordinates.T.astype(numpy.float64),
-                                                     natoms, None, weight)
+
+            if self.groupselections_atoms:
+                # 1) superposition structures
+                # Need to transpose coordinates such that the coordinate array is
+                # 3xN instead of Nx3. Also qcp requires that the dtype be float64
+                # (I think we swapped the position of ref and traj in CalcRMSDRotationalMatrix
+                # so that R acts **to the left** and can be broadcasted; we're saving
+                # one transpose. [orbeckst])
+                rmsd[k, 2] = qcp.CalcRMSDRotationalMatrix(ref_coordinates_T_64,
+                                                          traj_coordinates.T.astype(numpy.float64),
+                                                          natoms, rot, weight)
+                R[:,:] = rot.reshape(3,3)
+
+                # Transform each atom in the trajectory (use inplace ops to avoid copying arrays)
+                # (Marginally (~3%) faster than "ts._pos[:] = (ts._pos - x_com) * R + ref_com".)
+                ts._pos   -= x_com
+                ts._pos[:] = ts._pos * R # R acts to the left & is broadcasted N times.
+                ts._pos   += ref_com
+
+                # 2) calculate secondary RMSDs
+                for igroup, (refpos, atoms) in enumerate(izip(groupselections_ref_coords_T_64, self.groupselections_atoms), 3):
+                    rmsd[k, igroup] = qcp.CalcRMSDRotationalMatrix(refpos,
+                                                                   atoms['mobile'].positions.T.astype(numpy.float64),
+                                                                   atoms['mobile'].numberOfAtoms(), None, weight)
+            else:
+                # only calculate RMSD by setting the Rmatrix to None
+                # (no need to carry out the rotation as we already get the optimum RMSD)
+                rmsd[k, 2] = qcp.CalcRMSDRotationalMatrix(ref_coordinates_T_64,
+                                                          traj_coordinates.T.astype(numpy.float64),
+                                                          natoms, None, weight)
 
             percentage.echo(ts.frame, rmsd=rmsd[k,2])
         self.rmsd = rmsd
