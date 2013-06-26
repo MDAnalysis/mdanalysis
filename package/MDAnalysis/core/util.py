@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
@@ -217,7 +217,7 @@ def which(program):
 def realpath(*args):
     """Join all args and return the real path, rooted at /.
 
-    Expands '~', '~user', and environment variables such as $HOME.
+    Expands '~', '~user', and environment variables such as :envvar`$HOME`.
 
     Returns ``None`` if any of the args is ``None``.
     """
@@ -423,7 +423,7 @@ def fixedwidth_bins(delta,xmin,xmax):
 
 # geometric functions
 def norm(v):
-    """Returns the length of a vector, ``sqrt(v.v)``.
+    r"""Returns the length of a vector, ``sqrt(v.v)``.
 
     .. math::
 
@@ -434,7 +434,7 @@ def norm(v):
     return numpy.sqrt(numpy.dot(v,v))
 
 def normal(vec1, vec2):
-    """Returns the unit vector normal to two vectors.
+    r"""Returns the unit vector normal to two vectors.
 
     .. math::
 
@@ -459,14 +459,19 @@ def angle(a, b):
     return numpy.arccos(x)
 
 def stp(vec1, vec2, vec3):
-    """Takes the scalar triple product of three vectors.
+    r"""Takes the scalar triple product of three vectors.
 
-    :Returns: v3 . (v1 x v2)
+    Returns the volume *V* of the parallel epiped spanned by the three
+    vectors
+
+    .. math::
+
+        V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)
     """
     return numpy.dot(vec3, numpy.cross(vec1, vec2))
 
 def dihedral(ab, bc, cd):
-    """Returns the dihedral angle in radians between vectors connecting A,B,C,D.
+    r"""Returns the dihedral angle in radians between vectors connecting A,B,C,D.
 
     The dihedral measures the rotation around bc::
 
@@ -477,9 +482,9 @@ def dihedral(ab, bc, cd):
                 C---->D
                   cd
 
-    The dihedral angle is -pi <= x <= pi.
+    The dihedral angle is restricted to the range -π <= x <= π.
 
-    .. versionadded:: 0.7.8
+    .. versionadded:: 0.8
     """
     x = angle(normal(ab, bc), normal(bc, cd))
     return (x if stp(ab, bc, cd) <= 0.0 else -x)
