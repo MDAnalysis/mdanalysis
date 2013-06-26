@@ -327,6 +327,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
    See http://mdanalysis.googlecode.com for details.
  */
 #define SWIG_FILE_WITH_INIT
+#include <stdio.h>
 #include "xdrfile.h"
 #include "xdrfile_trr.h"
 #include "xdrfile_xtc.h"
@@ -351,6 +352,9 @@ import_array();
 enum { exdrOK, exdrHEADER, exdrSTRING, exdrDOUBLE, 
        exdrINT, exdrFLOAT, exdrUINT, exdr3DX, exdrCLOSE, exdrMAGIC,
        exdrNOMEM, exdrENDOFFILE, exdrFILENOTFOUND, exdrNR };
+
+/* These com from stdio.h, for file seeking. Gives all the flexibility to _fseek(). */
+enum { SEEK_SET, SEEK_CUR, SEEK_END };
 
 /* open/close xdr files */
 %feature("autodoc", "0") xdrfile_open;
@@ -391,15 +395,30 @@ extern int xdrfile_close(XDRFILE *fp);
   if (PyErr_Occurred()) SWIG_fail;
 }
 %inline %{
-  int my_read_xtc_numframes(char *fn) {
-    int numframes;
-    int status;
-    status = read_xtc_numframes(fn, &numframes);
+PyObject * my_read_xtc_numframes(char *fn) {
+    int numframes, status;
+    int64_t *offsets[1];
+    PyObject *npoffsets = NULL;
+    status = read_xtc_numframes(fn, &numframes, offsets);
     if (status != exdrOK) {
-      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by iterating through xtc '%s'", status, fn);
+      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by seeking through xtc '%s'", status, fn);
+      return status;
+    }
+    npy_intp nfrms[1] = { numframes };
+    npoffsets = PyArray_SimpleNewFromData(1, nfrms, NPY_INT64, *offsets);
+    if (npoffsets==NULL)
+    {
+      free(*offsets);
+      Py_XDECREF(npoffsets);
+      PyErr_Format(PyExc_IOError, "Error copying frame index into Python.");
       return 0;
     }
-    return numframes;
+    /* From http://web.archive.org/web/20130304224839/http://blog.enthought.com/python/numpy/simplified-creation-of-numpy-arrays-from-pre-allocated-memory/ */
+    PyArray_BASE(npoffsets) = PyCObject_FromVoidPtr(*offsets, free);
+    PyObject *tuple = PyTuple_New(2); 
+    PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong((long)numframes));
+    PyTuple_SET_ITEM(tuple, 1, npoffsets);
+    return tuple;
   }
 %}
 
@@ -427,6 +446,7 @@ extern int xdrfile_close(XDRFILE *fp);
   }
 %}
 
+
 %feature("autodoc", "0") my_read_trr_numframes;
 %rename (read_trr_numframes) my_read_trr_numframes;
 %exception my_read_trr_numframes {
@@ -434,15 +454,30 @@ extern int xdrfile_close(XDRFILE *fp);
   if (PyErr_Occurred()) SWIG_fail;
 }
 %inline %{
-  int my_read_trr_numframes(char *fn) {
-    int numframes;
-    int status;
-    status = read_trr_numframes(fn, &numframes);
+PyObject * my_read_trr_numframes(char *fn) {
+    int numframes, status;
+    int64_t *offsets[1];
+    PyObject *npoffsets = NULL;
+    status = read_trr_numframes(fn, &numframes, offsets);
     if (status != exdrOK) {
-      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes from trr '%s'", status, fn);
+      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by seeking through trr '%s'", status, fn);
+      return status;
+    }
+    npy_intp nfrms[1] = { numframes };
+    npoffsets = PyArray_SimpleNewFromData(1, nfrms, NPY_INT64, *offsets);
+    if (npoffsets==NULL)
+    {
+      free(*offsets);
+      Py_XDECREF(npoffsets);
+      PyErr_Format(PyExc_IOError, "Error copying frame index into Python.");
       return 0;
     }
-    return numframes;
+    /* From http://web.archive.org/web/20130304224839/http://blog.enthought.com/python/numpy/simplified-creation-of-numpy-arrays-from-pre-allocated-memory/ */
+    PyArray_BASE(npoffsets) = PyCObject_FromVoidPtr(*offsets, free);
+    PyObject *tuple = PyTuple_New(2); 
+    PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong((long)numframes));
+    PyTuple_SET_ITEM(tuple, 1, npoffsets);
+    return tuple;
   }
 %}
 
@@ -490,15 +525,18 @@ PyObject * my_read_trr(XDRFILE *xd, matrix box,
 		int vnatoms, int v_DIM, float *v,
 		int fnatoms, int f_DIM, float *f) {
   /* _DIM = 3 always, need to reorder for numpy.i SWIG */
-  int status, step;
+  int status, step, has_prop=0;
   float time, lmbda;
-  PyObject *tuple = PyTuple_New(4); 
-  status = read_trr(xd, natoms, &step, &time, &lmbda, box, (rvec *)x, (rvec *)v, (rvec *)f);
+  PyObject *tuple = PyTuple_New(7); 
+  status = read_trr(xd, natoms, &step, &time, &lmbda, box, (rvec *)x, (rvec *)v, (rvec *)f, &has_prop);
   PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong((long)status));
   PyTuple_SET_ITEM(tuple, 1, PyInt_FromLong((long)step));
   PyTuple_SET_ITEM(tuple, 2, PyFloat_FromDouble((double)time));
   PyTuple_SET_ITEM(tuple, 3, PyFloat_FromDouble((double)lmbda));
-  return tuple; // return  (status, step, time, lmbda)
+  PyTuple_SET_ITEM(tuple, 4, PyBool_FromLong((long)(has_prop & HASX)));
+  PyTuple_SET_ITEM(tuple, 5, PyBool_FromLong((long)(has_prop & HASV)));
+  PyTuple_SET_ITEM(tuple, 6, PyBool_FromLong((long)(has_prop & HASF)));
+  return tuple; // return  (status, step, time, lmbda, has_x, has_v, has_f)
 }
 %}
 
@@ -540,6 +578,12 @@ int my_write_trr(XDRFILE *xd, int step, float time, float lmbda, matrix box,
   return write_trr(xd, natoms, step, time, lmbda, box, (rvec *)x, (rvec *)v, (rvec *)f);
 }
 %}
+
+%feature("autodoc", "0") xdr_seek;
+extern int xdr_seek(XDRFILE *xd, long long pos, int whence);
+
+%feature("autodoc", "0") xdr_tell;
+extern long long xdr_tell(XDRFILE *xd);
 
 %clear (matrix box);
 %clear (int natoms,  int _DIM,  float *x);

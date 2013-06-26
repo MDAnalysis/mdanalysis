@@ -406,7 +406,7 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
 }
 
 static int do_trn(XDRFILE *xd,mybool bRead,int *step,float *t,float *lambda,
-				  matrix box,int *natoms,rvec *x,rvec *v,rvec *f)
+				  matrix box,int *natoms,rvec *x,rvec *v,rvec *f, int *has_prop)
 {
     t_trnheader *sh;
     int result;
@@ -433,6 +433,13 @@ static int do_trn(XDRFILE *xd,mybool bRead,int *step,float *t,float *lambda,
         *step   = sh->step;
         *t      = sh->td;
         *lambda = sh->lambdad;
+        /* Flag what we read */
+        if (sh->x_size)
+            *has_prop |= HASX;
+        if (sh->v_size)
+            *has_prop |= HASV;
+        if (sh->f_size)
+            *has_prop |= HASF;
     }
     if ((result = do_htrn(xd,bRead,sh,box,x,v,f)) != exdrOK)
         return result;
@@ -465,30 +472,77 @@ int read_trr_natoms(char *fn,int *natoms)
 	return exdrOK;
 }
 
-/* brain damaged iteration through trr to coun frames... can probably calculate it from size */
-int read_trr_numframes(char *fn, int *numframes)
+int read_trr_numframes(char *fn, int *numframes, int64_t **offsets)
 {
 	XDRFILE *xd;
-	int step, natoms;
+	t_trnheader sh;
 	float time, lambda;
-	matrix box;
-	rvec *x, *v, *f;
-	int result;
+	int result, framebytes, est_nframes, totalframebytes;
+    int64_t filesize, frame_offset;
 	
-	if ((result = read_trr_natoms(fn,&natoms)) != exdrOK)
-		return result;
-
-	xd = xdrfile_open(fn,"r");
-	if (NULL == xd)
+	if ((xd = xdrfile_open(fn,"r"))==NULL)
 		return exdrFILENOTFOUND;
-	/* no need to allocate the arrays */
-	x = v = f = NULL;
+    if (xdr_seek(xd, 0L, SEEK_END) != exdrOK)
+    {
+        xdrfile_close(xd);
+        return exdrNR;
+    }
+    filesize = xdr_tell(xd);
+    if (xdr_seek(xd, 0L, SEEK_SET) != exdrOK)
+    {
+        xdrfile_close(xd);
+        return exdrNR;
+    }
 
-	// loop through all frames :-p
-	*numframes = 0;
-	while (exdrOK == read_trr(xd, natoms, &step, &time, &lambda, box, x, v, f)) {
-		(*numframes)++;
-	}
+	if ((result = do_trnheader(xd,1,&sh)) != exdrOK)
+    {
+        xdrfile_close(xd);
+		return result;
+    }
+
+    framebytes = sh.ir_size + sh.e_size + sh.box_size +
+                 sh.vir_size + sh.pres_size + sh.top_size +
+                 sh.sym_size + sh.x_size + sh.v_size + sh.f_size;
+
+    est_nframes = (int) (filesize/((int64_t) (framebytes + TRR_MIN_HEADER_SIZE)) + 1); // add one because it'd be easy to underestimate low frame numbers. 
+    est_nframes += est_nframes/5;
+
+    /* Allocate memory for the frame index array */
+    if ((*offsets=(int64_t *)malloc(sizeof(int64_t)*est_nframes))==NULL)
+    {
+        xdrfile_close(xd);
+        return exdrNOMEM;
+    }
+
+    (*offsets)[0] = 0L;
+    *numframes = 1;
+    while (1)
+    {
+        if (xdr_seek(xd, (int64_t) (framebytes), SEEK_CUR) != exdrOK) {
+            free(*offsets);
+            xdrfile_close(xd);
+            return exdrNR;
+        }
+        frame_offset = xdr_tell(xd); /* Store it now, before we read the header */
+        if ((result = do_trnheader(xd,1,&sh)) != exdrOK) /* Interpreting as EOF */
+            break;
+        /* Read was successful; this is another frame */
+        /* Check if we need to enlarge array */
+        if (*numframes == est_nframes){
+            est_nframes += est_nframes/5 + 1; // Increase in 20% stretches
+            if ((*offsets = realloc(*offsets, sizeof(int64_t)*est_nframes))==NULL)
+            {
+                xdrfile_close(xd);
+                return exdrNOMEM;
+            }
+        }
+        (*offsets)[*numframes] = frame_offset;
+        (*numframes)++;
+        /* Calculate how much to skip this time */
+        framebytes = sh.ir_size + sh.e_size + sh.box_size +
+                     sh.vir_size + sh.pres_size + sh.top_size +
+                     sh.sym_size + sh.x_size + sh.v_size + sh.f_size;
+    }
 	xdrfile_close(xd);
 	return exdrOK;
 }
@@ -497,12 +551,13 @@ int read_trr_numframes(char *fn, int *numframes)
 int write_trr(XDRFILE *xd,int natoms,int step,float t,float lambda,
 			  matrix box,rvec *x,rvec *v,rvec *f)
 {
-	return do_trn(xd,0,&step,&t,&lambda,box,&natoms,x,v,f);
+    int *plcholder;
+	return do_trn(xd,0,&step,&t,&lambda,box,&natoms,x,v,f, plcholder);
 }
 
 int read_trr(XDRFILE *xd,int natoms,int *step,float *t,float *lambda,
-			 matrix box,rvec *x,rvec *v,rvec *f)
+			 matrix box,rvec *x,rvec *v,rvec *f, int *has_prop)
 {
-	return do_trn(xd,1,step,t,lambda,box,&natoms,x,v,f);
+	return do_trn(xd,1,step,t,lambda,box,&natoms,x,v,f,has_prop);
 }
 

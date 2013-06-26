@@ -111,7 +111,7 @@ struct XDR
 		int (*x_putbytes) (XDR *__xdrs, char *__addr, unsigned int __len);
 		/* two next routines are not 64-bit IO safe - don't use! */
 		unsigned int (*x_getpostn) (XDR *__xdrs); 
-		int (*x_setpostn) (XDR *__xdrs, unsigned int __pos);
+		int (*x_setpostn) (XDR *__xdrs, off_t __pos);
 		void (*x_destroy) (XDR *__xdrs); 
 	} 
     *x_ops;	    
@@ -2497,8 +2497,8 @@ static int xdrstdio_getlong (XDR *, int32_t *);
 static int xdrstdio_putlong (XDR *, int32_t *);
 static int xdrstdio_getbytes (XDR *, char *, unsigned int);
 static int xdrstdio_putbytes (XDR *, char *, unsigned int);
-static unsigned int xdrstdio_getpos (XDR *);
-static int xdrstdio_setpos (XDR *, unsigned int);
+static off_t xdrstdio_getpos (XDR *);
+static int xdrstdio_setpos (XDR *, off_t, int);
 static void xdrstdio_destroy (XDR *);
 
 /*
@@ -2579,19 +2579,35 @@ xdrstdio_putbytes (XDR *xdrs, char *addr, unsigned int len)
 	return 1;
 }
 
-/* 32 bit fileseek operations */
-static unsigned int
+
+static off_t
 xdrstdio_getpos (XDR *xdrs)
 {
-	return (unsigned int) ftell ((FILE *) xdrs->x_private);
+    return ftell ((FILE *) xdrs->x_private);
 }
 
 static int
-xdrstdio_setpos (XDR *xdrs, unsigned int pos)
+xdrstdio_setpos (XDR *xdrs, off_t pos, int whence)
 {
-	return fseek ((FILE *) xdrs->x_private, pos, 0) < 0 ? 0 : 1;
+	return fseek ((FILE *) xdrs->x_private, pos, whence) < 0 ? exdrNR : exdrOK;
 }
 
+
+int64_t xdr_tell(XDRFILE *xd)
+/* Reads position in file */
+{
+    return (int64_t)xdrstdio_getpos(xd->xdr);
+}
+
+int xdr_seek(XDRFILE *xd, int64_t pos, int whence)
+/* Seeks to position in file */
+{
+    int result;
+    if ((result = xdrstdio_setpos(xd->xdr, (off_t) pos, whence)) != exdrOK)
+        return result;
+
+    return exdrOK;
+}
 
 
 #endif /* HAVE_RPC_XDR_H not defined */

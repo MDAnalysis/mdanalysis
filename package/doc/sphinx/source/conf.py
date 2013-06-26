@@ -56,8 +56,8 @@ master_doc = 'index'
 # (take the list from AUTHORS)
 authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
     and Oliver Beckstein"""
 project = u'MDAnalysis'
 copyright = u'2005-2013, ' + authors
@@ -245,7 +245,7 @@ man_pages = [
 epub_title = u'MDAnalysis'
 epub_author = authors
 epub_publisher = 'Arizona State University, Tempe, Arizona, USA'
-epub_copyright = u'2012, '+authors
+epub_copyright = u'2013, '+authors
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

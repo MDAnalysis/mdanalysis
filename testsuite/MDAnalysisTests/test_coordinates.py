@@ -23,6 +23,7 @@ import MDAnalysis.coordinates.core
 import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
+import sys
 
 from MDAnalysis.tests.datafiles import PSF, DCD, DCD_empty, PDB_small, PDB_closed, PDB_multiframe, \
     PDB, CRD, XTC, TRR, GRO, DMS, CONECT, \
@@ -1640,7 +1641,6 @@ class _GromacsReader(TestCase):
         assert_equal(frames,  [3, 6, 9], "slicing xdrtrj [2:9:3]")
 
     @dec.slow
-    @dec.knownfailureif(True, "XTC/TRR reverse slicing not implemented for performance reasons")
     def test_reverse_xdrtrj(self):
         frames = [ts.frame for ts in self.trajectory[::-1]]
         assert_equal(frames, range(10,0,-1), "slicing xdrtrj [::-1]")
@@ -1752,6 +1752,9 @@ class TestTRRReader(_GromacsReader):
             assert_array_almost_equal(self.universe.atoms[index].velocity, v_known, self.prec,
                                   err_msg="atom[%d].velocity does not match known values" % index)
 
+if sys.version_info.major < 3:
+    class TestTRRReader_UTF8(TestTRRReader):
+        filename = unicode(TRR)
 
 class _XDRNoConversion(TestCase):
     filename = None
