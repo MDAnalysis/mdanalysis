@@ -95,6 +95,7 @@ For details see the report for `Issue 87`_.
           package_dir       = {'MDAnalysisTests': 'MDAnalysisTests'},
           package_data      = {'MDAnalysisTests':
                                    ['data/*.psf','data/*.dcd','data/*.pdb',
+                                    'data/tprs/*.tpr',
                                     'data/*.gro', 'data/*.xtc','data/*.trr',
                                     'data/*.crd', 'data/*.xyz',
                                     'data/*.prmtop', 'data/*.top', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',

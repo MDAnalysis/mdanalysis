@@ -174,6 +174,7 @@ if __name__ == '__main__':
                                 'MDAnalysis.core',
                                 'MDAnalysis.core.parallel',
                                 'MDAnalysis.topology',
+                                'MDAnalysis.topology.tpr',
                                 'MDAnalysis.selections',
                                 'MDAnalysis.coordinates',
                                 'MDAnalysis.coordinates.xdrfile',
