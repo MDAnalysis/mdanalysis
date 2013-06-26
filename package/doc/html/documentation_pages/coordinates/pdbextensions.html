@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -121,7 +122,7 @@ and more code at
 <h2>5.16.1. Module content<a class="headerlink" href="#module-content" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">SloppyStructureBuilder</tt><big>(</big><em>verbose=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">SloppyStructureBuilder</tt><big>(</big><em>verbose=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/pdb/extensions.html#SloppyStructureBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cope with resSeq &lt; 10,000 limitation by just incrementing internally.</p>
 <p>Solves the follwing problem with <tt class="xref py py-class docutils literal"><span class="pre">Bio.PDB.StructureBuilder.StructureBuilder</span></tt>:</p>
 <dl class="docutils">
@@ -139,7 +140,7 @@ PDBConstructionException: Blank altlocs in duplicate residue SOL (&#8216; &#8216
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.pdb.extensions.SloppyPDBIO">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">SloppyPDBIO</tt><big>(</big><em>use_model_flag=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.SloppyPDBIO" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">SloppyPDBIO</tt><big>(</big><em>use_model_flag=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/pdb/extensions.html#SloppyPDBIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.SloppyPDBIO" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDBIO class that can deal with large pdb files as used in MD simulations.</p>
 <ul class="simple">
 <li>resSeq simply wrap and are printed modulo 10,000.</li>
@@ -151,7 +152,7 @@ PDBConstructionException: Blank altlocs in duplicate residue SOL (&#8216; &#8216
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.pdb.extensions.get_structure">
-<tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">get_structure</tt><big>(</big><em>pdbfile</em>, <em>pdbid='system'</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.get_structure" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">get_structure</tt><big>(</big><em>pdbfile</em>, <em>pdbid='system'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/pdb/extensions.html#get_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.get_structure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the <em>pdbfilename</em>  and return a Bio.PDB structure.</p>
 <p>This function ignores duplicate atom numbers and resids from the
 file and simply increments them.</p>
@@ -164,7 +165,7 @@ file and simply increments them.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.pdb.extensions.write_pdb">
-<tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">write_pdb</tt><big>(</big><em>structure</em>, <em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.write_pdb" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.pdb.extensions.</tt><tt class="descname">write_pdb</tt><big>(</big><em>structure</em>, <em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/pdb/extensions.html#write_pdb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.pdb.extensions.write_pdb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write Bio.PDB molecule <em>structure</em> to <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -216,10 +217,10 @@ file and simply increments them.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

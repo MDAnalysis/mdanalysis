@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -71,7 +72,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="hbonds.html"
-                        title="previous chapter">3.6. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a></p>
+                        title="previous chapter">3.6. Hydrogen Bond analysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="hole.html"
                         title="next chapter">3.8. Generation and Analysis of HOLE pore profiles &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hole</span></tt></a></p>
@@ -107,9 +108,9 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Benjamin Hall &lt;<a class="reference external" href="mailto:benjamin&#46;a&#46;hall&#37;&#52;&#48;ucl&#46;ac&#46;uk">benjamin<span>&#46;</span>a<span>&#46;</span>hall<span>&#64;</span>ucl<span>&#46;</span>ac<span>&#46;</span>uk</a>&gt;, Oliver Beckstein</td>
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Benjamin Hall &lt;<a class="reference external" href="mailto:benjamin&#46;a&#46;hall&#37;&#52;&#48;ucl&#46;ac&#46;uk">benjamin<span>&#46;</span>a<span>&#46;</span>hall<span>&#64;</span>ucl<span>&#46;</span>ac<span>&#46;</span>uk</a>&gt;, Oliver Beckstein, Xavier Deupi</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2009, 2011</td>
+<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2009, 2011, 2013</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">License:</th><td class="field-body">GNU General Public License v2 (or higher)</td>
 </tr>
@@ -194,7 +195,7 @@ characterise helix geometry in proteins. <em>J Biomol Struct Dyn.</em>  17(5):81
 <h2>3.7.3. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.helanal.helanal_trajectory">
-<tt class="descclassname">MDAnalysis.analysis.helanal.</tt><tt class="descname">helanal_trajectory</tt><big>(</big><em>universe</em>, <em>selection='name CA'</em>, <em>start=None</em>, <em>end=None</em>, <em>begin=None</em>, <em>finish=None</em>, <em>matrix_filename='bending_matrix.dat'</em>, <em>origin_pdbfile='origin.pdb'</em>, <em>summary_filename='summary.txt'</em>, <em>screw_filename='screw.xvg'</em>, <em>tilt_filename='local_tilt.xvg'</em>, <em>fitted_tilt_filename='fit_tilt.xvg'</em>, <em>prefix='helanal_'</em>, <em>ref_axis=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.helanal.helanal_trajectory" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.helanal.</tt><tt class="descname">helanal_trajectory</tt><big>(</big><em>universe</em>, <em>selection='name CA'</em>, <em>start=None</em>, <em>end=None</em>, <em>begin=None</em>, <em>finish=None</em>, <em>matrix_filename='bending_matrix.dat'</em>, <em>origin_pdbfile='origin.pdb'</em>, <em>summary_filename='summary.txt'</em>, <em>screw_filename='screw.xvg'</em>, <em>tilt_filename='local_tilt.xvg'</em>, <em>fitted_tilt_filename='fit_tilt.xvg'</em>, <em>bend_filename='local_bend.xvg'</em>, <em>twist_filename='unit_twist.xvg'</em>, <em>prefix='helanal_'</em>, <em>ref_axis=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/helanal.html#helanal_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.helanal.helanal_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform <a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html">HELANAL</a> helix analysis on all frames in <em>universe</em>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -247,6 +248,14 @@ end of the trajectory [<tt class="docutils literal"><span class="pre">None</span
 <dd><p class="first last">Output file- tilt of line of best fit applied to origin axes
 [&#8220;local_tilt.xvg&#8221;]</p>
 </dd>
+<dt><em>bend_filename</em></dt>
+<dd><p class="first last">Output file- local bend angles between successive local helix axes
+[&#8220;local_bend.xvg&#8221;]</p>
+</dd>
+<dt><em>twist_filename</em></dt>
+<dd><p class="first last">Output file- local unit twist between successive helix turns
+[&#8220;unit_twist.xvg&#8221;]</p>
+</dd>
 <dt><em>prefix</em></dt>
 <dd><p class="first last">Prefix to add to all output file names; set to <tt class="docutils literal"><span class="pre">None</span></tt> to disable
 [&#8220;<a href="#id6"><span class="problematic" id="id7">helanal__</span></a>&#8220;]</p>
@@ -264,7 +273,7 @@ is chosen [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.helanal.helanal_main">
-<tt class="descclassname">MDAnalysis.analysis.helanal.</tt><tt class="descname">helanal_main</tt><big>(</big><em>pdbfile</em>, <em>selection='name CA'</em>, <em>start=None</em>, <em>end=None</em>, <em>ref_axis=None</em>, <em>permissive=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.helanal.helanal_main" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.helanal.</tt><tt class="descname">helanal_main</tt><big>(</big><em>pdbfile</em>, <em>selection='name CA'</em>, <em>start=None</em>, <em>end=None</em>, <em>ref_axis=None</em>, <em>permissive=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/helanal.html#helanal_main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.helanal.helanal_main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple HELANAL run on a single frame PDB/GRO.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -302,10 +311,10 @@ the helix, e.g. with &#8220;name CA and resid 1:20&#8221;.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

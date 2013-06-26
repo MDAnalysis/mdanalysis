@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -74,10 +75,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="units.html"
-                        title="previous chapter">7.8. Constants and unit conversion &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
+                        title="previous chapter">7.8. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="log.html"
-                        title="next chapter">7.10. Setting up logging &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
+                        title="next chapter">7.10. Setting up logging &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/util.txt"
@@ -111,7 +112,7 @@
 <h2>7.9.1. Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.filename">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">filename</tt><big>(</big><em>name</em>, <em>ext=None</em>, <em>keep=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.filename" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">filename</tt><big>(</big><em>name</em>, <em>ext=None</em>, <em>keep=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new name that has suffix attached; replaces other extensions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -136,14 +137,14 @@
 
 <dl class="function">
 <dt id="MDAnalysis.core.util.openany">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">openany</tt><big>(</big><em>directory</em><span class="optional">[</span>, <em>mode='r'</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.openany" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">openany</tt><big>(</big><em>directory</em><span class="optional">[</span>, <em>mode='r'</em><span class="optional">]</span><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#openany"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.openany" title="Permalink to this definition">¶</a></dt>
 <dd><p>Context manager to open a compressed (bzip2, gzip) or plain file
 (uses <a class="reference internal" href="#MDAnalysis.core.util.anyopen" title="MDAnalysis.core.util.anyopen"><tt class="xref py py-func docutils literal"><span class="pre">anyopen()</span></tt></a>).</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.util.anyopen">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">anyopen</tt><big>(</big><em>datasource</em>, <em>mode='r'</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.anyopen" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">anyopen</tt><big>(</big><em>datasource</em>, <em>mode='r'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#anyopen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.anyopen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open datasource (gzipped, bzipped, uncompressed) and return a stream.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -165,22 +166,22 @@
 
 <dl class="function">
 <dt id="MDAnalysis.core.util.greedy_splitext">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">greedy_splitext</tt><big>(</big><em>p</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.greedy_splitext" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">greedy_splitext</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#greedy_splitext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.greedy_splitext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split extension in path <em>p</em> at the left-most separator.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.util.which">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">which</tt><big>(</big><em>program</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.which" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine full path of executable <em>program</em> on <span class="target" id="index-0"></span><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt>.</p>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">which</tt><big>(</big><em>program</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#which"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.which" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine full path of executable <em>program</em> on <span class="target" id="index-0"></span><a class="reference external" href="http://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v1.2.1)"><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt></a>.</p>
 <p>(Jay at <a class="reference external" href="http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python">http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python</a>)</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.util.realpath">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">realpath</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.realpath" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">realpath</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#realpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.realpath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Join all args and return the real path, rooted at /.</p>
-<p>Expands &#8216;~&#8217;, &#8216;~user&#8217;, and environment variables such as $HOME.</p>
+<p>Expands &#8216;~&#8217;, &#8216;~user&#8217;, and environment variables such as :envvar`$HOME`.</p>
 <p>Returns <tt class="docutils literal"><span class="pre">None</span></tt> if any of the args is <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
 </dd></dl>
 
@@ -189,13 +190,13 @@
 <h2>7.9.2. Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.iterable">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">iterable</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.iterable" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">iterable</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.iterable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if <em>obj</em> can be iterated over and is <em>not</em> a  string.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.util.asiterable">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">asiterable</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.asiterable" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">asiterable</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#asiterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.asiterable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns obj so that it can be iterated over; a string is <em>not</em> treated as iterable</p>
 </dd></dl>
 
@@ -204,7 +205,7 @@
 <h2>7.9.3. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.util.FORTRANReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">FORTRANReader</tt><big>(</big><em>fmt</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">FORTRANReader</tt><big>(</big><em>fmt</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#FORTRANReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>FORTRANReader provides a method to parse FORTRAN formatted lines in a file.</p>
 <p>Usage:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">atomformat</span> <span class="o">=</span> <span class="n">FORTRANReader</span><span class="p">(</span><span class="s">&#39;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#39;</span><span class="p">)</span>
@@ -220,13 +221,13 @@
 <p>The string <em>fmt</em> should look like &#8216;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#8217;.</p>
 <dl class="method">
 <dt id="MDAnalysis.core.util.FORTRANReader.number_of_matches">
-<tt class="descname">number_of_matches</tt><big>(</big><em>line</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader.number_of_matches" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">number_of_matches</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#FORTRANReader.number_of_matches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader.number_of_matches" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return how many format entries could be populated with legal values.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.util.FORTRANReader.parse_FORTRAN_format">
-<tt class="descname">parse_FORTRAN_format</tt><big>(</big><em>edit_descriptor</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader.parse_FORTRAN_format" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">parse_FORTRAN_format</tt><big>(</big><em>edit_descriptor</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#FORTRANReader.parse_FORTRAN_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader.parse_FORTRAN_format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the descriptor.</p>
 <blockquote>
 <div>parse_FORTRAN_format(edit_descriptor) &#8211;&gt; dict</div></blockquote>
@@ -252,7 +253,7 @@ forms.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.util.FORTRANReader.read">
-<tt class="descname">read</tt><big>(</big><em>line</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader.read" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">read</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#FORTRANReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse <em>line</em> according to the format string and return list of values.</p>
 <p>Values are converted to Python types according to the format specifier.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -286,7 +287,7 @@ forms.</p>
 <h2>7.9.4. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.fixedwidth_bins">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">fixedwidth_bins</tt><big>(</big><em>delta</em>, <em>xmin</em>, <em>xmax</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.fixedwidth_bins" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">fixedwidth_bins</tt><big>(</big><em>delta</em>, <em>xmin</em>, <em>xmax</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#fixedwidth_bins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.fixedwidth_bins" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return bins of width delta that cover xmin,xmax (or a larger range).</p>
 <p>dict = fixedwidth_bins(delta,xmin,xmax)</p>
 <p>The dict contains &#8216;Nbins&#8217;, &#8216;delta&#8217;, &#8216;min&#8217;, and &#8216;max&#8217;.</p>
@@ -297,13 +298,13 @@ forms.</p>
 <h2>7.9.5. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.convert_aa_code">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">convert_aa_code</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.convert_aa_code" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">convert_aa_code</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#convert_aa_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.convert_aa_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts between 3-letter and 1-letter amino acid codes.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.util.parse_residue">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">parse_residue</tt><big>(</big><em>residue</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.parse_residue" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">parse_residue</tt><big>(</big><em>residue</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#parse_residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.parse_residue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process residue string.</p>
 <dl class="docutils">
 <dt>Examples:</dt>
@@ -333,57 +334,67 @@ aa codes are converted to 3-letter codes</td>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="MDAnalysis.core.util.conv_float">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">conv_float</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#conv_float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.conv_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert an object <em>s</em> to float if possible.</p>
+<p>Function to be passed into <a class="reference external" href="http://docs.python.org/library/functions.html#map" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">map()</span></tt></a> or a list comprehension. If
+the argument can be interpreted as a float it is converted,
+otherwise the original object is passed back.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="mathematics-and-geometry">
 <h2>7.9.6. Mathematics and Geometry<a class="headerlink" href="#mathematics-and-geometry" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.normal">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">normal</tt><big>(</big><em>vec1</em>, <em>vec2</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.normal" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">normal</tt><big>(</big><em>vec1</em>, <em>vec2</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#normal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.normal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the unit vector normal to two vectors.</p>
+<div class="math">
+\[\hat{\mathbf{n}} = \frac{\mathbf{v}_1 \times \mathbf{v}_2}{|\mathbf{v}_1 \times \mathbf{v}_2|}\]</div>
+<p>If the two vectors are collinear, the vector <span class="math">\(\mathbf{0}\)</span> is returned.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.util.norm">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">norm</tt><big>(</big><em>v</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.norm" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">norm</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the length of a vector, <tt class="docutils literal"><span class="pre">sqrt(v.v)</span></tt>.</p>
+<div class="math">
+\[v = \sqrt{\mathbf{v}\cdot\mathbf{v}}\]</div>
 <p>Faster than <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v1.7)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></tt></a> because no frills.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.util.angle">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">angle</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.angle" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">angle</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the angle between two vectors in radians</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.util.dihedral">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">dihedral</tt><big>(</big><em>ab</em>, <em>bc</em>, <em>cd</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.dihedral" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">dihedral</tt><big>(</big><em>ab</em>, <em>bc</em>, <em>cd</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.dihedral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the dihedral angle in radians between vectors connecting A,B,C,D.</p>
 <p>The dihedral measures the rotation around bc:</p>
 <div class="highlight-python"><pre>  ab
 A----&gt;B
        \ bc
-       _'
+       _\'
          C----&gt;D
            cd</pre>
 </div>
-<p>The dihedral angle is -pi &lt;= x &lt;= pi.</p>
+<p>The dihedral angle is restricted to the range -π &lt;= x &lt;= π.</p>
 <p class="versionadded">
-<span class="versionmodified">New in version 0.7.8.</span></p>
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.util.stp">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">stp</tt><big>(</big><em>vec1</em>, <em>vec2</em>, <em>vec3</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.util.stp" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">stp</tt><big>(</big><em>vec1</em>, <em>vec2</em>, <em>vec3</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#stp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.stp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes the scalar triple product of three vectors.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">v3 . (v1 x v2)</td>
-</tr>
-</tbody>
-</table>
+<p>Returns the volume <em>V</em> of the parallel epiped spanned by the three
+vectors</p>
+<div class="math">
+\[V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)\]</div>
 </dd></dl>
 
 </div>
@@ -415,10 +426,10 @@ A----&gt;B
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

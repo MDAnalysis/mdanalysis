@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -79,7 +80,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="GRO.html"
-                        title="previous chapter">5.8. GRO file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
+                        title="previous chapter">5.8. GRO file format &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="PDBQT.html"
                         title="next chapter">5.10. PDBQT structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a></p>
@@ -167,10 +168,10 @@ but this can be changed by setting the flag &#8220;permissive_pdb_reader&#8221; 
 current timestep.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.Timestep">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.Timestep" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="attribute">
 <dt id="MDAnalysis.coordinates.PDB.Timestep.dimensions">
-<tt class="descname">dimensions</tt><a class="headerlink" href="#MDAnalysis.coordinates.PDB.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">dimensions</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#Timestep.dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
 <dd><p>unitcell dimensions (<cite>A, B, C, alpha, beta, gamma</cite>)</p>
 <ul class="simple">
 <li><cite>A, B, C</cite> are the lengths of the primitive cell vectors <cite>e1, e2, e3</cite></li>
@@ -237,7 +238,7 @@ do the following:</p>
 <h3>5.9.2.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PrimitivePDBReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PrimitivePDBReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDBReader that reads a PDB-formatted file, no frills.</p>
 <dl class="docutils">
 <dt>Records read (see <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html">PDB coordinate section</a> for details):</dt>
@@ -393,7 +394,7 @@ frame numbers. Therefore, the MODEL numbers must be a sequence
 of integers (typically starting at 1 or 0).</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.Writer">
-<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.Writer" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a permissive (simple) PDBWriter for <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -415,19 +416,19 @@ of integers (typically starting at 1 or 0).</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_bfactors">
-<tt class="descname">get_bfactors</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_bfactors" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_bfactors</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBReader.get_bfactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_bfactors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of bfactors (tempFactor) in atom order.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_occupancy">
-<tt class="descname">get_occupancy</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_occupancy" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_occupancy</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBReader.get_occupancy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_occupancy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of occupancies in atom order.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.next">
-<tt class="descname">next</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.next" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">next</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBReader.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.next" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the next time step.</p>
 </dd></dl>
 
@@ -435,7 +436,7 @@ of integers (typically starting at 1 or 0).</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PrimitivePDBWriter</tt><big>(</big><em>filename</em>, <em>numatoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PrimitivePDBWriter'</em>, <em>convert_units=None</em>, <em>bonds=False</em>, <em>multiframe=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PrimitivePDBWriter</tt><big>(</big><em>filename</em>, <em>bonds='conect'</em>, <em>numatoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PrimitivePDBWriter'</em>, <em>convert_units=None</em>, <em>multiframe=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDB writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/v3.2.html">PDB 3.2 standard</a> .</p>
 <p>PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
 altLoc is written.</p>
@@ -505,7 +506,7 @@ records. If <tt class="docutils literal"><span class="pre">None</span></tt>, the
 </table>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter._check_pdb_coordinates">
-<tt class="descname">_check_pdb_coordinates</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter._check_pdb_coordinates" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_check_pdb_coordinates</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter._check_pdb_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter._check_pdb_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the coordinate values fall within the range allowed for PDB files.</p>
 <p>Deletes the output file if this is the first frame or if frames have
 already been written (in multi-frame mode) adds a REMARK instead of the
@@ -515,7 +516,7 @@ coordinates and closes the file.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter._write_pdb_bonds">
-<tt class="descname">_write_pdb_bonds</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter._write_pdb_bonds" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_write_pdb_bonds</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter._write_pdb_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter._write_pdb_bonds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes out all the bond records; works only for Universe objects.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -533,7 +534,7 @@ Raises <tt class="xref py py-exc docutils literal"><span class="pre">NotImplemen
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter._update_frame">
-<tt class="descname">_update_frame</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter._update_frame" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_update_frame</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter._update_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter._update_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to initialize important attributes in writer from a AtomGroup or Universe <em>obj</em>.</p>
 <p>Attributes initialized/updated:</p>
 <ul class="simple">
@@ -552,7 +553,7 @@ current frame.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter._write_timestep">
-<tt class="descname">_write_timestep</tt><big>(</big><em>ts</em>, <em>multiframe=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter._write_timestep" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_write_timestep</tt><big>(</big><em>ts</em>, <em>multiframe=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter._write_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter._write_timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a new timestep <em>ts</em> to file</p>
 <p>Does unit conversion if necessary.</p>
 <p>By setting <em>multiframe</em> = <tt class="docutils literal"><span class="pre">True</span></tt>, <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#MODEL">MODEL</a> ... <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL">ENDMDL</a> records are
@@ -570,7 +571,7 @@ have been written.)</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM">
-<tt class="descname">ATOM</tt><big>(</big><em>serial=None</em>, <em>name=None</em>, <em>altLoc=None</em>, <em>resName=None</em>, <em>chainID=None</em>, <em>resSeq=None</em>, <em>iCode=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em>, <em>occupancy=1.0</em>, <em>tempFactor=0.0</em>, <em>segID=None</em>, <em>element=None</em>, <em>charge=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">ATOM</tt><big>(</big><em>serial=None</em>, <em>name=None</em>, <em>altLoc=None</em>, <em>resName=None</em>, <em>chainID=None</em>, <em>resSeq=None</em>, <em>iCode=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em>, <em>occupancy=1.0</em>, <em>tempFactor=0.0</em>, <em>segID=None</em>, <em>element=None</em>, <em>charge=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.ATOM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ATOM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html">ATOM</a> record.</p>
 <p>Only some keword args are optional (<em>altLoc</em>, <em>iCode</em>, <em>chainID</em>), for
 some defaults are set.</p>
@@ -588,19 +589,19 @@ then the chain is set to the empty string &#8220;&#8221;.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.CONECT">
-<tt class="descname">CONECT</tt><big>(</big><em>conect</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.CONECT" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">CONECT</tt><big>(</big><em>conect</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.CONECT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.CONECT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect10.html#CONECT">CONECT</a> record.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.CRYST1">
-<tt class="descname">CRYST1</tt><big>(</big><em>dimensions</em>, <em>spacegroup='P 1'</em>, <em>zvalue=1</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.CRYST1" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">CRYST1</tt><big>(</big><em>dimensions</em>, <em>spacegroup='P 1'</em>, <em>zvalue=1</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.CRYST1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.CRYST1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect8.html">CRYST1</a> record.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.END">
-<tt class="descname">END</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.END" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">END</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.END"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.END" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect11.html#END">END</a> record.</p>
 <p>Only a single END record is written. Calling END multiple times has no
 effect. Because <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.close" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.close"><tt class="xref py py-meth docutils literal"><span class="pre">close()</span></tt></a> also calls this
@@ -610,25 +611,25 @@ method right before closing the file it is recommended to <em>not</em> call
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ENDMDL">
-<tt class="descname">ENDMDL</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ENDMDL" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">ENDMDL</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.ENDMDL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.ENDMDL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL">ENDMDL</a> record.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.HEADER">
-<tt class="descname">HEADER</tt><big>(</big><em>trajectory</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.HEADER" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">HEADER</tt><big>(</big><em>trajectory</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.HEADER"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.HEADER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect2.html#HEADER">HEADER</a> record.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.MODEL">
-<tt class="descname">MODEL</tt><big>(</big><em>modelnumber</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.MODEL" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">MODEL</tt><big>(</big><em>modelnumber</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.MODEL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.MODEL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#MODEL">MODEL</a> record.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.REMARK">
-<tt class="descname">REMARK</tt><big>(</big><em>*remarks</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.REMARK" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">REMARK</tt><big>(</big><em>*remarks</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.REMARK"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.REMARK" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write generic <a class="reference external" href="http://www.wwpdb.org/documentation/format32/remarks1.html">REMARK</a> record (without number).</p>
 <p>Each string provided in <em>remarks</em> is written as a separate <a class="reference external" href="http://www.wwpdb.org/documentation/format32/remarks1.html">REMARK</a>
 record.</p>
@@ -637,13 +638,13 @@ record.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.TITLE">
-<tt class="descname">TITLE</tt><big>(</big><em>*title</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.TITLE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">TITLE</tt><big>(</big><em>*title</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.TITLE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.TITLE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect2.html">TITLE</a> record.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.close" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close PDB file and write END record</p>
 </dd></dl>
 
@@ -655,7 +656,7 @@ record.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write">
-<tt class="descname">write</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write object <em>obj</em> at current trajectory frame to file.</p>
 <p><em>obj</em> can be a selection (i.e. a
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>) or a whole
@@ -681,7 +682,7 @@ details).</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write_all_timesteps">
-<tt class="descname">write_all_timesteps</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write_all_timesteps" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write_all_timesteps</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.write_all_timesteps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write_all_timesteps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write all timesteps associated with <em>obj</em> to the PDB file.</p>
 <p><em>obj</em> can be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>
 or a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>.</p>
@@ -703,7 +704,7 @@ constructor). Thus, if <em>u</em> is a Universe then</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write_next_timestep">
-<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter.write_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>write a new timestep to the PDB file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -735,7 +736,7 @@ its argument so that topology information can be gathered.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.MultiPDBWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">MultiPDBWriter</tt><big>(</big><em>filename</em>, <em>numatoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PrimitivePDBWriter'</em>, <em>convert_units=None</em>, <em>bonds=False</em>, <em>multiframe=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">MultiPDBWriter</tt><big>(</big><em>filename</em>, <em>bonds='conect'</em>, <em>numatoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PrimitivePDBWriter'</em>, <em>convert_units=None</em>, <em>multiframe=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#MultiPDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDB writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/v3.2.html">PDB 3.2 standard</a> .</p>
 <p>PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
 is written.</p>
@@ -824,14 +825,14 @@ with the help of <a class="reference external" href="http://docs.python.org/libr
 <h3>5.9.3.1. Classes<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PDBReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PDBReader</tt><big>(</big><em>pdbfilename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PDBReader</tt><big>(</big><em>pdbfilename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a pdb file into a BioPython pdb structure.</p>
 <p>The coordinates are also supplied as one numpy array and wrapped
 into a Timestep object; attributes are set so that the PDBReader
 object superficially resembles the DCDReader object.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBReader.Writer">
-<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader.Writer" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a strict PDBWriter for <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -860,7 +861,7 @@ this method of <a class="reference internal" href="#MDAnalysis.coordinates.PDB.P
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBReader.get_bfactors">
-<tt class="descname">get_bfactors</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader.get_bfactors" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_bfactors</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBReader.get_bfactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader.get_bfactors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of bfactors (tempFactor) in atom order.</p>
 </dd></dl>
 
@@ -868,7 +869,7 @@ this method of <a class="reference internal" href="#MDAnalysis.coordinates.PDB.P
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PDBWriter</tt><big>(</big><em>pdbfilename</em>, <em>universe=None</em>, <em>multi=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PDBWriter</tt><big>(</big><em>pdbfilename</em>, <em>universe=None</em>, <em>multi=False</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write out the current time step as a pdb file.</p>
 <p>This is not cleanly implemented at the moment. One must supply a
 universe, even though this is nominally an optional argument. The
@@ -906,7 +907,7 @@ which happens automatically when the
 </table>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter.write">
-<tt class="descname">write</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>ts=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write timestep as a pdb file.</p>
 <p>If ts=None then we try to get the current one from the universe.</p>
 </dd></dl>
@@ -953,10 +954,10 @@ implemented in Python. Bioinformatics, 19, 2308-2310. <a class="reference extern
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

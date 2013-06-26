@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -100,7 +101,7 @@ define the list of atoms (but no connectivity information will be
 available in this case).</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDBQT.PDBQTReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDBQT.</tt><tt class="descname">PDBQTReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDBQT.</tt><tt class="descname">PDBQTReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDBQTReader that reads a PDBQT-formatted file, no frills.</p>
 <dl class="docutils">
 <dt>Records read:</dt>
@@ -287,7 +288,7 @@ TORSDOF 3
 <p><em>filename</em> can be a gzipped or bzip2ed compressed PDBQT file.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDBQT.PDBQTReader.Writer">
-<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader.Writer" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a permissive (simple) PDBQTWriter for <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -309,13 +310,13 @@ TORSDOF 3
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDBQT.PDBQTReader.get_bfactors">
-<tt class="descname">get_bfactors</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader.get_bfactors" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_bfactors</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTReader.get_bfactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader.get_bfactors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of bfactors (tempFactor) in atom order.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDBQT.PDBQTReader.get_occupancy">
-<tt class="descname">get_occupancy</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader.get_occupancy" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_occupancy</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTReader.get_occupancy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader.get_occupancy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of occupancies in atom order.</p>
 </dd></dl>
 
@@ -323,11 +324,11 @@ TORSDOF 3
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDBQT.PDBQTWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDBQT.</tt><tt class="descname">PDBQTWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDBQT.</tt><tt class="descname">PDBQTWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDBQT writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/v3.2.html">PDB</a> 3.2 standard and the <a class="reference external" href="http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file">PDBQT</a> spec.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDBQT.PDBQTWriter.ATOM">
-<tt class="descname">ATOM</tt><big>(</big><em>serial=None</em>, <em>name=None</em>, <em>altLoc=None</em>, <em>resName=None</em>, <em>chainID=None</em>, <em>resSeq=None</em>, <em>iCode=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em>, <em>occupancy=1.0</em>, <em>tempFactor=0.0</em>, <em>segID=None</em>, <em>partialCharge=None</em>, <em>atomtype=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.ATOM" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">ATOM</tt><big>(</big><em>serial=None</em>, <em>name=None</em>, <em>altLoc=None</em>, <em>resName=None</em>, <em>chainID=None</em>, <em>resSeq=None</em>, <em>iCode=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em>, <em>occupancy=1.0</em>, <em>tempFactor=0.0</em>, <em>segID=None</em>, <em>partialCharge=None</em>, <em>atomtype=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter.ATOM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.ATOM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write ATOM record.
 <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html">http://www.wwpdb.org/documentation/format32/sect9.html</a>
 Only some keyword args are optional (altLoc, iCode, chainID), for some defaults are set.</p>
@@ -340,14 +341,14 @@ are chopped.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDBQT.PDBQTWriter.CRYST1">
-<tt class="descname">CRYST1</tt><big>(</big><em>dimensions</em>, <em>spacegroup='P 1'</em>, <em>zvalue=1</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.CRYST1" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">CRYST1</tt><big>(</big><em>dimensions</em>, <em>spacegroup='P 1'</em>, <em>zvalue=1</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter.CRYST1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.CRYST1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write CRYST1 record.
 <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect8.html">http://www.wwpdb.org/documentation/format32/sect8.html</a></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDBQT.PDBQTWriter.REMARK">
-<tt class="descname">REMARK</tt><big>(</big><em>*remark</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.REMARK" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">REMARK</tt><big>(</big><em>*remark</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter.REMARK"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.REMARK" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write generic REMARK record (without number).
 <a class="reference external" href="http://www.wwpdb.org/documentation/format32/remarks1.html">http://www.wwpdb.org/documentation/format32/remarks1.html</a>
 <a class="reference external" href="http://www.wwpdb.org/documentation/format32/remarks2.html">http://www.wwpdb.org/documentation/format32/remarks2.html</a></p>
@@ -355,14 +356,14 @@ are chopped.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDBQT.PDBQTWriter.TITLE">
-<tt class="descname">TITLE</tt><big>(</big><em>*title</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.TITLE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">TITLE</tt><big>(</big><em>*title</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter.TITLE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.TITLE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write TITLE record.
 <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect2.html">http://www.wwpdb.org/documentation/format32/sect2.html</a></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDBQT.PDBQTWriter.write">
-<tt class="descname">write</tt><big>(</big><em>selection</em>, <em>frame=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>selection</em>, <em>frame=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write selection at current trajectory frame to file.</p>
 <p>write(selection,frame=FRAME)</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -419,10 +420,10 @@ chainID.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

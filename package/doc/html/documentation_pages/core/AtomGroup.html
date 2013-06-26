@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -135,7 +136,7 @@ that the object belongs to.</p>
 <h2>7.2.2. Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.Universe">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Universe</tt><big>(</big><em>topologyfile</em>, <em>coordinatefile=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Universe</tt><big>(</big><em>topologyfile</em>, <em>coordinatefile=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>The MDAnalysis Universe contains all the information describing the system.</p>
 <p>The system always requires a <em>topology</em> file &#8212; in the simplest case just
 a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate
@@ -223,6 +224,19 @@ keyword has no effect if a list of file names is supplied because
 the &#8220;chained&#8221; reader has to guess the file format for each
 individual list member. [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
+<dt><em>bonds</em></dt>
+<dd><p class="first">bond handling for PDB files. The default is to read and store the 
+CONECT records only. When set to &#8216;True&#8217; it will attempt to guess
+connectivity between all atoms in the Universe. 
+Each bond knows if it was guessed or was a CONECT record, so when
+saving out use can specify which ones to write out by</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s">&quot;example.pdb&quot;</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;output.pdb&quot;</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="s">&quot;conect&quot;</span><span class="p">)</span> <span class="c"># default, only CONECT</span>
+<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;output.pdb&quot;</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="s">&quot;all&quot;</span><span class="p">)</span> 
+<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;output.pdb&quot;</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
 </dl>
 </td>
 </tr>
@@ -253,7 +267,7 @@ can be explicitly set with the <em>topology_format</em> keyword.</p>
 format detection.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Universe.coord">
-<tt class="descname">coord</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.coord" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">coord</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Universe.coord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.coord" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reference to current timestep and coordinates of universe.</p>
 <p>The raw trajectory coordinates are <tt class="xref py py-attr docutils literal"><span class="pre">Universe.coord._pos</span></tt>,
 represented as a <tt class="xref py py-class docutils literal"><span class="pre">numpy.float32</span></tt> array.</p>
@@ -271,13 +285,13 @@ of the Universe as a numpy array:
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Universe.dimensions">
-<tt class="descname">dimensions</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.dimensions" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">dimensions</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Universe.dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.dimensions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current dimensions of the unitcell</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.Universe.load_new">
-<tt class="descname">load_new</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.load_new" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">load_new</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Universe.load_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.load_new" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load coordinates from <em>filename</em>, using the suffix to detect file format.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -320,7 +334,7 @@ determined or no appropriate trajectory reader found</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.Universe.selectAtoms">
-<tt class="descname">selectAtoms</tt><big>(</big><em>sel</em>, <em>*othersel</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.selectAtoms" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">selectAtoms</tt><big>(</big><em>sel</em>, <em>*othersel</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Universe.selectAtoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.selectAtoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select atoms using a CHARMM selection string.</p>
 <p>Returns an <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> with atoms sorted according to their
 index in the psf (this is to ensure that there aren&#8217;t any duplicates,
@@ -437,7 +451,7 @@ runs from 1 up to the total number of atoms.</dd>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Universe.trajectory">
-<tt class="descname">trajectory</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.trajectory" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">trajectory</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Universe.trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reference to trajectory reader object containing trajectory data.</p>
 </dd></dl>
 
@@ -445,7 +459,7 @@ runs from 1 up to the total number of atoms.</dd>
 
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">AtomGroup</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">AtomGroup</tt><big>(</big><em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>A group of atoms.</p>
 <blockquote>
 <div>ag = universe.selectAtoms(atom-list)</div></blockquote>
@@ -511,14 +525,14 @@ Phys Chem B</em>, 108(21),
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.NoDataError" title="MDAnalysis.core.AtomGroup.NoDataError"><tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt></a>.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup._atoms">
-<tt class="descname">_atoms</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup._atoms" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_atoms</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup._atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup._atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>immutable list of references to the atoms <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> in the
 group</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup._rebuild_caches">
-<tt class="descname">_rebuild_caches</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup._rebuild_caches" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_rebuild_caches</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup._rebuild_caches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup._rebuild_caches" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rebuild all AtomGroup caches.</p>
 <p>A number of lists and attributes are cached. These caches are lazily
 built the first time they are needed. When editing the topology it
@@ -540,7 +554,7 @@ manually force a complete cache rebuild.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.align_principalAxis">
-<tt class="descname">align_principalAxis</tt><big>(</big><em>axis</em>, <em>vector</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.align_principalAxis" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">align_principalAxis</tt><big>(</big><em>axis</em>, <em>vector</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.align_principalAxis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.align_principalAxis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Align principal axis with index <em>axis</em> with <em>vector</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -570,7 +584,7 @@ i.e. <em>axis</em> = 0) with the z-axis:</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.angle">
-<tt class="descname">angle</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.angle" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">angle</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the angle in degrees between atoms 0, 1, 2.</p>
 <p>Angle between atoms 0 and 2 with apex at 1:</p>
 <div class="highlight-python"><pre>   2
@@ -589,7 +603,7 @@ i.e. <em>axis</em> = 0) with the z-axis:</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.asphericity">
-<tt class="descname">asphericity</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.asphericity" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">asphericity</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.asphericity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.asphericity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Asphericity.</p>
 <p>See <a class="reference internal" href="#dima2004">[Dima2004]</a> for background information.</p>
 <p class="versionadded">
@@ -598,7 +612,7 @@ i.e. <em>axis</em> = 0) with the z-axis:</p>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.atoms">
-<tt class="descname">atoms</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.atoms" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">atoms</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> of all atoms in this group</p>
 <p>The AtomGroup itself; provided for unified access across the
 hierarchy.  Use <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup._atoms" title="MDAnalysis.core.AtomGroup.AtomGroup._atoms"><tt class="xref py py-attr docutils literal"><span class="pre">_atoms</span></tt></a> if you really only need a list
@@ -607,7 +621,7 @@ of individual <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Ato
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.bbox">
-<tt class="descname">bbox</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bbox" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">bbox</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.bbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bbox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bounding box of the selection.</p>
 <p>The lengths A,B,C of the orthorhombic enclosing box are</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">L</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span>
@@ -628,7 +642,7 @@ of individual <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Ato
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.bfactors">
-<tt class="descname">bfactors</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bfactors" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">bfactors</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.bfactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bfactors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Crystallographic B-factors (from PDB) in A**2.</p>
 <p class="deprecated">
 <span class="versionmodified">Deprecated since version 0.8: </span>This managed attribute will become a method in 0.8 in order to
@@ -638,7 +652,7 @@ provide a unified interface to querying properties:
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.bond">
-<tt class="descname">bond</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bond" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">bond</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.bond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bond" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the distance between atoms in a 2-atom group.</p>
 <p>Distance between atoms 0 and 1:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="mi">0</span><span class="o">---</span><span class="mi">1</span>
@@ -656,7 +670,7 @@ provide a unified interface to querying properties:
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.bsphere">
-<tt class="descname">bsphere</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bsphere" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">bsphere</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.bsphere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bsphere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bounding sphere of the selection.</p>
 <p>The sphere is calculated relative to the centre of geometry.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -673,13 +687,13 @@ provide a unified interface to querying properties:
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry">
-<tt class="descname">centerOfGeometry</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">centerOfGeometry</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.centerOfGeometry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry (also known as centroid) of the selection.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass">
-<tt class="descname">centerOfMass</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">centerOfMass</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.centerOfMass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of mass of the selection.</p>
 </dd></dl>
 
@@ -691,7 +705,7 @@ provide a unified interface to querying properties:
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.charges">
-<tt class="descname">charges</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.charges" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">charges</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.charges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.charges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Array of partial charges of the atoms (as defined in the topology)</p>
 </dd></dl>
 
@@ -709,7 +723,7 @@ provide a unified interface to querying properties:
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.dihedral">
-<tt class="descname">dihedral</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.dihedral" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">dihedral</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.dihedral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the dihedral angle in degrees.</p>
 <p>Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
 between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
@@ -730,7 +744,7 @@ between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.dimensions">
-<tt class="descname">dimensions</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.dimensions" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">dimensions</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.dimensions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dimensions of the Universe to which the group belongs, at the current time step.</p>
 </dd></dl>
 
@@ -750,7 +764,7 @@ will set all forces to (0.,0.,0.)).</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.get_forces">
-<tt class="descname">get_forces</tt><big>(</big><em>ts=None</em>, <em>copy=False</em>, <em>dtype=&lt;type 'numpy.float32'&gt;</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_forces" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_forces</tt><big>(</big><em>ts=None</em>, <em>copy=False</em>, <em>dtype=&lt;type 'numpy.float32'&gt;</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.get_forces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_forces" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a NumPy array of the atomic forces (if available).
 Currently only supported for Gromacs .trr trajectories.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -792,7 +806,7 @@ by assigning to <a class="reference internal" href="#MDAnalysis.core.AtomGroup.A
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.get_positions">
-<tt class="descname">get_positions</tt><big>(</big><em>ts=None</em>, <em>copy=False</em>, <em>dtype=&lt;type 'numpy.float32'&gt;</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_positions" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_positions</tt><big>(</big><em>ts=None</em>, <em>copy=False</em>, <em>dtype=&lt;type 'numpy.float32'&gt;</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.get_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a NumPy array of the coordinates.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -835,7 +849,7 @@ differently for symmetry with with <a class="reference internal" href="#MDAnalys
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.get_velocities">
-<tt class="descname">get_velocities</tt><big>(</big><em>ts=None</em>, <em>copy=False</em>, <em>dtype=&lt;type 'numpy.float32'&gt;</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_velocities" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_velocities</tt><big>(</big><em>ts=None</em>, <em>copy=False</em>, <em>dtype=&lt;type 'numpy.float32'&gt;</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.get_velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>NumPy array of the velocities.</p>
 <p>Raises a <a class="reference internal" href="#MDAnalysis.core.AtomGroup.NoDataError" title="MDAnalysis.core.AtomGroup.NoDataError"><tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt></a> if the underlying
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> does not contain
@@ -848,7 +862,7 @@ differently for symmetry with with <a class="reference internal" href="#MDAnalys
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.improper">
-<tt class="descname">improper</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.improper" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">improper</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.improper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.improper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the improper dihedral between 4 atoms.</p>
 <p>The improper dihedral is calculated in the same way as the proper
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.dihedral" title="MDAnalysis.core.AtomGroup.AtomGroup.dihedral"><tt class="xref py py-meth docutils literal"><span class="pre">dihedral()</span></tt></a>: The angle between the planes formed by atoms (0,1,2)
@@ -866,7 +880,7 @@ selection of atoms and thus the user input!</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.indices">
-<tt class="descname">indices</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.indices" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">indices</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.indices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Array of all <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom.number" title="MDAnalysis.core.AtomGroup.Atom.number"><tt class="xref py py-attr docutils literal"><span class="pre">Atom.number</span></tt></a> in the group.</p>
 <p>These indices are 0-based and can be used to directly index
 <tt class="xref py py-attr docutils literal"><span class="pre">Universe.atoms</span></tt> or the coordinate array
@@ -875,37 +889,37 @@ selection of atoms and thus the user input!</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.masses">
-<tt class="descname">masses</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.masses" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">masses</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.masses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.masses" title="Permalink to this definition">¶</a></dt>
 <dd><p>Array of atomic masses (as defined in the topology)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.momentOfInertia">
-<tt class="descname">momentOfInertia</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.momentOfInertia" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">momentOfInertia</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.momentOfInertia"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.momentOfInertia" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tensor of inertia as 3x3 NumPy array.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.names">
-<tt class="descname">names</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.names" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">names</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of atom names.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.numberOfAtoms">
-<tt class="descname">numberOfAtoms</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.numberOfAtoms" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">numberOfAtoms</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.numberOfAtoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.numberOfAtoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Total number of atoms in the group</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.numberOfResidues">
-<tt class="descname">numberOfResidues</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.numberOfResidues" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">numberOfResidues</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.numberOfResidues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.numberOfResidues" title="Permalink to this definition">¶</a></dt>
 <dd><p>Total number of residues in the group</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.numberOfSegments">
-<tt class="descname">numberOfSegments</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.numberOfSegments" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">numberOfSegments</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.numberOfSegments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.numberOfSegments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Total number of segments in the group</p>
 </dd></dl>
 
@@ -925,7 +939,7 @@ will move all particles to the origin).</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.principalAxes">
-<tt class="descname">principalAxes</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.principalAxes" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">principalAxes</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.principalAxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.principalAxes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the principal axes from the moment of inertia.</p>
 <p>e1,e2,e3 = AtomGroup.principalAxes()</p>
 <p>The eigenvectors are sorted by eigenvalue, i.e. the first one
@@ -943,25 +957,25 @@ and <tt class="docutils literal"><span class="pre">v[2]</span></tt> as third eig
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.radii">
-<tt class="descname">radii</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.radii" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">radii</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.radii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.radii" title="Permalink to this definition">¶</a></dt>
 <dd><p>Array of atomic radii (as defined in the PQR file)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.radiusOfGyration">
-<tt class="descname">radiusOfGyration</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.radiusOfGyration" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">radiusOfGyration</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.radiusOfGyration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.radiusOfGyration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Radius of gyration.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.resids">
-<tt class="descname">resids</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.resids" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">resids</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.resids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.resids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of residue numbers.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.residues">
-<tt class="descname">residues</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.residues" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">residues</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.residues" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read-only list of <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> objects.</p>
 <p>A <a class="reference internal" href="#MDAnalysis.core.AtomGroup.ResidueGroup" title="MDAnalysis.core.AtomGroup.ResidueGroup"><tt class="xref py py-class docutils literal"><span class="pre">ResidueGroup</span></tt></a> of all residues that contain atoms in
 this group.</p>
@@ -969,13 +983,13 @@ this group.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.resnames">
-<tt class="descname">resnames</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.resnames" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">resnames</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.resnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.resnames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of residue names.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.resnums">
-<tt class="descname">resnums</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.resnums" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">resnums</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.resnums"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.resnums" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of canonical residue numbers.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
@@ -983,7 +997,7 @@ this group.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.rotate">
-<tt class="descname">rotate</tt><big>(</big><em>R</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.rotate" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">rotate</tt><big>(</big><em>R</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.rotate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply a rotation matrix <em>R</em> to the selection&#8217;s coordinates.</p>
 <p>AtomGroup.rotate(R)</p>
 <p><em>R</em> is a 3x3 orthogonal matrix that transforms x &#8211;&gt; x&#8217;:</p>
@@ -993,7 +1007,7 @@ this group.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.rotateby">
-<tt class="descname">rotateby</tt><big>(</big><em>angle</em>, <em>axis</em>, <em>point=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.rotateby" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">rotateby</tt><big>(</big><em>angle</em>, <em>axis</em>, <em>point=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.rotateby"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.rotateby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply a rotation to the selection&#8217;s coordinates.</p>
 <p>AtomGroup.rotateby(angle,axis[,point])</p>
 <p>The transformation from current coordinates x to new coordinates x&#8217; is</p>
@@ -1034,20 +1048,20 @@ and the translation vectort M[:3,3].</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.segids">
-<tt class="descname">segids</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.segids" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">segids</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.segids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.segids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of segment ids (=segment names).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.segments">
-<tt class="descname">segments</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.segments" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">segments</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.segments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read-only list of <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Segment" title="MDAnalysis.core.AtomGroup.Segment"><tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt></a> objects.</p>
 <p>A <a class="reference internal" href="#MDAnalysis.core.AtomGroup.SegmentGroup" title="MDAnalysis.core.AtomGroup.SegmentGroup"><tt class="xref py py-class docutils literal"><span class="pre">SegmentGroup</span></tt></a> of all segments that contain atoms in this group.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms">
-<tt class="descname">selectAtoms</tt><big>(</big><em>sel</em>, <em>*othersel</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">selectAtoms</tt><big>(</big><em>sel</em>, <em>*othersel</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.selectAtoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selection of atoms using the MDAnalysis selection syntax.</p>
 <p>AtomGroup.selectAtoms(selection[,selection[,...]])</p>
 <div class="admonition-see-also admonition seealso">
@@ -1058,7 +1072,7 @@ and the translation vectort M[:3,3].</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_bfactor">
-<tt class="descname">set_bfactor</tt><big>(</big><em>bfactor</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_bfactor" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_bfactor</tt><big>(</big><em>bfactor</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_bfactor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_bfactor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the atom bfactor to float <em>bfactor</em> for <strong>all atoms</strong> in the AtomGroup.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
@@ -1066,7 +1080,7 @@ and the translation vectort M[:3,3].</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_charge">
-<tt class="descname">set_charge</tt><big>(</big><em>charge</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_charge" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_charge</tt><big>(</big><em>charge</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_charge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_charge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the partial charge to float <em>charge</em> for <strong>all atoms</strong> in the AtomGroup.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
@@ -1074,7 +1088,7 @@ and the translation vectort M[:3,3].</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_forces">
-<tt class="descname">set_forces</tt><big>(</big><em>forces</em>, <em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_forces" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_forces</tt><big>(</big><em>forces</em>, <em>ts=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_forces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_forces" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the forces for all atoms in the group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1113,7 +1127,7 @@ to NumPy&#8217;s broadcasting rules), as described for
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_mass">
-<tt class="descname">set_mass</tt><big>(</big><em>mass</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_mass" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_mass</tt><big>(</big><em>mass</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the atom mass to float <em>mass</em> for <strong>all atoms</strong> in the AtomGroup.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
@@ -1121,7 +1135,7 @@ to NumPy&#8217;s broadcasting rules), as described for
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_name">
-<tt class="descname">set_name</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_name" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_name</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the atom name to string <em>name</em> for <strong>all atoms</strong> in the AtomGroup.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
@@ -1129,7 +1143,7 @@ to NumPy&#8217;s broadcasting rules), as described for
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_positions">
-<tt class="descname">set_positions</tt><big>(</big><em>coords</em>, <em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_positions" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_positions</tt><big>(</big><em>coords</em>, <em>ts=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the positions for all atoms in the group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1168,7 +1182,7 @@ to NumPy&#8217;s broadcasting rules), as described for
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_radius">
-<tt class="descname">set_radius</tt><big>(</big><em>radius</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_radius" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_radius</tt><big>(</big><em>radius</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_radius"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_radius" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the atom radius to float <em>radius</em> for <strong>all atoms</strong> in the AtomGroup.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
@@ -1176,7 +1190,7 @@ to NumPy&#8217;s broadcasting rules), as described for
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_resid">
-<tt class="descname">set_resid</tt><big>(</big><em>resid</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_resid" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_resid</tt><big>(</big><em>resid</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_resid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_resid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the resid to integer <em>resid</em> for <strong>all atoms</strong> in the AtomGroup.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -1191,7 +1205,7 @@ objects or split them.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_resname">
-<tt class="descname">set_resname</tt><big>(</big><em>resname</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_resname" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_resname</tt><big>(</big><em>resname</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_resname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_resname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the resname to string <em>resname</em> for <strong>all atoms</strong> in the AtomGroup.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
@@ -1201,7 +1215,7 @@ objects or split them.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_resnum">
-<tt class="descname">set_resnum</tt><big>(</big><em>resnum</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_resnum" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_resnum</tt><big>(</big><em>resnum</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_resnum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_resnum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the resnum to <em>resnum</em> for <strong>all atoms</strong> in the AtomGroup.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
@@ -1211,7 +1225,7 @@ objects or split them.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_segid">
-<tt class="descname">set_segid</tt><big>(</big><em>segid</em>, <em>buildsegments=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_segid" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_segid</tt><big>(</big><em>segid</em>, <em>buildsegments=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_segid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_segid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the segid to <em>segid</em> for all atoms in the AtomGroup.</p>
 <p>If <em>buildsegments</em> is set to <tt class="docutils literal"><span class="pre">False</span></tt> for performance reasons then one
 needs to run <tt class="xref py py-meth docutils literal"><span class="pre">Universe._build_segments()</span></tt> in order to update the
@@ -1223,7 +1237,7 @@ selectors.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_type">
-<tt class="descname">set_type</tt><big>(</big><em>atype</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_type" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_type</tt><big>(</big><em>atype</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the atom type to <em>atype</em> for <strong>all atoms</strong> in the AtomGroup.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.4.</span></p>
@@ -1231,7 +1245,7 @@ selectors.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.set_velocities">
-<tt class="descname">set_velocities</tt><big>(</big><em>v</em>, <em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_velocities" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_velocities</tt><big>(</big><em>v</em>, <em>ts=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.set_velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assign the velocities <em>v</em> to the timestep.</p>
 <p>Raises a <a class="reference internal" href="#MDAnalysis.core.AtomGroup.NoDataError" title="MDAnalysis.core.AtomGroup.NoDataError"><tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt></a> if the underlying
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> does not contain
@@ -1244,7 +1258,7 @@ attribute access.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.shapeParameter">
-<tt class="descname">shapeParameter</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.shapeParameter" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">shapeParameter</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.shapeParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.shapeParameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shape parameter.</p>
 <p>See <a class="reference internal" href="#dima2004">[Dima2004]</a> for background information.</p>
 <p class="versionadded">
@@ -1253,19 +1267,19 @@ attribute access.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.totalCharge">
-<tt class="descname">totalCharge</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.totalCharge" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">totalCharge</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.totalCharge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.totalCharge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sum of all partial charges (must be defined in topology).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.totalMass">
-<tt class="descname">totalMass</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.totalMass" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">totalMass</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.totalMass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.totalMass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Total mass of the selection (masses are taken from the topology or guessed).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.transform">
-<tt class="descname">transform</tt><big>(</big><em>M</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.transform" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">transform</tt><big>(</big><em>M</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply homogenous transformation matrix <em>M</em> to the coordinates.</p>
 <p>The matrix <em>M</em> must be a 4x4 matrix, with the rotation in
 <tt class="docutils literal"><span class="pre">M[:3,:3]</span></tt> and the translation in <tt class="docutils literal"><span class="pre">M[:3,3]</span></tt>.</p>
@@ -1276,7 +1290,7 @@ attribute access.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.translate">
-<tt class="descname">translate</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.translate" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">translate</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.translate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply translation vector <em>t</em> to the selection&#8217;s coordinates.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">AtomGroup</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">AtomGroup</span><span class="o">.</span><span class="n">translate</span><span class="p">((</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">))</span>
@@ -1297,7 +1311,7 @@ difference between the centers of geometry (centroid) of B and A:</p>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.ts">
-<tt class="descname">ts</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.ts" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">ts</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.ts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.ts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Temporary Timestep that contains the selection coordinates.</p>
 <p>A <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance,
 which can be passed to a trajectory writer.</p>
@@ -1312,13 +1326,13 @@ changes).</p>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.universe">
-<tt class="descname">universe</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.universe" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">universe</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>The universe to which the atoms belong (read-only).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.velocities">
-<tt class="descname">velocities</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.velocities" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">velocities</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>NumPy array of the velocities of the atoms in the group.</p>
 <p>If the trajectory does not contain velocity information then a
 <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt> is raised.</p>
@@ -1331,7 +1345,7 @@ and <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.set
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.write">
-<tt class="descname">write</tt><big>(</big><em>filename=None</em>, <em>format='PDB'</em>, <em>filenamefmt='%(trjname)s_%(frame)d'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.write" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write</tt><big>(</big><em>filename=None</em>, <em>format='PDB'</em>, <em>filenamefmt='%(trjname)s_%(frame)d'</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write AtomGroup to a file.</p>
 <p>AtomGroup.write(filename[,format])</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1350,6 +1364,16 @@ the filename extension [PDB]</p>
 <dd><p class="first last">format string for default filename; use substitution tokens
 &#8216;trjname&#8217; and &#8216;frame&#8217; [&#8220;%(trjname)s_%(frame)d&#8221;]</p>
 </dd>
+<dt><em>bonds</em></dt>
+<dd><p class="first">how to handle bond information, especially relevant for PDBs
+[&#8220;conect&#8221;] - write only the CONECT records defined in the original
+file
+&#8220;all&#8221; - write out all bonds, both the original defined and those</p>
+<blockquote>
+<div><p>guessed by MDAnalysis</p>
+</div></blockquote>
+<p class="last">None  - do not write out bonds</p>
+</dd>
 </dl>
 </td>
 </tr>
@@ -1359,7 +1383,7 @@ the filename extension [PDB]</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.write_selection">
-<tt class="descname">write_selection</tt><big>(</big><em>filename=None</em>, <em>format='vmd'</em>, <em>filenamefmt='%(trjname)s_%(frame)d'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.write_selection" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write_selection</tt><big>(</big><em>filename=None</em>, <em>format='vmd'</em>, <em>filenamefmt='%(trjname)s_%(frame)d'</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.write_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.write_selection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write AtomGroup selection to a file to be used in another programme.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1393,7 +1417,7 @@ placeholders; the extension is set according to the <em>format</em>
 
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.Atom">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Atom</tt><big>(</big><em>number</em>, <em>name</em>, <em>type</em>, <em>resname</em>, <em>resid</em>, <em>segid</em>, <em>mass</em>, <em>charge</em>, <em>residue=None</em>, <em>segment=None</em>, <em>radius=None</em>, <em>bfactor=None</em>, <em>resnum=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Atom</tt><big>(</big><em>number</em>, <em>name</em>, <em>type</em>, <em>resname</em>, <em>resid</em>, <em>segid</em>, <em>mass</em>, <em>charge</em>, <em>residue=None</em>, <em>segment=None</em>, <em>radius=None</em>, <em>bfactor=None</em>, <em>resnum=None</em>, <em>serial=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class representing a single atom.</p>
 <p><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> is the basic building block of all larger data
 structures in MDAnalysis, in particular of the
@@ -1478,33 +1502,33 @@ PQR file with the
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.Atom.centroid">
-<tt class="descname">centroid</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.centroid" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">centroid</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Atom.centroid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.centroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>The centroid of an atom is its position, <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom.pos" title="MDAnalysis.core.AtomGroup.Atom.pos"><tt class="xref py py-attr docutils literal"><span class="pre">Atom.pos</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Atom.pos">
-<tt class="descname">pos</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.pos" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">pos</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Atom.pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.pos" title="Permalink to this definition">¶</a></dt>
 <dd><p>deprecated, use position,
 get the Current cartesian coordinates of the atom.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Atom.position">
-<tt class="descname">position</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.position" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">position</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Atom.position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the current cartesian coordinates of the atom.
 &#64;return: a numpy 1x3 array</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Atom.universe">
-<tt class="descname">universe</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.universe" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">universe</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Atom.universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>a pointer back to the Universe</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Atom.velocity">
-<tt class="descname">velocity</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.velocity" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">velocity</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Atom.velocity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current velocity of the atom.</p>
 <p>A <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt> is raised if the trajectory
 does not contain velocities.</p>
@@ -1516,7 +1540,7 @@ does not contain velocities.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.Residue">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Residue</tt><big>(</big><em>name</em>, <em>id</em>, <em>atoms</em>, <em>resnum=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Residue</tt><big>(</big><em>name</em>, <em>id</em>, <em>atoms</em>, <em>resnum=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue" title="Permalink to this definition">¶</a></dt>
 <dd><p>A group of atoms corresponding to a residue.</p>
 <dl class="docutils">
 <dt>Pythonic access to atoms:</dt>
@@ -1558,7 +1582,7 @@ does not contain velocities.</p>
 <span class="versionmodified">Changed in version 0.7.4: </span>Added <tt class="xref py py-attr docutils literal"><span class="pre">Residue.resnum</span></tt> attribute and <em>resnum</em> keyword argument.</p>
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.Residue.chi1_selection">
-<tt class="descname">chi1_selection</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue.chi1_selection" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">chi1_selection</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Residue.chi1_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue.chi1_selection" title="Permalink to this definition">¶</a></dt>
 <dd><p>AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1575,7 +1599,7 @@ found then this method returns <tt class="docutils literal"><span class="pre">No
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.Residue.omega_selection">
-<tt class="descname">omega_selection</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue.omega_selection" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">omega_selection</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Residue.omega_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue.omega_selection" title="Permalink to this definition">¶</a></dt>
 <dd><p>AtomGroup corresponding to the omega protein backbone dihedral CA-C-N&#8217;-CA&#8217;.</p>
 <p>omega describes the -C-N- peptide bond. Typically, it is trans
 (180 degrees) although cis-bonds (0 degrees) are also
@@ -1594,7 +1618,7 @@ method returns <tt class="docutils literal"><span class="pre">None</span></tt>.<
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.Residue.phi_selection">
-<tt class="descname">phi_selection</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue.phi_selection" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">phi_selection</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Residue.phi_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue.phi_selection" title="Permalink to this definition">¶</a></dt>
 <dd><p>AtomGroup corresponding to the phi protein backbone dihedral C&#8217;-N-CA-C.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1610,7 +1634,7 @@ method returns <tt class="docutils literal"><span class="pre">None</span></tt>.<
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.Residue.psi_selection">
-<tt class="descname">psi_selection</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue.psi_selection" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">psi_selection</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Residue.psi_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Residue.psi_selection" title="Permalink to this definition">¶</a></dt>
 <dd><p>AtomGroup corresponding to the psi protein backbone dihedral N-CA-C-N&#8217;.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1628,7 +1652,7 @@ method returns <tt class="docutils literal"><span class="pre">None</span></tt>.<
 
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.ResidueGroup">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">ResidueGroup</tt><big>(</big><em>residues</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.ResidueGroup" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">ResidueGroup</tt><big>(</big><em>residues</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#ResidueGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.ResidueGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>A group of residues.</p>
 <dl class="docutils">
 <dt>Pythonic access to atoms:</dt>
@@ -1658,7 +1682,7 @@ method returns <tt class="docutils literal"><span class="pre">None</span></tt>.<
 
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.Segment">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Segment</tt><big>(</big><em>name</em>, <em>residues</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Segment" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">Segment</tt><big>(</big><em>name</em>, <em>residues</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Segment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Segment" title="Permalink to this definition">¶</a></dt>
 <dd><p>A group of residues corresponding to one segment of the topology.</p>
 <dl class="docutils">
 <dt>Pythonic access to residues:</dt>
@@ -1698,13 +1722,13 @@ chain identifier when loaded from a PDB</td>
 <p>Initialize a Segment with segid <em>name</em> from a list of <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> instances.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Segment.id">
-<tt class="descname">id</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Segment.id" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">id</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Segment.id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Segment.id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Segment id (alias for <tt class="xref py py-attr docutils literal"><span class="pre">Segment.name</span></tt>)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Segment.id_setter">
-<tt class="descname">id_setter</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Segment.id_setter" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">id_setter</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Segment.id_setter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Segment.id_setter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Segment id (alias for <tt class="xref py py-attr docutils literal"><span class="pre">Segment.name</span></tt>)</p>
 </dd></dl>
 
@@ -1712,7 +1736,7 @@ chain identifier when loaded from a PDB</td>
 
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.SegmentGroup">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">SegmentGroup</tt><big>(</big><em>segments</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.SegmentGroup" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">SegmentGroup</tt><big>(</big><em>segments</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#SegmentGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.SegmentGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>A group of segments.</p>
 <dl class="docutils">
 <dt>Pythonic access to segments:</dt>
@@ -1746,7 +1770,7 @@ character is prefixed with &#8216;s&#8217;, thus &#8216;4AKE&#8217; &#8211;&gt; 
 
 <dl class="function">
 <dt id="MDAnalysis.core.AtomGroup.asUniverse">
-<tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">asUniverse</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.asUniverse" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">asUniverse</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#asUniverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.asUniverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a universe from the input arguments.</p>
 <ol class="arabic">
 <li><p class="first">If the first argument is a universe, just return it:</p>
@@ -1818,10 +1842,10 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

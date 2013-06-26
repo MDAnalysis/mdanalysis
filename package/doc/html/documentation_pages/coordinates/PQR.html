@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -148,7 +149,7 @@ option are guaranteed to conform to the above format:</p>
 </div>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PQR.PQRReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PQR.</tt><tt class="descname">PQRReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PQR.</tt><tt class="descname">PQRReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a <a class="reference external" href="http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr">PQR</a> file into MDAnalysis.</p>
 <p>The <a class="reference internal" href="../topology/PQRParser.html#module-MDAnalysis.topology.PQRParser" title="MDAnalysis.topology.PQRParser"><tt class="xref py py-mod docutils literal"><span class="pre">PQRParser</span></tt></a> takes charges from the
 PQR file in order to populate the
@@ -160,13 +161,13 @@ accessible through the <a class="reference internal" href="#MDAnalysis.coordinat
 <p><em>filename</em> can be a gzipped or bzip2ed compressed <a class="reference external" href="http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr">PQR</a> file.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PQR.PQRReader.get_charges">
-<tt class="descname">get_charges</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader.get_charges" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_charges</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader.get_charges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader.get_charges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of charges in atom order.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PQR.PQRReader.get_radii">
-<tt class="descname">get_radii</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader.get_radii" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_radii</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader.get_radii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader.get_radii" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of atom radii in atom order.</p>
 </dd></dl>
 
@@ -200,10 +201,10 @@ accessible through the <a class="reference internal" href="#MDAnalysis.coordinat
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

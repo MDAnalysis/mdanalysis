@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -247,7 +248,7 @@ for a weighted RMSD calculation.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.alignto">
-<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">alignto</tt><big>(</big><em>mobile</em>, <em>reference</em>, <em>select='all'</em>, <em>mass_weighted=False</em>, <em>subselection=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.alignto" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">alignto</tt><big>(</big><em>mobile</em>, <em>reference</em>, <em>select='all'</em>, <em>mass_weighted=False</em>, <em>subselection=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#alignto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.alignto" title="Permalink to this definition">¶</a></dt>
 <dd><p>Spatially align <em>mobile</em> to <em>reference</em> by doing a RMSD fit on <em>select</em> atoms.</p>
 <p>The superposition is done in the following way:</p>
 <ol class="arabic simple">
@@ -338,7 +339,7 @@ use <a class="reference internal" href="#MDAnalysis.analysis.align.rms_fit_trj" 
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.rms_fit_trj">
-<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">rms_fit_trj</tt><big>(</big><em>traj</em>, <em>reference</em>, <em>select='all'</em>, <em>filename=None</em>, <em>rmsdfile=None</em>, <em>prefix='rmsfit_'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.1</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.rms_fit_trj" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">rms_fit_trj</tt><big>(</big><em>traj</em>, <em>reference</em>, <em>select='all'</em>, <em>filename=None</em>, <em>rmsdfile=None</em>, <em>prefix='rmsfit_'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.1</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#rms_fit_trj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.rms_fit_trj" title="Permalink to this definition">¶</a></dt>
 <dd><p>RMS-fit trajectory to a reference structure using a selection.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -401,7 +402,7 @@ module. They are probably of more interest to developers than to
 normal users.</p>
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.fasta2select">
-<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">fasta2select</tt><big>(</big><em>fastafilename</em>, <em>is_aligned=False</em>, <em>ref_resids=None</em>, <em>target_resids=None</em>, <em>ref_offset=0</em>, <em>target_offset=0</em>, <em>verbosity=3</em>, <em>alnfilename=None</em>, <em>treefilename=None</em>, <em>clustalw='clustalw2'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.align.fasta2select" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">fasta2select</tt><big>(</big><em>fastafilename</em>, <em>is_aligned=False</em>, <em>ref_resids=None</em>, <em>target_resids=None</em>, <em>ref_offset=0</em>, <em>target_offset=0</em>, <em>verbosity=3</em>, <em>alnfilename=None</em>, <em>treefilename=None</em>, <em>clustalw='clustalw2'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#fasta2select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.fasta2select" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return selection strings that will select equivalent residues.</p>
 <p>The function aligns two sequences provided in a FASTA file and
 constructs MDAnalysis selection strings of the common atoms. When
@@ -510,10 +511,10 @@ that can be used immediately in <a class="reference internal" href="#MDAnalysis.
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

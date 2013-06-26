@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -70,7 +71,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="contacts.html"
-                        title="previous chapter">3.2. Native contacts analysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></p>
+                        title="previous chapter">3.2. Native contacts analysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="distances.html"
                         title="next chapter">3.4. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></p>
@@ -150,7 +151,7 @@ any manner.</p>
 <h2>3.3.2. Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.density.Density">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">Density</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">Density</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">gridData.core.Grid</span></tt></p>
 <p>Class representing a density on a regular cartesian grid.</p>
 <p>The data (<tt class="xref py py-attr docutils literal"><span class="pre">Density.grid</span></tt>) can be manipulated as a standard numpy
@@ -296,7 +297,7 @@ stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.Density.convert_density">
-<tt class="descname">convert_density</tt><big>(</big><em>unit='Angstrom'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.convert_density" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">convert_density</tt><big>(</big><em>unit='Angstrom'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Density.convert_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Density.convert_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the density to the physical units given by <em>unit</em>.</p>
 <blockquote>
 <div>Grid.convert_to(unit)</div></blockquote>
@@ -348,7 +349,7 @@ and floating point artifacts for multiple conversions.</li>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.Density.convert_length">
-<tt class="descname">convert_length</tt><big>(</big><em>unit='Angstrom'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.convert_length" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">convert_length</tt><big>(</big><em>unit='Angstrom'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Density.convert_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Density.convert_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert Grid object to the new <em>unit</em>.</p>
 <blockquote>
 <div>Grid.convert_length(&lt;unit&gt;)</div></blockquote>
@@ -422,7 +423,7 @@ completely resets all values, based on the loaded data.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.Density.make_density">
-<tt class="descname">make_density</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Density.make_density" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">make_density</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Density.make_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Density.make_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the grid (a histogram, counts in a cell) to a density (counts/volume).</p>
 <blockquote>
 <div>make_density()</div></blockquote>
@@ -468,7 +469,7 @@ regenerated from the saved data with</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.density.density_from_Universe">
-<tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">density_from_Universe</tt><big>(</big><em>universe</em>, <em>delta=1.0</em>, <em>atomselection='name OH2'</em>, <em>metadata=None</em>, <em>padding=2.0</em>, <em>cutoff=0</em>, <em>soluteselection=None</em>, <em>use_kdtree=True</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_Universe" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">density_from_Universe</tt><big>(</big><em>universe</em>, <em>delta=1.0</em>, <em>atomselection='name OH2'</em>, <em>metadata=None</em>, <em>padding=2.0</em>, <em>cutoff=0</em>, <em>soluteselection=None</em>, <em>use_kdtree=True</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#density_from_Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_Universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density grid from a MDAnalysis.Universe object.</p>
 <blockquote>
 <div>density_from_Universe(universe, delta=1.0, atomselection=&#8217;name OH2&#8217;, ...) &#8211;&gt; density</div></blockquote>
@@ -523,7 +524,7 @@ in Angstroem [2.0]</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.density.density_from_trajectory">
-<tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">density_from_trajectory</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_trajectory" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">density_from_trajectory</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#density_from_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density grid from a trajectory.</p>
 <blockquote>
 <div>density_from_trajectory(PSF, DCD, delta=1.0, atomselection=&#8217;name OH2&#8217;, ...) &#8211;&gt; density</div></blockquote>
@@ -584,7 +585,7 @@ in Angstroem [2.0]</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.density.density_from_PDB">
-<tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">density_from_PDB</tt><big>(</big><em>pdb</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_PDB" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">density_from_PDB</tt><big>(</big><em>pdb</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#density_from_PDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_PDB" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density from a single frame PDB.</p>
 <p>Typical use is to make a density from the crystal water
 molecules. The density is created from isotropic gaussians
@@ -646,7 +647,7 @@ water density at standard conditions</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.density.Bfactor2RMSF">
-<tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">Bfactor2RMSF</tt><big>(</big><em>B</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.Bfactor2RMSF" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">Bfactor2RMSF</tt><big>(</big><em>B</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Bfactor2RMSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Bfactor2RMSF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Atomic root mean square fluctuation (in Angstrom) from the crystallographic B-factor</p>
 <p>B = [(8*PI**2)/3] * (RMSF)**2</p>
 <p>Willis &amp; Pryor, Thermal vibrations in crystallography, Cambridge
@@ -655,7 +656,7 @@ Univ. Press, 1975</p>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.density.BfactorDensityCreator">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">BfactorDensityCreator</tt><big>(</big><em>pdb</em>, <em>delta=1.0</em>, <em>atomselection='resname HOH and name O'</em>, <em>metadata=None</em>, <em>padding=1.0</em>, <em>sigma=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.density.</tt><tt class="descname">BfactorDensityCreator</tt><big>(</big><em>pdb</em>, <em>delta=1.0</em>, <em>atomselection='resname HOH and name O'</em>, <em>metadata=None</em>, <em>padding=1.0</em>, <em>sigma=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#BfactorDensityCreator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density grid from a pdb file using MDAnalysis.</p>
 <blockquote>
 <div>dens = BfactorDensityCreator(pdb,...).Density()</div></blockquote>
@@ -713,7 +714,7 @@ of about 0.5 A to obtain a well-defined and resolved x-ray water density
 that can be easily matched to a broader density distribution.</p>
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.BfactorDensityCreator.Density">
-<tt class="descname">Density</tt><big>(</big><em>threshold=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator.Density" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">Density</tt><big>(</big><em>threshold=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#BfactorDensityCreator.Density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator.Density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a Density object.</p>
 </dd></dl>
 
@@ -908,10 +909,10 @@ regenerated from the saved data with</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

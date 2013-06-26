@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -97,14 +98,14 @@
 <p>Currently all atom arrays are handled internally as sets, but returned as AtomGroups</p>
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.BackboneSelection">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">BackboneSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.BackboneSelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">BackboneSelection</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#BackboneSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.BackboneSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A BackboneSelection contains all atoms with name &#8216;N&#8217;, &#8216;CA&#8217;, &#8216;C&#8217;, &#8216;O&#8217;.</p>
 <p>This excludes OT* on C-termini (which are included by, eg VMD&#8217;s backbone selection).</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.BaseSelection">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">BaseSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.BaseSelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">BaseSelection</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#BaseSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.BaseSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selection of atoms in nucleobases.</p>
 <p>Recognized atom names (from CHARMM):</p>
 <blockquote>
@@ -114,19 +115,19 @@
 
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.CASelection">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">CASelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.CASelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">CASelection</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#CASelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.CASelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select atoms named CA in protein residues (supposed to be the C-alphas)</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.NucleicBackboneSelection">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicBackboneSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicBackboneSelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicBackboneSelection</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#NucleicBackboneSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicBackboneSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A NucleicBackboneSelection contains all atoms with name &#8220;P&#8221;, &#8220;C5&#8217;&#8221;, C3&#8217;&#8221;, &#8220;O3&#8217;&#8221;, &#8220;O5&#8217;&#8221;.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.NucleicSelection">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicSelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicSelection</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#NucleicSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A nucleic selection consists of all atoms in nucleic acid residues with  recognized residue names.</p>
 <p>Recognized residue names:</p>
 <ul>
@@ -143,13 +144,13 @@
 
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.NucleicSugarSelection">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicSugarSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicSugarSelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicSugarSelection</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#NucleicSugarSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicSugarSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A NucleicSugarSelection contains all atoms with name &#8216;C1&#8217;&#8216;, &#8216;C2&#8217;&#8216;,&#8217;C3&#8217;&#8216;, &#8216;C4&#8217;&#8216;, &#8216;O2&#8217;&#8216;,&#8217;O4&#8217;&#8216;,&#8217;O3&#8217;&#8216;.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.NucleicXstalSelection">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicXstalSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicXstalSelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicXstalSelection</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#NucleicXstalSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicXstalSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A nucleic selection consists of all atoms in nucleic acid residues with PDB-like resnames.</p>
 <p>Recognized residue names:</p>
 <ul>
@@ -166,14 +167,14 @@
 
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.PropertySelection">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">PropertySelection</tt><big>(</big><em>prop</em>, <em>operator</em>, <em>value</em>, <em>abs=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Selection.PropertySelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">PropertySelection</tt><big>(</big><em>prop</em>, <em>operator</em>, <em>value</em>, <em>abs=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#PropertySelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.PropertySelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Some of the possible properties:
 x, y, z, radius, mass,</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.ProteinSelection">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">ProteinSelection</tt><a class="headerlink" href="#MDAnalysis.core.Selection.ProteinSelection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">ProteinSelection</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#ProteinSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.ProteinSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A protein selection consists of all residues with  recognized residue names.</p>
 <p>Recognized residue names in <a class="reference internal" href="#MDAnalysis.core.Selection.ProteinSelection.prot_res" title="MDAnalysis.core.Selection.ProteinSelection.prot_res"><tt class="xref py py-attr docutils literal"><span class="pre">ProteinSelection.prot_res</span></tt></a>.</p>
 <blockquote>
@@ -200,7 +201,7 @@ x, y, z, radius, mass,</p>
 
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.SelectionParser">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">SelectionParser</tt><a class="headerlink" href="#MDAnalysis.core.Selection.SelectionParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">SelectionParser</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#SelectionParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.SelectionParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>A small parser for selection expressions.  Demonstration of
 recursive descent parsing using Precedence climbing (see
 <a class="reference external" href="http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm">http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm</a>).  Transforms
@@ -247,10 +248,10 @@ T(erms) --&gt;     segid [value]
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

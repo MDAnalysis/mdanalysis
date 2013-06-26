@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -110,47 +111,54 @@ are currently supported. The known working versions and the
 approximate Gromacs release numbers are listed in the table
 <a class="reference internal" href="#tpr-format-table"><em>TPR format versions</em></a>.</p>
 <table border="1" class="docutils" id="tpr-format-table">
-<caption>TPR format versions read by <a class="reference internal" href="#MDAnalysis.topology.TPRParser.parse" title="MDAnalysis.topology.TPRParser.parse"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.TPRParser.parse()</span></tt></a>.</caption>
+<caption>TPR format versions and generations read by <a class="reference internal" href="#MDAnalysis.topology.TPRParser.parse" title="MDAnalysis.topology.TPRParser.parse"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.TPRParser.parse()</span></tt></a>.</caption>
 <colgroup>
-<col width="39%" />
-<col width="49%" />
-<col width="12%" />
+<col width="20%" />
+<col width="29%" />
+<col width="41%" />
+<col width="10%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">TPX format</th>
+<th class="head">TPX generation</th>
 <th class="head">Gromacs release</th>
 <th class="head">read</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>??</td>
+<td>??</td>
 <td>3.3, 3.3.1</td>
 <td>no</td>
 </tr>
 <tr class="row-odd"><td>58</td>
+<td>17</td>
 <td>4.0, 4.0.2, 4.0.3,
 4.0.4, 4.0.5, 4.0.6,
 4.0.7</td>
 <td>yes</td>
 </tr>
 <tr class="row-even"><td>73</td>
+<td>23</td>
 <td>4.5.0, 4.5.1, 4.5.2,
 4.5.3, 4.5.4, 4.5.5</td>
 <td>yes</td>
 </tr>
-<tr class="row-odd"><td>??</td>
+<tr class="row-odd"><td>83</td>
+<td>24</td>
 <td>4.6, 4.6.1</td>
-<td>no</td>
+<td>yes</td>
 </tr>
 </tbody>
 </table>
 <p>For further discussion and notes see <a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=2">Issue 2</a>. Also add a comment to
-<a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=2">Issue 2</a> if a different TPR file format version should be supported.</p>
+<a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=2">Issue 2</a> if a new or different TPR file format version should be
+supported.</p>
 <div class="section" id="functions">
 <h2>4.13.1. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.topology.TPRParser.parse">
-<tt class="descclassname">MDAnalysis.topology.TPRParser.</tt><tt class="descname">parse</tt><big>(</big><em>tprfile</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.TPRParser.parse" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.TPRParser.</tt><tt class="descname">parse</tt><big>(</big><em>tprfile</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse a Gromacs TPR file into a MDAnalysis internal topology structure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -165,9 +173,11 @@ approximate Gromacs release numbers are listed in the table
 </div>
 <div class="section" id="development-notes">
 <h2>4.13.2. Development notes<a class="headerlink" href="#development-notes" title="Permalink to this headline">¶</a></h2>
-<p>Currently the following sections of the topology are parsed:</p>
+<p>The TPR reader is a pure-python implementation of a basic TPR
+parser. Currently the following sections of the topology are parsed:</p>
 <ul class="simple">
-<li>Atoms: number, name, type, resname, resid, segid, mass, charge, [residue, segment, radius, bfactor, resnum]</li>
+<li>Atoms: number, name, type, resname, resid, segid, mass, charge,
+[residue, segment, radius, bfactor, resnum]</li>
 <li>Bonds:</li>
 <li>Angels:</li>
 <li>Dihedrals:</li>
@@ -187,7 +197,7 @@ section is actually a list of Improper Dih.</p>
 <a class="reference external" href="http://code.google.com/p/mdanalysis/wiki/TPRReaderDevelopment">TPRReaderDevelopment</a> notes.  Functions with names starting with
 <tt class="docutils literal"><span class="pre">read_</span></tt> or <tt class="docutils literal"><span class="pre">do_</span></tt> are trying to be similar to those in
 <tt class="file docutils literal"><span class="pre">gmxdump.c</span></tt> or <tt class="file docutils literal"><span class="pre">tpxio.c</span></tt>, those with <tt class="docutils literal"><span class="pre">extract_</span></tt> are new.</p>
-<p>Wherever <tt class="docutils literal"><span class="pre">err(fver)</span></tt> is used, it means the tpx version problem
+<p>Wherever <tt class="docutils literal"><span class="pre">fver_err(fver)</span></tt> is used, it means the tpx version problem
 haven&#8217;t be resolved for those other than 58 and 73 (or gromacs version
 before 4.x)</p>
 </div>
@@ -219,10 +229,10 @@ before 4.x)</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

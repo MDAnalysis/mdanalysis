@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -250,7 +251,7 @@ Itzhack Y Bar-Itzhack, J Guid Contr Dynam. 2000. 23(6): 1085-1087.</li>
 <h2>7.6.5. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.transformations.Arcball">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">Arcball</tt><big>(</big><em>initial=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">Arcball</tt><big>(</big><em>initial=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#Arcball"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball" title="Permalink to this definition">¶</a></dt>
 <dd><p>Virtual Trackball Control.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span> <span class="o">=</span> <span class="n">Arcball</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span> <span class="o">=</span> <span class="n">Arcball</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
@@ -276,37 +277,37 @@ Itzhack Y Bar-Itzhack, J Guid Contr Dynam. 2000. 23(6): 1085-1087.</li>
 <p>initial : quaternion or rotation matrix</p>
 <dl class="method">
 <dt id="MDAnalysis.core.transformations.Arcball.down">
-<tt class="descname">down</tt><big>(</big><em>point</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.down" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">down</tt><big>(</big><em>point</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#Arcball.down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.down" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set initial cursor window coordinates and pick constrain-axis.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.transformations.Arcball.drag">
-<tt class="descname">drag</tt><big>(</big><em>point</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.drag" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">drag</tt><big>(</big><em>point</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#Arcball.drag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.drag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update current cursor window coordinates.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.transformations.Arcball.getconstrain">
-<tt class="descname">getconstrain</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.getconstrain" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">getconstrain</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#Arcball.getconstrain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.getconstrain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return state of constrain to axis mode.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.transformations.Arcball.matrix">
-<tt class="descname">matrix</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.matrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">matrix</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#Arcball.matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return homogeneous rotation matrix.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.transformations.Arcball.next">
-<tt class="descname">next</tt><big>(</big><em>acceleration=0.0</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.next" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">next</tt><big>(</big><em>acceleration=0.0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#Arcball.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.next" title="Permalink to this definition">¶</a></dt>
 <dd><p>Continue rotation in direction of last drag.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.transformations.Arcball.place">
-<tt class="descname">place</tt><big>(</big><em>center</em>, <em>radius</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.place" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">place</tt><big>(</big><em>center</em>, <em>radius</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#Arcball.place"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.place" title="Permalink to this definition">¶</a></dt>
 <dd><p>Place Arcball, e.g. when window size changes.</p>
 <dl class="docutils">
 <dt>center <span class="classifier-delimiter">:</span> <span class="classifier">sequence[2]</span></dt>
@@ -318,13 +319,13 @@ Itzhack Y Bar-Itzhack, J Guid Contr Dynam. 2000. 23(6): 1085-1087.</li>
 
 <dl class="method">
 <dt id="MDAnalysis.core.transformations.Arcball.setaxes">
-<tt class="descname">setaxes</tt><big>(</big><em>*axes</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.setaxes" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">setaxes</tt><big>(</big><em>*axes</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#Arcball.setaxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.setaxes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set axes to constrain rotations.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.transformations.Arcball.setconstrain">
-<tt class="descname">setconstrain</tt><big>(</big><em>constrain</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.setconstrain" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">setconstrain</tt><big>(</big><em>constrain</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#Arcball.setconstrain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.Arcball.setconstrain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set state of constrain to axis mode.</p>
 </dd></dl>
 
@@ -332,13 +333,13 @@ Itzhack Y Bar-Itzhack, J Guid Contr Dynam. 2000. 23(6): 1085-1087.</li>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.arcball_nearest_axis">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">arcball_nearest_axis</tt><big>(</big><em>point</em>, <em>axes</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.arcball_nearest_axis" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">arcball_nearest_axis</tt><big>(</big><em>point</em>, <em>axes</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#arcball_nearest_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.arcball_nearest_axis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return axis, which arc is nearest to point.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.compose_matrix">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">compose_matrix</tt><big>(</big><em>scale=None</em>, <em>shear=None</em>, <em>angles=None</em>, <em>translate=None</em>, <em>perspective=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.compose_matrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">compose_matrix</tt><big>(</big><em>scale=None</em>, <em>shear=None</em>, <em>angles=None</em>, <em>translate=None</em>, <em>perspective=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#compose_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.compose_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return transformation matrix from sequence of transformations.</p>
 <p>This is the inverse of the decompose_matrix function.</p>
 <dl class="docutils">
@@ -365,7 +366,7 @@ perspective : perspective partition of matrix</dd>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.concatenate_matrices">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">concatenate_matrices</tt><big>(</big><em>*matrices</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.concatenate_matrices" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">concatenate_matrices</tt><big>(</big><em>*matrices</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#concatenate_matrices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.concatenate_matrices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return concatenation of series of transformation matrices.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="o">-</span> <span class="mf">0.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">concatenate_matrices</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
@@ -378,7 +379,7 @@ perspective : perspective partition of matrix</dd>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.decompose_matrix">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">decompose_matrix</tt><big>(</big><em>matrix</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.decompose_matrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">decompose_matrix</tt><big>(</big><em>matrix</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#decompose_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.decompose_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return sequence of transformations from transformation matrix.</p>
 <dl class="docutils">
 <dt>matrix <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
@@ -411,7 +412,7 @@ perspective : perspective partition of matrix</dd>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.euler_from_quaternion">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">euler_from_quaternion</tt><big>(</big><em>quaternion</em>, <em>axes='sxyz'</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.euler_from_quaternion" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">euler_from_quaternion</tt><big>(</big><em>quaternion</em>, <em>axes='sxyz'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#euler_from_quaternion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.euler_from_quaternion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Euler angles from quaternion for specified axis sequence.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">angles</span> <span class="o">=</span> <span class="n">euler_from_quaternion</span><span class="p">([</span><span class="mf">0.99810947</span><span class="p">,</span> <span class="mf">0.06146124</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.123</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -422,7 +423,7 @@ perspective : perspective partition of matrix</dd>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.projection_from_matrix">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">projection_from_matrix</tt><big>(</big><em>matrix</em>, <em>pseudo=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.projection_from_matrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">projection_from_matrix</tt><big>(</big><em>matrix</em>, <em>pseudo=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#projection_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.projection_from_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return projection plane and perspective point from projection matrix.</p>
 <p>Return values are same as arguments for projection_matrix function:
 point, normal, direction, perspective, and pseudo.</p>
@@ -456,7 +457,7 @@ point, normal, direction, perspective, and pseudo.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.quaternion_imag">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">quaternion_imag</tt><big>(</big><em>quaternion</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.quaternion_imag" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">quaternion_imag</tt><big>(</big><em>quaternion</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#quaternion_imag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.quaternion_imag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return imaginary part of quaternion.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">quaternion_imag</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span>
 <span class="go">[0.0, 1.0, 2.0]</span>
@@ -466,7 +467,7 @@ point, normal, direction, perspective, and pseudo.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.quaternion_real">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">quaternion_real</tt><big>(</big><em>quaternion</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.quaternion_real" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">quaternion_real</tt><big>(</big><em>quaternion</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#quaternion_real"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.quaternion_real" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return real part of quaternion.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">quaternion_real</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span>
 <span class="go">3.0</span>
@@ -476,7 +477,7 @@ point, normal, direction, perspective, and pseudo.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.reflection_from_matrix">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">reflection_from_matrix</tt><big>(</big><em>matrix</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.reflection_from_matrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">reflection_from_matrix</tt><big>(</big><em>matrix</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#reflection_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.reflection_from_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return mirror plane point and normal vector from reflection matrix.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
@@ -491,7 +492,7 @@ point, normal, direction, perspective, and pseudo.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.rotation_from_matrix">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">rotation_from_matrix</tt><big>(</big><em>matrix</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.rotation_from_matrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">rotation_from_matrix</tt><big>(</big><em>matrix</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#rotation_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.rotation_from_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return rotation angle and axis from rotation matrix.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span> <span class="o">=</span> <span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">direc</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
@@ -507,13 +508,13 @@ point, normal, direction, perspective, and pseudo.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.rotaxis">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">rotaxis</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.rotaxis" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">rotaxis</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#rotaxis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.rotaxis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the rotation axis to rotate vector a into b.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.scale_from_matrix">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">scale_from_matrix</tt><big>(</big><em>matrix</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.scale_from_matrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">scale_from_matrix</tt><big>(</big><em>matrix</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#scale_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.scale_from_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return scaling factor, origin and direction from scaling matrix.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">factor</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">-</span> <span class="mi">5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">origin</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
@@ -534,7 +535,7 @@ point, normal, direction, perspective, and pseudo.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.shear_from_matrix">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">shear_from_matrix</tt><big>(</big><em>matrix</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.shear_from_matrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">shear_from_matrix</tt><big>(</big><em>matrix</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#shear_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.shear_from_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return shear angle, direction and plane from shear matrix.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span> <span class="o">=</span> <span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">direct</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
@@ -551,7 +552,7 @@ point, normal, direction, perspective, and pseudo.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.translation_from_matrix">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">translation_from_matrix</tt><big>(</big><em>matrix</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.translation_from_matrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">translation_from_matrix</tt><big>(</big><em>matrix</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#translation_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.translation_from_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return translation vector from translation matrix.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="n">translation_from_matrix</span><span class="p">(</span><span class="n">translation_matrix</span><span class="p">(</span><span class="n">v0</span><span class="p">))</span>
@@ -563,7 +564,7 @@ point, normal, direction, perspective, and pseudo.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.transformations.vecangle">
-<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">vecangle</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.transformations.vecangle" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.transformations.</tt><tt class="descname">vecangle</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/transformations.html#vecangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.transformations.vecangle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the angle between vectors a and b in radians.</p>
 </dd></dl>
 
@@ -596,10 +597,10 @@ point, normal, direction, perspective, and pseudo.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -100,7 +101,7 @@ as this is auto-detected.</p>
 Trajectory API.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.DCD.DCDReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">DCDReader</tt><big>(</big><em>dcdfilename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">DCDReader</tt><big>(</big><em>dcdfilename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads from a DCD file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -143,7 +144,7 @@ containing coordinates of current frame</p>
 </table>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDReader.Writer">
-<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.Writer" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a DCDWriter for <em>filename</em> with the same parameters as this DCD.</p>
 <p>All values can be changed through keyword arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -191,7 +192,7 @@ according to the CHARMM format. The time between two frames would be
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDReader.correl">
-<tt class="descname">correl</tt><big>(</big><em>timeseries</em>, <em>start=0</em>, <em>stop=-1</em>, <em>skip=1</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.correl" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">correl</tt><big>(</big><em>timeseries</em>, <em>start=0</em>, <em>stop=-1</em>, <em>skip=1</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.correl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.correl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Populate a TimeseriesCollection object with timeseries computed from the trajectory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -213,7 +214,7 @@ according to the CHARMM format. The time between two frames would be
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDReader.timeseries">
-<tt class="descname">timeseries</tt><big>(</big><em>asel</em>, <em>start=0</em>, <em>stop=-1</em>, <em>skip=1</em>, <em>format='afc'</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.timeseries" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">timeseries</tt><big>(</big><em>asel</em>, <em>start=0</em>, <em>stop=-1</em>, <em>skip=1</em>, <em>format='afc'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.timeseries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.timeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a subset of coordinate data for an AtomGroup</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -244,7 +245,7 @@ coordinates)</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.DCD.DCDWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">DCDWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=1.0</em>, <em>remarks='Created by DCDWriter'</em>, <em>convert_units=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">DCDWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=1.0</em>, <em>remarks='Created by DCDWriter'</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes to a DCD file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -290,20 +291,20 @@ the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAn
 </table>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDWriter.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.close" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close trajectory and flush buffers.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell">
-<tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts, _ts_order=[0, 3, 1, 4, 5, 2]</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts, _ts_order=[0, 3, 1, 4, 5, 2]</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter.convert_dimensions_to_unitcell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read dimensions from timestep <em>ts</em> and return appropriate unitcell
 as [A,alpha,B,beta,gamma,C]</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep">
-<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter.write_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>write a new timestep to the dcd file</p>
 <p><em>ts</em> - timestep object containing coordinates to be written to dcd file</p>
 <p class="versionchanged">
@@ -342,10 +343,10 @@ if no coordinates to be written.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
