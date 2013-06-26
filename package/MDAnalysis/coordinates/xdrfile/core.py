@@ -47,9 +47,10 @@ for the XTC and TRR format.
 
 """
 
-import os.path
+import os
 import errno
 import numpy
+import sys
 
 import libxdrfile, statno
 from MDAnalysis.coordinates import base
@@ -303,6 +304,13 @@ class TrjReader(base.Reader):
 
         """
         self.filename = filename
+
+        # Check if file is not too big file for a 32-bit.
+        # underlying xdrfile is indeed limited by the max integer value
+        if os.path.getsize(filename) > sys.maxint: # This test works even on a 32-bit system
+            raise OSError("Filesize is too big to be handled by xdrfile library (filesize: %.1fMB - max size: %.1fMB)"
+                          % (os.path.getsize(filename)/1.e6, sys.maxint/1.e6))
+
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
         self.convert_units = convert_units  # convert length and time to base units on the fly?
