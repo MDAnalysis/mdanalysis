@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/13  orbeckst, jandom, xdeupi, tyler.je.reddy, manuel.nuno.melo
+??/??/13  orbeckst, jandom, xdeupi, tyler.je.reddy, manuel.nuno.melo, sebastien.buchoux
 
   * 0.8
 
@@ -19,15 +19,20 @@ The rules for this file:
   * fast XTC seeking (Issue 127)
   * helanal: additional output of local bend and unit twist angles
     (Issue 133)
+  * added support for reading DMS files (DESRES molecular structure?)
 
   Changes
 
   * removed Timeseries.principleAxis (probably was never working)
-  * added support for reading DMS files (DESRES molecular structure?)
+
 
   Fixes
 
   * fixed Issue 129 (hole.py module pipe/file closure)
+  * fixed array comparison bug in MDAnalysis.analysis.helanal
+    and various enhancements to the helanal module
+  * fixed MDAnalysis.analysis.rms.RMSD.run(): gave incorrect results
+    if ref_frame != 0
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux
 

@@ -64,6 +64,7 @@ Strings
 
 .. autofunction:: convert_aa_code
 .. autofunction:: parse_residue
+.. autofunction:: conv_float
 
 
 Mathematics and Geometry
@@ -424,12 +425,23 @@ def fixedwidth_bins(delta,xmin,xmax):
 def norm(v):
     """Returns the length of a vector, ``sqrt(v.v)``.
 
+    .. math::
+
+       v = \sqrt{\mathbf{v}\cdot\mathbf{v}}
+
     Faster than :func:`numpy.linalg.norm` because no frills.
     """
     return numpy.sqrt(numpy.dot(v,v))
 
 def normal(vec1, vec2):
-    """Returns the unit vector normal to two vectors."""
+    """Returns the unit vector normal to two vectors.
+
+    .. math::
+
+       \hat{\mathbf{n}} = \frac{\mathbf{v}_1 \times \mathbf{v}_2}{|\mathbf{v}_1 \times \mathbf{v}_2|}
+
+    If the two vectors are collinear, the vector :math:`\mathbf{0}` is returned.
+    """
     normal = numpy.cross(vec1, vec2)
     n = norm(normal)
     if n == 0.0:
@@ -547,3 +559,16 @@ def parse_residue(residue):
         resname = residue                            # use 3-letter for any resname
     atomname = m.group('atom')
     return (resname, resid, atomname)
+
+
+def conv_float(s):
+    """Convert an object *s* to float if possible.
+
+    Function to be passed into :func:`map` or a list comprehension. If
+    the argument can be interpreted as a float it is converted,
+    otherwise the original object is passed back.
+    """
+    try:
+        return float(s)
+    except ValueError:
+        return s

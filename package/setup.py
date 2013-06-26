@@ -178,7 +178,7 @@ if __name__ == '__main__':
                                 'MDAnalysis.coordinates',
                                 'MDAnalysis.coordinates.xdrfile',
                                 'MDAnalysis.coordinates.pdb',
-                                'MDAnalysis.util', 'MDAnalysis.KDTree',
+                                'MDAnalysis.KDTree',
                                 'MDAnalysis.analysis',
                                 'MDAnalysis.builder',
                                 'MDAnalysis.tests'],

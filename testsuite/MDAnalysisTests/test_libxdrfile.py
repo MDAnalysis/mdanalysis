@@ -17,7 +17,7 @@
 
 import MDAnalysis
 from numpy.testing import *
-from MDAnalysis.tests.datafiles import XTC,TRR
+from MDAnalysis.tests.datafiles import XTC, TRR
 
 import MDAnalysis.coordinates.xdrfile.libxdrfile as xdr
 

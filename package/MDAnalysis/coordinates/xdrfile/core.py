@@ -159,6 +159,13 @@ class TrjWriter(base.Writer):
         if numatoms == 0:
             raise ValueError("TrjWriter: no atoms in output trajectory")
         self.filename = filename
+        # Convert filename to ascii because of SWIG bug.
+        # See: http://sourceforge.net/p/swig/feature-requests/75
+        # Only needed for Python < 3
+        if sys.version_info.major < 3:
+            if isinstance(filename, unicode):
+                self.filename = filename.encode("UTF-8")
+
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
         self.convert_units = convert_units    # convert length and time to base units on the fly?
@@ -170,7 +177,7 @@ class TrjWriter(base.Writer):
         self.delta = delta
         self.remarks = remarks
         self.precision = precision  # only for XTC
-        self.xdrfile = libxdrfile.xdrfile_open(filename, 'w')
+        self.xdrfile = libxdrfile.xdrfile_open(self.filename, 'w')
 
         self.ts = None
 
@@ -304,6 +311,12 @@ class TrjReader(base.Reader):
 
         """
         self.filename = filename
+        # Convert filename to ascii because of SWIG bug.
+        # See: http://sourceforge.net/p/swig/feature-requests/75
+        # Only needed for Python < 3
+        if sys.version_info.major < 3:
+            if isinstance(filename, unicode):
+                self.filename = filename.encode("UTF-8")
 
         # Check if file is not too big file for a 32-bit.
         # underlying xdrfile is indeed limited by the max integer value
