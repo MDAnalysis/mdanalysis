@@ -38,6 +38,9 @@ The rules for this file:
     and various enhancements to the helanal module
   * fixed MDAnalysis.analysis.rms.RMSD.run(): gave incorrect results
     if ref_frame != 0
+  * alignto() now checks that the two selections describe the same
+    atoms (fixes Issue 143)
+ 
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux
 

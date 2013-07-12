@@ -20,7 +20,7 @@ Coordinate fitting and alignment --- :mod:`MDAnalysis.analysis.align`
 =====================================================================
 
 :Author: Oliver Beckstein, Joshua Adelman
-:Year: 2010--2011
+:Year: 2010--2013
 :Copyright: GNU Public License v3
 
 The module contains functions to fit a target structure to a reference
@@ -150,7 +150,7 @@ module. They are probably of more interest to developers than to
 normal users.
 
 .. autofunction:: fasta2select
-
+.. autofunction:: check_same_atoms
 """
 
 import numpy
@@ -217,7 +217,7 @@ def rotation_matrix(a,b, weights=None):
 
 
 def alignto(mobile, reference, select="all", mass_weighted=False,
-            subselection=None):
+            subselection=None, tol_mass=0.1):
     """Spatially align *mobile* to *reference* by doing a RMSD fit on *select* atoms.
 
     The superposition is done in the following way:
@@ -267,6 +267,9 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
       *mass_weighted* : boolean
          ``True`` uses the masses :meth:`reference.masses` as weights for the
          RMSD fit.
+      *tol_mass*
+         Reject match if the atomic masses for matched atoms differ by more than
+         *tol_mass* [0.1]
       *subselection*
          Apply the transformation only to this selection.
 
@@ -283,6 +286,10 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
 
     .. SeeAlso:: For RMSD-fitting trajectories it is more efficient to
                  use :func:`rms_fit_trj`.
+
+    .. versionchanged:: 0.8
+       Added check that the two groups describe the same atoms including
+       the new *tol_mass* keyword.
     """
     if select in ('all', None):
         # keep the EXACT order in the input AtomGroups; selectAtoms('all')
@@ -294,6 +301,9 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
         select = _process_selection(select)
         mobile_atoms = mobile.selectAtoms(*select['mobile'])
         ref_atoms = reference.selectAtoms(*select['reference'])
+
+    check_same_atoms(ref_atoms, mobile_atoms, tol_mass=tol_mass)
+
     if mass_weighted:
         weights = ref_atoms.masses()/numpy.mean(ref_atoms.masses())
         ref_com = ref_atoms.centerOfMass()
@@ -384,25 +394,10 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     ref_atoms = reference.selectAtoms(*select['reference'])
     traj_atoms = traj.selectAtoms(*select['mobile'])
     natoms = traj_atoms.numberOfAtoms()
-    if len(ref_atoms) != len(traj_atoms):
-        raise SelectionError("Reference and trajectory atom selections do not contain "+
-                             "the same number of atoms: N_ref=%d, N_traj=%d" % \
-                             (len(ref_atoms), len(traj_atoms)))
-    logger.info("RMS-fitting on %d atoms." % len(ref_atoms))
-    mass_mismatches = (numpy.absolute(ref_atoms.masses() - traj_atoms.masses()) > tol_mass)
-    if numpy.any(mass_mismatches):
-        # diagnostic output:
-        logger.error("Atoms: reference | trajectory")
-        for ar,at in zip(ref_atoms,traj_atoms):
-            if ar.name != at.name:
-                logger.error("%4s %3d %3s %3s %6.3f  |  %4s %3d %3s %3s %6.3f" %  \
-                      (ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
-                       at.segid, at.resid, at.resname, at.name, at.mass,))
-        errmsg = "Inconsistent selections, masses differ by more than %f; mis-matching atoms are shown above." % tol_mass
-        logger.error(errmsg)
-        raise SelectionError(errmsg)
-    del mass_mismatches
 
+    check_same_atoms(ref_atoms, traj_atoms, tol_mass=tol_mass)
+
+    logger.info("RMS-fitting on %d atoms." % len(ref_atoms))
     if mass_weighted:
         # if performing a mass-weighted alignment/rmsd calculation
         weight = ref_atoms.masses()/ref_atoms.masses().mean()
@@ -648,3 +643,46 @@ def fasta2select(fastafilename,is_aligned=False,
     target_selection =  " or ".join(sel[1])
     return {'reference':ref_selection, 'mobile':target_selection}
 
+
+def check_same_atoms(ag1, ag2, tol_mass=0.1):
+    """Test if the two :class:`~MDAnalysis.core.AtomGroup.AtomGroup` *ag1* and *ag2* consist of the same atoms.
+
+    Two tests are performed:
+
+    1. The two groups must contain the same number of atoms.
+    2. The masses of corresponding atoms are compared and if any masses differ by more
+       than *tol_mass* the test is considered failed.
+
+    :Arguments:
+      *ag1*, *ag2*
+         :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances that are compared
+    :Keywords:
+      *tol_mass*
+         Reject if the atomic masses for matched atoms differ by more than
+         *tol_mass* [0.1]
+
+    :Raises: :exc:`SelectionError` if any of the tests fails.
+
+    .. versionadded:: 0.8
+    """
+
+    if len(ag1) != len(ag2):
+        # Test 1 failed
+        errmsg = "Reference and trajectory atom selections do not contain "\
+            "the same number of atoms: N_ref={0}, N_traj={1}".format(len(ag1), len(ag2))
+        logger.error(errmsg)
+        raise SelectionError(errmsg)
+    mass_mismatches = (numpy.absolute(ag1.masses() - ag2.masses()) > tol_mass)
+    if numpy.any(mass_mismatches):
+        # Test 2 failed.
+        # diagnostic output:
+        logger.error("Atoms: reference | trajectory")
+        for ar,at in zip(ag1, ag2):
+            if ar.name != at.name:
+                logger.error("%4s %3d %3s %3s %6.3f  |  %4s %3d %3s %3s %6.3f" %  \
+                      (ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
+                       at.segid, at.resid, at.resname, at.name, at.mass,))
+        errmsg = "Inconsistent selections, masses differ by more than {}; mis-matching atoms are shown above.".format(tol_mass)
+        logger.error(errmsg)
+        raise SelectionError(errmsg)
+    return True
