@@ -29,6 +29,7 @@ The rules for this file:
   Changes
 
   * removed Timeseries.principleAxis (probably was never working)
+  * dependent on Biopython >= 1.59 (Issue 147)
 
   Fixes
 
