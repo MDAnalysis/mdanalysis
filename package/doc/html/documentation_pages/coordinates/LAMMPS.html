@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -130,7 +131,7 @@ keywords <em>timeunit</em> and/or <em>lengthunit</em> to <a class="reference int
 <h2>5.7.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.LAMMPS.Timestep">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.LAMMPS.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.Timestep" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.LAMMPS.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>LAMMPS trajectory time step</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.LAMMPS.Timestep.copy">
@@ -160,7 +161,7 @@ which is used everywhere in MDAnalysis.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.LAMMPS.DCDReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.LAMMPS.</tt><tt class="descname">DCDReader</tt><big>(</big><em>dcdfilename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.LAMMPS.</tt><tt class="descname">DCDReader</tt><big>(</big><em>dcdfilename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DCDReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD trajectory.</p>
 <p>The units can be set from the constructor with the keyword
 arguments <em>timeunit</em> and <em>lengthunit</em>. The defaults are &#8220;ps&#8221; and
@@ -415,7 +416,7 @@ coordinates)</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.LAMMPS.</tt><tt class="descname">DCDWriter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.LAMMPS.</tt><tt class="descname">DCDWriter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DCDWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD trajectory.</p>
 <p>The units can be set from the constructor with the keyword
 arguments <em>timeunit</em> and <em>lengthunit</em>. The defaults are &#8220;ps&#8221; and
@@ -546,7 +547,7 @@ returned.</p>
 <dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
 </dd>
 <dt><em>x</em></dt>
-<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
+<dd><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
 </dd>
 </dl>
 </td>
@@ -613,10 +614,10 @@ if no coordinates to be written.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

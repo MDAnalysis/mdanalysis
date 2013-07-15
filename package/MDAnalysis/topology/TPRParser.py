@@ -1,0 +1,204 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
+#     doi:10.1002/jcc.21787
+#
+
+# TPR parser and tpr support module
+# Copyright (c) 2011 Zhuyi Xue
+# Released under the  GNU Public Licence, v2
+
+
+"""
+Gromacs portable run input TPR format parser
+============================================
+
+The :mod:`~MDAnalysis.topology.TPRParser` module allows reading of a
+Gromacs_ portable run input file (a `TPR file`_). At the moment, only
+atom information is read and used to build a minimal topology. Because
+the file format of the TPR file is changing rapidly, not all versions
+are currently supported. The known working versions and the
+approximate Gromacs release numbers are listed in the table
+:ref:`TPR format versions <TPR-format-table>`.
+
+.. _`TPR-format-table`:
+
+.. table:: TPR format versions and generations read by :func:`MDAnalysis.topology.TPRParser.parse`.
+
+   ========== ============== ==================== =====
+   TPX format TPX generation Gromacs release      read
+   ========== ============== ==================== =====
+   ??         ??             3.3, 3.3.1           no
+
+   58         17             4.0, 4.0.2, 4.0.3,   yes
+                             4.0.4, 4.0.5, 4.0.6,
+                             4.0.7
+
+   73         23             4.5.0, 4.5.1, 4.5.2, yes
+                             4.5.3, 4.5.4, 4.5.5
+
+   83         24             4.6, 4.6.1           yes
+   ========== ============== ==================== =====
+
+For further discussion and notes see `Issue 2`_. Also add a comment to
+`Issue 2`_ if a new or different TPR file format version should be
+supported.
+
+
+Functions
+---------
+
+.. autofunction:: parse
+
+Development notes
+-----------------
+
+The TPR reader is a pure-python implementation of a basic TPR
+parser. Currently the following sections of the topology are parsed:
+
+* Atoms: number, name, type, resname, resid, segid, mass, charge,
+  [residue, segment, radius, bfactor, resnum]
+
+* Bonds:
+
+* Angels:
+
+* Dihedrals:
+
+* Impropers:
+
+Potential Bug: in the result of :program:`gmxdump`, the "Proper Dih.:"
+section is actually a list of Improper Dih.
+
+This tpr parser is written according to the following files
+
+- :file:`{gromacs_dir}/src/kernel/gmxdump.c`
+- :file:`{gromacs_dir}/src/gmxlib/tpxio.c` (the most important one)
+- :file:`{gromacs_dir}/src/gmxlib/gmxfio_rw.c`
+- :file:`{gromacs_dir}/src/gmxlib/gmxfio_xdr.c`
+- :file:`{gromacs_dir}/include/gmxfiofio.h`
+
+The function :func:`read_tpxheader` is based on the
+`TPRReaderDevelopment`_ notes.  Functions with names starting with
+``read_`` or ``do_`` are trying to be similar to those in
+:file:`gmxdump.c` or :file:`tpxio.c`, those with ``extract_`` are new.
+
+Wherever ``fver_err(fver)`` is used, it means the tpx version problem
+haven't be resolved for those other than 58 and 73 (or gromacs version
+before 4.x)
+
+.. Links
+.. _Gromacs: http://www.gromacs.org
+.. _TPR file: http://manual.gromacs.org/current/online/tpr.html
+.. _`Issue 2`: http://code.google.com/p/mdanalysis/issues/detail?id=2
+.. _TPRReaderDevelopment: http://code.google.com/p/mdanalysis/wiki/TPRReaderDevelopment
+"""
+__author__      = "Zhuyi Xue"
+__copyright__   = "GNU Public Licence, v2"
+
+import sys
+import xdrlib
+
+from tpr import utils as U
+
+import logging
+logger = logging.getLogger("MDAnalysis.topology.TPRparser")
+
+ndo_int = U.ndo_int
+ndo_real = U.ndo_real
+ndo_rvec = U.ndo_rvec
+ndo_ivec = U.ndo_ivec
+
+def log_header(th):
+    logger.info("Gromacs version   : {0}".format(th.ver_str))
+    logger.info("tpx     version   : {0}".format(th.fver))
+    logger.info("tpx     generation: {0}".format(th.fgen))
+
+def parse(tprfile):
+    """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
+
+    :Returns: ``structure`` dict
+    """
+    tprf = open(tprfile).read()
+    data = xdrlib.Unpacker(tprf)
+    try:
+        th = U.read_tpxheader(data)                    # tpxheader
+    except EOFError:
+        logger.exception()
+        raise ValueError(
+            "{0}: Invalid tpr file or cannot be recognized".format(tprfile))
+
+    log_header(th)
+
+    V = th.fver                                    # since it's used very often
+
+    state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c
+    if th.bBox:
+        U.extract_box_info(data, V)
+
+    if state_ngtc > 0 and V >= 28:
+        if V < 69:                      # redundancy due to  different versions
+            ndo_real(data, state_ngtc)
+        ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
+
+    if V < 26:
+        U.fver_err(V)
+
+    if th.bTop:
+        tpr_top = U.do_mtop(data, V)
+        structure = {
+            '_atoms': tpr_top.atoms,
+            '_bonds': tpr_top.bonds,
+            '_angles': tpr_top.angles,
+            '_dihe': tpr_top.dihe,
+            '_impr': tpr_top.impr
+            }
+    else:
+        logger.exception()
+        raise ValueError("{0}: No topology found in tpr file".formation(tprfile))
+
+    # THE FOLLOWING CODE IS WORKING FOR TPX VERSION 58, BUT SINCE THESE INFO IS
+    # NOT INTERESTED, SO IT'S NOT COVERED IN ALL VERSIONS. PARSING STOPS HERE.
+
+    # if th.bX:
+    #     ndo_rvec(data, th.natoms)
+
+    # if th.bV:
+    #     ndo_rvec(data, th.natoms)
+
+    # if th.bF:
+    #     ndo_rvec(data, th.natoms)
+
+    # not useful at the moment
+    # ePBC = -1;
+    # bPeriodicMols = False
+    # if th.bIr:
+    #     # update
+    #     data.unpack_int()                                # ePBC
+    #     data.unpack_bool()                               # bPeriodicMols
+    #     # 17 < 23. and ir (ir is from the c code, seems not apply here
+    #     if th.fgen < setting.tpx_generation:
+    #         # a crazily long (670 lines) function in c, slightly better here
+    #         # (240 lines), so put it in setting.py
+    #         setting.do_inputrec(data)
+
+    return structure
+
+if __name__ == "__main__":
+    try:
+        parse(sys.argv[1])
+    except EOFError:
+        print "{0}\nInvalid tpr file or cannot be recognized\n".format(sys.argv[1])
+    except IndexError:
+        print "Please feed an tpr file or use this file as a module"

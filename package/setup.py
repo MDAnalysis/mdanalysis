@@ -174,11 +174,12 @@ if __name__ == '__main__':
                                 'MDAnalysis.core',
                                 'MDAnalysis.core.parallel',
                                 'MDAnalysis.topology',
+                                'MDAnalysis.topology.tpr',
                                 'MDAnalysis.selections',
                                 'MDAnalysis.coordinates',
                                 'MDAnalysis.coordinates.xdrfile',
                                 'MDAnalysis.coordinates.pdb',
-                                'MDAnalysis.util', 'MDAnalysis.KDTree',
+                                'MDAnalysis.KDTree',
                                 'MDAnalysis.analysis',
                                 'MDAnalysis.builder',
                                 'MDAnalysis.tests'],
@@ -191,7 +192,7 @@ if __name__ == '__main__':
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           install_requires = ['numpy>=1.0.3',   # currently not useful because without numpy we don't get here
-                              'biopython>=1.51',# required for standard PDB reader and sequence alignment
+                              'biopython>=1.59',# required for standard PDB reader and sequence alignment
                               'networkx>=1.0',  # LeafletFinder
                               'GridDataFormats>=0.2.2', # volumes and densities
                               ],

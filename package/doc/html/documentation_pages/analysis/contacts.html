@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -219,7 +220,7 @@ conformation and plot the trajectory projected on q1-q2:</p>
 <h2>3.2.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.contacts.</tt><tt class="descname">ContactAnalysis</tt><big>(</big><em>topology</em>, <em>trajectory</em>, <em>ref1=None</em>, <em>ref2=None</em>, <em>radius=8.0</em>, <em>targetdir='.'</em>, <em>infix=''</em>, <em>force=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.contacts.</tt><tt class="descname">ContactAnalysis</tt><big>(</big><em>topology</em>, <em>trajectory</em>, <em>ref1=None</em>, <em>ref2=None</em>, <em>radius=8.0</em>, <em>targetdir='.'</em>, <em>infix=''</em>, <em>force=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a native contact analysis (&#8220;q1-q2&#8221;).</p>
 <p>The analysis of the trajectory is performed with the
 <a class="reference internal" href="#MDAnalysis.analysis.contacts.ContactAnalysis.run" title="MDAnalysis.analysis.contacts.ContactAnalysis.run"><tt class="xref py py-meth docutils literal"><span class="pre">ContactAnalysis.run()</span></tt></a> method. The result is stored in
@@ -276,26 +277,26 @@ named &#8220;basename(<em>trajectory</em>)*infix*_q1q2.dat.bz2&#8221; and is als
 accessible as the attribute <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis.timeseries</span></tt>.</p>
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis.load">
-<tt class="descname">load</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis.load" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">load</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the data file.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis.output_exists">
-<tt class="descname">output_exists</tt><big>(</big><em>force=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis.output_exists" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">output_exists</tt><big>(</big><em>force=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis.output_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis.output_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if default output file already exists.</p>
 <p>Disable with force=True (will always return False)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis.plot">
-<tt class="descname">plot</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis.plot" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot q1-q2.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis.qN">
-<tt class="descname">qN</tt><big>(</big><em>q</em>, <em>n</em>, <em>out=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis.qN" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">qN</tt><big>(</big><em>q</em>, <em>n</em>, <em>out=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis.qN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis.qN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate native contacts relative to state n.</p>
 <p>If <em>out</em> is supplied as a pre-allocated array of the correct
 shape then it is filled instead of allocating a new one in
@@ -304,7 +305,7 @@ order to increase performance.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis.qarray">
-<tt class="descname">qarray</tt><big>(</big><em>d</em>, <em>out=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis.qarray" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">qarray</tt><big>(</big><em>d</em>, <em>out=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis.qarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis.qarray" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return distance array with True for contacts.</p>
 <p>If <em>out</em> is supplied as a pre-allocated array of the correct
 shape then it is filled instead of allocating a new one in
@@ -313,7 +314,7 @@ order to increase performance.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis.run">
-<tt class="descname">run</tt><big>(</big><em>store=True</em>, <em>force=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run</tt><big>(</big><em>store=True</em>, <em>force=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze trajectory and produce timeseries.</p>
 <p>Stores results in <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis.timeseries</span></tt> (if
 store=True) and writes them to a bzip2-compressed data file.</p>
@@ -323,7 +324,7 @@ store=True) and writes them to a bzip2-compressed data file.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis1">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.contacts.</tt><tt class="descname">ContactAnalysis1</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.contacts.</tt><tt class="descname">ContactAnalysis1</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a very flexible native contact analysis with respect to a single reference.</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis1.ContactAnalysis1">
@@ -332,7 +333,7 @@ store=True) and writes them to a bzip2-compressed data file.</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.contacts.</tt><tt class="descname">ContactAnalysis1</tt><big>(</big><em>universe</em><span class="optional">[</span>, <em>selection</em><span class="optional">[</span>, <em>refgroup</em><span class="optional">[</span>, <em>radius</em><span class="optional">[</span>, <em>outfile</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.contacts.</tt><tt class="descname">ContactAnalysis1</tt><big>(</big><em>universe</em><span class="optional">[</span>, <em>selection</em><span class="optional">[</span>, <em>refgroup</em><span class="optional">[</span>, <em>radius</em><span class="optional">[</span>, <em>outfile</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis1"><span class="viewcode-link">[source]</span></a></dt>
 <dd></dd></dl>
 
 <p>This analysis class allows one to calculate the fraction of native contacts
@@ -430,7 +431,7 @@ file that has the same name with &#8216;array&#8217; included. E.g. for the
 default name &#8220;q1.dat.gz&#8221; the &lt;q&gt; file will be &#8220;q1.array.gz&#8221;. The
 format is the matrix in column-row format, i.e. selection 1
 residues are the columns and selection 2 residues are rows. The
-file can be read with <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.loadtxt.html#numpy.loadtxt" title="(in NumPy v1.6)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.loadtxt()</span></tt></a>.  [&#8220;q1.dat.gz&#8221;]</p>
+file can be read with <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.loadtxt.html#numpy.loadtxt" title="(in NumPy v1.7)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.loadtxt()</span></tt></a>.  [&#8220;q1.dat.gz&#8221;]</p>
 </dd>
 </dl>
 </td>
@@ -446,24 +447,24 @@ of the trajectory).</p>
 the attribute <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis1.timeseries</span></tt>.</p>
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis1.load">
-<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">load</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.load" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">load</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis1.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the data file.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis1.output_exists">
-<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">output_exists</tt><big>(</big><em>force=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.output_exists" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">output_exists</tt><big>(</big><em>force=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis1.output_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.output_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if default output file already exists.</p>
 <p>Disable with force=True (will always return False)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis1.plot">
-<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">plot</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.plot" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">plot</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis1.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot q(t).</p>
 <dl class="function">
 <dt>
-<tt class="descname">plot</tt><big>(</big><span class="optional">[</span><em>filename</em>, <em>...</em><span class="optional">]</span><big>)</big></dt>
+<tt class="descname">plot</tt><big>(</big><span class="optional">[</span><em>filename</em>, <em>...</em><span class="optional">]</span><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis1.plot"><span class="viewcode-link">[source]</span></a></dt>
 <dd></dd></dl>
 
 <p>If <em>filename</em> is supplied then the figure is also written to file (the
@@ -473,11 +474,11 @@ keyword arguments are passed on to <tt class="xref py py-func docutils literal">
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis1.plot_qavg">
-<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">plot_qavg</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.plot_qavg" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">plot_qavg</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis1.plot_qavg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.plot_qavg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis1.qavg</span></tt>, the matrix of average native contacts.</p>
 <dl class="function">
 <dt>
-<tt class="descname">plot_qavg</tt><big>(</big><span class="optional">[</span><em>filename</em>, <em>...</em><span class="optional">]</span><big>)</big></dt>
+<tt class="descname">plot_qavg</tt><big>(</big><span class="optional">[</span><em>filename</em>, <em>...</em><span class="optional">]</span><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis1.plot_qavg"><span class="viewcode-link">[source]</span></a></dt>
 <dd></dd></dl>
 
 <p>If <em>filename</em> is supplied then the figure is also written to file (the
@@ -487,7 +488,7 @@ keyword arguments are passed on to <tt class="xref py py-func docutils literal">
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis1.qN">
-<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">qN</tt><big>(</big><em>q</em>, <em>out=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.qN" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">qN</tt><big>(</big><em>q</em>, <em>out=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis1.qN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.qN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate native contacts relative to reference state.</p>
 <p><em>q</em> is the matrix of contacts (e.g. <tt class="xref py py-attr docutils literal"><span class="pre">q</span></tt>).</p>
 <p>If <em>out</em> is supplied as a pre-allocated array of the correct
@@ -498,7 +499,7 @@ order to increase performance.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis1.qarray">
-<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">qarray</tt><big>(</big><em>d</em>, <em>out=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.qarray" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">qarray</tt><big>(</big><em>d</em>, <em>out=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis1.qarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.qarray" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return distance array with True for contacts.</p>
 <p><em>d</em> is the matrix of distances. The method uses the value of
 <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis1.radius</span></tt> to determine if a <tt class="docutils literal"><span class="pre">distance</span> <span class="pre">&lt;</span> <span class="pre">radius</span></tt>
@@ -511,7 +512,7 @@ order to increase performance.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.contacts.ContactAnalysis1.run">
-<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">run</tt><big>(</big><em>store=True</em>, <em>force=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">ContactAnalysis1.</tt><tt class="descname">run</tt><big>(</big><em>store=True</em>, <em>force=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#ContactAnalysis1.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.ContactAnalysis1.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze trajectory and produce timeseries.</p>
 <p>Stores results in <tt class="xref py py-attr docutils literal"><span class="pre">ContactAnalysis1.timeseries</span></tt> (if store=True)
 and writes them to a data file. The average q is written to a second
@@ -549,10 +550,10 @@ data file.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

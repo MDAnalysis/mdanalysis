@@ -293,34 +293,42 @@ class CenterOfMass(Timeseries):
         return [a.mass for a in self.atoms]
 
 class WaterDipole(Timeseries):
-    '''Create a Timeseries that returns a timeseries for the bisector vector of a 3-site water
+    r'''Create a Timeseries that returns a timeseries for the bisector vector of a 3-site water
 
-           t = WaterDipole(atoms)
+           d = WaterDipole(atoms)
 
-        The vector, multiplied by the partial charge on the oxygen
-        atom (e.g. q=-0.0.834 for TIP3P water), gives the actual
-        dipole moment.
+        *atoms* must contain 3 :class:`~MDAnalysis.core.AtomGroup.Atom`
+        objects, either as a list or an
+        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`; the first one *must* be
+        the oxygen, the other two are the hydrogens.
 
-        *atoms* must contain 3 :class:`~MDAnalysis.core.AtomGroup.Atom` objects, either as a list or an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`;
-        the first one *must* be the oxygen, the other two are the
-        hydrogens. The vector is calculated from the positions of the
-        oygen atom (xO) and the two hydrogen atoms (xH1, xH2) as
+        The vector ``d``, multiplied by the partial charge on the oxygen atom
+        (e.g. *q* = -0.0.834 for TIP3P water), gives the actual dipole moment.
 
-           d = xO - (xH1 + xH2)/2
+        The vector is calculated from the positions of the oxygen atom
+        (:math:`\mathbf{x}_{\text{O}}`) and the two hydrogen atoms
+        (:math:`\mathbf{x}_{\text{H}_1}`, :math:`\mathbf{x}_{\text{H}_2}`) as
 
-        and the dipole moment is
+        .. math::
 
-           µ = qO d
+           \mathbf{d} = \mathbf{x}_{\text{O}} - \frac{1}{2}(\mathbf{x}_{\text{H}_1} + \mathbf{x}_{\text{H}_2})
+
+        and the dipole moment vector is
+
+         .. math::
+
+           \boldsymbol{\mu} = q_{\text{O}} \mathbf{d}
 
         .. Note::
 
-           This will only work for water models that have half of the
-           oxygen charge on each hydrogen. The vector d has the
-           opposite direction of the dipole moment; multiplying with
-           the oxygen charge (<0!) will flip the direction.
+           This will only work for water models that have half of the oxygen
+           charge on each hydrogen. The vector :math:`\mathbf{d}` has the
+           opposite direction of the dipole moment; multiplying with the oxygen
+           charge (:math:`q_{\text{O}}<0`) will flip the direction and produce
+           the correct orientation.
 
-           There are no sanity checks; if the first atom in a water
-           molecule is not oxygen then results will be wrong.
+           There are no sanity checks; *if the first atom in a water
+           molecule is not oxygen then results will be wrong.*
 
     '''
     def __init__(self, atoms):

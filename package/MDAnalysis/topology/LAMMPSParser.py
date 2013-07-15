@@ -15,13 +15,54 @@
 #     doi:10.1002/jcc.21787
 #
 
-""" LAMMPSParser - reads a lammps data file to build system
+"""
+LAMMPSParser
+============
+
+The :func:`parse` function reads a LAMMPS_ data file to build system
+topology. (**Currently not implemented** --- see below for
+alternative).
+
+The :class:`LAMMPSData` class can extract topology information and
+coordinates from a LAMMPS_ data file. For instance, in order to
+produce a PSF file of the topology and a PDB file of the coordinates
+from a data file "lammps.data" you can use::
+
+  from MDAnalysis.topology.LAMMPSParser import LAMPPSData
+  d = LAMMPSData("lammps.data")
+  d.writePSF("lammps.psf")
+  d.writePDB("lammps.pdb")
+
+You can then read a trajectory (e.g. a LAMMPS DCD, see
+:class:`MDAnalysis.coordinates.LAMMPS.DCDReader`) with ::
+
+  u = MDAnalysis.Unverse("lammps.psf", "lammps.dcd", format="LAMMPS")
+
+
+Functions and classes
+----------------------
+
+.. autofunc:: parse
+
+.. autoclass:: LAMMPSData
+   :members:
+
+.. autoexception:: LAMPPSParserError
+
+
+.. _LAMMPS: http://lammps.sandia.gov/
 """
 
 import numpy
-# from Scientific.IO.FortranFormat import FortranFormat, FortranLine #unused
 
-class Atom(object):
+def parse(filename):
+    """Parse a LAMMPS_ data file.
+
+    **Not implemented**
+    """
+    raise NotImplementedError("Cannot directly read a LAMMPS data file yet. Use LAMPPSData(datafile).writePSF(psffile) as a workaround.")
+
+class LAMMPSAtom(object):
     __slots__ = ("index", "name", "type", "chainid", "charge", "mass", "_positions")
     def __init__(self, index, name, type, chain_id, charge=0, mass=1):
         self.index = index
@@ -31,7 +72,7 @@ class Atom(object):
         self.charge = charge
         self.mass = mass
     def __repr__(self):
-        return "<Atom "+repr(self.index+1)+ ": name " + repr(self.type) +" of chain "+repr(self.chainid)+">"
+        return "<LAMMPSAtom "+repr(self.index+1)+ ": name " + repr(self.type) +" of chain "+repr(self.chainid)+">"
     def __cmp__(self, other):
         return cmp(self.index, other.index)
     def __eq__(self, other):
@@ -41,12 +82,13 @@ class Atom(object):
     def __getattr__(self, attr):
         if attr == 'pos':
             return self._positions[self.index]
-        else: super(Atom, self).__getattribute__(attr)
+        else: super(LAMMPSAtom, self).__getattribute__(attr)
     def __iter__(self):
         pos = self.pos
         return iter((self.index+1, self.chainid, self.type, self.charge, self.mass, pos[0], pos[1], pos[2]))
 
 class LAMMPSParseError(Exception):
+    """An error occured while parsing a LAMMPS_ data file."""
     pass
 
 header_keywords= ["atoms","bonds","angles","dihedrals","impropers","atom types","bond types","angle types","dihedral types","improper types","xlo xhi","ylo yhi","zlo zhi"]
@@ -70,6 +112,10 @@ def conv_float(l):
     return n
 
 class LAMMPSData(object):
+    """Class to parse a LAMMPS_ data file.
+
+    The data file contains both topology and coordinate information.
+    """
     def __init__(self, filename=None):
         self.names = {}
         self.headers = {}
@@ -102,7 +148,7 @@ class LAMMPSData(object):
             file = open(filename, 'r')
             file_iter = file.xreadlines()
             # Create coordinate array
-            positions = numpy.zeros((headers['atoms'], 3), numpy.Float64)
+            positions = numpy.zeros((headers['atoms'], 3), numpy.float64)
             sections = self.sections
             for l in file_iter:
                 line = l.strip()
@@ -131,7 +177,7 @@ class LAMMPSData(object):
                     for i in xrange(headers["atoms"]):
                         fields = file_iter.next().strip().split()
                         index = int(fields[0])-1
-                        a = Atom(index=index, name=fields[2], type=int(fields[2]), chain_id=int(fields[1]), charge=float(fields[3]))
+                        a = LAMMPSAtom(index=index, name=fields[2], type=int(fields[2]), chain_id=int(fields[1]), charge=float(fields[3]))
                         a._positions = positions
                         data.append(a)
                         positions[index] = numpy.array([float(fields[4]), float(fields[5]), float(fields[6])])
@@ -144,7 +190,9 @@ class LAMMPSData(object):
                         print "help"
             self.positions = positions
             file.close()
+
     def writePSF(self, filename, names=None):
+        """Export topology information to a simple PSF file."""
         import string
         # Naveen formatted -- works with MDAnalysis verison 52
         #psf_atom_format = "   %5d %-4s %-4d %-4s %-4s %-4s %10.6f      %7.4f            %1d\n"
@@ -180,7 +228,9 @@ class LAMMPSData(object):
             bond_line = map(lambda bond: string.rjust(str(bond[1]), 8)+string.rjust(str(bond[2]), 8), bonds)
             file.write(''.join(bond_line)+'\n')
         file.close()
+
     def writePDB(self, filename):
+        """Export coordinates to a simple PDB file."""
         import string
         atom_format = "%6s%.5s %4s %4s %.4s    %8.3f%8.3f%8.3f%6.2f%6.2f          %2s  \n"
         p = self.positions

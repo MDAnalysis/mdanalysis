@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -204,7 +205,7 @@ was compiled; this is most certainly 3.</p>
 to access xdr files such as xtc or trr trajectories.</p>
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile.xdrfile_open">
-<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">xdrfile_open</tt><big>(</big><em>path</em>, <em>mode</em><big>)</big> &rarr; XDRFILE<a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.xdrfile_open" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">xdrfile_open</tt><big>(</big><em>path</em>, <em>mode</em><big>)</big> &rarr; XDRFILE<a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile.html#xdrfile_open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.xdrfile_open" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open <em>path</em> and returns a <em>XDRFILE</em> handle that is required by other
 functions.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -230,7 +231,7 @@ functions.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile.xdrfile_close">
-<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">xdrfile_close</tt><big>(</big><em>XDRFILE</em><big>)</big> &rarr; status<a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.xdrfile_close" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">xdrfile_close</tt><big>(</big><em>XDRFILE</em><big>)</big> &rarr; status<a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile.html#xdrfile_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.xdrfile_close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the xdrfile pointed to by <em>XDRFILE</em>.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -250,7 +251,7 @@ multiplied by <em>precision</em> and truncated to the integer part. A typical va
 <p>The advantage of XTC over TRR is its significantly reduced size.</p>
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile.read_xtc_natoms">
-<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">read_xtc_natoms</tt><big>(</big><em>fn</em><big>)</big> &rarr; natoms<a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.read_xtc_natoms" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">read_xtc_natoms</tt><big>(</big><em>fn</em><big>)</big> &rarr; natoms<a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile.html#read_xtc_natoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.read_xtc_natoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the number of atoms <em>natoms</em> from a xtc file <em>fn</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -273,7 +274,7 @@ or if it is not readable.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile.read_xtc_numframes">
-<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">read_xtc_numframes</tt><big>(</big><em>fn</em><big>)</big> &rarr; numframes<a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.read_xtc_numframes" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">read_xtc_numframes</tt><big>(</big><em>fn</em><big>)</big> &rarr; numframes<a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile.html#read_xtc_numframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.read_xtc_numframes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read through the whole trajectory (!) to obtaine the total number of frames. 
 This can take a long time but it might still be advantageous to obtain 
 <em>numframes</em> in this way before setting up a complicated analysis. Unlike the DCD
@@ -300,7 +301,7 @@ or if it is not readable.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile.read_xtc">
-<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">read_xtc</tt><big>(</big><em>XDRFILE</em>, <em>box</em>, <em>x) -&gt; (status</em>, <em>step</em>, <em>time</em>, <em>precision</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.read_xtc" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">read_xtc</tt><big>(</big><em>XDRFILE</em>, <em>box</em>, <em>x) -&gt; (status</em>, <em>step</em>, <em>time</em>, <em>precision</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile.html#read_xtc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.read_xtc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the next frame from the opened xtc trajectory into <em>x</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -346,7 +347,7 @@ values)</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile.write_xtc">
-<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">write_xtc</tt><big>(</big><em>XDRFILE</em>, <em>step</em>, <em>time</em>, <em>box</em>, <em>x</em>, <em>prec</em><big>)</big> &rarr; status<a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.write_xtc" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">write_xtc</tt><big>(</big><em>XDRFILE</em>, <em>step</em>, <em>time</em>, <em>box</em>, <em>x</em>, <em>prec</em><big>)</big> &rarr; status<a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile.html#write_xtc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.write_xtc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the next frame <em>x</em> to the opened xtc trajectory.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -392,7 +393,7 @@ coordinates, velocities and forces, and the lambda value for free energy perturb
 calculations. Velocities and forces are optional in the sense that they can be all zero.</p>
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile.read_trr_natoms">
-<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">read_trr_natoms</tt><big>(</big><em>fn</em><big>)</big> &rarr; natoms<a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.read_trr_natoms" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">read_trr_natoms</tt><big>(</big><em>fn</em><big>)</big> &rarr; natoms<a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile.html#read_trr_natoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.read_trr_natoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the number of atoms <em>natoms</em> from a trr file <em>fn</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -415,7 +416,7 @@ or if it is not readable.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile.read_trr_numframes">
-<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">read_trr_numframes</tt><big>(</big><em>fn</em><big>)</big> &rarr; numframes<a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.read_trr_numframes" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">read_trr_numframes</tt><big>(</big><em>fn</em><big>)</big> &rarr; numframes<a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile.html#read_trr_numframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.read_trr_numframes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read through the whole trajectory (!) to obtaine the total number of frames. 
 This can take a long time but it might still be advantageous to obtain 
 <em>numframes</em> in this way before setting up a complicated analysis. (This is a 
@@ -441,7 +442,7 @@ frames&#8212;please supply a better one.)</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile.read_trr">
-<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">read_trr</tt><big>(</big><em>XDRFILE</em>, <em>box</em>, <em>x</em>, <em>v</em>, <em>f) -&gt; (status</em>, <em>step</em>, <em>time</em>, <em>lambda</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.read_trr" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">read_trr</tt><big>(</big><em>XDRFILE</em>, <em>box</em>, <em>x</em>, <em>v</em>, <em>f) -&gt; (status</em>, <em>step</em>, <em>time</em>, <em>lambda</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile.html#read_trr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.read_trr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the next frame from the opened trr trajectory into <em>x</em>, <em>v</em>, and <em>f</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -495,7 +496,7 @@ under <a class="reference internal" href="#status-symbols">Status symbols</a> fo
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile.write_trr">
-<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">write_trr</tt><big>(</big><em>XDRFILE</em>, <em>step</em>, <em>time</em>, <em>lambda</em>, <em>box</em>, <em>x</em>, <em>v</em>, <em>f</em><big>)</big> &rarr; status<a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.write_trr" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile.</tt><tt class="descname">write_trr</tt><big>(</big><em>XDRFILE</em>, <em>step</em>, <em>time</em>, <em>lambda</em>, <em>box</em>, <em>x</em>, <em>v</em>, <em>f</em><big>)</big> &rarr; status<a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile.html#write_trr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile.write_trr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the next frame to the opened trr trajectory.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -571,10 +572,10 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

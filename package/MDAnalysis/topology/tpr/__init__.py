@@ -15,27 +15,24 @@
 #     doi:10.1002/jcc.21787
 #
 
-from Scientific.Geometry import Transformation
+"""
+TPR support module
+==================
 
-class Transformation:
-    def __init__(self):
-        pass
-    def transform(self):
-        raise NotImplemented()
+The modules are required for the :mod:`MDAnalysis.topology.TPRParser` module.
 
-class Recenter(Transformation):
-    def __init__(self, system, asel):
-        self.system = system
-        self.asel = asel
-    def transform(self):
-        com = self.asel.centerOfMass()
-        self.system.coord -= self.asel.centerOfMass()
+.. autodata:: SUPPORTED_VERSIONS
 
-class RMSOrient(Transformation):
-    def __init__(self, system, asel):
-        self.system = system
-        self.asel = asel
-    #def transform(self):
-    #    # XXX Not complete yet
-    #    com = self.asel.centerOfMass()
+Sub-modules
+-----------
 
+.. automodule:: setting
+   :members:
+.. automodule:: obj
+   :members:
+.. automodule:: util
+
+"""
+__all__ = ["obj", "setting", "util"]
+
+from setting import SUPPORTED_VERSIONS

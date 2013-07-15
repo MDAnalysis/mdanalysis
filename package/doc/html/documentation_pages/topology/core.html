@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -103,11 +104,11 @@ information that is used by functions such as <a class="reference internal" href
 </div>
 <dl class="class">
 <dt id="MDAnalysis.topology.core.Bond">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">Bond</tt><big>(</big><em>a1</em>, <em>a2</em>, <em>order=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.Bond" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">Bond</tt><big>(</big><em>a1</em>, <em>a2</em>, <em>order=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Bond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Bond" title="Permalink to this definition">¶</a></dt>
 <dd><p>A bond between two <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
 <dl class="method">
 <dt id="MDAnalysis.topology.core.Bond.length">
-<tt class="descname">length</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.Bond.length" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">length</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Bond.length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Bond.length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Length of the bond.</p>
 </dd></dl>
 
@@ -115,7 +116,7 @@ information that is used by functions such as <a class="reference internal" href
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.build_bondlists">
-<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">build_bondlists</tt><big>(</big><em>atoms</em>, <em>bonds</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.build_bondlists" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">build_bondlists</tt><big>(</big><em>atoms</em>, <em>bonds</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#build_bondlists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.build_bondlists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct the bond list of each <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>.</p>
 <p>The bond list is stored in the attribute
 <tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.bonds</span></tt> and consists of a list of
@@ -124,7 +125,7 @@ information that is used by functions such as <a class="reference internal" href
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.build_segments">
-<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">build_segments</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.build_segments" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">build_segments</tt><big>(</big><em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#build_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.build_segments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create all <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Segment" title="MDAnalysis.core.AtomGroup.Segment"><tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt></a> instancess from a list of <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
 <p>The function also builds the <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a>
 instances by tracking residue numbers.</p>
@@ -132,7 +133,7 @@ instances by tracking residue numbers.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.get_atom_mass">
-<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">get_atom_mass</tt><big>(</big><em>element</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.get_atom_mass" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">get_atom_mass</tt><big>(</big><em>element</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#get_atom_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.get_atom_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the atomic mass in u for <em>element</em>.</p>
 <p>Masses are looked up in <a class="reference internal" href="tables.html#MDAnalysis.topology.tables.masses" title="MDAnalysis.topology.tables.masses"><tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.topology.tables.masses</span></tt></a>.</p>
 <div class="admonition warning">
@@ -143,7 +144,7 @@ instances by tracking residue numbers.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.get_parser_for">
-<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">get_parser_for</tt><big>(</big><em>filename</em>, <em>permissive=False</em>, <em>format=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.get_parser_for" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">get_parser_for</tt><big>(</big><em>filename</em>, <em>permissive=False</em>, <em>bonds=False</em>, <em>format=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#get_parser_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.get_parser_for" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the appropriate topology parser for <em>filename</em>.</p>
 <p>Automatic detection is disabled when an explicit <em>format</em> is
 provided.</p>
@@ -151,7 +152,7 @@ provided.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_atom_charge">
-<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_charge</tt><big>(</big><em>atomname</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_charge" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_charge</tt><big>(</big><em>atomname</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_atom_charge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_charge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess atom charge from the name.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -161,7 +162,7 @@ provided.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_atom_element">
-<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_element</tt><big>(</big><em>atomname</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_element" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_element</tt><big>(</big><em>atomname</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_atom_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess the element of the atom from the name.</p>
 <p>Looks in dict to see if element is found, otherwise it uses the first character in the atomname.
 The table comes from CHARMM and AMBER atom types, where the first character is not sufficient to
@@ -175,7 +176,7 @@ determine the atom type. Some GROMOS ions have also been added.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_atom_mass">
-<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_mass</tt><big>(</big><em>atomname</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_mass" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_mass</tt><big>(</big><em>atomname</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_atom_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess a mass based on the atom name.</p>
 <p><a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></tt></a> is used to determine the kind of atom.</p>
 <div class="admonition warning">
@@ -187,7 +188,7 @@ masses you might want to double check.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_atom_type">
-<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_type</tt><big>(</big><em>atomname</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_type" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_type</tt><big>(</big><em>atomname</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_atom_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess atom type from the name.</p>
 <p>At the moment, this function simply returns the element, as
 guessed by <a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></tt></a>.</p>
@@ -198,8 +199,24 @@ guessed by <a class="reference internal" href="#MDAnalysis.topology.core.guess_a
 </dd></dl>
 
 <dl class="function">
+<dt id="MDAnalysis.topology.core.guess_bonds">
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_bonds</tt><big>(</big><em>atoms</em>, <em>coords</em>, <em>fudge_factor=0.72</em>, <em>vdwradii=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bond between two atoms is created, if the two atoms are within R1 * R2 * 0.6
+of each other, where R1 and R2 are the VdW radii of the atoms and 0.6 is an 
+ad-hoc factor. This is false (and the reference provided below is wrong).</p>
+<p>Here the bond is created, when sum of the radii multiplied by some fudge_factor
+(0.7 by default) is greater than the distance between the two atoms.</p>
+<p>The VMD radii table is taken from GROMACS (/usr/share/gromacs/top/vdwradii.dat)</p>
+<p>No check is done after the bonds are guesses to see if Lewis structre is 
+correct. This is wrong and will burn somebody.</p>
+<p>The code is also in pure python now, so it&#8217;s slow.</p>
+<p>Reference: <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/vmd-1.7/ug/node23.html">http://www.ks.uiuc.edu/Research/vmd/vmd-1.7/ug/node23.html</a>
+Author: Jan Domanski</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="MDAnalysis.topology.core.guess_format">
-<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_format</tt><big>(</big><em>filename</em>, <em>format=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.guess_format" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_format</tt><big>(</big><em>filename</em>, <em>format=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the type of topology file <em>filename</em>.</p>
 <p>The current heuristic simply looks at the filename extension but
 more complicated probes could be implemented here or in the
@@ -235,10 +252,10 @@ individual packages (e.g. as static methods).</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

@@ -274,3 +274,10 @@ Zr    91.224
 #: Dictionary table with atomic masses in u, indexed by the element from
 #: :data:`atomelements`.
 masses = kv2dict(TABLE_MASSES, convertor=float)
+
+vdwradii = {  "C":     1.5,
+              "F":     1.2,
+              "H":     0.4,
+              "N":     1.10,
+              "O":     1.05,
+              "S":     1.6,}

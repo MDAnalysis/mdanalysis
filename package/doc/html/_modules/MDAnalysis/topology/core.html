@@ -1,0 +1,381 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>MDAnalysis.topology.core &mdash; MDAnalysis 0.7.8-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.7.8-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../../index.html" />
+    <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for MDAnalysis.topology.core</h1><div class="highlight"><pre>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c">#</span>
+<span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
+<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
+<span class="c">#               and contributors (see website for details)</span>
+<span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c">#</span>
+<span class="c"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c">#</span>
+<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
+<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
+<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
+<span class="c">#     doi:10.1002/jcc.21787</span>
+<span class="c">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Common functions for topology building --- :mod:`MDAnalysis.topology.core`</span>
+<span class="sd">==========================================================================</span>
+
+<span class="sd">The various topology parsers make use of functions and classes in this</span>
+<span class="sd">module. They are mostly of use to developers.</span>
+
+<span class="sd">.. SeeAlso:: :mod:`MDAnalysis.topology.tables` for some hard-coded atom</span>
+<span class="sd">   information that is used by functions such as :func:`guess_atom_type` and</span>
+<span class="sd">   :func:`guess_atom_mass`.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.topology</span>
+<span class="kn">import</span> <span class="nn">tables</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.core.distances</span> <span class="kn">import</span> <span class="n">self_distance_array</span>
+
+<div class="viewcode-block" id="build_segments"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.build_segments">[docs]</a><span class="k">def</span> <span class="nf">build_segments</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create all :class:`~MDAnalysis.core.AtomGroup.Segment` instancess from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.</span>
+
+<span class="sd">    The function also builds the :class:`~MDAnalysis.core.AtomGroup.Residue`</span>
+<span class="sd">    instances by tracking residue numbers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span>
+    <span class="n">struc</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">residues</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">resatomlist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">curr_segname</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">segid</span>
+    <span class="n">curr_resnum</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">resid</span>
+    <span class="n">curr_resname</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">resname</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">segid</span> <span class="o">==</span> <span class="n">curr_segname</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">resid</span> <span class="o">==</span> <span class="n">curr_resnum</span><span class="p">):</span>
+                <span class="n">resatomlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># New residue</span>
+                <span class="n">residues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Residue</span><span class="p">(</span><span class="n">curr_resname</span><span class="p">,</span> <span class="n">curr_resnum</span><span class="p">,</span> <span class="n">resatomlist</span><span class="p">))</span>
+                <span class="n">resatomlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+                <span class="n">curr_resnum</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">resid</span>
+                <span class="n">curr_resname</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">resname</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># We&#39;ve come to a new segment</span>
+            <span class="n">residues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Residue</span><span class="p">(</span><span class="n">curr_resname</span><span class="p">,</span> <span class="n">curr_resnum</span><span class="p">,</span> <span class="n">resatomlist</span><span class="p">))</span>
+            <span class="n">struc</span><span class="p">[</span><span class="n">curr_segname</span><span class="p">]</span> <span class="o">=</span> <span class="n">Segment</span><span class="p">(</span><span class="n">curr_segname</span><span class="p">,</span> <span class="n">residues</span><span class="p">)</span>
+            <span class="n">residues</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">resatomlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+            <span class="n">curr_resnum</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">resid</span>
+            <span class="n">curr_resname</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">resname</span>
+            <span class="n">curr_segname</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">segid</span>
+    <span class="c"># Add the last segment</span>
+    <span class="n">residues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Residue</span><span class="p">(</span><span class="n">curr_resname</span><span class="p">,</span> <span class="n">curr_resnum</span><span class="p">,</span> <span class="n">resatomlist</span><span class="p">))</span>
+    <span class="n">struc</span><span class="p">[</span><span class="n">curr_segname</span><span class="p">]</span> <span class="o">=</span> <span class="n">Segment</span><span class="p">(</span><span class="n">curr_segname</span><span class="p">,</span> <span class="n">residues</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">struc</span>
+</div>
+<div class="viewcode-block" id="Bond"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.Bond">[docs]</a><span class="k">class</span> <span class="nc">Bond</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A bond between two :class:`~MDAnalysis.core.AtomGroup.Atom` instances.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atom1</span> <span class="o">=</span> <span class="n">a1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span> <span class="o">=</span> <span class="n">a2</span>
+        <span class="n">a1</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">a2</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_guessed</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">def</span> <span class="nf">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">atom</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span>
+        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom1</span>
+    <span class="k">def</span> <span class="nf">set_is_guessed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_guessed</span> <span class="o">=</span> <span class="n">b</span>
+    <span class="k">def</span> <span class="nf">get_is_guessed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_guessed</span>
+<div class="viewcode-block" id="Bond.length"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.Bond.length">[docs]</a>    <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Length of the bond.&quot;&quot;&quot;</span>
+        <span class="n">bond</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">pos</span>
+        <span class="kn">import</span> <span class="nn">math</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">bond</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="n">bond</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="n">bond</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span></div>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">a1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom1</span>
+        <span class="n">a2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span>
+        <span class="k">return</span> <span class="s">&quot;&lt; Bond between: Atom </span><span class="si">%d</span><span class="s"> (</span><span class="si">%s</span><span class="s"> of </span><span class="si">%s</span><span class="s">-</span><span class="si">%d</span><span class="s">) and Atom </span><span class="si">%s</span><span class="s"> (</span><span class="si">%s</span><span class="s"> of </span><span class="si">%s</span><span class="s">-</span><span class="si">%d</span><span class="s">), length </span><span class="si">%.2f</span><span class="s"> A &gt;&quot;</span> <span class="o">%</span> \
+          <span class="p">(</span><span class="n">a1</span><span class="o">.</span><span class="n">number</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">a1</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">a1</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">a1</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">a2</span><span class="o">.</span><span class="n">number</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">a2</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">a2</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">a2</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">())</span>
+
+</div>
+<div class="viewcode-block" id="build_bondlists"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.build_bondlists">[docs]</a><span class="k">def</span> <span class="nf">build_bondlists</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">bonds</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Construct the bond list of each :class:`~MDAnalysis.core.AtomGroup.Atom`.</span>
+
+<span class="sd">    The bond list is stored in the attribute</span>
+<span class="sd">    :attr:`MDAnalysis.core.AtomGroup.Atom.bonds` and consists of a list of</span>
+<span class="sd">    :class:`Bond` instances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">bonds</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="ow">in</span> <span class="n">bonds</span><span class="p">:</span>
+        <span class="n">atom1</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span>
+        <span class="n">atom2</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="n">a2</span><span class="p">]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">Bond</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">)</span>
+        <span class="n">atom1</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">atom2</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="get_parser_for"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.get_parser_for">[docs]</a><span class="k">def</span> <span class="nf">get_parser_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">permissive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the appropriate topology parser for *filename*.</span>
+
+<span class="sd">    Automatic detection is disabled when an explicit *format* is</span>
+<span class="sd">    provided.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="n">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">permissive</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">bonds</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">_topology_parsers_permissive</span><span class="p">[</span><span class="n">format</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">permissive</span> <span class="ow">and</span> <span class="n">bonds</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">_topology_parsers_bonds</span><span class="p">[</span><span class="n">format</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">_topology_parsers</span><span class="p">[</span><span class="n">format</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="guess_format"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_format">[docs]</a><span class="k">def</span> <span class="nf">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the type of topology file *filename*.</span>
+
+<span class="sd">    The current heuristic simply looks at the filename extension but</span>
+<span class="sd">    more complicated probes could be implemented here or in the</span>
+<span class="sd">    individual packages (e.g. as static methods).</span>
+
+<span class="sd">    If *format* is supplied then it overrides the auto detection.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">format</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="c"># simple extension checking... something more complicated is left</span>
+        <span class="c"># for the ambitious</span>
+        <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ext</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">):</span>
+                <span class="n">ext</span> <span class="o">=</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">format</span> <span class="o">=</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Cannot determine topology type for </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># internally, formats are all uppercase</span>
+        <span class="n">format</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">format</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="c"># sanity check</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">format</span> <span class="ow">in</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">_topology_parsers</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Unknown topology format </span><span class="si">%r</span><span class="s"> for </span><span class="si">%r</span><span class="s">; only </span><span class="si">%r</span><span class="s"> are implemented in MDAnalysis.&quot;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">_topology_parsers</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="k">return</span> <span class="n">format</span>
+
+<span class="c"># following guess_* used by PDB parser</span>
+</div>
+<div class="viewcode-block" id="guess_atom_type"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_atom_type">[docs]</a><span class="k">def</span> <span class="nf">guess_atom_type</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Guess atom type from the name.</span>
+
+<span class="sd">    At the moment, this function simply returns the element, as</span>
+<span class="sd">    guessed by :func:`guess_atom_element`.</span>
+
+<span class="sd">    .. SeeAlso:: :func:`guess_atom_element` and :mod:`MDAnalysis.topology.tables`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atomname</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="guess_atom_element"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_atom_element">[docs]</a><span class="k">def</span> <span class="nf">guess_atom_element</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Guess the element of the atom from the name.</span>
+
+<span class="sd">    Looks in dict to see if element is found, otherwise it uses the first character in the atomname.</span>
+<span class="sd">    The table comes from CHARMM and AMBER atom types, where the first character is not sufficient to</span>
+<span class="sd">    determine the atom type. Some GROMOS ions have also been added.</span>
+
+<span class="sd">    .. Warning: The translation table is incomplete. This will probably result</span>
+<span class="sd">                in some mistakes, but it still better than nothing!</span>
+
+<span class="sd">    .. SeeAlso:: :func:`guess_atom_type` and</span>
+<span class="sd">                 :mod:`MDAnalysis.topology.tables` (where the data are stored)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">atomelements</span><span class="p">[</span><span class="n">atomname</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">atomname</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="s">&#39;2&#39;</span><span class="p">,</span> <span class="s">&#39;3&#39;</span><span class="p">,</span> <span class="s">&#39;4&#39;</span><span class="p">,</span> <span class="s">&#39;5&#39;</span><span class="p">,</span> <span class="s">&#39;6&#39;</span><span class="p">,</span> <span class="s">&#39;7&#39;</span><span class="p">,</span> <span class="s">&#39;8&#39;</span><span class="p">,</span> <span class="s">&#39;9&#39;</span><span class="p">)):</span>
+            <span class="c"># catch 1HH etc</span>
+            <span class="k">return</span> <span class="n">atomname</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">atomname</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="guess_bonds"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_bonds">[docs]</a><span class="k">def</span> <span class="nf">guess_bonds</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">fudge_factor</span><span class="o">=</span><span class="mf">0.72</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bond between two atoms is created, if the two atoms are within R1 * R2 * 0.6</span>
+<span class="sd">    of each other, where R1 and R2 are the VdW radii of the atoms and 0.6 is an </span>
+<span class="sd">    ad-hoc factor. This is false (and the reference provided below is wrong).</span>
+<span class="sd">    </span>
+<span class="sd">    Here the bond is created, when sum of the radii multiplied by some fudge_factor</span>
+<span class="sd">    (0.7 by default) is greater than the distance between the two atoms.</span>
+<span class="sd">    </span>
+<span class="sd">    The VMD radii table is taken from GROMACS (/usr/share/gromacs/top/vdwradii.dat)</span>
+<span class="sd">    </span>
+<span class="sd">    No check is done after the bonds are guesses to see if Lewis structre is </span>
+<span class="sd">    correct. This is wrong and will burn somebody.</span>
+<span class="sd">    </span>
+<span class="sd">    The code is also in pure python now, so it&#39;s slow. </span>
+<span class="sd">    </span>
+<span class="sd">    Reference: http://www.ks.uiuc.edu/Research/vmd/vmd-1.7/ug/node23.html</span>
+<span class="sd">    Author: Jan Domanski</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Taken from GROMACS gromacs/top/vdwradii.dat; in nm</span>
+    <span class="c"># FIXME by JD: these should be stored in an asset file, rather than in </span>
+    <span class="c"># source code.</span>
+    <span class="c"># FIXME this is not the whole periodic table... (eg halogens are missing)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">vdwradii</span><span class="p">:</span>
+        <span class="n">vdwradii</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">vdwradii</span>
+    
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">([</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span> <span class="k">if</span> <span class="n">a</span><span class="p">])</span> <span class="o">==</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="n">bonds</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">a</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="n">vdwradii</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> 
+            <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">type</span> <span class="o">+</span> <span class="s">&quot;has no defined vdw radius&quot;</span>
+            <span class="k">return</span> <span class="n">bonds</span><span class="p">()</span>
+
+    <span class="c"># 1-D vector of the upper-triangle of all-to-all distance matrix    </span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">self_distance_array</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+    
+    <span class="n">pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="p">[[</span><span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">))</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+       
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">pairs</span><span class="p">)):</span>
+        <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">vdwradii</span><span class="p">[</span><span class="n">a1</span><span class="o">.</span><span class="n">type</span><span class="p">],</span> <span class="n">vdwradii</span><span class="p">[</span><span class="n">a2</span><span class="o">.</span><span class="n">type</span><span class="p">]</span> 
+        <span class="c"># 10 comes from scaling nm to A        </span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">r1</span> <span class="o">+</span> <span class="n">r2</span><span class="p">)</span> <span class="o">*</span> <span class="n">fudge_factor</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="p">:</span> <span class="k">continue</span>
+        <span class="c">#print &quot;BOND&quot;, ((r1 + r2) * 10 * fudge_factor), dist[i,j]</span>
+        <span class="n">bonds</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">([</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">bonds</span>
+</div>
+<div class="viewcode-block" id="get_atom_mass"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.get_atom_mass">[docs]</a><span class="k">def</span> <span class="nf">get_atom_mass</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the atomic mass in u for *element*.</span>
+
+<span class="sd">    Masses are looked up in :data:`MDAnalysis.topology.tables.masses`.</span>
+
+<span class="sd">    .. Warning:: Unknown masses are set to 0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">masses</span><span class="p">[</span><span class="n">element</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.000</span>
+</div>
+<div class="viewcode-block" id="guess_atom_mass"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_atom_mass">[docs]</a><span class="k">def</span> <span class="nf">guess_atom_mass</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Guess a mass based on the atom name.</span>
+
+<span class="sd">    :func:`guess_atom_element` is used to determine the kind of atom.</span>
+
+<span class="sd">    .. warning:: Anything not recognized is simply set to 0; if you rely on the</span>
+<span class="sd">                 masses you might want to double check.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">get_atom_mass</span><span class="p">(</span><span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atomname</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="guess_atom_charge"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_atom_charge">[docs]</a><span class="k">def</span> <span class="nf">guess_atom_charge</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Guess atom charge from the name.</span>
+
+<span class="sd">    .. Warning:: Not implemented; simply returns 0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># TODO: do something slightly smarter, at least use name/element</span>
+    <span class="k">return</span> <span class="mf">0.0</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

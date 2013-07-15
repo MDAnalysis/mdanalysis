@@ -501,7 +501,11 @@ class PrimitivePDBReader(base.Reader):
         atoms = []
 
         unitcell = numpy.zeros(6, dtype=numpy.float32)
-
+        
+        class Struct:
+            def __init__(self, **entries): 
+                self.__dict__.update(entries)
+                
         with util.openany(filename, 'r') as pdbfile:
             for i, line in enumerate(pdbfile):
                 def _c(start, stop, typeclass=float):
@@ -546,8 +550,10 @@ class PrimitivePDBReader(base.Reader):
                     segID = _c(67, 76, str).strip()
                     element = _c(77, 78, str).strip()
                     coords.append((x, y, z))
-                    atoms.append((serial, name, resName, chainID, resSeq, occupancy, tempFactor, segID, element))
-                    continue
+                    atom = Struct(**dict(zip(("serial", "name", "resName", "chainID", "resSeq", "occupancy", "tempFactor", "segID", "element"),\
+                    (serial, name, resName, chainID, resSeq, occupancy, tempFactor, segID, element))))
+                    atoms.append(atom)
+
         self.header = header
         self.compound = compound
         self.remarks = remarks
@@ -570,8 +576,8 @@ class PrimitivePDBReader(base.Reader):
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1
-        # hack for PrimitivePDBParser:
-        self._atoms = numpy.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,segID,element")
+
+        self._atoms = atoms
 
     def _col(self, line, start, stop, typeclass=float):
         """Pick out and convert the columns start-stop.
@@ -764,8 +770,8 @@ class PrimitivePDBWriter(base.Writer):
     remark_max_length = 66
     _multiframe = False
 
-    def __init__(self, filename, numatoms=None, start=0, step=1, remarks="Created by PrimitivePDBWriter",
-                 convert_units=None, bonds=False, multiframe=None):
+    def __init__(self, filename, bonds="conect", numatoms=None, start=0, step=1, remarks="Created by PrimitivePDBWriter",
+                 convert_units=None, multiframe=None):
         """Create a new PDBWriter
 
         :Arguments:
@@ -920,7 +926,7 @@ class PrimitivePDBWriter(base.Writer):
 
         # TODO: The bonds should not be a list of ints, as are now, but a list
         #       of Atom objects.
-
+        
         if not self.bonds:
             return
 
@@ -928,13 +934,44 @@ class PrimitivePDBWriter(base.Writer):
             return
 
         if self.obj.atoms.numberOfAtoms() != self.obj.universe.atoms.numberOfAtoms():
-            logger.error("PDB CONECT records not written because this only works correctly for a whole Universe.")
-            raise NotImplementedError("PDB CONECT records not written because this only works correctly for a whole Universe.")
+            pass
+            #logger.error("PDB CONECT records not written because this only works correctly for a whole Universe.")
+            #raise NotImplementedError("PDB CONECT records not written because this only works correctly for a whole Universe.")
+        
+        bonds = set()
 
-        for conect in self.obj.universe.bonds:
-            # TODO: could add logic here to re-number (need a dict converting between atom numbers in Universe/bonds
-            #       and in the selection)
-            self.CONECT(conect)
+        [[bonds.add(b) for b in a.bonds] for a in self.obj.atoms]
+        
+        atoms = set([a.number for a in self.obj.atoms])
+        
+        mapping = dict([(atom.number, i) for i, atom in enumerate(self.obj.atoms)])
+        
+        # Write out only the bonds that were defined in CONECT records
+        if self.bonds == "conect":
+            bonds = [(bond.atom1.number, bond.atom2.number) for bond in bonds if not bond.is_guessed]
+        elif self.bonds == "all":
+            bonds = [(bond.atom1.number, bond.atom2.number) for bond in bonds]
+        else :
+            raise ValueError("bonds has to be either None, 'conect' or 'all'")
+        con = {}
+        
+        for a1, a2 in bonds:
+             if not (a1 in atoms and a2 in atoms): continue
+             if not con.has_key(a1): con[a1] = []
+             if not con.has_key(a2): con[a2] = []
+             con[a2].append(a1)
+             con[a1].append(a2)
+        
+        #print con
+        atoms = sorted([a.number for a in self.obj.atoms])
+
+        conect = [([a,] + sorted(con[a])) for a in atoms if con.has_key(a)]
+        
+        conect = [[mapping[e] for e in row] for row in conect]
+        
+        for c in conect:
+            self.CONECT(c)
+
 
     def _update_frame(self, obj):
         """Method to initialize important attributes in writer from a AtomGroup or Universe *obj*.
@@ -961,7 +998,7 @@ class PrimitivePDBWriter(base.Writer):
         ts, traj = None, None
         if hasattr(obj, 'universe') and not isinstance(obj, Universe):
             # For AtomGroup and children (Residue, ResidueGroup, Segment)
-            ts = obj.ts
+            ts = obj.universe.trajectory.ts
             traj = obj.universe.trajectory
         else:
             # For Universe only
@@ -1100,6 +1137,9 @@ class PrimitivePDBWriter(base.Writer):
             coor = self.convert_pos_to_native(ts._pos, inplace=False)
         else:
             coor = ts._pos
+
+        if hasattr(self.obj, "indices"):
+            coor = coor[self.obj.indices()]
 
         if len(atoms) != len(coor):
             raise ValueError("Length of the atoms array is %d, this is different form the Timestep coordinate array %d" % (len(atoms), len(ts._pos)))
@@ -1272,7 +1312,7 @@ class PrimitivePDBWriter(base.Writer):
         .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
 
         """
-        conect = ["%5d" % entry for entry in conect]
+        conect = ["%5d" % (entry+1) for entry in conect]
         conect = "".join(conect)
         self.pdbfile.write(self.fmt['CONECT'] % conect)
 

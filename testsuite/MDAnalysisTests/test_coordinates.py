@@ -23,9 +23,10 @@ import MDAnalysis.coordinates.core
 import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
+import sys
 
 from MDAnalysis.tests.datafiles import PSF, DCD, DCD_empty, PDB_small, PDB_closed, PDB_multiframe, \
-    PDB, CRD, XTC, TRR, GRO, DMS, \
+    PDB, CRD, XTC, TRR, GRO, DMS, CONECT, \
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol
 
@@ -348,7 +349,9 @@ class TestNCDFWriter(TestCase, RefVGV):
         self.prec = 6
         ext = ".ncdf"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
         fd, self.outtop = tempfile.mkstemp(suffix=".pdb")
+        os.close(fd)
         self.Writer = MDAnalysis.coordinates.TRJ.NCDFWriter
 
     def tearDown(self):
@@ -548,6 +551,7 @@ class TestPrimitivePDBWriter(TestCase):
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         ext = ".pdb"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
 
     def tearDown(self):
         try:
@@ -605,7 +609,8 @@ class TestPrimitivePDBWriter(TestCase):
 
 class TestMultiPDBReader(TestCase):
     def setUp(self):
-        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True, bonds=True)
+        self.conect = mda.Universe(CONECT, bonds=True)
 
     def test_numframes(self):
         assert_equal(self.multiverse.trajectory.numframes, 24, "Wrong number of frames read from PDB muliple model file")
@@ -645,6 +650,31 @@ class TestMultiPDBReader(TestCase):
                      np.arange(u.trajectory.numframes)[4:-2:4],
                      err_msg="slicing did not produce the expected frames")
 
+    def test_conect(self):
+        conect = self.conect
+        
+        assert_equal(len(conect.atoms), 1890)
+        
+        assert_equal(len(conect.bonds), 1922)
+        
+        fd, outfile1 = tempfile.mkstemp(suffix=".pdb")
+        os.close(fd)
+        self.conect.atoms.write(outfile1, bonds="conect")
+        u1 = mda.Universe(outfile1, bonds=True)
+        assert_equal(len(u1.atoms), 1890)
+        assert_equal(len(u1.bonds), 1922)
+        
+        
+        fd, outfile2 = tempfile.mkstemp(suffix=".pdb")
+        os.close(fd)
+        self.conect.atoms.write(outfile2, bonds="all")
+        u2 = mda.Universe(outfile2, bonds=True)
+        assert_equal(len(u1.atoms), 1890)
+        assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922 )
+        
+        
+        #assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
+
     def test_numconnections(self):
         u = self.multiverse
 
@@ -675,20 +705,45 @@ class TestMultiPDBReader(TestCase):
                    [349, 338],
                    [365, 48],
                    [387, 249]]
-
-        assert_equal(u._psf['_bonds'], desired,
+        
+        
+        def helper(atoms, bonds):
+            """
+            Convert a bunch of atoms and bonds into a list of CONECT records
+            """
+            con = {}
+            
+            for bond in bonds:
+                 a1, a2 = bond.atom1.number, bond.atom2.number
+                 if not con.has_key(a1): con[a1] = []
+                 if not con.has_key(a2): con[a2] = []
+                 con[a2].append(a1)
+                 con[a1].append(a2)
+            
+            #print con
+            atoms = sorted([a.number for a in atoms])
+            
+            conect = [([a,] + sorted(con[a])) for a in atoms if con.has_key(a)]
+            conect = [[ a+1 for a in c ]for c in conect]
+            
+            return conect
+        conect = helper(self.multiverse.atoms, [b for b in u.bonds if not b.is_guessed])
+        for r in conect: print r
+        assert_equal(conect, desired,
                                 err_msg="The bond list does not match the test reference; len(actual) is %d, len(desired) is %d " % (len(u._psf['_bonds']), len(desired)))
 
 
 class TestMultiPDBWriter(TestCase):
     def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small, permissive=True)
-        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
-        self.universe2 = mda.Universe(PSF, DCD, permissive=True)
+        self.universe = mda.Universe(PSF, PDB_small, permissive=True, bonds=True)
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True,  bonds=True)
+        self.universe2 = mda.Universe(PSF, DCD, permissive=True, bonds=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         ext = ".pdb"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
         fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
 
     def tearDown(self):
         try:
@@ -724,6 +779,7 @@ class TestMultiPDBWriter(TestCase):
         group = u.selectAtoms('name CA', 'name C')
         desired_group = 56
         desired_frames = 6
+
         pdb = MDAnalysis.Writer(self.outfile, multiframe=True, start=12, step=2)
         pdb.write_all_timesteps(group)
         u2 = mda.Universe(self.outfile)
@@ -846,20 +902,20 @@ class TestDMSReader(TestCase):
 
     def test_global_cell(self):
         assert_equal(self.ts.dimensions, [0., 0., 0., 0., 0., 0.])
-      
+
     def test_velocities(self):
         assert_equal(hasattr(self.ts, "_velocities"), False)
-    
+
     def test_number_of_coords(self):
         # Desired value taken from VMD
         #      Info)    Atoms: 3341
-        assert_equal(len(self.universe.atoms),3341) 
-        
+        assert_equal(len(self.universe.atoms),3341)
+
     def test_coords_atom_0(self):
         # Desired coordinates taken directly from the SQLite file. Check unit conversion
         coords_0 = np.array([-11.0530004501343, 26.6800003051758, 12.7419996261597,], dtype=np.float32)
         assert_array_equal(self.universe.atoms[0].pos, coords_0)
-        
+
 class TestGROReaderNoConversion(TestCase, RefAdK):
     def setUp(self):
         ##mda.core.flags['convert_gromacs_lengths'] = False
@@ -914,7 +970,9 @@ class TestGROWriter(TestCase):
         self.prec = 2  # 3 decimals in file in nm but MDAnalysis is in A
         ext = ".gro"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
         fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
 
     def tearDown(self):
         try:
@@ -1121,6 +1179,7 @@ class TestDCDWriter(TestCase):
         self.universe = mda.Universe(PSF, DCD)
         ext = ".dcd"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
         self.Writer = MDAnalysis.coordinates.DCD.DCDWriter
 
     def tearDown(self):
@@ -1176,6 +1235,7 @@ class TestDCDWriter_Issue59(TestCase):
         """Generate input xtc."""
         self.u = MDAnalysis.Universe(PSF,DCD)
         fd, self.xtc = tempfile.mkstemp(suffix='.xtc')
+        os.close(fd)
         wXTC = MDAnalysis.Writer(self.xtc, self.u.atoms.numberOfAtoms())
         for ts in self.u.trajectory:
             wXTC.write(ts);
@@ -1197,6 +1257,7 @@ class TestDCDWriter_Issue59(TestCase):
         """Test writing of XTC to DCD (Issue 59)"""
         xtc = MDAnalysis.Universe(PSF, self.xtc)
         fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
+        os.close(fd)
         wDCD = MDAnalysis.Writer(self.dcd, xtc.atoms.numberOfAtoms())
         for ts in xtc.trajectory:
             wDCD.write(ts);
@@ -1233,6 +1294,7 @@ class TestNCDF2DCD(TestCase):
         self.u = MDAnalysis.Universe(PRMncdf, NCDF)
         # create the DCD
         fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
+        os.close(fd)
         DCD = MDAnalysis.Writer(self.dcd, numatoms=self.u.atoms.numberOfAtoms())
         for ts in self.u.trajectory:
             DCD.write(ts)
@@ -1388,6 +1450,7 @@ class TestChainReader(TestCase):
         self.prec = 3
         # dummy output DCD file
         fd, self.outfile = tempfile.mkstemp(suffix=".dcd")
+        os.close(fd)
 
     def tearDown(self):
         try:
@@ -1482,11 +1545,11 @@ class TestChainReaderFormats(TestCase):
         assert_equal(universe.trajectory.numframes, 2)
 
 class TestTRRReader_Sub(TestCase):
-    
+
     def setUp(self):
-        """ 
-        grab values from selected atoms from full solvated traj, 
-        later compare to using 'sub' 
+        """
+        grab values from selected atoms from full solvated traj,
+        later compare to using 'sub'
         """
         usol = mda.Universe(PDB_sub_sol, TRR_sub_sol)
         atoms = usol.selectAtoms("not resname SOL")
@@ -1496,10 +1559,10 @@ class TestTRRReader_Sub(TestCase):
         self.sub = atoms.indices()
         # universe from un-solvated protein
         self.udry = mda.Universe(PDB_sub_dry)
-        
+
     def test_load_new_raises_ValueError(self):
         # should fail if we load universe with a trajectory with different
-        # number of atoms when NOT using sub, same as before. 
+        # number of atoms when NOT using sub, same as before.
         def load_new_without_sub():
             self.udry.load_new(TRR_sub_sol)
         assert_raises(ValueError, load_new_without_sub)
@@ -1509,14 +1572,14 @@ class TestTRRReader_Sub(TestCase):
         load solvated trajectory into universe with unsolvated protein.
         """
         self.udry.load_new(TRR_sub_sol, sub=self.sub)
-        assert_array_almost_equal(self.pos, self.udry.atoms.positions, 
+        assert_array_almost_equal(self.pos, self.udry.atoms.positions,
                                   err_msg="positions differ")
-        assert_array_almost_equal(self.vel, self.udry.atoms.velocities(), 
+        assert_array_almost_equal(self.vel, self.udry.atoms.velocities(),
                                   err_msg="positions differ")
-        assert_array_almost_equal(self.force, self.udry.atoms.forces, 
+        assert_array_almost_equal(self.force, self.udry.atoms.forces,
                                   err_msg="positions differ")
 
-        
+
 
 
 class _GromacsReader(TestCase):
@@ -1537,6 +1600,7 @@ class _GromacsReader(TestCase):
         # dummy output file
         ext = os.path.splitext(self.filename)[1]
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
 
     def tearDown(self):
         try:
@@ -1577,7 +1641,6 @@ class _GromacsReader(TestCase):
         assert_equal(frames,  [3, 6, 9], "slicing xdrtrj [2:9:3]")
 
     @dec.slow
-    @dec.knownfailureif(True, "XTC/TRR reverse slicing not implemented for performance reasons")
     def test_reverse_xdrtrj(self):
         frames = [ts.frame for ts in self.trajectory[::-1]]
         assert_equal(frames, range(10,0,-1), "slicing xdrtrj [::-1]")
@@ -1689,6 +1752,9 @@ class TestTRRReader(_GromacsReader):
             assert_array_almost_equal(self.universe.atoms[index].velocity, v_known, self.prec,
                                   err_msg="atom[%d].velocity does not match known values" % index)
 
+if sys.version_info.major < 3:
+    class TestTRRReader_UTF8(TestTRRReader):
+        filename = unicode(TRR)
 
 class _XDRNoConversion(TestCase):
     filename = None
@@ -1737,6 +1803,7 @@ class _GromacsWriter(TestCase):
         self.universe = mda.Universe(GRO, self.infilename)
         ext = os.path.splitext(self.infilename)[1]
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
         self.Writer = self.Writers[ext]
 
     def tearDown(self):
@@ -1813,6 +1880,7 @@ class _GromacsWriterIssue101(TestCase):
 
     def setUp(self):
         fd, self.outfile = tempfile.mkstemp(suffix=self.ext)
+        os.close(fd)
         self.Writer = self.Writers[self.ext]
 
     def tearDown(self):
@@ -1862,6 +1930,7 @@ class _GromacsWriterIssue117(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PRMncdf, NCDF)
         fd, self.outfile = tempfile.mkstemp(suffix=self.ext)
+        os.close(fd)
         self.Writer = MDAnalysis.Writer(self.outfile, numatoms=self.universe.atoms.numberOfAtoms(),
                                         delta=self.universe.trajectory.delta,
                                         step=self.universe.trajectory.skip_timestep)

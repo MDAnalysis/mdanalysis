@@ -1,0 +1,357 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>MDAnalysis.analysis.distances &mdash; MDAnalysis 0.7.8-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.7.8-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../../index.html" />
+    <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for MDAnalysis.analysis.distances</h1><div class="highlight"><pre>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c">#</span>
+<span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
+<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
+<span class="c">#               and contributors (see website for details)</span>
+<span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c">#</span>
+<span class="c"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c">#</span>
+<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
+<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
+<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
+<span class="c">#     doi:10.1002/jcc.21787</span>
+<span class="c">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Distance analysis --- :mod:`MDAnalysis.distances`</span>
+<span class="sd">==================================================</span>
+
+<span class="sd">This module provides functions to rapidly compute distances between</span>
+<span class="sd">atoms or groups of atoms.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;distance_array&#39;</span><span class="p">,</span> <span class="s">&#39;self_distance_array&#39;</span><span class="p">,</span> <span class="s">&#39;contact_matrix&#39;</span><span class="p">,</span> <span class="s">&#39;dist&#39;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">weave</span>
+<span class="kn">from</span> <span class="nn">scipy.weave</span> <span class="kn">import</span> <span class="n">converters</span>
+
+<span class="kn">from</span> <span class="nn">MDAnalysis.core.distances</span> <span class="kn">import</span> <span class="n">distance_array</span><span class="p">,</span> <span class="n">self_distance_array</span>
+
+
+<div class="viewcode-block" id="contact_matrix"><a class="viewcode-back" href="../../../documentation_pages/analysis/distances.html#MDAnalysis.analysis.distances.contact_matrix">[docs]</a><span class="k">def</span> <span class="nf">contact_matrix</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">returntype</span><span class="o">=</span><span class="s">&quot;numpy&quot;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">progress_meter_freq</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">suppress_progmet</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculates a matrix of contacts between a list of coordinates.</span>
+<span class="sd">    There is a fast, high-memory-usage version for small systems</span>
+<span class="sd">    (returntype=&#39;numpy&#39;), and a slower, low-memory-usage version</span>
+<span class="sd">    for larger systems (returntype=&#39;sparse&#39;).</span>
+
+<span class="sd">    If box dimensions are passed, then periodic boundary conditions</span>
+<span class="sd">    are applied.</span>
+
+<span class="sd">    Change progress_meter_freq to alter frequency of progress meter</span>
+<span class="sd">    updates. Or switch suppress_progmet to True to suppress it completely.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">returntype</span><span class="o">==</span><span class="s">&quot;numpy&quot;</span><span class="p">:</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="p">(</span><span class="n">distance_array</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span><span class="n">coord</span><span class="p">,</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">cutoff</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">adj</span>
+
+    <span class="k">elif</span> <span class="n">returntype</span><span class="o">==</span><span class="s">&quot;sparse&quot;</span><span class="p">:</span>
+        <span class="c"># Initialize square List of Lists matrix of dimensions equal to number of coordinates passed</span>
+        <span class="n">sparse_contacts</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">lil_matrix</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">))</span>  <span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;bool&#39;</span><span class="p">)</span>
+        <span class="c"># if PBC</span>
+
+        <span class="c"># TODO Jan: this distance matrix will be symmetric, hence some of the iterations could be skipped.</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">contact_matrix_pbc</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">sparse_contacts</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">progress_meter_freq</span><span class="p">,</span> <span class="n">suppress_progmet</span> <span class="p">)</span>
+
+        <span class="c"># if no PBC</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">contact_matrix_no_pbc</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">sparse_contacts</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">progress_meter_freq</span><span class="p">,</span> <span class="n">suppress_progmet</span> <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">sparse_contacts</span>
+</div>
+<span class="k">def</span> <span class="nf">contact_matrix_pbc</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">sparse_contacts</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">progress_meter_freq</span><span class="p">,</span> <span class="n">suppress_progmet</span> <span class="p">):</span>
+    <span class="k">print</span> <span class="n">box</span>
+    <span class="n">box_half</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span> <span class="o">/</span> <span class="mf">2.</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">box</span><span class="p">]</span> <span class="p">)</span>
+    <span class="k">print</span> <span class="n">box_half</span>
+
+    <span class="n">c_code</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">    #include &lt;math.h&gt;</span>
+
+<span class="s">    int rows = Ncoord[0];</span>
+
+<span class="s">    float cutoff2 = powf(cutoff, 2);</span>
+
+<span class="s">    py::tuple args(2);</span>
+
+<span class="s">    bool b = 1;</span>
+
+<span class="s">    args[1] = b;</span>
+
+<span class="s">    for (int i=0; i &lt; rows; i++) {</span>
+
+<span class="s">        // Print progress meter</span>
+<span class="s">        if (i % progress_meter_freq == 0 ) {</span>
+<span class="s">            printf(&quot;</span><span class="si">%.1f</span><span class="s"> percent done </span><span class="se">\\</span><span class="s">n&quot;, (100.0 * i / rows));</span>
+<span class="s">        }</span>
+
+<span class="s">        for (int j=0; j &lt; rows; j++) {</span>
+<span class="s">            float x = coord(i,0) - coord(j,0);</span>
+<span class="s">            float y = coord(i,1) - coord(j,1);</span>
+<span class="s">            float z = coord(i,2) - coord(j,2);</span>
+
+
+<span class="s">            // Handle the periodicity</span>
+<span class="s">            if (fabs(x) &gt; box_half(0) ) {</span>
+<span class="s">                if (x &lt; 0.0) {x += box(0); }</span>
+<span class="s">                else { x -= box(0); }</span>
+<span class="s">            }</span>
+
+<span class="s">            if (fabs(y) &gt; box_half(1) ) {</span>
+<span class="s">                if (y &lt; 0.0) {y += box(1); }</span>
+<span class="s">                else { y -= box(1); }</span>
+<span class="s">            }</span>
+
+<span class="s">            if (fabs(z) &gt; box_half(2) ) {</span>
+<span class="s">                if (z &lt; 0.0) {z += box(2); }</span>
+<span class="s">                else { z -= box(2); }</span>
+<span class="s">            }</span>
+
+
+<span class="s">            float dist = powf(x, 2) + powf(y, 2) + powf(z, 2);</span>
+
+<span class="s">            if (dist != 0.0 &amp;&amp; dist &lt; cutoff2) {</span>
+
+<span class="s">                py::tuple idx(2);</span>
+
+<span class="s">                idx[0] = i;</span>
+
+<span class="s">                idx[1] = j;</span>
+
+<span class="s">                args[0] = idx;</span>
+
+<span class="s">                sparse_contacts.mcall(&quot;__setitem__&quot;,args);</span>
+<span class="s">            }</span>
+<span class="s">        }</span>
+<span class="s">    }</span>
+<span class="s">    &quot;&quot;&quot;</span>
+
+    <span class="n">weave</span><span class="o">.</span><span class="n">inline</span><span class="p">(</span><span class="n">c_code</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;coord&#39;</span><span class="p">,</span> <span class="s">&#39;sparse_contacts&#39;</span><span class="p">,</span> <span class="s">&#39;box&#39;</span><span class="p">,</span> <span class="s">&#39;box_half&#39;</span><span class="p">,</span> <span class="s">&#39;cutoff&#39;</span><span class="p">,</span> <span class="s">&#39;progress_meter_freq&#39;</span><span class="p">,</span> <span class="s">&#39;suppress_progmet&#39;</span><span class="p">],</span> <span class="n">type_converters</span><span class="o">=</span><span class="n">converters</span><span class="o">.</span><span class="n">blitz</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">contact_matrix_no_pbc</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">sparse_contacts</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">progress_meter_freq</span><span class="p">,</span> <span class="n">suppress_progmet</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Examples of python.weave usage http://github.com/scipy/scipy/tree/master/scipy/weave/examples</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">c_code</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">    #include &lt;math.h&gt;</span>
+
+<span class="s">    int rows = Ncoord[0];</span>
+
+<span class="s">    float cutoff2 = powf(cutoff, 2.);</span>
+
+<span class="s">    py::tuple args(2);</span>
+
+<span class="s">    bool b = 1;</span>
+
+<span class="s">    args[1] = b;</span>
+
+<span class="s">    for (int i=0; i &lt; rows; i++) {</span>
+
+<span class="s">        // Print progress meter</span>
+<span class="s">        if (i % progress_meter_freq == 0 ) {</span>
+<span class="s">            printf(&quot;</span><span class="si">%.1f</span><span class="s"> percent done </span><span class="se">\\</span><span class="s">n&quot;, (100.0 * i / rows));</span>
+<span class="s">        }</span>
+
+<span class="s">        for (int j=0; j &lt; rows; j++) {</span>
+<span class="s">            float x = coord(i,0) - coord(j,0);</span>
+<span class="s">            float y = coord(i,1) - coord(j,1);</span>
+<span class="s">            float z = coord(i,2) - coord(j,2);</span>
+
+<span class="s">            float dist = powf(x, 2.) + powf(y, 2.) + powf(z, 2.);</span>
+
+<span class="s">            if (dist != 0.0 &amp;&amp; dist &lt; cutoff2) {</span>
+
+<span class="s">                py::tuple idx(2);</span>
+
+<span class="s">                idx[0] = i;</span>
+
+<span class="s">                idx[1] = j;</span>
+
+<span class="s">                args[0] = idx;</span>
+
+<span class="s">                sparse_contacts.mcall(&quot;__setitem__&quot;,args);</span>
+<span class="s">            }</span>
+<span class="s">        }</span>
+<span class="s">    }</span>
+<span class="s">    &quot;&quot;&quot;</span>
+
+    <span class="n">weave</span><span class="o">.</span><span class="n">inline</span><span class="p">(</span><span class="n">c_code</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;coord&#39;</span><span class="p">,</span> <span class="s">&#39;sparse_contacts&#39;</span><span class="p">,</span> <span class="s">&#39;cutoff&#39;</span><span class="p">,</span> <span class="s">&#39;progress_meter_freq&#39;</span><span class="p">,</span> <span class="s">&#39;suppress_progmet&#39;</span><span class="p">],</span> <span class="n">type_converters</span><span class="o">=</span><span class="n">converters</span><span class="o">.</span><span class="n">blitz</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="dist"><a class="viewcode-back" href="../../../documentation_pages/analysis/distances.html#MDAnalysis.analysis.distances.dist">[docs]</a><span class="k">def</span> <span class="nf">dist</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return distance between atoms in two atom groups.</span>
+
+<span class="sd">    The distance is calculated atom-wise. The residue ids are also</span>
+<span class="sd">    returned because a typical use case is to look at CA distances</span>
+<span class="sd">    before and after an alignment. Using the *offset* keyword one can</span>
+<span class="sd">    also add a constant offset to the resids which facilitates</span>
+<span class="sd">    comparison with PDB numbering.</span>
+
+<span class="sd">    :Arguments:</span>
+<span class="sd">       *A*, *B*</span>
+<span class="sd">          :class:`~MDAnalysis.core.AtomGroup.AtomGroup` with the</span>
+<span class="sd">          same number of atoms</span>
+
+<span class="sd">    :Keywords:</span>
+<span class="sd">       *offset* : integer</span>
+<span class="sd">          The *offset* is added to *resids_A* and *resids_B* (see</span>
+<span class="sd">          below) in order to produce PDB numbers. The default is 0.</span>
+
+<span class="sd">       *offset* : tuple</span>
+<span class="sd">          *offset[0]* is added to *resids_A* and *offset[1]* to</span>
+<span class="sd">          *resids_B*.</span>
+
+<span class="sd">    :Returns: NumPy `array([resids_A, resids_B, distances])`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span> <span class="o">!=</span> <span class="n">B</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;AtomGroups A and B do not have the same number of atoms&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">off_A</span><span class="p">,</span> <span class="n">off_B</span> <span class="o">=</span> <span class="n">offset</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+        <span class="n">off_A</span> <span class="o">=</span> <span class="n">off_B</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+    <span class="n">residues_A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">resids</span><span class="p">())</span> <span class="o">+</span> <span class="n">off_A</span>
+    <span class="n">residues_B</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">resids</span><span class="p">())</span> <span class="o">+</span> <span class="n">off_B</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="n">B</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">r</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">residues_A</span><span class="p">,</span> <span class="n">residues_B</span><span class="p">,</span> <span class="n">d</span><span class="p">])</span>
+
+</div>
+<span class="k">def</span> <span class="nf">between</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Return sub group of *group* that is within *distance* of both *A* and *B*.</span>
+
+<span class="sd">  *group*, *A*, and *B* must be</span>
+<span class="sd">  :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances.  Works best</span>
+<span class="sd">  if *group* is bigger than either *A* or *B*. This function is not</span>
+<span class="sd">  aware of periodic boundary conditions.</span>
+
+<span class="sd">  Can be used to find bridging waters or molecules in an interface.</span>
+
+<span class="sd">  Similar to &quot;*group* and (AROUND *A* *distance* and AROUND *B* *distance*)&quot;.</span>
+
+<span class="sd">  .. SeeAlso:: Makes use of :mod:`MDAnalysis.KDTree.NeighborSearch`.</span>
+
+<span class="sd">  .. versionadded: 0.7.5</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">MDAnalysis.KDTree.NeighborSearch</span> <span class="kn">import</span> <span class="n">AtomNeighborSearch</span>
+  <span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
+  <span class="n">ns_group</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+  <span class="n">resA</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ns_group</span><span class="o">.</span><span class="n">search_list</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">distance</span><span class="p">))</span>
+  <span class="n">resB</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ns_group</span><span class="o">.</span><span class="n">search_list</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">distance</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">AtomGroup</span><span class="p">(</span><span class="n">resB</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">resA</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

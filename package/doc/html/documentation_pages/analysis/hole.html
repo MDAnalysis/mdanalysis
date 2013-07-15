@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -205,7 +206,7 @@ iterate over the sorted profiles (see <a class="reference internal" href="#MDAna
 </div>
 <div class="section" id="data-structures">
 <h2>3.8.2. Data structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
-<p>A profile is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>:</p>
+<p>A profile is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>:</p>
 <div class="highlight-python"><pre>frame   rxncoord   radius</pre>
 </div>
 <dl class="docutils">
@@ -234,7 +235,7 @@ be stored in the dict.</p>
 <h2>3.8.3. Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.hole.HOLE">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hole.</tt><tt class="descname">HOLE</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hole.</tt><tt class="descname">HOLE</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run HOLE on a single frame or a DCD trajectory.</p>
 <p>Only a subset of all <a class="reference external" href="http://d2o.bioch.ox.ac.uk:38080/doc/hole_d03.html">HOLE control parameters</a> is supported and can be set
 with keyword arguments.</p>
@@ -449,7 +450,7 @@ file. [&#8220;hole.sph&#8221;]</p>
 (e.g. <tt class="docutils literal"><span class="pre">/opt/hole/exe/hole</span></tt>); the other programs
 <strong class="program">sph_process</strong> and <strong class="program">sos_triangle</strong> are assumed
 to live in the same directory as <strong class="program">hole</strong>. If
-<strong class="program">hole</strong> is found on the <span class="target" id="index-0"></span><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt> then the bare
+<strong class="program">hole</strong> is found on the <span class="target" id="index-0"></span><a class="reference external" href="http://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v1.2.1)"><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt></a> then the bare
 executable name is sufficient.  [&#8220;hole&#8221;]</p>
 </div></blockquote>
 </td>
@@ -473,7 +474,7 @@ that the order is random; one needs to sort the keys first.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLE.check_and_fix_long_filename">
-<tt class="descname">check_and_fix_long_filename</tt><big>(</big><em>filename</em>, <em>tmpdir='.'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.check_and_fix_long_filename" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">check_and_fix_long_filename</tt><big>(</big><em>filename</em>, <em>tmpdir='.'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLE.check_and_fix_long_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.check_and_fix_long_filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <em>filename</em> suitable for HOLE.</p>
 <p>HOLE is limited to filenames &lt;= <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE.HOLE_MAX_LENGTH" title="MDAnalysis.analysis.hole.HOLE.HOLE_MAX_LENGTH"><tt class="xref py py-attr docutils literal"><span class="pre">HOLE.HOLE_MAX_LENGTH</span></tt></a>. This method</p>
 <ol class="arabic">
@@ -495,14 +496,14 @@ with the <em>tmpdir</em> keyword (e.g. one can use &#8220;/tmp&#8221;).</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLE.collect">
-<tt class="descname">collect</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.collect" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">collect</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLE.collect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.collect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the output from a HOLE run into numpy recarrays.</p>
 <p>Can deal with outputs containing multiple frames. Output format:</p>
 <div class="highlight-python"><pre>frame  rxncoord   radius</pre>
 </div>
 <p>The method saves the result as <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE.profiles" title="MDAnalysis.analysis.hole.HOLE.profiles"><tt class="xref py py-attr docutils literal"><span class="pre">HOLE.profiles</span></tt></a>, a dictionary
 indexed by the frame number. Each entry is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
 <p>If the keyword <em>outdir</em> is supplied (e.g. &#8221;.&#8221;) then each profile is
 saved to a gzipped data file.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -526,7 +527,7 @@ value but <tt class="docutils literal"><span class="pre">None</span></tt> [<tt c
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLE.create_vmd_surface">
-<tt class="descname">create_vmd_surface</tt><big>(</big><em>filename='hole.vmd'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.create_vmd_surface" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">create_vmd_surface</tt><big>(</big><em>filename='hole.vmd'</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLE.create_vmd_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.create_vmd_surface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process HOLE output to create a smooth pore surface suitable for VMD.</p>
 <p>Takes the <tt class="xref py py-attr docutils literal"><span class="pre">sphpdb</span></tt> file and feeds it to <strong class="program">sph_process</strong>
 and <strong class="program">sos_triangle</strong> as described under <a class="reference external" href="http://d2o.bioch.ox.ac.uk:38080/doc/hole_d04.html">Visualization of HOLE
@@ -570,7 +571,7 @@ the <em>ignore_residues</em> keyword.</p>
 <tt class="docutils literal"><span class="pre">None</span></tt> will use <em>cmap</em> instead [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>linestyle</em></dt>
-<dd><p class="first last">linestyle supported by <tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt>;
+<dd><p class="first last">linestyle supported by <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.2.1)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>;
 an iterable will be applied in turn [&#8216;-&#8216;]</p>
 </dd>
 <dt><em>yshift</em></dt>
@@ -588,7 +589,7 @@ is set to &#8220;_nolegend_&#8221; or <tt class="docutils literal"><span class="
 legend is displayed</p>
 </dd>
 <dt><em>ax</em></dt>
-<dd><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt> instance to plot into
+<dd><p class="first last"><a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.2.1)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a> instance to plot into
 [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
@@ -596,7 +597,7 @@ legend is displayed</p>
 </tr>
 </tbody>
 </table>
-<p>All other <em>kwargs</em> are passed to <tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt>.</p>
+<p>All other <em>kwargs</em> are passed to <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.2.1)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -628,7 +629,7 @@ legend is displayed</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLE.run">
-<tt class="descname">run</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLE.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run HOLE on the input file.</p>
 </dd></dl>
 
@@ -654,7 +655,7 @@ legend is displayed</p>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.hole.HOLEtraj">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hole.</tt><tt class="descname">HOLEtraj</tt><big>(</big><em>universe</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hole.</tt><tt class="descname">HOLEtraj</tt><big>(</big><em>universe</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLEtraj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze all frames in a trajectory.</p>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE" title="MDAnalysis.analysis.hole.HOLE"><tt class="xref py py-class docutils literal"><span class="pre">HOLE</span></tt></a> class provides a direct interface to HOLE. HOLE itself
 has limited support for analysing trajectories but cannot deal with all the
@@ -687,8 +688,12 @@ frames in the trajectory.</p>
 the group of atoms that is to be analysed by HOLE [&#8220;protein&#8221;]</p>
 </dd>
 <dt><em>cpoint</em></dt>
-<dd><p class="first last"><em>cpoint</em> is guessed as the <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry" title="MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry"><tt class="xref py py-meth docutils literal"><span class="pre">centerOfGeometry()</span></tt></a>
-of the <em>selection</em></p>
+<dd><p class="first">Point inside the pore.</p>
+<p>If set to <tt class="docutils literal"><span class="pre">True</span></tt> then <em>cpoint</em> is guessed as the
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry" title="MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry"><tt class="xref py py-meth docutils literal"><span class="pre">centerOfGeometry()</span></tt></a> of
+the <em>selection</em> from the first frame of the trajectory.</p>
+<p class="last">If <em>cpoint</em> is not set or set to <tt class="docutils literal"><span class="pre">None</span></tt> then HOLE guesses it
+with its own algorithm (for each individual frame). [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">All other keywords are passed on to <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE" title="MDAnalysis.analysis.hole.HOLE"><tt class="xref py py-class docutils literal"><span class="pre">HOLE</span></tt></a> (see there for description).</p>
@@ -709,9 +714,9 @@ order is random; one needs to sort the keys first.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLEtraj.guess_cpoint">
-<tt class="descname">guess_cpoint</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.guess_cpoint" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">guess_cpoint</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLEtraj.guess_cpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.guess_cpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess a point inside the pore.</p>
-<p>This method simply uses the center of geometry of the protein seelction
+<p>This method simply uses the center of geometry of the protein selection
 as a guess. <em>selection</em> is &#8220;protein&#8221; by default.</p>
 </dd></dl>
 
@@ -736,7 +741,7 @@ as a guess. <em>selection</em> is &#8220;protein&#8221; by default.</p>
 <tt class="docutils literal"><span class="pre">None</span></tt> will use <em>cmap</em> instead [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>linestyle</em></dt>
-<dd><p class="first last">linestyle supported by <tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt>;
+<dd><p class="first last">linestyle supported by <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.2.1)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>;
 an iterable will be applied in turn [&#8216;-&#8216;]</p>
 </dd>
 <dt><em>yshift</em></dt>
@@ -754,7 +759,7 @@ is set to &#8220;_nolegend_&#8221; or <tt class="docutils literal"><span class="
 legend is displayed</p>
 </dd>
 <dt><em>ax</em></dt>
-<dd><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt> instance to plot into
+<dd><p class="first last"><a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.2.1)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a> instance to plot into
 [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
@@ -762,7 +767,7 @@ legend is displayed</p>
 </tr>
 </tbody>
 </table>
-<p>All other <em>kwargs</em> are passed to <tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt>.</p>
+<p>All other <em>kwargs</em> are passed to <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.2.1)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -794,7 +799,7 @@ legend is displayed</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLEtraj.run">
-<tt class="descname">run</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLEtraj.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run HOLE on the whole trajectory and collect profiles.</p>
 <p>Keyword arguments <em>start</em>, <em>stop</em>, and <em>step</em> can be used to only
 analyse part of the trajectory.</p>
@@ -802,7 +807,7 @@ analyse part of the trajectory.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLEtraj.run_hole">
-<tt class="descname">run_hole</tt><big>(</big><em>pdbfile</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.run_hole" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run_hole</tt><big>(</big><em>pdbfile</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLEtraj.run_hole"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.run_hole" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run HOLE on a single PDB file <em>pdbfile</em>.</p>
 </dd></dl>
 
@@ -841,14 +846,14 @@ The data file can be written with the convenience function <a class="reference i
 <h2>3.8.4. Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.hole.write_simplerad2">
-<tt class="descclassname">MDAnalysis.analysis.hole.</tt><tt class="descname">write_simplerad2</tt><big>(</big><em>filename='simple2.rad'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hole.write_simplerad2" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.hole.</tt><tt class="descname">write_simplerad2</tt><big>(</big><em>filename='simple2.rad'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#write_simplerad2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.write_simplerad2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the built-in radii in <a class="reference internal" href="#MDAnalysis.analysis.hole.SIMPLE2_RAD" title="MDAnalysis.analysis.hole.SIMPLE2_RAD"><tt class="xref py py-data docutils literal"><span class="pre">SIMPLE2_RAD</span></tt></a> to <em>filename</em>.</p>
 <p>Does nothing if <em>filename</em> already exists.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.hole.seq2str">
-<tt class="descclassname">MDAnalysis.analysis.hole.</tt><tt class="descname">seq2str</tt><big>(</big><em>v</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.hole.seq2str" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.hole.</tt><tt class="descname">seq2str</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#seq2str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.seq2str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return sequence <em>v</em> as a string of numbers with spaces as separators.</p>
 <p>In the special case of <tt class="docutils literal"><span class="pre">None</span></tt>, the empty string &#8220;&#8221; is returned.</p>
 </dd></dl>
@@ -891,10 +896,10 @@ The data file can be written with the convenience function <a class="reference i
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

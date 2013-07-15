@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -129,7 +130,7 @@ of distances from the centre of geometry (or possibly simply the
 algorithm.</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.leaflet.</tt><tt class="descname">LeafletFinder</tt><big>(</big><em>universe</em>, <em>selectionstring</em>, <em>cutoff=15.0</em>, <em>pbc=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.leaflet.</tt><tt class="descname">LeafletFinder</tt><big>(</big><em>universe</em>, <em>selectionstring</em>, <em>cutoff=15.0</em>, <em>pbc=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identify atoms in the same leaflet of a lipid bilayer.</p>
 <p>The components of the graph are stored in the list
 <tt class="xref py py-attr docutils literal"><span class="pre">LeafletFinder.components</span></tt>; the atoms in each component are numbered
@@ -182,13 +183,13 @@ for orthorhombic boxes) [<tt class="docutils literal"><span class="pre">False</s
 </table>
 <dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.group">
-<tt class="descname">group</tt><big>(</big><em>component_index</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.group" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">group</tt><big>(</big><em>component_index</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a> for <em>component_index</em>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.groups">
-<tt class="descname">groups</tt><big>(</big><em>component_index=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">groups</tt><big>(</big><em>component_index=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a> for <em>component_index</em>.</p>
 <p>If no argument is supplied, then a list of all leaflet groups is returned.</p>
 <div class="admonition-see-also admonition seealso">
@@ -199,25 +200,25 @@ for orthorhombic boxes) [<tt class="docutils literal"><span class="pre">False</s
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter">
-<tt class="descname">groups_iter</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">groups_iter</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.groups_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterator over all leaflet <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups"><tt class="xref py py-meth docutils literal"><span class="pre">groups()</span></tt></a></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.sizes">
-<tt class="descname">sizes</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.sizes" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">sizes</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.sizes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.sizes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dict of component index with size of component.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.update">
-<tt class="descname">update</tt><big>(</big><em>cutoff=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.update" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">update</tt><big>(</big><em>cutoff=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update components, possibly with a different <em>cutoff</em></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.write_selection">
-<tt class="descname">write_selection</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.write_selection" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write_selection</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.write_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.write_selection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write selections for the leaflets to <em>filename</em>.</p>
 <p>The format is typically determined by the extension of <em>filename</em>
 (e.g. &#8220;vmd&#8221;, &#8220;pml&#8221;, or &#8220;ndx&#8221; for VMD, PyMol, or Gromacs).</p>
@@ -229,7 +230,7 @@ options.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.leaflet.optimize_cutoff">
-<tt class="descclassname">MDAnalysis.analysis.leaflet.</tt><tt class="descname">optimize_cutoff</tt><big>(</big><em>universe</em>, <em>selection</em>, <em>dmin=10.0</em>, <em>dmax=20.0</em>, <em>step=0.5</em>, <em>max_imbalance=0.20000000000000001</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.leaflet.optimize_cutoff" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.leaflet.</tt><tt class="descname">optimize_cutoff</tt><big>(</big><em>universe</em>, <em>selection</em>, <em>dmin=10.0</em>, <em>dmax=20.0</em>, <em>step=0.5</em>, <em>max_imbalance=0.2</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#optimize_cutoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.optimize_cutoff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find cutoff that minimizes number of disconnected groups.</p>
 <p>Applies heuristics to find best groups:</p>
 <ol class="arabic">
@@ -305,10 +306,10 @@ can be found; needs to be made more robust</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -62,8 +63,12 @@
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">3.11. Calculating root mean square quantities &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a><ul>
-<li><a class="reference internal" href="#functions">3.11.1. Functions</a></li>
-<li><a class="reference internal" href="#analysis-classes">3.11.2. Analysis classes</a></li>
+<li><a class="reference internal" href="#examples">3.11.1. Examples</a><ul>
+<li><a class="reference internal" href="#calculating-rmsd-for-multiple-domains">3.11.1.1. Calculating RMSD for multiple domains</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#functions">3.11.2. Functions</a></li>
+<li><a class="reference internal" href="#analysis-classes">3.11.3. Analysis classes</a></li>
 </ul>
 </li>
 </ul>
@@ -132,11 +137,62 @@ implemented in
 <dd>implements the fast RMSD algorithm.</dd>
 </dl>
 </div>
+<div class="section" id="examples">
+<h2>3.11.1. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="calculating-rmsd-for-multiple-domains">
+<h3>3.11.1.1. Calculating RMSD for multiple domains<a class="headerlink" href="#calculating-rmsd-for-multiple-domains" title="Permalink to this headline">¶</a></h3>
+<p>In this example we will globally fit a protein to a reference
+structure and investigate the relative movements of domains by
+computing the RMSD of the domains to the reference. The example is a
+DIMS trajectory of adenylate kinase, which samples a large
+closed-to-open transition. The protein consists of the CORE, LID, and
+NMP domain.</p>
+<ul class="simple">
+<li>superimpose on the closed structure (frame 0 of the trajectory),
+using backbone atoms</li>
+<li>calculate the backbone RMSD and RMSD for CORE, LID, NMP (backbone atoms)</li>
+</ul>
+<p>The trajectory is included with the test data files. The data in
+<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><tt class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></tt></a> is plotted with <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.2.1)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">,</span><span class="n">CRD</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<span class="n">ref</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>     <span class="c"># reference closed AdK (1AKE) (with the default ref_frame=0)</span>
+<span class="c">#ref = MDAnalysis.Universe(PSF,CRD)    # reference open AdK (4AKE)</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis.analysis.rms</span>
+
+<span class="n">R</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">rms</span><span class="o">.</span><span class="n">RMSD</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span>
+           <span class="n">select</span><span class="o">=</span><span class="s">&quot;backbone&quot;</span><span class="p">,</span>             <span class="c"># superimpose on whole backbone of the whole protein</span>
+           <span class="n">groupselections</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;backbone and (resid 1-29 or resid 60-121 or resid 160-214)&quot;</span><span class="p">,</span>   <span class="c"># CORE</span>
+                            <span class="s">&quot;backbone and resid 122-159&quot;</span><span class="p">,</span>                                   <span class="c"># LID</span>
+                            <span class="s">&quot;backbone and resid 30-59&quot;</span><span class="p">],</span>                                    <span class="c"># NMP</span>
+           <span class="n">filename</span><span class="o">=</span><span class="s">&quot;rmsd_all_CORE_LID_NMP.dat&quot;</span><span class="p">)</span>
+<span class="n">R</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">R</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="n">rmsd</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">rmsd</span><span class="o">.</span><span class="n">T</span>   <span class="c"># transpose makes it easier for plotting</span>
+<span class="n">time</span> <span class="o">=</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s">&#39;k-&#39;</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="s">&quot;all&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="s">&#39;k--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;CORE&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="s">&#39;r--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;LID&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="s">&#39;b--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;NMP&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s">&quot;best&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;time (ps)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">r&quot;RMSD ($\AA$)&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">&quot;rmsd_all_CORE_LID_NMP_ref1AKE.pdf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="section" id="functions">
-<h2>3.11.1. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<h2>3.11.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.rms.rmsd">
-<tt class="descclassname">MDAnalysis.analysis.rms.</tt><tt class="descname">rmsd</tt><big>(</big><em>a</em>, <em>b</em>, <em>weights=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.rms.rmsd" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.rms.</tt><tt class="descname">rmsd</tt><big>(</big><em>a</em>, <em>b</em>, <em>weights=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#rmsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.rmsd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns RMSD between two coordinate sets <em>a</em> and <em>b</em>.</p>
 <p><em>a</em> and <em>b</em> are arrays of the coordinates of N atoms of shape N*3
 as generated by, e.g.,
@@ -162,10 +218,10 @@ for a weighted RMSD calculation.</p>
 
 </div>
 <div class="section" id="analysis-classes">
-<h2>3.11.2. Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline">¶</a></h2>
+<h2>3.11.3. Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.rms.RMSD">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.rms.</tt><tt class="descname">RMSD</tt><big>(</big><em>traj</em>, <em>reference=None</em>, <em>select='all'</em>, <em>filename='rmsd.dat'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.10000000000000001</em>, <em>ref_frame=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.rms.</tt><tt class="descname">RMSD</tt><big>(</big><em>traj</em>, <em>reference=None</em>, <em>select='all'</em>, <em>groupselections=None</em>, <em>filename='rmsd.dat'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.1</em>, <em>ref_frame=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to perform RMSD analysis on a trajectory.</p>
 <p>Run the analysis with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.run" title="MDAnalysis.analysis.rms.RMSD.run"><tt class="xref py py-meth docutils literal"><span class="pre">RMSD.run()</span></tt></a>, which stores the results
 in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><tt class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></tt></a>:</p>
@@ -206,6 +262,15 @@ dictionary based on a <a class="reference external" href="http://www.clustal.org
 a list of selection strings (to generate a AtomGroup with defined atom order as
 described under <a class="reference internal" href="../selections.html#ordered-selections-label"><em>Ordered selections</em></a>).</p>
 </dd>
+<dt><em>groupselections</em></dt>
+<dd><p class="first">A list of selections as described for <em>select</em>. Each selection describes additional
+RMSDs to be computed <em>after the structures have be superpositioned</em> according to <em>select</em>.
+The output contains one additional column for each selection. [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Experimental feature. Only limited error checking implemented.</p>
+</div>
+</dd>
 <dt><em>filename</em></dt>
 <dd><p class="first last">If set, <em>filename</em> can be used to write the results with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.save" title="MDAnalysis.analysis.rms.RMSD.save"><tt class="xref py py-meth docutils literal"><span class="pre">RMSD.save()</span></tt></a> [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
@@ -224,16 +289,20 @@ described under <a class="reference internal" href="../selections.html#ordered-s
 </tr>
 </tbody>
 </table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8: </span><em>groupselections</em> added</p>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rms.RMSD.rmsd">
 <tt class="descname">rmsd</tt><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Results are stored in this N×3 <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> array,
+<dd><p>Results are stored in this N×3 <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> array,
 (frame, time (ps), RMSD (Å)).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.rms.RMSD.run">
-<tt class="descname">run</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform RMSD analysis on the trajectory.</p>
 <p>A number of parameters can be changed from the defaults. The
 result is stored as the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><tt class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></tt></a>.</p>
@@ -265,11 +334,11 @@ result is stored as the array <a class="reference internal" href="#MDAnalysis.an
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.rms.RMSD.save">
-<tt class="descname">save</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.save" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">save</tt><big>(</big><em>filename=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save RMSD from <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><tt class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></tt></a> to text file <em>filename</em>.</p>
 <p>If <em>filename</em> is not supplied then the default provided to the
 constructor is used.</p>
-<p>The data are saved with <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.savetxt.html#numpy.savetxt" title="(in NumPy v1.6)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.savetxt()</span></tt></a>.</p>
+<p>The data are saved with <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.savetxt.html#numpy.savetxt" title="(in NumPy v1.7)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.savetxt()</span></tt></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -303,10 +372,10 @@ constructor is used.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

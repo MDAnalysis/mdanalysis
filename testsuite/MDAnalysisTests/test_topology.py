@@ -123,8 +123,12 @@ class TestMagnesium(_TestGuessAtomType):
 class _TestTopology(TestCase):
     def test_parser(self):
         U = MDAnalysis.Universe(self.topology)
-        assert_equal(U.atoms.numberOfAtoms(), self.ref_numatoms, "wrong number of atoms in topology")
-        assert_equal(U.atoms.numberOfResidues(), self.ref_numresidues, "wrong number of residues in topology")
+        assert_equal(U.atoms.numberOfAtoms(),
+                     self.ref_numatoms,
+                     "wrong number of atoms in topology")
+        assert_equal(U.atoms.numberOfResidues(),
+                     self.ref_numresidues,
+                     "wrong number of residues in topology")
 
 class RefAdKSmall(object):
     """Mixin class to provide comparison numbers.

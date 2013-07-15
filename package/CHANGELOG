@@ -10,16 +10,39 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-07/15/13  orbeckst, jandom, denniej0
+??/??/13  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy, manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0
 
   * 0.8
+
+  Enhancements
+
+  * TPR parser (currently limited to versions 58, 73 and 83 of the
+    Gromacs TPR format (Gromacs 4.0 to 4.6.1), see Issue 2)
+  * fast XTC seeking (Issue 127)
+  * helanal: additional output of local bend and unit twist angles
+    (Issue 133)
+  * added support for reading DMS files (DESRES molecular structure?)
+  * bond connectivity information can be guessed from a PDB file if
+    the bond=True keyword is set in Universe (Issue 23)
+  * MDAnalysis.analysis.rms.RMSD: calculation of additional RMSDs
+  * Plugin to generate nucleic acid helicoidal parameters using X3DNA;
+    (must install working version 2.1 of X3DNA independently)
 
   Changes
 
   * removed Timeseries.principleAxis (probably was never working)
-  * added support for reading DMS files (DESRES molecular structure?)
-  * Plugin to generate nucleic acid helicoidal parameters using X3DNA; 
-    (must install working version 2.1 of X3DNA independently)
+  * dependent on Biopython >= 1.59 (Issue 147)
+
+  Fixes
+
+  * fixed Issue 129 (hole.py module pipe/file closure)
+  * fixed array comparison bug in MDAnalysis.analysis.helanal
+    and various enhancements to the helanal module
+  * fixed MDAnalysis.analysis.rms.RMSD.run(): gave incorrect results
+    if ref_frame != 0
+  * alignto() now checks that the two selections describe the same
+    atoms (fixes Issue 143)
+ 
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux
 

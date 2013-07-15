@@ -32,6 +32,7 @@ class TestPDBQT(TestCase):
         self.universe = MDAnalysis.Universe(PDBQT_input) # PDBQT
         self.query_universe = MDAnalysis.Universe(PDBQT_querypdb) # PDB file
         fd, self.outfile = tempfile.mkstemp(suffix='.pdbqt')
+        os.close(fd)
 
     def tearDown(self):
         del self.universe

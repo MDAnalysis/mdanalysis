@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -145,7 +146,7 @@ States by Normal-Mode Frequencies. <em>JACS</em> 129 (2007), 11394&#8211;11401.<
 <h2>3.5.1. Analysis tasks<a class="headerlink" href="#analysis-tasks" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.gnm.GNMAnalysis">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">GNMAnalysis</tt><big>(</big><em>universe</em>, <em>selection='protein and name CA'</em>, <em>cutoff=7.0</em>, <em>ReportVector=None</em>, <em>Bonus_groups=()</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">GNMAnalysis</tt><big>(</big><em>universe</em>, <em>selection='protein and name CA'</em>, <em>cutoff=7.0</em>, <em>ReportVector=None</em>, <em>Bonus_groups=()</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Basic tool for GNM analysis.</p>
 <p>Each frame is treated as a novel structure and the GNM
 calculated.  By default, this stores the dominant eigenvector
@@ -153,7 +154,7 @@ and its associated eigenvalue; either can be used to monitor
 conformational change in a simulation.</p>
 <dl class="method">
 <dt id="MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff">
-<tt class="descname">generate_kirchoff</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">generate_kirchoff</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis.generate_kirchoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate the Kirchhoff matrix of contacts.</p>
 <p>This generates the neighbour matrix by generating a grid of
 near-neighbours and then calculating which are are within
@@ -162,7 +163,7 @@ the cutoff. Returns the resulting matrix</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.gnm.GNMAnalysis.generate_output">
-<tt class="descname">generate_output</tt><big>(</big><em>w</em>, <em>v</em>, <em>outputobject</em>, <em>time</em>, <em>matrix</em>, <em>nmodes=2</em>, <em>ReportVector=None</em>, <em>counter=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.generate_output" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">generate_output</tt><big>(</big><em>w</em>, <em>v</em>, <em>outputobject</em>, <em>time</em>, <em>matrix</em>, <em>nmodes=2</em>, <em>ReportVector=None</em>, <em>counter=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis.generate_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.generate_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Appends eigenvalues and eigenvectors to results.</p>
 <p>This generates the output by adding eigenvalue and
 eigenvector data to an appendable object and optionally
@@ -173,7 +174,7 @@ outputs</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.gnm.GNMAnalysis.run">
-<tt class="descname">run</tt><big>(</big><em>skip=1</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run</tt><big>(</big><em>skip=1</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze trajectory and produce timeseries.</p>
 <p>Returns GNM results per frame:</p>
 <div class="highlight-python"><pre>results = [(time,eigenvalues[1],eigenvectors[1]),(time,eigenvalues[1],eigenvectors[1])... ]</pre>
@@ -184,7 +185,7 @@ outputs</p>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.gnm.closeContactGNMAnalysis">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">closeContactGNMAnalysis</tt><big>(</big><em>universe</em>, <em>selection='protein'</em>, <em>cutoff=4.5</em>, <em>ReportVector=None</em>, <em>MassWeight=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">closeContactGNMAnalysis</tt><big>(</big><em>universe</em>, <em>selection='protein'</em>, <em>cutoff=4.5</em>, <em>ReportVector=None</em>, <em>MassWeight=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#closeContactGNMAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>GNMAnalysis only using close contacts.</p>
 <p>This is a version of the GNM where the Kirchoff matrix is
 constructed from the close contacts between individual atoms
@@ -198,13 +199,13 @@ in different residues</p>
 directly needed to perform the analysis.</p>
 <dl class="function">
 <dt id="MDAnalysis.analysis.gnm.backup_file">
-<tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">backup_file</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.backup_file" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">backup_file</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#backup_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.backup_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function helps prevent overwriting default named files</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.gnm.generate_grid">
-<tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">generate_grid</tt><big>(</big><em>positions</em>, <em>cutoff</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.generate_grid" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">generate_grid</tt><big>(</big><em>positions</em>, <em>cutoff</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#generate_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.generate_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>An alternative to searching the entire list of each atom; divide the structure into cutoff sized boxes
 This way, for each particle you only need to search the neighbouring boxes to find the particles within the cutoff
 Observed a 6x speed up for a smallish protein with ~300 residues; this should get better with bigger systems.</p>
@@ -212,7 +213,7 @@ Observed a 6x speed up for a smallish protein with ~300 residues; this should ge
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.gnm.order_list">
-<tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">order_list</tt><big>(</big><em>w</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.gnm.order_list" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">order_list</tt><big>(</big><em>w</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#order_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.order_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a dictionary showing the order of eigenvalues (which are reported scrambled normally)</p>
 </dd></dl>
 
@@ -245,10 +246,10 @@ Observed a 6x speed up for a smallish protein with ~300 residues; this should ge
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

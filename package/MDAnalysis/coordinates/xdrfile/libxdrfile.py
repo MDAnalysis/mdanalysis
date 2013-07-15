@@ -393,6 +393,9 @@ exdrNOMEM = _libxdrfile.exdrNOMEM
 exdrENDOFFILE = _libxdrfile.exdrENDOFFILE
 exdrFILENOTFOUND = _libxdrfile.exdrFILENOTFOUND
 exdrNR = _libxdrfile.exdrNR
+SEEK_SET = _libxdrfile.SEEK_SET
+SEEK_CUR = _libxdrfile.SEEK_CUR
+SEEK_END = _libxdrfile.SEEK_END
 
 def xdrfile_open(*args):
   """xdrfile_open(path, mode) -> XDRFILE"""
@@ -407,7 +410,7 @@ def read_xtc_natoms(*args):
   return _libxdrfile.read_xtc_natoms(*args)
 
 def read_xtc_numframes(*args):
-  """read_xtc_numframes(fn) -> int"""
+  """read_xtc_numframes(fn) -> PyObject"""
   return _libxdrfile.read_xtc_numframes(*args)
 
 def read_trr_natoms(*args):
@@ -415,7 +418,7 @@ def read_trr_natoms(*args):
   return _libxdrfile.read_trr_natoms(*args)
 
 def read_trr_numframes(*args):
-  """read_trr_numframes(fn) -> int"""
+  """read_trr_numframes(fn) -> PyObject"""
   return _libxdrfile.read_trr_numframes(*args)
 DIM = _libxdrfile.DIM
 
@@ -434,6 +437,14 @@ def write_xtc(*args):
 def write_trr(*args):
   """write_xtc(XDRFILE, step, time, lambda, box, x, v, f) -> status"""
   return _libxdrfile.write_trr(*args)
+
+def xdr_seek(*args):
+  """xdr_seek(xd, pos, whence) -> int"""
+  return _libxdrfile.xdr_seek(*args)
+
+def xdr_tell(*args):
+  """xdr_tell(xd) -> long long"""
+  return _libxdrfile.xdr_tell(*args)
 # This file is compatible with both classic and new-style classes.
 
 
