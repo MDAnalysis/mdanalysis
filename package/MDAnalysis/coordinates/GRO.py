@@ -87,13 +87,15 @@ class GROReader(base.Reader):
                         # Read first two lines to get number of atoms
                         grofile.readline()
                         total_atnums = int(grofile.readline())
+                        # and the third line to get the spacing between coords (cs) (dependent upon the GRO file precision)
+                        cs = grofile.readline()[25:].find('.') + 1
                         grofile.seek(0)
                         for linenum,line in enumerate(grofile):
                                 # Should work with any precision
                                 if linenum not in (0,1,total_atnums+2):
-                                        coords_list.append( numpy.array( map( float , line[20:].split()[0:3] ) ) )
-                                        if len(line[20:].split()) >= 6: #if there are enough data columns to include velocities
-                                            velocities_list.append( numpy.array( map( float , line[20:].split()[3:6] ) ) )
+                                        coords_list.append( numpy.array( ( float(line[20:20+cs]) , float(line[20+cs:20+(cs*2)]) , float(line[20+(cs*2):20+(cs*3)]) ) ) )
+                                        if line[20:].count('.') > 3: #if there are enough decimals to indicate the presence of velocities
+                                            velocities_list.append( numpy.array( ( float(line[20+(cs*3):20+(cs*4)]) , float(line[20+(cs*4):20+(cs*5)]) , float(line[20+(cs*5):20+(cs*6)]) ) ) )
                                 # Unit cell footer
                                 elif linenum == total_atnums+2:
                                         unitcell = numpy.array( map( float , line.split() ) )

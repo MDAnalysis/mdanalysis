@@ -5,8 +5,13 @@
 *.bak
 *.so
 MDAnalysis.egg-info
+MDAnalysisTests.egg-info
 # Ignore build dir
 build/
+dist/
 temp/
 examples/eigenvalues.dat
 examples/output.txt
+.project
+.pydevproject
+.settings

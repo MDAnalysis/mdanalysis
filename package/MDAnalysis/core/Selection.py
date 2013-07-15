@@ -379,22 +379,7 @@ class NucleicSelection(Selection):
         return set([a for a in group.atoms if a.resname in self.nucl_res])
     def __repr__(self):
         return "<'NucleicSelection' >"
-'''
-class NucleicXstalSelection(Selection):
-    """A nucleic selection consists of all atoms in nucleic acid residues with PDB-like resnames.
 
-    Recognized residue names:
-
-    * from the Charmm force field::
-        awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_na.rtf
-    * recognized: 'A', 'U', 'C', 'G','T'
-    """
-    nucl_res = dict([(x,None) for x in ['A', 'T', 'U', 'C', 'G']])
-    def _apply(self, group):
-        return set([a for a in group.atoms if a.resname in self.nucl_res])
-    def __repr__(self):
-        return "<'NucleicXstalSelection' >"
-'''
 class BackboneSelection(ProteinSelection):
     """A BackboneSelection contains all atoms with name 'N', 'CA', 'C', 'O'.
 
@@ -565,7 +550,6 @@ class SelectionParser:
                       (NUCLEIC, NucleicSelection), (PROTEIN, ProteinSelection),
                       (BB, BackboneSelection), (NBB, NucleicBackboneSelection),
                       (BASE, BaseSelection), (SUGAR, NucleicSugarSelection),
-                      #(NUCLEICXSTAL, NucleicXstalSelection),
                       #(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists
                       (ATOM, AtomSelection)])
     associativity = dict([(AND, "left"), (OR, "left")])

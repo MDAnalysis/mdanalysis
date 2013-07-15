@@ -29,12 +29,18 @@ Note that the files are actually located in a separate package,
 
  from MDAnalysisTestData.datafiles import *
 """
-__all__ = ["PSF", "DCD", "CRD",               # CHARMM
+__all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
            "DCD_empty",
            "PSF_NAMD", "PDB_NAMD",            # NAMD
-           "PDB_small","NUCL",                   # PDB
+           "PSF_nosegid",                     # psf without a segid, Issue 121
+           "PDB_small","NUCL",                # PDB
+           "PDB_closed",
            "PDB_multiframe",
-           "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",   # Gromacs
+           "PDB_helix",
+           "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",   # Gromacs (AdK)
+           "PDB_xvf", "TPR_xvf", "TRR_xvf",     # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
+           "PDB_sub_sol", "PDB_sub_dry",        # TRRReader sub selection 
+           "TRR_sub_sol",        
            "XYZ", "XYZ_psf", "XYZ_bz2",         # XYZ
            "PRM", "TRJ", "TRJ_bz2",             # Amber (no periodic box)
            "PRMpbc", "TRJpbc_bz2",              # Amber (periodic box)
@@ -43,6 +49,9 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM
            "PQR",                               # PQR
            "PDBQT_input",                       # PDBQT
            "PDBQT_querypdb",
+           "FASTA",                             # sequence alignment, Issue 112 + 113
+           "PDB_HOLE",                          # gramicidin A
+           "DMS",                               # DHFR
            ]
 
 from pkg_resources import resource_filename
@@ -55,15 +64,28 @@ CRD = resource_filename(__name__, 'data/adk_open.crd')
 PSF_NAMD = resource_filename(__name__, 'data/namd_cgenff.psf')
 PDB_NAMD = resource_filename(__name__, 'data/namd_cgenff.pdb')
 
+PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
+
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
+PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
+
 NUCL =  resource_filename(__name__, 'data/1k5i.pdb')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
+PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
+
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
 PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
 TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
+PDB_sub_dry = resource_filename(__name__, 'data/cobrotoxin_dry_neutral_0.pdb')
+TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
+PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
+
+PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
+TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
+TRR_xvf = resource_filename(__name__, 'data/cobrotoxin.trr')
 
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
@@ -87,3 +109,9 @@ PQR = resource_filename(__name__, 'data/adk_open.pqr')
 
 PDBQT_input = resource_filename(__name__, 'data/pdbqt_inputpdbqt.pdbqt')
 PDBQT_querypdb = resource_filename(__name__, 'data/pdbqt_querypdb.pdb')
+
+FASTA = resource_filename(__name__, 'data/test.fasta')
+
+PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
+
+DMS = resource_filename(__name__, 'data/adk_closed.dms')

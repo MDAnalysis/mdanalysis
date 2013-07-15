@@ -196,7 +196,7 @@ class Flag(object):
                 raise ValueError("flag must be None or one of "+str(self.mapping.keys()))
         return self.get()
     def prop(self):
-        """Use this for property(**flag.prop())"""
+        """Use this for ``property(**flag.prop())``"""
         return {'fget':self.get, 'fset':self.set, 'doc':self.__doc__}
     def __repr__(self):
         return """Flag('%(name)s',%(value)r)""" % self.__dict__
@@ -304,6 +304,18 @@ _flags = [
           },
          """
             Base unit for speed (in particular velocities in trajectories)
+
+            >>> flags['%(name)s'] = value
+
+         """
+         ),
+    _Flag('force_unit',
+         'kJ/(mol*Angstrom)',
+         {'kJ/(mol*Angstrom)': 'kJ/(mol*Angstrom)', 'kJ/(mol*A)': 'kJ/(mol*Angstrom)', 
+          'kJ/(mol*nm)': 'kJ/(mol*nm)',
+          },
+         """
+            Base unit for forces (in particular forces in trajectories)
 
             >>> flags['%(name)s'] = value
 

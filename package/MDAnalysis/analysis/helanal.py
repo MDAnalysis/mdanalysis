@@ -57,7 +57,7 @@ structures.
 .. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 .. _Helanal webserver: http://nucleix.mbu.iisc.ernet.in/helanal/helanal.shtml
 .. _`helanal.f`: http://www.webcitation.org/5y1RpVJtF
-.. helanal.f: http://www.ccrnp.ncifcrf.gov/users/kumarsan//HELANAL/helanal.f
+.. helanal.f: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.f
 
 Background
 ----------
@@ -129,6 +129,8 @@ except ImportError:
                 return 180.0*x/numpy.pi
         def deg2rad(x):             # no need for the numpy out=[] argument
                 return x*numpy.pi/180.0
+
+import MDAnalysis
 
 def center(coordinates):
         """Return the geometric center (centroid) of the coordinates.
@@ -242,7 +244,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
                 # two atoms
                 ref_axis = numpy.asarray(ref_axis)
 
-        if start is None and stop is None:
+        if start is None and end is None:
                 pass
         else:
                 if start is None:
@@ -473,7 +475,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
         """
 
         universe = MDAnalysis.Universe(pdbfile, permissive=permissive)
-        if start is None and stop is None:
+        if start is None and end is None:
                 pass
         else:
                 if start is None:
@@ -502,7 +504,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
         #calculate local bending matrix(now it is looking at all i, j combinations)
         for i in local_helix_axes:
                 for j in local_helix_axes:
-                        if i == j:
+                        if (i == j).all():
                                 angle = 0.
                         else:
                                 angle = rad2deg(numpy.arccos(vecscaler(i,j)))

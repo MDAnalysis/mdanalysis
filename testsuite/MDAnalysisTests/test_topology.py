@@ -16,10 +16,12 @@
 #
 
 import MDAnalysis
+import MDAnalysis as mda
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
-from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD
+from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS
 
 from numpy.testing import *
+from nose.plugins.attrib import attr
 
 def check_atom_type(atype, aname):
     assert_equal(guess_atom_type(aname), atype)
@@ -150,6 +152,16 @@ class RefNAMD_CGENFF(object):
 class TestPSF_NAMD_CGENFF(_TestTopology, RefNAMD_CGENFF):
     """Testing NAMD PSF file (with CGENFF atom types, Issue 107)"""
 
+class TestPSF_Issue121(TestCase):
+    @attr('issue')
+    def test_nosegid(self):
+        try:
+            u = MDAnalysis.Universe(PSF_nosegid)
+        except IndexError:
+            raise AssertionError("Issue 121 not fixed: cannot load PSF with empty SEGID")
+        assert_equal(u.atoms.numberOfAtoms(), 98)
+        assert_equal(u.atoms.segids(), ["SYSTEM"])
+
 # AMBER
 
 class RefCappedAla(object):
@@ -179,3 +191,39 @@ class TestAMBER(_TestTopology, RefCappedAla):
 class TestAMBER12(_TestTopology, RefAMBER12):
     """Testing AMBER 12 PRMTOP parser (Issue 100)"""
 
+
+class TestDMSReader(TestCase):
+    def setUp(self):
+        self.universe = mda.Universe(DMS)
+        self.ts = self.universe.trajectory.ts
+
+    def tearDown(self):
+        del self.universe
+        del self.ts
+
+    def test_number_of_bonds(self):
+        # Desired value taken from VMD
+        #      Info)    Atoms: 3341
+        assert_equal(len(self.universe.bonds),3365) 
+
+    def test_bond_order(self):
+        pass
+
+    def test_segid(self):
+        segid = set([a.segid for a in self.universe.atoms])
+        assert_equal(segid, set(("4AKE",) ))
+    
+    def test_atomsels(self):
+        # Desired value taken from VMD atomsel
+        s0 = self.universe.selectAtoms("name CA")
+        assert_equal(len(s0), 214)
+        
+        s1 = self.universe.selectAtoms("resid 33")
+        assert_equal(len(s1), 12)
+        
+        s2 = self.universe.selectAtoms("segid 4AKE")
+        assert_equal(len(s2), 3341)
+        
+        s3 = self.universe.selectAtoms("resname ALA")
+        assert_equal(len(s3), 190)
+        

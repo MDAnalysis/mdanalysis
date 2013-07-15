@@ -10,12 +10,54 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
+??/??/13  orbeckst, jandom
 
-06/30/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy, lukas.grossar, denniej0
+  * 0.8
 
-  * 0.7.6 (in development)
+  Changes
+
+  * removed Timeseries.principleAxis (probably was never working)
+  * added support for reading DMS files (DESRES molecular structure?)
+
+
+12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux
+
+  * 0.7.7
 
   Enhancements
+
+  * multithreaded distance_array() (Issue 80, experimental); see the 
+    new core.parallel.distance module
+  * MDAnalysis.analysis.rms for simple RMSD analysis
+  * format of input coordinates can be set as (filename, format)
+    tuples (Issue 76) 
+  * new AtomGroup.asphericity() and AtomGroup.shapeParameter()   
+    methods to compute shape descriptors.
+  * access to forces (AtomGroup.forces with get_forces() and set_forces();
+    the default unit for force is kJ/(mol*A) and it is automatically 
+    converted from/to native). Currently, only the TRR Reader/Writer
+    support forces.
+  * all element masses
+  * logger reports current version when starting
+
+  Fixes
+
+  * fixed Issue 115 (GROReader now uses fixed-column width format to read GRO files)
+  * fixed Issue 116 (Failed to write AMBER netcdf trajectory from AtomGroup)
+  * fixed Issue 117 (could not write Gromacs XTC/TRR from AMBER netcdf)
+  * fixed Issue 120 (DCDWriter: wrote wrong unitcell information)
+  * fixed Issue 121 (PSFParser would fail with IndexError for files without SEGID)
+  * Issue 122 (made installation of netCDF4 library optional, which
+    means that users of the AMBER netcdf Reader/Writer will have to
+    manually install the library and its dependencies netcdf and HDF5, 
+    see https://code.google.com/p/mdanalysis/wiki/netcdf)
+
+06/30/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy, lukas.grossar, denniej0, danny.parton
+
+  * 0.7.6 
+
+  Enhancements
+
   * GRO file velocities may be accessed as AtomGroup.velocities()
     or Atom.velocity (Issue 102)
   * PrimitivePDBReader can be sliced
@@ -44,6 +86,8 @@ The rules for this file:
       stored as attribute timeseries (similar to other analysis tools)
     - only write per-frame debugging messages to the logfile when the 
       new verbose keyword is set to True
+    - more reliable detection of hydrogens bonded to heavy atoms  
+    - remove duplicate hydrogen bonds from the output
   * removed CHO and EAM (formyl and ethanol termini of gA in CHARMM)
     from the set of residues recognized as protein (collision with
     commonly used CHO for cholesterol)
@@ -56,6 +100,8 @@ The rules for this file:
   * all single frame readers denote the first (and only) frame as 
     frame number 1 (i.e. ts.frame == 1); it used to be 0 but 1 is
     consistent with the way this is is handled with real trajectories
+  * requires Biopython >= 1.51 (fixes for Issue 112 and Issue 113)
+  * Atom.type is always stored as a string.
 
   Fixes
 
@@ -70,6 +116,14 @@ The rules for this file:
   * fixed: permissive=True flag was ignored in Universe and hence the
     PrimitivePDBReader was always selected even if the Biopython one
     was desired
+  * fixed Issue 112 (used removed Biopython constructs in 
+    MDAnalysis.analysis.align.fasta2select; thanks to francesco.oteri
+    for a test case and fix)
+  * fixed failing 'type' selection for topology formats that read an
+    atom type as an integer (such as the AMBER parser)
+  * fixed Issue 111 (NAN in pycpqrot and RMSD calculation)
+  * fixed Issue 113 (replaced outdated Biopython to call ClustalW)
+
 
 02/16/12 sebastien.buchoux
 

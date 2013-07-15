@@ -167,12 +167,12 @@ def __parseatoms_(lines, atoms_per, attr, structure, numlines, **kwargs):
     # how to partition the line into the individual atom components
     atom_parsers = {
         'STANDARD': lambda l:
-            (l[:8], l[9:13].strip(), l[14:18], l[19:23].strip(), l[24:28].strip(),
+            (l[:8], l[9:13].strip() or "SYSTEM", l[14:18], l[19:23].strip(), l[24:28].strip(),
              l[29:33].strip(), l[34:48], l[48:62], l[62:70]),   #  l[70:84], l[84:98] ignore ECH and EHA,
         'EXTENDED': lambda l:
-            (l[:10], l[11:19].strip(), l[20:28], l[29:37].strip(), l[38:46].strip(),
+            (l[:10], l[11:19].strip() or "SYSTEM", l[20:28], l[29:37].strip(), l[38:46].strip(),
              l[47:51].strip(), l[52:66], l[66:70], l[70:78]),   #  l[78:84], l[84:98] ignore ECH and EHA,
-        'NAMD': lambda l: l.split()[:9],
+        'NAMD': lambda l: l.split()[:9],  # will fail if SEGID is empty!
         }
     atom_parser = atom_parsers[format]
 

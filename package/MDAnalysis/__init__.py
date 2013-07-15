@@ -154,7 +154,7 @@ the OPLS/AA force field.
                 394 (2009), 160--176, doi:10.1016/j.jmb.2009.09.009
 """
 
-__version__ = "0.7.6-devel"  # NOTE: keep in sync with RELEASE in setup.py
+__version__ = "0.7.8-dev"  # NOTE: keep in sync with RELEASE in setup.py
 
 __all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
 
@@ -176,7 +176,7 @@ def start_logging(logfile="MDAnalysis.log"):
     """
     import core.log
     core.log.create("MDAnalysis", logfile=logfile)
-    logging.getLogger("MDAnalysis").info("MDAnalysis STARTED logging to %r", logfile)
+    logging.getLogger("MDAnalysis").info("MDAnalysis %s STARTED logging to %r", __version__, logfile)
 
 def stop_logging():
     """Stop logging to logfile and console."""
@@ -194,6 +194,14 @@ class NoDataError(ValueError):
 
 class FormatError(EnvironmentError):
     """Raised when there appears to be a problem with format of input files."""
+
+class ApplicationError(OSError):
+    """Raised when an external application failed.
+
+    The error code is specific for the application.
+
+    .. versionadded:: 0.7.7
+    """
 
 class SelectionWarning(Warning):
     """Warning indicating a possible problem with a selection."""

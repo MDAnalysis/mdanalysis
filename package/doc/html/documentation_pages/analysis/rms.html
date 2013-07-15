@@ -1,0 +1,314 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3.11. Calculating root mean square quantities — MDAnalysis.analysis.rms &mdash; MDAnalysis 0.7.8-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.8-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
+    <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
+    <link rel="next" title="4. Topology modules" href="../topology_modules.html" />
+    <link rel="prev" title="3.10. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo" href="nuclinfo.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../topology_modules.html" title="4. Topology modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="nuclinfo.html" title="3.10. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+          <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3.11. Calculating root mean square quantities &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a><ul>
+<li><a class="reference internal" href="#functions">3.11.1. Functions</a></li>
+<li><a class="reference internal" href="#analysis-classes">3.11.2. Analysis classes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="nuclinfo.html"
+                        title="previous chapter">3.10. Nucleic acid analysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../topology_modules.html"
+                        title="next chapter">4. Topology modules</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/analysis/rms.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.analysis.rms"></span><div class="section" id="calculating-root-mean-square-quantities-mdanalysis-analysis-rms">
+<h1>3.11. Calculating root mean square quantities &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a><a class="headerlink" href="#calculating-root-mean-square-quantities-mdanalysis-analysis-rms" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Oliver Beckstein</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2012</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v2</td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
+<p>The module contains code to analyze root mean square quantities such
+as the RMSD or RMSF (not implemented yet).</p>
+<p>This module uses the fast QCP algorithm <a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a> to calculate
+the root mean square distance (RMSD) between two coordinate sets (as
+implemented in
+<a class="reference internal" href="../core/qcprot.html#MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix()</span></tt></a>).</p>
+<p>When using this module in published work please cite <a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a>.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="align.html#module-MDAnalysis.analysis.align" title="MDAnalysis.analysis.align"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></dt>
+<dd>aligning structures based on RMSD</dd>
+<dt><a class="reference internal" href="../core/qcprot.html#module-MDAnalysis.core.qcprot" title="MDAnalysis.core.qcprot"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></tt></a></dt>
+<dd>implements the fast RMSD algorithm.</dd>
+</dl>
+</div>
+<div class="section" id="functions">
+<h2>3.11.1. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.analysis.rms.rmsd">
+<tt class="descclassname">MDAnalysis.analysis.rms.</tt><tt class="descname">rmsd</tt><big>(</big><em>a</em>, <em>b</em>, <em>weights=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.rms.rmsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns RMSD between two coordinate sets <em>a</em> and <em>b</em>.</p>
+<p><em>a</em> and <em>b</em> are arrays of the coordinates of N atoms of shape N*3
+as generated by, e.g.,
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.coordinates" title="MDAnalysis.core.AtomGroup.AtomGroup.coordinates"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.coordinates()</span></tt></a>.</p>
+<p>The <em>weights</em> can be an array of length N, containing e.g. masses
+for a weighted RMSD calculation.</p>
+<p>The function uses Douglas Theobald&#8217;s fast QCP algorithm
+<a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a> to calculate the RMSD.</p>
+<dl class="docutils">
+<dt>Example::</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bb</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;backbone&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>  <span class="c"># coordinates of first frame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>      <span class="c"># forward to last frame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">B</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>  <span class="c"># coordinates of last frame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rmsd</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+<span class="go">6.8342494129169804</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="analysis-classes">
+<h2>3.11.2. Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.analysis.rms.RMSD">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.rms.</tt><tt class="descname">RMSD</tt><big>(</big><em>traj</em>, <em>reference=None</em>, <em>select='all'</em>, <em>filename='rmsd.dat'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.10000000000000001</em>, <em>ref_frame=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to perform RMSD analysis on a trajectory.</p>
+<p>Run the analysis with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.run" title="MDAnalysis.analysis.rms.RMSD.run"><tt class="xref py py-meth docutils literal"><span class="pre">RMSD.run()</span></tt></a>, which stores the results
+in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><tt class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></tt></a>:</p>
+<div class="highlight-python"><pre>frame    time (ps)    RMSD (A)</pre>
+</div>
+<p>This class uses Douglas Theobald&#8217;s fast QCP algorithm
+<a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a> to calculate the RMSD.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
+<p>Setting up the RMSD analysis.</p>
+<p>The RMSD will be computed between <em>select</em> and <em>reference</em> for
+all frames in the trajectory in <em>universe</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>traj</em></dt>
+<dd><p class="first last">universe (<tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> object) that contains a
+trajectory</p>
+</dd>
+<dt><em>reference</em></dt>
+<dd><p class="first last">reference coordinates; <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> object; if <tt class="docutils literal"><span class="pre">None</span></tt>
+the <em>traj</em> is used (uses the current time step of the object) [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+<dt><em>select</em></dt>
+<dd><p class="first">The selection to operate on; can be one of:</p>
+<ol class="arabic simple">
+<li>any valid selection string for
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms" title="MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms"><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt></a> that produces identical
+selections in <em>mobile</em> and <em>reference</em>; or</li>
+<li>a dictionary <tt class="docutils literal"><span class="pre">{'mobile':sel1,</span> <span class="pre">'reference':sel2}</span></tt> (the
+<a class="reference internal" href="align.html#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.analysis.align.fasta2select()</span></tt></a> function returns such a
+dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment); or</li>
+<li>a tuple <tt class="docutils literal"><span class="pre">(sel1,</span> <span class="pre">sel2)</span></tt></li>
+</ol>
+<p class="last">When using 2. or 3. with <em>sel1</em> and <em>sel2</em> then these selections can also each be
+a list of selection strings (to generate a AtomGroup with defined atom order as
+described under <a class="reference internal" href="../selections.html#ordered-selections-label"><em>Ordered selections</em></a>).</p>
+</dd>
+<dt><em>filename</em></dt>
+<dd><p class="first last">If set, <em>filename</em> can be used to write the results with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.save" title="MDAnalysis.analysis.rms.RMSD.save"><tt class="xref py py-meth docutils literal"><span class="pre">RMSD.save()</span></tt></a> [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+<dt><em>mass_weighted</em></dt>
+<dd><p class="first last">do a mass-weighted RMSD fit</p>
+</dd>
+<dt><em>tol_mass</em></dt>
+<dd><p class="first last">Reject match if the atomic masses for matched atoms differ by more than
+<em>tol_mass</em> [0.1]</p>
+</dd>
+<dt><em>ref_frame</em></dt>
+<dd><p class="first last">frame index to select frame from <em>reference</em> [0]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rms.RMSD.rmsd">
+<tt class="descname">rmsd</tt><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Results are stored in this N×3 <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> array,
+(frame, time (ps), RMSD (Å)).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.rms.RMSD.run">
+<tt class="descname">run</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform RMSD analysis on the trajectory.</p>
+<p>A number of parameters can be changed from the defaults. The
+result is stored as the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><tt class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>start</em>, <em>stop</em>, <em>step</em></dt>
+<dd><p class="first last">start and stop frame index with step size: analyse
+<tt class="docutils literal"><span class="pre">trajectory[start:stop:step]</span></tt> [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+<dt><em>mass_weighted</em></dt>
+<dd><p class="first last">do a mass-weighted RMSD fit</p>
+</dd>
+<dt><em>tol_mass</em></dt>
+<dd><p class="first last">Reject match if the atomic masses for matched atoms differ by more than
+<em>tol_mass</em></p>
+</dd>
+<dt><em>ref_frame</em></dt>
+<dd><p class="first last">frame index to select frame from <em>reference</em></p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.rms.RMSD.save">
+<tt class="descname">save</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save RMSD from <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><tt class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></tt></a> to text file <em>filename</em>.</p>
+<p>If <em>filename</em> is not supplied then the default provided to the
+constructor is used.</p>
+<p>The data are saved with <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.savetxt.html#numpy.savetxt" title="(in NumPy v1.6)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.savetxt()</span></tt></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../topology_modules.html" title="4. Topology modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="nuclinfo.html" title="3.10. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+          <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,155 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.12. DESRES Molecular Structure file format topology parser &mdash; MDAnalysis 0.7.8-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.8-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
+    <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
+    <link rel="next" title="5. Coordinates modules" href="../coordinates_modules.html" />
+    <link rel="prev" title="4.11. PQR topology parser" href="PQRParser.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../coordinates_modules.html" title="5. Coordinates modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="PQRParser.html" title="4.11. PQR topology parser"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+          <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="PQRParser.html"
+                        title="previous chapter">4.11. PQR topology parser</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../coordinates_modules.html"
+                        title="next chapter">5. Coordinates modules</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/topology/DMSParser.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.topology.DMSParser"></span><div class="section" id="desres-molecular-structure-file-format-topology-parser">
+<h1>4.12. DESRES Molecular Structure file format topology parser<a class="headerlink" href="#desres-molecular-structure-file-format-topology-parser" title="Permalink to this headline">¶</a></h1>
+<p>Classes to read a topology from a <a class="reference external" href="http://www.deshawresearch.com">DESRES</a> Molecular Structure file
+format (<a class="reference external" href="http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf">DMS</a>) coordinate files (as used by the <a class="reference external" href="http://www.deshawresearch.com/resources_desmond.html">Desmond</a> MD package).</p>
+<dl class="function">
+<dt id="MDAnalysis.topology.DMSParser.parse">
+<tt class="descclassname">MDAnalysis.topology.DMSParser.</tt><tt class="descname">parse</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.DMSParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse DMS file <em>filename</em> and return the dict <cite>structure</cite>.</p>
+<p>Only reads the list of atoms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">MDAnalysis internal <em>structure</em> dict, which contains
+Atom and Bond objects</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <em>structure</em> dict is defined in
+<a class="reference internal" href="PSFParser.html#MDAnalysis.topology.PSFParser.parse" title="MDAnalysis.topology.PSFParser.parse"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.PSFParser.parse()</span></tt></a>.</p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../coordinates_modules.html" title="5. Coordinates modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="PQRParser.html" title="4.11. PQR topology parser"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+          <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

@@ -106,7 +106,11 @@ Classes and functions
 
    .. attribute::        type
 
-      string or number (from force field), describing the atom type
+      string or number (from force field), describing the atom type;
+      stored as a string.
+
+      .. versionchanged:: 0.7.6
+         The :attr:`Atom.type` attribute is always stored as a string.
 
    .. attribute::        mass
 
@@ -144,9 +148,9 @@ Classes and functions
 import warnings
 
 import numpy
-from math import *  # TODO: OB -- get rid of this
+from math import sqrt, acos, pi
 from MDAnalysis import SelectionError, NoDataError, SelectionWarning
-from MDAnalysis.core.util import normal, angle, stp
+from MDAnalysis.core.util import angle, dihedral
 
 class Atom(object):
     """A class representing a single atom.
@@ -161,6 +165,7 @@ class Atom(object):
     For performance reasons, only a predefined number of attributes
     are included (and thus it is not possible to add attributes "on
     the fly"; they have to be included in the class definition).
+
     """
 
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
@@ -171,7 +176,7 @@ class Atom(object):
                  residue=None, segment=None, radius=None, bfactor=None, resnum=None):
         self.number = number
         self.name = name
-        self.type = type        # numeric or string
+        self.type = str(type)   # always a string (needed for selections)
         self.resname = resname
         self.resid = resid
         self.resnum = resnum
@@ -182,6 +187,7 @@ class Atom(object):
         self.charge = charge
         self.radius = radius
         self.bfactor = bfactor
+        self.bonds = list()
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
                repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'
@@ -241,15 +247,16 @@ class Atom(object):
         # centroid exists for compatibility with AtomGroup
         return self.pos
 
-    def universe():
-        doc = "a pointer back to the Universe"
-        def fget(self):
-            if not self.__universe == None: return self.__universe
-            else: raise AttributeError("Atom "+repr(self.number)+" is not assigned to a Universe")
-        def fset(self, universe):
-            self.__universe = universe
-        return locals()
-    universe = property(**universe())
+    @property
+    def universe(self):
+        """a pointer back to the Universe"""
+        if not self.__universe == None: return self.__universe
+        else: raise AttributeError("Atom "+repr(self.number)+" is not assigned to a Universe")
+
+    @universe.setter
+    def universe(self, universe):
+        self.__universe = universe
+
 
 class AtomGroup(object):
     """A group of atoms.
@@ -307,6 +314,16 @@ class AtomGroup(object):
        difficult to use the feature consistently in scripts but it is
        much better for interactive work.
 
+    .. rubric:: References for analysis methods
+
+    .. [Dima2004] Dima, R. I., & Thirumalai, D. (2004). Asymmetry in the
+                  shapes of folded and denatured states of proteins. *J
+                  Phys Chem B*, 108(21),
+                  6564-6570. doi:`10.1021/jp037128y`_
+
+    .. _10.1021/jp037128y: http://dx.doi.org/10.1021/jp037128y
+
+
     .. versionchanged:: 0.7.6
        An empty AtomGroup can be created and no longer raises a
        :exc:`NoDataError`.
@@ -356,7 +373,7 @@ class AtomGroup(object):
         .. versionadded:: 0.7.5
         """
         # If the number of atoms is very large, create a dictionary cache for lookup
-        if len(atoms) > 10000:
+        if len(self._atoms) > 10000:
             self.__cache['atoms'] = dict(((x,None) for x in self.__atoms))
         # indices
         self.__cache['indices'] = numpy.array([atom.number for atom in self._atoms])
@@ -649,7 +666,7 @@ class AtomGroup(object):
         .. versionadded:: 0.7.4
         """
         self._set_atoms("charge", float(charge))
-    def set_radius(self, charge):
+    def set_radius(self, radius):
         """Set the atom radius to float *radius* for **all atoms** in the AtomGroup.
 
         .. versionadded:: 0.7.4
@@ -674,6 +691,40 @@ class AtomGroup(object):
         recenteredpos = self.coordinates() - self.centerOfMass()
         rog_sq = numpy.sum(masses*numpy.sum(numpy.power(recenteredpos, 2), axis=1))/self.totalMass()
         return numpy.sqrt(rog_sq)
+    def shapeParameter(self):
+        """Shape parameter.
+
+        See [Dima2004]_ for background information.
+
+        .. versionadded:: 0.7.7
+        """
+        masses = self.masses()
+        recenteredpos = self.coordinates() - self.centerOfMass()
+        tensor = numpy.zeros((3,3))
+        for x in xrange(recenteredpos.shape[0]):
+            tensor += masses[x] * numpy.outer(recenteredpos[x,:],
+                                              recenteredpos[x,:])
+        tensor /= self.totalMass()
+        eig_vals = numpy.linalg.eigvalsh(tensor)
+        shape = 27.0 * numpy.prod(eig_vals-numpy.mean(eig_vals)) / numpy.power(numpy.sum(eig_vals),3)
+        return shape
+    def asphericity(self):
+        """Asphericity.
+
+        See [Dima2004]_ for background information.
+
+        .. versionadded:: 0.7.7
+        """
+        masses = self.masses()
+        recenteredpos = self.coordinates() - self.centerOfMass()
+        tensor = numpy.zeros((3,3))
+        for x in xrange(recenteredpos.shape[0]):
+            tensor += masses[x] * numpy.outer(recenteredpos[x,:],
+                                              recenteredpos[x,:])
+        tensor /= self.totalMass()
+        eig_vals = numpy.linalg.eigvalsh(tensor)
+        shape = (3.0 / 2.0) * numpy.sum(numpy.power(eig_vals-numpy.mean(eig_vals),2)) / numpy.power(numpy.sum(eig_vals),2)
+        return shape
     def momentOfInertia(self):
         """Tensor of inertia as 3x3 NumPy array."""
         # Convert to local coordinates
@@ -806,114 +857,12 @@ class AtomGroup(object):
         """
         if len(self) != 4:
                 raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
-        # TODO 0.7.3: merge in dihedral_numpy() and remove dihedral_orig()
-        return self.dihedral_numpy()
-
-    def dihedral_orig(self):
-        """Calculate the dihedral angle in degrees.
-
-        .. Note::
-
-           Only makes sense for a :class:`AtomGroup` with exactly 4
-           :class:`Atom`; anything else will raise a :exc:`ValueError`.
-
-        .. deprecated:: 0.7.3
-           This is a slower implementation (without numpy) and will be
-           removed. Use :meth:`dihedral_numpy` instead (or simply
-           :meth:`dihedral` which is set up to use :meth:`dihedral_numpy`.)
-        """
-
-        ####  To whom altered this previously. please do not change or attempt to simplify  as incorrect dihedral values were calculated (developer -- Elizabeth Denning)
-        def vector(atm1, atm2):
-            """takes two points in three dimensional space and finds the vector between them"""
-            vector = [0,0,0]
-            vector[0] = atm1[0] - atm2[0]
-            vector[1] = atm1[1] - atm2[1]
-            vector[2] = atm1[2] - atm2[2]
-            return vector
-        def normal(vec1, vec2):
-            """takes two vectors and finds a UNIT vector normal to them"""
-            normal = [0,0,0]
-            normal[0] = vec1[1]*vec2[2] - vec1[2]*vec2[1]
-            normal[1] = vec1[2]*vec2[0] - vec1[0]*vec2[2]
-            normal[2] = vec1[0]*vec2[1] - vec1[1]*vec2[0]
-            dist = sqrt(normal[0]**2 + normal[1]**2 + normal[2]**2)
-            try:
-                normal[0] = normal[0]/dist
-                normal[1] = normal[1]/dist
-                normal[2] = normal[2]/dist
-            except ZeroDivisionError:
-                print ''
-            return normal
-        def angle(norm1, norm2):
-            """finds the angle between two vectors"""
-            dist1 = sqrt(norm1[0]**2 + norm1[1]**2 + norm1[2]**2)
-            dist2 = sqrt(norm2[0]**2 + norm2[1]**2 + norm2[2]**2)
-            cosa1 = norm1[0]/dist1; cosb1 = norm1[1]/dist1; cosg1 = norm1[2]/dist1
-            cosa2 = norm2[0]/dist2; cosb2 = norm2[1]/dist2; cosg2 = norm2[2]/dist2
-            costheta = cosa1*cosa2 + cosb1*cosb2 + cosg1*cosg2
-            theta = acos(costheta)*180./pi
-            return theta
-
-        def dot(vec1, vec2):
-            """finds the dot product of two vectors"""
-            return vec1[0]*vec2[0] + vec1[1]*vec2[1] + vec1[2]*vec2[2]
-
-        def cross(vec1, vec2):
-            """Takes the cross product of two vectors"""
-            return [vec1[1]*vec2[2] - vec1[2]*vec2[1],\
-                        vec1[2]*vec2[0] - vec1[0]*vec2[2],\
-                        vec1[0]*vec2[1] - vec1[1]*vec2[0]]
-
-        def stp(vec1, vec2, vec3):
-            """Takes the scalar triple product of three vectors"""
-            return dot(vec3, cross(vec1, vec2))
-
-        def anglecheck(angle,vec1,vec2,vec3):
-            """Determines the sign (+/-) of the angle in question"""
-            angleout=angle
-            if stp(vec1, vec2, vec3) > 0.0:
-                angleout = -angle
-            return angleout
-
-        if len(self) != 4:
-            raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
-
-        norm1 = normal(vector(self.coordinates()[0], self.coordinates()[1]), vector(self.coordinates()[1], self.coordinates()[2]))
-        norm2 = normal(vector(self.coordinates()[1], self.coordinates()[2]), vector(self.coordinates()[2], self.coordinates()[3]))
-        pre_dihe  = angle(norm1, norm2)
-        dihe = anglecheck(pre_dihe, vector(self.coordinates()[0], self.coordinates()[1]), vector(self.coordinates()[1], self.coordinates()[2]), vector(self.coordinates()[2], self.coordinates()[3]))
-
-        return dihe
-
-    def dihedral_numpy(self):
-        """Calculate the dihedral angle in degrees.
-
-        .. Note::
-
-           Only makes sense for a :class:`AtomGroup` with exactly 4
-           :class:`Atom`; anything else will raise a :exc:`ValueError`.
-
-        .. deprecated:: 0.7.3
-           Do not use this method directly; instead simply use :meth:`dihedral`
-           which is set up to use :meth:`dihedral_numpy`.
-        """
-        if len(self) != 4:
-                raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
-
-        def anglecheck(angle, vec1, vec2, vec3):
-            """Returns the signed (+/-) angle within -pi < x < pi deg"""
-            angleout = angle
-            if stp(vec1, vec2, vec3) > 0.0:
-                angleout = -angle
-            return angleout
 
         A,B,C,D = self.coordinates()[:4]
         ab = A - B
         bc = B - C
         cd = C - D
-        dihe = anglecheck(angle(normal(ab, bc), normal(bc, cd)), ab, bc, cd)
-        return numpy.rad2deg(dihe)
+        return numpy.rad2deg(dihedral(ab, bc, cd))
 
     def principalAxes(self):
         """Calculate the principal axes from the moment of inertia.
@@ -1078,6 +1027,93 @@ class AtomGroup(object):
 
     # TODO for 0.8
     #velocities = property(get_velocities, set_velocities, doc="velocities of the atoms\n\n.. versionchanged:: 0.8")
+
+
+    def get_forces(self, ts=None, copy=False, dtype=numpy.float32):
+        """
+        Get a NumPy array of the atomic forces (if available).
+        Currently only supported for Gromacs .trr trajectories.
+
+        :Keywords:
+           *ts*
+               If *ts* is provided then positions are read from that
+               :class:`~MDAnalysis.coordinates.base.Timestep` instead of
+               the one from the current trajectory belonging to this universe.
+               The *ts* is indexed with the indices returned by
+               :meth:`~AtomGroup.indices` and it is the user's responsibility
+               to provide a time step that has the appropriate dimensions.
+           *copy*
+               ``True``: always make a copy (slow), ``False``: Try to
+               return a array view or reference (faster); note that for
+               passing coordinates to C-code it can be necessary to use
+               a copy [``False``]
+           *dtype*
+               NumPy Data type of the array; the default is usually
+               entirely appropriate. Most C-code actually requires the
+               default  [:class:`numpy.float32`]
+
+        Forces can also be directly obtained from the attribute
+        :attr:`~AtomGroup.forces`.
+
+        Forces can be directly set with :meth:`~AtomGroup.set_forces` or
+        by assigning to :attr:`~AtomGroup.forces`.
+
+        .. versionadded:: 0.7.7
+        """
+        if ts == None:
+            ts = self.universe.trajectory.ts
+        try:
+            return numpy.array(ts._forces[self.indices()], copy=copy, dtype=dtype)
+        except AttributeError:
+            raise NoDataError("Timestep does not contain forces")
+
+    def set_forces(self, forces, ts=None):
+        """Set the forces for all atoms in the group.
+
+        :Arguments:
+           *forces*
+               a Nx3 NumPy :class:`numpy.ndarray` where N is the number of
+               atoms in this atom group.
+
+        :Keywords:
+           *ts*
+              :class:`~MDAnalysis.coordinates.base.Timestep`, defaults
+              to ``None`` and then the current time step is used.
+
+        .. Note::
+
+           If the group contains N atoms and *force* is a single point (i.e. an
+           array of length 3) then all N atom positions are set to *force* (due
+           to NumPy's broadcasting rules), as described for
+           :attr:`~AtomGroup.forces`.
+
+        See also :meth:`~AtomGroup.get_forces` and attribute access through
+        :attr:`~AtomGroup.forces`.
+
+        .. versionadded:: 0.7.7
+        """
+        if ts == None:
+            ts = self.universe.trajectory.ts
+        try:
+            ts._forces[self.indices(), :] = forces
+        except AttributeError:
+            raise NoDataError("Timestep does not contain forces")
+
+    forces = property(get_forces, set_forces,
+                         doc="""
+                Forces on the atoms in the AtomGroup.
+
+                The forces can be changed by assigning an array of the appropriate
+                shape, i.e. either Nx3 to assign individual force or 3, to assign
+                the *same* force to all atoms (e.g. ``ag.forces = array([0,0,0])``
+                will set all forces to (0.,0.,0.)).
+
+                For more control use the :meth:`~AtomGroup.get_forces` and
+                :meth:`~AtomGroup.set_forces` methods.
+
+                .. versionadded:: 0.7.7""")
+
+
 
     def transform(self, M):
         """Apply homogenous transformation matrix *M* to the coordinates.
@@ -1545,14 +1581,16 @@ class Segment(ResidueGroup):
             res.segment = self
             for atom in res:
                 atom.segment = self
-    def id():
-        doc = """Segment id (alias for :attr:`Segment.name`)"""
-        def fget(self):
-            return self.name
-        def fset(self,x):
-            self.name = x
-        return locals()
-    id = property(**id())
+
+    @property
+    def id(self):
+        """Segment id (alias for :attr:`Segment.name`)"""
+        return self.name
+
+    @id.setter
+    def id_setter(self,x):
+        self.name = x
+
 
     def __getattr__(self, attr):
         if attr[0] == 'r':
@@ -2003,16 +2041,16 @@ class Universe(object):
         """
         return self.trajectory.ts
 
-    def trajectory():
-        doc = "Reference to trajectory reader object containing trajectory data."
-        def fget(self):
-            if not self.__trajectory == None: return self.__trajectory
-            else: raise AttributeError("No trajectory loaded into Universe")
-        def fset(self, value):
-            del self.__trajectory  # guarantees that files are closed (?)
-            self.__trajectory = value
-        return locals()
-    trajectory = property(**trajectory())
+    @property
+    def trajectory(self):
+        """Reference to trajectory reader object containing trajectory data."""
+        if not self.__trajectory == None: return self.__trajectory
+        else: raise AttributeError("No trajectory loaded into Universe")
+
+    @trajectory.setter
+    def trajectory(self, value):
+        del self.__trajectory  # guarantees that files are closed (?)
+        self.__trajectory = value
 
 def asUniverse(*args, **kwargs):
     """Return a universe from the input arguments.

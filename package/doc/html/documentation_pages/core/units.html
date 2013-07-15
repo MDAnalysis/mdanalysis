@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.8. Constants and unit conversion — MDAnalysis.core.units &mdash; MDAnalysis 0.7.6-devel documentation</title>
+    <title>7.8. Constants and unit conversion — MDAnalysis.core.units &mdash; MDAnalysis 0.7.8-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6-devel',
+        VERSION:     '0.7.8-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.6-devel documentation"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.6-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.9. Helper functions — MDAnalysis.core.util" href="util.html" />
     <link rel="prev" title="7.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot" href="qcprot.html" /> 
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="qcprot.html" title="7.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -106,7 +106,7 @@
 <h1>7.8. Constants and unit conversion &#8212; <a class="reference internal" href="#module-MDAnalysis.core.units" title="MDAnalysis.core.units"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a><a class="headerlink" href="#constants-and-unit-conversion-mdanalysis-core-units" title="Permalink to this headline">¶</a></h1>
 <p>The base units of MDAnalysis are <em>Angstrom</em> for <em>length</em> (1 Angstrom =
 0.1 nm = 10^-10 m) and <em>ps</em> (pico second) for <em>time</em> (1 ps = 10^-12
-sec).</p>
+sec). For <em>force</em> we adopted kJ/(mol*Angstrom).</p>
 <p>All conversions: the conversion factor f to a unit b&#8217; for a quantity X
 (whose numeric value relative to the base unit b is stored in the
 program) is a quantity with unit <cite>b&#8217;/b</cite>. In the dictionaries below only
@@ -236,6 +236,12 @@ hence a number of values are pre-stored in <a class="reference internal" href="#
 </dd></dl>
 
 <dl class="data">
+<dt id="MDAnalysis.core.units.forceUnit_factor">
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">forceUnit_factor</tt><em class="property"> = {'kJ/(mol*A)': 1.0, 'kJ/(mol*nm)': 10.0, 'kJ/(mol*\xc3\x85)': 1.0, 'kJ/(mol*Angstrom)': 1.0}</em><a class="headerlink" href="#MDAnalysis.core.units.forceUnit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>For <em>force</em> the basic unit is kJ/(mol*Angstrom).</p>
+</dd></dl>
+
+<dl class="data">
 <dt id="MDAnalysis.core.units.chargeUnit_factor">
 <tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">chargeUnit_factor</tt><em class="property"> = {'Amber': 18.222300000000001, 'C': 1.602176487e-19, 'e': 1.0, 'As': 1.602176487e-19}</em><a class="headerlink" href="#MDAnalysis.core.units.chargeUnit_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>Charge</em> is measured in multiples of the <a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?e">electron charge</a>
@@ -244,7 +250,7 @@ hence a number of values are pre-stored in <a class="reference internal" href="#
 
 <dl class="data">
 <dt id="MDAnalysis.core.units.conversion_factor">
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">conversion_factor</tt><em class="property"> = {'length': {'A': 1.0, 'picometer': 100.0, 'Angstrom': 1.0, 'femtometer': 100000.0, 'nm': 0.10000000000000001, 'pm': 100.0, 'nanometer': 0.10000000000000001, 'fm': 100000.0, '\xc3\x85': 1.0, 'angstrom': 1.0}, 'time': {'ps': 1.0, 'second': 9.9999999999999998e-13, 'fs': 1000.0, 'sec': 9.9999999999999998e-13, 'picosecond': 1.0, 'femtosecond': 1000.0, 'AKMA': 20.45482949774598, 'ns': 0.001, 'nanosecond': 0.001, 's': 9.9999999999999998e-13}, 'speed': {'Angstrom/picosecond': 1.0, '\xc3\x85/ps': 1.0, 'm/s': 100.0, 'nm/ps': 0.10000000000000001, 'nm/ns': 100.0, 'Angstrom/AKMA': 0.048888210000000001, 'pm/ps': 100.0, 'angstrom/picosecond': 1.0, 'A/ps': 1.0, 'Angstrom/ps': 1.0, 'nanometer/picosecond': 0.10000000000000001, 'nanometer/ps': 0.10000000000000001}, 'charge': {'Amber': 18.222300000000001, 'C': 1.602176487e-19, 'e': 1.0, 'As': 1.602176487e-19}, 'density': {'Molar': 1660.5387831627258, 'water': 30.006285574182215, 'A^{-3}': 1.0, 'nm^{-3}': 1000.0, '\xc3\x85^{-3}': 1.0, 'nanometer^{-3}': 1000.0, 'SPC': 30.37184438320779, 'Angstrom^{-3}': 1.0, 'TIP4P': 29.886380337122549, 'TIP3P': 29.856553610239185}}</em><a class="headerlink" href="#MDAnalysis.core.units.conversion_factor" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">conversion_factor</tt><em class="property"> = {'force': {'kJ/(mol*A)': 1.0, 'kJ/(mol*nm)': 10.0, 'kJ/(mol*\xc3\x85)': 1.0, 'kJ/(mol*Angstrom)': 1.0}, 'density': {'Molar': 1660.5387831627258, 'water': 30.006285574182215, 'A^{-3}': 1.0, 'nm^{-3}': 1000.0, '\xc3\x85^{-3}': 1.0, 'nanometer^{-3}': 1000.0, 'SPC': 30.37184438320779, 'Angstrom^{-3}': 1.0, 'TIP4P': 29.886380337122549, 'TIP3P': 29.856553610239185}, 'charge': {'Amber': 18.222300000000001, 'C': 1.602176487e-19, 'e': 1.0, 'As': 1.602176487e-19}, 'length': {'A': 1.0, 'picometer': 100.0, 'Angstrom': 1.0, 'femtometer': 100000.0, 'nm': 0.10000000000000001, 'pm': 100.0, 'nanometer': 0.10000000000000001, 'fm': 100000.0, '\xc3\x85': 1.0, 'angstrom': 1.0}, 'time': {'ps': 1.0, 'second': 9.9999999999999998e-13, 'fs': 1000.0, 'sec': 9.9999999999999998e-13, 'picosecond': 1.0, 'femtosecond': 1000.0, 'AKMA': 20.45482949774598, 'ns': 0.001, 'nanosecond': 0.001, 's': 9.9999999999999998e-13}, 'speed': {'Angstrom/picosecond': 1.0, '\xc3\x85/ps': 1.0, 'm/s': 100.0, 'nm/ps': 0.10000000000000001, 'nm/ns': 100.0, 'Angstrom/AKMA': 0.048888210000000001, 'pm/ps': 100.0, 'angstrom/picosecond': 1.0, 'A/ps': 1.0, 'Angstrom/ps': 1.0, 'nanometer/picosecond': 0.10000000000000001, 'nanometer/ps': 0.10000000000000001}}</em><a class="headerlink" href="#MDAnalysis.core.units.conversion_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#MDAnalysis.core.units.conversion_factor" title="MDAnalysis.core.units.conversion_factor"><tt class="xref py py-data docutils literal"><span class="pre">conversion_factor</span></tt></a> is used by <a class="reference internal" href="#MDAnalysis.core.units.get_conversion_factor" title="MDAnalysis.core.units.get_conversion_factor"><tt class="xref py py-func docutils literal"><span class="pre">get_conversion_factor()</span></tt></a>:
 Note: any observable with a unit (i.e. one with an entry in
 the <tt class="xref py py-attr docutils literal"><span class="pre">unit</span></tt> attribute) needs an entry in <a class="reference internal" href="#MDAnalysis.core.units.conversion_factor" title="MDAnalysis.core.units.conversion_factor"><tt class="xref py py-data docutils literal"><span class="pre">conversion_factor</span></tt></a></p>
@@ -252,7 +258,7 @@ the <tt class="xref py py-attr docutils literal"><span class="pre">unit</span></
 
 <dl class="data">
 <dt id="MDAnalysis.core.units.unit_types">
-<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">unit_types</tt><em class="property"> = {'Molar': 'density', 'Angstrom/picosecond': 'speed', '\xc3\x85/ps': 'speed', 'm/s': 'speed', 'Angstrom^{-3}': 'density', '\xc3\x85': 'length', 'second': 'time', 'sec': 'time', 'Angstrom': 'length', 'nm/ns': 'speed', 'Angstrom/AKMA': 'speed', 'nanometer': 'length', 'pm/ps': 'speed', 'ps': 'time', 'angstrom/picosecond': 'speed', 'nm': 'length', 'nanometer^{-3}': 'density', 'A/ps': 'speed', 'nanosecond': 'time', 'As': 'charge', 'angstrom': 'length', 'AKMA': 'time', 'ns': 'time', 'pm': 'length', 'A': 'length', 'C': 'charge', 'fs': 'time', 'femtosecond': 'time', 'nm/ps': 'speed', 'TIP3P': 'density', 'water': 'density', 'A^{-3}': 'density', 'nm^{-3}': 'density', 'picosecond': 'time', 'fm': 'length', 'Amber': 'charge', 'nanometer/picosecond': 'speed', 'e': 'charge', 'TIP4P': 'density', 'Angstrom/ps': 'speed', 'SPC': 'density', 's': 'time', '\xc3\x85^{-3}': 'density', 'femtometer': 'length', 'nanometer/ps': 'speed', 'picometer': 'length'}</em><a class="headerlink" href="#MDAnalysis.core.units.unit_types" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.units.</tt><tt class="descname">unit_types</tt><em class="property"> = {'A': 'length', 'Angstrom/picosecond': 'speed', '\xc3\x85/ps': 'speed', 'm/s': 'speed', 'Angstrom^{-3}': 'density', '\xc3\x85': 'length', 'second': 'time', 'sec': 'time', 'Angstrom': 'length', 'nm/ns': 'speed', 'Angstrom/AKMA': 'speed', 'nanometer': 'length', 'TIP4P': 'density', 'ps': 'time', 'angstrom/picosecond': 'speed', 'nm': 'length', 'nanometer^{-3}': 'density', 'A/ps': 'speed', 'nanosecond': 'time', 'ns': 'time', 'angstrom': 'length', 'kJ/(mol*A)': 'force', 'AKMA': 'time', 'SPC': 'density', 'pm': 'length', 'Molar': 'density', 'C': 'charge', 'fs': 'time', 'femtosecond': 'time', 's': 'time', 'pm/ps': 'speed', 'nm/ps': 'speed', 'kJ/(mol*\xc3\x85)': 'force', 'TIP3P': 'density', 'water': 'density', 'nanometer/ps': 'speed', 'nm^{-3}': 'density', 'picosecond': 'time', 'nanometer/picosecond': 'speed', 'fm': 'length', 'Amber': 'charge', 'A^{-3}': 'density', 'e': 'charge', 'Angstrom/ps': 'speed', 'As': 'charge', '\xc3\x85^{-3}': 'density', 'kJ/(mol*Angstrom)': 'force', 'femtometer': 'length', 'kJ/(mol*nm)': 'force', 'picometer': 'length'}</em><a class="headerlink" href="#MDAnalysis.core.units.unit_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generated lookup table (dict): returns the type of unit for a known input unit.
 Note: Any unit must be <em>unique</em> because this dict is used to guess the
 unit type.</p>
@@ -294,16 +300,17 @@ unit type.</p>
         <li class="right" >
           <a href="qcprot.html" title="7.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

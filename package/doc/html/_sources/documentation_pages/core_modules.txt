@@ -25,3 +25,4 @@ parsing in :mod:`MDAnalysis.core.Selection`.
    core/units
    core/util
    core/log
+   core/parallel

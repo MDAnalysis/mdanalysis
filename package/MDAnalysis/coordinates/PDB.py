@@ -60,15 +60,15 @@ Implementations
 Two different implementations of PDB I/O are available: the ":ref:`permissive<permissive>`"
 and the ":ref:`strict<strict>`" Reader/Writers. The default are the "permissive" ones
 but this can be changed by setting the flag "permissive_pdb_reader" in
-:data:`MDAnalysis.flags` (see :ref:`flags-label`) to ``False``::
+:data:`MDAnalysis.core.flags` (see :ref:`flags-label`) to ``False``::
 
-   MDAnalysis.flags["permissive_pdb_reader"] = False
+   MDAnalysis.core.flags["permissive_pdb_reader"] = False
 
 The *default for MDAnalysis* is to use the
 ":ref:`permissive<permissive>`" :class:`PrimitivePDBReader` and
 :class:`PrimitivePDBWriter`, corresponding to ::
 
-   MDAnalysis.flags["permissive_pdb_reader"] = True
+   MDAnalysis.core.flags["permissive_pdb_reader"] = True
 
 On a case-by-case basis one kind of reader can be selected with the
 *permissive* keyword to :class:`~MDAnalysis.core.AtomGroup.Universe`, e.g. ::
@@ -174,6 +174,14 @@ implemented. The Biopython Reader/Writer can be selected when loading data into
 a :class:`~MDAnalysis.core.AtomGroup.Universe` by providing the keyword
 *permissive* = ``False``.
 
+The Biopython PDB parser :class:`Bio.PDB.PDBParser` is fairly strict and even
+in its own permissive mode (which MDAnalysis employs) typically warns about
+missing element names with a
+:exc:`Bio.PDB.PDBExceptions.PDBConstructionWarning` . Such warnings, however,
+are generally harmless and therefore are filtered (and ignored) by MDAnalysis
+with the help of :func:`warnings.filterwarnings`.
+
+
 Classes
 ~~~~~~~
 
@@ -198,6 +206,11 @@ from __future__ import with_statement
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
     import Bio.PDB
+    import pdb.extensions
+    # disable PDBConstructionWarning from picky builder
+    import warnings
+    warnings.filterwarnings("ignore", category=Bio.PDB.PDBExceptions.PDBConstructionWarning,
+                            message="Could not assign element|Used element .* for Atom")
 except ImportError:
     # TODO: fall back to PrimitivePDBReader
     raise ImportError("No full-feature PDB I/O functionality. Install biopython.")
@@ -209,7 +222,6 @@ import numpy
 import MDAnalysis.core
 import MDAnalysis.core.util as util
 import base
-import pdb.extensions
 
 from MDAnalysis.topology.core import guess_atom_element
 from MDAnalysis.core.AtomGroup import Universe, AtomGroup
@@ -290,7 +302,7 @@ class PDBReader(base.Reader):
            This :class:`PDBWriter` 's :meth:`~PDBWriter.write` method
            always requires a :class:`Timestep` as an argument (it is
            not optional anymore when the Writer is obtained through
-           this method of :class:`PDBReader`.)
+           this method of :class:`PDBReader` .)
         """
         # This is messy; we cannot get a universe from the Reader, which would be
         # also needed to be fed to the PDBWriter (which is a total mess...).
@@ -326,11 +338,11 @@ class PDBWriter(base.Writer):
 
     .. Note::
 
-      The standard PDBWriter can only write the *whole system*.  In
-      order to write a selection, use the :class:`PrimitivePDBWriter`,
-      which happens automatically when the
-      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of a
-      :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance is used.
+       The standard PDBWriter can only write the *whole system*.  In
+       order to write a selection, use the :class:`PrimitivePDBWriter` ,
+       which happens automatically when the
+       :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of a
+       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance is used.
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
@@ -344,12 +356,15 @@ class PDBWriter(base.Writer):
 
     def __init__(self, pdbfilename, universe=None, multi=False, **kwargs):
         """pdbwriter = PDBWriter(<pdbfilename>,universe=universe,**kwargs)
+
         :Arguments:
-        pdbfilename     filename; if multi=True, embed a %%d formatstring
-                        so that write_next_timestep() can insert the frame number
-        universe        supply a universe [really REQUIRED; optional only for compatibility]
-        multi           False: write a single structure to a single pdb
-                        True: write all frames to multiple pdb files
+          pdbfilename     filename; if multi=True, embed a %%d formatstring
+                          so that write_next_timestep() can insert the frame number
+
+          universe        supply a universe [really REQUIRED; optional only for compatibility]
+
+          multi           False: write a single structure to a single pdb
+                          True: write all frames to multiple pdb files
         """
         import Bio.PDB.Structure
         self.universe = universe
@@ -459,17 +474,23 @@ class PrimitivePDBReader(base.Reader):
         If the pdb file contains multiple MODEL records then it is
         read as a trajectory where the MODEL numbers correspond to
         frame numbers. Therefore, the MODEL numbers must be a sequence
-        of integeres (typically starting at 1 or 0).
+        of integers (typically starting at 1 or 0).
         """
         self.filename = filename
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
-        # add this number to the MODEL number to get frame: typically
-        # PDB starts at 1 but Gromacs trjconv exports starting with
-        # MODEL 0. (MODEL 0 is autodetected in the code, though!)
-        self.model_offset = kwargs.pop("model_offset", -1)
+        # = NOTE to clear up confusion over 0-based vs 1-based frame numbering =
+        # self.frame is 1-based for this Reader, which matches the behavior of
+        # the MODEL record in a typical multi-model PDB file.  If the MODEL
+        # record is 0-based, this is accounted for by __init__.
+        # self._read_frame assumes that it is passed a 0-based frame number, so
+        # that it functions as expected when slicing is used.
+
+        # If MODEL number in the PDB file is 0-based, then this model_offset
+        # will be set to 1 by __init__.
+        self.model_offset = kwargs.pop("model_offset", 0)
 
         header = ""
         compound = []
@@ -506,9 +527,9 @@ class PrimitivePDBReader(base.Reader):
                     frameno = int(line.split()[1])
                     if frameno == 0:
                         # detect if MODEL starts at 0 or at 1; switch model_offset appropriately
-                        # Will break/loose frames if MODELs are renumbered in the PDB file...
-                        self.model_offset = 0
-                    frames[frameno + self.model_offset] = i # 0-based indexing
+                        # Will break/lose frames if MODELs are nonconsecutive in the PDB file...
+                        self.model_offset = 1
+                    frames[frameno + self.model_offset] = i # 1-based indexing
                 elif line[:6] in ('ATOM  ', 'HETATM'):
                     # skip atom/hetatm for frames other than the first - they will be read in when next() is called on the trajectory reader
                     if len(frames) > 1:
@@ -540,7 +561,7 @@ class PrimitivePDBReader(base.Reader):
 
         # No 'MODEL' entries
         if len(frames) == 0:
-            frames[0] = 0
+            frames[1] = 0
 
         self.frames = frames
         self.numframes = len(frames) if frames else 1
@@ -607,18 +628,27 @@ class PrimitivePDBReader(base.Reader):
             except IOError:
                 raise StopIteration
 
+    #def __getitem__(self,frame):
+    #    return self._read_frame(frame+1)
+
     def _read_next_timestep(self, ts=None):
         if ts is None:
             ts = self.ts
         else:
             # TODO: cleanup _read_frame() to use a "free" Timestep
             raise NotImplementedError("PrimitivePDBReader cannot assign to a timestep")
-        frame = self.frame + 1
+        # frame is 1-based. Normally would add 1 to frame before calling
+        # self._read_frame to retrieve the subsequent ts. But self._read_frame
+        # assumes it is being passed a 0-based frame, and adjusts.
+        frame = self.frame
         return self._read_frame(frame)
 
     def _read_frame(self, frame):
         if numpy.dtype(type(frame)) != numpy.dtype(int):
             raise TypeError("frame must be a integer")
+        # Assume _read_frame is passed a 0-based frame number. Convert this to
+        # 1-based.
+        frame += 1
         try:
             line = self.frames[frame]
         except KeyError:
@@ -642,6 +672,8 @@ class PrimitivePDBReader(base.Reader):
             for line in f:
                 if line[:6] == 'ENDMDL':
                     break
+                # NOTE - CRYST1 line won't be found if it comes before the MODEL line,
+                # which is sometimes the case, e.g. output from gromacs trjconv
                 elif line[:6] == 'CRYST1':
                     A, B, C = _c(7, 15), _c(16, 24), _c(25, 33)
                     alpha, beta, gamma = _c(34, 40), _c(41, 47), _c(48, 54)
@@ -664,12 +696,12 @@ class PrimitivePDBReader(base.Reader):
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)             # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)
-        self.ts.frame = frame+1   # frame labels are 1-based (confusing ...)
+        self.ts.frame = frame
         return self.ts
 
 
 class PrimitivePDBWriter(base.Writer):
-    """PDB writer that implements a subset of the `PDB 3.2 standard`_.
+    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
     altLoc is written.
@@ -750,7 +782,7 @@ class PrimitivePDBWriter(base.Writer):
            characters) being wrapped.
          *convert_units*
            units are converted to the MDAnalysis base format; ``None`` selects
-           the value of :data:`MDAnalysis.core.flags`['convert_gromacs_lengths']
+           the value of :data:`MDAnalysis.core.flags` ['convert_gromacs_lengths']
          *bonds*
            write bonds to the PDB file as CONECT_ records [``False``]
 
@@ -1246,7 +1278,7 @@ class PrimitivePDBWriter(base.Writer):
 
 
 class MultiPDBWriter(PrimitivePDBWriter):
-    """PDB writer that implements a subset of the `PDB 3.2 standard`_.
+    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
     is written.
@@ -1257,6 +1289,7 @@ class MultiPDBWriter(PrimitivePDBWriter):
 
     .. _`PDB 3.2 standard`:
        http://www.wwpdb.org/documentation/format32/v3.2.html
+
     .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
     .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
     .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT

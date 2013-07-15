@@ -238,7 +238,7 @@ class IObase(object):
         return x
 
     def convert_velocities_from_native(self, v, inplace=True):
-        """In-place conversion of coordinate array *v* from native units to base units.
+        """In-place conversion of velocities array *v* from native units to base units.
 
         By default, the input *v* is modified in place and also returned.
 
@@ -251,6 +251,21 @@ class IObase(object):
             return f*v
         v *= f
         return v
+
+    def convert_forces_from_native(self, force, inplace=True):
+        """In-place conversion of forces array *force* from native units to base units.
+
+        By default, the input *force* is modified in place and also returned.
+
+        .. versionadded:: 0.7.7
+        """
+        f = units.get_conversion_factor('force', self.units['force'], MDAnalysis.core.flags['force_unit'])
+        if f == 1.:
+            return force
+        if not inplace:
+            return f*force
+        force *= f
+        return force
 
     def convert_time_from_native(self, t, inplace=True):
         """Convert time *t* from native units to base units.
@@ -309,6 +324,21 @@ class IObase(object):
             return f*v
         v *= f
         return v
+
+    def convert_forces_to_native(self, force, inplace=True):
+        """In-place conversion of force array *force* from base units to native units.
+
+        By default, the input *force* is modified in place and also returned.
+
+        .. versionadded:: 0.7.7
+        """
+        f = units.get_conversion_factor('force', MDAnalysis.core.flags['force_unit'], self.units['force'])
+        if f == 1.:
+            return force
+        if not inplace:
+            return f*force
+        force *= f
+        return force
 
     def convert_time_to_native(self, t, inplace=True):
         """Convert time *t* from base units to native units.
@@ -530,7 +560,9 @@ class ChainReader(Reader):
 
     - slicing not implemented
 
-    - :attr:`time` not implemented yet
+    - :attr:`time` will not necessarily return the true time but just
+      number of frames times a provided time between frames (from the
+      keyword *delta*)
     """
     format = 'CHAIN'
 
@@ -545,18 +577,32 @@ class ChainReader(Reader):
                contain the same number of atoms in the same order
                (i.e. they all must belong to the same topology). The trajectory
                format is deduced from the extension of *filename*.
+
+               Extension: filenames are either single filename or list of file names in either plain file names format or (filename,format) tuple combination
+
            *skip*
                skip step (also passed on to the individual trajectory
                readers); must be same for all trajectories
+
+           *delta*
+               The time between frames in MDAnalysis time units if no
+               other information is available. If this is not set then
+               any call to :attr:`~ChainReader.time` will raise a
+               :exc:`ValueError`.
+
            *kwargs*
                all other keyword arguments are passed on to each
                trajectory reader unchanged
+
+        .. versionchanged:: 0.8
+           The *delta* keyword was added.
         """
         self.filenames = asiterable(filenames)
         self.readers = [core.reader(filename, **kwargs) for filename in self.filenames]
         self.__active_reader_index = 0   # pointer to "active" trajectory index into self.readers
 
         self.skip = kwargs.get('skip', 1)
+        self._default_delta = kwargs.pop('delta', None)
         self.numatoms = self._get_same('numatoms')
         self.fixed = self._get_same('fixed')
 
@@ -667,7 +713,11 @@ class ChainReader(Reader):
     @property
     def time(self):
         """Cumulative time of the current frame in MDAnalysis time units (typically ps)."""
-        raise NotImplementedError
+        # currently a hack, should really use a list of trajectory lengths and delta * local_frame
+        try:
+            return self.frame * self._default_delta
+        except TypeError:
+            raise ValueError("No timestep information available. Set delta to fake a constant time step.")
 
     def _apply(self, method, **kwargs):
         """Execute *method* with *kwargs* for all readers."""
@@ -687,7 +737,7 @@ class ChainReader(Reader):
         values = numpy.array(self._get(attr))
         value = values[0]
         if not numpy.all(values == value):
-            bad_traj = numpy.array(self.filenames)[values != value]
+            bad_traj = numpy.array([self.get_flname(fn) for fn in self.filenames])[values != value]
             raise ValueError("The following trajectories do not have the correct %s "
                              " (%d):\n%r" % (attr, value, bad_traj))
         return value
@@ -764,10 +814,13 @@ class ChainReader(Reader):
         for ts in self.__chained_trajectories_iter:
             yield ts
 
+    def get_flname(self, filename): #retrieve the actual filename of the list element
+        return filename[0] if isinstance(filename,tuple) else filename
+
     def __repr__(self):
         return "< %s %r with %d frames of %d atoms (%d fixed) >" % \
             (self.__class__.__name__,
-             [os.path.basename(fn) for fn in self.filenames],
+             [os.path.basename(self.get_flname(fn)) for fn in self.filenames],
              self.numframes, self.numatoms, self.fixed)
 
 

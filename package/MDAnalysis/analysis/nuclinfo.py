@@ -3,16 +3,16 @@
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
 # Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see website for details)
+#            Elizabeth J. Denning, Oliver Beckstein,
+#            and contributors (see website for details)
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. (2011),
-#     doi:10.1002/jcc.21787
+#    N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#    O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#    Molecular Dynamics Simulations. J. Comput. Chem. (2011),
+#    doi:10.1002/jcc.21787
 #
 
 # MDAnalysis -- nucleic acid analysis
@@ -44,13 +44,13 @@ in degrees. The functions use standard CHARMM names for nucleic acids and atom n
 .. rubric:: References
 
 .. [Denning2011] E.J. Denning, U.D. Priyakumar, L. Nilsson, and A.D. Mackerell, Jr. Impact of
-                 2'-hydroxyl sampling on the conformational properties of RNA: update of the
-                 CHARMM all-atom additive force field for RNA. *J. Comput. Chem.* 32 (2011),
-                 1929--1943. doi: `10.1002/jcc.21777`_
+              2'-hydroxyl sampling on the conformational properties of RNA: update of the
+              CHARMM all-atom additive force field for RNA. *J. Comput. Chem.* 32 (2011),
+              1929--1943. doi: `10.1002/jcc.21777`_
 
 .. [Denning2012] E.J. Denning and A.D. MacKerell, Jr. Intrinsic Contribution of the 2'-Hydroxyl to 
-                 RNA Conformational Heterogeneity. *J. Am. Chem. Soc.* 134 (2012), 2800--2806.
-                 doi: `10.1021/ja211328g`_
+              RNA Conformational Heterogeneity. *J. Am. Chem. Soc.* 134 (2012), 2800--2806.
+              doi: `10.1021/ja211328g`_
 
 
 .. _`10.1002/jcc.21777`: http://dx.doi.org/10.1002/jcc.21777
@@ -96,13 +96,13 @@ Dihedral angles
 
 .. autofunction:: hydroxyl
 
-                                                                                                                                                                              """
+                                                                                                                                            """
 
 from MDAnalysis.core.util import norm
 import numpy
 from math import pi, sin, cos, atan2, sqrt, pow
 
-def wc_pair(universe, seg1, i, seg2, bp):
+def wc_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
      """Watson-Crick basepair distance for residue *i* with residue *bp*.
 
      The distance of the nitrogen atoms in a Watson-Crick hydrogen bond is
@@ -130,7 +130,7 @@ def wc_pair(universe, seg1, i, seg2, bp):
      wc = norm(wc_dist[0].pos - wc_dist[1].pos)
      return wc
 
-def minor_pair(universe,seg1,i,seg2,bp):
+def minor_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
      """Minor-Groove basepair distance for residue *i* with residue *bp*.
 
      The distance of the nitrogen and oxygen atoms in a Minor-groove hydrogen bond is
@@ -158,7 +158,7 @@ def minor_pair(universe,seg1,i,seg2,bp):
      c2o2 = norm(c2o2_dist[0].pos - c2o2_dist[1].pos)
      return c2o2
 
-def major_pair(universe,seg1,i,seg2,bp):
+def major_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
      """Major-Groove basepair distance for residue *i* with residue *bp*.
 
      The distance of the nitrogen and oxygen atoms in a Major-groove hydrogen bond is
@@ -188,305 +188,304 @@ def major_pair(universe,seg1,i,seg2,bp):
 
 
 def phase_cp(universe,seg,i):
-     """Pseudo-angle describing the phase of the ribose pucker for residue *i* 
-     using the CP method 
-     
-     The angle is computed by the positions of atoms in the ribose ring 
-     
-     :Arguments:
-       *universe* 
-           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-        *segid*
-           segment identity of resid
-       *i*
-           resid of the base
+    """Pseudo-angle describing the phase of the ribose pucker for residue *i* 
+    using the CP method 
+    
+    The angle is computed by the positions of atoms in the ribose ring 
+    
+    :Arguments:
+      *universe* 
+         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+         
+       *segid*
+         segment identity of resid
+      *i*
+         resid of the base
+    
+    .. versionadded:: 0.7.6
+    """
+    atom1 = universe.selectAtoms(" atom %s %s O4\' "%(seg,i))
+    atom2 = universe.selectAtoms(" atom %s %s C1\' "%(seg,i))
+    atom3 = universe.selectAtoms(" atom %s %s C2\' "%(seg,i))
+    atom4 = universe.selectAtoms(" atom %s %s C3\' "%(seg,i))
+    atom5 = universe.selectAtoms(" atom %s %s C4\' "%(seg,i))
 
-     .. versionadded:: 0.7.6
-     """
-     atom1 = universe.selectAtoms(" atom %s %s O4\' "%(seg,i))
-     atom2 = universe.selectAtoms(" atom %s %s C1\' "%(seg,i))
-     atom3 = universe.selectAtoms(" atom %s %s C2\' "%(seg,i))
-     atom4 = universe.selectAtoms(" atom %s %s C3\' "%(seg,i))
-     atom5 = universe.selectAtoms(" atom %s %s C4\' "%(seg,i))
-
-     data1 = atom1.coordinates()
-     data2 = atom2.coordinates()
-     data3 = atom3.coordinates()
-     data4 = atom4.coordinates()
-     data5 = atom5.coordinates()
+    data1 = atom1.coordinates()
+    data2 = atom2.coordinates()
+    data3 = atom3.coordinates()
+    data4 = atom4.coordinates()
+    data5 = atom5.coordinates()
 
 
-     r0 = ( data1 + data2 + data3 + data4 + data5 ) * (1.0/ 5.0)
-     r1 = data1 - r0
-     r2 = data2 - r0
-     r3 = data3 - r0
-     r4 = data4 - r0
-     r5 = data5 - r0
+    r0 = ( data1 + data2 + data3 + data4 + data5 ) * (1.0/ 5.0)
+    r1 = data1 - r0
+    r2 = data2 - r0
+    r3 = data3 - r0
+    r4 = data4 - r0
+    r5 = data5 - r0
 
-     R1 = ( ( r1 * sin(2 * pi * 0.0 / 5.0) )\
-          + ( r2 * sin(2 * pi * 1.0 / 5.0) )\
-          + ( r3 * sin(2 * pi * 2.0 / 5.0) )\
-          + ( r4 * sin(2 * pi * 3.0 / 5.0) )\
-          + ( r5 * sin(2 * pi * 4.0 / 5.0) ) )
+    R1 = ( ( r1 * sin(2 * pi * 0.0 / 5.0) )\
+        + ( r2 * sin(2 * pi * 1.0 / 5.0) )\
+        + ( r3 * sin(2 * pi * 2.0 / 5.0) )\
+        + ( r4 * sin(2 * pi * 3.0 / 5.0) )\
+        + ( r5 * sin(2 * pi * 4.0 / 5.0) ) )
 
-     R2 = ( ( r1 * cos(2 * pi * 0.0 / 5.0) )\
-          + ( r2 * cos(2 * pi * 1.0 / 5.0) )\
-          + ( r3 * cos(2 * pi * 2.0 / 5.0) )\
-          + ( r4 * cos(2 * pi * 3.0 / 5.0) )\
-          + ( r5 * cos(2 * pi * 4.0 / 5.0) ) )
+    R2 = ( ( r1 * cos(2 * pi * 0.0 / 5.0) )\
+        + ( r2 * cos(2 * pi * 1.0 / 5.0) )\
+        + ( r3 * cos(2 * pi * 2.0 / 5.0) )\
+        + ( r4 * cos(2 * pi * 3.0 / 5.0) )\
+        + ( r5 * cos(2 * pi * 4.0 / 5.0) ) )
 
-     x = numpy.cross(R1[0],R2[0])
-     n = x / sqrt( pow(x[0],2) + pow(x[1],2) + pow(x[2],2) )
+    x = numpy.cross(R1[0],R2[0])
+    n = x / sqrt( pow(x[0],2) + pow(x[1],2) + pow(x[2],2) )
 
-     r1_d = numpy.dot(r1,n)
-     r2_d = numpy.dot(r2,n)
-     r3_d = numpy.dot(r3,n)
-     r4_d = numpy.dot(r4,n)
-     r5_d = numpy.dot(r5,n)
+    r1_d = numpy.dot(r1,n)
+    r2_d = numpy.dot(r2,n)
+    r3_d = numpy.dot(r3,n)
+    r4_d = numpy.dot(r4,n)
+    r5_d = numpy.dot(r5,n)
 
-     D = ( (r1_d * sin(4 * pi * 0.0 / 5.0))\
-          + (r2_d * sin(4 * pi * 1.0 / 5.0))\
-          + (r3_d * sin(4 * pi * 2.0 / 5.0))\
-          + (r4_d * sin(4 * pi * 3.0 / 5.0))\
-          + (r5_d * sin(4 * pi * 4.0 / 5.0)) ) * -1 * sqrt(2.0/5.0)
+    D = ( (r1_d * sin(4 * pi * 0.0 / 5.0))\
+        + (r2_d * sin(4 * pi * 1.0 / 5.0))\
+        + (r3_d * sin(4 * pi * 2.0 / 5.0))\
+        + (r4_d * sin(4 * pi * 3.0 / 5.0))\
+        + (r5_d * sin(4 * pi * 4.0 / 5.0)) ) * -1 * sqrt(2.0/5.0)
 
-     C = ( (r1_d * cos(4 * pi * 0.0 / 5.0))\
-          + (r2_d * cos(4 * pi * 1.0 / 5.0))\
-          + (r3_d * cos(4 * pi * 2.0 / 5.0))\
-          + (r4_d * cos(4 * pi * 3.0 / 5.0))\
-          + (r5_d * cos(4 * pi * 4.0 / 5.0)) ) * sqrt(2.0/5.0)
+    C = ( (r1_d * cos(4 * pi * 0.0 / 5.0))\
+        + (r2_d * cos(4 * pi * 1.0 / 5.0))\
+        + (r3_d * cos(4 * pi * 2.0 / 5.0))\
+        + (r4_d * cos(4 * pi * 3.0 / 5.0))\
+        + (r5_d * cos(4 * pi * 4.0 / 5.0)) ) * sqrt(2.0/5.0)
 
-     phase_ang = ( atan2(D,C) + ( pi / 2. ) ) * 180. / pi
-     if phase_ang < 0:
-          phase_ang = phase_ang+360
-     else:
-          phase_ang
-     return phase_ang
+    phase_ang = ( atan2(D,C) + ( pi / 2. ) ) * 180. / pi
+    if phase_ang < 0:
+        phase_ang = phase_ang+360
+    else:
+        phase_ang
+    return phase_ang
 
 
 def phase_as(universe,seg,i):
-     """Pseudo-angle describing the phase of the ribose pucker for residue *i* using the AS method
-     
-     The angle is computed by the position vector of atoms in the ribose ring
-     
-     :Arguments:
-       *universe* 
-           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-       *segid*
-           segment identity of resid
-       *i*
-           resid of the base
+    """Pseudo-angle describing the phase of the ribose pucker for residue *i* using the AS method
+    
+    The angle is computed by the position vector of atoms in the ribose ring
+    
+    :Arguments:
+      *universe* 
+         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+      *segid*
+         segment identity of resid
+      *i*
+         resid of the base
 
-     .. versionadded:: 0.7.6
-     """
-     angle1 = universe.selectAtoms(" atom %s %s C1\' "%(seg,i)," atom %s %s C2\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s C4\' "%(seg,i))
-     angle2 = universe.selectAtoms(" atom %s %s C2\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s O4\' "%(seg,i))
-     angle3 = universe.selectAtoms(" atom %s %s C3\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i))
-     angle4 = universe.selectAtoms(" atom %s %s C4\' "%(seg,i)," atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s C2\' "%(seg,i))
-     angle5 = universe.selectAtoms(" atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s C2\' "%(seg,i)," atom %s %s C3\' "%(seg,i))
+    .. versionadded:: 0.7.6
+    """
+    angle1 = universe.selectAtoms(" atom %s %s C1\' "%(seg,i)," atom %s %s C2\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s C4\' "%(seg,i))
+    angle2 = universe.selectAtoms(" atom %s %s C2\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s O4\' "%(seg,i))
+    angle3 = universe.selectAtoms(" atom %s %s C3\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i))
+    angle4 = universe.selectAtoms(" atom %s %s C4\' "%(seg,i)," atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s C2\' "%(seg,i))
+    angle5 = universe.selectAtoms(" atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s C2\' "%(seg,i)," atom %s %s C3\' "%(seg,i))
 
-     data1 = angle1.dihedral()
-     data2 = angle2.dihedral()
-     data3 = angle3.dihedral()
-     data4 = angle4.dihedral()
-     data5 = angle5.dihedral()
+    data1 = angle1.dihedral()
+    data2 = angle2.dihedral()
+    data3 = angle3.dihedral()
+    data4 = angle4.dihedral()
+    data5 = angle5.dihedral()
 
-     B = ( (data1 * sin(2 * 2 * pi * (1-1.)/5.))\
-          + (data2 * sin(2 * 2 * pi * (2-1.)/5.))\
-          + (data3 * sin(2 * 2 * pi * (3-1.)/5.))\
-          + (data4 * sin(2 * 2 * pi * (4-1.)/5.))\
-          + (data5 * sin(2 * 2 * pi * (5-1.)/5.)) ) * -2. / 5.
+    B = ( (data1 * sin(2 * 2 * pi * (1-1.)/5.))\
+        + (data2 * sin(2 * 2 * pi * (2-1.)/5.))\
+        + (data3 * sin(2 * 2 * pi * (3-1.)/5.))\
+        + (data4 * sin(2 * 2 * pi * (4-1.)/5.))\
+        + (data5 * sin(2 * 2 * pi * (5-1.)/5.)) ) * -2. / 5.
 
-     A = ( (data1 * cos(2 * 2 * pi * (1-1.)/5.))\
-          + (data2 * cos(2 * 2 * pi * (2-1.)/5.))\
-          + (data3 * cos(2 * 2 * pi * (3-1.)/5.))\
-          + (data4 * cos(2 * 2 * pi * (4-1.)/5.))\
-          + (data5 * cos(2 * 2 * pi * (5-1.)/5.)) ) * 2. / 5.
+    A = ( (data1 * cos(2 * 2 * pi * (1-1.)/5.))\
+        + (data2 * cos(2 * 2 * pi * (2-1.)/5.))\
+        + (data3 * cos(2 * 2 * pi * (3-1.)/5.))\
+        + (data4 * cos(2 * 2 * pi * (4-1.)/5.))\
+        + (data5 * cos(2 * 2 * pi * (5-1.)/5.)) ) * 2. / 5.
 
-     phase_ang = atan2(B,A) * 180. / pi
-     if phase_ang < 0:
-          phase_ang = phase_ang+360
-     else:
-          phase_ang
-     return phase_ang
+    phase_ang = atan2(B,A) * 180. / pi
+    if phase_ang < 0:
+        phase_ang = phase_ang+360
+    else:
+        phase_ang
+    return phase_ang
 
 def tors(universe,seg,i):	
-     """Backbone dihedrals includes alpha, beta, gamma, delta, epsilon, zeta, chi
+    """Backbone dihedrals includes alpha, beta, gamma, delta, epsilon, zeta, chi
+    
+    The dihedral is computed based on position atoms for resid *i* 
+    
+    :Arguments:
+      *universe* 
+         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+      *segid*
+         segid of resid 
+      *i*
+         resid of the base
      
-     The dihedral is computed based on position atoms for resid *i* 
-     
-     :Arguments:
-       *universe* 
-           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-       *segid*
-           segid of resid 
-       *i*
-           resid of the base
-      
-     .. versionadded:: 0.7.6
-     """
-     a = universe.selectAtoms(" atom %s %s O3\' "%(seg,i-1)," atom %s %s P  "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i))
-     b = universe.selectAtoms(" atom %s %s P    "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i))
-     g = universe.selectAtoms(" atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i))
-     d = universe.selectAtoms(" atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i))
-     e = universe.selectAtoms(" atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i)," atom %s %s P    "%(seg,i+1))
-     z = universe.selectAtoms(" atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i)," atom %s %s P    "%(seg,i+1)," atom %s %s O5\' "%(seg,i+1))
-     try:
-          c = universe.selectAtoms(" atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s N1 "%(seg,i)," atom %s %s C2  "%(seg,i))
-     except:
-          c = universe.selectAtoms(" atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s N9 "%(seg,i)," atom %s %s C4  "%(seg,i))
+    """
+    a = universe.selectAtoms(" atom %s %s O3\' "%(seg,i-1)," atom %s %s P  "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i))
+    b = universe.selectAtoms(" atom %s %s P    "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i))
+    g = universe.selectAtoms(" atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i))
+    d = universe.selectAtoms(" atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i))
+    e = universe.selectAtoms(" atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i)," atom %s %s P    "%(seg,i+1))
+    z = universe.selectAtoms(" atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i)," atom %s %s P    "%(seg,i+1)," atom %s %s O5\' "%(seg,i+1))
+    try:
+        c = universe.selectAtoms(" atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s N1 "%(seg,i)," atom %s %s C2  "%(seg,i))
+    except:
+        c = universe.selectAtoms(" atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s N9 "%(seg,i)," atom %s %s C4  "%(seg,i))
 
-     alpha = a.dihedral_orig()
-     beta = b.dihedral_orig()
-     gamma = g.dihedral_orig()
-     delta = d.dihedral_orig()
-     epsilon = e.dihedral_orig()
-     zeta = z.dihedral_orig()
-     chi = c.dihedral_orig()
+    alpha = a.dihedral()
+    beta = b.dihedral()
+    gamma = g.dihedral()
+    delta = d.dihedral()
+    epsilon = e.dihedral()
+    zeta = z.dihedral()
+    chi = c.dihedral()
 
-     if alpha < 0 :
-          alpha = alpha+360
-     if beta < 0 :
-          beta = beta+360
-     if gamma < 0 :
-          gamma = gamma+360
-     if epsilon < 0:
-          epsilon = epsilon+360
-     if zeta < 0 :
-          zeta = zeta+360
-     if chi < 0 :
-          chi = chi+360
-     return [alpha, beta, gamma, delta, epsilon, zeta, chi]
+    if alpha < 0 :
+        alpha = alpha+360
+    if beta < 0 :
+        beta = beta+360
+    if gamma < 0 :
+        gamma = gamma+360
+    if epsilon < 0:
+        epsilon = epsilon+360
+    if zeta < 0 :
+        zeta = zeta+360
+    if chi < 0 :
+        chi = chi+360
+    return [alpha, beta, gamma, delta, epsilon, zeta, chi]
 
 def tors_alpha(universe,seg,i):
-     """alpha backbone dihedral
+    """alpha backbone dihedral
     
-     The dihedral is computed based on position atoms for resid *i*
+    The dihedral is computed based on position atoms for resid *i*
     
-     :Arguments:
-       *universe*
-           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-       *segid*
-           segid of resid
-       *i*
-           resid of the base
+    :Arguments:
+      *universe*
+         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+      *segid*
+         segid of resid
+      *i*
+         resid of the base
 
-     .. versionadded:: 0.7.6
-     """
-     a = universe.selectAtoms(" atom %s %s O3\' "%(seg,i-1)," atom %s %s P  "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i))
-     alpha = a.dihedral()
-     if alpha < 0 :
-          alpha = alpha+360
-     return alpha
+    .. versionadded:: 0.7.6
+    """
+    a = universe.selectAtoms(" atom %s %s O3\' "%(seg,i-1)," atom %s %s P  "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i))
+    alpha = a.dihedral()
+    if alpha < 0 :
+        alpha = alpha+360
+    return alpha
 
 def tors_beta(universe,seg,i):
-     """beta  backbone dihedral
-     
-     The dihedral is computed based on position atoms for resid *i*
-     
-     :Arguments:
-       *universe* 
-           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-       *segid*
-           segid of resid
-       *i*
-           resid of the base
+    """beta  backbone dihedral
+    
+    The dihedral is computed based on position atoms for resid *i*
+    
+    :Arguments:
+      *universe* 
+         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+      *segid*
+         segid of resid
+      *i*
+         resid of the base
 
-     .. versionadded:: 0.7.6
-     """
-     b = universe.selectAtoms(" atom %s %s P    "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i))
-     beta = b.dihedral()
-     if beta < 0 :
-          beta = beta+360
-     return beta
+    .. versionadded:: 0.7.6
+    """
+    b = universe.selectAtoms(" atom %s %s P    "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i))
+    beta = b.dihedral()
+    if beta < 0 :
+        beta = beta+360
+    return beta
 
 def tors_gamma(universe,seg,i):
-     """ Gamma backbone dihedral
+    """ Gamma backbone dihedral
     
-      The dihedral is computed based on position atoms for resid *i*
-     
-     :Arguments:
-       *universe* 
-           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-       *segid*
-           segid of resid
-       *i*
-           resid of the base
+     The dihedral is computed based on position atoms for resid *i*
+    
+    :Arguments:
+      *universe* 
+         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+      *segid*
+         segid of resid
+      *i*
+         resid of the base
 
-     .. versionadded:: 0.7.6
-     """
-     g = universe.selectAtoms(" atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i))
-     gamma = g.dihedral()
-     if gamma < 0:
-          gamma = gamma + 360
-     return gamma
+    .. versionadded:: 0.7.6
+    """
+    g = universe.selectAtoms(" atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i))
+    gamma = g.dihedral()
+    if gamma < 0:
+        gamma = gamma + 360
+    return gamma
 
 def tors_delta(universe,seg,i):
-     """delta backbone dihedral
-     
-     The dihedral is computed based on position atoms for resid *i*
-     
-     :Arguments:
-       *universe* 
-           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-       *segid*
-           segid of resid
-       *i*
-           resid of the base
+    """delta backbone dihedral
+    
+    The dihedral is computed based on position atoms for resid *i*
+    
+    :Arguments:
+      *universe* 
+         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+      *segid*
+         segid of resid
+      *i*
+         resid of the base
 
-     .. versionadded:: 0.7.6
-     """
-     d = universe.selectAtoms(" atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i))
-     delta = d.dihedral()
-     if delta < 0:
-          delta = delta + 360
-     return delta
+    .. versionadded:: 0.7.6
+    """
+    d = universe.selectAtoms(" atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i))
+    delta = d.dihedral()
+    if delta < 0:
+        delta = delta + 360
+    return delta
 
 def tors_eps(universe,seg,i):
-     """Epsilon backbone dihedral
+    """Epsilon backbone dihedral
 
-     The dihedral is computed based on position atoms for resid *i*
-     
-     :Arguments:
-       *universe* 
-           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-       *segid*
-           segid of resid
-       *i*
-           resid of the base
+    The dihedral is computed based on position atoms for resid *i*
+    
+    :Arguments:
+      *universe* 
+         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+      *segid*
+         segid of resid
+      *i*
+         resid of the base
 
-     .. versionadded:: 0.7.6
-     """
-     e = universe.selectAtoms(" atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i)," atom %s %s P    "%(seg,i+1))
-     epsilon = e.dihedral()
-     if epsilon < 0:
-          epsilon = epsilon + 360
-     return epsilon
+    .. versionadded:: 0.7.6
+    """
+    e = universe.selectAtoms(" atom %s %s C4\' "%(seg,i)," atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i)," atom %s %s P    "%(seg,i+1))
+    epsilon = e.dihedral()
+    if epsilon < 0:
+        epsilon = epsilon + 360
+    return epsilon
 
 def tors_zeta(universe,seg,i):
-     """Zeta backbone dihedral
+    """Zeta backbone dihedral
 
-     The dihedral is computed based on position atoms for resid *i*
-     
-     :Arguments:
-       *universe* 
-           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-       *segid*
-           segid of resid
-       *i*
-           resid of the base
+    The dihedral is computed based on position atoms for resid *i*
+    
+    :Arguments:
+      *universe* 
+         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+      *segid*
+         segid of resid
+      *i*
+         resid of the base
 
-     .. versionadded:: 0.7.6
-     """
-     z = universe.selectAtoms(" atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i)," atom %s %s P    "%(seg,i+1)," atom %s %s O5\' "%(seg,i+1))
-     zeta = z.dihedral()
-     if zeta < 0:
-          zeta = zeta + 360
-     return zeta
+    .. versionadded:: 0.7.6
+    """
+    z = universe.selectAtoms(" atom %s %s C3\' "%(seg,i)," atom %s %s O3\' "%(seg,i)," atom %s %s P    "%(seg,i+1)," atom %s %s O5\' "%(seg,i+1))
+    zeta = z.dihedral()
+    if zeta < 0:
+        zeta = zeta + 360
+    return zeta
 
 def tors_chi(universe,seg,i):
-     """chi nucleic acid dihedral
-
+    """chi nucleic acid dihedral
      The dihedral is computed based on position atoms for resid *i*
      
      :Arguments:
@@ -497,22 +496,19 @@ def tors_chi(universe,seg,i):
        *i*
            resid of the base
 
-     .. versionadded:: 0.7.6
-     """
-     try:
-          c = universe.selectAtoms(" atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s N1 "%(seg,i)," atom %s %s C2  "%(seg,i))
-     except:
-          c = universe.selectAtoms(" atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s N9 "%(seg,i)," atom %s %s C4  "%(seg,i))
-     chi = c.dihedral()
-     if chi < 0:
-          chi = chi + 360
-     return chi
+    .. versionadded:: 0.7.6
+    """
+    try:
+        c = universe.selectAtoms(" atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s N1 "%(seg,i)," atom %s %s C2  "%(seg,i))
+    except:
+        c = universe.selectAtoms(" atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s N9 "%(seg,i)," atom %s %s C4  "%(seg,i))
+    chi = c.dihedral()
+    if chi < 0:
+        chi = chi + 360
+    return chi
 
 def hydroxyl(universe,seg,i):
-     """2-hydroxyl dihedral. Useful only for RNA calculations. 
-     
-     The dihedral is computed based on position atoms for resid *i*
-    
+    """2-hydroxyl dihedral. Useful only for RNA calculations. 
      :Note: This dihedral calculation will only work if using atom names 
      as documented by charmm force field parameters. 
 
@@ -524,16 +520,16 @@ def hydroxyl(universe,seg,i):
        *i*
            resid of the base
 
-     .. versionadded:: 0.7.6
-     """
-     h = universe.selectAtoms(" atom %s %s C1\' "%(seg,i)," atom %s %s C2\' "%(seg,i)," atom %s %s O2\' "%(seg,i)," atom %s %s H2\'\' "%(seg,i))
-     hydr = h.dihedral()
-     if hydr < 0:
-          hydr = hydr + 360
-     return hydr
+    .. versionadded:: 0.7.6
+    """
+    h = universe.selectAtoms(" atom %s %s C1\' "%(seg,i)," atom %s %s C2\' "%(seg,i)," atom %s %s O2\' "%(seg,i)," atom %s %s H2\'\' "%(seg,i))
+    hydr = h.dihedral()
+    if hydr < 0:
+        hydr = hydr + 360
+    return hydr
 
-def pseudo_dihe_baseflip(universe,seg1,bp1,seg2,bp2,seg3,i):
-     """pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping
+def pseudo_dihe_baseflip(universe,bp1,bp2,i,seg1="SYSTEM",seg2="SYSTEM",seg3="SYSTEM"):
+    """pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping
      
      The dihedral is computed based on position atoms for resid *i*
     
@@ -556,16 +552,16 @@ def pseudo_dihe_baseflip(universe,seg1,bp1,seg2,bp2,seg3,i):
        *i*
            resid of the base that flips
 
-     .. versionadded:: 0.8.0
-     """
-     bf1 = universe.selectAtoms(" ( segid %s and resid %s and nucleicbase ) or ( segid %s and resid %s and nucleicbase ) "%(seg1,bp1,seg2,bp2))
-     bf4 = universe.selectAtoms(" ( segid %s and resid %s and nucleicbase ) "%(seg3,i)) 
-     bf2 =  universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) "%(seg2,bp2))
-     bf3 =  universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) "%(seg3,i))
-     h = [bf1.centerOfMass(),bf2.centerOfMass(),bf3.centerOfMass(),bf4.centerOfMass()]
-     pseudo = h.dihedral_orig()
-     if pseudo < 0:
-          pseudo = pseudo + 360
-     return pseudo
+    .. versionadded:: 0.8.0
+    """
+    bf1 = universe.selectAtoms(" ( segid %s and resid %s and nucleicbase ) or ( segid %s and resid %s and nucleicbase ) "%(seg1,bp1,seg2,bp2))
+    bf4 = universe.selectAtoms(" ( segid %s and resid %s and nucleicbase ) "%(seg3,i)) 
+    bf2 =  universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) "%(seg2,bp2))
+    bf3 =  universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) "%(seg3,i))
+    h = [bf1.centerOfMass(),bf2.centerOfMass(),bf3.centerOfMass(),bf4.centerOfMass()]
+    pseudo = h.dihedral_orig()
+    if pseudo < 0:
+        pseudo = pseudo + 360
+    return pseudo
 
 

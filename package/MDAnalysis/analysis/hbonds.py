@@ -343,7 +343,7 @@ class HydrogenBondAnalysis(object):
     #: default heavy atom names whose hydrogens are treated as *donors*
     #: (see :ref:`Default atom names for hydrogen bonding analysis`)
     #: Use the keyword *donors* to add a list of additional donor names.
-    DEFAULT_DONORS = {'CHARMM27': tuple(set(['N', 'OH2', 'OW', 'NE', 'NH1' 'NH2', 'ND2', 'SG', 'NE2',
+    DEFAULT_DONORS = {'CHARMM27': tuple(set(['N', 'OH2', 'OW', 'NE', 'NH1', 'NH2', 'ND2', 'SG', 'NE2',
                                 'ND1', 'NZ', 'OG', 'OG1', 'NE1', 'OH'])),
                       'GLYCAM06': tuple(set(['N','NT','N3','OH','OW'])),
                       'other':  tuple(set([]))}
@@ -376,29 +376,31 @@ class HydrogenBondAnalysis(object):
           *universe*
             Universe object
           *selection1*
-            Selection string for first selection
+            Selection string for first selection ['protein']
           *selection2*
-            Selection string for second selection
+            Selection string for second selection ['all']
           *selection1_type*
-            Selection 1 can be 'donor', 'acceptor' or 'both'
+            Selection 1 can be 'donor', 'acceptor' or 'both' ['both']
           *update_selection1*
-            Update selection 1 at each frame?
+            Update selection 1 at each frame? [``False``]
           *update_selection2*
-            Update selection 2 at each frame?
+            Update selection 2 at each frame? [``False``]
           *filter_first*
-            Filter selection 2 first to only atoms 3*distance away
+            Filter selection 2 first to only atoms 3*distance away [``True``]
           *distance*
             Distance cutoff for hydrogen bonds; only interactions with a H-A distance
             <= *distance* (and the appropriate D-H-A angle, see *angle*) are
-            recorded.
+            recorded. [3.0
           *angle*
             Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
             180º.  A hydrogen bond is only recorded if the D-H-A angle is
             >=  *angle*. The default of 120º also finds fairly non-specific
-            hydrogen interactions and a possibly better value is 150º.
+            hydrogen interactions and a possibly better value is 150º. [120.0]
           *forcefield*
-            Name of the forcefield used. Switches between different DEFAULT_DONORS and DEFAULT_ACCEPTORS values.
-            Available values: "CHARMM27", "GLYCAM06", "other"
+            Name of the forcefield used. Switches between different
+            :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS` and
+            :attr:`~HydrogenBondAnalysis.DEFAULT_ACCEPTORS` values.
+            Available values: "CHARMM27", "GLYCAM06", "other" ["CHARMM27"]
           *donors*
             Extra H donor atom types (in addition to those in
             :attr:`~HydrogenBondAnalysis.DEFAULT_DONORS`), must be a sequence.
@@ -416,7 +418,7 @@ class HydrogenBondAnalysis(object):
             Note that not all trajectory readers perform well with a step different
             from 1 [``None``]
           *verbose*
-            If set to true enables per-frame debug logging. This is disabled
+            If set to ``True`` enables per-frame debug logging. This is disabled
             by default because it generates a very large amount of output in
             the log file. (Note that a logger must have been started to see
             the output, e.g. using :func:`MDAnalysis.start_logging`.)
@@ -427,12 +429,12 @@ class HydrogenBondAnalysis(object):
             (looks for the next few atoms in the atom list). "distance" should
             always give the correct answer but "heuristic" is faster,
             especially when the donor list is updated each
-            selection. ["distance"]
+            for each frame. ["distance"]
 
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
 
         .. versionchanged:: 0.7.6
-           New *verbose* keyword (and per-frame debug logging disable by
+           New *verbose* keyword (and per-frame debug logging disabled by
            default).
 
            New *detect_hydrogens* keyword to switch between two different
@@ -622,7 +624,7 @@ class HydrogenBondAnalysis(object):
         if self.verbose:
             logger.debug(*args)
 
-    def run(self):
+    def run(self, **kwargs):
         """Analyze trajectory and produce timeseries.
 
         Stores the hydrogen bond data per frame
@@ -634,14 +636,26 @@ class HydrogenBondAnalysis(object):
 
         .. versionchanged:: 0.7.6
            Results are not returned, only stored in
-           :attr:`~HydrogenBondAnalysis.timeseries`.
+           :attr:`~HydrogenBondAnalysis.timeseries` and duplicate hydrogen bonds
+           are removed from output (can be suppressed with *remove_duplicates* =
+           ``False``)
+
         """
         logger.info("HBond analysis: starting")
         logger.debug("HBond analysis: donors    %r", self.donors)
         logger.debug("HBond analysis: acceptors %r", self.acceptors)
 
+        remove_duplicates = kwargs.pop('remove_duplicates', True) # False: old behaviour
+        if not remove_duplicates:
+            logger.warn("Hidden feature remove_duplicates = True activated: you will probably get duplicate H-bonds.")
+
+        verbose = kwargs.pop('verbose', False)
+        if verbose != self.verbose:
+            self.verbose = verbose
+            logger.debug("Toggling verbose to %r", self.verbose)
         if not self.verbose:
             logger.debug("HBond analysis: For full step-by-step debugging output use verbose=True")
+
         self.timeseries = []
         self.timesteps = []
 
@@ -672,7 +686,11 @@ class HydrogenBondAnalysis(object):
                     (self.traj_slice.stop or self.u.trajectory.numframes), self.traj_slice.step or 1)
 
         for ts in self.u.trajectory[self.traj_slice]:
+            # all bonds for this timestep
             frame_results = []
+            # dict of tuples (atomid, atomid) for quick check if
+            # we already have the bond (to avoid duplicates)
+            already_found = {}
 
             frame = ts.frame
             timestep = _get_timestep()
@@ -696,8 +714,10 @@ class HydrogenBondAnalysis(object):
                             angle = self.calc_angle(d,h,a)
                             dist = self.calc_eucl_distance(h,a)
                             if angle >= self.angle and dist <= self.distance:
-                                self.logger_debug("S1-D: %s <-> S2-A: %s %fA, %f DEG" % (h.number, a.number, dist, angle))
+                                self.logger_debug("S1-D: %s <-> S2-A: %s %f A, %f DEG" % (h.number+1, a.number+1, dist, angle))
+                                #self.logger_debug("S1-D: %r <-> S2-A: %r %f A, %f DEG" % (h, a, dist, angle))
                                 frame_results.append([h.number+1, a.number+1, '%s%s:%s' % (h.resname, repr(h.resid), h.name), '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
+                                already_found[(h.number+1, a.number+1)] = True
             if self.selection1_type in ('acceptor', 'both'):
                 self.logger_debug("Selection 1 Acceptors <-> Donors")
                 ns_acceptors = NS.AtomNeighborSearch(self._s1_acceptors)
@@ -706,14 +726,20 @@ class HydrogenBondAnalysis(object):
                     for h in donor_h_set:
                         res = ns_acceptors.search_list(AtomGroup([h]), self.distance)
                         for a in res:
+                            if remove_duplicates and \
+                                    ((h.number+1, a.number+1) in already_found or \
+                                         (a.number+1, h.number+1) in already_found):
+                                continue
                             angle = self.calc_angle(d,h,a)
                             dist = self.calc_eucl_distance(h,a)
                             if angle >= self.angle and dist <= self.distance:
-                                self.logger_debug("S1-A: %s <-> S2-D: %s %fA, %f DEG" % (a.number+1, h.number, dist, angle))
+                                self.logger_debug("S1-A: %s <-> S2-D: %s %f A, %f DEG" % (a.number+1, h.number+1, dist, angle))
+                                #self.logger_debug("S1-A: %r <-> S2-D: %r %f A, %f DEG" % (a, h, dist, angle))
                                 frame_results.append([h.number+1, a.number+1, '%s%s:%s' % (h.resname, repr(h.resid), h.name), '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
             self.timeseries.append(frame_results)
 
-        logger.info("HBond analysis: complete; timeseries in %s.timeseries", self.__class__.__name__)
+        logger.info("HBond analysis: complete; timeseries with %d hbonds in %s.timeseries",
+                    self.count_by_time().count.sum(), self.__class__.__name__)
 
     def calc_angle(self, d, h, a):
         """Calculate the angle (in degrees) between two atoms with H at apex."""
@@ -970,6 +996,10 @@ class HydrogenBondAnalysis(object):
 
     def _donor_lookup_table_byindex(self):
         """Look-up table to identify the donor heavy atom from hydrogen atom index.
+
+        Assumptions:
+        * selections have not changed (because we are simply looking at the last content
+          of the donors and donor hydrogen lists)
 
         Donors from *selection1* and *selection2* are merged.
 

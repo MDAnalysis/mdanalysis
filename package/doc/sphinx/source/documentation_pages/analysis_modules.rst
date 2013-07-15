@@ -41,13 +41,15 @@ has to import them from :mod:`MDAnalysis.analysis`, for instance ::
 
    analysis/align
    analysis/contacts
-   analysis/distances
    analysis/density
+   analysis/distances
    analysis/gnm
    analysis/hbonds
    analysis/helanal
+   analysis/hole
    analysis/leaflet
    analysis/nuclinfo
+   analysis/rms
 
 
    

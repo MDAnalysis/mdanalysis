@@ -34,6 +34,9 @@ Files and directories
 
 .. autofunction:: greedy_splitext
 
+.. autofunction:: which
+
+.. autofunction:: realpath
 
 Containers and lists
 --------------------
@@ -69,6 +72,7 @@ Mathematics and Geometry
 .. autofunction:: normal
 .. autofunction:: norm
 .. autofunction:: angle
+.. autofunction:: dihedral
 .. autofunction:: stp
 
 """
@@ -189,6 +193,37 @@ def greedy_splitext(p):
         if not ext:
             break
     return root, extension
+
+def which(program):
+    """Determine full path of executable *program* on :envvar:`PATH`.
+
+    (Jay at http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python)
+    """
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+    fpath, fname = os.path.split(program)
+    if fpath:
+        real_program = realpath(program)
+        if is_exe(real_program):
+            return real_program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+    return None
+
+def realpath(*args):
+    """Join all args and return the real path, rooted at /.
+
+    Expands '~', '~user', and environment variables such as $HOME.
+
+    Returns ``None`` if any of the args is ``None``.
+    """
+    if None in args:
+        return None
+    return os.path.realpath(os.path.expanduser(os.path.expandvars(os.path.join(*args))))
+
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
@@ -417,6 +452,25 @@ def stp(vec1, vec2, vec3):
     :Returns: v3 . (v1 x v2)
     """
     return numpy.dot(vec3, numpy.cross(vec1, vec2))
+
+def dihedral(ab, bc, cd):
+    """Returns the dihedral angle in radians between vectors connecting A,B,C,D.
+
+    The dihedral measures the rotation around bc::
+
+         ab
+       A---->B
+              \ bc
+              _\'
+                C---->D
+                  cd
+
+    The dihedral angle is -pi <= x <= pi.
+
+    .. versionadded:: 0.7.8
+    """
+    x = angle(normal(ab, bc), normal(bc, cd))
+    return (x if stp(ab, bc, cd) <= 0.0 else -x)
 
 
 # String functions

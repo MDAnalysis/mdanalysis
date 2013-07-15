@@ -267,6 +267,14 @@ class TestAtomGroup(TestCase):
         assert_almost_equal(sel3.angle(), 117.46187591552734, 3,
                             "angle of Glu98 OE1-CD-OE2 wrong")
 
+    def test_shapeParameter(self):
+        s = self.universe.s4AKE.shapeParameter()
+        assert_almost_equal(s, 0.00240753939086033, 6)
+
+    def test_asphericity(self):
+        a = self.universe.s4AKE.asphericity()
+        assert_almost_equal(a, 0.020227504542775828, 6)
+
     # TODO: tests for the coordinate manipulation methods
     # - transform
     # - translate

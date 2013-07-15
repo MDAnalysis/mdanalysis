@@ -164,8 +164,22 @@ class ProgressMeter(object):
 
       "Step %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\\r"
 
-    ends with a carriage return `\\r` and not a newline `\\n`, the
+    ends with a carriage return ``\\r`` and not a newline ``\\n``, the
     lines will be printed on top of each other.
+
+    It is possible to embed (almost) arbitrary additional data in the
+    format string, for example a current RMSD value:
+
+       pm = ProgressMeter(u.trajectory.numframes, interval=100,
+                          "RMSD %(rmsd)5.2f at %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\\r")
+       for ts in u.trajectory:
+           pm.echo(ts.frame, rmsd=current_rmsd)
+           ...
+
+    This will print something like
+       RMSD   1.02 at  100/10000 [  1.0%]
+       RMSD   1.89 at  200/10000 [  2.0%]
+       ...
 
     """
     def __init__(self, numsteps, format=None, interval=10, offset=0):
@@ -211,12 +225,18 @@ class ProgressMeter(object):
         assert numsteps > 0, "numsteps step must be >0"
         assert interval > 0, "interval step must be >0"
 
-    def update(self, step):
-        """Update the state of the ProgressMeter"""
+    def update(self, step, **kwargs):
+        """Update the state of the ProgressMeter.
+
+        *kwargs* are additional attributes that can be references in
+        the format string.
+        """
         self.step = step + self.offset
         self.percentage = 100. * self.step/self.numsteps
+        for k,v in kwargs.items():
+            setattr(self, k, v)
 
-    def echo(self, step):
+    def echo(self, step, **kwargs):
         """Print the state to stderr, but only every *interval* steps.
 
         1) calls :meth:`~ProgressMeter.update`
@@ -225,8 +245,11 @@ class ProgressMeter(object):
 
         The last step is always shown, even if not on an *interval*, and a
         carriage return is replaced with a new line for a cleaner display.
+
+        *kwargs* are additional attributes that can be references in
+        the format string.
         """
-        self.update(step)
+        self.update(step, **kwargs)
         format = self.format
         if self.step == self.numsteps:
             if self.last_newline:

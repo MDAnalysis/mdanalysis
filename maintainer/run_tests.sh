@@ -2,12 +2,6 @@
 # Written by Sébastien Buchoux, 2012
 # Placed into the Public Domain
 
-# Make sure we are in the develop branch
-if [ "`git branch | grep \"* develop\"`" == "" ]; then
-	echo "Please switch to the develop branch";
-	exit 1;
-fi
-
 # Get root dir
 cur_dir="`pwd`"
 root_dir="`pwd`/`dirname $0`/.."
@@ -35,8 +29,6 @@ testsuite_lib="$root_dir/testsuite/build/$lib_dir"
 echo
 echo "Running the tests..."
 
-cmd="PYTHONPATH=\"$package_lib\" nosetests -v \"$testsuite_lib/MDAnalysisTests\""
-echo $cmd
-eval ${cmd}
-
-cd
+cd "$package_lib"
+nosetests -v "$testsuite_lib/MDAnalysisTests"
+cd "$cur_dir"

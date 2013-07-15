@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.5. Amber PRMTOP topology parser &mdash; MDAnalysis 0.7.6-devel documentation</title>
+    <title>4.5. AMBER PRMTOP topology parser &mdash; MDAnalysis 0.7.8-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.6-devel',
+        VERSION:     '0.7.8-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.6-devel documentation"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.6-devel documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.6. CRD topology parser" href="CRDParser.html" />
     <link rel="prev" title="4.4. PSF topology parser" href="PSFParser.html" /> 
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="PSFParser.html" title="4.4. PSF topology parser"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -92,16 +92,22 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.topology.TOPParser"></span><div class="section" id="amber-prmtop-topology-parser">
-<h1>4.5. Amber PRMTOP topology parser<a class="headerlink" href="#amber-prmtop-topology-parser" title="Permalink to this headline">¶</a></h1>
-<p>Reads a Amber top file to build the system. It uses atom types,
+<h1>4.5. AMBER PRMTOP topology parser<a class="headerlink" href="#amber-prmtop-topology-parser" title="Permalink to this headline">¶</a></h1>
+<p>Reads a  AMBER top file to build the system. It uses atom types,
 partial charges and masses from the PRMTOP file.</p>
-<p>The format is defined in <a class="reference external" href="http://ambermd.org/formats.html#topology">PARM parameter/topology file specification</a>.</p>
+<p>The format is defined in <a class="reference external" href="http://ambermd.org/formats.html#topology">PARM parameter/topology file specification</a>.
+The reader tries to detect if it is a newer (AMBER 12?) file format
+by looking for the flag &#8220;ATOMIC_NUMBER&#8221;.</p>
+<p>The parser raises a <tt class="xref py py-exc docutils literal"><span class="pre">TOPParserError</span></tt> if it fails to read
+the topology file.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The Amber charge is converted to electron charges as used in
 MDAnalysis and other packages. To get back Amber charges, multiply
 by 18.2223.</p>
 </div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>parses both amber10 and amber12 formats</p>
 <dl class="exception">
 <dt id="MDAnalysis.topology.TOPParser.TOPParseError">
 <em class="property">exception </em><tt class="descclassname">MDAnalysis.topology.TOPParser.</tt><tt class="descname">TOPParseError</tt><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParseError" title="Permalink to this definition">¶</a></dt>
@@ -145,16 +151,17 @@ by 18.2223.</p>
         <li class="right" >
           <a href="PSFParser.html" title="4.4. PSF topology parser"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.6-devel documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Danny Parton,
-    Tyler Reddy, Paul Rigor, Andy Somogyi, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

@@ -25,18 +25,19 @@ For the example provided below, the backbone dihedrals and WC distances
 """
 
 import numpy
-import MDAnalysis 
+import MDAnalysis
 
-from MDAnalysis.analysis import nuclinfo 
+from MDAnalysis.analysis import nuclinfo
 from MDAnalysis.tests.datafiles import NUCL
- 
+
 from numpy.testing import *
 del test
 from nose.plugins.attrib import attr
 
-class TestNucl(TestCase):
+class TestNuclinfo(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(NUCL)
+        self.prec = 4
     def tearDown(self):
         del self.universe
     def test_wc_pair(self):
@@ -51,6 +52,6 @@ class TestNucl(TestCase):
     def test_torsions(self):
         nucl_acid = numpy.array(nuclinfo.tors(self.universe,"RNAA",4),dtype=numpy.float32)
         expected_nucl_acid = numpy.array([296.45596313,  177.79353333,   48.67910767,   81.81109619,  205.58882141,  286.37353516,  198.09187317], dtype=numpy.float32)
-        assert_almost_equal(nucl_acid, expected_nucl_acid, err_msg="Backbone torsion does not have expected values for alpha, beta, gamma, epsilon, zeta, chi.")
+        assert_almost_equal(nucl_acid, expected_nucl_acid, self.prec, err_msg="Backbone torsion does not have expected values for alpha, beta, gamma, epsilon, zeta, chi.")
 
 

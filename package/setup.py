@@ -83,8 +83,16 @@ except ImportError:
     use_cython = False
     cmdclass = {}
 
+if use_cython:
+    # cython has to be >=0.16 to support cython.parallel
+    import Cython
+    required_version = "0.16"
+    if not int(Cython.__version__.replace(".","")) >= int(required_version.replace(".", "")):
+        raise ImportError("Cython version %s (found %s) is required because it offers a handy parallelisation module" % (required_version, Cython.__version__))
+    del Cython
+
 if __name__ == '__main__':
-    RELEASE = "0.7.6-devel"     # NOTE: keep in sync with MDAnalysis.version in __init__.py
+    RELEASE = "0.7.8-dev"     # NOTE: keep in sync with MDAnalysis.version in __init__.py
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = ['Development Status :: 4 - Beta',
@@ -123,9 +131,15 @@ if __name__ == '__main__':
                             libraries = ['m'],
                             define_macros=define_macros,
                             extra_compile_args=extra_compile_args),
+                  Extension("core.parallel.distances",
+                            ['src/numtools/distances_parallel.%s' % ("pyx" if use_cython else "c")],
+                            include_dirs=include_dirs,
+                            libraries = ['m'],
+                            extra_compile_args=['-fopenmp'],
+                            extra_link_args=['-fopenmp']),
                   Extension('core.qcprot', ['src/pyqcprot/pyqcprot.%s' % ("pyx" if use_cython else "c")],
                             include_dirs=include_dirs,
-                            extra_compile_args=["-O3","-ffast-math"]),
+                            extra_compile_args=["-O3", "-ffast-math"]),
                   Extension('core._transformations', ['src/transformations/transformations.c'],
                             libraries = ['m'],
                             define_macros=define_macros,
@@ -156,7 +170,10 @@ if __name__ == '__main__':
                                'GridDataFormats'],
           provides          = ['MDAnalysis'],
           license           = 'GPL 2',
-          packages          = [ 'MDAnalysis', 'MDAnalysis.core', 'MDAnalysis.topology',
+          packages          = [ 'MDAnalysis',
+                                'MDAnalysis.core',
+                                'MDAnalysis.core.parallel',
+                                'MDAnalysis.topology',
                                 'MDAnalysis.selections',
                                 'MDAnalysis.coordinates',
                                 'MDAnalysis.coordinates.xdrfile',
@@ -174,15 +191,16 @@ if __name__ == '__main__':
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           install_requires = ['numpy>=1.0.3',   # currently not useful because without numpy we don't get here
-                              'biopython',      # required for standard PDB reader
+                              'biopython>=1.51',# required for standard PDB reader and sequence alignment
                               'networkx>=1.0',  # LeafletFinder
                               'GridDataFormats>=0.2.2', # volumes and densities
-                              'netCDF4>=1.0',   # for AMBER netcdf, also needs HDF5 and netcdf-4
                               ],
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
           # packaging system
           extras_require = {
+                'AMBER':    ['netCDF4>=1.0',   # for AMBER netcdf, also needs HDF5 and netcdf-4
+                             ],
                 'analysis': ['matplotlib',
                              'scipy',          # sparse contact matrix
                              ],
