@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/13  orbeckst, jandom
+07/15/13  orbeckst, jandom, denniej0
 
   * 0.8
 
@@ -18,7 +18,8 @@ The rules for this file:
 
   * removed Timeseries.principleAxis (probably was never working)
   * added support for reading DMS files (DESRES molecular structure?)
-
+  * Plugin to generate nucleic acid helicoidal parameters using X3DNA; 
+    (must install working version 2.1 of X3DNA independently)
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux
 
