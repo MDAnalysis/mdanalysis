@@ -95,6 +95,7 @@ class TestAtomGroup(TestCase):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.ag = self.universe.atoms  # prototypical AtomGroup
+        self.dih_prec = 2
 
     def test_newAtomGroup(self):
         newag = MDAnalysis.core.AtomGroup.AtomGroup(self.ag[1000:2000:200])
@@ -211,25 +212,25 @@ class TestAtomGroup(TestCase):
         u = self.universe
         u.trajectory.rewind()   # just to make sure...
         phisel = u.s4AKE.r10.phi_selection()
-        assert_almost_equal(phisel.dihedral(), -168.57384, 3)
+        assert_almost_equal(phisel.dihedral(), -168.57384, self.dih_prec)
 
     def test_dihedral_psi(self):
         u = self.universe
         u.trajectory.rewind()   # just to make sure...
         psisel = u.s4AKE.r10.psi_selection()
-        assert_almost_equal(psisel.dihedral(), -30.064838, 3)
+        assert_almost_equal(psisel.dihedral(), -30.064838, self.dih_prec)
 
     def test_dihedral_omega(self):
         u = self.universe
         u.trajectory.rewind()   # just to make sure...
         osel =  u.s4AKE.r8.omega_selection()
-        assert_almost_equal(osel.dihedral(), -179.93439, 3)
+        assert_almost_equal(osel.dihedral(), -179.93439, self.dih_prec)
 
     def test_dihedral_chi1(self):
         u = self.universe
         u.trajectory.rewind()   # just to make sure...
         sel =  u.s4AKE.r13.chi1_selection()  # LYS
-        assert_almost_equal(sel.dihedral(), -58.428127, 3)
+        assert_almost_equal(sel.dihedral(), -58.428127, self.dih_prec)
 
     def test_dihedral_ValueError(self):
         """test that AtomGroup.dihedral() raises ValueError if not exactly 4 atoms given"""
@@ -243,7 +244,7 @@ class TestAtomGroup(TestCase):
         u.trajectory.rewind()   # just to make sure...
         peptbond =  u.selectAtoms("atom 4AKE 20 C", "atom 4AKE 21 CA",
                                   "atom 4AKE 21 N", "atom 4AKE 21 HN")
-        assert_almost_equal(peptbond.improper(), 168.52952575683594, 3,
+        assert_almost_equal(peptbond.improper(), 168.52952575683594, self.dih_prec,
                             "Peptide bond improper dihedral for M21 calculated wrongly.")
 
     def test_dihedral_equals_improper(self):
