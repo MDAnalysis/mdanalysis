@@ -27,6 +27,42 @@ Feature requests and pertinent bugs
   molecules that are within a certain region
 
 
+Streamline AtomGroup
+
+- make the following methods properties:
+
+    bfactors  (already attribute but scheduled to be a method in 0.8)
+    charges
+    indices
+    masses
+    names
+    radii
+    resids
+    resnames
+    resnums
+    segids
+    
+    velocities
+    coordinates
+
+- for simple numerical values or strings return numpy arrays instead
+  of lists
+
+Improve topology handling
+
+- create a Topology class that becomes part of Universe as
+  Universe.topology: Universe is supposed to bind Topology and
+  Trajectory together.
+
+  Topology will then have methods to add/delete/copy
+  atoms/residues/segments --- basically just add/delete Atom instances
+  and then rerun build_residues()/build_segments().
+
+  However, we could also use Andyi's PSFGEN port and use the VMD
+  topology structure (in C) as our topology.
+
+- move/mirror AtomGroup setters to topology??
+
 
 Installation
 ============

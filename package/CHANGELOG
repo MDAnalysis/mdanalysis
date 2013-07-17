@@ -19,6 +19,9 @@ The rules for this file:
   * TPR parser (currently limited to versions 58, 73 and 83 of the
     Gromacs TPR format (Gromacs 4.0 to 4.6.1), see Issue 2)
   * fast XTC seeking (Issue 127)
+  * changing resid (set_resid()) or segid (set_segid()) changes the
+    topology and lists of resids/segids can be assigned to 
+    groups of objects (AtomGroup, ResidueGroup)
   * helanal: additional output of local bend and unit twist angles
     (Issue 133)
   * added support for reading DMS files (DESRES molecular structure?)

@@ -55,6 +55,90 @@ belongs. Each object provides three attributes (:attr:`~AtomGroup.atoms`,
 that the object belongs to.
 
 
+Manipulating atoms, residues, and segments
+------------------------------------------
+
+When working with MDAnalysis it is useful to remember that the fundamental
+object is the :class:`Atom`. Each particle in the topology is represented by
+exactly one :class:`Atom` instance. One :class:`Atom`, however, can be a member
+of multiple :class:`AtomGroup` collections, for instance from different
+selections even though they all refer to the *same* :class:`Atom` object. Thus,
+changing a property of a specific and :class:`Atom` in one :class:`AtomGroup`
+changes it "everywhere".
+
+The same is mostly true for :class:`Residue` instances although they are
+derived from :class:`Atom` instances: all :class:`Atom` objects with the same
+:attr:`Atom.resid` are bundled into a single :class:`Residue` with
+:class:`Residue.id` = *resid*. This means that just changing, say, the residue
+name with a command such as ::
+
+  >>> r = u.selectAtoms("resid 99").residues[0]
+  >>> print(r)
+  <Residue 'ALA', 99>
+  >>> r.name = "UNK"
+  >>> print(r)
+  <Residue 'UNK', 99>
+  >>> rnew = u.selectAtoms("resid 99").residues[0]
+  >>> print(rnew)
+  <Residue 'UNK', 99>
+
+will typically work as expected. When working with collections such as
+:class:`AtomGroup` or :class:`ResidueGroup` it is generally better to use
+provided setter methods such as :meth:`AtomGroup.set_resname` or
+:meth:`ResidueGroup.set_resname`. 
+
+There are two cases when it is very important to use the setters: 
+
+* changing *resid*: :meth:`AtomGroup.set_resid` and :meth:`ResidueGroup.set_resid`
+* changing *segid*: :meth:`AtomGroup.set_segid` and :meth:`ResidueGroup.set_segid`
+
+Because residues are determined by the :attr:`Atom.resid` and segments by
+:attr:`Atom.segid`, the above methods take extra care to rebuild the list of
+segments and residues.
+
+.. Note::
+
+   :meth:`AtomGroup.set_resid`, :meth:`ResidueGroup.set_resid`,
+   :meth:`AtomGroup.set_segid`, :meth:`ResidueGroup.set_segid` can change the
+   topology: they can split or merge residues or segments.
+
+Splitting/merging of residues is probably not very useful because no chemical
+rearrangements are carried out. Manipulating segments might be more useful in
+order to add additional structure to a :class:`Universe` and provide instant
+segment selectors for interactive work::
+
+  u.selectAtoms("protein").set_segid("protein")
+  u.selectAtoms("resname POPE or resname POPC").set_segid("lipids")
+  u.selectAtoms("resname SOL").set_segid("water")
+  u.selectAtoms("resname NA or resname CL").set_segid("ions")
+  
+  u.protein.numberOfResidues()
+  water_oxygens = u.water.OW
+
+The setter methods have the additional advantage that they can assign
+lists. For instance, many MD codes number residues consecutively starting from
+1. However, the original structure might be missing a few atoms at the
+N-terminus. Let's say that the first residue is really residue 10. In order to
+store the canonical residue IDs ("resnum") one could the use ::
+
+  import numpy as np
+  protein = u.selectAtoms("protein").residues
+  protein.set_resnum(np.array(protein.resnums()) + 9)
+
+.. TODO: correct this example when resnums has become a property that returns a np array
+..  protein = u.selectAtoms("protein").residues
+..  protein.set_resnum(protein.resnums + 9)
+
+One can then use ``protein.select("resnum 42")`` to select the residue that has
+the canonical residue id 42 (instead of ``resid 33``).
+
+One can also read the resids directly from  an original PDB file:
+
+  orig = MDAnalysis.Universe("2jln.pdb")
+  protein.set_resnum(orig.selectAtoms("protein").resids())
+
+
+
 Classes and functions
 ---------------------
 
@@ -69,6 +153,10 @@ Classes and functions
       group
 
    .. automethod:: _rebuild_caches
+
+   .. automethod:: _clear_caches
+
+   .. automethod:: _fill_cache
 
 .. autoclass:: Atom
    :members:
@@ -99,6 +187,10 @@ Classes and functions
    .. attribute::        residue
 
       :class:`Residue` object containing the atoms
+
+   .. attribute::     id
+
+      atom number inside the residue
 
    .. attribute::       name
 
@@ -148,10 +240,10 @@ Classes and functions
 import warnings
 
 import numpy
-from math import sqrt, acos, pi
-from MDAnalysis import SelectionError, NoDataError, SelectionWarning
-from MDAnalysis.core.util import angle, dihedral
+import itertools
 
+from MDAnalysis import SelectionError, NoDataError, SelectionWarning
+import util
 
 class Atom(object):
     """A class representing a single atom.
@@ -195,17 +287,23 @@ class Atom(object):
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
                repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'
+
     def __cmp__(self, other):
         return cmp(self.number, other.number)
+
     def __eq__(self, other):
         return self.number == other.number
+
     def __hash__(self):
         return hash(self.number)
+
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
             raise TypeError('Can only concatenate Atoms (not "'+repr(other.__class__.__name__)+'") to AtomGroup')
-        if isinstance(other, Atom): return AtomGroup([self, other])
-        else: return AtomGroup([self]+other.atoms)
+        if isinstance(other, Atom): 
+            return AtomGroup([self, other])
+        else: 
+            return AtomGroup([self]+other.atoms)
 
     @property
     def pos(self):
@@ -374,6 +472,8 @@ class AtomGroup(object):
         * residues (:attr:`AtomGroup.residues`)
         * segments (:attr:`AtomGroup.segments`)
 
+        .. SeeAlso:: :meth:`_clear_caches`
+
         .. versionadded:: 0.7.5
         """
         # If the number of atoms is very large, create a dictionary cache for lookup
@@ -400,16 +500,44 @@ class AtomGroup(object):
         # masses
         self.__cache['masses'] = numpy.array([atom.mass for atom in self._atoms])
 
+    def _clear_caches(self, *args):
+        """Clear cache for all *args*.
+
+        If no args are provided, all caches are cleared.
+
+        .. SeeAlso:: :meth:`_rebuild_caches`
+
+        .. versionadded:: 0.8
+        """
+        if len(args) == 0:
+            self.__cache = {}
+        else:
+            for name in args:
+                try:
+                    del self.__cache[name]
+                except KeyError:
+                    pass
+
+    def _fill_cache(self, name, value):
+        """Populate __cache[name] with value.
+
+        .. versionadded:: 0.8
+        """
+        self.__cache[name] = value
+                        
     # AtomGroup.atoms is guaranteed to be a AtomGroup, too; keeps a consistent API
     # between AtomGroup, Residue, ResidueGroup, Segment; access the list as
     # _atoms (although atoms supports all list-like operations, too).
     @property
     def atoms(self):
-        """:class:`AtomGroup` of all atoms in this group
+        """:class:`AtomGroup` of all atoms in this group.
 
-        The AtomGroup itself; provided for unified access across the
-        hierarchy.  Use :attr:`_atoms` if you really only need a list
-        of individual :class:`Atom` instances.
+        If this is a :class:`AtomGroup` then it returns itself. Otherwise, it
+        will return a new :class:`AtomGroup` based on all :class:`Atom`
+        instances contained.
+
+        Apply `:func:`list` to :attr:`atoms` or use :attr:`_atoms` if you
+        really only need a list of individual :class:`Atom` instances.
         """
         # Cannot just return self because fails with inheritance from AtomGroup
         if type(self) == AtomGroup:
@@ -433,6 +561,7 @@ class AtomGroup(object):
     def __len__(self):
         """Number of atoms in the group"""
         return self.numberOfAtoms()
+
     def __getitem__(self, item):
         """Return Atom (index) or AtomGroup (slicing)"""
         # consistent with the way list indexing/slicing behaves:
@@ -445,15 +574,18 @@ class AtomGroup(object):
             return AtomGroup([self._atoms[i] for i in item])
         else:
             return super(AtomGroup, self).__getitem__(item)
+
     def __getattr__(self, name):
         # There can be more than one atom with the same name
         atomlist = [atom for atom in self._atoms if name == atom.name]
         if len(atomlist) == 0: raise SelectionError("No atoms with name "+name)
         elif len(atomlist) == 1: return atomlist[0]  # XXX: keep this, makes more sense for names
         else: return AtomGroup(atomlist)             # XXX: but inconsistent (see residues and Issue 47)
+
     def __iter__(self):
         """Iterator over all atoms"""
         return iter(self._atoms)
+
     def __contains__(self, other):
         # If the number of atoms is very large, create a dictionary cache for lookup
         if len(self) > 10000 and not 'atoms' in self.__cache:
@@ -462,24 +594,30 @@ class AtomGroup(object):
             return other in self.__cache['atoms']
         except KeyError:
             return other in self._atoms
+
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
             raise TypeError('Can only concatenate AtomGroup (not "'+repr(other.__class__.__name__)+'") to AtomGroup')
         if isinstance(other, AtomGroup):
             return AtomGroup(self._atoms + other._atoms)
         else:
-            return AtomGroup(self._atoms+[other])
+            return AtomGroup(self._atoms + [other])
+
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(self.numberOfAtoms())+' atoms>'
+
     def numberOfAtoms(self):
         """Total number of atoms in the group"""
         return len(self._atoms)
+
     def numberOfResidues(self):
         """Total number of residues in the group"""
         return len(self.residues)
+
     def numberOfSegments(self):
         """Total number of segments in the group"""
         return len(self.segments)
+
     def indices(self):
         """Array of all :attr:`Atom.number` in the group.
 
@@ -490,9 +628,11 @@ class AtomGroup(object):
         if not 'indices' in self.__cache:
             self.__cache['indices'] = numpy.array([atom.number for atom in self._atoms])
         return self.__cache['indices']
+
     def names(self):
         """Returns a list of atom names."""
         return [a.name for a in self._atoms]
+
     @property
     def residues(self):
         """Read-only list of :class:`Residue` objects.
@@ -509,18 +649,22 @@ class AtomGroup(object):
                 current_residue = atom.residue
             self.__cache['residues'] = ResidueGroup(residues)
         return self.__cache['residues']
+
     def resids(self):
         """Returns a list of residue numbers."""
         return [r.id for r in self.residues]
+
     def resnames(self):
         """Returns a list of residue names."""
         return [r.name for r in self.residues]
+
     def resnums(self):
         """Returns a list of canonical residue numbers.
 
         .. versionadded:: 0.7.4
         """
         return [r.resnum for r in self.residues]
+
     @property
     def segments(self):
         """Read-only list of :class:`Segment` objects.
@@ -536,26 +680,33 @@ class AtomGroup(object):
                 current_segment = atom.segment
             self.__cache['segments'] = SegmentGroup(segments)
         return self.__cache['segments']
+
     def segids(self):
         """Returns a list of segment ids (=segment names)."""
         return [s.name for s in self.segments]
+
     def masses(self):
         """Array of atomic masses (as defined in the topology)"""
         if not 'masses' in self.__cache:
             self.__cache['masses'] = numpy.array([atom.mass for atom in self._atoms])
         return self.__cache['masses']
+
     def totalMass(self):
         """Total mass of the selection (masses are taken from the topology or guessed)."""
         return numpy.sum(self.masses(), axis=0)
+
     def charges(self):
         """Array of partial charges of the atoms (as defined in the topology)"""
         return numpy.array([atom.charge for atom in self._atoms])
+
     def totalCharge(self):
         """Sum of all partial charges (must be defined in topology)."""
         return numpy.sum(self.charges(), axis=0)
+
     def radii(self):
         """Array of atomic radii (as defined in the PQR file)"""
         return numpy.array([atom.radius for atom in self._atoms])
+
     # TODO release 0.8: make this a method again (in MDAnalysis 0.8)
     @property
     def bfactors(self):
@@ -570,131 +721,267 @@ class AtomGroup(object):
                       DeprecationWarning)
         return numpy.array([atom.bfactor for atom in self._atoms])
 
-    def _set_atoms(self, name, value):
-        """Set attribute *name* to *value* for all atoms in the AtomGroup.
+    def _set_attribute(self, groupname, name, value, **kwargs):
+        """Set attribute *name* to *value* for all elements in *groupname*.
+
+        *groupname* can be *atoms*, *residues*, *segments. ``getattr(self,
+        groupname)`` should produce one of the groups in the hierarchy.
+
+        If *value* is a sequence of the same length as the group then each
+        element's attribute *name* is set to the corresponding value. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        group then a :exc:`ValueError` is raised.
+
+        A cache entry ``__cache[groupname]`` is deleted if it exists.
+
+        :Keywords:
+  
+          *conversion*
+               function such as :func:`str` or :func:`int` that converts the
+               argument. ``None`` passes it through unchanged [``None``]
+
+          *cache*
+               alternative identifier for the cache, instead of *groupname*
+
+        .. versionadded:: 0.8  
+        """
+        values = util.asiterable(value)
+        group = getattr(self, groupname)
+        conversion = kwargs.pop('conversion', None)
+        cache = kwargs.pop('cache', groupname)
+        if not conversion:
+            conversion = lambda x: x
+        if len(values) == 1:
+            for x in group:
+                setattr(x, name, conversion(values[0]))
+        elif len(group) == len(values):
+            for x, value in itertools.izip(group, values):
+                setattr(x, name, conversion(value))
+        else:
+            raise ValueError("set_{0}: can only set all atoms to a single value or each atom to a distinct one "
+                             "but len(atoms)={1} whereas len(value)={2}".format(groupname, len(group), len(values)))
+        self._clear_caches(cache)
+
+        # big hammer... if we find the time, use this in a more surgical fashion.
+        #self.atoms._rebuild_caches()
+        #if self.atoms is not self.universe.atoms:
+        #    self.universe.atoms._rebuild_caches()
+
+    def _set_atoms(self, name, value, **kwargs):
+        """Set attribute *name* to *value* for all atoms in the :class:`AtomGroup`.
+
+        If *value* is a sequence of the same length as the :class:`AtomGroup`
+        then each :class:`Atom`'s property *name* is set to the corresponding value. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
         .. versionadded:: 0.7.4
+        .. versionchanged:: 0.8  
+           Can set atoms to distinct values by providing a sequence or iterable.
         """
-        for a in self.atoms:
-            setattr(a, name, value)
-        try:
-            del self.__cache['atoms']
-        except KeyError:
-            pass
-    def _set_residues(self, name, value):
-        """Set attribute *name* to *value* for all residues in the AtomGroup.
+        self._set_attribute("atoms", name, value, **kwargs)
 
-        .. versionadded:: 0.7.5
-        """
-        for r in self.residues:
-            setattr(r, name, value)
-        try:
-            del self.__cache['residues']
-        except KeyError:
-            pass
+    # override for ResidueGroup, SegmentGroup accordingly
+    set = _set_atoms
+
     def set_name(self, name):
-        """Set the atom name to string *name* for **all atoms** in the AtomGroup.
+        """Set the atom name to string for *all atoms* in the AtomGroup.
+
+        If *value* is a sequence of the same length as the :class:`AtomGroup`
+        then each :attr:`Atom.name` is set to the corresponding value. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
         .. versionadded:: 0.7.4
+        .. versionchanged:: 0.8  
+           Can set atoms to distinct values by providing a sequence or iterable.
         """
-        self._set_atoms("name", str(name))
+        self.set("name", name, conversion=str)
+
     def set_resid(self, resid):
-        """Set the resid to integer *resid* for **all atoms** in the AtomGroup.
+        """Set the resid to integer *resid* for **all atoms** in the :class:`AtomGroup`.
+
+        If *resid* is a sequence of the same length as the :class:`AtomGroup`
+        then each :attr:`Atom.resid` is set to the corresponding value together
+        with the :attr:`Residue.id` of the residue the atom belongs to. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
+
+        .. Note::
+        
+           Changing resids can change the topology.
+
+           Assigning the same *resid* to multiple residues will
+           **merge** these residues. Assigning different *resid* to
+           atoms in the same residue will **split** a residue (and
+           potentially merge with another one). 
+
+        .. versionadded:: 0.7.4
+        .. versionchanged:: 0.7.5
+           Also changes the residues.
+        .. versionchanged:: 0.8
+           Can set atoms and residues to distinct values by providing a
+           sequence or iterable and can change the topology via
+           :func:`MDAnalysis.topology.core.build_residues`.
+           
+        """
+        from MDAnalysis.topology.core import build_residues
+        self.set("resid", resid, conversion=int)
+        # Note that this also automagically updates THIS AtomGroup;
+        # the side effect of build_residues(self.atoms) is to update all Atoms!!!!
+        self._fill_cache('residues', build_residues(self.atoms))
+        # make sure to update the whole universe: the Atoms are shared but ResidueGroups are not
+        if self.atoms is not self.universe.atoms:
+            self.universe.atoms._fill_cache('residues', build_residues(self.universe.atoms))
+
+    def set_resnum(self, resnum):
+        """Set the resnum to *resnum* for **all atoms** in the :class:`AtomGroup`.
+
+        If *resnum* is a sequence of the same length as the :class:`AtomGroup`
+        then each :attr:`Atom.resnum` is set to the corresponding value together
+        with the :attr:`Residue.resnum` of the residue the atom belongs to. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
+
+        .. Note:: 
+
+           Changing *resnum* will not affect the topology: you can have
+           multiple residues with the same *resnum*.
+
+        .. SeeAlso:: :meth:`set_resid`
+
+        .. versionadded:: 0.7.4
+        .. versionchanged:: 0.7.5
+           Also changes the residues.
+        .. versionchanged:: 0.8
+           Can set atoms and residues to distinct values by providing a sequence or iterable.
+        """
+        from MDAnalysis.topology.core import build_residues
+        self.set("resnum", resnum)
+        # build_residues() is the easiest (though expensive) way to make sure
+        # that all residues get their new resnum. There's no easy way to parse
+        # a per-atom resnum list (with potential duplicates) into a list of
+        # corresponding residues.
+        #
+        # (This comment applies to the analogous methods below as well.)
+        build_residues(self.atoms)
+
+    def set_resname(self, resname):
+        """Set the resname to string *resname* for **all atoms** in the :class:`AtomGroup`.
+
+        If *resname* is a sequence of the same length as the :class:`AtomGroup`
+        then each :attr:`Atom.resname` is set to the corresponding value together
+        with the :attr:`Residue.name` of the residue the atom belongs to. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
+
+        .. versionadded:: 0.7.4
+        .. versionchanged:: 0.7.5
+           Also changes the residues.
+        .. versionchanged:: 0.8
+           Can set atoms and residues to distinct values by providing a sequence or iterable.
+        """
+        from MDAnalysis.topology.core import build_residues
+        self.set("resname", resname, conversion=str)
+        build_residues(self.atoms)
+
+    def set_segid(self, segid, buildsegments=True):
+        """Set the segid to *segid* for all atoms in the :class:`AtomGroup`.
+
+        If *segid* is a sequence of the same length as the :class:`AtomGroup`
+        then each :attr:`Atom.segid` is set to the corresponding value together
+        with the :attr:`Segment.id` of the residue the atom belongs to. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
         .. Note::
 
-           Only changes the resid but does not create combined :class:`Residue`
-           objects or split them.
+           :meth:`set_segid` can change the topology.
+
+           With the default *buildsegments* = ``True`` it can be used to join
+           segments or to break groups into multiple disjoint segments. Note
+           that each :class:`Atom` can only belong to a single
+           :class:`Segment`.
+
+        For performance reasons, *buildsegments* can be set to ``False``. Then
+        one needs to run :meth:`Universe._build_segments` manually later in
+        order to update the list of :class:`Segment` instances and regenerate
+        the segid instant selectors.
 
         .. versionadded:: 0.7.4
-        .. versionchanged:: 0.7.5
-           Also changes the residues.
+        .. versionchanged:: 0.8
+           Can set atoms and residues to distinct values by providing a sequence or iterable.
         """
-        self._set_atoms("resid", int(resid))
-        self._set_residues("id", int(resid))
-        # should rebuild residues: would allow us to split/merge residues
-    def set_resnum(self, resnum):
-        """Set the resnum to *resnum* for **all atoms** in the AtomGroup.
-
-        .. versionadded:: 0.7.4
-        .. versionchanged:: 0.7.5
-           Also changes the residues.
-        """
-        self._set_atoms("resnum", resnum)
-        self._set_residues("resnum", resnum)
-    def set_resname(self, resname):
-        """Set the resname to string *resname* for **all atoms** in the AtomGroup.
-
-        .. versionadded:: 0.7.4
-        .. versionchanged:: 0.7.5
-           Also changes the residues.
-        """
-        self._set_atoms("resname", str(resname))
-        self._set_residues("name", str(resname))
-    def set_segid(self, segid, buildsegments=True):
-        """Set the segid to *segid* for all atoms in the AtomGroup.
-
-        If *buildsegments* is set to ``False`` for performance reasons then one
-        needs to run :meth:`Universe._build_segments` in order to update the
-        list of :class:`Segment` instances and regenerate the segid instant
-        selectors.
-
-        .. versionadded:: 0.7.4
-        """
-        self._set_atoms("segid", segid)
+        self.set("segid", segid)
+        self._clear_caches('segments')
         if buildsegments:
-            try:
-                del self.__cache['segments']
-            except KeyError:
-                pass
             self.universe._build_segments()
+        else:
+            # do not even update the local segment
+            pass
+        self.universe.atoms._clear_caches('segments')
+
     def set_mass(self, mass):
         """Set the atom mass to float *mass* for **all atoms** in the AtomGroup.
 
         .. versionadded:: 0.7.4
+        .. versionchanged:: 0.8
+           Can set atoms and residues to distinct values by providing a sequence or iterable.
         """
-        self._set_atoms("mass", float(mass))
-        try:
-            del self.__cache['masses']
-        except KeyError:
-            pass
+        self.set("mass", mass, conversion=float, cache="masses")
+
     def set_type(self, atype):
         """Set the atom type to *atype* for **all atoms** in the AtomGroup.
 
         .. versionadded:: 0.7.4
+        .. versionchanged:: 0.8
+           Can set atoms and residues to distinct values by providing a sequence or iterable.
         """
-        self._set_atoms("type", atype)
+        self.set("type", atype)
+
     def set_charge(self, charge):
         """Set the partial charge to float *charge* for **all atoms** in the AtomGroup.
 
         .. versionadded:: 0.7.4
+        .. versionchanged:: 0.8
+           Can set atoms and residues to distinct values by providing a sequence or iterable.
         """
-        self._set_atoms("charge", float(charge))
+        self.set("charge", charge, conversion=float)
+
     def set_radius(self, radius):
         """Set the atom radius to float *radius* for **all atoms** in the AtomGroup.
 
         .. versionadded:: 0.7.4
+        .. versionchanged:: 0.8
+           Can set atoms and residues to distinct values by providing a sequence or iterable.
         """
-        self._set_atoms("radius", float(radius))
+        self.set("radius", radius, conversion=float)
+
     def set_bfactor(self, bfactor):
         """Set the atom bfactor to float *bfactor* for **all atoms** in the AtomGroup.
 
         .. versionadded:: 0.7.4
+        .. versionchanged:: 0.8
+           Can set atoms and residues to distinct values by providing a sequence or iterable.
         """
-        self._set_atoms("bfactor", float(bfactor))
+        self.set("bfactor", bfactor, conversion=float)
+
     def centerOfGeometry(self):
         """Center of geometry (also known as centroid) of the selection."""
         return numpy.sum(self.coordinates(), axis=0)/self.numberOfAtoms()
     centroid = centerOfGeometry
+
     def centerOfMass(self):
         """Center of mass of the selection."""
         return numpy.sum(self.coordinates()*self.masses()[:,numpy.newaxis],axis=0)/self.totalMass()
+
     def radiusOfGyration(self):
         """Radius of gyration."""
         masses = self.masses()
         recenteredpos = self.coordinates() - self.centerOfMass()
         rog_sq = numpy.sum(masses*numpy.sum(numpy.power(recenteredpos, 2), axis=1))/self.totalMass()
         return numpy.sqrt(rog_sq)
+
     def shapeParameter(self):
         """Shape parameter.
 
@@ -712,6 +999,7 @@ class AtomGroup(object):
         eig_vals = numpy.linalg.eigvalsh(tensor)
         shape = 27.0 * numpy.prod(eig_vals-numpy.mean(eig_vals)) / numpy.power(numpy.sum(eig_vals),3)
         return shape
+
     def asphericity(self):
         """Asphericity.
 
@@ -729,6 +1017,7 @@ class AtomGroup(object):
         eig_vals = numpy.linalg.eigvalsh(tensor)
         shape = (3.0 / 2.0) * numpy.sum(numpy.power(eig_vals-numpy.mean(eig_vals),2)) / numpy.power(numpy.sum(eig_vals),2)
         return shape
+
     def momentOfInertia(self):
         """Tensor of inertia as 3x3 NumPy array."""
         # Convert to local coordinates
@@ -866,7 +1155,7 @@ class AtomGroup(object):
         ab = A - B
         bc = B - C
         cd = C - D
-        return numpy.rad2deg(dihedral(ab, bc, cd))
+        return numpy.rad2deg(util.dihedral(ab, bc, cd))
 
     def principalAxes(self):
         """Calculate the principal axes from the moment of inertia.
@@ -1414,6 +1703,12 @@ class Residue(AtomGroup):
       :attr:`Residue.resnum`
         Numeric canonical residue id (e.g. as used in the PDB structure).
 
+    .. Note:: 
+
+       Creating a :class:`Residue` modifies the underlying :class:`Atom`
+       instances. Each :class:`Atom` can only belong to a single
+       :class:`Residue`.
+
     .. versionchanged:: 0.7.4
        Added :attr:`Residue.resnum` attribute and *resnum* keyword argument.
     """
@@ -1437,6 +1732,7 @@ class Residue(AtomGroup):
         #        have the SAME residue name but different atoms!!! Issue 70
         ##if not Residue.__cache.has_key(name):
         ##    Residue.__cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
+
     def phi_selection(self):
         """AtomGroup corresponding to the phi protein backbone dihedral C'-N-CA-C.
 
@@ -1505,13 +1801,13 @@ class Residue(AtomGroup):
             return self._atoms[item]
         else:
             return self.__getattr__(item)
+
     def __getattr__(self, name):
         # There can only be one atom with a certain name
-         for atom in self.atoms:
-             if (name == atom.name):
-                 return atom
-         raise SelectionError("No atom in residue "+self.name+" with name "+name)
-
+        for atom in self.atoms:
+            if (name == atom.name):
+                return atom
+        raise SelectionError("No atom in residue "+self.name+" with name "+name)
         # Use the cache
         ## FIXME (see above, __cache, Issue 70)
         ##try:
@@ -1519,6 +1815,7 @@ class Residue(AtomGroup):
         ##    return self._atoms[index]
         ##except KeyError:
         ##    raise SelectionError("No atom in residue "+self.name+" with name "+name)
+
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self.name)+', '+repr(self.id)+'>'
 
@@ -1544,18 +1841,142 @@ class ResidueGroup(AtomGroup):
         for res in residues:
             atoms.extend(res.atoms)
         super(ResidueGroup, self).__init__(atoms)
+
+    def _set_residues(self, name, value, **kwargs):
+        """Set attribute *name* to *value* for all residues in the :class:`ResidueGroup`.
+
+        If *value* is a sequence of the same length as the
+        :class:`ResidueGroup` (:attr:`AtomGroup.residues`) then each
+        :class:`Residue`'s property *name* is set to the corresponding
+        value. If *value* is neither of length 1 (or a scalar) nor of the
+        length of the :class:`ResidueGroup` then a :exc:`ValueError` is raised.
+
+        .. versionadded:: 0.7.5
+        .. versionchanged:: 0.8  
+           Can set residues to distinct values by providing a sequence or iterable.
+        """
+        values = util.asiterable(value)
+        if len(values) == 1:
+            self._set_atoms(name, values[0], **kwargs)
+        elif len(values) == len(self.residues):
+            for r,value in itertools.izip(self.residues, values):
+                r._set_atoms(name, value, **kwargs)
+        else:
+            raise ValueError("set_residues: can only set all atoms to a single value or each atom to a distinct one "
+                             "but len(residues)={0} whereas len(value)={1}".format(len(self.residues), len(values)))
+
+        # also fix self --- otherwise users will get confused if the changes are not reflected in the
+        # object they are currently using (it works automatically for AtomGroup but not higher order groups)
+        #
+        # This is a hack to be able to set properties on Atom and Residue
+        # instances where they have different names
+        attr = {'resname': 'name',
+                'resid': 'id'}
+        for r,value in itertools.izip(self.residues, itertools.cycle(values)):
+            attrname = attr.get(name, name)
+            if hasattr(r, attrname):         # should use __slots__ on Residue and try/except here 
+                setattr(r, attrname, value)
+
+    set = _set_residues
+
+    def set_resid(self, resid):
+        """Set the resid to integer *resid* for **all residues** in the :class:`ResidueGroup`.
+
+        If *resid* is a sequence of the same length as the :class:`ResidueGroup`
+        then each :attr:`Atom.resid` is set to the corresponding value together
+        with the :attr:`Residue.id` of the residue the atom belongs to. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
+
+        .. Note::
+        
+           Changing resids can change the topology.
+
+           Assigning the same *resid* to multiple residues will **merge** these
+           residues. The new residue name will be the name of the first old
+           residue in the merged residue.
+
+        .. Warning::
+
+           The values of *this* :class:`ResidueGroup` are not being
+           changed. You **must create a new :class:`ResidueGroup` from the
+           :class:`Universe`** --- only :class:`Atom` instances are changed,
+           everything else is derived from these atoms.
+
+        .. versionadded:: 0.8
+        """
+        from MDAnalysis.topology.core import build_residues
+        self.set('resid', resid)
+        residues = build_residues(self.atoms)
+        # update THIS residue group
+        self.residues._residues = residues
+        # make sure to update the whole universe: the Atoms are shared but ResidueGroups are not
+        if self.atoms is not self.universe.atoms:
+            self.universe.atoms._fill_cache('residues', build_residues(self.universe.atoms))
+
+    def set_resnum(self, resnum):
+        """Set the resnum to *resnum* for **all residues** in the :class:`ResidueGroup`.
+
+        If *resnum* is a sequence of the same length as the :class:`ResidueGroup`
+        then each :attr:`Atom.resnum` is set to the corresponding value together
+        with the :attr:`Residue.resnum` of the residue the atom belongs to. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
+
+        .. Note:: 
+
+           Changing *resnum* will not affect the topology: you can have
+           multiple residues with the same *resnum*.
+
+        .. SeeAlso:: :meth:`set_resid`
+
+        .. versionadded:: 0.7.4
+        .. versionchanged:: 0.7.5
+           Also changes the residues.
+        .. versionchanged:: 0.8
+           Can set atoms and residues to distinct values by providing a sequence or iterable.
+        """
+        self.set("resnum", resnum)
+
+    def set_resname(self, resname):
+        """Set the resname to string *resname* for **all residues** in the :class:`ResidueGroup`.
+
+        If *resname* is a sequence of the same length as the :class:`ResidueGroup`
+        then each :attr:`Atom.resname` is set to the corresponding value together
+        with the :attr:`Residue.name` of the residue the atom belongs to. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
+
+        .. versionadded:: 0.7.4
+        .. versionchanged:: 0.7.5
+           Also changes the residues.
+        .. versionchanged:: 0.8
+           Can set atoms and residues to distinct values by providing a sequence or iterable.
+        """
+        self.set("resname", resname, conversion=str)
+
+    # All other AtomGroup.set_xxx() methods should just work as
+    # ResidueGroup.set_xxx() because we overrode self.set(); the ones above
+    # where kept separate because we can save a call to build_residues()
+    # because there is no ambiguity as which residues are changed.
+
+
     def __iter__(self):
         return iter(self._residues)
+
     def __len__(self):
         return len(self._residues)
+
     def __getitem__(self, item):
         if numpy.dtype(type(item)) == numpy.dtype(int) or type(item) == slice:
             return self._residues[item]
         else:
             raise TypeError("Residue group indices must be int or a slice, not %s." % type(item))
+
     def __getattr__(self, attr):
         atomlist = [atom for atom in self.atoms if atom.name == attr]
         return AtomGroup(atomlist)
+
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self._residues)+'>'
 
@@ -1563,6 +1984,7 @@ class Segment(ResidueGroup):
     """A group of residues corresponding to one segment of the topology.
 
     Pythonic access to residues:
+
       - The attribute rN returns the N-th residue :class:`Residue` of the
         segment (numbering starts at N=1). Example::
 
@@ -1601,7 +2023,6 @@ class Segment(ResidueGroup):
     @id.setter
     def id_setter(self,x):
         self.name = x
-
 
     def __getattr__(self, attr):
         if attr[0] == 'r':
@@ -1645,15 +2066,82 @@ class SegmentGroup(ResidueGroup):
         for s in segments:
             residues.extend(s.residues)
         super(SegmentGroup, self).__init__(residues)
+
+    def _set_segments(self, name, value, **kwargs):
+        """Set attribute *name* to *value* for all :class:`Segment` in this :class:`AtomGroup`.
+
+        If *value* is a sequence of the same length as the
+        :class:`SegmentGroup` (:attr:`AtomGroup.residues`) then each
+        :class:`Segment`'s property *name* is set to the corresponding
+        value. If *value* is neither of length 1 (or a scalar) nor of the
+        length of the :class:`SegmentGroup` then a :exc:`ValueError` is raised.
+
+        .. versionadded:: 0.8
+        """
+        values = util.asiterable(value)
+        if len(values) == 1:
+            self._set_atoms(name, values[0], **kwargs)
+        elif len(values) == len(self.segments):
+            for s,value in itertools.izip(self.segments, values):
+                s._set_atoms(name, value, **kwargs)
+        else:
+            raise ValueError("set_segments: can only set all atoms to a single value or each atom to a distinct one "
+                             "but len(segments)={0} whereas len(value)={1}".format(len(self.segments), len(values)))
+
+    set = _set_segments
+
+    def set_segid(self, segid, buildsegments=True):
+        """Set the segid to *segid* for all atoms in the :class:`SegmentGroup`.
+
+        If *segid* is a sequence of the same length as the :class:`SegmentGroup`
+        then each :attr:`Atom.segid` is set to the corresponding value together
+        with the :attr:`Segment.id` of the segment the atom belongs to. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
+
+        .. Note::
+
+           :meth:`set_segid` can change the topology.
+
+           With the default *buildsegments* = ``True`` it can be used to join
+           segments or to break groups into multiple disjoint segments. Note
+           that each :class:`Atom` can only belong to a single
+           :class:`Segment`.
+
+        For performance reasons, *buildsegments* can be set to ``False``. Then
+        one needs to run :meth:`Universe._build_segments` manually later in
+        order to update the list of :class:`Segment` instances and regenerate
+        the segid instant selectors.
+
+        .. versionadded:: 0.7.4
+        .. versionchanged:: 0.8
+           Can set atoms and residues to distinct values by providing a sequence or iterable.
+        """
+        super(SegmentGroup, self).set_segid(segid, buildsegments=buildsegments)
+
+        # Is the following needed? -- orbeckst
+        # also fix self --- otherwise users will get confused if the changes are not reflected in the
+        # object they are currently using (it works automatically for AtomGroup but not higher order groups)
+        #
+        # This is a hack to be able to set properties on Segment/Atom
+        # instances where they have different names
+        #attr = {'segid': 'id'}
+        for seg,value in itertools.izip(self.segments, itertools.cycle(util.asiterable(segid))):
+            setattr(seg, 'name', value)
+
+
     def __iter__(self):
         return iter(self._segments)
+
     def __len__(self):
         return len(self._segments)
+
     def __getitem__(self, item):
         if numpy.dtype(type(item)) == numpy.dtype(int) or type(item) == slice:
             return self._segments[item]
         else:
             raise TypeError("Segment group indices must be int or a slice, not %s." % type(item))
+
     def __getattr__(self, attr):
         if attr.startswith('s') and attr[1].isdigit():
             attr = attr[1:]  # sNxxx only used for python, the name is stored without s-prefix
@@ -1661,9 +2149,12 @@ class SegmentGroup(ResidueGroup):
         if len(seglist) == 0:
             return super(SegmentGroup, self).__getattr__(attr)
         if len(seglist) > 1:
-            warnings.warn("SegmentGroup: Multiple segments with the same name %r; only the "
-                          "FIRST one is returned." % attr, category=SelectionWarning)
+            warnings.warn("SegmentGroup: Multiple segments with the same name {}; a combined, NON-CONSECUTIVE "
+                          "Segment is returned.".format(attr), category=SelectionWarning)
+            #return Segment(sum([s.residues for s in seglist])) ### FIXME: not working yet, need __add__
+            return seglist[0]
         return seglist[0]
+
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self._segments)+'>'
 
@@ -1817,6 +2308,7 @@ class Universe(object):
                 coordinatefile = topologyfile         # hack for pdb/gro/crd - only
 
         # build the topology (or at least a list of atoms)
+        self.filename = topologyfile
         try:
             parser = get_parser_for(topologyfile, permissive=kwargs['permissive'], bonds=kwargs.get('bonds', False),
                                     format=topology_format)
@@ -1824,7 +2316,17 @@ class Universe(object):
         except TypeError, err:   
             raise ValueError("Failed to build a topology from either a psf, pdb or gro (%s)" % err)
 
-        self.filename = topologyfile
+        # populate atoms etc
+        self._init_topology(struc)
+
+        # Load coordinates
+        self.load_new(coordinatefile, **kwargs)
+
+        # Bonds (Can we move this after _init_topology() or do we need coordinates eg for bond guessing?)
+        self._init_bonds()
+
+    def _init_topology(self, struc):
+        """Populate Universe attributes from the structure dictionary *struc*."""
         self._psf = struc
         #for data in struc.keys():
         #    setattr(self, data, struc[data])
@@ -1834,63 +2336,23 @@ class Universe(object):
         # TODO move to universe._psf.bonds
 
         if struc.has_key("_bonds"):
-          self.bonds = struc["_bonds"]
+            self.bonds = struc["_bonds"]
 
         # XXX: add H-bond information here if available from psf (or other sources)
         # segment instant selectors
         self._build_segments()
-        # convenience access to residues and segments (these are managed attributes
-        # (properties) and are built on the fly or read from a cache) -- does this
-        # create memory problems?
-        self.segments = self.atoms.segments
-        self.residues = self.atoms.residues
-        self.universe = self    # for Writer.write(universe), see Issue 49
 
         #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
         # Let atoms access the universe
         for a in self.atoms:
             a.universe = self
 
-        # Load coordinates
-        self.load_new(coordinatefile, **kwargs)
-
-
-        # TODO wrap-around in a BondGroup class, translating bonds to lists of Atom objects; otherwise indexing becomes a pain
-        # TODO move to universe._psf.bonds
-        #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
-        # FIXME JD: bonds generated from connect records are different than those 
-        # guessed from atom distances it'd be good to keep a record of weather a bond
-        # is guessed or created 
-        # FIXME by OB: the CONECT bonds should take priority over the guessed bonds 
-        #bonds.extend(guessed_bonds)                
-                
-        self.bonds = set()
-        from MDAnalysis.topology.core import Bond
-
-        putative_bonds = set()
-        if struc.has_key("_bonds"):
-            putative_bonds = putative_bonds.union(struc["_bonds"])
-        if struc.has_key("_guessed_bonds"):
-            putative_bonds = putative_bonds.union(struc["_guessed_bonds"])        
-        
-        for bond in putative_bonds:
-            if isinstance(bond, Bond): 
-                self.bonds.add(bond)
-                continue
-            i,j = bond
-            #print i,j
-            a1, a2 = self.atoms[i-1],self.atoms[j-1]
-            bond = Bond(a1, a2)
-            if struc.has_key("_guessed_bonds") and \
-                    set([i,j]) in struc["_guessed_bonds"] and \
-                    set([i,j]) not in struc["_bonds"]:
-                bond.set_is_guessed(True)
-            self.bonds.add(bond)
-        self.bonds = list(self.bonds)
-
-
     def _build_segments(self):
-        """Parse topology into segments and create the segid instant selectors.
+        """Parse list of atoms into segments.
+        
+        * updates :attr:`Universe.atoms` as a side effect
+        * updates :attr:`Universe.segments` and :attr:`Universe.residues`
+        * creates the segid instant selectors
 
         Because of Python's syntax rules, attribute names cannot start with a
         digit and so we prefix any segments starting with a digit with the
@@ -1905,7 +2367,55 @@ class Universe(object):
                 segments[newsegname] = segments[seg]
                 del segments[seg]
         self.__dict__.update(segments)
-        self.segments = self.atoms.segments   # duplicated, but keep for e.g. set_segid()!
+        # convenience access to residues and segments (these are managed attributes
+        # (properties) and are built on the fly or read from a cache) -- does this
+        # create memory problems?
+        self.segments = self.atoms.segments
+        self.residues = self.atoms.residues
+        self.universe = self    # for Writer.write(universe), see Issue 49
+
+
+    def _init_bonds(self):
+        """Set bond information.
+
+        * FIXME JD: bonds generated from connect records are different than those 
+          guessed from atom distances it'd be good to keep a record of weather a bond
+          is guessed or created 
+        * FIXME by OB: the CONECT bonds should take priority over the guessed bonds 
+        """
+        # TODO wrap-around in a BondGroup class, translating bonds to lists of Atom objects; otherwise indexing becomes a pain
+        # TODO move to universe._psf.bonds
+        #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
+        # FIXME JD: bonds generated from connect records are different than those 
+        # guessed from atom distances it'd be good to keep a record of weather a bond
+        # is guessed or created 
+        # FIXME by OB: the CONECT bonds should take priority over the guessed bonds 
+        #bonds.extend(guessed_bonds)                
+                
+        self.bonds = set()
+        from MDAnalysis.topology.core import Bond
+
+        struc = self._psf
+        putative_bonds = set()
+        if struc.has_key("_bonds"):
+            putative_bonds = putative_bonds.union(struc["_bonds"])
+        if struc.has_key("_guessed_bonds"):
+            putative_bonds = putative_bonds.union(struc["_guessed_bonds"])        
+        
+        for bond in putative_bonds:
+            if isinstance(bond, Bond): 
+                self.bonds.add(bond)
+                continue
+            i,j = bond
+            a1, a2 = self.atoms[i-1],self.atoms[j-1]
+            bond = Bond(a1, a2)
+            if struc.has_key("_guessed_bonds") and \
+                    set([i,j]) in struc["_guessed_bonds"] and \
+                    set([i,j]) not in struc["_bonds"]:
+                bond.set_is_guessed(True)
+            self.bonds.add(bond)
+        self.bonds = list(self.bonds)
+
 
     def load_new(self, filename, **kwargs):
         """Load coordinates from *filename*, using the suffix to detect file format.
