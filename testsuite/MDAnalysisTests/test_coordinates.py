@@ -23,9 +23,10 @@ import MDAnalysis.coordinates.core
 import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
+import sys
 
 from MDAnalysis.tests.datafiles import PSF, DCD, DCD_empty, PDB_small, PDB_closed, PDB_multiframe, \
-    PDB, CRD, XTC, TRR, GRO, DMS, \
+    PDB, CRD, XTC, TRR, GRO, DMS, CONECT, \
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol
 
@@ -608,7 +609,8 @@ class TestPrimitivePDBWriter(TestCase):
 
 class TestMultiPDBReader(TestCase):
     def setUp(self):
-        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True, bonds=True)
+        self.conect = mda.Universe(CONECT, bonds=True)
 
     def test_numframes(self):
         assert_equal(self.multiverse.trajectory.numframes, 24, "Wrong number of frames read from PDB muliple model file")
@@ -648,6 +650,31 @@ class TestMultiPDBReader(TestCase):
                      np.arange(u.trajectory.numframes)[4:-2:4],
                      err_msg="slicing did not produce the expected frames")
 
+    def test_conect(self):
+        conect = self.conect
+        
+        assert_equal(len(conect.atoms), 1890)
+        
+        assert_equal(len(conect.bonds), 1922)
+        
+        fd, outfile1 = tempfile.mkstemp(suffix=".pdb")
+        os.close(fd)
+        self.conect.atoms.write(outfile1, bonds="conect")
+        u1 = mda.Universe(outfile1, bonds=True)
+        assert_equal(len(u1.atoms), 1890)
+        assert_equal(len(u1.bonds), 1922)
+        
+        
+        fd, outfile2 = tempfile.mkstemp(suffix=".pdb")
+        os.close(fd)
+        self.conect.atoms.write(outfile2, bonds="all")
+        u2 = mda.Universe(outfile2, bonds=True)
+        assert_equal(len(u1.atoms), 1890)
+        assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922 )
+        
+        
+        #assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
+
     def test_numconnections(self):
         u = self.multiverse
 
@@ -678,16 +705,39 @@ class TestMultiPDBReader(TestCase):
                    [349, 338],
                    [365, 48],
                    [387, 249]]
-
-        assert_equal(u._psf['_bonds'], desired,
+        
+        
+        def helper(atoms, bonds):
+            """
+            Convert a bunch of atoms and bonds into a list of CONECT records
+            """
+            con = {}
+            
+            for bond in bonds:
+                 a1, a2 = bond.atom1.number, bond.atom2.number
+                 if not con.has_key(a1): con[a1] = []
+                 if not con.has_key(a2): con[a2] = []
+                 con[a2].append(a1)
+                 con[a1].append(a2)
+            
+            #print con
+            atoms = sorted([a.number for a in atoms])
+            
+            conect = [([a,] + sorted(con[a])) for a in atoms if con.has_key(a)]
+            conect = [[ a+1 for a in c ]for c in conect]
+            
+            return conect
+        conect = helper(self.multiverse.atoms, [b for b in u.bonds if not b.is_guessed])
+        for r in conect: print r
+        assert_equal(conect, desired,
                                 err_msg="The bond list does not match the test reference; len(actual) is %d, len(desired) is %d " % (len(u._psf['_bonds']), len(desired)))
 
 
 class TestMultiPDBWriter(TestCase):
     def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small, permissive=True)
-        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
-        self.universe2 = mda.Universe(PSF, DCD, permissive=True)
+        self.universe = mda.Universe(PSF, PDB_small, permissive=True, bonds=True)
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True,  bonds=True)
+        self.universe2 = mda.Universe(PSF, DCD, permissive=True, bonds=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         ext = ".pdb"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
@@ -729,6 +779,7 @@ class TestMultiPDBWriter(TestCase):
         group = u.selectAtoms('name CA', 'name C')
         desired_group = 56
         desired_frames = 6
+
         pdb = MDAnalysis.Writer(self.outfile, multiframe=True, start=12, step=2)
         pdb.write_all_timesteps(group)
         u2 = mda.Universe(self.outfile)
@@ -1590,7 +1641,6 @@ class _GromacsReader(TestCase):
         assert_equal(frames,  [3, 6, 9], "slicing xdrtrj [2:9:3]")
 
     @dec.slow
-    @dec.knownfailureif(True, "XTC/TRR reverse slicing not implemented for performance reasons")
     def test_reverse_xdrtrj(self):
         frames = [ts.frame for ts in self.trajectory[::-1]]
         assert_equal(frames, range(10,0,-1), "slicing xdrtrj [::-1]")
@@ -1702,6 +1752,9 @@ class TestTRRReader(_GromacsReader):
             assert_array_almost_equal(self.universe.atoms[index].velocity, v_known, self.prec,
                                   err_msg="atom[%d].velocity does not match known values" % index)
 
+if sys.version_info.major < 3:
+    class TestTRRReader_UTF8(TestTRRReader):
+        filename = unicode(TRR)
 
 class _XDRNoConversion(TestCase):
     filename = None

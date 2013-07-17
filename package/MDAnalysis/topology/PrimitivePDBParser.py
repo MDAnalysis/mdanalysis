@@ -28,8 +28,10 @@ Reads a PDB file line by line and is not fuzzy about numbering.
              are guessed and set to 0 if unknown.
 """
 
+from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge, guess_bonds
+import numpy as np
 import MDAnalysis.coordinates.PDB
-from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
+
 
 class PDBParseError(Exception):
     """Signifies an error during parsing a PDB file."""
@@ -50,7 +52,26 @@ def parse(filename):
     __parseatoms_(pdb, structure)
     # TODO: reconstruct bonds from CONECT or guess from distance search
     #       (e.g. like VMD)
-    __parsebonds_(filename, structure)
+    __parsebonds_(filename, pdb, structure, guess_bonds_mode=False)
+    return structure
+
+
+def parse_bonds(filename):
+    """Parse atom information from PDB file *filename*.
+
+    :Returns: MDAnalysis internal *structure* dict
+
+    .. SeeAlso:: The *structure* dict is defined in
+                 :func:`MDAnalysis.topology.PSFParser.parse` and the file is read with
+                 :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
+    """
+    structure = {}
+    pdb =  MDAnalysis.coordinates.PDB.PrimitivePDBReader(filename)
+
+    __parseatoms_(pdb, structure)
+    # TODO: reconstruct bonds from CONECT or guess from distance search
+    #       (e.g. like VMD)
+    __parsebonds_(filename, pdb, structure, guess_bonds_mode=True)
     return structure
 
 def __parseatoms_(pdb, structure):
@@ -60,31 +81,49 @@ def __parseatoms_(pdb, structure):
 
     # translate list of atoms to MDAnalysis Atom.
     for iatom,atom in enumerate(pdb._atoms):
-        atomname = atom.name
-        atomtype = atom.element or guess_atom_type(atomname)
-        resname = atom.resName
-        resid = atom.resSeq
-        chain = atom.chainID.strip()
-        segid = atom.segID.strip() or chain or "SYSTEM"  # no empty segids (or Universe throws IndexError)
-        mass = guess_atom_mass(atomname)
-        charge = guess_atom_charge(atomname)
-        bfactor = atom.tempFactor
-        occupancy = atom.occupancy
 
-        atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),
-                          bfactor=bfactor))
-
+        # ATOM
+        if len(atom.__dict__) == 9:
+            atomname = atom.name
+            atomtype = atom.element or guess_atom_type(atomname)
+            resname = atom.resName
+            resid = atom.resSeq
+            chain = atom.chainID.strip()
+            segid = atom.segID.strip() or chain or "SYSTEM"  # no empty segids (or Universe throws IndexError)
+            mass = guess_atom_mass(atomname)
+            charge = guess_atom_charge(atomname)
+            bfactor = atom.tempFactor
+            occupancy = atom.occupancy
+    
+            atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),\
+                              bfactor=bfactor,serial=atom.serial))
+        # TER atoms
+        elif len(atom.__dict__) == 5:
+            pass
+            #atoms.append(None)
     structure[attr] = atoms
 
-def __parsebonds_(filename, structure):
-  attr = "_bonds"
-  bonds = []
 
+
+def __parsebonds_(filename, primitive_pdb_reader, structure, guess_bonds_mode):
+  guessed_bonds = set()
+  if guess_bonds_mode:      
+      guessed_bonds = guess_bonds(structure["_atoms"], np.array(primitive_pdb_reader.ts))
+  
+  #
+  # Mapping between the atom array indicies and atom ids in the original PDB file
+  #
+  mapping =  dict([(a.serial, i+1) for i, a in  enumerate(structure["_atoms"])])
+  
+  bonds = set()  
   with open(filename , "r") as filename:
-    for num,line in enumerate(filename):
-      if line[:6] != "CONECT": continue
-      bond = line[6:].split()
-      bond = [int(atom) for atom in bond]
-      bonds.append(bond) 
+    lines = [(num, line[6:].split()) for num,line in enumerate(filename) if line[:6] == "CONECT"]
+    for num, bond in lines:
+      atom, atoms = int(bond[0]) , map(int,bond[1:])
+      for a in atoms:
+          bond = frozenset([mapping[atom], mapping[a] ])
+          bonds.add(bond) 
 
-  structure[attr] = bonds
+  # FIXME by JD: we could use a BondsGroup class perhaps 
+  structure["_bonds"] = bonds
+  structure["_guessed_bonds"] = guessed_bonds

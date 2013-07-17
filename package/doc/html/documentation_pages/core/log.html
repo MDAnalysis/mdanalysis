@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -139,7 +140,7 @@ in depth documentation about using logging.</p>
 stop the default <em>MDAnalysis</em> logger.</p>
 <dl class="function">
 <dt id="MDAnalysis.start_logging">
-<tt class="descclassname">MDAnalysis.</tt><tt class="descname">start_logging</tt><big>(</big><em>logfile='MDAnalysis.log'</em><big>)</big><a class="headerlink" href="#MDAnalysis.start_logging" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.</tt><tt class="descname">start_logging</tt><big>(</big><em>logfile='MDAnalysis.log'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis.html#start_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.start_logging" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start logging of messages to file and console.</p>
 <p>The default logfile is named <cite>MDAnalysis.log</cite> and messages are
 logged with the tag <em>MDAnalysis</em>.</p>
@@ -147,7 +148,7 @@ logged with the tag <em>MDAnalysis</em>.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.stop_logging">
-<tt class="descclassname">MDAnalysis.</tt><tt class="descname">stop_logging</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.stop_logging" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.</tt><tt class="descname">stop_logging</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis.html#stop_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.stop_logging" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop logging to logfile and console.</p>
 </dd></dl>
 
@@ -156,7 +157,7 @@ logged with the tag <em>MDAnalysis</em>.</p>
 <h2>7.10.2. Other functions and classes for logging purposes<a class="headerlink" href="#other-functions-and-classes-for-logging-purposes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.log.NullHandler">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">NullHandler</tt><big>(</big><em>level=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.NullHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">NullHandler</tt><big>(</big><em>level=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/log.html#NullHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.log.NullHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Silent Handler.</p>
 <p>Useful as a default:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">h</span> <span class="o">=</span> <span class="n">NullHandler</span><span class="p">()</span>
@@ -170,7 +171,7 @@ and the filter list to empty.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.core.log.ProgressMeter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">ProgressMeter</tt><big>(</big><em>numsteps</em>, <em>format=None</em>, <em>interval=10</em>, <em>offset=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">ProgressMeter</tt><big>(</big><em>numsteps</em>, <em>format=None</em>, <em>interval=10</em>, <em>offset=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/log.html#ProgressMeter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple progress meter</p>
 <p>Usage:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
@@ -252,7 +253,7 @@ set <em>offset</em> = 1 [0]</p>
 </table>
 <dl class="method">
 <dt id="MDAnalysis.core.log.ProgressMeter.echo">
-<tt class="descname">echo</tt><big>(</big><em>step</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter.echo" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">echo</tt><big>(</big><em>step</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/log.html#ProgressMeter.echo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter.echo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the state to stderr, but only every <em>interval</em> steps.</p>
 <ol class="arabic simple">
 <li>calls <a class="reference internal" href="#MDAnalysis.core.log.ProgressMeter.update" title="MDAnalysis.core.log.ProgressMeter.update"><tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt></a></li>
@@ -267,7 +268,7 @@ the format string.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.log.ProgressMeter.update">
-<tt class="descname">update</tt><big>(</big><em>step</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter.update" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">update</tt><big>(</big><em>step</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/log.html#ProgressMeter.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the state of the ProgressMeter.</p>
 <p><em>kwargs</em> are additional attributes that can be references in
 the format string.</p>
@@ -277,14 +278,14 @@ the format string.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.log.clear_handlers">
-<tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">clear_handlers</tt><big>(</big><em>logger</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.clear_handlers" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">clear_handlers</tt><big>(</big><em>logger</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/log.html#clear_handlers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.log.clear_handlers" title="Permalink to this definition">¶</a></dt>
 <dd><p>clean out handlers in the library top level logger</p>
 <p>(only important for reload/debug cycles...)</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.log.create">
-<tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">create</tt><big>(</big><em>logger_name='MDAnalysis'</em>, <em>logfile='MDAnalysis.log'</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.create" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">create</tt><big>(</big><em>logger_name='MDAnalysis'</em>, <em>logfile='MDAnalysis.log'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/log.html#create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.log.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a top level logger.</p>
 <ul class="simple">
 <li>The file logger logs everything (including DEBUG).</li>
@@ -300,7 +301,7 @@ console.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.log.echo">
-<tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">echo</tt><big>(</big><em>s=''</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.log.echo" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">echo</tt><big>(</big><em>s=''</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/log.html#echo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.log.echo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple string output that immediately prints to the console.</p>
 </dd></dl>
 
@@ -333,10 +334,10 @@ console.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

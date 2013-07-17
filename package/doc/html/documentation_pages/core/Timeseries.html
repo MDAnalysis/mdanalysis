@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -70,7 +71,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="Selection.html"
-                        title="previous chapter">7.3. Atom selection Hierarchy &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.Selection</span></tt></a></p>
+                        title="previous chapter">7.3. Atom selection Hierarchy &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.Selection</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="distances.html"
                         title="next chapter">7.5. Fast distance array computation &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.distances</span></tt></a></p>
@@ -113,11 +114,11 @@ support them.</p>
 <h2>7.4.1. Basic classes<a class="headerlink" href="#basic-classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.Timeseries.Timeseries">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Timeseries</tt><big>(</big><em>code</em>, <em>atoms</em>, <em>dsize</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.Timeseries" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Timeseries</tt><big>(</big><em>code</em>, <em>atoms</em>, <em>dsize</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#Timeseries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.Timeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base timeseries class - define subclasses for specific timeseries computations</p>
 <dl class="attribute">
 <dt id="MDAnalysis.core.Timeseries.Timeseries.shape">
-<tt class="descname">shape</tt><a class="headerlink" href="#MDAnalysis.core.Timeseries.Timeseries.shape" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">shape</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#Timeseries.shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.Timeseries.shape" title="Permalink to this definition">¶</a></dt>
 <dd><p>shape tuple of the underlying numpy array</p>
 </dd></dl>
 
@@ -125,7 +126,7 @@ support them.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.core.Timeseries.TimeseriesCollection">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">TimeseriesCollection</tt><a class="headerlink" href="#MDAnalysis.core.Timeseries.TimeseriesCollection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">TimeseriesCollection</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#TimeseriesCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.TimeseriesCollection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A collection of timeseries objects.</p>
 <p>The collection of timeseries (such as Atom, Bond, Dihedral...)  can be
 computed from a trajectory in one go, foregoing the need to iterate through
@@ -142,19 +143,19 @@ len(collection)                                - return the number of Timeseries
 </div>
 <dl class="method">
 <dt id="MDAnalysis.core.Timeseries.TimeseriesCollection.addTimeseries">
-<tt class="descname">addTimeseries</tt><big>(</big><em>ts</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.TimeseriesCollection.addTimeseries" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">addTimeseries</tt><big>(</big><em>ts</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#TimeseriesCollection.addTimeseries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.TimeseriesCollection.addTimeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>add a Timeseries object to the collection</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.Timeseries.TimeseriesCollection.clear">
-<tt class="descname">clear</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.TimeseriesCollection.clear" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">clear</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#TimeseriesCollection.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.TimeseriesCollection.clear" title="Permalink to this definition">¶</a></dt>
 <dd><p>clear the timeseries collection</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.Timeseries.TimeseriesCollection.compute">
-<tt class="descname">compute</tt><big>(</big><em>trj</em>, <em>start=0</em>, <em>stop=-1</em>, <em>skip=1</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.TimeseriesCollection.compute" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">compute</tt><big>(</big><em>trj</em>, <em>start=0</em>, <em>stop=-1</em>, <em>skip=1</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#TimeseriesCollection.compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.TimeseriesCollection.compute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate through the trajectory <em>trj</em> and compute the time series.</p>
 <dl class="docutils">
 <dt><em>trj</em></dt>
@@ -172,7 +173,7 @@ note that <em>start</em> and <em>stop</em> are inclusive</dd>
 <h2>7.4.2. Timeseries of observables<a class="headerlink" href="#timeseries-of-observables" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.Timeseries.Atom">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Atom</tt><big>(</big><em>code</em>, <em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.Atom" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Atom</tt><big>(</big><em>code</em>, <em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#Atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.Atom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns coordinate data for an atom or group of atoms</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span>
 </pre></div>
@@ -190,7 +191,7 @@ a list of <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.Ato
 
 <dl class="class">
 <dt id="MDAnalysis.core.Timeseries.Bond">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Bond</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.Bond" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Bond</tt><big>(</big><em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#Bond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.Bond" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns a timeseries for a bond</p>
 <blockquote>
 <div>t = Bond(atoms)</div></blockquote>
@@ -199,7 +200,7 @@ a list of <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.Ato
 
 <dl class="class">
 <dt id="MDAnalysis.core.Timeseries.Angle">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Angle</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.Angle" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Angle</tt><big>(</big><em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#Angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.Angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns a timeseries for an angle</p>
 <blockquote>
 <div>t = Angle(atoms)</div></blockquote>
@@ -208,7 +209,7 @@ a list of <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.Ato
 
 <dl class="class">
 <dt id="MDAnalysis.core.Timeseries.Dihedral">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Dihedral</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.Dihedral" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Dihedral</tt><big>(</big><em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#Dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.Dihedral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns a timeseries for a dihedral angle</p>
 <blockquote>
 <div>t = Dihedral(atoms)</div></blockquote>
@@ -217,7 +218,7 @@ a list of <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.Ato
 
 <dl class="class">
 <dt id="MDAnalysis.core.Timeseries.Distance">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Distance</tt><big>(</big><em>code</em>, <em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.Distance" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">Distance</tt><big>(</big><em>code</em>, <em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#Distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.Distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns distances between 2 atoms</p>
 <blockquote>
 <div>t = Distance(code, atoms)</div></blockquote>
@@ -227,7 +228,7 @@ atoms must contain 2 <a class="reference internal" href="AtomGroup.html#MDAnalys
 
 <dl class="class">
 <dt id="MDAnalysis.core.Timeseries.CenterOfGeometry">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">CenterOfGeometry</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.CenterOfGeometry" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">CenterOfGeometry</tt><big>(</big><em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#CenterOfGeometry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.CenterOfGeometry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns the center of geometry of a group of atoms</p>
 <blockquote>
 <div>t = CenterOfGeometry(atoms)</div></blockquote>
@@ -237,7 +238,7 @@ objects, or a <a class="reference internal" href="AtomGroup.html#MDAnalysis.core
 
 <dl class="class">
 <dt id="MDAnalysis.core.Timeseries.CenterOfMass">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">CenterOfMass</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.CenterOfMass" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">CenterOfMass</tt><big>(</big><em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#CenterOfMass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.CenterOfMass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a timeseries that returns the center of mass of a group of atoms</p>
 <blockquote>
 <div>t = CenterOfMass(atoms)</div></blockquote>
@@ -247,30 +248,35 @@ objects or a <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.
 
 <dl class="class">
 <dt id="MDAnalysis.core.Timeseries.WaterDipole">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">WaterDipole</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.Timeseries.WaterDipole" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Timeseries.</tt><tt class="descname">WaterDipole</tt><big>(</big><em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/Timeseries.html#WaterDipole"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Timeseries.WaterDipole" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Timeseries that returns a timeseries for the bisector vector of a 3-site water</p>
 <blockquote>
-<div>t = WaterDipole(atoms)</div></blockquote>
-<p>The vector, multiplied by the partial charge on the oxygen
-atom (e.g. q=-0.0.834 for TIP3P water), gives the actual
-dipole moment.</p>
-<p><em>atoms</em> must contain 3 <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> objects, either as a list or an <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>;
-the first one <em>must</em> be the oxygen, the other two are the
-hydrogens. The vector is calculated from the positions of the
-oygen atom (xO) and the two hydrogen atoms (xH1, xH2) as</p>
+<div>d = WaterDipole(atoms)</div></blockquote>
+<p><em>atoms</em> must contain 3 <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>
+objects, either as a list or an
+<a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>; the first one <em>must</em> be
+the oxygen, the other two are the hydrogens.</p>
+<p>The vector <tt class="docutils literal"><span class="pre">d</span></tt>, multiplied by the partial charge on the oxygen atom
+(e.g. <em>q</em> = -0.0.834 for TIP3P water), gives the actual dipole moment.</p>
+<p>The vector is calculated from the positions of the oxygen atom
+(<span class="math">\(\mathbf{x}_{\text{O}}\)</span>) and the two hydrogen atoms
+(<span class="math">\(\mathbf{x}_{\text{H}_1}\)</span>, <span class="math">\(\mathbf{x}_{\text{H}_2}\)</span>) as</p>
+<div class="math">
+\[\mathbf{d} = \mathbf{x}_{\text{O}} - \frac{1}{2}(\mathbf{x}_{\text{H}_1} + \mathbf{x}_{\text{H}_2})\]</div>
+<p>and the dipole moment vector is</p>
 <blockquote>
-<div>d = xO - (xH1 + xH2)/2</div></blockquote>
-<p>and the dipole moment is</p>
-<blockquote>
-<div>µ = qO d</div></blockquote>
+<div><div class="math">
+\[\boldsymbol{\mu} = q_{\text{O}} \mathbf{d}\]</div>
+</div></blockquote>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>This will only work for water models that have half of the
-oxygen charge on each hydrogen. The vector d has the
-opposite direction of the dipole moment; multiplying with
-the oxygen charge (&lt;0!) will flip the direction.</p>
-<p class="last">There are no sanity checks; if the first atom in a water
-molecule is not oxygen then results will be wrong.</p>
+<p>This will only work for water models that have half of the oxygen
+charge on each hydrogen. The vector <span class="math">\(\mathbf{d}\)</span> has the
+opposite direction of the dipole moment; multiplying with the oxygen
+charge (<span class="math">\(q_{\text{O}}&lt;0\)</span>) will flip the direction and produce
+the correct orientation.</p>
+<p class="last">There are no sanity checks; <em>if the first atom in a water
+molecule is not oxygen then results will be wrong.</em></p>
 </div>
 </dd></dl>
 
@@ -303,10 +309,10 @@ molecule is not oxygen then results will be wrong.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

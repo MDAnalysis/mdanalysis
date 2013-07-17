@@ -16,12 +16,16 @@
 #
 
 """
-Distance analysis --- :mod:`MDAnalysis.distances`
-==================================================
+Distance analysis --- :mod:`MDAnalysis.analysis.distances`
+==========================================================
 
 This module provides functions to rapidly compute distances between
 atoms or groups of atoms.
 
+:func:`dist` and :func:`between` can take atom groups that do not even
+have to be from the same :class:`~MDAnalysis.core.AtomGroup.Universe`.
+
+.. SeeAlso:: :mod:`MDAnalysis.core.distances` and :mod:`MDAnalysis.core.parallel.distances`
 """
 
 __all__ = ['distance_array', 'self_distance_array', 'contact_matrix', 'dist']
@@ -33,19 +37,23 @@ from scipy.weave import converters
 
 from MDAnalysis.core.distances import distance_array, self_distance_array
 
+import logging
+logger = logging.getLogger("MDAnalysis.analysis.distances")
 
 def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_meter_freq=100, suppress_progmet=False):
-    '''
-    Calculates a matrix of contacts between a list of coordinates.
+    '''Calculates a matrix of contacts between a list of coordinates.
+
     There is a fast, high-memory-usage version for small systems
-    (returntype='numpy'), and a slower, low-memory-usage version
-    for larger systems (returntype='sparse').
+    (*returntype* = 'numpy'), and a slower, low-memory-usage version for
+    larger systems (*returntype* = 'sparse').
 
-    If box dimensions are passed, then periodic boundary conditions
-    are applied.
+    If *box* dimensions are passed (``box = [Lx, Ly, Lz]``), then
+    periodic boundary conditions are applied.  Only orthorhombic boxes
+    are currently supported.
 
-    Change progress_meter_freq to alter frequency of progress meter
-    updates. Or switch suppress_progmet to True to suppress it completely.
+    Change *progress_meter_freq* to alter frequency of progress meter
+    updates. Or switch *suppress_progmet* to ``True`` to suppress it
+    completely.
     '''
     if returntype=="numpy":
         adj = (distance_array(coord,coord,box=box) < cutoff)
@@ -53,23 +61,36 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_me
 
     elif returntype=="sparse":
         # Initialize square List of Lists matrix of dimensions equal to number of coordinates passed
-        sparse_contacts = sparse.lil_matrix((len(coord),len(coord))  , dtype='bool')
+        sparse_contacts = sparse.lil_matrix((len(coord), len(coord)), dtype='bool')
         # if PBC
 
         # TODO Jan: this distance matrix will be symmetric, hence some of the iterations could be skipped.
         if box != None:
-            contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, suppress_progmet )
+            contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, suppress_progmet)
 
         # if no PBC
         else:
-            contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, suppress_progmet )
+            contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, suppress_progmet)
 
         return sparse_contacts
 
-def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, suppress_progmet ):
-    print box
-    box_half = numpy.array([x / 2. for x in box] )
-    print box_half
+def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, suppress_progmet):
+    """Contact matrix calculation with periodic boundary conditions.
+
+    You don't have to call this function explicitly; just provide a
+    *box* to :func:`contact_matrix`, which will then call this
+    function.
+
+    Only orthorhombic boxes are currently supported.
+
+    This function uses  `python.weave`_.
+
+    ..  _`python.weave`: http://github.com/scipy/scipy/tree/master/scipy/weave/examples
+    """
+
+    box_half = numpy.array([x / 2. for x in box])
+    logger.info("contac_matrix_pbc(): using box %r", box)
+    logger.debug("contac_matrix_pbc(): half box %r", box_half)
 
     c_code = """
     #include <math.h>
@@ -135,9 +156,15 @@ def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq,
     weave.inline(c_code, ['coord', 'sparse_contacts', 'box', 'box_half', 'cutoff', 'progress_meter_freq', 'suppress_progmet'], type_converters=converters.blitz)
 
 def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, suppress_progmet ):
-    """
+    """Contact matrix calculation without periodic boundary conditions.
 
-    Examples of python.weave usage http://github.com/scipy/scipy/tree/master/scipy/weave/examples
+    You don't have to call this function explicitly; just set *box* =
+    ``None`` when calling :func:`contact_matrix`, which will then call
+    this function.
+
+    This function uses  `python.weave`_.
+
+    ..  _`python.weave`: http://github.com/scipy/scipy/tree/master/scipy/weave/examples
     """
 
     c_code = """
@@ -207,7 +234,9 @@ def dist(A, B, offset=0):
 
        *offset* : tuple
           *offset[0]* is added to *resids_A* and *offset[1]* to
-          *resids_B*.
+          *resids_B*. Note that one can actually supply numpy arrays
+          of the same length as the atom group so that an individual
+          offset is added to each resid.
 
     :Returns: NumPy `array([resids_A, resids_B, distances])`
 

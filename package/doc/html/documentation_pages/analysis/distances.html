@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -195,7 +196,7 @@ make copies of the coordinate arrays.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.distances.contact_matrix">
-<tt class="descclassname">MDAnalysis.analysis.distances.</tt><tt class="descname">contact_matrix</tt><big>(</big><em>coord</em>, <em>cutoff=15.0</em>, <em>returntype='numpy'</em>, <em>box=None</em>, <em>progress_meter_freq=100</em>, <em>suppress_progmet=False</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.distances.contact_matrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.distances.</tt><tt class="descname">contact_matrix</tt><big>(</big><em>coord</em>, <em>cutoff=15.0</em>, <em>returntype='numpy'</em>, <em>box=None</em>, <em>progress_meter_freq=100</em>, <em>suppress_progmet=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/distances.html#contact_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.distances.contact_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates a matrix of contacts between a list of coordinates.
 There is a fast, high-memory-usage version for small systems
 (returntype=&#8217;numpy&#8217;), and a slower, low-memory-usage version
@@ -208,7 +209,7 @@ updates. Or switch suppress_progmet to True to suppress it completely.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.distances.dist">
-<tt class="descclassname">MDAnalysis.analysis.distances.</tt><tt class="descname">dist</tt><big>(</big><em>A</em>, <em>B</em>, <em>offset=0</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.distances.dist" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.distances.</tt><tt class="descname">dist</tt><big>(</big><em>A</em>, <em>B</em>, <em>offset=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/distances.html#dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.distances.dist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return distance between atoms in two atom groups.</p>
 <p>The distance is calculated atom-wise. The residue ids are also
 returned because a typical use case is to look at CA distances
@@ -274,10 +275,10 @@ below) in order to produce PDB numbers. The default is 0.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

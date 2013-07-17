@@ -93,7 +93,7 @@ References
 
 .. [Jorgensen1998]  W. Jorgensen, C. Jenson, J Comp Chem 19 (1998), 1179-1186
 
-.. _AKMA: http://www.charmm.org/html/documentation/c36b1/usage.html#%20AKMA
+.. _AKMA: http://www.charmm.org/documentation/c37b1/usage.html#%20AKMA
 .. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
 .. _`Avogadro's constant`: http://physics.nist.gov/cgi-bin/cuu/Value?na
 

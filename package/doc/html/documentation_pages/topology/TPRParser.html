@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.13. Gromacs portable run input TPR format parser &mdash; MDAnalysis 0.7.8-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.8-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
+    <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
+    <link rel="next" title="5. Coordinates modules" href="../coordinates_modules.html" />
+    <link rel="prev" title="4.12. DESRES Molecular Structure file format topology parser" href="DMSParser.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../coordinates_modules.html" title="5. Coordinates modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="DMSParser.html" title="4.12. DESRES Molecular Structure file format topology parser"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+          <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4.13. Gromacs portable run input TPR format parser</a><ul>
+<li><a class="reference internal" href="#functions">4.13.1. Functions</a></li>
+<li><a class="reference internal" href="#development-notes">4.13.2. Development notes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="DMSParser.html"
+                        title="previous chapter">4.12. DESRES Molecular Structure file format topology parser</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../coordinates_modules.html"
+                        title="next chapter">5. Coordinates modules</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/topology/TPRParser.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.topology.TPRParser"></span><div class="section" id="gromacs-portable-run-input-tpr-format-parser">
+<h1>4.13. Gromacs portable run input TPR format parser<a class="headerlink" href="#gromacs-portable-run-input-tpr-format-parser" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#module-MDAnalysis.topology.TPRParser" title="MDAnalysis.topology.TPRParser"><tt class="xref py py-mod docutils literal"><span class="pre">TPRParser</span></tt></a> module allows reading of a
+<a class="reference external" href="http://www.gromacs.org">Gromacs</a> portable run input file (a <a class="reference external" href="http://manual.gromacs.org/current/online/tpr.html">TPR file</a>). At the moment, only
+atom information is read and used to build a minimal topology. Because
+the file format of the TPR file is changing rapidly, not all versions
+are currently supported. The known working versions and the
+approximate Gromacs release numbers are listed in the table
+<a class="reference internal" href="#tpr-format-table"><em>TPR format versions</em></a>.</p>
+<table border="1" class="docutils" id="tpr-format-table">
+<caption>TPR format versions and generations read by <a class="reference internal" href="#MDAnalysis.topology.TPRParser.parse" title="MDAnalysis.topology.TPRParser.parse"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.TPRParser.parse()</span></tt></a>.</caption>
+<colgroup>
+<col width="20%" />
+<col width="29%" />
+<col width="41%" />
+<col width="10%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">TPX format</th>
+<th class="head">TPX generation</th>
+<th class="head">Gromacs release</th>
+<th class="head">read</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>??</td>
+<td>??</td>
+<td>3.3, 3.3.1</td>
+<td>no</td>
+</tr>
+<tr class="row-odd"><td>58</td>
+<td>17</td>
+<td>4.0, 4.0.2, 4.0.3,
+4.0.4, 4.0.5, 4.0.6,
+4.0.7</td>
+<td>yes</td>
+</tr>
+<tr class="row-even"><td>73</td>
+<td>23</td>
+<td>4.5.0, 4.5.1, 4.5.2,
+4.5.3, 4.5.4, 4.5.5</td>
+<td>yes</td>
+</tr>
+<tr class="row-odd"><td>83</td>
+<td>24</td>
+<td>4.6, 4.6.1</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<p>For further discussion and notes see <a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=2">Issue 2</a>. Also add a comment to
+<a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=2">Issue 2</a> if a new or different TPR file format version should be
+supported.</p>
+<div class="section" id="functions">
+<h2>4.13.1. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.topology.TPRParser.parse">
+<tt class="descclassname">MDAnalysis.topology.TPRParser.</tt><tt class="descname">parse</tt><big>(</big><em>tprfile</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a Gromacs TPR file into a MDAnalysis internal topology structure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><tt class="docutils literal"><span class="pre">structure</span></tt> dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="development-notes">
+<h2>4.13.2. Development notes<a class="headerlink" href="#development-notes" title="Permalink to this headline">¶</a></h2>
+<p>The TPR reader is a pure-python implementation of a basic TPR
+parser. Currently the following sections of the topology are parsed:</p>
+<ul class="simple">
+<li>Atoms: number, name, type, resname, resid, segid, mass, charge,
+[residue, segment, radius, bfactor, resnum]</li>
+<li>Bonds:</li>
+<li>Angels:</li>
+<li>Dihedrals:</li>
+<li>Impropers:</li>
+</ul>
+<p>Potential Bug: in the result of <strong class="program">gmxdump</strong>, the &#8220;Proper Dih.:&#8221;
+section is actually a list of Improper Dih.</p>
+<p>This tpr parser is written according to the following files</p>
+<ul class="simple">
+<li><tt class="file docutils literal"><em><span class="pre">gromacs_dir</span></em><span class="pre">/src/kernel/gmxdump.c</span></tt></li>
+<li><tt class="file docutils literal"><em><span class="pre">gromacs_dir</span></em><span class="pre">/src/gmxlib/tpxio.c</span></tt> (the most important one)</li>
+<li><tt class="file docutils literal"><em><span class="pre">gromacs_dir</span></em><span class="pre">/src/gmxlib/gmxfio_rw.c</span></tt></li>
+<li><tt class="file docutils literal"><em><span class="pre">gromacs_dir</span></em><span class="pre">/src/gmxlib/gmxfio_xdr.c</span></tt></li>
+<li><tt class="file docutils literal"><em><span class="pre">gromacs_dir</span></em><span class="pre">/include/gmxfiofio.h</span></tt></li>
+</ul>
+<p>The function <tt class="xref py py-func docutils literal"><span class="pre">read_tpxheader()</span></tt> is based on the
+<a class="reference external" href="http://code.google.com/p/mdanalysis/wiki/TPRReaderDevelopment">TPRReaderDevelopment</a> notes.  Functions with names starting with
+<tt class="docutils literal"><span class="pre">read_</span></tt> or <tt class="docutils literal"><span class="pre">do_</span></tt> are trying to be similar to those in
+<tt class="file docutils literal"><span class="pre">gmxdump.c</span></tt> or <tt class="file docutils literal"><span class="pre">tpxio.c</span></tt>, those with <tt class="docutils literal"><span class="pre">extract_</span></tt> are new.</p>
+<p>Wherever <tt class="docutils literal"><span class="pre">fver_err(fver)</span></tt> is used, it means the tpx version problem
+haven&#8217;t be resolved for those other than 58 and 73 (or gromacs version
+before 4.x)</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../coordinates_modules.html" title="5. Coordinates modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="DMSParser.html" title="4.12. DESRES Molecular Structure file format topology parser"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+          <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

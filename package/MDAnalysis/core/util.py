@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
@@ -64,6 +64,7 @@ Strings
 
 .. autofunction:: convert_aa_code
 .. autofunction:: parse_residue
+.. autofunction:: conv_float
 
 
 Mathematics and Geometry
@@ -216,7 +217,7 @@ def which(program):
 def realpath(*args):
     """Join all args and return the real path, rooted at /.
 
-    Expands '~', '~user', and environment variables such as $HOME.
+    Expands '~', '~user', and environment variables such as :envvar`$HOME`.
 
     Returns ``None`` if any of the args is ``None``.
     """
@@ -422,14 +423,25 @@ def fixedwidth_bins(delta,xmin,xmax):
 
 # geometric functions
 def norm(v):
-    """Returns the length of a vector, ``sqrt(v.v)``.
+    r"""Returns the length of a vector, ``sqrt(v.v)``.
+
+    .. math::
+
+       v = \sqrt{\mathbf{v}\cdot\mathbf{v}}
 
     Faster than :func:`numpy.linalg.norm` because no frills.
     """
     return numpy.sqrt(numpy.dot(v,v))
 
 def normal(vec1, vec2):
-    """Returns the unit vector normal to two vectors."""
+    r"""Returns the unit vector normal to two vectors.
+
+    .. math::
+
+       \hat{\mathbf{n}} = \frac{\mathbf{v}_1 \times \mathbf{v}_2}{|\mathbf{v}_1 \times \mathbf{v}_2|}
+
+    If the two vectors are collinear, the vector :math:`\mathbf{0}` is returned.
+    """
     normal = numpy.cross(vec1, vec2)
     n = norm(normal)
     if n == 0.0:
@@ -447,14 +459,19 @@ def angle(a, b):
     return numpy.arccos(x)
 
 def stp(vec1, vec2, vec3):
-    """Takes the scalar triple product of three vectors.
+    r"""Takes the scalar triple product of three vectors.
 
-    :Returns: v3 . (v1 x v2)
+    Returns the volume *V* of the parallel epiped spanned by the three
+    vectors
+
+    .. math::
+
+        V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)
     """
     return numpy.dot(vec3, numpy.cross(vec1, vec2))
 
 def dihedral(ab, bc, cd):
-    """Returns the dihedral angle in radians between vectors connecting A,B,C,D.
+    r"""Returns the dihedral angle in radians between vectors connecting A,B,C,D.
 
     The dihedral measures the rotation around bc::
 
@@ -465,9 +482,9 @@ def dihedral(ab, bc, cd):
                 C---->D
                   cd
 
-    The dihedral angle is -pi <= x <= pi.
+    The dihedral angle is restricted to the range -π <= x <= π.
 
-    .. versionadded:: 0.7.8
+    .. versionadded:: 0.8
     """
     x = angle(normal(ab, bc), normal(bc, cd))
     return (x if stp(ab, bc, cd) <= 0.0 else -x)
@@ -547,3 +564,16 @@ def parse_residue(residue):
         resname = residue                            # use 3-letter for any resname
     atomname = m.group('atom')
     return (resname, resid, atomname)
+
+
+def conv_float(s):
+    """Convert an object *s* to float if possible.
+
+    Function to be passed into :func:`map` or a list comprehension. If
+    the argument can be interpreted as a float it is converted,
+    otherwise the original object is passed back.
+    """
+    try:
+        return float(s)
+    except ValueError:
+        return s

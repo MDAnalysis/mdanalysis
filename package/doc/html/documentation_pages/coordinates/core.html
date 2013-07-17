@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -96,7 +97,7 @@
 <p>Important base classes are collected in <a class="reference internal" href="base.html#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a>.</p>
 <dl class="function">
 <dt id="MDAnalysis.coordinates.core.reader">
-<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">reader</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.reader" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">reader</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/core.html#reader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.core.reader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide a trajectory reader instance for <em>filename</em>.</p>
 <p>This function guesses the file format from the extension of <em>filename</em> and
 it will throw a <tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt> if the extension is not recognized.</p>
@@ -137,7 +138,7 @@ input (currently only implemented for PDB). [<tt class="docutils literal"><span 
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.core.writer">
-<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">writer</tt><big>(</big><em>filename</em>, <em>numatoms=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.writer" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">writer</tt><big>(</big><em>filename</em>, <em>numatoms=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/core.html#writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.core.writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize a trajectory writer instance for <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -194,7 +195,7 @@ and <tt class="xref py py-class docutils literal"><span class="pre">TRRWriter</s
 <p>Helper functions:</p>
 <dl class="function">
 <dt id="MDAnalysis.coordinates.core.get_reader_for">
-<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">get_reader_for</tt><big>(</big><em>filename</em>, <em>permissive=False</em>, <em>format=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.get_reader_for" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">get_reader_for</tt><big>(</big><em>filename</em>, <em>permissive=False</em>, <em>format=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/core.html#get_reader_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.core.get_reader_for" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the appropriate trajectory reader class for <em>filename</em>.</p>
 <p>Automatic detection is disabled when an explicit <em>format</em> is
 provided.</p>
@@ -202,7 +203,7 @@ provided.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.core.get_writer_for">
-<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">get_writer_for</tt><big>(</big><em>filename=None</em>, <em>format='DCD'</em>, <em>multiframe=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.get_writer_for" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">get_writer_for</tt><big>(</big><em>filename=None</em>, <em>format='DCD'</em>, <em>multiframe=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/core.html#get_writer_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.core.get_writer_for" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an appropriate trajectory or frame writer class for <em>filename</em>.</p>
 <p>The format is determined by the <em>format</em> argument or the extension
 of <em>filename</em>. The default is to return a dcd writer (<em>format</em> = &#8216;dcd&#8217;).</p>
@@ -236,7 +237,7 @@ behaviour.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.core.guess_format">
-<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">guess_format</tt><big>(</big><em>filename</em>, <em>format=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.guess_format" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">guess_format</tt><big>(</big><em>filename</em>, <em>format=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/core.html#guess_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.core.guess_format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the type of coordinate file <em>filename</em>.</p>
 <p>The current heuristic simply looks at the filename extension but
 more complicated probes could be implemented here or in the
@@ -246,7 +247,7 @@ individual packages (e.g. as static methods).</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.core.triclinic_box">
-<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">triclinic_box</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.triclinic_box" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">triclinic_box</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/core.html#triclinic_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.core.triclinic_box" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the three triclinic box vectors to [A,B,C,alpha,beta,gamma].</p>
 <p>Angles are in degrees.</p>
 <ul class="simple">
@@ -262,7 +263,7 @@ individual packages (e.g. as static methods).</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.core.triclinic_vectors">
-<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">triclinic_vectors</tt><big>(</big><em>dimensions</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.triclinic_vectors" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">triclinic_vectors</tt><big>(</big><em>dimensions</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/core.html#triclinic_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.core.triclinic_vectors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert <cite>[A,B,C,alpha,beta,gamma]</cite> to a triclinic box representation.</p>
 <p>Original <a class="reference external" href="http://www.mail-archive.com/gmx-users&#64;gromacs.org/msg28032.html">code by Tsjerk Wassenaar</a> posted on the Gromacs mailinglist.</p>
 <p>If <em>dimensions</em> indicates a non-periodic system (i.e. all lengths
@@ -296,7 +297,7 @@ i.e. parallel to (1,0,0).</p>
 
 <dl class="function">
 <dt id="MDAnalysis.coordinates.core.box_volume">
-<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">box_volume</tt><big>(</big><em>dimensions</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.core.box_volume" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">box_volume</tt><big>(</big><em>dimensions</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/core.html#box_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.core.box_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the volume of the unitcell described by <em>dimensions</em>.</p>
 <p>The volume is computed as <cite>det(x1,x2,x2)</cite> where the xi are the
 triclinic box vectors from <a class="reference internal" href="#MDAnalysis.coordinates.core.triclinic_vectors" title="MDAnalysis.coordinates.core.triclinic_vectors"><tt class="xref py py-func docutils literal"><span class="pre">triclinic_vectors()</span></tt></a>.</p>
@@ -348,10 +349,10 @@ B[1] = second vector, B[2] third box vector.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -120,7 +121,7 @@ the <a class="reference external" href="http://groups.google.com/group/mdnalysis
 object.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>AMBER trajectory Timestep.</p>
 <p>The Timestep can be initialized with <em>arg</em> being</p>
 <ol class="arabic simple">
@@ -129,27 +130,27 @@ space for both coordinates and velocities;</li>
 <li>another <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance, in which case a copy is made (If the copied Timestep
 does not contain velocities but <em>velocities</em> = <tt class="docutils literal"><span class="pre">True</span></tt> is provided, then space for
 velocities is allocated);</li>
-<li>a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <tt class="docutils literal"><span class="pre">(numatoms,</span> <span class="pre">3)</span></tt> (for positions only) or
+<li>a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <tt class="docutils literal"><span class="pre">(numatoms,</span> <span class="pre">3)</span></tt> (for positions only) or
 <tt class="docutils literal"><span class="pre">(numatoms,</span> <span class="pre">6)</span></tt> (for positions and velocities): <tt class="docutils literal"><span class="pre">positions</span> <span class="pre">=</span> <span class="pre">arg[:,:3]</span></tt>,
 <tt class="docutils literal"><span class="pre">velocities</span> <span class="pre">=</span> <span class="pre">arg[:3:6]</span></tt>.</li>
 </ol>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._pos">
 <tt class="descname">_pos</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>coordinates of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(numatoms, 3)</cite></p>
+<dd><p>coordinates of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(numatoms, 3)</cite></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._velocities">
 <tt class="descname">_velocities</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._velocities" title="Permalink to this definition">¶</a></dt>
-<dd><p>velocities of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(numatoms, 3)</cite>;
+<dd><p>velocities of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(numatoms, 3)</cite>;
 only available if the trajectory contains velocities or if the
 <em>velocities</em> = <tt class="docutils literal"><span class="pre">True</span></tt> keyword has been supplied.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep.dimensions">
-<tt class="descname">dimensions</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">dimensions</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#Timestep.dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
 <dd><p>unitcell dimensions (<cite>A, B, C, alpha, beta, gamma</cite>)</p>
 <ul class="simple">
 <li><cite>A, B, C</cite> are the lengths of the primitive cell vectors <cite>e1, e2, e3</cite></li>
@@ -189,7 +190,7 @@ assumed to be non-periodic (for technical reasons).</li>
 </ul>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRJ.TRJReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">TRJReader</tt><big>(</big><em>filename</em>, <em>numatoms=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">TRJReader</tt><big>(</big><em>filename</em>, <em>numatoms=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>AMBER trajectory reader.</p>
 <p>Reads the ASCII formatted <a class="reference external" href="http://ambermd.org/formats.html#trajectory">AMBER TRJ format</a>. Periodic box information
 is auto-detected.</p>
@@ -204,25 +205,25 @@ is assumed to be in ps. The default value is 1 ps.</p>
 trajectory.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.TRJReader.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.close" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close trj trajectory file if it was open.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.TRJReader.numframes">
-<tt class="descname">numframes</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.numframes" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">numframes</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader.numframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.numframes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of frames (obtained from reading the whole trajectory).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.TRJReader.open_trajectory">
-<tt class="descname">open_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.open_trajectory" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">open_trajectory</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader.open_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.open_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open the trajectory for reading and load first frame.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.TRJReader.rewind">
-<tt class="descname">rewind</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.rewind" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">rewind</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader.rewind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.rewind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reposition at the beginning of the trajectory</p>
 </dd></dl>
 
@@ -240,7 +241,7 @@ defaults of ångström and picoseconds but at the moment MDAnalysis only support
 those and will raise a <tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt> if anything else is detected.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">NCDFReader</tt><big>(</big><em>filename</em>, <em>numatoms=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">NCDFReader</tt><big>(</big><em>filename</em>, <em>numatoms=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reader for <a class="reference external" href="http://ambermd.org/netcdf/nctraj.html">AMBER NETCDF format</a> (version 1.0).</p>
 <p>AMBER binary trajectories are automatically recognised by the
 file extension &#8221;.ncdf&#8221;.</p>
@@ -265,7 +266,7 @@ the trajectory, then <a class="reference internal" href="#MDAnalysis.coordinates
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader.__getitem__">
-<tt class="descname">__getitem__</tt><big>(</big><em>frame</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.__getitem__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__getitem__</tt><big>(</big><em>frame</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader.__getitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.__getitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the Timestep corresponding to <em>frame</em>.</p>
 <p>If <em>frame</em> is a integer then the corresponding frame is
 returned. Negative numbers are counted from the end.</p>
@@ -279,13 +280,13 @@ allows iteration over that part of the trajectory.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader.__iter__">
-<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.__iter__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader.__iter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate over the whole trajectory</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader.Writer">
-<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.Writer" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a NCDFWriter for <em>filename</em> with the same parameters as this NCDF.</p>
 <p>All values can be changed through keyword arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -321,7 +322,7 @@ allows iteration over that part of the trajectory.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.close" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close trajectory; any further access will raise an <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt></p>
 </dd></dl>
 
@@ -329,7 +330,7 @@ allows iteration over that part of the trajectory.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">NCDFWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=1.0</em>, <em>remarks=None</em>, <em>convert_units=None</em>, <em>zlib=False</em>, <em>cmplevel=1</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">NCDFWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=1.0</em>, <em>remarks=None</em>, <em>convert_units=None</em>, <em>zlib=False</em>, <em>cmplevel=1</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writer for <a class="reference external" href="http://ambermd.org/netcdf/nctraj.html">AMBER NETCDF format</a> (version 1.0).</p>
 <p>AMBER binary trajectories are automatically recognised by the
 file extension &#8221;.ncdf&#8221;.</p>
@@ -385,13 +386,13 @@ the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAn
 </table>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic">
-<tt class="descname">is_periodic</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">is_periodic</tt><big>(</big><em>ts=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter.is_periodic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <tt class="docutils literal"><span class="pre">True</span></tt> if <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> <em>ts</em> contains a valid simulation box</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFWriter.write_next_timestep">
-<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter.write_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>write a new timestep to the trj file</p>
 <p><em>ts</em> is a <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance containing coordinates to
 be written to trajectory file</p>
@@ -428,10 +429,10 @@ be written to trajectory file</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>MDAnalysis.coordinates.PQR &mdash; MDAnalysis 0.7.8-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.7.8-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.7.8-dev documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../../index.html" />
+    <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for MDAnalysis.coordinates.PQR</h1><div class="highlight"><pre>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8; -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c">#</span>
+<span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
+<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
+<span class="c">#               and contributors (see website for details)</span>
+<span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c">#</span>
+<span class="c"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c">#</span>
+<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
+<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
+<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
+<span class="c">#     doi:10.1002/jcc.21787</span>
+<span class="c">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PQR file format --- :mod:`MDAnalysis.coordinates.PQR`</span>
+<span class="sd">=====================================================</span>
+
+<span class="sd">Read atoms with charges from a PQR_ file (as written by PDB2PQR_). The</span>
+<span class="sd">following is adopted from the description of the PQR_ format as used by APBS_:</span>
+
+<span class="sd">*MDAnalysis* reads very loosely-formatted PQR files: all fields are</span>
+<span class="sd">**whitespace-delimited** rather than the strict column formatting mandated</span>
+<span class="sd">by the PDB_ format. This more liberal formatting allows coordinates</span>
+<span class="sd">which are larger/smaller than ±999 Å.</span>
+
+<span class="sd">MDAnalysis reads data on a per-line basis from PQR files using the following format::</span>
+
+<span class="sd">   recordName serial atomName residueName chainID residueNumber X Y Z charge radius</span>
+
+<span class="sd">If this fails it is assumed that the *chainID* was omitted and the shorter</span>
+<span class="sd">format is read::</span>
+
+<span class="sd">   recordName serial atomName residueName residueNumber X Y Z charge radius</span>
+
+<span class="sd">Anything else will raise a :exc:`ValueError`.</span>
+
+<span class="sd">The whitespace is the most important feature of this format: fields</span>
+<span class="sd">*must* be separated by at least one space or tab character. The fields</span>
+<span class="sd">are:</span>
+
+<span class="sd">*recordName*</span>
+<span class="sd">    A string which specifies the type of PQR entry and should either be ATOM or</span>
+<span class="sd">    HETATM.</span>
+<span class="sd">*serial*</span>
+<span class="sd">    An integer which provides the atom index (but note that MDAnalysis renumbers</span>
+<span class="sd">    atoms so one cannot rely on the *serial*)</span>
+<span class="sd">*atomName*</span>
+<span class="sd">    A string which provides the atom name.</span>
+<span class="sd">*residueName*</span>
+<span class="sd">    A string which provides the residue name.</span>
+<span class="sd">*chainID*</span>
+<span class="sd">    An optional string which provides the chain ID of the atom.</span>
+<span class="sd">*residueNumber*</span>
+<span class="sd">    An integer which provides the residue index.</span>
+<span class="sd">*X Y Z*</span>
+<span class="sd">    Three floats which provide the atomic coordiantes.</span>
+<span class="sd">*charge*</span>
+<span class="sd">    A float which provides the atomic charge (in electrons).</span>
+<span class="sd">*radius*</span>
+<span class="sd">    A float which provides the atomic radius (in Ã…).</span>
+
+<span class="sd">Clearly, this format can deviate wildly from PDB_ due to the use of whitespaces</span>
+<span class="sd">rather than specific column widths and alignments. This deviation can be</span>
+<span class="sd">particularly significant when large coordinate values are used.</span>
+
+<span class="sd">.. Warning:: Fields *must be white-space separated* or data are read</span>
+<span class="sd">             incorrectly. PDB formatted files are *not* guaranteed to be</span>
+<span class="sd">             white-space separated so extra care should be taken when quickly</span>
+<span class="sd">             converting PDB files into PQR files using simple scripts.</span>
+
+<span class="sd">For example, PQR files created with PDB2PQR_ and the `--whitespace`</span>
+<span class="sd">option are guaranteed to conform to the above format::</span>
+
+<span class="sd">   pdb2pqr --ff=charmm --whitespace 4ake.pdb 4ake.pqr</span>
+
+<span class="sd">.. _PQR:     http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr</span>
+<span class="sd">.. _APBS:    http://www.poissonboltzmann.org/apbs</span>
+<span class="sd">.. _PDB2PQR: http://www.poissonboltzmann.org/pdb2pqr</span>
+<span class="sd">.. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis.core</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">as</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">base</span>
+<span class="kn">from</span> <span class="nn">base</span> <span class="kn">import</span> <span class="n">Timestep</span>
+<span class="kn">import</span> <span class="nn">pdb.extensions</span>
+
+<div class="viewcode-block" id="PQRReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader">[docs]</a><span class="k">class</span> <span class="nc">PQRReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read a PQR_ file into MDAnalysis.</span>
+
+<span class="sd">    The :mod:`~MDAnalysis.topology.PQRParser` takes charges from the</span>
+<span class="sd">    PQR file in order to populate the</span>
+<span class="sd">    :attr:`MDAnalysis.core.AtomGroup.Atom.charge` attribute. Radii are</span>
+<span class="sd">    accessible through the :meth:`get_radii` method of the reader, the</span>
+<span class="sd">    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.radii` method and the</span>
+<span class="sd">    :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;PQR&#39;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>
+    <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read coordinates from *filename*.</span>
+
+<span class="sd">        *filename* can be a gzipped or bzip2ed compressed PQR_ file.</span>
+
+<span class="sd">        .. _PQR:</span>
+<span class="sd">           http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">convert_units</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_gromacs_lengths&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>  <span class="c"># convert length and time to base units</span>
+
+        <span class="n">coords</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">segID</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>  <span class="c"># use empty string (not in PQR), PQRParsers sets it to SYSTEM</span>
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pqrfile</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">pqrfile</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;ATOM  &#39;</span><span class="p">,</span> <span class="s">&#39;HETATM&#39;</span><span class="p">):</span>
+                    <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">recordName</span><span class="p">,</span><span class="n">serial</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">resName</span><span class="p">,</span><span class="n">chainID</span><span class="p">,</span><span class="n">resSeq</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">charge</span><span class="p">,</span><span class="n">radius</span> <span class="o">=</span> <span class="n">fields</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="c"># files without the chainID</span>
+                        <span class="n">recordName</span><span class="p">,</span><span class="n">serial</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">resName</span><span class="p">,</span><span class="n">resSeq</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">charge</span><span class="p">,</span><span class="n">radius</span> <span class="o">=</span> <span class="n">fields</span>
+                        <span class="n">chainID</span> <span class="o">=</span> <span class="s">&#39;A&#39;</span>
+                    <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">z</span><span class="p">)))</span>
+                    <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">serial</span><span class="p">),</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">resSeq</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">charge</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">),</span><span class="n">segID</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">unitcell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># 1-based frame number</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>             <span class="c"># in-place !</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>    <span class="c"># in-place ! (only lengths)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip_timestep</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c"># hack for PQRParser:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">fromrecords</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s">&quot;serial,name,resName,chainID,resSeq,charge,radius,segID&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PQRReader.get_radii"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader.get_radii">[docs]</a>    <span class="k">def</span> <span class="nf">get_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return an array of atom radii in atom order.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">radius</span>
+</div>
+<div class="viewcode-block" id="PQRReader.get_charges"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader.get_charges">[docs]</a>    <span class="k">def</span> <span class="nf">get_charges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return an array of charges in atom order.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">charge</span>
+</div>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>  <span class="c"># Just a single frame</span>
+        <span class="k">raise</span> <span class="ne">StopIteration</span>
+
+    <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;PQR only contains a single frame at frame index 0&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
+
+    <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># PQR file only contains a single frame</span>
+        <span class="k">raise</span> <span class="ne">IOError</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

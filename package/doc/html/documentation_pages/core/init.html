@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.7.8-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -142,7 +143,7 @@ raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError
 <h3>7.1.1.1. List of MDAnalysis flags with default values<a class="headerlink" href="#list-of-mdanalysis-flags-with-default-values" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="MDAnalysis.core.__init__.flagsDocs">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.__init__.</tt><tt class="descname">flagsDocs</tt><a class="headerlink" href="#MDAnalysis.core.__init__.flagsDocs" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.__init__.</tt><tt class="descname">flagsDocs</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/__init__.html#flagsDocs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.__init__.flagsDocs" title="Permalink to this definition">¶</a></dt>
 <dd><p><strong>use_periodic_selections</strong> = <em>True</em></p>
 <blockquote>
 <div><p>Determines if distance selections (AROUND, POINT) respect periodicity.</p>
@@ -266,7 +267,7 @@ trajectories.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.core.__init__.Flags">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.__init__.</tt><tt class="descname">Flags</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flags" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.__init__.</tt><tt class="descname">Flags</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/__init__.html#Flags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.__init__.Flags" title="Permalink to this definition">¶</a></dt>
 <dd><p>Global registry of flags. Acts like a dict for item access.</p>
 <p>There are a number flags defined that influence how MDAnalysis behaves. They are
 accessible through the pseudo-dictionary</p>
@@ -282,19 +283,19 @@ instance as an argument.</p>
 <p>For DEVELOPERS: Initialize Flags registry with a <em>list</em> of <a class="reference internal" href="#MDAnalysis.core.__init__.Flag" title="MDAnalysis.core.__init__.Flag"><tt class="xref py py-class docutils literal"><span class="pre">Flag</span></tt></a> instances.</p>
 <dl class="method">
 <dt id="MDAnalysis.core.__init__.Flags.doc">
-<tt class="descname">doc</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flags.doc" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">doc</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/__init__.html#Flags.doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.__init__.Flags.doc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows doc strings for all flags.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.__init__.Flags.register">
-<tt class="descname">register</tt><big>(</big><em>flag</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flags.register" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">register</tt><big>(</big><em>flag</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/__init__.html#Flags.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.__init__.Flags.register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register a new Flag instance with the Flags registry.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.__init__.Flags.update">
-<tt class="descname">update</tt><big>(</big><em>*flags</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flags.update" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">update</tt><big>(</big><em>*flags</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/__init__.html#Flags.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.__init__.Flags.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update Flags registry with a list of Flag instances.</p>
 </dd></dl>
 
@@ -302,7 +303,7 @@ instance as an argument.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.core.__init__.Flag">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.__init__.</tt><tt class="descname">Flag</tt><big>(</big><em>name</em>, <em>default</em>, <em>mapping=None</em>, <em>doc=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flag" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.__init__.</tt><tt class="descname">Flag</tt><big>(</big><em>name</em>, <em>default</em>, <em>mapping=None</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/__init__.html#Flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.__init__.Flag" title="Permalink to this definition">¶</a></dt>
 <dd><p>A Flag, essentially a variable that knows its default and legal values.</p>
 <p>Create a new flag which will be registered with FLags.</p>
 <blockquote>
@@ -339,7 +340,7 @@ all values are directly set.</p>
 </table>
 <dl class="method">
 <dt id="MDAnalysis.core.__init__.Flag.prop">
-<tt class="descname">prop</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.__init__.Flag.prop" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">prop</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/__init__.html#Flag.prop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.__init__.Flag.prop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use this for <tt class="docutils literal"><span class="pre">property(**flag.prop())</span></tt></p>
 </dd></dl>
 
@@ -375,10 +376,10 @@ all values are directly set.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2012, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl,
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

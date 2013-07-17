@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
@@ -68,6 +68,11 @@ The following table lists the currently supported topology formats.
    DESRES [#a]_     dms         DESRES molecular sturcture reader (only supports
                                 the atom and bond records);
                                 :mod:`MDAnalysis.topology.DMSParser`
+
+   TPR              tpr         Gromacs portable run input reader (limited
+                                experimental support for some of the more recent
+                                versions of the file format);
+                                :mod:`MDAnalysis.topology.TPRParser`
    ================ ==========  =====================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
@@ -78,14 +83,127 @@ The following table lists the currently supported topology formats.
    Universe(filename)``
 
 .. SeeAlso:: :ref:`Coordinates` with the :ref:`Supported coordinate formats`
+
+
+Developer Notes
+---------------
+
+.. versionadded:: 0.8
+
+Topology information consists of data that do not change over time,
+i.e. information that is the same for all time steps of a
+trajectory. This includes
+
+* identity of atoms (name, type, number, partial charge, ...) and to
+  which residue and segment they belong; atoms are identified in
+  MDAnalysis by their :attr:`~MDAnalysis.core.AtomGroup.Atom.number`,
+  an integer number starting at 0 and incremented in the order of
+  atoms found in the topology.
+
+* bonds (pairs of atoms)
+
+* angles (triplets of atoms)
+
+* dihedral angles (quadruplets of atoms) — proper and improper
+  dihedrals should be treated separately
+
+At the moment, only the identity of atoms is mandatory and at its most
+basic, the topology is simply a list of atoms to be associated with a
+list of coordinates.
+
+The current implementation contains submodules for different topology
+file types. Each submodule *must* contain a function :func:`parse`:
+
+.. function: parse(filename)
+
+   Read a topology from *filename* and return the structure dict.
+
+The function returns the basic MDAnalysis representation of the
+topology. At the moment, this is simply a dictionary with keys
+*_atoms*, *_bonds*, *_angles*, *_dihe*, *_impr*. The dictionary is
+stored as :attr:`MDAnalysis.AtomGroup.Universe._psf`.
+
+.. warning::
+
+   The internal dictionary representation is subject to change. User
+   code should *not* access this dictionary directly. The information
+   provided here is solely for developers who need to work with the
+   existing parsers.
+
+The format of the individual keys is the following (see
+:mod:`PSFParser` for a reference implementation):
+
+_atoms
+~~~~~~
+
+The **atoms** are represented as a :class:`list` of
+:class:`~MDAnalysis.core.AtomGroup.Atom` instances. The parser needs
+to initialize the :class:`~MDAnalysis.core.AtomGroup.Atom` objects
+with the data read from the topology file.
+
+The order of atoms in the list must correspond to the sequence of
+atoms in the topology file. The atom's
+:attr:`~MDAnalysis.core.AtomGroup.Atom.number` corresponds to its
+index in this list.
+
+
+_bonds
+~~~~~~
+
+**Bonds** are represented as a :class:`list` of :class:`tuple`. Each tuple
+contains two atom numbers, which indicate the atoms between which the
+bond is formed. Only one of the two permutations is stored, typically
+the one with the lower atom number first.
+
+
+_angles
+~~~~~~~
+
+**Angles** are represented by a :class:`list` of :class:`tuple`. Each
+tuple contains three atom numbers.
+
+.. Note::
+
+   At the moment, the order is not defined and depends on how the
+   topology file defines angles.
+
+   Currently, MDAnalysis does not use the angles.
+
+_dihe
+~~~~~
+
+**Proper dihedral angles** are represented by a :class:`list` of :class:`tuple`. Each
+tuple contains four atom numbers.
+
+.. Note::
+
+   At the moment, the order is not defined and depends on how the
+   topology file defines proper dihedrals..
+
+   Currently, MDAnalysis does not use the dihedrals.
+
+
+_impr
+~~~~~
+
+**Improper dihedral angles** are represented by a :class:`list` of :class:`tuple`. Each
+tuple contains four atom numbers.
+
+.. Note::
+
+   At the moment, the order is not defined and depends on how the
+   topology file defines improper dihedrals..
+
+   Currently, MDAnalysis does not use the improper dihedrals.
+
 """
 
-__all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser', 'CRDParser','TOPParser', 'PDBQTParser']
+__all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser', 'CRDParser','TOPParser', 'PDBQTParser', 'TPRParser']
 
 import core
 import PSFParser, TOPParser, \
     PDBParser, PrimitivePDBParser, PQRParser, GROParser, CRDParser, \
-    PDBQTParser, DMSParser
+    PDBQTParser, DMSParser, TPRParser
 
 # dictionary of known file formats and the corresponding file parser
 # (all parser should essentially do the same thing; the PSFParser is
@@ -99,7 +217,11 @@ _topology_parsers = {'PSF': PSFParser.parse,
                      'TOP': TOPParser.parse,
                      'PRMTOP': TOPParser.parse,
                      'PDBQT': PDBQTParser.parse,
+                     'TPR': TPRParser.parse,
                      'DMS': DMSParser.parse,
                      }
 _topology_parsers_permissive = _topology_parsers.copy()
 _topology_parsers_permissive['PDB'] = PrimitivePDBParser.parse
+
+_topology_parsers_bonds = _topology_parsers.copy()
+_topology_parsers_bonds['PDB'] = PrimitivePDBParser.parse_bonds

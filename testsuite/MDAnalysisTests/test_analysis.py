@@ -19,6 +19,7 @@ import MDAnalysis
 import MDAnalysis.analysis.distances
 import MDAnalysis.analysis.align
 import MDAnalysis.analysis.hbonds
+from MDAnalysis import SelectionError
 
 import numpy as np
 from numpy.testing import *
@@ -121,6 +122,23 @@ class TestAlign(TestCase):
         rmsd = MDAnalysis.analysis.align.rmsd(self.reference.atoms.coordinates(), fitted.atoms.coordinates())
         assert_almost_equal(rmsd, desired, decimal=5,
                             err_msg="frame %d of fit does not have expected RMSD" % frame)
+
+    @attr('issue')
+    def test_alignto_checks_selections(self):
+        """Testing that alignto() fails if selections do not match (Issue 143)"""
+        u = self.universe
+
+        def different_size():
+            a = u.atoms[10:100]
+            b = u.atoms[10:101]
+            return MDAnalysis.analysis.align.alignto(a, b)
+        assert_raises(SelectionError, different_size)
+
+        def different_atoms():
+            a = u.atoms[10:20]
+            b = u.atoms[10:17] + u.atoms[18:21]
+            return MDAnalysis.analysis.align.alignto(a, b)
+        assert_raises(SelectionError, different_atoms)
 
 class TestHydrogenBondAnalysis(TestCase):
     def setUp(self):
