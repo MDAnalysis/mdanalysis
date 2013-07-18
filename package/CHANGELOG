@@ -28,11 +28,16 @@ The rules for this file:
   * bond connectivity information can be guessed from a PDB file if
     the bond=True keyword is set in Universe (Issue 23)
   * MDAnalysis.analysis.rms.RMSD: calculation of additional RMSDs
+  * can use advanced slicing (with arbitrary lists or arrays) at all
+    levels of the hierarchy (Issue 148)
 
   Changes
 
   * removed Timeseries.principleAxis (probably was never working)
   * dependent on Biopython >= 1.59 (Issue 147)
+  * slicing and indexing of AtomGroup, Residue, ResidueGroup, Segment,
+    SegmentGroup will now always return an appropriate object and
+    never a simple list
 
   Fixes
 
@@ -43,6 +48,9 @@ The rules for this file:
     if ref_frame != 0
   * alignto() now checks that the two selections describe the same
     atoms (fixes Issue 143)
+  * slicing of ResidueGroup will now produce a ResidueGroup, and
+    slicing of a SegmentGroup will produce a SegmentGroup, not a list
+    as before (fixes Issue 135)
  
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux

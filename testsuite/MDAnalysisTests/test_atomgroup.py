@@ -362,6 +362,34 @@ class TestAtomGroup(TestCase):
         assert_equal(u.atoms.segids(), ["CORE", "NMP", "CORE", "LID", "CORE"],
                      err_msg="failed to change segids = {}".format(u.atoms.segids()))
 
+class TestResidue(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PSF, DCD)
+        self.res = self.universe.residues[100]
+
+    def test_type(self):
+        assert_equal(type(self.res), MDAnalysis.core.AtomGroup.Residue)
+        assert_equal(self.res.name, "ILE")
+        assert_equal(self.res.id, 101)
+
+    def test_index(self):
+        atom = self.res[2]        
+        assert_equal(type(atom), MDAnalysis.core.AtomGroup.Atom)
+        assert_equal(atom.name, "CA")
+        assert_equal(atom.number, 1522)
+        assert_equal(atom.resid, 101)
+
+    def test_slicing(self):
+        atoms = self.res[2:10:2]
+        assert_equal(len(atoms), 4)
+        assert_equal(type(atoms), MDAnalysis.core.AtomGroup.AtomGroup)
+
+    def test_advanced_slicing(self):
+        atoms = self.res[[0, 2, -2, -1]]
+        assert_equal(len(atoms), 4)
+        assert_equal(type(atoms), MDAnalysis.core.AtomGroup.AtomGroup)
+        assert_equal(atoms.names(), ["N", "CA", "C" ,"O"])
+
 
 class TestResidueGroup(TestCase):
     def setUp(self):
@@ -370,8 +398,9 @@ class TestResidueGroup(TestCase):
         self.rg = self.universe.atoms.residues
 
     def test_newResidueGroup(self):
+        """test that slicing a ResidueGroup returns a new ResidueGroup (Issue 135)"""
         rg = self.universe.atoms.residues
-        newrg = MDAnalysis.core.AtomGroup.ResidueGroup(rg[10:20:2])
+        newrg = rg[10:20:2]
         assert_equal(type(newrg), type(rg), "Failed to make a new ResidueGroup: type mismatch")
         assert_equal(len(newrg), len(rg[10:20:2]))
 
@@ -447,6 +476,33 @@ class TestResidueGroup(TestCase):
                      mass*numpy.ones(rg.numberOfAtoms()),
                      err_msg="failed to set_mass H* atoms in resid 12:42 to {}".format(mass))
 
+class TestSegment(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PSF, DCD)
+        self.universe.residues[:100].set_segid("A")     # make up some segments
+        self.universe.residues[100:150].set_segid("B")
+        self.universe.residues[150:].set_segid("C")
+        self.sB = self.universe.segments[1]
+
+    def test_type(self):
+        assert_equal(type(self.sB), MDAnalysis.core.AtomGroup.Segment)
+        assert_equal(self.sB.name, "B")
+
+    def test_index(self):
+        s = self.sB
+        res = s[5]
+        assert_equal(type(res), MDAnalysis.core.AtomGroup.Residue)
+
+    def test_slicing(self):
+        res = self.sB[5:10]
+        assert_equal(len(res), 5)
+        assert_equal(type(res), MDAnalysis.core.AtomGroup.ResidueGroup)
+
+    def test_advanced_slicing(self):
+        res = self.sB[[3,7,2,4]]
+        assert_equal(len(res), 4)
+        assert_equal(type(res), MDAnalysis.core.AtomGroup.ResidueGroup)
+
 
 class TestSegmentGroup(TestCase):
     def setUp(self):
@@ -455,10 +511,11 @@ class TestSegmentGroup(TestCase):
         self.g = self.universe.atoms.segments
 
     def test_newSegmentGroup(self):
+        """test that slicing a SegmentGroup returns a new SegmentGroup (Issue 135)"""
         g = self.universe.atoms.segments
-        newg = MDAnalysis.core.AtomGroup.SegmentGroup(g[:])
+        newg = g[:]
         assert_equal(type(newg), type(g), "Failed to make a new SegmentGroup: type mismatch")
-        assert_equal(len(newg), len(g[:]))
+        assert_equal(len(newg), len(g))
 
     def test_numberOfAtoms(self):
         assert_equal(self.g.numberOfAtoms(), 3341)

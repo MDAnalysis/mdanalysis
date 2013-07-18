@@ -430,6 +430,8 @@ class AtomGroup(object):
        An empty AtomGroup can be created and no longer raises a
        :exc:`NoDataError`.
     """
+    # for generalized __getitem__ (override _containername for ResidueGroup and SegmentGroup)
+    _containername = "_atoms"
     def __init__(self, atoms):
         if len(atoms) > 0:
             # __atoms property is effectively readonly
@@ -453,6 +455,9 @@ class AtomGroup(object):
         # - built on the fly when they are needed
         # - delete entry to invalidate
         self.__cache = dict()
+
+        # for generalized __getitem__ (override _containername for ResidueGroup and SegmentGroup)
+        self._container = getattr(self, self._containername)
 
     def _rebuild_caches(self):
         """Rebuild all AtomGroup caches.
@@ -563,17 +568,22 @@ class AtomGroup(object):
         return self.numberOfAtoms()
 
     def __getitem__(self, item):
-        """Return Atom (index) or AtomGroup (slicing)"""
+        """Return element (index) or group (slicing).
+
+        .. versionchanged:: 0.8 ResidueGroup and SegmentGroup: return groups themselves and allow advanced slicing
+        """
+        container = self._container     # see __init__ and _containername: used so that __getitem__
+        cls = self.__class__            # can be used inherited in ResidueGroup and SegmentGroup
         # consistent with the way list indexing/slicing behaves:
         if numpy.dtype(type(item)) == numpy.dtype(int):
-            return self._atoms[item]
+            return container[item]
         elif type(item) == slice:
-            return AtomGroup(self._atoms[item])
+            return cls(container[item])
         elif isinstance(item, (numpy.ndarray, list)):
             # advanced slicing, requires array or list
-            return AtomGroup([self._atoms[i] for i in item])
+            return cls([container[i] for i in item])
         else:
-            return super(AtomGroup, self).__getitem__(item)
+            return super(cls, self).__getitem__(item)
 
     def __getattr__(self, name):
         # There can be more than one atom with the same name
@@ -1713,7 +1723,7 @@ class Residue(AtomGroup):
        Added :attr:`Residue.resnum` attribute and *resnum* keyword argument.
     """
     ## FIXME (see below, Issue 70)
-    ##__cache = {}
+    ##__cache = {}    
     def __init__(self, name, id, atoms, resnum=None):
         super(Residue, self).__init__(atoms)
         self.name = name
@@ -1797,10 +1807,22 @@ class Residue(AtomGroup):
             return None
 
     def __getitem__(self, item):
-        if numpy.dtype(type(item)) == numpy.dtype(int) or type(item) == slice:
-            return self._atoms[item]
+        """Return :class:`Atom` (index) or :class:`AtomGroup` (slicing).
+
+        .. versionchanged:: 0.8 slicing/advanced slicing returns :class:`AtomGroup`, not just :class:`list`.
+        """
+        container = self._atoms
+        cls = AtomGroup
+        # consistent with the way list indexing/slicing behaves:
+        if numpy.dtype(type(item)) == numpy.dtype(int):
+            return container[item]
+        elif type(item) == slice:
+            return cls(container[item])
+        elif isinstance(item, (numpy.ndarray, list)):
+            # advanced slicing, requires array or list
+            return cls([container[i] for i in item])
         else:
-            return self.__getattr__(item)
+            return super(cls, self).__getitem__(item)
 
     def __getattr__(self, name):
         # There can only be one atom with a certain name
@@ -1834,6 +1856,7 @@ class ResidueGroup(AtomGroup):
     :Data: :attr:`ResidueGroup._residues`
 
     """
+    _containername = "_residues"
     def __init__(self, residues):
         """Initialize the ResidueGroup with a list of :class:`Residue` instances."""
         self._residues = residues
@@ -1967,11 +1990,12 @@ class ResidueGroup(AtomGroup):
     def __len__(self):
         return len(self._residues)
 
-    def __getitem__(self, item):
-        if numpy.dtype(type(item)) == numpy.dtype(int) or type(item) == slice:
-            return self._residues[item]
-        else:
-            raise TypeError("Residue group indices must be int or a slice, not %s." % type(item))
+#    def __getitem__(self, item):
+#        if numpy.dtype(type(item)) == numpy.dtype(int) or type(item) == slice:
+#            return self._residues[item]
+#        else:
+#            raise TypeError("Residue group indices must be int or a slice, not %s." % type(item))
+
 
     def __getattr__(self, attr):
         atomlist = [atom for atom in self.atoms if atom.name == attr]
@@ -2024,6 +2048,24 @@ class Segment(ResidueGroup):
     def id_setter(self,x):
         self.name = x
 
+    def __getitem__(self, item):
+        """Return :class:`Residue` (index) or :class:`ResidueGroup` (slicing).
+
+        .. versionchanged:: 0.8 slicing/advanced slicing returns :class:`ResidueGroup`, not just :class:`list`.
+        """
+        container = self._residues
+        cls = ResidueGroup
+        # consistent with the way list indexing/slicing behaves:
+        if numpy.dtype(type(item)) == numpy.dtype(int):
+            return container[item]
+        elif type(item) == slice:
+            return cls(container[item])
+        elif isinstance(item, (numpy.ndarray, list)):
+            # advanced slicing, requires array or list
+            return cls([container[i] for i in item])
+        else:
+            return super(cls, self).__getitem__(item)
+
     def __getattr__(self, attr):
         if attr[0] == 'r':
             resnum = int(attr[1:]) - 1   # 1-based for the user, 0-based internally
@@ -2036,6 +2078,7 @@ class Segment(ResidueGroup):
             if (len(r) == 0): return super(Segment, self).__getattr__(attr)
             # elif (len(r) == 1): return r[0]  ## creates unexpected behaviour (Issue 47)
             else: return ResidueGroup(r)
+
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self.name)+'>'
 
@@ -2059,6 +2102,7 @@ class SegmentGroup(ResidueGroup):
     :Data: :attr:`SegmentGroup._segments`
 
     """
+    _containername = "_segments"
     def __init__(self, segments):
         """Initialize the SegmentGroup with a list of :class:`Segment` instances."""
         self._segments = segments
@@ -2129,18 +2173,11 @@ class SegmentGroup(ResidueGroup):
         for seg,value in itertools.izip(self.segments, itertools.cycle(util.asiterable(segid))):
             setattr(seg, 'name', value)
 
-
     def __iter__(self):
         return iter(self._segments)
 
     def __len__(self):
         return len(self._segments)
-
-    def __getitem__(self, item):
-        if numpy.dtype(type(item)) == numpy.dtype(int) or type(item) == slice:
-            return self._segments[item]
-        else:
-            raise TypeError("Segment group indices must be int or a slice, not %s." % type(item))
 
     def __getattr__(self, attr):
         if attr.startswith('s') and attr[1].isdigit():
