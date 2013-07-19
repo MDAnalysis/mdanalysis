@@ -546,12 +546,16 @@ class X3DNAtraj(BaseX3DNA):
             logger.info("X3DNA analysis frame %4d ", ts.frame)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)
+            nucleic.write(pdbfile)
+            os.system("find_pair %s 355d.bps" %(pdbfile))
             try:
                 nucleic.write(pdbfile)
-                if int(ts.frame) == int(start+1):
+                '''
+                if int(ts.frame) in [int(start+1), 1]:
                     #print start
                     os.system("find_pair %s 355d.bps" %(pdbfile))
                     #print "complete"
+                '''
                 x3dna_profiles = self.run_x3dna(pdbfile, **x3dna_kw)
                 #print "yes"
             finally:
