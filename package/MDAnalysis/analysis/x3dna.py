@@ -53,7 +53,7 @@ B-DNA structure::
    from MDAnalysis.analysis.x3dna import X3DNA, X3DNAtraj
    from MDAnalysis.tests.datafiles import PDB_X3DNA
 
-   H = X3DNA(PDB_X3DNA, executable="find_pair pdbfile stdout | analyze stdin ")  # set path to your x3dna binary in bashrc file
+   H = X3DNA(PDB_X3DNA, executable="x3dna_ensemble analyze -b 355d.bps -p pdbfile # set path to your x3dna binary in bashrc file
    H.run()
    H.collect()
    H.plot()
@@ -68,6 +68,7 @@ Analyzing a trajectory::
   H = X3DNAtraj(u, ...)
   H.run()
   H.plot()
+  H.save()
 
 The profiles are available as the attribute :attr:`X3DNAtraj.profiles`
 (``H.profiles`` in the example) and are indexed by frame number but
@@ -83,8 +84,7 @@ Analysis
    :members:
    :inherited-members:
 
-
-   find_pair pdbfile stdout | analyze stdin ") attribute:: profiles
+   x3dna_ensemble analyze -b 355d.bps -p pdbfile  attribute:: profiles
       After running :meth:`X3DNA.collect`, this dict contains all the
       X3DNA profiles, indexed by the frame number. If only a single
       frame was analyzed then this will be ``X3DNA.profiles[0]``. Note
@@ -170,8 +170,8 @@ class BaseX3DNA(object):
         bp_shear,bp_stretch,bp_stagger,bp_rise,bp_shift,bp_slide,bp_buckle,bp_prop,bp_open,bp_tilt,bp_roll,bp_twist = numpy.array(bp_shear),numpy.array(bp_stretch),numpy.array(bp_stagger),numpy.array(bp_rise),numpy.array(bp_shift),numpy.array(bp_slide),numpy.array(bp_buckle),numpy.array(bp_prop),numpy.array(bp_open),numpy.array(bp_tilt),numpy.array(bp_roll),numpy.array(bp_twist)
         na_avg,na_std = [], []
         for j in range(len(bp_shear[0])):
-            na_avg.append([numpy.mean(bp_shear[:,j]),numpy.mean(bp_stretch[:,j]),numpy.mean(bp_stagger[:,j]),numpy.mean(bp_buckle[:j]),numpy.mean(bp_prop[:,j]),numpy.mean(bp_open[:,j]),numpy.mean(bp_shift[:,j]),numpy.mean(bp_slide[:,j]),numpy.mean(bp_rise[:,j]),numpy.mean(bp_tilt[:,j]),numpy.mean(bp_roll[:,j]),numpy.mean(bp_twist[:,j])])
-            na_std.append([numpy.std(bp_shear[:,j]),numpy.std(bp_stretch[:,j]),numpy.std(bp_stagger[:,j]),numpy.std(bp_buckle[:j]),numpy.std(bp_prop[:,j]),numpy.std(bp_open[:,j]),numpy.std(bp_shift[:,j]),numpy.std(bp_slide[:,j]),numpy.std(bp_rise[:,j]),numpy.std(bp_tilt[:,j]),numpy.std(bp_roll[:,j]),numpy.std(bp_twist[:,j])])
+            na_avg.append([numpy.mean(bp_shear[:,j]),numpy.mean(bp_stretch[:,j]),numpy.mean(bp_stagger[:,j]),numpy.mean(bp_buckle[:,j]),numpy.mean(bp_prop[:,j]),numpy.mean(bp_open[:,j]),numpy.mean(bp_shift[:,j]),numpy.mean(bp_slide[:,j]),numpy.mean(bp_rise[:,j]),numpy.mean(bp_tilt[:,j]),numpy.mean(bp_roll[:,j]),numpy.mean(bp_twist[:,j])])
+            na_std.append([numpy.std(bp_shear[:,j]),numpy.std(bp_stretch[:,j]),numpy.std(bp_stagger[:,j]),numpy.std(bp_buckle[:,j]),numpy.std(bp_prop[:,j]),numpy.std(bp_open[:,j]),numpy.std(bp_shift[:,j]),numpy.std(bp_slide[:,j]),numpy.std(bp_rise[:,j]),numpy.std(bp_tilt[:,j]),numpy.std(bp_roll[:,j]),numpy.std(bp_twist[:,j])])
         na_avg,na_std = numpy.array(na_avg),numpy.array(na_std)
         return na_avg,na_std
 
@@ -239,12 +239,7 @@ class BaseX3DNA(object):
         import matplotlib.pyplot as plt
         from itertools import izip
 
-        #kw, kwargs = self._process_plot_kwargs(kwargs)
-
-        #ax = kwargs.pop('ax', plt.subplot(111))
-
         na_avg,na_std = self.mean_std()
-
         for k in range(len(na_avg[0])):
             ax = kwargs.pop('ax', plt.subplot(111))
             x = range(1,len(na_avg[:,k])+1)
@@ -252,13 +247,13 @@ class BaseX3DNA(object):
             ax.set_xlim(0,len(na_avg[:,k])+1)
             ax.set_xlabel(r"Nucleic Acid Number")
             param = self.profiles.values()[0].dtype.names[k]
-            print param
             if param in ["Shear","Stretch","Stagger","Rise","Shift","Slide"]:
                 ax.set_ylabel("%s ($\AA$)"%(param))
             else:
                 ax.set_ylabel("%s (deg)"%(param))
             ax.figure.savefig("%s.png"%(param))
             ax.figure.clf()
+
 
     def sorted_profiles_iter(self):
         """Return an iterator over profiles sorted by frame/order parameter *q*.
@@ -288,7 +283,7 @@ class X3DNA(BaseX3DNA):
     The class also provides some simple plotting functions of the collected
     data such as :meth:`X3DNA.plot` or :meth:`X3DNA.plot3D`.
 
-    .. versionadded:: 0.7.7
+    .. versionadded:: 0.8  
 
     .. _`X3DNA docs`:
        http://http://forum.x3dna.org/ 
@@ -304,7 +299,7 @@ class X3DNA(BaseX3DNA):
 
           *filename*
 
-               The *filename* is used as input for X3DNA in the "find_pair"    
+               The *filename* is used as input for X3DNA in the "xdna_ensemble"    
                command.  It specifies the name of a PDB coordinate file
                to be used. This must be in Brookhaven protein databank format
                or something closely approximating this. Both ATOM and HETATM
@@ -312,69 +307,11 @@ class X3DNA(BaseX3DNA):
                present in the channel these can be ignored on read by the use
                of the *ignore_residues* keyword.
 
-               **Wildcard pattern**. A new feature (in release 2.1 of X3DNA) was
-               the option to include a wild card (``*``) in the filename. e.g.,
-               *filename* = `"ab*.pdb"` will apply x3dna to all files in the
-               directory whose name starts with ``ab`` and ends with
-               ``.pdb``. This is intended to aid the analysis of multiple
-               copies of the same molecule - produced during molecular dynamics
-               or other method. The x3dna procedure will be applied to each file
-               in turn with the same setup conditions (initial point, sampling
-               distance etc.). Graphics files will contain a combination of the
-               individual runs, one after another. Note that the pdb files are
-               read independently so that they need not have an identical
-               number of atoms or atom order etc. (though they should be
-               sufficiently similar for a X3DNA run from identical starting
-               conditions to be useful).
-
-               .. SeeAlso::
-
-                  An alternative way to load in multiple files is a direct read
-                  from a CHARMM binary dynamics DCD coordinate file - using the
-                  *dcd* keyword or use :class:`X3DNAtraj`.
-
-
         :Keywords:
-
-          *dcd*
-               DCD trajectory (must be supplied together with a matching
-               PDB file *filename*) and then X3DNA runs its analysis on each frame.
-
-               It does multiple X3DNA runs on positions taken from a CHARMM binary
-               dynamics format .DCD trajectory file. The *dcd* file must have
-               exactly the same number of atoms in exactly the same order as
-               the pdb file specified by *filename*. Note that if this option
-               is used the pdb file is used as a template only - the
-               coordinates are ignored. Note that structural parameters
-               determined for each individual structure are written in a tagged
-               format so that it is possible to extract the information from
-               the text output file using a :program:`grep` command. The
-               reading of the file can be controlled by the *step* keyword
-               and/or setting :attr:`X3DNA.dcd_iniskip` to the number of frames
-               to be skipped initially.
-
-               .. Note::
-
-                  X3DNA is very picky and does not read all DCD-like formats. If
-                  in doubt, look into the *logfile* for error diagnostics.
-
-                  At the moment, DCDs generated with MDAnalysis are not
-                  accepted by X3DNA — use :class:`X3DNAtraj`, which works with
-                  anything that MDAnalysis can read.
-
-          *logfile*
-
-               name of the file collecting X3DNA's output (which can be parsed
-               using :meth:`X3DNA.collect` ["tmp*.out"]
-
-          *step*
-
-               step size for going through the trajectory (skips *step* - 1
-               frames) [1]
 
           *executable*
 
-               Path to the :program:`find_pair` executable directories
+               Path to the :program:`xdna_ensemble` executable directories
                (e.g. ``/opt/x3dna/2.1 and /opt/x3dna/2.1/bin``) must be set 
                and then added to export in bashrc file. See X3DNA 
                documentation for set-up instructions.
@@ -383,41 +320,26 @@ class X3DNA(BaseX3DNA):
         self.tempfiles = ["auxiliary.par","bestpairs.pdb","bp_order.dat","bp_helical.par","cf_7methods.par","col_chains.scr","col_helices.scr","hel_regions.pdb","ref_frames.dat","hstacking.pdb","stacking.pdb"]
         self.tempdirs = []
         self.filename = filename
-        #self.coordinates = self.check_and_fix_long_filename(self.filename)
-        self.dcd = kwargs.pop('dcd', None)
-        #if self.dcd:
-        #    self.dcd = self.check_and_fix_long_filename(self.dcd)
-        self.dcd_step = kwargs.pop("step", 1) - 1   # X3DNA docs description is confusing: step or skip??
-        self.dcd_iniskip = 0
-        self.shorto = int(kwargs.pop("shorto", 0))     # look at using SHORTO 2 for minimum output
 
         logger.info("Setting up X3DNA analysis for %(filename)r", vars(self))
 
         # guess executables
         self.exe = {}
-        x3dna_exe_name = kwargs.pop('executable', 'find_pair')
-        self.exe['find_pair'] = which(x3dna_exe_name)
-        if self.exe['find_pair'] is None:
+        x3dna_exe_name = kwargs.pop('executable', 'xdna_ensemble')
+        self.exe['xdna_ensemble'] = which(x3dna_exe_name)
+        if self.exe['xdna_ensemble'] is None:
             errmsg = "X3DNA binary %(x3dna_exe_name)r not found." % vars()
             logger.fatal(errmsg)
             logger.fatal("%(x3dna_exe_name)r must be on the PATH or provided as keyword argument 'executable'.",
                          vars())
             raise OSError(errno.ENOENT, errmsg)
-        x3dnapath = os.path.dirname(self.exe['find_pair'])
+        x3dnapath = os.path.dirname(self.exe['xdna_ensemble'])
         self.logfile = kwargs.pop("logfile", "bp_step.par")
        
-        self.template = textwrap.dedent("""find_pair %(filename)r stdout |analyze stdin """)
-
-        if self.dcd:
-            # CHARMD -- DCD (matches COORD)
-            # CHARMS int int -- ignore_first_N_frames   skip_every_X_frames
-            # http://d2o.bioch.ox.ac.uk:38080/doc/hole_d03.html#CHARMD
-            self.template += "\nCHARMD %(dcd)s\nCHARMS %(dcd_iniskip)d %(dcd_step)d\n"
+        self.template = textwrap.dedent("""x3dna_ensemble analyze -b 355d.bps -p %(filename)r """)
+        #self.template = textwrap.dedent("""xdna_ensemble %(filename)r 355d.bps stdout |analyze stdin """)
 
         # sanity checks
-        if self.shorto > 2:
-            logger.warn("SHORTO (%d) needs to be < 3 in order to extract a X3DNA profile!",
-                        self.shorto)
         for program, path in self.exe.items():
             if path is None or which(path) is None:
                 logger.error("Executable %(program)r not found, should have been %(path)r.",
@@ -425,39 +347,6 @@ class X3DNA(BaseX3DNA):
         # results
         self.profiles = {}
 
-    def check_and_fix_long_filename(self, filename, tmpdir=os.path.curdir):
-        """Return *filename* suitable for X3DNA.
-
-        X3DNA is limited to filenames <= :attr:`X3DNA.X3DNA_MAX_LENGTH`. This method
-
-        1. returns *filename* if X3DNA can process it
-        2. returns a relative path (see :func:`os.path.relpath`) if that shortens the
-           path sufficiently
-        3. creates a symlink to *filename* (:func:`os.symlink`) in a safe temporary
-           directory and returns the path of the symlink. The temporary directory and
-           the symlink are stored in :attr:`X3DNA.tempfiles` and :attr:`X3DNA.tempdirs`
-           and deleted when the :class:`X3DNA` instance is deleted or garbage collected.
-
-           By default the temporary directory is created inside the current
-           directory in order to keep that path name short. This can be changed
-           with the *tmpdir* keyword (e.g. one can use "/tmp").
-        """
-        #if len(filename) <= self.X3DNA_MAX_LENGTH:
-        #    return filename
-
-        logger.debug("path check: X3DNA will not read %r because it has more than %d characters.", filename)
-        # try a relative path
-        newname = filename #os.path.relpath(filename)
-
-        # shorten path by creating a symlink inside a safe temp dir
-        root,ext = filename #os.path.splitext(filename)
-        dirname = tempfile.mkdtemp(dir=tmpdir)
-        newname = os.path.join(dirname, os.path.basename(filename))
-        self.tempfiles.append(newname)
-        self.tempdirs.append(dirname)
-        os.symlink(filename, newname)
-        logger.debug("path check: Using symlink: %r --> %r", filename, newname)
-        return newname
 
     def run(self, **kwargs):
         """Run X3DNA on the input file."""
@@ -474,7 +363,7 @@ class X3DNA(BaseX3DNA):
             logger.debug("Wrote X3DNA input file %r for inspection", inpname)
 
         logger.info("Starting X3DNA on %(filename)r (trajectory: %(dcd)r)", x3dnaargs)
-        logger.debug("%s", self.exe['find_pair'])
+        logger.debug("%s", self.exe['xdna_ensemble'])
         with open(outname, "w") as output:
             x3dna = subprocess.call([inp],shell=True)
         with open(outname, "r") as output:
@@ -485,9 +374,6 @@ class X3DNA(BaseX3DNA):
                     break
         if x3dna.bit_length != 0:
             logger.fatal("X3DNA Failure (%d). Check output %r", x3dna.bit_length, outname)
-            #if stderr is not None:
-            #    logger.fatal(stderr)
-            #raise ApplicationError(x3dna.returncode, "X3DNA %r failed. Check output %r." % (self.exe['find_pair'], outname))
         logger.info("X3DNA finished: output file %(outname)r", vars())
 
     def collect(self, **kwargs):
@@ -533,11 +419,6 @@ class X3DNA(BaseX3DNA):
                 logger.error("Glob pattern %r did not find any files.", self.filename)
                 raise ValueError("Glob pattern %r did not find any files." % (self.filename,))
             logger.info("Found %d input files based on glob pattern %s", length, self.filename)
-        if self.dcd:
-            from MDAnalysis import Universe
-            u = Universe(self.filename, self.dcd)
-            length = int((u.trajectory.numframes - self.dcd_iniskip)/(self.dcd_step+1))
-            logger.info("Found %d input frames in DCD trajectory %r", length, self.dcd)
 
         # one recarray for each frame, indexed by frame number
         # TODO: use ordered dict
@@ -550,50 +431,41 @@ class X3DNA(BaseX3DNA):
             read_data = False
             for line in x3dna:
                 line = line.rstrip()  # preserve columns (FORTRAN output...)
-                #print line
-                # not sure if correct startswith
                 if line.startswith("#        Shear"):
                     read_data = True
                     logger.debug("Started reading data")
                     fields = line.split()
-                    # not sure if correct fields
-                    x3dna_profile_no = int(13) #fields[1:])
+                    x3dna_profile_no = int(1)  #### useless int value code based off hole plugin
                     records = []
-                    #print fields
                     continue
                 if read_data:
                     if len(line.strip()) != 0:
                         try:
-                            Sequence, Shear,Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist = line.split() #x3dnaformat.read(line)
+                            Sequence, Shear,Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist = line.split() 
                         except:
                             logger.critical("Run %d: Problem parsing line %r", run, line.strip())
                             logger.exception("Check input file %r.", x3dna_output)
                             raise
                         records.append([float(Shear),float(Stretch),float(Stagger),float(Buckle),float(Propeller),float(Opening),float(Shift),float(Slide),float(Rise),float(Tilt),float(Roll),float(Twist)])
-                        #print records
-                        #print len(records)
                         continue
                     else:
                         # end of records (empty line)
-
                         read_data = False
             frame_x3dna_output = numpy.rec.fromrecords(records, formats="f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8", names="Shear,Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist")
             # store the profile
             self.profiles[x3dna_profile_no] = frame_x3dna_output
-            #print self.profiles
             logger.debug("Collected X3DNA profile for frame %d (%d datapoints)",
                 x3dna_profile_no, len(frame_x3dna_output))
             # save a profile for each frame (for debugging and scripted processing)
             # a tmp folder for each trajectory
             if outdir is not None:
                 rundir = os.path.join(outdir, "run_"+str(run))
-                os.system("mv tmp*.out %s"%rundir)
+                os.system("rm -f tmp*.out")
                 if not os.path.exists(rundir):
                     os.makedirs(rundir)
                 frame_x3dna_txt = os.path.join(rundir, "bp_step_%s_%04d.dat.gz" % (run, x3dna_profile_no))
                 numpy.savetxt(frame_x3dna_txt, frame_x3dna_output)
                 logger.debug("Finished with frame %d, saved as %r", x3dna_profile_no, frame_x3dna_txt)
-                #continue
                 # if we get here then we haven't found anything interesting
         if len(self.profiles) == length:
             logger.info("Collected X3DNA profiles for %d frames", len(self.profiles))
@@ -631,10 +503,6 @@ class X3DNAtraj(BaseX3DNA):
                individual file. (Use the *start*, *stop*, and *step* keywords
                to slice the trajectory.)
 
-          *orderparameters*
-               Sequence or text file with list of numbers corresponding to the
-               frames in the trajectory.
-
           *start*, *stop*, *step*
                frame indices to slice the trajectory as
                ``universe.trajectory[start, stop, step]``
@@ -645,7 +513,6 @@ class X3DNAtraj(BaseX3DNA):
         """
         self.universe = universe
         self.selection = kwargs.pop("selection", "nucleic")
-        self.orderparametersfile = kwargs.pop("orderparameters", None)
 
         self.start = kwargs.pop('start', None)
         self.stop = kwargs.pop('stop', None)
@@ -655,31 +522,7 @@ class X3DNAtraj(BaseX3DNA):
         self.x3dna_kwargs = kwargs
 
         # processing
-        self.orderparameters = self._process_orderparameters(self.orderparametersfile)
 
-    def _process_orderparameters(self, data):
-        """Read orderparameters from *data*
-
-        * If *data* is a string: Read orderparameters from *filename*.
-        * If data is a array/list: use as is
-        * If ``None``: assign frame numbers from trajectory
-        """
-        if isinstance(data, basestring):
-            q = numpy.loadtxt(data)
-        elif data is None:
-            # frame numbers
-            q = numpy.arange(1, self.universe.trajectory.numframes+1)
-        else:
-            q = numpy.asarray(data)
-
-        if len(q.shape) != 1:
-            raise TypeError("Order parameter array must be 1D.")
-        if len(q) != self.universe.trajectory.numframes:
-            errmsg = "Not same number of orderparameters ({0}) as trajectory frames ({1})".format(
-                len(q), self.universe.trajectory.numframes)
-            logger.error(errmsg)
-            raise ValueError(errmsg)
-        return q
     def run(self, **kwargs):
         """Run X3DNA on the whole trajectory and collect profiles.
 
@@ -694,16 +537,23 @@ class X3DNAtraj(BaseX3DNA):
         x3dna_kw = self.x3dna_kwargs.copy()
         x3dna_kw.update(kwargs)
 
-        profiles = {}  # index by orderparameters: NOTE: can overwrite!
+        profiles = {}  
 
         nucleic = self.universe.selectAtoms(self.selection)
-        for q,ts in izip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
-            logger.info("X3DNA analysis frame %4d (orderparameter %g)", ts.frame, q)
+        for ts in self.universe.trajectory[start:stop:step]: 
+            print ts.frame
+            print nucleic.atoms
+            logger.info("X3DNA analysis frame %4d ", ts.frame)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
+            os.close(fd)
             try:
                 nucleic.write(pdbfile)
+                if int(ts.frame) == int(start+1):
+                    #print start
+                    os.system("find_pair %s 355d.bps" %(pdbfile))
+                    #print "complete"
                 x3dna_profiles = self.run_x3dna(pdbfile, **x3dna_kw)
-                print "yes"
+                #print "yes"
             finally:
                 try:
                     os.unlink(pdbfile)
@@ -714,7 +564,7 @@ class X3DNAtraj(BaseX3DNA):
                     len(x3dna_profiles), x3dna_profiles.keys(), ts)
                 logger.error(err_msg)
                 warnings.warn(err_msg)
-            profiles[q] = x3dna_profiles.values()[0]
+            profiles[ts.frame] = x3dna_profiles.values()[0]
         self.profiles = profiles
 
     def run_x3dna(self, pdbfile, **kwargs):
