@@ -640,8 +640,12 @@ class AtomGroup(object):
         return self.__cache['indices']
 
     def names(self):
-        """Returns a list of atom names."""
-        return [a.name for a in self._atoms]
+        """Returns a list of atom names.
+
+        .. versionchanged:: 0.8
+           Returns a :class:`numpy.ndarray`
+        """
+        return numpy.array([a.name for a in self._atoms])
 
     @property
     def residues(self):
@@ -661,19 +665,29 @@ class AtomGroup(object):
         return self.__cache['residues']
 
     def resids(self):
-        """Returns a list of residue numbers."""
-        return [r.id for r in self.residues]
+        """Returns a list of residue numbers.
+
+        .. versionchanged:: 0.8
+           Returns a :class:`numpy.ndarray`
+        """
+        return numpy.array([r.id for r in self.residues])
 
     def resnames(self):
-        """Returns a list of residue names."""
-        return [r.name for r in self.residues]
+        """Returns a list of residue names.
+
+        .. versionchanged:: 0.8
+           Returns a :class:`numpy.ndarray`
+        """
+        return numpy.array([r.name for r in self.residues])
 
     def resnums(self):
         """Returns a list of canonical residue numbers.
 
         .. versionadded:: 0.7.4
+        .. versionchanged:: 0.8
+           Returns a :class:`numpy.ndarray`
         """
-        return [r.resnum for r in self.residues]
+        return numpy.array([r.resnum for r in self.residues])
 
     @property
     def segments(self):
@@ -692,8 +706,12 @@ class AtomGroup(object):
         return self.__cache['segments']
 
     def segids(self):
-        """Returns a list of segment ids (=segment names)."""
-        return [s.name for s in self.segments]
+        """Returns a list of segment ids (=segment names).
+
+        .. versionchanged:: 0.8
+           Returns a :class:`numpy.ndarray`
+        """
+        return numpy.array([s.name for s in self.segments])
 
     def masses(self):
         """Array of atomic masses (as defined in the topology)"""

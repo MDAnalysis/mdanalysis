@@ -24,7 +24,7 @@ The rules for this file:
     groups of objects (AtomGroup, ResidueGroup)
   * helanal: additional output of local bend and unit twist angles
     (Issue 133)
-  * added support for reading DMS files (DESRES molecular structure?)
+  * added support for reading DMS files (DESRES molecular structure)
   * bond connectivity information can be guessed from a PDB file if
     the bond=True keyword is set in Universe (Issue 23)
   * MDAnalysis.analysis.rms.RMSD: calculation of additional RMSDs
@@ -33,11 +33,12 @@ The rules for this file:
 
   Changes
 
-  * removed Timeseries.principleAxis (probably was never working)
-  * dependent on Biopython >= 1.59 (Issue 147)
+  * almost all methods of AtomGroup return NumPy arrays
   * slicing and indexing of AtomGroup, Residue, ResidueGroup, Segment,
     SegmentGroup will now always return an appropriate object and
     never a simple list
+  * removed Timeseries.principleAxis (probably was never working)
+  * dependent on Biopython >= 1.59 (Issue 147)
 
   Fixes
 

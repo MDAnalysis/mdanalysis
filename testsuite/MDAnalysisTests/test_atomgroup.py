@@ -122,10 +122,6 @@ class TestAtomGroup(TestCase):
         assert_array_almost_equal(self.ag.centerOfMass(),
                                   array([-0.01094035,  0.05727601, -0.12885778]))
 
-    def test_charges(self):
-        assert_array_almost_equal(self.ag.charges()[1000:2000:200],
-                                  array([-0.09,  0.09, -0.47,  0.51,  0.09]))
-
     def test_coordinates(self):
         assert_array_almost_equal(self.ag.coordinates()[1000:2000:200],
                                   array([[  3.94543672, -12.4060812 ,  -7.26820087],
@@ -133,8 +129,6 @@ class TestAtomGroup(TestCase):
                                          [ 12.07735443,  -9.00604534,   4.09301519],
                                          [ 11.35541916,   7.0690732 ,  -0.32511973],
                                          [-13.26763439,   4.90658951,  10.6880455 ]], dtype=float32))
-    def test_indices(self):
-        assert_array_equal(self.ag.indices()[:5], array([0, 1, 2, 3, 4]))
 
     def test_principalAxes(self):
         assert_array_almost_equal(self.ag.principalAxes(),
@@ -144,6 +138,66 @@ class TestAtomGroup(TestCase):
 
     def test_totalCharge(self):
         assert_almost_equal(self.ag.totalCharge(), -4.0)
+
+    def test_totalMass(self):
+        assert_almost_equal(self.ag.totalMass(), 23582.043)
+
+    def test_indices_ndarray(self):
+        assert_equal(isinstance(self.ag.indices(), numpy.ndarray), True)
+    def test_indices(self):
+        assert_array_equal(self.ag.indices()[:5], array([0, 1, 2, 3, 4]))
+
+    def test_resids_ndarray(self):
+        assert_equal(isinstance(self.ag.resids(), numpy.ndarray), True)
+    def test_resids(self):
+        assert_array_equal(self.ag.resids(), numpy.arange(1,215))
+
+    def test_resnums_ndarray(self):
+        assert_equal(isinstance(self.ag.resnums(), numpy.ndarray), True)
+    def test_resnums(self):
+        assert_array_equal(self.ag.resids(), numpy.arange(1,215))
+
+    def test_resnames_ndarray(self):
+        assert_equal(isinstance(self.ag.resnames(), numpy.ndarray), True)
+    def test_resnames(self):
+        resnames = self.ag.resnames()
+        assert_array_equal(resnames[0:3], numpy.array(["MET", "ARG", "ILE"]))
+
+    def test_names_ndarray(self):
+        assert_equal(isinstance(self.ag.names(), numpy.ndarray), True)
+    def test_names(self):
+        names = self.ag.names()
+        assert_array_equal(names[0:3], numpy.array(["N", "HT1", "HT2"]))
+
+    def test_segids_ndarray(self):
+        assert_equal(isinstance(self.ag.segids(), numpy.ndarray), True)
+    def test_segids(self):
+        segids = self.ag.segids()
+        assert_array_equal(segids[0], numpy.array(["4AKE"]))
+
+    def test_masses_ndarray(self):
+        assert_equal(isinstance(self.ag.masses(), numpy.ndarray), True)
+    def test_masses(self):
+        masses = self.ag.masses()
+        assert_array_equal(masses[0:3], numpy.array([14.007, 1.008, 1.008]))
+
+    def test_charges_ndarray(self):
+        assert_equal(isinstance(self.ag.charges(), numpy.ndarray), True)    
+    def test_charges(self):
+        assert_array_almost_equal(self.ag.charges()[1000:2000:200],
+                                  array([-0.09,  0.09, -0.47,  0.51,  0.09]))
+
+    def test_radii_ndarray(self):
+        assert_equal(isinstance(self.ag.radii(), numpy.ndarray), True)
+    def test_radii(self):
+        radii = self.ag.radii()
+        assert_array_equal(radii[0:3], numpy.array([None, None, None]))
+
+    def test_bfactors_ndarray(self):
+        assert_equal(isinstance(self.ag.bfactors, numpy.ndarray), True)
+    def test_bfactors(self):
+        bfactors = self.ag.bfactors   # property, not method!
+        assert_array_equal(bfactors[0:3], numpy.array([None, None, None]))
 
     # TODO: add all other methods except selectAtoms(), see test_selections.py
 
@@ -287,7 +341,7 @@ class TestAtomGroup(TestCase):
         ag = self.universe.selectAtoms("bynum 12:42")
         pos = ag.positions + 3.14
         ag.positions = pos
-        # shoud work
+        # should work
         assert_almost_equal(ag.coordinates(), pos,
                             err_msg="failed to update atoms 12:42 position to new position")
         def set_badarr(pos=pos):
