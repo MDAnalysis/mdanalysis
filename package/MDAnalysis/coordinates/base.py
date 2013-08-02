@@ -209,6 +209,9 @@ class Timestep(object):
 
 class IObase(object):
     """Base class bundling common functionality for trajectory I/O.
+
+    .. versionchanged:: 0.8
+       Added context manager protocol.
     """
     #: override to define trajectory format of the reader/writer (DCD, XTC, ...)
     format = None
@@ -375,6 +378,15 @@ class IObase(object):
         warnings.warn("close_trajectory() will be removed in MDAnalysis 0.8. "
                       "Use close() instead.", DeprecationWarning)
         self.close()
+
+    # experimental:  context manager protocol
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # see http://docs.python.org/2/library/stdtypes.html#typecontextmanager
+        self.close()
+        return False  # do not suppress exceptions
 
 class Reader(IObase):
     """Base class for trajectory readers.

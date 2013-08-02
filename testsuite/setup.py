@@ -51,8 +51,8 @@ import sys, os
 import glob
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (2, 5):
-    print "MDAnalysis requires Python 2.5 or better. Python %d.%d detected" % \
+if sys.version_info[:2] < (2, 6):
+    print "MDAnalysis requires Python 2.6 or better. Python %d.%d detected" % \
         sys.version_info[:2]
     print "Please upgrade your version of Python."
     sys.exit(-1)

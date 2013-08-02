@@ -85,9 +85,9 @@ name with a command such as ::
 will typically work as expected. When working with collections such as
 :class:`AtomGroup` or :class:`ResidueGroup` it is generally better to use
 provided setter methods such as :meth:`AtomGroup.set_resname` or
-:meth:`ResidueGroup.set_resname`. 
+:meth:`ResidueGroup.set_resname`.
 
-There are two cases when it is very important to use the setters: 
+There are two cases when it is very important to use the setters:
 
 * changing *resid*: :meth:`AtomGroup.set_resid` and :meth:`ResidueGroup.set_resid`
 * changing *segid*: :meth:`AtomGroup.set_segid` and :meth:`ResidueGroup.set_segid`
@@ -111,7 +111,7 @@ segment selectors for interactive work::
   u.selectAtoms("resname POPE or resname POPC").set_segid("lipids")
   u.selectAtoms("resname SOL").set_segid("water")
   u.selectAtoms("resname NA or resname CL").set_segid("ions")
-  
+
   u.protein.numberOfResidues()
   water_oxygens = u.water.OW
 
@@ -266,7 +266,7 @@ class Atom(object):
                  "radius", "bfactor", "resnum", "serial")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
-                 residue=None, segment=None, radius=None, bfactor=None, 
+                 residue=None, segment=None, radius=None, bfactor=None,
                  resnum=None, serial=None):
         self.number = number
         self.name = name
@@ -300,9 +300,9 @@ class Atom(object):
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
             raise TypeError('Can only concatenate Atoms (not "'+repr(other.__class__.__name__)+'") to AtomGroup')
-        if isinstance(other, Atom): 
+        if isinstance(other, Atom):
             return AtomGroup([self, other])
-        else: 
+        else:
             return AtomGroup([self]+other.atoms)
 
     @property
@@ -529,7 +529,7 @@ class AtomGroup(object):
         .. versionadded:: 0.8
         """
         self.__cache[name] = value
-                        
+
     # AtomGroup.atoms is guaranteed to be a AtomGroup, too; keeps a consistent API
     # between AtomGroup, Residue, ResidueGroup, Segment; access the list as
     # _atoms (although atoms supports all list-like operations, too).
@@ -763,7 +763,7 @@ class AtomGroup(object):
         A cache entry ``__cache[groupname]`` is deleted if it exists.
 
         :Keywords:
-  
+
           *conversion*
                function such as :func:`str` or :func:`int` that converts the
                argument. ``None`` passes it through unchanged [``None``]
@@ -771,7 +771,7 @@ class AtomGroup(object):
           *cache*
                alternative identifier for the cache, instead of *groupname*
 
-        .. versionadded:: 0.8  
+        .. versionadded:: 0.8
         """
         values = util.asiterable(value)
         group = getattr(self, groupname)
@@ -804,7 +804,7 @@ class AtomGroup(object):
         :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
         .. versionadded:: 0.7.4
-        .. versionchanged:: 0.8  
+        .. versionchanged:: 0.8
            Can set atoms to distinct values by providing a sequence or iterable.
         """
         self._set_attribute("atoms", name, value, **kwargs)
@@ -821,7 +821,7 @@ class AtomGroup(object):
         :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
         .. versionadded:: 0.7.4
-        .. versionchanged:: 0.8  
+        .. versionchanged:: 0.8
            Can set atoms to distinct values by providing a sequence or iterable.
         """
         self.set("name", name, conversion=str)
@@ -836,13 +836,13 @@ class AtomGroup(object):
         :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
         .. Note::
-        
+
            Changing resids can change the topology.
 
            Assigning the same *resid* to multiple residues will
            **merge** these residues. Assigning different *resid* to
            atoms in the same residue will **split** a residue (and
-           potentially merge with another one). 
+           potentially merge with another one).
 
         .. versionadded:: 0.7.4
         .. versionchanged:: 0.7.5
@@ -851,7 +851,7 @@ class AtomGroup(object):
            Can set atoms and residues to distinct values by providing a
            sequence or iterable and can change the topology via
            :func:`MDAnalysis.topology.core.build_residues`.
-           
+
         """
         from MDAnalysis.topology.core import build_residues
         self.set("resid", resid, conversion=int)
@@ -871,7 +871,7 @@ class AtomGroup(object):
         *value* is neither of length 1 (or a scalar) nor of the length of the
         :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
-        .. Note:: 
+        .. Note::
 
            Changing *resnum* will not affect the topology: you can have
            multiple residues with the same *resnum*.
@@ -1731,7 +1731,7 @@ class Residue(AtomGroup):
       :attr:`Residue.resnum`
         Numeric canonical residue id (e.g. as used in the PDB structure).
 
-    .. Note:: 
+    .. Note::
 
        Creating a :class:`Residue` modifies the underlying :class:`Atom`
        instances. Each :class:`Atom` can only belong to a single
@@ -1741,7 +1741,7 @@ class Residue(AtomGroup):
        Added :attr:`Residue.resnum` attribute and *resnum* keyword argument.
     """
     ## FIXME (see below, Issue 70)
-    ##__cache = {}    
+    ##__cache = {}
     def __init__(self, name, id, atoms, resnum=None):
         super(Residue, self).__init__(atoms)
         self.name = name
@@ -1893,7 +1893,7 @@ class ResidueGroup(AtomGroup):
         length of the :class:`ResidueGroup` then a :exc:`ValueError` is raised.
 
         .. versionadded:: 0.7.5
-        .. versionchanged:: 0.8  
+        .. versionchanged:: 0.8
            Can set residues to distinct values by providing a sequence or iterable.
         """
         values = util.asiterable(value)
@@ -1915,7 +1915,7 @@ class ResidueGroup(AtomGroup):
                 'resid': 'id'}
         for r,value in itertools.izip(self.residues, itertools.cycle(values)):
             attrname = attr.get(name, name)
-            if hasattr(r, attrname):         # should use __slots__ on Residue and try/except here 
+            if hasattr(r, attrname):         # should use __slots__ on Residue and try/except here
                 setattr(r, attrname, value)
 
     set = _set_residues
@@ -1930,7 +1930,7 @@ class ResidueGroup(AtomGroup):
         :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
         .. Note::
-        
+
            Changing resids can change the topology.
 
            Assigning the same *resid* to multiple residues will **merge** these
@@ -1964,7 +1964,7 @@ class ResidueGroup(AtomGroup):
         *value* is neither of length 1 (or a scalar) nor of the length of the
         :class:`AtomGroup` then a :exc:`ValueError` is raised.
 
-        .. Note:: 
+        .. Note::
 
            Changing *resnum* will not affect the topology: you can have
            multiple residues with the same *resnum*.
@@ -2304,15 +2304,15 @@ class Universe(object):
              the "chained" reader has to guess the file format for each
              individual list member. [``None``]
           *bonds*
-             bond handling for PDB files. The default is to read and store the 
+             bond handling for PDB files. The default is to read and store the
              CONECT records only. When set to 'True' it will attempt to guess
-             connectivity between all atoms in the Universe. 
+             connectivity between all atoms in the Universe.
              Each bond knows if it was guessed or was a CONECT record, so when
              saving out use can specify which ones to write out by ::
-             
+
                u = Universe("example.pdb")
                u.atoms.write("output.pdb", bonds="conect") # default, only CONECT
-               u.atoms.write("output.pdb", bonds="all") 
+               u.atoms.write("output.pdb", bonds="all")
                u.atoms.write("output.pdb", bonds=None)
 
 
@@ -2368,7 +2368,7 @@ class Universe(object):
             parser = get_parser_for(topologyfile, permissive=kwargs['permissive'], bonds=kwargs.get('bonds', False),
                                     format=topology_format)
             struc = parser(topologyfile)
-        except TypeError, err:   
+        except TypeError, err:
             raise ValueError("Failed to build a topology from either a psf, pdb or gro (%s)" % err)
 
         # populate atoms etc
@@ -2404,7 +2404,7 @@ class Universe(object):
 
     def _build_segments(self):
         """Parse list of atoms into segments.
-        
+
         * updates :attr:`Universe.atoms` as a side effect
         * updates :attr:`Universe.segments` and :attr:`Universe.residues`
         * creates the segid instant selectors
@@ -2433,20 +2433,20 @@ class Universe(object):
     def _init_bonds(self):
         """Set bond information.
 
-        * FIXME JD: bonds generated from connect records are different than those 
+        * FIXME JD: bonds generated from connect records are different than those
           guessed from atom distances it'd be good to keep a record of weather a bond
-          is guessed or created 
-        * FIXME by OB: the CONECT bonds should take priority over the guessed bonds 
+          is guessed or created
+        * FIXME by OB: the CONECT bonds should take priority over the guessed bonds
         """
         # TODO wrap-around in a BondGroup class, translating bonds to lists of Atom objects; otherwise indexing becomes a pain
         # TODO move to universe._psf.bonds
         #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
-        # FIXME JD: bonds generated from connect records are different than those 
+        # FIXME JD: bonds generated from connect records are different than those
         # guessed from atom distances it'd be good to keep a record of weather a bond
-        # is guessed or created 
-        # FIXME by OB: the CONECT bonds should take priority over the guessed bonds 
-        #bonds.extend(guessed_bonds)                
-                
+        # is guessed or created
+        # FIXME by OB: the CONECT bonds should take priority over the guessed bonds
+        #bonds.extend(guessed_bonds)
+
         self.bonds = set()
         from MDAnalysis.topology.core import Bond
 
@@ -2455,10 +2455,10 @@ class Universe(object):
         if struc.has_key("_bonds"):
             putative_bonds = putative_bonds.union(struc["_bonds"])
         if struc.has_key("_guessed_bonds"):
-            putative_bonds = putative_bonds.union(struc["_guessed_bonds"])        
-        
+            putative_bonds = putative_bonds.union(struc["_guessed_bonds"])
+
         for bond in putative_bonds:
-            if isinstance(bond, Bond): 
+            if isinstance(bond, Bond):
                 self.bonds.add(bond)
                 continue
             i,j = bond
@@ -2675,6 +2675,11 @@ class Universe(object):
     def trajectory(self, value):
         del self.__trajectory  # guarantees that files are closed (?)
         self.__trajectory = value
+
+    def __del__(self):
+        # make sure that any trajectory that we're reading get closed
+        self.trajectory.close()
+
 
 def asUniverse(*args, **kwargs):
     """Return a universe from the input arguments.

@@ -77,7 +77,6 @@ Mathematics and Geometry
 .. autofunction:: stp
 
 """
-from __future__ import with_statement
 
 __docformat__ = "restructuredtext en"
 

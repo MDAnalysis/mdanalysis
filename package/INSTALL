@@ -35,7 +35,7 @@ Requirements for installing from source
 
 In order to build MDAnalysis from source, you will need
 
-    * python (>=2.5)
+    * python (>=2.6)
     * a C and a C++ compiler (e.g. GNU gcc),
     * the python header files (typically in a package python-dev),
     * numpy to compile the DCD and XTC reader and other extensions,

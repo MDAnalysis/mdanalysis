@@ -27,7 +27,6 @@ coordinate files (as used by the Desmond_ MD package).
 .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
 """
 
-from __future__ import with_statement
 
 import os, errno
 import warnings

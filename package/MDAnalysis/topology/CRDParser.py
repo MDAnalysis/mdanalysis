@@ -24,7 +24,6 @@ Read a list of atoms from a CHARMM CARD coordinate file (CRD) to build a basic t
 Atom types and masses are guessed.
 """
 
-from __future__ import with_statement
 
 from MDAnalysis.core.AtomGroup import Atom
 from MDAnalysis.core.util import FORTRANReader

@@ -23,7 +23,6 @@ Read a list of atoms from a GROMOS/Gromacs GRO coordinate file to build a basic 
 
 Atom types and masses are guessed.
 """
-from __future__ import with_statement
 
 from MDAnalysis.core.AtomGroup import Atom
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge

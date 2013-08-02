@@ -30,9 +30,13 @@ The rules for this file:
   * MDAnalysis.analysis.rms.RMSD: calculation of additional RMSDs
   * can use advanced slicing (with arbitrary lists or arrays) at all
     levels of the hierarchy (Issue 148)
+  * coordinate readers and writers can be used as context managers
+    with the 'with' statement
 
   Changes
 
+  * dropped support for Python 2.5; minimum requirement is Python 2.6
+    (Issue 130)
   * almost all methods of AtomGroup return NumPy arrays
   * slicing and indexing of AtomGroup, Residue, ResidueGroup, Segment,
     SegmentGroup will now always return an appropriate object and

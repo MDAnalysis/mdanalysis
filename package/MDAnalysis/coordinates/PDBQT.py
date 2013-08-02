@@ -30,7 +30,6 @@ available in this case).
 .. _AutoDock:
    http://autodock.scripps.edu/
 """
-from __future__ import with_statement
 
 import os, errno
 import numpy

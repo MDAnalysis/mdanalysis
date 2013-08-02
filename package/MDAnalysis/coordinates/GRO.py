@@ -26,7 +26,6 @@ Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 .. _GRO: http://manual.gromacs.org/current/online/gro.html
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
 """
-from __future__ import with_statement
 
 import os, errno
 import warnings

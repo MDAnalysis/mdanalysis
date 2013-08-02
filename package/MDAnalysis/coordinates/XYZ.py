@@ -90,7 +90,7 @@ class XYZReader(base.Reader):
             self.xyzfile = gzip.open(self.filename, 'rb')
         elif ext[1:] == "xyz":
             self.compression = None
-            self.xyzfile = file(self.filename, 'r')
+            self.xyzfile = open(self.filename, 'r')
 
         # note that, like for xtc and trr files, __numatoms and __numframes are used quasi-private variables
         # to prevent the properties being recalculated
@@ -234,7 +234,7 @@ class XYZReader(base.Reader):
         elif self.compression == "gz":
             self.xyzfile = gzip.open(self.filename, 'rb')
         elif self.compression == None:
-            self.xyzfile = file(self.filename, 'r')
+            self.xyzfile = open(self.filename, 'r')
 
         # reset ts
         ts = self.ts

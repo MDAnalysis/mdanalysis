@@ -652,27 +652,27 @@ class TestMultiPDBReader(TestCase):
 
     def test_conect(self):
         conect = self.conect
-        
+
         assert_equal(len(conect.atoms), 1890)
-        
+
         assert_equal(len(conect.bonds), 1922)
-        
+
         fd, outfile1 = tempfile.mkstemp(suffix=".pdb")
         os.close(fd)
         self.conect.atoms.write(outfile1, bonds="conect")
         u1 = mda.Universe(outfile1, bonds=True)
         assert_equal(len(u1.atoms), 1890)
         assert_equal(len(u1.bonds), 1922)
-        
-        
+
+
         fd, outfile2 = tempfile.mkstemp(suffix=".pdb")
         os.close(fd)
         self.conect.atoms.write(outfile2, bonds="all")
         u2 = mda.Universe(outfile2, bonds=True)
         assert_equal(len(u1.atoms), 1890)
         assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922 )
-        
-        
+
+
         #assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
 
     def test_numconnections(self):
@@ -705,27 +705,27 @@ class TestMultiPDBReader(TestCase):
                    [349, 338],
                    [365, 48],
                    [387, 249]]
-        
-        
+
+
         def helper(atoms, bonds):
             """
             Convert a bunch of atoms and bonds into a list of CONECT records
             """
             con = {}
-            
+
             for bond in bonds:
                  a1, a2 = bond.atom1.number, bond.atom2.number
                  if not con.has_key(a1): con[a1] = []
                  if not con.has_key(a2): con[a2] = []
                  con[a2].append(a1)
                  con[a1].append(a2)
-            
+
             #print con
             atoms = sorted([a.number for a in atoms])
-            
+
             conect = [([a,] + sorted(con[a])) for a in atoms if con.has_key(a)]
             conect = [[ a+1 for a in c ]for c in conect]
-            
+
             return conect
         conect = helper(self.multiverse.atoms, [b for b in u.bonds if not b.is_guessed])
         for r in conect: print r
@@ -1117,6 +1117,19 @@ class _TestDCD(TestCase):
         del self.dcd
         del self.ts
 
+class TestDCDReaderClass(TestCase):
+    def test_with_statement(self):
+        from MDAnalysis.coordinates.DCD import DCDReader
+        try:
+            with DCDReader(DCD) as trj:
+                N = trj.numframes
+                frames = [ts.frame for ts in trj]
+        except:
+            raise AssertionError("with_statement not working for DCDReader")
+        assert_equal(N, 98, err_msg="with_statement: DCDReader reads wrong number of frames")
+        assert_array_equal(frames, np.arange(1, N+1), err_msg="with_statement: DCDReader does not read all frames")
+
+
 class TestDCDReader(_TestDCD):
     def test_rewind_dcd(self):
         self.dcd.rewind()
@@ -1229,6 +1242,19 @@ class TestDCDWriter(TestCase):
         assert_equal(w.trajectory.numframes, 1, "single frame trajectory has wrong number of frames")
         assert_almost_equal(w.atoms.coordinates(), u.atoms.coordinates(), 3,
                             err_msg="coordinates do not match")
+
+    def test_with_statement(self):
+        u = MDAnalysis.Universe(PSF, CRD)
+        try:
+            with MDAnalysis.Writer(self.outfile, u.atoms.numberOfAtoms()) as W:
+                W.write(u.atoms)
+        except:
+            raise AssertionError("DCDWriter: does not support with statement")
+        w = MDAnalysis.Universe(PSF, self.outfile)
+        assert_equal(w.trajectory.numframes, 1, "with_statement: single frame trajectory has wrong number of frames")
+        assert_almost_equal(w.atoms.coordinates(), u.atoms.coordinates(), 3,
+                            err_msg="with_statement: coordinates do not match")
+
 
 class TestDCDWriter_Issue59(TestCase):
     def setUp(self):
@@ -1724,6 +1750,19 @@ class _GromacsReader(TestCase):
 class TestXTCReader(_GromacsReader):
     filename = XTC
 
+class TestXTCReaderClass(TestCase):
+    def test_with_statement(self):
+        from MDAnalysis.coordinates.XTC import XTCReader
+        try:
+            with XTCReader(XTC) as trj:
+                N = trj.numframes
+                frames = [ts.frame for ts in trj]
+        except:
+            raise AssertionError("with_statement not working for XTCReader")
+        assert_equal(N, 10, err_msg="with_statement: XTCReader reads wrong number of frames")
+        assert_array_equal(frames, np.arange(1, N+1), err_msg="with_statement: XTCReader does not read all frames")
+
+
 class TestTRRReader(_GromacsReader):
     filename = TRR
 
@@ -1755,6 +1794,19 @@ class TestTRRReader(_GromacsReader):
 if sys.version_info.major < 3:
     class TestTRRReader_UTF8(TestTRRReader):
         filename = unicode(TRR)
+
+class TestTRRReaderClass(TestCase):
+    def test_with_statement(self):
+        from MDAnalysis.coordinates.TRR import TRRReader
+        try:
+            with TRRReader(TRR) as trj:
+                N = trj.numframes
+                frames = [ts.frame for ts in trj]
+        except:
+            raise AssertionError("with_statement not working for TRRReader")
+        assert_equal(N, 10, err_msg="with_statement: TRRReader reads wrong number of frames")
+        assert_array_equal(frames, np.arange(1, N+1), err_msg="with_statement: TRRReader does not read all frames")
+
 
 class _XDRNoConversion(TestCase):
     filename = None

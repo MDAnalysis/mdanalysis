@@ -57,116 +57,116 @@ def parse(filename):
     :Returns: MDAnalysis internal *structure* dict.
     """
     formatversion = 10
-    for line in open(filename):
-        if line.startswith("%FLAG ATOMIC_NUMBER"):
-           formatversion = 12
-           break
+    with open(filename) as topfile:
+        for line in topfile:
+            if line.startswith("%FLAG ATOMIC_NUMBER"):
+                formatversion = 12
+                break
     # Open and check top validity
     ######  Reading header info POINTERS  #################
-    topfile = open(filename,'r')
-    next_line = skip_line = topfile.next
-    header = next_line()
-    if header[:3] != "%VE":
-        raise TOPParseError("%s is not a valid TOP file" % topfile)
-    title = next_line().split()
-    if not (title[1] == "TITLE"):
-        raise TOPParseError("%s is not a valid TOP file" % topfile)
-    while header[:14] != '%FLAG POINTERS':
+    with open(filename,'r') as topfile:
+        next_line = skip_line = topfile.next
         header = next_line()
-    header = next_line()
-    topremarks = [next_line().strip() for i in range(4)]
-    sys_info = []
-    for i in topremarks:
-        j = i.split()
-        for k in j:
-            sys_info.append(int(k))
-    ########################################################
+        if header[:3] != "%VE":
+            raise TOPParseError("%s is not a valid TOP file" % topfile)
+        title = next_line().split()
+        if not (title[1] == "TITLE"):
+            raise TOPParseError("%s is not a valid TOP file" % topfile)
+        while header[:14] != '%FLAG POINTERS':
+            header = next_line()
+        header = next_line()
+        topremarks = [next_line().strip() for i in range(4)]
+        sys_info = []
+        for i in topremarks:
+            j = i.split()
+            for k in j:
+                sys_info.append(int(k))
+        ########################################################
 
-    structure = {}
-    final_structure = {}
+        structure = {}
+        final_structure = {}
 
-    def parse_sec(section_info):
-        desc, atoms_per, per_line, parsefunc, data_struc, sect_num = section_info
-        from math import ceil
-        # Get the number
-        num = sys_info[sect_num]
-        if data_struc in ["_resname","_bond"]:
-                pass
-        else:
-                header = next_line()
+        def parse_sec(section_info):
+            desc, atoms_per, per_line, parsefunc, data_struc, sect_num = section_info
+            from math import ceil
+            # Get the number
+            num = sys_info[sect_num]
+            if data_struc in ["_resname","_bond"]:
+                    pass
+            else:
+                    header = next_line()
 
-        # Now figure out how many lines to read
-        numlines = int(ceil(float(num)/per_line))
-        #print data_struc, numlines
-        if parsefunc == __parsebond_:
-                parsefunc(next_line, atoms_per, data_struc, final_structure, numlines)
-        else:
-                parsefunc(next_line, atoms_per, data_struc, structure, numlines)
+            # Now figure out how many lines to read
+            numlines = int(ceil(float(num)/per_line))
+            #print data_struc, numlines
+            if parsefunc == __parsebond_:
+                    parsefunc(next_line, atoms_per, data_struc, final_structure, numlines)
+            else:
+                    parsefunc(next_line, atoms_per, data_struc, structure, numlines)
 
-    sections = {12:
-                    [("ATOM_NAME", 1, 20, __parseatoms_, "_name",0),
-                     ("CHARGE",1, 5, __parsesection_,"_charge",0),
-                     ("ATOMIC_NUMBER", 1, 10, __parsesectionint_,"_skip",0),
-                     ("MASS",1, 5, __parsesection_,"_mass",0),
-                     ("ATOM_TYPE_INDEX", 1, 10, __parsesectionint_,"_atom_type",0),
-                     ("NUMBER_EXCLUDED_ATOMS", 1, 10, __parseskip_,"_skip",8),
-                     ("NONBONDED_PARM_INDEX", 1, 10, __parseskip_,"_skip",8),
-                     ("RESIDUE_LABEL", 1, 20, __parseatoms_, "_resname",11),
-                     ("RESIDUE_POINTER", 2, 10, __parsesectionint_,"_respoint",11),
-                     ("BOND_FORCE_CONSTANT", 1, 5, __parseskip_,"_skip",8),
-                     ("BOND_EQUIL_VALUE", 1, 5, __parseskip_,"_skip",8),
-                     ("ANGLE_FORCE_CONSTANT", 1, 5, __parseskip_,"_skip",8),
-                     ("ANGLE_EQUIL_VALUE", 1, 5, __parseskip_,"_skip",8),
-                     ("DIHEDRAL_FORCE_CONSTANT", 1, 5, __parseskip_,"_skip",8),
-                     ("DIHEDRAL_PERIODICITY", 1, 5, __parseskip_,"_skip",8),
-                     ("DIHEDRAL_PHASE", 1, 5, __parseskip_,"_skip",8),
-                     ("SOLTY", 1, 5, __parseskip_,"_skip",8),
-                     ("LENNARD_JONES_ACOEF", 1, 5, __parseskip_,"_skip",8),
-                     ("LENNARD_JONES_BCOEF", 1, 5, __parseskip_,"_skip",8),
-                     #("BONDS_INC_HYDROGEN", 2, 4, __parsebond_, "_bonds",2),
-                     #("ANGLES_INC_HYDROGEN", 3, 3, __parsesection_, "_angles"),
-                     #("DIHEDRALS_INC_HYDROGEN", 4, 2, __parsesection_, "_dihe"),
-                     #("NIMPHI", 4, 2, __parsesection_, "_impr"),
-                     #("NDON", 2, 4, __parsesection_,"_donors"),
-                     #("NACC", 2, 4, __parsesection_,"_acceptors"),
-                     ],
-                10:
-                    [("ATOM_NAME", 1, 20, __parseatoms_, "_name",0),
-                     ("CHARGE",1, 5, __parsesection_,"_charge",0),
-                     ("MASS",1, 5, __parsesection_,"_mass",0),
-                     ("ATOM_TYPE_INDEX", 1, 10, __parsesectionint_,"_atom_type",0),
-                     ("NUMBER_EXCLUDED_ATOMS", 1, 10, __parseskip_,"_skip",8),
-                     ("NONBONDED_PARM_INDEX", 1, 10, __parseskip_,"_skip",8),
-                     ("RESIDUE_LABEL", 1, 20, __parseatoms_, "_resname",11),
-                     ("RESIDUE_POINTER", 2, 10, __parsesectionint_,"_respoint",11),
-                     ("BOND_FORCE_CONSTANT", 1, 5, __parseskip_,"_skip",8),
-                     ("BOND_EQUIL_VALUE", 1, 5, __parseskip_,"_skip",8),
-                     ("ANGLE_FORCE_CONSTANT", 1, 5, __parseskip_,"_skip",8),
-                     ("ANGLE_EQUIL_VALUE", 1, 5, __parseskip_,"_skip",8),
-                     ("DIHEDRAL_FORCE_CONSTANT", 1, 5, __parseskip_,"_skip",8),
-                     ("DIHEDRAL_PERIODICITY", 1, 5, __parseskip_,"_skip",8),
-                     ("DIHEDRAL_PHASE", 1, 5, __parseskip_,"_skip",8),
-                     ("SOLTY", 1, 5, __parseskip_,"_skip",8),
-                     ("LENNARD_JONES_ACOEF", 1, 5, __parseskip_,"_skip",8),
-                     ("LENNARD_JONES_BCOEF", 1, 5, __parseskip_,"_skip",8),
-                     #("BONDS_INC_HYDROGEN", 2, 4, __parsebond_, "_bonds",2),
-                     #("ANGLES_INC_HYDROGEN", 3, 3, __parsesection_, "_angles"),
-                     #("DIHEDRALS_INC_HYDROGEN", 4, 2, __parsesection_, "_dihe")]
-                     #("NIMPHI", 4, 2, __parsesection_, "_impr"),
-                     #("NDON", 2, 4, __parsesection_,"_donors"),
-                     #("NACC", 2, 4, __parsesection_,"_acceptors")]
-                     ],
-                }
-    structure = {}
-    try:
-        for info in sections[formatversion]:
-             parse_sec(info)
-    except StopIteration:
-        raise TOPParseError("The TOP file didn't contain the minimum required section of ATOM_NAME")
-    # Completing info respoint to include all atoms in last resid
-    structure["_respoint"].append(sys_info[0])
-    structure["_respoint"][-1] = structure["_respoint"][-1] + 1
-    topfile.close()
+        sections = {12:
+                        [("ATOM_NAME", 1, 20, __parseatoms_, "_name",0),
+                         ("CHARGE",1, 5, __parsesection_,"_charge",0),
+                         ("ATOMIC_NUMBER", 1, 10, __parsesectionint_,"_skip",0),
+                         ("MASS",1, 5, __parsesection_,"_mass",0),
+                         ("ATOM_TYPE_INDEX", 1, 10, __parsesectionint_,"_atom_type",0),
+                         ("NUMBER_EXCLUDED_ATOMS", 1, 10, __parseskip_,"_skip",8),
+                         ("NONBONDED_PARM_INDEX", 1, 10, __parseskip_,"_skip",8),
+                         ("RESIDUE_LABEL", 1, 20, __parseatoms_, "_resname",11),
+                         ("RESIDUE_POINTER", 2, 10, __parsesectionint_,"_respoint",11),
+                         ("BOND_FORCE_CONSTANT", 1, 5, __parseskip_,"_skip",8),
+                         ("BOND_EQUIL_VALUE", 1, 5, __parseskip_,"_skip",8),
+                         ("ANGLE_FORCE_CONSTANT", 1, 5, __parseskip_,"_skip",8),
+                         ("ANGLE_EQUIL_VALUE", 1, 5, __parseskip_,"_skip",8),
+                         ("DIHEDRAL_FORCE_CONSTANT", 1, 5, __parseskip_,"_skip",8),
+                         ("DIHEDRAL_PERIODICITY", 1, 5, __parseskip_,"_skip",8),
+                         ("DIHEDRAL_PHASE", 1, 5, __parseskip_,"_skip",8),
+                         ("SOLTY", 1, 5, __parseskip_,"_skip",8),
+                         ("LENNARD_JONES_ACOEF", 1, 5, __parseskip_,"_skip",8),
+                         ("LENNARD_JONES_BCOEF", 1, 5, __parseskip_,"_skip",8),
+                         #("BONDS_INC_HYDROGEN", 2, 4, __parsebond_, "_bonds",2),
+                         #("ANGLES_INC_HYDROGEN", 3, 3, __parsesection_, "_angles"),
+                         #("DIHEDRALS_INC_HYDROGEN", 4, 2, __parsesection_, "_dihe"),
+                         #("NIMPHI", 4, 2, __parsesection_, "_impr"),
+                         #("NDON", 2, 4, __parsesection_,"_donors"),
+                         #("NACC", 2, 4, __parsesection_,"_acceptors"),
+                         ],
+                    10:
+                        [("ATOM_NAME", 1, 20, __parseatoms_, "_name",0),
+                         ("CHARGE",1, 5, __parsesection_,"_charge",0),
+                         ("MASS",1, 5, __parsesection_,"_mass",0),
+                         ("ATOM_TYPE_INDEX", 1, 10, __parsesectionint_,"_atom_type",0),
+                         ("NUMBER_EXCLUDED_ATOMS", 1, 10, __parseskip_,"_skip",8),
+                         ("NONBONDED_PARM_INDEX", 1, 10, __parseskip_,"_skip",8),
+                         ("RESIDUE_LABEL", 1, 20, __parseatoms_, "_resname",11),
+                         ("RESIDUE_POINTER", 2, 10, __parsesectionint_,"_respoint",11),
+                         ("BOND_FORCE_CONSTANT", 1, 5, __parseskip_,"_skip",8),
+                         ("BOND_EQUIL_VALUE", 1, 5, __parseskip_,"_skip",8),
+                         ("ANGLE_FORCE_CONSTANT", 1, 5, __parseskip_,"_skip",8),
+                         ("ANGLE_EQUIL_VALUE", 1, 5, __parseskip_,"_skip",8),
+                         ("DIHEDRAL_FORCE_CONSTANT", 1, 5, __parseskip_,"_skip",8),
+                         ("DIHEDRAL_PERIODICITY", 1, 5, __parseskip_,"_skip",8),
+                         ("DIHEDRAL_PHASE", 1, 5, __parseskip_,"_skip",8),
+                         ("SOLTY", 1, 5, __parseskip_,"_skip",8),
+                         ("LENNARD_JONES_ACOEF", 1, 5, __parseskip_,"_skip",8),
+                         ("LENNARD_JONES_BCOEF", 1, 5, __parseskip_,"_skip",8),
+                         #("BONDS_INC_HYDROGEN", 2, 4, __parsebond_, "_bonds",2),
+                         #("ANGLES_INC_HYDROGEN", 3, 3, __parsesection_, "_angles"),
+                         #("DIHEDRALS_INC_HYDROGEN", 4, 2, __parsesection_, "_dihe")]
+                         #("NIMPHI", 4, 2, __parsesection_, "_impr"),
+                         #("NDON", 2, 4, __parsesection_,"_donors"),
+                         #("NACC", 2, 4, __parsesection_,"_acceptors")]
+                         ],
+                    }
+        structure = {}
+        try:
+            for info in sections[formatversion]:
+                 parse_sec(info)
+        except StopIteration:
+            raise TOPParseError("The TOP file didn't contain the minimum required section of ATOM_NAME")
+        # Completing info respoint to include all atoms in last resid
+        structure["_respoint"].append(sys_info[0])
+        structure["_respoint"][-1] = structure["_respoint"][-1] + 1
 
     atoms = [None,]*sys_info[0]
     from MDAnalysis.core.AtomGroup import Atom

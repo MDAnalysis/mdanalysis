@@ -94,7 +94,7 @@ def __parseatoms_(pdb, structure):
             charge = guess_atom_charge(atomname)
             bfactor = atom.tempFactor
             occupancy = atom.occupancy
-    
+
             atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),\
                               bfactor=bfactor,serial=atom.serial))
         # TER atoms
@@ -106,24 +106,24 @@ def __parseatoms_(pdb, structure):
 
 
 def __parsebonds_(filename, primitive_pdb_reader, structure, guess_bonds_mode):
-  guessed_bonds = set()
-  if guess_bonds_mode:      
-      guessed_bonds = guess_bonds(structure["_atoms"], np.array(primitive_pdb_reader.ts))
-  
-  #
-  # Mapping between the atom array indicies and atom ids in the original PDB file
-  #
-  mapping =  dict([(a.serial, i+1) for i, a in  enumerate(structure["_atoms"])])
-  
-  bonds = set()  
-  with open(filename , "r") as filename:
-    lines = [(num, line[6:].split()) for num,line in enumerate(filename) if line[:6] == "CONECT"]
-    for num, bond in lines:
-      atom, atoms = int(bond[0]) , map(int,bond[1:])
-      for a in atoms:
-          bond = frozenset([mapping[atom], mapping[a] ])
-          bonds.add(bond) 
+    guessed_bonds = set()
+    if guess_bonds_mode:
+        guessed_bonds = guess_bonds(structure["_atoms"], np.array(primitive_pdb_reader.ts))
 
-  # FIXME by JD: we could use a BondsGroup class perhaps 
-  structure["_bonds"] = bonds
-  structure["_guessed_bonds"] = guessed_bonds
+    #
+    # Mapping between the atom array indicies and atom ids in the original PDB file
+    #
+    mapping =  dict([(a.serial, i+1) for i, a in  enumerate(structure["_atoms"])])
+
+    bonds = set()
+    with open(filename , "r") as filename:
+        lines = [(num, line[6:].split()) for num,line in enumerate(filename) if line[:6] == "CONECT"]
+        for num, bond in lines:
+            atom, atoms = int(bond[0]) , map(int,bond[1:])
+            for a in atoms:
+                bond = frozenset([mapping[atom], mapping[a] ])
+                bonds.add(bond)
+
+    # FIXME by JD: we could use a BondsGroup class perhaps
+    structure["_bonds"] = bonds
+    structure["_guessed_bonds"] = guessed_bonds

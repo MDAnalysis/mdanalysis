@@ -201,7 +201,6 @@ References
 .. _END: http://www.wwpdb.org/documentation/format32/sect11.html#END
 
 """
-from __future__ import with_statement
 
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
