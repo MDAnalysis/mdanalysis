@@ -612,6 +612,10 @@ class TestMultiPDBReader(TestCase):
         self.multiverse = mda.Universe(PDB_multiframe, permissive=True, bonds=True)
         self.conect = mda.Universe(CONECT, bonds=True)
 
+    def tearDown(self):
+        del self.multiverse
+        del self.conect
+
     def test_numframes(self):
         assert_equal(self.multiverse.trajectory.numframes, 24, "Wrong number of frames read from PDB muliple model file")
 
