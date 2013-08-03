@@ -2676,9 +2676,11 @@ class Universe(object):
         del self.__trajectory  # guarantees that files are closed (?)
         self.__trajectory = value
 
-    def __del__(self):
-        # make sure that any trajectory that we're reading get closed
-        self.trajectory.close()
+    # NOTE: DO NOT ADD A __del__() method: it somehow keeps the Universe
+    #       alive during unit tests and the unit tests run out of memory!
+    #### def __del__(self): <------ do not add this! [orbeckst]
+       
+        
 
 
 def asUniverse(*args, **kwargs):
