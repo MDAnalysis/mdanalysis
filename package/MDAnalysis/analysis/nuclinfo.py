@@ -102,76 +102,89 @@ from MDAnalysis.core.util import norm
 import numpy
 from math import pi, sin, cos, atan2, sqrt, pow
 
-def wc_pair(universe, i,bp):
-    """Watson-Crick basepair distance for residue *i* with residue *bp*.
+def wc_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
+     """Watson-Crick basepair distance for residue *i* with residue *bp*.
 
-    The distance of the nitrogen atoms in a Watson-Crick hydrogen bond is
-    computed.
+     The distance of the nitrogen atoms in a Watson-Crick hydrogen bond is
+     computed.
 
-    :Arguments:
-      *universe*
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-      *i*
-         resid of the first base
-      *bp*
-         resid of the second base
+     :Arguments:
+       *universe*
+           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+       *seg1*
+           segment id for first base
+       *i*
+           resid of the first base
+       *seg2*
+           segment id for second base
+       *bp*
+           resid of the second base
 
-    .. versionadded:: 0.7.6
-    """
-    if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DT","U","C","T","CYT","THY","URA"]:
-        a1,a2 = "N3","N1"
-    if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DG","DA","A","G","ADE","GUA"]:
-        a1,a2 = "N1","N3"
-    wc_dist = universe.selectAtoms(" (resid %s and name %s) or (resid %s and name %s) "%(i,a1,bp,a2))
-    wc = norm(wc_dist[0].pos - wc_dist[1].pos)
-    return wc
+     .. versionadded:: 0.7.6
+     """
+     if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DT","U","C","T","CYT","THY","URA"]:
+          a1,a2 = "N3","N1"
+     if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DG","DA","A","G","ADE","GUA"]:
+          a1,a2 = "N1","N3"
+     wc_dist = universe.selectAtoms(" (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) "%(seg1,i,a1,seg2,bp,a2))
+     wc = norm(wc_dist[0].pos - wc_dist[1].pos)
+     return wc
 
-def minor_pair(universe,i,bp):
-    """Minor-Groove basepair distance for residue *i* with residue *bp*.
+def minor_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
+     """Minor-Groove basepair distance for residue *i* with residue *bp*.
 
-    The distance of the nitrogen and oxygen atoms in a Minor-groove hydrogen bond is
-    computed.
+     The distance of the nitrogen and oxygen atoms in a Minor-groove hydrogen bond is
+     computed.
 
-    :Arguments:
-     *universe*
-        :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-     *i*
-        resid of the first base
-     *bp*
-        resid of the second base
+     :Arguments:
+       *universe*
+           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+       *seg1*
+           segment id for first base
+       *i*
+           resid of the first base
+       *seg2*
+           segment id for second base
+       *bp*
+           resid of the second base
 
-    .. versionadded:: 0.7.6
-    """
-    if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DT","U","C","T","CYT","THY","URA"]:
-       a1,a2 = "O2","C2"
-    if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DG","DA","A","G","ADE","GUA"]:
-       a1,a2 = "C2","O2"
-    c2o2_dist = universe.selectAtoms(" (resid %s and name %s) or (resid %s and name %s) "%(i,a1,bp,a2))
-    c2o2 = norm(c2o2_dist[0].pos - c2o2_dist[1].pos)
-    return c2o2
+     .. versionadded:: 0.7.6
+     """
+     if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DT","U","C","T","CYT","THY","URA"]:
+          a1,a2 = "O2","C2"
+     if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DG","DA","A","G","ADE","GUA"]:
+          a1,a2 = "C2","O2"
+     c2o2_dist = universe.selectAtoms(" (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) "%(seg1,i,a1,seg2,bp,a2))
+     c2o2 = norm(c2o2_dist[0].pos - c2o2_dist[1].pos)
+     return c2o2
 
-def major_pair(universe,i,bp):
-    """Major-Groove basepair distance for residue *i* with residue *bp*.
+def major_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
+     """Major-Groove basepair distance for residue *i* with residue *bp*.
 
-    The distance of the nitrogen and oxygen atoms in a Major-groove hydrogen bond is
-    computed.
-    
-    :Arguments:
-      *universe* 
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory      *i*
-         resid of the first base
-      *bp* 
-         resid of the second base
+     The distance of the nitrogen and oxygen atoms in a Major-groove hydrogen bond is
+     computed.
+     
+     :Arguments:
+       *universe* 
+           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory       *i*
+       *seg1*
+           segment id for first base
+       *i*
+           resid of the first base
+       *seg2*
+           segment id for second base
+       *bp*
+           resid of the second base
 
-    .. versionadded:: 0.7.6
-    """
-    if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DG","C","G","CYT","GUA"]:
-        a1,a2 = "O6","N4"
-    if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DT","DA","A","T","U","ADE","THY","URA"]: 
-        a1,a2 = "N6","O4"            
-    no_dist = universe.selectAtoms(" (resid %s or resid %s) and (name %s or name %s) "%(i,bp,a1,a2))
-    major = norm(no_dist[0].pos - no_dist[1].pos)
-    return major
+     .. versionadded:: 0.7.6
+     """
+     if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DG","C","G","CYT","GUA"]:
+          a1,a2 = "O6","N4"
+     if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DT","DA","A","T","U","ADE","THY","URA"]: 
+          a1,a2 = "N6","O4"               
+     no_dist = universe.selectAtoms(" (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) "%(seg1,i,a1,seg2,bp,a2))
+     major = norm(no_dist[0].pos - no_dist[1].pos)
+     return major
 
 
 def phase_cp(universe,seg,i):
@@ -311,7 +324,6 @@ def tors(universe,seg,i):
       *i*
          resid of the base
      
-    .. versionadded:: 0.7.6
     """
     a = universe.selectAtoms(" atom %s %s O3\' "%(seg,i-1)," atom %s %s P  "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i))
     b = universe.selectAtoms(" atom %s %s P    "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i)," atom %s %s C4\' "%(seg,i))
@@ -474,16 +486,15 @@ def tors_zeta(universe,seg,i):
 
 def tors_chi(universe,seg,i):
     """chi nucleic acid dihedral
-
-    The dihedral is computed based on position atoms for resid *i*
-    
-    :Arguments:
-      *universe* 
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-      *segid*
-         segid of resid
-      *i*
-         resid of the base
+     The dihedral is computed based on position atoms for resid *i*
+     
+     :Arguments:
+       *universe* 
+           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+       *segid*
+           segid of resid
+       *i*
+           resid of the base
 
     .. versionadded:: 0.7.6
     """
@@ -492,30 +503,70 @@ def tors_chi(universe,seg,i):
     except:
         c = universe.selectAtoms(" atom %s %s O4\' "%(seg,i)," atom %s %s C1\' "%(seg,i)," atom %s %s N9 "%(seg,i)," atom %s %s C4  "%(seg,i))
     chi = c.dihedral()
-    if chi < 360:
+    if chi < 0:
         chi = chi + 360
     return chi
 
 def hydroxyl(universe,seg,i):
     """2-hydroxyl dihedral. Useful only for RNA calculations. 
-    
-    The dihedral is computed based on position atoms for resid *i*
-    
-    :Note: This dihedral calculation will only work if using atom names 
-           as documented by charmm force field parameters. 
+     :Note: This dihedral calculation will only work if using atom names 
+     as documented by charmm force field parameters. 
 
-    :Arguments:
-      *universe* 
-         :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-      *segid*
-         segid of resid
-      *i*
-         resid of the base
-    
+     :Arguments:
+       *universe* 
+           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+       *segid*
+           segid of resid
+       *i*
+           resid of the base
+
     .. versionadded:: 0.7.6
     """
     h = universe.selectAtoms(" atom %s %s C1\' "%(seg,i)," atom %s %s C2\' "%(seg,i)," atom %s %s O2\' "%(seg,i)," atom %s %s H2\'\' "%(seg,i))
     hydr = h.dihedral()
-    if hydr < 360:
+    if hydr < 0:
         hydr = hydr + 360
-    return hydr  
+    return hydr
+
+def pseudo_dihe_baseflip(universe,bp1,bp2,i,seg1="SYSTEM",seg2="SYSTEM",seg3="SYSTEM"):
+    """pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping
+     
+     The dihedral is computed based on position atoms for resid *i*
+    
+     :Note: This dihedral calculation will only work if using atom names 
+     as documented by charmm force field parameters. 
+
+     :Arguments:
+       *universe* 
+           :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
+       *segid1*
+           segid of resid base pairing with bp2
+       *bp1*
+           resid that base pairs with bp2 
+       *segid2*
+           segid same as that of segid of flipping resid
+       *bp2*
+           resid above or below the base that flips 
+       *segid3*
+           segid of resid that flips
+       *i*
+           resid of the base that flips
+
+    .. versionadded:: 0.8.0
+    """
+    from MDAnalysis.core import util
+    import numpy
+
+
+    bf1 = universe.selectAtoms(" ( segid %s and resid %s and nucleicbase ) or ( segid %s and resid %s and nucleicbase ) "%(seg1,bp1,seg2,bp2))
+    bf4 = universe.selectAtoms(" ( segid %s and resid %s and nucleicbase ) "%(seg3,i)) 
+    bf2 =  universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) "%(seg2,bp2))
+    bf3 =  universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) "%(seg3,i))
+    x = [bf1.centerOfMass(),bf2.centerOfMass(),bf3.centerOfMass(),bf4.centerOfMass()]
+    pseudo = util.dihedral(x[1]-x[0],x[2]-x[1],x[3]-x[2])
+    pseudo = numpy.rad2deg(pseudo)
+    if pseudo < 0:
+        pseudo = pseudo + 360
+    return pseudo
+
+
