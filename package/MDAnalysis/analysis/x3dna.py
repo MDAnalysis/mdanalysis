@@ -132,6 +132,45 @@ from MDAnalysis.core.util import which, realpath, asiterable
 import logging
 logger = logging.getLogger("MDAnalysis.analysis.x3dna")
 
+def mean_std_from_x3dnaPickle(self):
+    if self.x3dna_param == False:
+        bp_shear,bp_stretch,bp_stagger,bp_rise,bp_shift,bp_slide,bp_buckle,bp_prop,bp_open,bp_tilt,bp_roll,bp_twist = [],[],[],[],[],[],[],[],[],[],[],[]
+        for i in range(len(self.profiles)):
+            bp_shear.append(self.profiles.values()[i].Shear)
+            bp_stretch.append(self.profiles.values()[i].Stretch)
+            bp_stagger.append(self.profiles.values()[i].Stagger)
+            bp_buckle.append(self.profiles.values()[i].Buckle)
+            bp_prop.append(self.profiles.values()[i].Propeller)
+            bp_open.append(self.profiles.values()[i].Opening)
+            bp_rise.append(self.profiles.values()[i].Rise)
+            bp_shift.append(self.profiles.values()[i].Shift)
+            bp_slide.append(self.profiles.values()[i].Slide)
+            bp_tilt.append(self.profiles.values()[i].Tilt)
+            bp_roll.append(self.profiles.values()[i].Roll)
+            bp_twist.append(self.profiles.values()[i].Twist)
+        bp_shear,bp_stretch,bp_stagger,bp_rise,bp_shift,bp_slide,bp_buckle,bp_prop,bp_open,bp_tilt,bp_roll,bp_twist = numpy.array(bp_shear),numpy.array(bp_stretch),numpy.array(bp_stagger),numpy.array(bp_rise),numpy.array(bp_shift),numpy.array(bp_slide),numpy.array(bp_buckle),numpy.array(bp_prop),numpy.array(bp_open),numpy.array(bp_tilt),numpy.array(bp_roll),numpy.array(bp_twist)
+        na_avg,na_std = [], []
+        for j in range(len(bp_shear[0])):
+            na_avg.append([numpy.mean(bp_shear[:,j]),numpy.mean(bp_stretch[:,j]),numpy.mean(bp_stagger[:,j]),numpy.mean(bp_buckle[:,j]),numpy.mean(bp_prop[:,j]),numpy.mean(bp_open[:,j]),numpy.mean(bp_shift[:,j]),numpy.mean(bp_slide[:,j]),numpy.mean(bp_rise[:,j]),numpy.mean(bp_tilt[:,j]),numpy.mean(bp_roll[:,j]),numpy.mean(bp_twist[:,j])])
+            na_std.append([numpy.std(bp_shear[:,j]),numpy.std(bp_stretch[:,j]),numpy.std(bp_stagger[:,j]),numpy.std(bp_buckle[:,j]),numpy.std(bp_prop[:,j]),numpy.std(bp_open[:,j]),numpy.std(bp_shift[:,j]),numpy.std(bp_slide[:,j]),numpy.std(bp_rise[:,j]),numpy.std(bp_tilt[:,j]),numpy.std(bp_roll[:,j]),numpy.std(bp_twist[:,j])])
+    else:
+        bp_rise,bp_shift,bp_slide,bp_tilt,bp_roll,bp_twist = [],[],[],[],[],[],[],[],[],[],[],[]
+        for i in range(len(self)):
+            #print i
+            bp_rise.append(self.profiles.values()[i].Rise)
+            bp_shift.append(self.profiles.values()[i].Shift)
+            bp_slide.append(self.profiles.values()[i].Slide)
+            bp_tilt.append(self.profiles.values()[i].Tilt)
+            bp_roll.append(self.profiles.values()[i].Roll)
+            bp_twist.append(self.profiles.values()[i].Twist)
+        bp_rise,bp_shift,bp_slide,bp_tilt,bp_roll,bp_twist = numpy.array(bp_shear),numpy.array(bp_stretch),numpy.array(bp_stagger),numpy.array(bp_rise),numpy.array(bp_shift),numpy.array(bp_slide),numpy.array(bp_buckle),numpy.array(bp_prop),numpy.array(bp_open),numpy.array(bp_tilt),numpy.array(bp_roll),numpy.array(bp_twist)
+        na_avg,na_std = [], []
+        for j in range(len(bp_shift[0])):
+            na_avg.append([numpy.mean(bp_shift[:,j]),numpy.mean(bp_slide[:,j]),numpy.mean(bp_rise[:,j]),numpy.mean(bp_tilt[:,j]),numpy.mean(bp_roll[:,j]),numpy.mean(bp_twist[:,j])])
+            na_std.append([numpy.std(bp_shift[:,j]),numpy.std(bp_slide[:,j]),numpy.std(bp_rise[:,j]),numpy.std(bp_tilt[:,j]),numpy.std(bp_roll[:,j]),numpy.std(bp_twist[:,j])])
+
+    na_avg,na_std = numpy.array(na_avg),numpy.array(na_std)
+    return na_avg,na_std
 
 class BaseX3DNA(object):
     """Baseclass for X3DNA analysis, providing plotting and utility functions"""
@@ -315,6 +354,13 @@ class X3DNA(BaseX3DNA):
                (e.g. ``/opt/x3dna/2.1 and /opt/x3dna/2.1/bin``) must be set 
                and then added to export in bashrc file. See X3DNA 
                documentation for set-up instructions.
+        
+          *x3dna_param*
+        
+               Determines whether base step or base pair parameters will be 
+               calculated. If True then stacked base step parameters will be 
+               analyzed [Default is True].  If False then stacked base pair 
+               parameters will be analyzed.
         """
         # list of temporary files, to be cleaned up on __del__
         self.tempfiles = ["auxiliary.par","bestpairs.pdb","bp_order.dat","bp_helical.par","cf_7methods.par","col_chains.scr","col_helices.scr","hel_regions.pdb","ref_frames.dat","hstacking.pdb","stacking.pdb"]
@@ -326,6 +372,7 @@ class X3DNA(BaseX3DNA):
         # guess executables
         self.exe = {}
         x3dna_exe_name = kwargs.pop('executable', 'xdna_ensemble')
+        self.x3dna_param = kwargs.pop('x3dna_param',True)
         self.exe['xdna_ensemble'] = which(x3dna_exe_name)
         if self.exe['xdna_ensemble'] is None:
             errmsg = "X3DNA binary %(x3dna_exe_name)r not found." % vars()
@@ -336,9 +383,11 @@ class X3DNA(BaseX3DNA):
         x3dnapath = os.path.dirname(self.exe['xdna_ensemble'])
         self.logfile = kwargs.pop("logfile", "bp_step.par")
        
-        self.template = textwrap.dedent("""x3dna_ensemble analyze -b 355d.bps -p %(filename)r """)
-        #self.template = textwrap.dedent("""xdna_ensemble %(filename)r 355d.bps stdout |analyze stdin """)
-
+        if self.x3dna_param == False:
+            self.template = textwrap.dedent("""x3dna_ensemble analyze -b 355d.bps --one %(filename)r """)
+        else:
+            self.template = textwrap.dedent("""find_pair -s %(filename)r stdout |analyze stdin """)
+        
         # sanity checks
         for program, path in self.exe.items():
             if path is None or which(path) is None:
@@ -352,9 +401,10 @@ class X3DNA(BaseX3DNA):
         """Run X3DNA on the input file."""
         inpname = kwargs.pop("inpfile", None)
         outname = kwargs.pop("outfile", self.logfile)
-        
+
         x3dnaargs = vars(self).copy()
         x3dnaargs.update(kwargs)
+        x3dna_param = kwargs.pop('x3dna_param',self.x3dna_param)
 
         inp = self.template % x3dnaargs
         if inpname:
@@ -406,6 +456,7 @@ class X3DNA(BaseX3DNA):
         #C-G     -0.529     0.122    -0.002    -7.983   -10.083    -0.091    -0.911     1.375     3.213    -0.766    -4.065    41.492
         # only parse bp_step.par      
         x3dna_output = kwargs.pop("x3dnaout", self.logfile)
+        
         run = kwargs.pop("run", 1)     # id number
         outdir = kwargs.pop("outdir", os.path.curdir)
 
@@ -431,27 +482,52 @@ class X3DNA(BaseX3DNA):
             read_data = False
             for line in x3dna:
                 line = line.rstrip()  # preserve columns (FORTRAN output...)
-                if line.startswith("#        Shear"):
-                    read_data = True
-                    logger.debug("Started reading data")
-                    fields = line.split()
-                    x3dna_profile_no = int(1)  #### useless int value code based off hole plugin
-                    records = []
-                    continue
-                if read_data:
-                    if len(line.strip()) != 0:
-                        try:
-                            Sequence, Shear,Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist = line.split() 
-                        except:
-                            logger.critical("Run %d: Problem parsing line %r", run, line.strip())
-                            logger.exception("Check input file %r.", x3dna_output)
-                            raise
-                        records.append([float(Shear),float(Stretch),float(Stagger),float(Buckle),float(Propeller),float(Opening),float(Shift),float(Slide),float(Rise),float(Tilt),float(Roll),float(Twist)])
+                if self.x3dna_param == False:
+                    if line.startswith("#        Shear"):
+                        read_data = True
+                        logger.debug("Started reading data")
+                        fields = line.split()
+                        x3dna_profile_no = int(1)  #### useless int value code based off hole plugin
+                        records = []
                         continue
-                    else:
-                        # end of records (empty line)
-                        read_data = False
-            frame_x3dna_output = numpy.rec.fromrecords(records, formats="f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8", names="Shear,Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist")
+                    if read_data:
+                        if len(line.strip()) != 0:
+                            try:
+                                Sequence, Shear,Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist = line.split()
+                            except:
+                                logger.critical("Run %d: Problem parsing line %r", run, line.strip())
+                                logger.exception("Check input file %r.", x3dna_output)
+                                raise
+                            records.append([float(Shear),float(Stretch),float(Stagger),float(Buckle),float(Propeller),float(Opening),float(Shift),float(Slide),float(Rise),float(Tilt),float(Roll),float(Twist)])
+                            continue
+                        else:
+                            # end of records (empty line)
+                            read_data = False
+                else:    
+                    if line.startswith("#      Shift"):
+                        read_data = True
+                        logger.debug("Started reading data")
+                        fields = line.split()
+                        x3dna_profile_no = int(1)  #### useless int value code based off hole plugin
+                        records = []
+                        continue
+                    if read_data:
+                        if len(line.strip()) != 0:
+                            try:
+                                Sequence, Shift,Slide,Rise,Tilt,Roll,Twist = line.split()
+                            except:
+                                logger.critical("Run %d: Problem parsing line %r", run, line.strip())
+                                logger.exception("Check input file %r.", x3dna_output)
+                                raise
+                            records.append([float(Shift),float(Slide),float(Rise),float(Tilt),float(Roll),float(Twist)])
+                            continue
+                        else:
+                            # end of records (empty line)
+                            read_data = False
+            if self.x3dna_param == False:
+                frame_x3dna_output = numpy.rec.fromrecords(records, formats="f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8", names="Shear,Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist")
+            else:
+                frame_x3dna_output = numpy.rec.fromrecords(records, formats="f8,f8,f8,f8,f8,f8", names="Shift,Slide,Rise,Tilt,Roll,Twist")
             # store the profile
             self.profiles[x3dna_profile_no] = frame_x3dna_output
             logger.debug("Collected X3DNA profile for frame %d (%d datapoints)",
@@ -507,6 +583,11 @@ class X3DNAtraj(BaseX3DNA):
                frame indices to slice the trajectory as
                ``universe.trajectory[start, stop, step]``
 
+          *x3dna_param*
+               indicates whether stacked bases or stacked base-pairs will be 
+               analyzed. True is bases or False is stacked base-pairs [Default
+               is True].
+
           *kwargs*
                All other keywords are passed on to :class:`X3DNA` (see there for description).
 
@@ -514,6 +595,7 @@ class X3DNAtraj(BaseX3DNA):
         self.universe = universe
         self.selection = kwargs.pop("selection", "nucleic")
 
+        self.x3dna_param = kwargs.pop('x3dna_param',True)
         self.start = kwargs.pop('start', None)
         self.stop = kwargs.pop('stop', None)
         self.step = kwargs.pop('step', None)
@@ -534,6 +616,7 @@ class X3DNAtraj(BaseX3DNA):
         start = kwargs.pop('start', self.start)
         stop = kwargs.pop('stop', self.stop)
         step = kwargs.pop('step', self.step)
+        x3dna_param = kwargs.pop('x3dna_param',self.x3dna_param)
         x3dna_kw = self.x3dna_kwargs.copy()
         x3dna_kw.update(kwargs)
 
@@ -557,7 +640,6 @@ class X3DNAtraj(BaseX3DNA):
                     #print "complete"
                 '''
                 x3dna_profiles = self.run_x3dna(pdbfile, **x3dna_kw)
-                #print "yes"
             finally:
                 try:
                     os.unlink(pdbfile)
@@ -573,6 +655,7 @@ class X3DNAtraj(BaseX3DNA):
 
     def run_x3dna(self, pdbfile, **kwargs):
         """Run X3DNA on a single PDB file *pdbfile*."""
+        kwargs['x3dna_param'] = self.x3dna_param
         H = X3DNA(pdbfile, **kwargs)
         H.run()
         H.collect()

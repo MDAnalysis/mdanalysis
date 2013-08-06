@@ -554,12 +554,17 @@ def pseudo_dihe_baseflip(universe,bp1,bp2,i,seg1="SYSTEM",seg2="SYSTEM",seg3="SY
 
     .. versionadded:: 0.8.0
     """
+    from MDAnalysis.core import util
+    import numpy
+
+
     bf1 = universe.selectAtoms(" ( segid %s and resid %s and nucleicbase ) or ( segid %s and resid %s and nucleicbase ) "%(seg1,bp1,seg2,bp2))
     bf4 = universe.selectAtoms(" ( segid %s and resid %s and nucleicbase ) "%(seg3,i)) 
     bf2 =  universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) "%(seg2,bp2))
     bf3 =  universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) "%(seg3,i))
-    h = [bf1.centerOfMass(),bf2.centerOfMass(),bf3.centerOfMass(),bf4.centerOfMass()]
-    pseudo = h.dihedral_orig()
+    x = [bf1.centerOfMass(),bf2.centerOfMass(),bf3.centerOfMass(),bf4.centerOfMass()]
+    pseudo = util.dihedral(x[1]-x[0],x[2]-x[1],x[3]-x[2])
+    pseudo = numpy.rad2deg(pseudo)
     if pseudo < 0:
         pseudo = pseudo + 360
     return pseudo
