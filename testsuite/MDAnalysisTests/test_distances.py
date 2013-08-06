@@ -69,7 +69,7 @@ class TestDistanceArray(TestCase):
         ref = mindist(a, b, box)
         val = MDAnalysis.core.distances.distance_array(np.array([a]), np.array([b]), box)[0,0]
 
-        assert np.abs(ref - val) < 1e-6, "distance_array: {0} != reference: {1}".format(val, ref)
+        assert_almost_equal(val, ref, decimal=6, err_msg="Issue 151 not correct (PBC in distance array)")
 
 
 class TestDistanceArrayDCD(TestCase):

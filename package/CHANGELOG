@@ -10,7 +10,9 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/13  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy, manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0
+??/??/13  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
+          manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
+	  rmcgibbo
 
   * 0.8.0
 
@@ -48,6 +50,8 @@ The rules for this file:
 
   Fixes
 
+  * fixed incorrect computation of distances in serial and parallel 
+    distance_array() with PBC (Issue 151)
   * fixed Issue 129 (hole.py module pipe/file closure)
   * fixed array comparison bug in MDAnalysis.analysis.helanal
     and various enhancements to the helanal module
