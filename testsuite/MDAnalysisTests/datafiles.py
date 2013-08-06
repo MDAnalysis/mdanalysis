@@ -33,10 +33,11 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "DCD_empty",
            "PSF_NAMD", "PDB_NAMD",            # NAMD
            "PSF_nosegid",                     # psf without a segid, Issue 121
-           "PDB_small","NUCL",                # PDB
+           "PDB_small",                       # PDB
            "PDB_closed",
            "PDB_multiframe",
            "PDB_helix",
+           "NUCL",                            # nucleic acid (PDB)
            "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",   # Gromacs (AdK)
            "PDB_xvf", "TPR_xvf", "TRR_xvf",     # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
            "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",

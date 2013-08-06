@@ -370,11 +370,16 @@ class NucleicSelection(Selection):
 
     Recognized residue names:
 
-    * from the Charmm force field ::
+    * from the CHARMM force field ::
         awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_na.rtf
-    * recognized: 'ADE', 'URA', 'CYT', 'GUA', 'THY'
+      * recognized: 'ADE', 'URA', 'CYT', 'GUA', 'THY'
+    * recognized (CHARMM in Gromacs): 'DA', 'DU', 'DC', 'DG', 'DT'
+
+    .. versionchanged:: 0.8
+       additional Gromacs selections (see also :class:`NucleicXstalSelection`)
     """
-    nucl_res = dict([(x,None) for x in ['ADE', 'URA', 'CYT', 'GUA', 'THY']])
+    nucl_res = dict([(x,None) for x in ['ADE', 'URA', 'CYT', 'GUA', 'THY',
+                                        'DA', 'DU', 'DC', 'DG', 'DT']])
     def _apply(self, group):
         return set([a for a in group.atoms if a.resname in self.nucl_res])
     def __repr__(self):
@@ -408,10 +413,13 @@ class BackboneSelection(ProteinSelection):
 
 class NucleicBackboneSelection(NucleicSelection):
     """A NucleicBackboneSelection contains all atoms with name "P", "C5'", C3'", "O3'", "O5'".
+
+    These atoms are only recognized if they are in a residue matched
+    by the :class:`NucleicSelection`.
     """
-    bb_atoms = dict([(x,None) for x in ['P', 'C5\'', 'C3\'', 'O3\'','O5\'']])
+    bb_atoms = dict([(x,None) for x in ["P", "C5'", "C3'", "O3'", "O5'"]])
     def _apply(self, group):
-        return set([a for a in group.atoms if (a.name in self.bb_atoms and a.resname in self.nucl_res)])
+        return set([a for a in group.atoms if (a.name in self.bb_atoms and a.resname in NucleicSelection.nucl_res)])
     def __repr__(self):
         return "<'NucleicBackboneSelection' >"
 
@@ -432,9 +440,9 @@ class BaseSelection(NucleicSelection):
         return "<'BaseSelection' >"
 
 class NucleicSugarSelection(NucleicSelection):
-    """A NucleicSugarSelection contains all atoms with name 'C1\'', 'C2\'','C3\'', 'C4\'', 'O2\'','O4\'','O3\''.
+    """A NucleicSugarSelection contains all atoms with name C1', C2', C3', C4', O2', O4', O3'.
     """
-    sug_atoms = dict([(x,None) for x in ['C1\'', 'C2\'','C3\'', 'C4\'', 'O2\'','O4\'','O3\'']])
+    sug_atoms = dict([(x,None) for x in ["C1'", "C2'", "C3'", "C4'", "O2'", "O4'", "O3'"]])
     def _apply(self, group):
         return set([a for a in group.atoms if (a.name in self.sug_atoms and a.resname in self.nucl_res)])
     def __repr__(self):
