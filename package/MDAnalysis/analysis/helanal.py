@@ -56,8 +56,8 @@ structures.
 
 .. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 .. _Helanal webserver: http://nucleix.mbu.iisc.ernet.in/helanal/helanal.shtml
-.. _`helanal.f`: http://www.webcitation.org/5y1RpVJtF
-.. helanal.f: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.f
+.. `helanal.f`: http://www.webcitation.org/5y1RpVJtF
+.. _`helanal.f`: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.f
 
 Background
 ----------
@@ -68,7 +68,7 @@ HELANAL_ can be used to characterize the geometry of helices with a minimum 9
 residues. The geometry of an alpha helix is characterized by computing local
 helix axes and local helix origins for four contiguous C-Alpha atoms, using the
 procedure of Sugeta and Miyazawa [Sugeta1967]_ and sliding this window over
-the length of the helix in steps of one C-Alpha atom.
+the length of the helix in steps of one C-alpha atom.
 
 The angles between successive local helix axes can identify *local bends* or
 *kinks* as well as occurrence of *smooth curvature* in the helix. A matrix, whose

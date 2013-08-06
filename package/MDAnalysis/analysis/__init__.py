@@ -65,13 +65,17 @@ Available analysis modules
 :mod:`~MDAnalysis.analysis.rms`
     Calculation of RMSD and RMSF.
 
+:mod:`~MDAnalysis.analysis.x3dna`
+    Analysis of helicoidal parameters driven by X3DNA_.
+
 .. _GridDataFormats: https://github.com/orbeckst/GridDataFormats
 .. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
+.. _X3DNA: http://x3dna.org/
 
 """
 __all__ = ['align', 'contacts', 'density', 'distances',
            'helanal', 'hbonds', 'leaflet', 'nuclinfo' ,
-           'rms',
+           'rms', 'x3dna',
            ]
 
 import align
@@ -82,5 +86,6 @@ import helanal
 import hbonds
 import leaflet
 import nuclinfo
+import x3dna
 import rms
 
