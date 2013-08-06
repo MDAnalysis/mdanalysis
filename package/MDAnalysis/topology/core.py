@@ -30,15 +30,24 @@ module. They are mostly of use to developers.
 import os.path
 import MDAnalysis.topology
 import tables
-from MDAnalysis.core.distances import self_distance_array
+import MDAnalysis.core.distances as distances
+
+import MDAnalysis.core.AtomGroup as AtomGroup
 
 def build_segments(atoms):
     """Create all :class:`~MDAnalysis.core.AtomGroup.Segment` instancess from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
 
     The function also builds the :class:`~MDAnalysis.core.AtomGroup.Residue`
     instances by tracking residue numbers.
+
+    Updating segments also changes the underlying
+    :class:`~MDAnalysis.core.AtomGroup.Atom` instances, which record
+    to which residue and segment an atom belongs.
+
+    :Returns: structure dict, which associates a segname with a
+              :class:`~MDAnalysis.core.AtomGroup.Segment`
+
     """
-    from MDAnalysis.core.AtomGroup import Residue, Segment
     struc = {}
     residues = []
     resatomlist = []
@@ -51,23 +60,52 @@ def build_segments(atoms):
                 resatomlist.append(a)
             else:
                 # New residue
-                residues.append(Residue(curr_resname, curr_resnum, resatomlist))
+                residues.append(AtomGroup.Residue(curr_resname, curr_resnum, resatomlist))
                 resatomlist = [a]
                 curr_resnum = a.resid
                 curr_resname = a.resname
         else:
             # We've come to a new segment
-            residues.append(Residue(curr_resname, curr_resnum, resatomlist))
-            struc[curr_segname] = Segment(curr_segname, residues)
+            residues.append(AtomGroup.Residue(curr_resname, curr_resnum, resatomlist))
+            struc[curr_segname] = AtomGroup.Segment(curr_segname, residues)
             residues = []
             resatomlist = [a]
             curr_resnum = a.resid
             curr_resname = a.resname
             curr_segname = a.segid
     # Add the last segment
-    residues.append(Residue(curr_resname, curr_resnum, resatomlist))
-    struc[curr_segname] = Segment(curr_segname, residues)
+    residues.append(AtomGroup.Residue(curr_resname, curr_resnum, resatomlist))
+    struc[curr_segname] = AtomGroup.Segment(curr_segname, residues)
     return struc
+
+def build_residues(atoms):
+    """Create a list :class:`~MDAnalysis.core.AtomGroup.Residue` instances from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
+
+    Updating residues also changes the underlying
+    :class:`~MDAnalysis.core.AtomGroup.Atom` instances, which record
+    to which residue an atom belongs.
+
+    :Returns: List of :class:`~MDAnalysis.core.AtomGroup.Residue` instances
+
+    .. versionadded:: 0.8
+    """
+    struc = {}
+    residues = []
+    resatomlist = []
+    curr_resnum = atoms[0].resid
+    curr_resname = atoms[0].resname
+    for a in atoms:
+        if (a.resid == curr_resnum):
+            resatomlist.append(a)
+        else:
+            # New residue
+            residues.append(AtomGroup.Residue(curr_resname, curr_resnum, resatomlist))
+            resatomlist = [a]
+            curr_resnum = a.resid
+            curr_resname = a.resname
+    # Add the last residue
+    residues.append(AtomGroup.Residue(curr_resname, curr_resnum, resatomlist))
+    return residues
 
 class Bond(object):
     """A bond between two :class:`~MDAnalysis.core.AtomGroup.Atom` instances."""
@@ -201,13 +239,17 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
     
     The VMD radii table is taken from GROMACS (/usr/share/gromacs/top/vdwradii.dat)
     
-    No check is done after the bonds are guesses to see if Lewis structre is 
-    correct. This is wrong and will burn somebody.
+    .. warning:: 
+
+       No check is done after the bonds are guesses to see if Lewis
+       structure is correct. This is wrong and will burn somebody.
     
     The code is also in pure python now, so it's slow. 
     
-    Reference: http://www.ks.uiuc.edu/Research/vmd/vmd-1.7/ug/node23.html
-    Author: Jan Domanski
+    * Reference: http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html
+    * Author: Jan Domanski
+
+    .. versionadded:: 0.7.7
     """
     # Taken from GROMACS gromacs/top/vdwradii.dat; in nm
     # FIXME by JD: these should be stored in an asset file, rather than in 
@@ -226,7 +268,7 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
             return bonds()
 
     # 1-D vector of the upper-triangle of all-to-all distance matrix    
-    dist = self_distance_array(coords)
+    dist = distances.self_distance_array(coords)
     N = len(coords)
     
     pairs = list()

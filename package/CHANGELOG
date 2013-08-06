@@ -12,24 +12,37 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/13  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy, manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0
 
-  * 0.8
+  * 0.8.0
 
   Enhancements
 
   * TPR parser (currently limited to versions 58, 73 and 83 of the
     Gromacs TPR format (Gromacs 4.0 to 4.6.1), see Issue 2)
   * fast XTC seeking (Issue 127)
+  * changing resid (set_resid()) or segid (set_segid()) changes the
+    topology and lists of resids/segids can be assigned to 
+    groups of objects (AtomGroup, ResidueGroup)
   * helanal: additional output of local bend and unit twist angles
     (Issue 133)
-  * added support for reading DMS files (DESRES molecular structure?)
+  * added support for reading DMS files (DESRES molecular structure)
   * bond connectivity information can be guessed from a PDB file if
     the bond=True keyword is set in Universe (Issue 23)
   * MDAnalysis.analysis.rms.RMSD: calculation of additional RMSDs
   * Plugin to generate nucleic acid helicoidal parameters using X3DNA;
     (must install working version 2.1 of X3DNA independently)
+  * can use advanced slicing (with arbitrary lists or arrays) at all
+    levels of the hierarchy (Issue 148)
+  * coordinate readers and writers can be used as context managers
+    with the 'with' statement
 
   Changes
 
+  * dropped support for Python 2.5; minimum requirement is Python 2.6
+    (Issue 130)
+  * almost all methods of AtomGroup return NumPy arrays
+  * slicing and indexing of AtomGroup, Residue, ResidueGroup, Segment,
+    SegmentGroup will now always return an appropriate object and
+    never a simple list
   * removed Timeseries.principleAxis (probably was never working)
   * dependent on Biopython >= 1.59 (Issue 147)
 
@@ -42,6 +55,9 @@ The rules for this file:
     if ref_frame != 0
   * alignto() now checks that the two selections describe the same
     atoms (fixes Issue 143)
+  * slicing of ResidueGroup will now produce a ResidueGroup, and
+    slicing of a SegmentGroup will produce a SegmentGroup, not a list
+    as before (fixes Issue 135)
  
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux

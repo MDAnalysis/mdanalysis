@@ -83,7 +83,6 @@ option are guaranteed to conform to the above format::
 .. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards
 """
 
-from __future__ import with_statement
 import numpy
 
 import MDAnalysis.core

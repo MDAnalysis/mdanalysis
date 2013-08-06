@@ -82,7 +82,7 @@ class DCDWriter(base.Writer):
         self.start = start
         self.step = step
         self.delta = delta
-        self.dcdfile = file(self.filename, 'wb')
+        self.dcdfile = open(self.filename, 'wb')
         self.remarks = remarks
         self._write_dcd_header(numatoms, start, step, delta, remarks)
     def _dcd_header(self):
@@ -199,7 +199,7 @@ class DCDReader(base.Reader):
         if stats.st_size == 0:
             raise IOError(errno.ENODATA,"DCD file is zero size",dcdfilename)
 
-        self.dcdfile = file(dcdfilename, 'rb')
+        self.dcdfile = open(dcdfilename, 'rb')
         self.numatoms = 0
         self.numframes = 0
         self.fixed = 0

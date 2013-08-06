@@ -27,7 +27,6 @@ format (DMS_) coordinate files (as used by the Desmond_ MD package).
 .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
 """
 
-from __future__ import with_statement
 
 from MDAnalysis.core.AtomGroup import Atom
 from MDAnalysis.topology.core import guess_atom_type, Bond
@@ -48,8 +47,6 @@ def parse(filename):
                      :func:`MDAnalysis.topology.PSFParser.parse`.
 
         """
-        con = sqlite3.connect(filename)
-
         def dict_factory(cursor, row):
             """
             Fetch SQL records as dictionaries, rather than the default tuples.
@@ -60,7 +57,7 @@ def parse(filename):
             return d
 
         atoms = None
-        with con:
+        with sqlite3.connect(filename) as con:
             # This will return dictionaries instead of tuples, when calling cur.fetch() or fetchall()
             con.row_factory = dict_factory
             cur = con.cursor()

@@ -53,6 +53,30 @@ appropriate reader automatically.
 .. _duck typing: http://c2.com/cgi/wiki?DuckTyping
 
 
+Using Readers
+-------------
+
+Normally, one does not explicitly need to select a reader. This is handled
+automatically when creating a :class:`~MDAnalysis.core.AtomGroup.Universe` and
+the appropriate reader for the file type is selected (typically by the file
+extension but this choice can be overriden with the ``format`` argument to
+:class:`~MDAnalysis.core.AtomGroup.Universe`).
+
+Using Writers
+-------------
+
+A typical approach is to generate a new trajectory from an old one, e.g. to
+only keep the protein::
+
+  u = MDAnalysis.Universe(PDB, XTC)
+  protein = u.selectAtoms("protein")
+  with MDAnalysis.Writer("protein.xtc", protein.numberOfAtoms()) as W:
+      for ts in u.trajectory:
+          W.write(protein)
+
+Using the :func:`with` statement will automatically close the trajectory when
+the last frame has been written.
+
 
 Supported coordinate formats
 ----------------------------
@@ -167,9 +191,10 @@ History
 - 2012-02-11 added _velocities to Timestep
 - 2012-05-24 multiframe keyword to distinguish trajectory from single frame writers
 - 2012-06-04 missing implementations of Reader.__getitem__ should raise :exc:`TypeError`
+- 2013-08-02 Readers/Writers must conform to the Python `Context Manager`_ API
 
 .. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
-
+.. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers
 
 Registry
 ~~~~~~~~
@@ -304,6 +329,10 @@ The following methods must be implemented in a Reader class.
      past the last frame
  ``rewind()``
      reposition to first frame
+  ``__entry__()``
+     entry method of a `Context Manager`_ (returns self)
+  ``__exit__()``
+     exit method of a `Context Manager`_, should call ``close()``.
 
 
 **Optional methods**

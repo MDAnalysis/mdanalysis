@@ -22,7 +22,6 @@ Read and write coordinates in CHARMM CARD coordinate format (suffix
 "crd"). The CHARMM "extended format" is handled automatically.
 
 """
-from __future__ import with_statement
 
 import MDAnalysis
 import MDAnalysis.core.util as util

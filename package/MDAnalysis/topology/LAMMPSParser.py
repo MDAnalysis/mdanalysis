@@ -124,72 +124,71 @@ class LAMMPSData(object):
             self.title = "LAMMPS data file"
         else:
             # Open and check validity
-            file = open(filename, 'r')
-            file_iter = file.xreadlines()
-            self.title = file_iter.next()
-            # Parse headers
-            headers = self.headers
-            for l in file_iter:
-                line = l.strip()
-                if len(line) == 0: continue
-                found = False
-                for keyword in header_keywords:
-                    if line.find(keyword) >= 0:
-                        found = True
-                        values = line.split()
-                        if keyword in ("xlo xhi", "ylo yhi", "zlo zhi"):
-                            headers[keyword] = (float(values[0]), float(values[1]))
-                        else:
-                            headers[keyword] = int(values[0])
-                if found == False: break
-            file.close()
+            with open(filename, 'r') as file:
+                file_iter = file.xreadlines()
+                self.title = file_iter.next()
+                # Parse headers
+                headers = self.headers
+                for l in file_iter:
+                    line = l.strip()
+                    if len(line) == 0: continue
+                    found = False
+                    for keyword in header_keywords:
+                        if line.find(keyword) >= 0:
+                            found = True
+                            values = line.split()
+                            if keyword in ("xlo xhi", "ylo yhi", "zlo zhi"):
+                                headers[keyword] = (float(values[0]), float(values[1]))
+                            else:
+                                headers[keyword] = int(values[0])
+                    if found == False: break
+
             # Parse sections
             # XXX This is a crappy way to do it
-            file = open(filename, 'r')
-            file_iter = file.xreadlines()
-            # Create coordinate array
-            positions = numpy.zeros((headers['atoms'], 3), numpy.float64)
-            sections = self.sections
-            for l in file_iter:
-                line = l.strip()
-                if len(line) == 0: continue
-                if coeff.has_key(line):
-                    h, numcoeff = coeff[line]
-                    # skip line
-                    file_iter.next()
-                    data = []
-                    for i in xrange(headers[h]):
-                        fields = file_iter.next().strip().split()
-                        data.append(tuple(map(conv_float, fields[1:])))
-                    sections[line] = data
-                elif connections.has_key(line):
-                    h, numfields = connections[line]
-                    # skip line
-                    file_iter.next()
-                    data = []
-                    for i in range(headers[h]):
-                        fields = file_iter.next().strip().split()
-                        data.append(tuple(map(int, fields[1:])))
-                    sections[line] = data
-                elif line == "Atoms":
-                    file_iter.next()
-                    data = []
-                    for i in xrange(headers["atoms"]):
-                        fields = file_iter.next().strip().split()
-                        index = int(fields[0])-1
-                        a = LAMMPSAtom(index=index, name=fields[2], type=int(fields[2]), chain_id=int(fields[1]), charge=float(fields[3]))
-                        a._positions = positions
-                        data.append(a)
-                        positions[index] = numpy.array([float(fields[4]), float(fields[5]), float(fields[6])])
-                    sections[line] = data
-                elif line == "Masses":
-                    file_iter.next()
-                    data = []
-                    for i in xrange(headers["atom type"]):
-                        fields = file_iter.next().strip().split()
-                        print "help"
-            self.positions = positions
-            file.close()
+            with open(filename, 'r') as file:
+                file_iter = file.xreadlines()
+                # Create coordinate array
+                positions = numpy.zeros((headers['atoms'], 3), numpy.float64)
+                sections = self.sections
+                for l in file_iter:
+                    line = l.strip()
+                    if len(line) == 0: continue
+                    if coeff.has_key(line):
+                        h, numcoeff = coeff[line]
+                        # skip line
+                        file_iter.next()
+                        data = []
+                        for i in xrange(headers[h]):
+                            fields = file_iter.next().strip().split()
+                            data.append(tuple(map(conv_float, fields[1:])))
+                        sections[line] = data
+                    elif connections.has_key(line):
+                        h, numfields = connections[line]
+                        # skip line
+                        file_iter.next()
+                        data = []
+                        for i in range(headers[h]):
+                            fields = file_iter.next().strip().split()
+                            data.append(tuple(map(int, fields[1:])))
+                        sections[line] = data
+                    elif line == "Atoms":
+                        file_iter.next()
+                        data = []
+                        for i in xrange(headers["atoms"]):
+                            fields = file_iter.next().strip().split()
+                            index = int(fields[0])-1
+                            a = LAMMPSAtom(index=index, name=fields[2], type=int(fields[2]), chain_id=int(fields[1]), charge=float(fields[3]))
+                            a._positions = positions
+                            data.append(a)
+                            positions[index] = numpy.array([float(fields[4]), float(fields[5]), float(fields[6])])
+                        sections[line] = data
+                    elif line == "Masses":
+                        file_iter.next()
+                        data = []
+                        for i in xrange(headers["atom type"]):
+                            fields = file_iter.next().strip().split()
+                            print "help"
+                self.positions = positions
 
     def writePSF(self, filename, names=None):
         """Export topology information to a simple PSF file."""
@@ -200,41 +199,40 @@ class LAMMPSData(object):
         #psf_atom_format = "%8d %4.4s %-4.4s %-4.4s %-4.4s %-4.4s %16.8e %1s %-7.4f %7.7s %s\n"
         # Oli formatted -- works with MDAnalysis verison 81
         psf_atom_format = "%8d %4s %-4s %4s %-4s% 4s %-14.6f%-14.6f%8s\n"
-        file = open(filename, 'w')
-        file.write("PSF\n\n")
-        file.write(string.rjust('0', 8) + ' !NTITLE\n\n')
-        file.write(string.rjust(str(len(self.sections["Atoms"])), 8) + ' !NATOM\n')
-        #print self.sections["Masses"]
-        for i, atom in enumerate(self.sections["Atoms"]):
-            if names != None: resname, atomname = names[i]
-            else: resname, atomname = 'TEMP', 'XXXX'
-            for j, liz in enumerate(self.sections["Masses"]):
-                    liz = liz[0]
-                    #print j+1, atom.type, liz
-                    if j+1 == atom.type: line = [i+1, 'TEMP', str(atom.chainid), resname, atomname, str(atom.type+1), atom.charge, float(liz), 0.]
-                    else: continue
-            #print line
-            file.write(psf_atom_format%tuple(line))
+        with open(filename, 'w') as file:
+            file.write("PSF\n\n")
+            file.write(string.rjust('0', 8) + ' !NTITLE\n\n')
+            file.write(string.rjust(str(len(self.sections["Atoms"])), 8) + ' !NATOM\n')
+            #print self.sections["Masses"]
+            for i, atom in enumerate(self.sections["Atoms"]):
+                if names != None: resname, atomname = names[i]
+                else: resname, atomname = 'TEMP', 'XXXX'
+                for j, liz in enumerate(self.sections["Masses"]):
+                        liz = liz[0]
+                        #print j+1, atom.type, liz
+                        if j+1 == atom.type: line = [i+1, 'TEMP', str(atom.chainid), resname, atomname, str(atom.type+1), atom.charge, float(liz), 0.]
+                        else: continue
+                #print line
+                file.write(psf_atom_format%tuple(line))
 
-        file.write("\n")
-        num_bonds = len(self.sections["Bonds"])
-        bond_list = self.sections["Bonds"]
-        file.write(string.rjust(str(num_bonds), 8) + ' !NBOND\n')
-        for index in range(0, num_bonds, 4):
-            try:
-                bonds = bond_list[index:index+4]
-            except IndexError:
-                bonds = bond_list[index:-1]
-            bond_line = map(lambda bond: string.rjust(str(bond[1]), 8)+string.rjust(str(bond[2]), 8), bonds)
-            file.write(''.join(bond_line)+'\n')
-        file.close()
+            file.write("\n")
+            num_bonds = len(self.sections["Bonds"])
+            bond_list = self.sections["Bonds"]
+            file.write(string.rjust(str(num_bonds), 8) + ' !NBOND\n')
+            for index in range(0, num_bonds, 4):
+                try:
+                    bonds = bond_list[index:index+4]
+                except IndexError:
+                    bonds = bond_list[index:-1]
+                bond_line = map(lambda bond: string.rjust(str(bond[1]), 8)+string.rjust(str(bond[2]), 8), bonds)
+                file.write(''.join(bond_line)+'\n')
 
     def writePDB(self, filename):
         """Export coordinates to a simple PDB file."""
         import string
         atom_format = "%6s%.5s %4s %4s %.4s    %8.3f%8.3f%8.3f%6.2f%6.2f          %2s  \n"
         p = self.positions
-        file = open(filename, 'w')
-        for i, atom in enumerate(self.sections["Atoms"]):
-            line = ["ATOM  ", str(i+1), 'XXXX', 'TEMP', str(atom.type+1), p[i,0], p[i,1], p[i,2], 0.0, 0.0, str(atom.type)]
-            file.write(atom_format%tuple(line))
+        with open(filename, 'w') as file:
+            for i, atom in enumerate(self.sections["Atoms"]):
+                line = ["ATOM  ", str(i+1), 'XXXX', 'TEMP', str(atom.type+1), p[i,0], p[i,1], p[i,2], 0.0, 0.0, str(atom.type)]
+                file.write(atom_format%tuple(line))

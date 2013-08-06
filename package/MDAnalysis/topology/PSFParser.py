@@ -46,70 +46,70 @@ def parse(filename):
     :Returns: MDAnalysis internal *structure* dict as defined here.
     """
     # Open and check psf validity
-    psffile = open(filename,'r')
-    next_line = skip_line = psffile.next
-    header = next_line()
-    if header[:3] != "PSF":
-        logger.error("%s is not valid PSF file (header = %r)", psffile.name, header)
-        raise PSFParseError("%s is not a valid PSF file" % psffile.name)
-    header_flags = header[3:].split()
-    if "NAMD" in header_flags:
-        format = "NAMD"        # NAMD/VMD
-    elif "EXT" in header_flags:
-        format = "EXTENDED"    # CHARMM
-    else:
-        format = "STANDARD"    # CHARMM
-    skip_line()
-    title = next_line().split()
-    if not (title[1] == "!NTITLE"):
-        logger.error("%s is not a valid PSF file", psffile.name)
-        raise PSFParseError("%s is not a valid PSF file" % psffile.name)
-    psfremarks = [next_line() for i in range(int(title[0]))]
-    logger.debug("PSF file %r: format %r", psffile.name, format)
-
-    structure = {}
-
-    def parse_sec(section_info, **kwargs):
-        desc, atoms_per, per_line, parsefunc, data_struc = section_info
-        from math import ceil
+    with open(filename,'r') as psffile:
+        next_line = skip_line = psffile.next
         header = next_line()
-        while header.strip() == "": header = next_line()
-        header = header.split()
-        # Get the number
-        num = int(header[0])
-        sect_type = header[1].strip('!:')
-        # Make sure the section type matches the desc
-        if not (sect_type == desc):
-            logger.error("Expected section %r but found %r", desc, sect_type)
-            raise PSFParseError("Expected section {0} but found {1}".format(desc, sect_type))
-        # Now figure out how many lines to read
-        numlines = int(ceil(float(num)/per_line))
-        # Too bad I don't have generator expressions
-        #def repeat(func, num):
-        #    for i in xrange(num):
-        #        yield func()
-        #lines = repeat(next_line, numlines)
-        parsefunc(next_line, atoms_per, data_struc, structure, numlines, **kwargs)
+        if header[:3] != "PSF":
+            logger.error("%s is not valid PSF file (header = %r)", psffile.name, header)
+            raise PSFParseError("%s is not a valid PSF file" % psffile.name)
+        header_flags = header[3:].split()
+        if "NAMD" in header_flags:
+            format = "NAMD"        # NAMD/VMD
+        elif "EXT" in header_flags:
+            format = "EXTENDED"    # CHARMM
+        else:
+            format = "STANDARD"    # CHARMM
+        skip_line()
+        title = next_line().split()
+        if not (title[1] == "!NTITLE"):
+            logger.error("%s is not a valid PSF file", psffile.name)
+            raise PSFParseError("%s is not a valid PSF file" % psffile.name)
+        psfremarks = [next_line() for i in range(int(title[0]))]
+        logger.debug("PSF file %r: format %r", psffile.name, format)
 
-    sections = [("NATOM", 1, 1, __parseatoms_, "_atoms"),
-                ("NBOND", 2, 4, __parsesection_, "_bonds"),
-                ("NTHETA", 3, 3, __parsesection_, "_angles"),
-                ("NPHI", 4, 2, __parsesection_, "_dihe"),
-                ("NIMPHI", 4, 2, __parsesection_, "_impr"),
-                ("NDON", 2, 4, __parsesection_,"_donors"),
-                ("NACC", 2, 4, __parsesection_,"_acceptors")]
+        structure = {}
 
-    try:
-        for info in sections:
-            skip_line()
-            parse_sec(info, format=format)
-    except StopIteration:
-        # Reached the end of the file before we expected
-        if not structure.has_key("_atoms"):
-            logger.error("The PSF file didn't contain the minimum required section of NATOM")
-            raise PSFParseError("The PSF file didn't contain the minimum required section of NATOM")
+        def parse_sec(section_info, **kwargs):
+            desc, atoms_per, per_line, parsefunc, data_struc = section_info
+            from math import ceil
+            header = next_line()
+            while header.strip() == "": header = next_line()
+            header = header.split()
+            # Get the number
+            num = int(header[0])
+            sect_type = header[1].strip('!:')
+            # Make sure the section type matches the desc
+            if not (sect_type == desc):
+                logger.error("Expected section %r but found %r", desc, sect_type)
+                raise PSFParseError("Expected section {0} but found {1}".format(desc, sect_type))
+            # Now figure out how many lines to read
+            numlines = int(ceil(float(num)/per_line))
+            # Too bad I don't have generator expressions [said Naveen in 2005]
+            #def repeat(func, num):
+            #    for i in xrange(num):
+            #        yield func()
+            #lines = repeat(next_line, numlines)
+            parsefunc(next_line, atoms_per, data_struc, structure, numlines, **kwargs)
+
+        sections = [("NATOM", 1, 1, __parseatoms_, "_atoms"),
+                    ("NBOND", 2, 4, __parsesection_, "_bonds"),
+                    ("NTHETA", 3, 3, __parsesection_, "_angles"),
+                    ("NPHI", 4, 2, __parsesection_, "_dihe"),
+                    ("NIMPHI", 4, 2, __parsesection_, "_impr"),
+                    ("NDON", 2, 4, __parsesection_,"_donors"),
+                    ("NACC", 2, 4, __parsesection_,"_acceptors")]
+
+        try:
+            for info in sections:
+                skip_line()
+                parse_sec(info, format=format)
+        except StopIteration:
+            # Reached the end of the file before we expected
+            if not structure.has_key("_atoms"):
+                logger.error("The PSF file didn't contain the minimum required section of NATOM")
+                raise PSFParseError("The PSF file didn't contain the minimum required section of NATOM")
+
     # Who cares about the rest
-    psffile.close()
     return structure
 
 def __parseatoms_(lines, atoms_per, attr, structure, numlines, **kwargs):

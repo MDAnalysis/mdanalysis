@@ -44,7 +44,7 @@ k =  1.3806580000000001e-23
 T = 300 # kelvin
 eigenv, eigenvec = LinearAlgebra.eigenvectors(ca_cov2)
 real = [e.real/100. for e in eigenv]
-f = file('eigenval.dat', 'w')
+f = open('eigenval.dat', 'w')
 for i, val in enumerate(real):
     f.write(`i+1` + '\t' + `val` + '\n')
 f.close()

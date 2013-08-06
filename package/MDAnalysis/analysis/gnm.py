@@ -75,7 +75,6 @@ directly needed to perform the analysis.
 
 """
 
-from __future__ import with_statement
 # import copy #unused
 
 import numpy

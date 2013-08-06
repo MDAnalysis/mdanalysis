@@ -17,7 +17,7 @@
 
 import MDAnalysis
 import MDAnalysis.core.Selection
-from MDAnalysis.tests.datafiles import PSF,DCD,PRMpbc,TRJpbc_bz2,PSF_NAMD,PDB_NAMD,GRO
+from MDAnalysis.tests.datafiles import PSF,DCD,PRMpbc,TRJpbc_bz2,PSF_NAMD,PDB_NAMD,GRO,NUCL
 
 from numpy.testing import *
 from numpy import array, float32
@@ -222,3 +222,30 @@ class TestSelectionsGRO(TestCase):
         sel = self.universe.selectAtoms('atom SYSTEM 100 CA')
         assert_equal(len(sel), 1)
         assert_equal(sel.resnames(), ['GLY'])
+
+class TestSelectionsNucleicAcids(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(NUCL)
+    
+    def test_nucleic(self):
+        rna = self.universe.selectAtoms("nucleic")
+        assert_equal(rna.numberOfAtoms(), 739)
+        assert_equal(rna.numberOfResidues(), 23)
+
+    def test_nucleicbackbone(self):
+        rna = self.universe.selectAtoms("nucleicbackbone")
+        assert_equal(rna.numberOfResidues(), 23)
+        assert_equal(rna.numberOfAtoms(), rna.numberOfResidues() * 5 - 1)
+        # -1 because this is a single strand of RNA and on P is missing at the 5' end
+
+    # todo: need checks for other selection resnames such as DT DA DG DC DU 
+
+    def test_nucleicbase(self):
+        rna = self.universe.selectAtoms("nucleicbase")
+        assert_equal(rna.numberOfResidues(), 23)
+        assert_equal(rna.numberOfAtoms(), 214)
+
+    def test_nucleicsugar(self):
+        rna = self.universe.selectAtoms("nucleicsugar")
+        assert_equal(rna.numberOfResidues(), 23)
+        assert_equal(rna.numberOfAtoms(), rna.numberOfResidues() * 5)

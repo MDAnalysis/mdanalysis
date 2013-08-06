@@ -5,7 +5,7 @@
 usage="usage: $(basename $0) RELEASE
 
 Change the RELEASE in all relevant files in MDAnalysis. RELEASE should be something
-like '0.7.6' or 0.7.6-devel'.
+like '0.7.6' or 0.7.6-dev'.
 
 Run from the top directory of the git checkout.
 "
@@ -73,9 +73,9 @@ echo "Using sed = $SED"
 
 echo "Setting RELEASE/__version__ in MDAnalysis to $RELEASE"
 
-git grep -E -l 'RELEASE.*[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-devel)?' $FILES  \
-   | xargs -I FILE $SED '/RELEASE/s/[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-devel)?/'${RELEASE}'/' -i.bak FILE
-git grep -E -l '__version__ =.*[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-devel)?'  $FILES \
-   | xargs -I FILE $SED '/__version__/s/[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-devel)?/'${RELEASE}'/' -i.bak FILE
+git grep -E -l 'RELEASE.*[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-devel|-dev)?' $FILES  \
+   | xargs -I FILE $SED '/RELEASE/s/[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-devel|-dev)?/'${RELEASE}'/' -i.bak FILE
+git grep -E -l '__version__ =.*[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-devel|-dev)?'  $FILES \
+   | xargs -I FILE $SED '/__version__/s/[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-devel|-dev)?/'${RELEASE}'/' -i.bak FILE
 git status
 

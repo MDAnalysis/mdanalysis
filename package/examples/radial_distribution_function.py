@@ -15,7 +15,6 @@ Profiling shows that the computational bottleneck is the
 :func:`numpy.histogram` function.
 """
 
-from __future__ import with_statement
 
 from itertools import izip
 

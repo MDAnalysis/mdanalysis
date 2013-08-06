@@ -27,7 +27,6 @@ details of such an "EasyInstall" installation procedure are shown on
 By changing the code below you can also switch to a standard distutils
 installation.
 """
-from __future__ import with_statement
 
 #------------------------------------------------------------
 # selection of the installation system
@@ -52,8 +51,8 @@ import sys, os
 import glob
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (2, 5):
-    print "MDAnalysis requires Python 2.5 or better. Python %d.%d detected" % \
+if sys.version_info[:2] < (2, 6):
+    print "MDAnalysis requires Python 2.6 or better. Python %d.%d detected" % \
         sys.version_info[:2]
     print "Please upgrade your version of Python."
     sys.exit(-1)
@@ -92,7 +91,7 @@ if use_cython:
     del Cython
 
 if __name__ == '__main__':
-    RELEASE = "0.7.8-dev"     # NOTE: keep in sync with MDAnalysis.version in __init__.py
+    RELEASE = "0.8.0-dev"     # NOTE: keep in sync with MDAnalysis.version in __init__.py
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = ['Development Status :: 4 - Beta',
