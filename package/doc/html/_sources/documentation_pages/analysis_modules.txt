@@ -27,32 +27,58 @@ has to import them from :mod:`MDAnalysis.analysis`, for instance ::
   one can add the ``[analysis]`` requirement to the
   :program:`easy_install` command line to force their installation.
 
-.. TODO: write a INSTALLATION page and link to it
-
 .. _scipy: http://www.scipy.org/
 .. _networkx: http://networkx.lanl.gov/
 
 
 
-.. rubric:: Contents
+Distances and contacts
+======================
 
 .. toctree::
    :maxdepth: 1
 
    analysis/align
    analysis/contacts
-   analysis/density
    analysis/distances
-   analysis/gnm
    analysis/hbonds
-   analysis/helanal
-   analysis/hole
-   analysis/leaflet
-   analysis/nuclinfo
    analysis/rms
 
+Membranes and membrane proteins
+===============================
 
-   
+.. toctree::
+   :maxdepth: 1
 
+   analysis/hole
+   analysis/leaflet
+
+Nucleic acids
+=============
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/nuclinfo
+   analysis/x3dna
+
+
+Structure
+=========
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/gnm
+   analysis/helanal
+
+
+Volumetric analysis
+===================   
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/density
 
 

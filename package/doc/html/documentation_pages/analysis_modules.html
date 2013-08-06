@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3. Analysis modules &mdash; MDAnalysis 0.7.8-dev documentation</title>
+    <title>3. Analysis modules &mdash; MDAnalysis 0.8.0-dev documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7.8-dev',
+        VERSION:     '0.8.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,11 +27,11 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.8-dev documentation"
+          title="Search within MDAnalysis 0.8.0-dev documentation"
           href="../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../index.html" />
-    <link rel="next" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align" href="analysis/align.html" />
+    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../index.html" />
+    <link rel="next" title="3.1.1. Coordinate fitting and alignment — MDAnalysis.analysis.align" href="analysis/align.html" />
     <link rel="prev" title="2. Selection Commands" href="selections.html" /> 
   </head>
   <body>
@@ -45,12 +45,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="analysis/align.html" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align"
+          <a href="analysis/align.html" title="3.1.1. Coordinate fitting and alignment — MDAnalysis.analysis.align"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="selections.html" title="2. Selection Commands"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -58,12 +58,34 @@
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3. Analysis modules</a><ul>
+<li><a class="reference internal" href="#distances-and-contacts">3.1. Distances and contacts</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#membranes-and-membrane-proteins">3.2. Membranes and membrane proteins</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#nucleic-acids">3.3. Nucleic acids</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#structure">3.4. Structure</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#volumetric-analysis">3.5. Volumetric analysis</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="selections.html"
                         title="previous chapter">2. Selection Commands</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="analysis/align.html"
-                        title="next chapter">3.1. Coordinate fitting and alignment &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></p>
+                        title="next chapter">3.1.1. Coordinate fitting and alignment &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/documentation_pages/analysis_modules.txt"
@@ -113,21 +135,52 @@ has to import them from <tt class="xref py py-mod docutils literal"><span class=
 one can add the <tt class="docutils literal"><span class="pre">[analysis]</span></tt> requirement to the
 <strong class="program">easy_install</strong> command line to force their installation.</p>
 </div>
-<p class="rubric">Contents</p>
+<div class="section" id="distances-and-contacts">
+<h2>3.1. Distances and contacts<a class="headerlink" href="#distances-and-contacts" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/align.html">3.1. Coordinate fitting and alignment &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/contacts.html">3.2. Native contacts analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/density.html">3.3. Generating densities from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/distances.html">3.4. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.distances</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/gnm.html">3.5. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/hbonds.html">3.6. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/helanal.html">3.7. HELANAL &#8212; analysis of protein helices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/hole.html">3.8. Generation and Analysis of HOLE pore profiles &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hole</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/leaflet.html">3.9. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/nuclinfo.html">3.10. Nucleic acid analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/rms.html">3.11. Calculating root mean square quantities &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/align.html">3.1.1. Coordinate fitting and alignment &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/contacts.html">3.1.2. Native contacts analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/distances.html">3.1.3. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.distances</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/hbonds.html">3.1.4. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/rms.html">3.1.5. Calculating root mean square quantities &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a></li>
 </ul>
+</div>
+</div>
+<div class="section" id="membranes-and-membrane-proteins">
+<h2>3.2. Membranes and membrane proteins<a class="headerlink" href="#membranes-and-membrane-proteins" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis/hole.html">3.2.1. Generation and Analysis of HOLE pore profiles &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hole</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/leaflet.html">3.2.2. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="nucleic-acids">
+<h2>3.3. Nucleic acids<a class="headerlink" href="#nucleic-acids" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis/nuclinfo.html">3.3.1. Nucleic acid analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/x3dna.html">3.3.2. Generation and Analysis of X3DNA helicoidal parameter profiles &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.x3dna</span></tt></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="structure">
+<h2>3.4. Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis/gnm.html">3.4.1. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/helanal.html">3.4.2. HELANAL &#8212; analysis of protein helices</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="volumetric-analysis">
+<h2>3.5. Volumetric analysis<a class="headerlink" href="#volumetric-analysis" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis/density.html">3.5.1. Generating densities from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></li>
+</ul>
+</div>
 </div>
 </div>
 
@@ -147,12 +200,12 @@ one can add the <tt class="docutils literal"><span class="pre">[analysis]</span>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="analysis/align.html" title="3.1. Coordinate fitting and alignment — MDAnalysis.analysis.align"
+          <a href="analysis/align.html" title="3.1.1. Coordinate fitting and alignment — MDAnalysis.analysis.align"
              >next</a> |</li>
         <li class="right" >
           <a href="selections.html" title="2. Selection Commands"
              >previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

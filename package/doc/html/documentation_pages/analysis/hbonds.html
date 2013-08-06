@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.6. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis 0.7.8-dev documentation</title>
+    <title>3.1.4. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis 0.8.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.8-dev',
+        VERSION:     '0.8.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,13 +27,13 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.8-dev documentation"
+          title="Search within MDAnalysis 0.8.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
-    <link rel="next" title="3.7. HELANAL — analysis of protein helices" href="helanal.html" />
-    <link rel="prev" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" /> 
+    <link rel="next" title="3.1.5. Calculating root mean square quantities — MDAnalysis.analysis.rms" href="rms.html" />
+    <link rel="prev" title="3.1.3. Distance analysis — MDAnalysis.analysis.distances" href="distances.html" /> 
   </head>
   <body>
     <div class="related">
@@ -46,12 +46,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="helanal.html" title="3.7. HELANAL — analysis of protein helices"
+          <a href="rms.html" title="3.1.5. Calculating root mean square quantities — MDAnalysis.analysis.rms"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="gnm.html" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
+          <a href="distances.html" title="3.1.3. Distance analysis — MDAnalysis.analysis.distances"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -62,21 +62,21 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">3.6. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a><ul>
-<li><a class="reference internal" href="#output">3.6.1. Output</a></li>
-<li><a class="reference internal" href="#detection-of-hydrogen-bonds">3.6.2. Detection of hydrogen bonds</a></li>
-<li><a class="reference internal" href="#example">3.6.3. Example</a></li>
-<li><a class="reference internal" href="#classes">3.6.4. Classes</a></li>
+<li><a class="reference internal" href="#">3.1.4. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a><ul>
+<li><a class="reference internal" href="#output">3.1.4.1. Output</a></li>
+<li><a class="reference internal" href="#detection-of-hydrogen-bonds">3.1.4.2. Detection of hydrogen bonds</a></li>
+<li><a class="reference internal" href="#example">3.1.4.3. Example</a></li>
+<li><a class="reference internal" href="#classes">3.1.4.4. Classes</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="gnm.html"
-                        title="previous chapter">3.5. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></p>
+  <p class="topless"><a href="distances.html"
+                        title="previous chapter">3.1.3. Distance analysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.distances</span></tt></a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="helanal.html"
-                        title="next chapter">3.7. HELANAL &#8212; analysis of protein helices</a></p>
+  <p class="topless"><a href="rms.html"
+                        title="next chapter">3.1.5. Calculating root mean square quantities &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/analysis/hbonds.txt"
@@ -104,7 +104,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.analysis.hbonds"></span><div class="section" id="hydrogen-bond-analysis-mdanalysis-analysis-hbonds">
-<h1>3.6. Hydrogen Bond analysis &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.hbonds" title="MDAnalysis.analysis.hbonds"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a><a class="headerlink" href="#hydrogen-bond-analysis-mdanalysis-analysis-hbonds" title="Permalink to this headline">¶</a></h1>
+<h1>3.1.4. Hydrogen Bond analysis &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.hbonds" title="MDAnalysis.analysis.hbonds"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a><a class="headerlink" href="#hydrogen-bond-analysis-mdanalysis-analysis-hbonds" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -135,7 +135,7 @@ HBONDS plugin</a>.</p>
 </dd>
 </dl>
 <div class="section" id="output">
-<span id="analysis-output"></span><h2>3.6.1. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<span id="analysis-output"></span><h2>3.1.4.1. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>The results are hydrogen bond data per frame (# indicates comments
 that are not part of the output), stored in
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a>:</p>
@@ -169,7 +169,7 @@ database for further processing. <a class="reference internal" href="#MDAnalysis
 the table to a pickled file. The table itself is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
 </div>
 <div class="section" id="detection-of-hydrogen-bonds">
-<h2>3.6.2. Detection of hydrogen bonds<a class="headerlink" href="#detection-of-hydrogen-bonds" title="Permalink to this headline">¶</a></h2>
+<h2>3.1.4.2. Detection of hydrogen bonds<a class="headerlink" href="#detection-of-hydrogen-bonds" title="Permalink to this headline">¶</a></h2>
 <p>Hydrogen bonds are recorded based on a geometric criterion:</p>
 <ol class="arabic simple">
 <li>The distance between acceptor and hydrogen is less than or equal to
@@ -371,7 +371,7 @@ F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,
 </table>
 </div>
 <div class="section" id="example">
-<h2>3.6.3. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<h2>3.1.4.3. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>All protein-water hydrogen bonds can be analysed with</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.hbonds</span>
 
@@ -393,7 +393,7 @@ interactions.</p>
 </div>
 </div>
 <div class="section" id="classes">
-<h2>3.6.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>3.1.4.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hbonds.</tt><tt class="descname">HydrogenBondAnalysis</tt><big>(</big><em>universe</em>, <em>selection1='protein'</em>, <em>selection2='all'</em>, <em>selection1_type='both'</em>, <em>update_selection1=False</em>, <em>update_selection2=False</em>, <em>filter_first=True</em>, <em>distance=3.0</em>, <em>angle=120.0</em>, <em>forcefield='CHARMM27'</em>, <em>donors=None</em>, <em>acceptors=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>verbose=False</em>, <em>detect_hydrogens='distance'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds.html#HydrogenBondAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
@@ -756,7 +756,7 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.r_cov">
-<tt class="descname">r_cov</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x1046b48c0&gt;, {'P': 1.58, 'S': 1.55, 'O': 1.31, 'N': 1.31})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">r_cov</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x1051c8488&gt;, {'P': 1.58, 'S': 1.55, 'O': 1.31, 'N': 1.31})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <a class="reference external" href="http://docs.python.org/library/collections.html#collections.defaultdict" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">collections.defaultdict</span></tt></a> of covalent radii of common donors
 (used in :meth`_get_bonded_hydrogens_list` to check if a hydrogen is
 sufficiently close to its donor heavy atom). Values are stored for
@@ -837,12 +837,12 @@ of timesteps at which the hydrogen bond was detected.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="helanal.html" title="3.7. HELANAL — analysis of protein helices"
+          <a href="rms.html" title="3.1.5. Calculating root mean square quantities — MDAnalysis.analysis.rms"
              >next</a> |</li>
         <li class="right" >
-          <a href="gnm.html" title="3.5. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
+          <a href="distances.html" title="3.1.3. Distance analysis — MDAnalysis.analysis.distances"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
