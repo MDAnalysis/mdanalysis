@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis 0.7.8-dev documentation</title>
+    <title>5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis 0.8.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.8-dev',
+        VERSION:     '0.8.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +27,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.7.8-dev documentation"
+          title="Search within MDAnalysis 0.8.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.7.8-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.2. Base classes — MDAnalysis.coordinates.base" href="base.html" />
     <link rel="prev" title="5. Coordinates modules" href="../coordinates_modules.html" /> 
@@ -51,7 +51,7 @@
         <li class="right" >
           <a href="../coordinates_modules.html" title="5. Coordinates modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -63,33 +63,35 @@
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">5.1. Coordinate/Trajectory Readers and Writers  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt></a><ul>
-<li><a class="reference internal" href="#supported-coordinate-formats">5.1.1. Supported coordinate formats</a></li>
-<li><a class="reference internal" href="#trajectory-api">5.1.2. Trajectory API</a><ul>
-<li><a class="reference internal" href="#history">5.1.2.1. History</a></li>
-<li><a class="reference internal" href="#registry">5.1.2.2. Registry</a></li>
-<li><a class="reference internal" href="#timestep-class">5.1.2.3. Timestep class</a><ul>
-<li><a class="reference internal" href="#methods">5.1.2.3.1. Methods</a></li>
-<li><a class="reference internal" href="#attributes">5.1.2.3.2. Attributes</a></li>
-<li><a class="reference internal" href="#private-attributes">5.1.2.3.3. Private attributes</a></li>
+<li><a class="reference internal" href="#using-readers">5.1.1. Using Readers</a></li>
+<li><a class="reference internal" href="#using-writers">5.1.2. Using Writers</a></li>
+<li><a class="reference internal" href="#supported-coordinate-formats">5.1.3. Supported coordinate formats</a></li>
+<li><a class="reference internal" href="#trajectory-api">5.1.4. Trajectory API</a><ul>
+<li><a class="reference internal" href="#history">5.1.4.1. History</a></li>
+<li><a class="reference internal" href="#registry">5.1.4.2. Registry</a></li>
+<li><a class="reference internal" href="#timestep-class">5.1.4.3. Timestep class</a><ul>
+<li><a class="reference internal" href="#methods">5.1.4.3.1. Methods</a></li>
+<li><a class="reference internal" href="#attributes">5.1.4.3.2. Attributes</a></li>
+<li><a class="reference internal" href="#private-attributes">5.1.4.3.3. Private attributes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#trajectory-reader-class">5.1.2.4. Trajectory Reader class</a><ul>
-<li><a class="reference internal" href="#id9">5.1.2.4.1. Methods</a></li>
-<li><a class="reference internal" href="#id10">5.1.2.4.2. Attributes</a></li>
+<li><a class="reference internal" href="#trajectory-reader-class">5.1.4.4. Trajectory Reader class</a><ul>
+<li><a class="reference internal" href="#id9">5.1.4.4.1. Methods</a></li>
+<li><a class="reference internal" href="#id10">5.1.4.4.2. Attributes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#trajectory-writer-class">5.1.2.5. Trajectory Writer class</a><ul>
-<li><a class="reference internal" href="#id11">5.1.2.5.1. Methods</a></li>
-<li><a class="reference internal" href="#id12">5.1.2.5.2. Attributes</a></li>
+<li><a class="reference internal" href="#trajectory-writer-class">5.1.4.5. Trajectory Writer class</a><ul>
+<li><a class="reference internal" href="#id11">5.1.4.5.1. Methods</a></li>
+<li><a class="reference internal" href="#id12">5.1.4.5.2. Attributes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#single-frame-writer-class">5.1.2.6. Single Frame Writer class</a><ul>
-<li><a class="reference internal" href="#id13">5.1.2.6.1. Methods</a></li>
+<li><a class="reference internal" href="#single-frame-writer-class">5.1.4.6. Single Frame Writer class</a><ul>
+<li><a class="reference internal" href="#id13">5.1.4.6.1. Methods</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#reader-writer-registry">5.1.3. Reader/Writer registry</a></li>
+<li><a class="reference internal" href="#reader-writer-registry">5.1.5. Reader/Writer registry</a></li>
 </ul>
 </li>
 </ul>
@@ -154,8 +156,30 @@ to return a trajectory <a class="reference internal" href="base.html#MDAnalysis.
 instance although this is often not needed because the
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> class can choose an
 appropriate reader automatically.</p>
+<div class="section" id="using-readers">
+<h2>5.1.1. Using Readers<a class="headerlink" href="#using-readers" title="Permalink to this headline">¶</a></h2>
+<p>Normally, one does not explicitly need to select a reader. This is handled
+automatically when creating a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> and
+the appropriate reader for the file type is selected (typically by the file
+extension but this choice can be overriden with the <tt class="docutils literal"><span class="pre">format</span></tt> argument to
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>).</p>
+</div>
+<div class="section" id="using-writers">
+<h2>5.1.2. Using Writers<a class="headerlink" href="#using-writers" title="Permalink to this headline">¶</a></h2>
+<p>A typical approach is to generate a new trajectory from an old one, e.g. to
+only keep the protein:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
+<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;protein&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s">&quot;protein.xtc&quot;</span><span class="p">,</span> <span class="n">protein</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">())</span> <span class="k">as</span> <span class="n">W</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+        <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">protein</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Using the <tt class="xref py py-func docutils literal"><span class="pre">with()</span></tt> statement will automatically close the trajectory when
+the last frame has been written.</p>
+</div>
 <div class="section" id="supported-coordinate-formats">
-<h2>5.1.1. Supported coordinate formats<a class="headerlink" href="#supported-coordinate-formats" title="Permalink to this headline">¶</a></h2>
+<h2>5.1.3. Supported coordinate formats<a class="headerlink" href="#supported-coordinate-formats" title="Permalink to this headline">¶</a></h2>
 <p>The table below lists the coordinate file formats understood by MDAnalysis. The
 emphasis is on formats that are used in popular molecular dynamics codes. By
 default, MDAnalysis figures out formats by looking at the extension. Thus, a
@@ -290,7 +314,7 @@ providing a file of this format: <tt class="docutils literal"><span class="pre">
 </table>
 </div>
 <div class="section" id="trajectory-api">
-<span id="id8"></span><h2>5.1.2. Trajectory API<a class="headerlink" href="#trajectory-api" title="Permalink to this headline">¶</a></h2>
+<span id="id8"></span><h2>5.1.4. Trajectory API<a class="headerlink" href="#trajectory-api" title="Permalink to this headline">¶</a></h2>
 <p>The <strong>Trajectory API</strong> defines how classes have to be structured that allow
 reading and writing of coordinate files. By following the API it is possible to
 seamlessly enhance the I/O capabilities of MDAnalysis. The actual underlying
@@ -300,7 +324,7 @@ I/O code can be written in C or python or a mixture thereof.</p>
 <p>Reader and Writer classes are derived from base classes in
 <a class="reference internal" href="base.html#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a>.</p>
 <div class="section" id="history">
-<h3>5.1.2.1. History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h3>
+<h3>5.1.4.1. History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>2010-04-30 Draft [orbeckst]</li>
 <li>2010-08-20 added single frame writers to API [orbeckst]</li>
@@ -314,10 +338,11 @@ I/O code can be written in C or python or a mixture thereof.</p>
 <li>2012-02-11 added _velocities to Timestep</li>
 <li>2012-05-24 multiframe keyword to distinguish trajectory from single frame writers</li>
 <li>2012-06-04 missing implementations of Reader.__getitem__ should raise <tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt></li>
+<li>2013-08-02 Readers/Writers must conform to the Python <a class="reference external" href="http://docs.python.org/2/reference/datamodel.html#context-managers">Context Manager</a> API</li>
 </ul>
 </div>
 <div class="section" id="registry">
-<h3>5.1.2.2. Registry<a class="headerlink" href="#registry" title="Permalink to this headline">¶</a></h3>
+<h3>5.1.4.2. Registry<a class="headerlink" href="#registry" title="Permalink to this headline">¶</a></h3>
 <p>In various places, MDAnalysis tries to automatically select appropriate formats
 (e.g. by looking at file extensions). In order to allow it to choose the
 correct format, all I/O classes must be registered in one of three dictionaries
@@ -332,14 +357,14 @@ with the format (typically the file extension in upper case):</p>
 </ul>
 </div>
 <div class="section" id="timestep-class">
-<h3>5.1.2.3. Timestep class<a class="headerlink" href="#timestep-class" title="Permalink to this headline">¶</a></h3>
+<h3>5.1.4.3. Timestep class<a class="headerlink" href="#timestep-class" title="Permalink to this headline">¶</a></h3>
 <p>A Timestep instance holds data for the current frame. It is updated whenever a
 new frame of the trajectory is read.</p>
 <p>Timestep classes are derived from
 <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep</span></tt></a>, which is the primary
 implementation example (and used directly for the DCDReader).</p>
 <div class="section" id="methods">
-<h4>5.1.2.3.1. Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h4>
+<h4>5.1.4.3.1. Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">__init__(arg)</span></tt></dt>
@@ -371,7 +396,7 @@ coordinate array</dd>
 </div></blockquote>
 </div>
 <div class="section" id="attributes">
-<h4>5.1.2.3.2. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h4>
+<h4>5.1.4.3.2. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">numatoms</span></tt></dt>
@@ -388,7 +413,7 @@ underlying <tt class="xref py py-attr docutils literal"><span class="pre">Timest
 </div></blockquote>
 </div>
 <div class="section" id="private-attributes">
-<h4>5.1.2.3.3. Private attributes<a class="headerlink" href="#private-attributes" title="Permalink to this headline">¶</a></h4>
+<h4>5.1.4.3.3. Private attributes<a class="headerlink" href="#private-attributes" title="Permalink to this headline">¶</a></h4>
 <p>These attributes are set directly by the underlying trajectory
 readers. Normally the user should not have to directly access those (although in
 some cases it is convenient to directly use <tt class="xref py py-attr docutils literal"><span class="pre">Timestep._pos</span></tt>).</p>
@@ -416,11 +441,11 @@ code should handle this gracefully.</p>
 </div>
 </div>
 <div class="section" id="trajectory-reader-class">
-<h3>5.1.2.4. Trajectory Reader class<a class="headerlink" href="#trajectory-reader-class" title="Permalink to this headline">¶</a></h3>
+<h3>5.1.4.4. Trajectory Reader class<a class="headerlink" href="#trajectory-reader-class" title="Permalink to this headline">¶</a></h3>
 <p>Trajectory readers are derived from <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Reader" title="MDAnalysis.coordinates.base.Reader"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.Reader</span></tt></a>.
 Typically, many methods and attributes are overriden.</p>
 <div class="section" id="id9">
-<h4>5.1.2.4.1. Methods<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
+<h4>5.1.4.4.1. Methods<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
 <p>The <a class="reference internal" href="DCD.html#MDAnalysis.coordinates.DCD.DCDReader" title="MDAnalysis.coordinates.DCD.DCDReader"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.DCD.DCDReader</span></tt></a> class is the primary
 implementation example.</p>
 <p><strong>Mandatory methods</strong></p>
@@ -454,7 +479,15 @@ within <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysi
 <dd>advance to next time step or raise <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> when moving
 past the last frame</dd>
 <dt><tt class="docutils literal"><span class="pre">rewind()</span></tt></dt>
-<dd>reposition to first frame</dd>
+<dd><blockquote class="first">
+<div>reposition to first frame</div></blockquote>
+<dl class="last docutils">
+<dt><tt class="docutils literal"><span class="pre">__entry__()</span></tt></dt>
+<dd>entry method of a <a class="reference external" href="http://docs.python.org/2/reference/datamodel.html#context-managers">Context Manager</a> (returns self)</dd>
+<dt><tt class="docutils literal"><span class="pre">__exit__()</span></tt></dt>
+<dd>exit method of a <a class="reference external" href="http://docs.python.org/2/reference/datamodel.html#context-managers">Context Manager</a>, should call <tt class="docutils literal"><span class="pre">close()</span></tt>.</dd>
+</dl>
+</dd>
 </dl>
 </div></blockquote>
 <p><strong>Optional methods</strong></p>
@@ -524,7 +557,7 @@ with observable timeseries computed from the trajectory</dd>
 </div></blockquote>
 </div>
 <div class="section" id="id10">
-<h4>5.1.2.4.2. Attributes<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
+<h4>5.1.4.4.2. Attributes<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">filename</span></tt></dt>
@@ -578,7 +611,7 @@ unit for time (pico seconds by default)</dd>
 </div>
 </div>
 <div class="section" id="trajectory-writer-class">
-<h3>5.1.2.5. Trajectory Writer class<a class="headerlink" href="#trajectory-writer-class" title="Permalink to this headline">¶</a></h3>
+<h3>5.1.4.5. Trajectory Writer class<a class="headerlink" href="#trajectory-writer-class" title="Permalink to this headline">¶</a></h3>
 <p>Trajectory readers are derived from
 <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Writer" title="MDAnalysis.coordinates.base.Writer"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.Writer</span></tt></a>. They are used to write
 multiple frames to a trajectory file. Every time the
@@ -597,7 +630,7 @@ another frame is appended to the trajectory.</p>
 </pre></div>
 </div>
 <div class="section" id="id11">
-<h4>5.1.2.5.1. Methods<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+<h4>5.1.4.5.1. Methods<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">__init__(filename,numatoms[,start[,step[,delta[,remarks]]]])</span></tt></dt>
@@ -617,7 +650,7 @@ unitcell representation of the format</dd>
 </div></blockquote>
 </div>
 <div class="section" id="id12">
-<h4>5.1.2.5.2. Attributes<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h4>
+<h4>5.1.4.5.2. Attributes<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">filename</span></tt></dt>
@@ -644,7 +677,7 @@ Any field not used should be set to <tt class="docutils literal"><span class="pr
 </div>
 </div>
 <div class="section" id="single-frame-writer-class">
-<h3>5.1.2.6. Single Frame Writer class<a class="headerlink" href="#single-frame-writer-class" title="Permalink to this headline">¶</a></h3>
+<h3>5.1.4.6. Single Frame Writer class<a class="headerlink" href="#single-frame-writer-class" title="Permalink to this headline">¶</a></h3>
 <p>A single frame writer is a special case of a trajectory writer in that it
 writes only a single coordinate frame to a file, for instance, a pdb or gro
 file. Unlike trajectory formats, which only contains coordinates, <em>single
@@ -662,7 +695,7 @@ arguments (filename and numatoms) as for the Trajectory writers. In
 this way, the simple <a class="reference internal" href="core.html#MDAnalysis.coordinates.core.writer" title="MDAnalysis.coordinates.core.writer"><tt class="xref py py-func docutils literal"><span class="pre">writer()</span></tt></a>
 factory function can be used for all writers.</p>
 <div class="section" id="id13">
-<h4>5.1.2.6.1. Methods<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
+<h4>5.1.4.6.1. Methods<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">__init__(filename,</span> <span class="pre">**kwargs)</span></tt></dt>
@@ -684,7 +717,7 @@ raw <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Ti
 </div>
 </div>
 <div class="section" id="reader-writer-registry">
-<h2>5.1.3. Reader/Writer registry<a class="headerlink" href="#reader-writer-registry" title="Permalink to this headline">¶</a></h2>
+<h2>5.1.5. Reader/Writer registry<a class="headerlink" href="#reader-writer-registry" title="Permalink to this headline">¶</a></h2>
 <p>The following data structures connect reader/writer classes to their
 format identifiers. They are documented for programmers who want to
 enhance MDAnalysis; the casual user is unlikely to access them
@@ -769,7 +802,7 @@ Signature:</p>
         <li class="right" >
           <a href="../coordinates_modules.html" title="5. Coordinates modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.7.8-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>

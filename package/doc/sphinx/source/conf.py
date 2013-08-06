@@ -57,7 +57,7 @@ master_doc = 'index'
 authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    Joshua L. Phillips, Tyler Reddy, Paul Rigor, rmcgibbo, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein"""
 project = u'MDAnalysis'
 copyright = u'2005-2013, ' + authors

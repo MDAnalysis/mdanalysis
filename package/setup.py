@@ -205,7 +205,7 @@ if __name__ == '__main__':
                              'scipy',          # sparse contact matrix
                              ],
                 },
-          test_suite = "nose.collector",
+          test_suite = "MDAnalysisTests",
           tests_require = ['nose>=0.10',
                            'MDAnalysisTests==%s' % RELEASE,  # same as this release!
                            ],

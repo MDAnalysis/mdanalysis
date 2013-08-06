@@ -42,8 +42,8 @@ of a protein and the radius of gyration of the backbone atoms are calculated::
 .. _NAMD:    http://www.ks.uiuc.edu/Research/namd/
 .. _Gromacs: http://www.gromacs.org/
 
-.. _CHARMM-style: http://www.charmm.org/html/documentation/c34b1/select.html
-
+.. _CHARMM-style:
+   http://www.charmm.org/documentation/c37b1/select.html
 
 .. TODO: more about philosophy etc... copy and paste from paper
 

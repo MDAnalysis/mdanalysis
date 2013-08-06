@@ -57,6 +57,21 @@ class TestDistanceArray(TestCase):
                                            self._dist(3, ref=[1,1,2]),
                                            ]]))
 
+    def test_PBC2(self):
+        a = np.array([  7.90146923, -13.72858524,   3.75326586], dtype=np.float32)
+        b = np.array([ -1.36250901,  13.45423985,  -0.36317623], dtype=np.float32)
+        box = np.array([5.5457325, 5.5457325, 5.5457325], dtype=np.float32)
+
+        def mindist(a, b, box):
+            x = a - b
+            return np.linalg.norm(x - np.rint(x/box) * box)
+
+        ref = mindist(a, b, box)
+        val = MDAnalysis.core.distances.distance_array(np.array([a]), np.array([b]), box)[0,0]
+
+        assert_almost_equal(val, ref, decimal=6, err_msg="Issue 151 not correct (PBC in distance array)")
+
+
 class TestDistanceArrayDCD(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)

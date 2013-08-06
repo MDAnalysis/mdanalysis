@@ -36,37 +36,49 @@ class TestDistances(TestCase):
         self.ref = distance_array_reference(self.coord[0], self.coord[1])
         self.box = (np.random.random((3)) * np.random.random()).astype(np.float32)
         self.ref_pbc = distance_array_reference(self.coord[0], self.coord[1], box=self.box)
-        
+
+
+    def test_PBC2(self):
+        a = np.array([  7.90146923, -13.72858524,   3.75326586], dtype=np.float32)
+        b = np.array([ -1.36250901,  13.45423985,  -0.36317623], dtype=np.float32)
+        box = np.array([5.5457325, 5.5457325, 5.5457325], dtype=np.float32)
+        def mindist(a, b, box):
+            x = a - b
+            return np.linalg.norm(x - np.rint(x/box) * box)
+        ref = mindist(a, b, box)
+        val = distance_array(np.array([a]), np.array([b]), box)[0,0]
+        assert_allclose(val, ref, rtol=1e-6, atol=1e-6,
+                        err_msg="Issue 151 not correct (PBC in distance array)")
 
     def test_distance_array_parallel(self):
         cython_parallel = distance_array(self.coord[0], self.coord[1])
-        assert_allclose(cython_parallel, self.ref, rtol=1e-6, atol=0,
+        assert_allclose(cython_parallel, self.ref, rtol=1e-6, atol=1e-6,
                         err_msg="Cython parallel distance matrix does not match C")
 
     def test_distance_array_parallel_results(self):
         result = np.empty((self.coord[0].shape[0], self.coord[0].shape[0])).astype(np.float32)
         cython_parallel = distance_array(self.coord[0], self.coord[1], result=result)
-        assert_allclose(cython_parallel, self.ref, rtol=1e-6, atol=0,
+        assert_allclose(cython_parallel, self.ref, rtol=1e-6, atol=1e-6,
                         err_msg="Cython parallel distance matrix does not match C")
 
     def test_distance_array_parallel_pbc(self):
         cython_parallel = distance_array(self.coord[0], self.coord[1], box=self.box)
-        assert_allclose(cython_parallel, self.ref_pbc, rtol=1e-6, atol=0,
+        assert_allclose(cython_parallel, self.ref_pbc, rtol=1e-6, atol=1e-6,
                         err_msg="Cython parallel distance matrix does not match C")
 
     def test_distance_array_serial(self):
         coord = self.coord
         cython_serial = distance_array_serial(self.coord[0], self.coord[1])
-        assert_allclose(cython_serial, self.ref, rtol=1e-6, atol=0,
+        assert_allclose(cython_serial, self.ref, rtol=1e-6, atol=1e-6,
                         err_msg="Cython serial distance matrix does not match C")
 
     def test_distance_array_serial_results(self):
         result = np.empty((self.coord[0].shape[0], self.coord[0].shape[0])).astype(np.float32)
         cython_parallel = distance_array_serial(self.coord[0], self.coord[1], result=result)
-        assert_allclose(cython_parallel, self.ref, rtol=1e-6, atol=0,
+        assert_allclose(cython_parallel, self.ref, rtol=1e-6, atol=1e-6,
                         err_msg="Cython parallel distance matrix does not match C")
 
     def test_distance_array_serial_pbc(self):
         cython_parallel = distance_array_serial(self.coord[0], self.coord[1], box=self.box)
-        assert_allclose(cython_parallel, self.ref_pbc, rtol=1e-6, atol=0,
+        assert_allclose(cython_parallel, self.ref_pbc, rtol=1e-6, atol=1e-6,
                         err_msg="Cython parallel distance matrix does not match C")

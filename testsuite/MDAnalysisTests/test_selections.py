@@ -248,4 +248,4 @@ class TestSelectionsNucleicAcids(TestCase):
     def test_nucleicsugar(self):
         rna = self.universe.selectAtoms("nucleicsugar")
         assert_equal(rna.numberOfResidues(), 23)
-        assert_equal(rna.numberOfAtoms(), rna.numberOfResidues() * 7)
+        assert_equal(rna.numberOfAtoms(), rna.numberOfResidues() * 5)

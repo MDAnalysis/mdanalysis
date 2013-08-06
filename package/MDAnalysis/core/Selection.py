@@ -378,27 +378,11 @@ class NucleicSelection(Selection):
     .. versionchanged:: 0.8
        additional Gromacs selections (see also :class:`NucleicXstalSelection`)
     """
-    nucl_res = dict([(x,None) for x in ['ADE', 'URA', 'CYT', 'GUA', 'THY',
-                                        'DA', 'DU', 'DC', 'DG', 'DT']])
+    nucl_res = dict([(x,None) for x in ['ADE', 'URA', 'CYT', 'GUA', 'THY','DA','DC','DG','DT','RA','RU','RG','RC','A', 'T', 'U', 'C', 'G']])
     def _apply(self, group):
         return set([a for a in group.atoms if a.resname in self.nucl_res])
     def __repr__(self):
         return "<'NucleicSelection' >"
-
-class NucleicXstalSelection(Selection):
-    """A nucleic selection consists of all atoms in nucleic acid residues with PDB-like resnames.
-
-    Recognized residue names:
-
-    * from the Charmm force field::
-        awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_na.rtf
-    * recognized: 'A', 'U', 'C', 'G', 'DT','DA','DC','DG'
-    """
-    nucl_res = dict([(x,None) for x in ['A', 'U', 'C', 'G', 'DT','DA','DC','DG']])
-    def _apply(self, group):
-        return set([a for a in group.atoms if a.resname in self.nucl_res])
-    def __repr__(self):
-        return "<'NucleicXstalSelection' >"
 
 class BackboneSelection(ProteinSelection):
     """A BackboneSelection contains all atoms with name 'N', 'CA', 'C', 'O'.
@@ -419,7 +403,7 @@ class NucleicBackboneSelection(NucleicSelection):
     """
     bb_atoms = dict([(x,None) for x in ["P", "C5'", "C3'", "O3'", "O5'"]])
     def _apply(self, group):
-        return set([a for a in group.atoms if (a.name in self.bb_atoms and a.resname in NucleicSelection.nucl_res)])
+        return set([a for a in group.atoms if (a.name in self.bb_atoms and a.resname in self.nucl_res)])
     def __repr__(self):
         return "<'NucleicBackboneSelection' >"
 
@@ -442,7 +426,7 @@ class BaseSelection(NucleicSelection):
 class NucleicSugarSelection(NucleicSelection):
     """A NucleicSugarSelection contains all atoms with name C1', C2', C3', C4', O2', O4', O3'.
     """
-    sug_atoms = dict([(x,None) for x in ["C1'", "C2'", "C3'", "C4'", "O2'", "O4'", "O3'"]])
+    sug_atoms = dict([(x,None) for x in ['C1\'', 'C2\'','C3\'', 'C4\'','O4\'']])
     def _apply(self, group):
         return set([a for a in group.atoms if (a.name in self.sug_atoms and a.resname in self.nucl_res)])
     def __repr__(self):
@@ -573,7 +557,6 @@ class SelectionParser:
                       (NUCLEIC, NucleicSelection), (PROTEIN, ProteinSelection),
                       (BB, BackboneSelection), (NBB, NucleicBackboneSelection),
                       (BASE, BaseSelection), (SUGAR, NucleicSugarSelection),
-                      (NUCLEICXSTAL, NucleicXstalSelection),
                       #(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists
                       (ATOM, AtomSelection)])
     associativity = dict([(AND, "left"), (OR, "left")])

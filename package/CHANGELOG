@@ -10,7 +10,9 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/13  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy, manuel.nuno.melo, danny.parton, sebastien.buchoux
+??/??/13  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
+          manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
+	  rmcgibbo
 
   * 0.8.0
 
@@ -28,6 +30,8 @@ The rules for this file:
   * bond connectivity information can be guessed from a PDB file if
     the bond=True keyword is set in Universe (Issue 23)
   * MDAnalysis.analysis.rms.RMSD: calculation of additional RMSDs
+  * Plugin to generate nucleic acid helicoidal parameters using X3DNA;
+    (must install working version 2.1 of X3DNA independently)
   * can use advanced slicing (with arbitrary lists or arrays) at all
     levels of the hierarchy (Issue 148)
   * coordinate readers and writers can be used as context managers
@@ -46,6 +50,8 @@ The rules for this file:
 
   Fixes
 
+  * fixed incorrect computation of distances in serial and parallel 
+    distance_array() with PBC (Issue 151)
   * fixed Issue 129 (hole.py module pipe/file closure)
   * fixed array comparison bug in MDAnalysis.analysis.helanal
     and various enhancements to the helanal module
@@ -114,6 +120,10 @@ The rules for this file:
  
   Changes
 
+  * selectAtoms: updated *nucleic* and *nucleicxstal* selection definition
+    *nucleic* includes the two-letter NA code that follows gromacs topolgy
+    format and *nucleicxstal* allows for the one-letter NA code that follows
+    the PDB Database code.
   * HydrogenBondAnalysis: multiple enhancements and changes (Issue 103)
     - many new analysis functions (see docs)
     - run() does not return the results anymore; results are simply
