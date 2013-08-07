@@ -338,7 +338,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
 
 
 def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, prefix='rmsfit_',
-                mass_weighted=False, tol_mass=0.1 ,**kwargs):
+                mass_weighted=False, tol_mass=0.1, force=True, **kwargs):
     """RMS-fit trajectory to a reference structure using a selection.
 
     Both reference *ref* and trajectory *traj* must be
@@ -377,6 +377,9 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
       *tol_mass*
          Reject match if the atomic masses for matched atoms differ by more than
          *tol_mass* [0.1]
+      *force*
+         - ``True``: Overwrite an existing output trajectory (default)
+         - ``False``: simply return if the file already exists
       *kwargs*
          All other keyword arguments are passed on the trajectory
          :class:`~MDAnalysis.coordinates.base.Writer`; this allows manipulating/fixing 
@@ -396,12 +399,17 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     frames = traj.trajectory
 
     kwargs.setdefault('remarks', 'RMS fitted trajectory to reference')
-    if filename is None:
+    if filename is None:        
         path,fn = os.path.split(frames.filename)
         filename = os.path.join(path,prefix+fn)
-        writer = frames.Writer(filename, **kwargs)
+        _Writer = frames.Writer
     else:
-        writer = frames.OtherWriter(filename, **kwargs)
+        _Writer = frames.OtherWriter
+    if os.path.exists(filename) and not force:
+        logger.warn("{0} already exists and will NOT be overwritten; use force=True if you want this".format(filename))
+        return filename
+    writer = _Writer(filename, **kwargs)
+    del _Writer
 
     select = _process_selection(select)
 
