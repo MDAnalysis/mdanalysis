@@ -44,11 +44,14 @@ installation.
 from ez_setup import use_setuptools
 use_setuptools()
 from setuptools import setup, Extension
+from distutils.ccompiler import new_compiler
 #
 #------------------------------------------------------------
 
 import sys, os
 import glob
+import shutil
+import tempfile
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 6):
@@ -90,6 +93,59 @@ if use_cython:
         raise ImportError("Cython version %s (found %s) is required because it offers a handy parallelisation module" % (required_version, Cython.__version__))
     del Cython
 
+
+def hasfunction(cc, funcname, include=None, extra_postargs=None):
+    # From http://stackoverflow.com/questions/
+    #            7018879/disabling-output-when-compiling-with-distutils
+    tmpdir = tempfile.mkdtemp(prefix='hasfunction-')
+    devnull = oldstderr = None
+    try:
+        try:
+            fname = os.path.join(tmpdir, 'funcname.c')
+            f = open(fname, 'w')
+            if include is not None:
+                f.write('#include %s\n' % include)
+            f.write('int main(void) {\n')
+            f.write('    %s;\n' % funcname)
+            f.write('}\n')
+            f.close()
+            # Redirect stderr to /dev/null to hide any error messages
+            # from the compiler.
+            # This will have to be changed if we ever have to check
+            # for a function on Windows.
+            devnull = open('/dev/null', 'w')
+            oldstderr = os.dup(sys.stderr.fileno())
+            os.dup2(devnull.fileno(), sys.stderr.fileno())
+            objects = cc.compile([fname], output_dir=tmpdir,
+                                 extra_postargs=extra_postargs)
+            cc.link_executable(objects, os.path.join(tmpdir, "a.out"))
+        except Exception as e:
+            return False
+        return True
+    finally:
+        if oldstderr is not None:
+            os.dup2(oldstderr, sys.stderr.fileno())
+        if devnull is not None:
+            devnull.close()
+        shutil.rmtree(tmpdir)
+
+
+def detect_openmp():
+    "Does this compiler support OpenMP parallelization?"
+    compiler = new_compiler()
+    print "Attempting to autodetect OpenMP support... ",
+    hasopenmp = hasfunction(compiler, 'omp_get_num_threads()')
+    needs_gomp = hasopenmp
+    if not hasopenmp:
+        compiler.add_library('gomp')
+        hasopenmp = hasfunction(compiler, 'omp_get_num_threads()')
+        needs_gomp = hasopenmp
+    if hasopenmp:
+        print "Compiler supports OpenMP"
+    else:
+        print "Did not detect OpenMP support."
+    return hasopenmp, needs_gomp
+
 if __name__ == '__main__':
     RELEASE = "0.8.0-dev"     # NOTE: keep in sync with MDAnalysis.version in __init__.py
     with open("SUMMARY.txt") as summary:
@@ -117,6 +173,10 @@ if __name__ == '__main__':
         extra_compile_args = ''
         define_macros = []
 
+    has_openmp, needs_gomp = detect_openmp()
+    parallel_args = ['-fopenmp'] if has_openmp else []
+    parallel_libraries = ['gomp'] if needs_gomp else []
+
     extensions = [Extension('coordinates._dcdmodule', ['src/dcd/dcd.c'],
                             include_dirs = include_dirs+['src/dcd/include'],
                             define_macros=define_macros,
@@ -133,9 +193,9 @@ if __name__ == '__main__':
                   Extension("core.parallel.distances",
                             ['src/numtools/distances_parallel.%s' % ("pyx" if use_cython else "c")],
                             include_dirs=include_dirs,
-                            libraries = ['m'],
-                            extra_compile_args=['-fopenmp'],
-                            extra_link_args=['-fopenmp']),
+                            libraries = ['m'] + parallel_libraries,
+                            extra_compile_args=parallel_args,
+                            extra_link_args=parallel_args),
                   Extension('core.qcprot', ['src/pyqcprot/pyqcprot.%s' % ("pyx" if use_cython else "c")],
                             include_dirs=include_dirs,
                             extra_compile_args=["-O3", "-ffast-math"]),

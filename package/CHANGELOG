@@ -62,6 +62,10 @@ The rules for this file:
   * slicing of ResidueGroup will now produce a ResidueGroup, and
     slicing of a SegmentGroup will produce a SegmentGroup, not a list
     as before (fixes Issue 135)
+  * detect OpenMP-capable compiler during setup (Issue 145), which should allow
+    users of Mac OS X 10.7 and 10.8 to build MDAnalysis using Apple's
+    C-compiler (clang) (Issue 142) although they will not get a parallel
+    version of distance_array.
  
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux
