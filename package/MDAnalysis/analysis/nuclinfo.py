@@ -179,9 +179,15 @@ def major_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
      .. versionadded:: 0.7.6
      """
      if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DG","C","G","CYT","GUA"]:
-          a1,a2 = "O6","N4"
+          if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","C","CYT"]:
+              a1,a2 = "N4","O6"
+          else:
+              a1,a2 = "O6","N4"
      if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DT","DA","A","T","U","ADE","THY","URA"]: 
-          a1,a2 = "N6","O4"               
+          if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DT","T","THY","U","URA"]:
+              a1,a2 = "O4","N6"
+          else:
+              a1,a2 = "N6","O4"          
      no_dist = universe.selectAtoms(" (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) "%(seg1,i,a1,seg2,bp,a2))
      major = norm(no_dist[0].pos - no_dist[1].pos)
      return major
