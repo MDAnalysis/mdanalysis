@@ -120,6 +120,8 @@ def wc_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
        *bp*
            resid of the second base
 
+     NOTE: if failure occurs be sure to check the segment identification
+
      .. versionadded:: 0.7.6
      """
      if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DT","U","C","T","CYT","THY","URA"]:
@@ -148,6 +150,8 @@ def minor_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
        *bp*
            resid of the second base
 
+     NOTE: if failure occurs be sure to check the segment identification
+
      .. versionadded:: 0.7.6
      """
      if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DT","U","C","T","CYT","THY","URA"]:
@@ -175,6 +179,8 @@ def major_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
            segment id for second base
        *bp*
            resid of the second base
+
+     NOTE: if failure occurs be sure to check the segment identification
 
      .. versionadded:: 0.7.6
      """
@@ -329,6 +335,8 @@ def tors(universe,seg,i):
          segid of resid 
       *i*
          resid of the base
+
+    NOTE: if failure occurs be sure to check the segment identification
      
     """
     a = universe.selectAtoms(" atom %s %s O3\' "%(seg,i-1)," atom %s %s P  "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i))
