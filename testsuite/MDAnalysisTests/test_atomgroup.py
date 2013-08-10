@@ -182,7 +182,7 @@ class TestAtomGroup(TestCase):
         assert_array_equal(masses[0:3], numpy.array([14.007, 1.008, 1.008]))
 
     def test_charges_ndarray(self):
-        assert_equal(isinstance(self.ag.charges(), numpy.ndarray), True)    
+        assert_equal(isinstance(self.ag.charges(), numpy.ndarray), True)
     def test_charges(self):
         assert_array_almost_equal(self.ag.charges()[1000:2000:200],
                                   array([-0.09,  0.09, -0.47,  0.51,  0.09]))
@@ -368,11 +368,11 @@ class TestAtomGroup(TestCase):
         resid = 999
         ag.set_resid(resid)
         # check individual atoms
-        assert_equal([a.resid for a in ag], 
+        assert_equal([a.resid for a in ag],
                      resid*numpy.ones(ag.numberOfAtoms()),
                      err_msg="failed to set_resid atoms 12:42 to same resid")
         # check residues
-        assert_equal(ag.resids(), 999*numpy.ones(ag.numberOfResidues()),                     
+        assert_equal(ag.resids(), 999*numpy.ones(ag.numberOfResidues()),
                      err_msg="failed to set_resid of residues belonging to atoms 12:42 to same resid")
 
     def test_set_resids(self):
@@ -404,7 +404,7 @@ class TestAtomGroup(TestCase):
         mass = 2.0
         ag.set_mass(mass)
         # check individual atoms
-        assert_equal([a.mass for a in ag], 
+        assert_equal([a.mass for a in ag],
                      mass*numpy.ones(ag.numberOfAtoms()),
                      err_msg="failed to set_mass H* atoms in resid 12:42 to {}".format(mass))
 
@@ -427,7 +427,7 @@ class TestResidue(TestCase):
         assert_equal(self.res.id, 101)
 
     def test_index(self):
-        atom = self.res[2]        
+        atom = self.res[2]
         assert_equal(type(atom), MDAnalysis.core.AtomGroup.Atom)
         assert_equal(atom.name, "CA")
         assert_equal(atom.number, 1522)
@@ -473,11 +473,11 @@ class TestResidueGroup(TestCase):
         resid = 999
         rg.set_resid(resid)
         # check individual atoms
-        assert_equal([a.resid for a in rg.atoms], 
+        assert_equal([a.resid for a in rg.atoms],
                      resid*numpy.ones(rg.numberOfAtoms()),
                      err_msg="failed to set_resid atoms 12:42 to same resid")
         # check residues
-        assert_equal(rg.resids(), resid*numpy.ones(rg.numberOfResidues()),                     
+        assert_equal(rg.resids(), resid*numpy.ones(rg.numberOfResidues()),
                      err_msg="failed to set_resid of residues belonging to atoms 12:42 to same resid")
 
     def test_set_resids(self):
@@ -487,7 +487,7 @@ class TestResidueGroup(TestCase):
         rg.set_resid(resids)
         # check individual atoms
         for r, resid in itertools.izip(rg, resids):
-            assert_equal([a.resid for a in r.atoms], 
+            assert_equal([a.resid for a in r.atoms],
                          resid*numpy.ones(r.numberOfAtoms()),
                          err_msg="failed to set_resid residues 10:18 to same resid in residue {0}\n"
                          "(resids = {1}\nresidues = {2})".format(r, resids, rg))
@@ -526,7 +526,7 @@ class TestResidueGroup(TestCase):
         mass = 2.0
         rg.set_mass(mass)
         # check individual atoms
-        assert_equal([a.mass for a in rg.atoms], 
+        assert_equal([a.mass for a in rg.atoms],
                      mass*numpy.ones(rg.numberOfAtoms()),
                      err_msg="failed to set_mass H* atoms in resid 12:42 to {}".format(mass))
 
@@ -582,11 +582,11 @@ class TestSegmentGroup(TestCase):
         resid = 999
         g.set_resid(resid)
         # check individual atoms
-        assert_equal([a.resid for a in g.atoms], 
+        assert_equal([a.resid for a in g.atoms],
                      resid*numpy.ones(g.numberOfAtoms()),
                      err_msg="failed to set_resid for segment to same resid")
         # check residues
-        assert_equal(g.resids(), resid*numpy.ones(g.numberOfResidues()),                     
+        assert_equal(g.resids(), resid*numpy.ones(g.numberOfResidues()),
                      err_msg="failed to set_resid of segments belonging to atoms 12:42 to same resid")
 
     def test_set_resids(self):
@@ -614,7 +614,7 @@ class TestSegmentGroup(TestCase):
         mass = 2.0
         g.set_mass(mass)
         # check individual atoms
-        assert_equal([a.mass for a in g.atoms], 
+        assert_equal([a.mass for a in g.atoms],
                      mass*numpy.ones(g.numberOfAtoms()),
                      err_msg="failed to set_mass in segment of  H* atoms in resid 12:42 to {}".format(mass))
 
@@ -774,6 +774,7 @@ def test_instantselection_termini():
 
 class TestUniverse(TestCase):
     def test_load(self):
+        # Universe(top, trj)
         u = MDAnalysis.Universe(PSF, PDB_small)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
@@ -792,3 +793,25 @@ class TestUniverse(TestCase):
         u = MDAnalysis.Universe(PSF, DCD)
         u.load_new(PDB_small, permissive=True)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=True)")
+
+    def test_load_structure(self):
+        # Universe(struct)
+        ref = MDAnalysis.Universe(PSF, PDB_small)
+        u = MDAnalysis.Universe(PDB_small)
+        assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
+        assert_almost_equal(u.atoms.positions, ref.atoms.positions)
+
+    def test_load_multiple_list(self):
+        # Universe(top, [trj, trj, ...])
+        ref = MDAnalysis.Universe(PSF, DCD)
+        u = MDAnalysis.Universe(PSF, [DCD, DCD])
+        assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
+        assert_equal(u.trajectory.numframes, 2*ref.trajectory.numframes)
+
+    def test_load_multiple_args(self):
+        # Universe(top, trj, trj, ...)
+        ref = MDAnalysis.Universe(PSF, DCD)
+        u = MDAnalysis.Universe(PSF, DCD, DCD)
+        assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
+        assert_equal(u.trajectory.numframes, 2*ref.trajectory.numframes)
+

@@ -245,6 +245,9 @@ import itertools
 from MDAnalysis import SelectionError, NoDataError, SelectionWarning
 import util
 
+import logging
+logger = logging.getLogger("MDAnalysis.core.AtomGroup")
+
 class Atom(object):
     """A class representing a single atom.
 
@@ -2238,13 +2241,14 @@ class Universe(object):
        u = Universe(topology, trajectory)          # read system from file(s)
        u = Universe(pdbfile)                       # read atoms and coordinates from PDB or GRO
        u = Universe(topology, [traj1, traj2, ...]) # read from a list of trajectories
+       u = Universe(topology, traj1, traj2, ...)   # read from multiple trajectories
 
     Load new data into a universe (replaces old trajectory and does *not* append)::
 
        u.load_new(trajectory)                      # read from a new trajectory file
 
     Select atoms, with syntax similar to CHARMM (see
-    :class:`AtomGroup.selectAtoms` for details)::
+    :class:`~Universe.selectAtoms` for details)::
 
        u.selectAtoms(...)
 
@@ -2272,8 +2276,11 @@ class Universe(object):
        Can also read multi-frame PDB files with the
        :class:`~MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
 
+    .. versionchanged:: 0.8
+       Parse arbitrary number of arguments as a single topology file and a a sequence
+       of trajectories.
     """
-    def __init__(self, topologyfile, coordinatefile=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Initialize the central MDAnalysis Universe object.
 
         :Arguments:
@@ -2289,6 +2296,11 @@ class Universe(object):
              If a **list of filenames** is provided then they are sequentially read and appear
              as one single trajectory to the Universe. The list can contain different file
              formats.
+
+             .. deprecated:: 0.8
+                Do not use the *coordinatefile* keyword argument, just provide trajectories as
+                positional arguments.
+
           *permissive*
              currently only relevant for PDB files: Set to ``True`` in order to ignore most errors
              and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
@@ -2346,19 +2358,25 @@ class Universe(object):
         # trajectory format type (i.e. the extension))
         self.__trajectory = None
 
+        kwargs.setdefault('coordinatefile', None)  # deprecated
+        topology_format = kwargs.pop('topology_format', None)
         if kwargs.get('permissive', None) is None:
             kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
 
-        topology_format = kwargs.pop('topology_format', None)
-
-        if coordinatefile is None:
+        try:
+            topologyfile = args[0]
+        except IndexError:
+            raise ValueError("Universe requires at least a single topology or structure file.")
+        # old behaviour (explicit coordfile) overrides new behaviour
+        coordinatefile = args[1:] if kwargs['coordinatefile'] is None else kwargs['coordinatefile']
+        if len(args) == 1 and not coordinatefile:
             # special hacks to treat a coordinate file as a coordinate AND topology file
+            # coordinatefile can be None or () (from an empty slice args[1:])
             if kwargs.get('format', None) is None:
                 kwargs['format'] = topology_format
             elif topology_format is None:
                 topology_format = kwargs.get('format', None)
-
-            if coordinatefile is None and guess_format(topologyfile, format=kwargs.get('format', None)) in \
+            if guess_format(topologyfile, format=kwargs.get('format', None)) in \
                     MDAnalysis.coordinates._topology_coordinates_readers:
                 coordinatefile = topologyfile         # hack for pdb/gro/crd - only
 
@@ -2368,8 +2386,8 @@ class Universe(object):
             parser = get_parser_for(topologyfile, permissive=kwargs['permissive'], bonds=kwargs.get('bonds', False),
                                     format=topology_format)
             struc = parser(topologyfile)
-        except TypeError, err:
-            raise ValueError("Failed to build a topology from either a psf, pdb or gro (%s)" % err)
+        except TypeError as err:
+            raise ValueError("Failed to build a topology from the topology file {0}. Error: {1}".format(self.filename, err))
 
         # populate atoms etc
         self._init_topology(struc)
@@ -2389,7 +2407,6 @@ class Universe(object):
 
         # TODO wrap-around in a BondGroup class, translating bonds to lists of Atom objects; otherwise indexing becomes a pain
         # TODO move to universe._psf.bonds
-
         if struc.has_key("_bonds"):
             self.bonds = struc["_bonds"]
 
@@ -2478,7 +2495,7 @@ class Universe(object):
         :Arguments:
              *filename*
                  the coordinate file (single frame or trajectory) *or* a list of
-                 filenames, which are read one after another
+                 filenames, which are read one after another.
              *permissive*
                  currently only relevant for PDB files: Set to ``True`` in order to ignore most errors
                  and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
@@ -2496,20 +2513,29 @@ class Universe(object):
         :Returns: (filename, trajectory_format) or ``None`` if *filename* == ``None``
         :Raises: :exc:`TypeError` if trajectory format can not be
                   determined or no appropriate trajectory reader found
+
+        .. versionchanged:: 0.8
+           If a list or sequence that is provided for *filename*  only contains a single entry
+           then it is treated as single coordinate file. This has the consequence that it is
+           not read by the :class:`~MDAnalysis.coordinates.base.ChainReader` but directly by
+           its specialized file format reader, which typically has more features than the
+           :class:`~MDAnalysis.coordinates.base.ChainReader`.
         """
         if filename is None:
             return
 
         import MDAnalysis.core
         from MDAnalysis.coordinates.core import get_reader_for
-        from itertools import izip
 
         if kwargs.get('permissive', None) is None:
             kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
+        if len(util.asiterable(filename)) == 1:
+            filename = util.asiterable(filename)[0]  # make sure a single filename is not handed to the ChainReader
+        logger.debug("Universe.load_new(): loading {0}...".format(filename))
         try:
             TRJReader = get_reader_for(filename, permissive=kwargs.pop('permissive'),
                                        format=kwargs.pop('format', None))
-        except TypeError, err:
+        except TypeError as err:
             raise TypeError("Universe.load_new() cannot find an appropriate coordinate reader "
                             "for file %r.\n%r" % (filename, err))
         # supply number of atoms for readers that cannot do it for themselves
@@ -2679,8 +2705,8 @@ class Universe(object):
     # NOTE: DO NOT ADD A __del__() method: it somehow keeps the Universe
     #       alive during unit tests and the unit tests run out of memory!
     #### def __del__(self): <------ do not add this! [orbeckst]
-       
-        
+
+
 
 
 def asUniverse(*args, **kwargs):

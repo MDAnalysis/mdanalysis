@@ -36,6 +36,10 @@ The rules for this file:
     levels of the hierarchy (Issue 148)
   * coordinate readers and writers can be used as context managers
     with the 'with' statement
+  * Can load multiple trajectories as Universe(topology, traj2, traj2,
+    ...) in addition to providing all trajectories as a list,
+    i.e. Universe(topology, [traj1, traj2, ...])
+
 
   Changes
 
