@@ -120,6 +120,8 @@ def wc_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
        *bp*
            resid of the second base
 
+     NOTE: if failure occurs be sure to check the segment identification
+
      .. versionadded:: 0.7.6
      """
      if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DT","U","C","T","CYT","THY","URA"]:
@@ -147,6 +149,8 @@ def minor_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
            segment id for second base
        *bp*
            resid of the second base
+
+     NOTE: if failure occurs be sure to check the segment identification
 
      .. versionadded:: 0.7.6
      """
@@ -176,12 +180,20 @@ def major_pair(universe, i, bp, seg1="SYSTEM",seg2="SYSTEM"):
        *bp*
            resid of the second base
 
+     NOTE: if failure occurs be sure to check the segment identification
+
      .. versionadded:: 0.7.6
      """
      if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","DG","C","G","CYT","GUA"]:
-          a1,a2 = "O6","N4"
+          if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DC","C","CYT"]:
+              a1,a2 = "N4","O6"
+          else:
+              a1,a2 = "O6","N4"
      if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DT","DA","A","T","U","ADE","THY","URA"]: 
-          a1,a2 = "N6","O4"               
+          if universe.selectAtoms(" resid %s "%(i,)).resnames()[0] in ["DT","T","THY","U","URA"]:
+              a1,a2 = "O4","N6"
+          else:
+              a1,a2 = "N6","O4"          
      no_dist = universe.selectAtoms(" (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) "%(seg1,i,a1,seg2,bp,a2))
      major = norm(no_dist[0].pos - no_dist[1].pos)
      return major
@@ -323,6 +335,8 @@ def tors(universe,seg,i):
          segid of resid 
       *i*
          resid of the base
+
+    NOTE: if failure occurs be sure to check the segment identification
      
     """
     a = universe.selectAtoms(" atom %s %s O3\' "%(seg,i-1)," atom %s %s P  "%(seg,i)," atom %s %s O5\' "%(seg,i)," atom %s %s C5\' "%(seg,i))
@@ -544,11 +558,11 @@ def pseudo_dihe_baseflip(universe,bp1,bp2,i,seg1="SYSTEM",seg2="SYSTEM",seg3="SY
        *bp1*
            resid that base pairs with bp2 
        *segid2*
-           segid same as that of segid of flipping resid
+           segid same as that of segid of flipping resid 
        *bp2*
-           resid above or below the base that flips 
+           resid below the base that flips 
        *segid3*
-           segid of resid that flips
+           segid of resid that flips 
        *i*
            resid of the base that flips
 
@@ -563,7 +577,7 @@ def pseudo_dihe_baseflip(universe,bp1,bp2,i,seg1="SYSTEM",seg2="SYSTEM",seg3="SY
     bf2 =  universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) "%(seg2,bp2))
     bf3 =  universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) "%(seg3,i))
     x = [bf1.centerOfMass(),bf2.centerOfMass(),bf3.centerOfMass(),bf4.centerOfMass()]
-    pseudo = util.dihedral(x[1]-x[0],x[2]-x[1],x[3]-x[2])
+    pseudo = util.dihedral(x[0]-x[1],x[1]-x[2],x[2]-x[3])
     pseudo = numpy.rad2deg(pseudo)
     if pseudo < 0:
         pseudo = pseudo + 360

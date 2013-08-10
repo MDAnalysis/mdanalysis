@@ -338,8 +338,14 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
 
 
 def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, prefix='rmsfit_',
-                mass_weighted=False, tol_mass=0.1):
+                mass_weighted=False, tol_mass=0.1, force=True, **kwargs):
     """RMS-fit trajectory to a reference structure using a selection.
+
+    Both reference *ref* and trajectory *traj* must be
+    :class:`MDAnalysis.Universe` instances. If they contain a
+    trajectory then it is used. The output file format is determined
+    by the file extension of *filename*. One can also use the same
+    universe if one wants to fit to the current frame.
 
     :Arguments:
       *traj*
@@ -371,23 +377,39 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
       *tol_mass*
          Reject match if the atomic masses for matched atoms differ by more than
          *tol_mass* [0.1]
+      *force*
+         - ``True``: Overwrite an existing output trajectory (default)
+         - ``False``: simply return if the file already exists
+      *kwargs*
+         All other keyword arguments are passed on the trajectory
+         :class:`~MDAnalysis.coordinates.base.Writer`; this allows manipulating/fixing 
+         trajectories on the fly (e.g. change the output format by changing the extension of *filename*
+         and setting different parameters as described for the corresponding writer).
 
-    Both reference and trajectory must be :class:`MDAnalysis.Universe`
-    instances. If they contain a trajectory then it is used. The
-    output file format is the same as the input *traj*.
+    :Returns: *filename* (either provided or auto-generated)
 
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
+
+    .. versionchanged:: 0.8
+       Added *kwargs* to be passed to the trajectory :class:`~MDAnalysis.coordinates.base.Writer` and
+       *filename* is returned.
     """
 
     frames = traj.trajectory
 
-    if filename is None:
+    kwargs.setdefault('remarks', 'RMS fitted trajectory to reference')
+    if filename is None:        
         path,fn = os.path.split(frames.filename)
         filename = os.path.join(path,prefix+fn)
-        writer = frames.Writer(filename, remarks='RMS fitted trajectory to reference')
+        _Writer = frames.Writer
     else:
-        writer = frames.OtherWriter(filename)
+        _Writer = frames.OtherWriter
+    if os.path.exists(filename) and not force:
+        logger.warn("{0} already exists and will NOT be overwritten; use force=True if you want this".format(filename))
+        return filename
+    writer = _Writer(filename, **kwargs)
+    del _Writer
 
     select = _process_selection(select)
 
@@ -454,6 +476,8 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     if not rmsdfile is None:
         numpy.savetxt(rmsdfile,rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
+        
+    return filename
 
 def fasta2select(fastafilename,is_aligned=False,
                  ref_resids=None, target_resids=None,

@@ -41,14 +41,22 @@ class TestNuclinfo(TestCase):
     def tearDown(self):
         del self.universe
     def test_wc_pair(self):
-        wc = numpy.array(nuclinfo.wc_pair(self.universe,4,20),dtype=numpy.float32)
+        seg1 = self.universe.residues[3].segids()[0]
+        seg2 = self.universe.residues[19].segids()[0]
+        wc = numpy.array(nuclinfo.wc_pair(self.universe,4,20,seg1,seg2),dtype=numpy.float32)
         assert_almost_equal(wc, 2.9810174, err_msg="Watson-Crick distance does not match expected value.")
     def test_major_pair(self):
-        maj = numpy.array(nuclinfo.major_pair(self.universe,4,20),dtype=numpy.float32)
+        seg1 = self.universe.residues[3].segids()[0]
+        seg2 = self.universe.residues[19].segids()[0]
+        maj = numpy.array(nuclinfo.major_pair(self.universe,4,20,seg1,seg2),dtype=numpy.float32)
         assert_almost_equal(maj, 2.9400151, err_msg="Watson-Crick distance does not match expected value.")
     def test_minor_pair(self):
-        minor = numpy.array(nuclinfo.minor_pair(self.universe,4,20),dtype=numpy.float32)
+        seg1 = self.universe.residues[3].segids()[0]
+        seg2 = self.universe.residues[19].segids()[0]
+
+        minor = numpy.array(nuclinfo.minor_pair(self.universe,4,20,seg1,seg2),dtype=numpy.float32)
         assert_almost_equal(minor, 3.7739358, err_msg="Watson-Crick distance does not match expected value.")
+
     def test_torsions(self):
         nucl_acid = numpy.array(nuclinfo.tors(self.universe,"RNAA",4),dtype=numpy.float32)
         expected_nucl_acid = numpy.array([296.45596313,  177.79353333,   48.67910767,   81.81109619,  205.58882141,  286.37353516,  198.09187317], dtype=numpy.float32)
