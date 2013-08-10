@@ -182,7 +182,7 @@ class ProgressMeter(object):
        ...
 
     """
-    def __init__(self, numsteps, format=None, interval=10, offset=0):
+    def __init__(self, numsteps, format=None, interval=10, offset=0, quiet=False):
         """Set up the ProgressMeter
 
         :Arguments:
@@ -208,11 +208,18 @@ class ProgressMeter(object):
            *offset*
               number to add to *step*; e.g. if *step* is 0-based then one would
               set *offset* = 1 [0]
+           *quiet*
+              If ``True``, disable all output, ``False`` print all messages as
+              specified, [``False``]
+
+        .. versionchanged:: 0.8
+           Keyword argument *quiet* was added.
 
         """
         self.numsteps = numsteps
         self.interval = int(interval)
         self.offset = int(offset)
+        self.quiet = quiet
         if format is None:
             format = "Step %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r"
         self.format = format
@@ -248,7 +255,14 @@ class ProgressMeter(object):
 
         *kwargs* are additional attributes that can be references in
         the format string.
+
+        .. Note:: If *quiet* = ``True`` has been set in the
+                  constructor or if :attr:`ProgressMeter.quiet` has
+                  been set to ``True`` the no messages will be
+                  printed.
         """
+        if self.quiet:
+            return
         self.update(step, **kwargs)
         format = self.format
         if self.step == self.numsteps:

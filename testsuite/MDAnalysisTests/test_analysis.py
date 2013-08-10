@@ -109,7 +109,7 @@ class TestAlign(TestCase):
         # align to *last frame* in target... just for the heck of it
         self.reference.trajectory[-1]
         MDAnalysis.analysis.align.rms_fit_trj(self.universe, self.reference, select="all",
-                                              filename=self.outfile)
+                                              filename=self.outfile, quiet=True)
         fitted = MDAnalysis.Universe(PSF, self.outfile)
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689

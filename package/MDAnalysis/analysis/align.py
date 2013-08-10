@@ -338,7 +338,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
 
 
 def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, prefix='rmsfit_',
-                mass_weighted=False, tol_mass=0.1, force=True, **kwargs):
+                mass_weighted=False, tol_mass=0.1, force=True, quiet=False, **kwargs):
     """RMS-fit trajectory to a reference structure using a selection.
 
     Both reference *ref* and trajectory *traj* must be
@@ -380,9 +380,17 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
       *force*
          - ``True``: Overwrite an existing output trajectory (default)
          - ``False``: simply return if the file already exists
+      *quiet*
+         - ``True``: suppress progress and logging for levels INFO and below.
+         - ``False``: show all status messages and do not change the the logging
+           level (default)
+
+         .. Note:: If
+
+
       *kwargs*
          All other keyword arguments are passed on the trajectory
-         :class:`~MDAnalysis.coordinates.base.Writer`; this allows manipulating/fixing 
+         :class:`~MDAnalysis.coordinates.base.Writer`; this allows manipulating/fixing
          trajectories on the fly (e.g. change the output format by changing the extension of *filename*
          and setting different parameters as described for the corresponding writer).
 
@@ -398,8 +406,12 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
 
     frames = traj.trajectory
 
+    if quiet:
+        # should be part of a try ... finally to guarantee restoring the log level
+        logging.disable(logging.WARN)
+
     kwargs.setdefault('remarks', 'RMS fitted trajectory to reference')
-    if filename is None:        
+    if filename is None:
         path,fn = os.path.split(frames.filename)
         filename = os.path.join(path,prefix+fn)
         _Writer = frames.Writer
@@ -444,7 +456,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     rot = numpy.zeros(9,dtype=numpy.float64)      # allocate space for calculation
     R = numpy.matrix(rot.reshape(3,3))
 
-    percentage = ProgressMeter(nframes, interval=10,
+    percentage = ProgressMeter(nframes, interval=10, quiet=quiet,
                                format="Fitted frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
 
     for k,ts in enumerate(frames):
@@ -476,7 +488,11 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     if not rmsdfile is None:
         numpy.savetxt(rmsdfile,rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
-        
+
+    if quiet:
+        # should be part of a try ... finally to guarantee restoring the log level
+        logging.disable(logging.NOTSET)
+
     return filename
 
 def fasta2select(fastafilename,is_aligned=False,
