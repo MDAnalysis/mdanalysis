@@ -558,11 +558,11 @@ def pseudo_dihe_baseflip(universe,bp1,bp2,i,seg1="SYSTEM",seg2="SYSTEM",seg3="SY
        *bp1*
            resid that base pairs with bp2 
        *segid2*
-           segid same as that of segid of flipping resid
+           segid same as that of segid of flipping resid 
        *bp2*
-           resid above or below the base that flips 
+           resid below the base that flips 
        *segid3*
-           segid of resid that flips
+           segid of resid that flips 
        *i*
            resid of the base that flips
 
@@ -577,7 +577,7 @@ def pseudo_dihe_baseflip(universe,bp1,bp2,i,seg1="SYSTEM",seg2="SYSTEM",seg3="SY
     bf2 =  universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) "%(seg2,bp2))
     bf3 =  universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) "%(seg3,i))
     x = [bf1.centerOfMass(),bf2.centerOfMass(),bf3.centerOfMass(),bf4.centerOfMass()]
-    pseudo = util.dihedral(x[1]-x[0],x[2]-x[1],x[3]-x[2])
+    pseudo = util.dihedral(x[0]-x[1],x[1]-x[2],x[2]-x[3])
     pseudo = numpy.rad2deg(pseudo)
     if pseudo < 0:
         pseudo = pseudo + 360
