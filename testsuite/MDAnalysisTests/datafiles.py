@@ -57,7 +57,8 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "PDB_HOLE",                          # gramicidin A
            "XTC_HOLE",                          # gramicidin A, all frames identical, for Issue 129
            "DMS",
-           "CONECT"                             # HIV Reverse Transcriptase with inhibitor
+           "CONECT",                             # HIV Reverse Transcriptase with inhibitor
+           "TRZ", "TRZ_psf"
            ]
 
 from pkg_resources import resource_filename
@@ -141,3 +142,6 @@ XTC_HOLE = resource_filename(__name__, 'data/gram_A_identical_frames.xtc')
 DMS = resource_filename(__name__, 'data/adk_closed.dms')
 
 CONECT = resource_filename(__name__, 'data/1hvr.pdb')
+
+TRZ = resource_filename(__name__, 'data/trzfile.trz')
+TRZ_psf = resource_filename(__name__, 'data/trz_psf.psf')

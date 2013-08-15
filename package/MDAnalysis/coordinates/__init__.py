@@ -151,6 +151,9 @@ also recognized when they are compressed with :program:`gzip` or
    | DESRES [#a]_  | dms       |  r    | DESRES Molecular Structure file format reader.       |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.DMS`             |
    +---------------+-----------+-------+------------------------------------------------------+
+   | IBIsCO/YASP   | trz       |  r    | Binary IBIsCO or YASP trajectories Module            |
+   |               |           |       | :mod:`MDAnalysis.coordinates.TRZ`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -584,7 +587,7 @@ PDB). In theses cases, the kind of writer is selected with the
 
 __all__ = ['reader', 'writer']
 
-import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS, DMS
+import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS, DMS, TRZ
 import base
 from core import reader, writer
 
@@ -605,6 +608,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'LAMMPS': LAMMPS.DCDReader,
                        'CHAIN': base.ChainReader,
                        'DMS': DMS.DMSReader,
+                       'TRZ': TRZ.TRZReader,
                        }
 
 #: formats of readers that can also handle gzip or bzip2 compressed files

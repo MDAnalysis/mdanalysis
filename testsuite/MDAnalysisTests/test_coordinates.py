@@ -28,7 +28,7 @@ import sys
 from MDAnalysis.tests.datafiles import PSF, DCD, DCD_empty, PDB_small, PDB_closed, PDB_multiframe, \
     PDB, CRD, XTC, TRR, GRO, DMS, CONECT, \
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
-    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol
+    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf
 
 import os
 import tempfile
@@ -2034,3 +2034,45 @@ def test_triclinic_box():
                               err_msg="unitcell round-trip connversion failed (Issue 61)")
 
 
+class RefTRZ(object):
+#    ref_coordinates = {}
+#    ref_distances = {'endtoend': }
+    ref_numatoms = 8184
+    ref_unitcell = np.array([5.5422830581665039,5.5422830581665039,5.5422830581665039,90.,90.,90.], dtype=np.float32)
+    ref_volume = 170.241762765
+    ref_numframes = 6
+
+
+class TestTRZReader(TestCase, RefTRZ):
+    def setUp(self):
+        self.universe = mda.Universe(TRZ_psf, TRZ)
+        self.trz = self.universe.trajectory
+        self.ts = self.universe.trajectory.ts
+        self.prec = 3
+    
+    def tearDown(self):
+        del self.universe
+        del self.trz
+        del self.ts
+
+    def test_load_trz(self):
+        U = self.universe
+        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from PSF and TRZ")
+
+    def test_rewind_trz(self):
+        self.trz.rewind()
+        assert_equal(self.ts.frame, 1, "rewinding to frame 1")
+
+    def test_next_trz(self):
+        self.trz.rewind()
+        self.trz.next()
+        assert_equal(self.ts.frame, 2, "loading frame 2")
+
+    def test_numframes(self):
+        assert_equal(self.universe.trajectory.numframes, self.ref_numframes, "wrong number of frames in trz")
+
+    def test_volume(self):
+        assert_almost_equal(self.ts.volume, self.ref_volume, self.prec, "wrong volume for trz")
+
+    def test_unitcell(self):
+        assert_almost_equal(self.ts.dimensions, self.ref_unitcell, self.prec, "wrong unitcell for trz")
