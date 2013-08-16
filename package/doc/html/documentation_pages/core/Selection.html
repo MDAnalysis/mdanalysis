@@ -123,6 +123,8 @@
 <dt id="MDAnalysis.core.Selection.NucleicBackboneSelection">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicBackboneSelection</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#NucleicBackboneSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicBackboneSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A NucleicBackboneSelection contains all atoms with name &#8220;P&#8221;, &#8220;C5&#8217;&#8221;, C3&#8217;&#8221;, &#8220;O3&#8217;&#8221;, &#8220;O5&#8217;&#8221;.</p>
+<p>These atoms are only recognized if they are in a residue matched
+by the <a class="reference internal" href="#MDAnalysis.core.Selection.NucleicSelection" title="MDAnalysis.core.Selection.NucleicSelection"><tt class="xref py py-class docutils literal"><span class="pre">NucleicSelection</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="class">
@@ -132,37 +134,25 @@
 <p>Recognized residue names:</p>
 <ul>
 <li><dl class="first docutils">
-<dt>from the Charmm force field ::</dt>
+<dt>from the CHARMM force field ::</dt>
 <dd><p class="first last">awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</p>
 </dd>
 </dl>
+<ul class="simple">
+<li>recognized: &#8216;ADE&#8217;, &#8216;URA&#8217;, &#8216;CYT&#8217;, &#8216;GUA&#8217;, &#8216;THY&#8217;</li>
+</ul>
 </li>
-<li><p class="first">recognized: &#8216;ADE&#8217;, &#8216;URA&#8217;, &#8216;CYT&#8217;, &#8216;GUA&#8217;, &#8216;THY&#8217;</p>
+<li><p class="first">recognized (CHARMM in Gromacs): &#8216;DA&#8217;, &#8216;DU&#8217;, &#8216;DC&#8217;, &#8216;DG&#8217;, &#8216;DT&#8217;</p>
 </li>
 </ul>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8: </span>additional Gromacs selections (see also <tt class="xref py py-class docutils literal"><span class="pre">NucleicXstalSelection</span></tt>)</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.core.Selection.NucleicSugarSelection">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicSugarSelection</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#NucleicSugarSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicSugarSelection" title="Permalink to this definition">¶</a></dt>
-<dd><p>A NucleicSugarSelection contains all atoms with name &#8216;C1&#8217;&#8216;, &#8216;C2&#8217;&#8216;,&#8217;C3&#8217;&#8216;, &#8216;C4&#8217;&#8216;, &#8216;O2&#8217;&#8216;,&#8217;O4&#8217;&#8216;,&#8217;O3&#8217;&#8216;.</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="MDAnalysis.core.Selection.NucleicXstalSelection">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.Selection.</tt><tt class="descname">NucleicXstalSelection</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/Selection.html#NucleicXstalSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.Selection.NucleicXstalSelection" title="Permalink to this definition">¶</a></dt>
-<dd><p>A nucleic selection consists of all atoms in nucleic acid residues with PDB-like resnames.</p>
-<p>Recognized residue names:</p>
-<ul>
-<li><dl class="first docutils">
-<dt>from the Charmm force field::</dt>
-<dd><p class="first last">awk &#8216;/RESI/ {printf &#8220;&#8217;&#8221;&#8217;&#8221;%s&#8221;&#8217;&#8221;&#8217;,&#8221;,$2 }&#8217; top_all27_prot_na.rtf</p>
-</dd>
-</dl>
-</li>
-<li><p class="first">recognized: &#8216;A&#8217;, &#8216;U&#8217;, &#8216;C&#8217;, &#8216;G&#8217;, &#8216;DT&#8217;,&#8217;DA&#8217;,&#8217;DC&#8217;,&#8217;DG&#8217;</p>
-</li>
-</ul>
+<dd><p>A NucleicSugarSelection contains all atoms with name C1&#8217;, C2&#8217;, C3&#8217;, C4&#8217;, O2&#8217;, O4&#8217;, O3&#8217;.</p>
 </dd></dl>
 
 <dl class="class">
@@ -250,9 +240,9 @@ T(erms) --&gt;     segid [value]
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
-    and Oliver Beckstein.
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

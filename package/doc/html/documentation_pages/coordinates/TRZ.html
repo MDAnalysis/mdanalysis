@@ -1,0 +1,246 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.18. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8.0-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.8.0-dev documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../index.html" />
+    <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
+    <link rel="next" title="6. Selection exporters" href="../selections_modules.html" />
+    <link rel="prev" title="5.17. The Gromacs xtc/trr library libxdrfile" href="libxdrfile.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../selections_modules.html" title="6. Selection exporters"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="libxdrfile.html" title="5.17. The Gromacs xtc/trr library libxdrfile"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="libxdrfile.html"
+                        title="previous chapter">5.17. The Gromacs xtc/trr library <tt class="docutils literal"><span class="pre">libxdrfile</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../selections_modules.html"
+                        title="next chapter">6. Selection exporters</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/coordinates/TRZ.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.TRZ"></span><div class="section" id="trz-trajectory-i-o-mdanalysis-coordinates-trz">
+<h1>5.18. TRZ trajectory I/O  &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.TRZ" title="MDAnalysis.coordinates.TRZ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a><a class="headerlink" href="#trz-trajectory-i-o-mdanalysis-coordinates-trz" title="Permalink to this headline">¶</a></h1>
+<p>Classes to read IBIsCO/YASP binary trajectories.
+Only coordinates are currently read from these.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first last admonition-title">See also</p>
+</div>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.TRZ.TRZReader">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRZ.</tt><tt class="descname">TRZReader</tt><big>(</big><em>trzfilename</em>, <em>numatoms=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads an IBIsCO or YASP trajectory file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Data :</th><td class="field-body"><dl class="first docutils">
+<dt>ts</dt>
+<dd><p class="first last"><a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> object
+containing coordinates of current frame</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Methods :</th><td class="field-body"><dl class="first docutils">
+<dt><tt class="docutils literal"><span class="pre">len(trz)</span></tt></dt>
+<dd><p class="first last">returns the number of frames</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">for</span> <span class="pre">ts</span> <span class="pre">in</span> <span class="pre">trz</span></tt></dt>
+<dd><p class="first last">iterates through the trajectory</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Format :</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>TRZ format detailed below, each line is a single fortran write statement, so is surrounded by 4 bytes of metadata
+In brackets after each entry is the size of the content of each line</p>
+<div class="highlight-python"><pre>Header 
+  title(80c)
+  nrec (int4)
+Frame
+  nframe, ntrj*nframe, natoms, treal (3*int4, real8)
+  boxx, 0.0, 0.0, 0.0, boxy, 0.0, 0.0, 0.0, boxz (real8 * 9)
+  pressure, pt11, pt12, pt22, pt13, pt23, pt33 (real8 *7)
+  6, etot, ptot, ek, t, 0.0, 0.0 (int4, real8 * 6)
+  rx (real4 * natoms)
+  ry 
+  rz
+  vx
+  vy
+  vz</pre>
+</div>
+<p>Creates a TRZ Reader</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>trzfilename</em></dt>
+<dd><p class="first last">name of input file</p>
+</dd>
+<dt><em>numatoms</em></dt>
+<dd><p class="first last">number of atoms in trajectory, must taken from topology file!</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.TRZ.TRZReader.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close trz file if it was open</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.TRZReader.numatoms">
+<tt class="descname">numatoms</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.numatoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.numatoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of atoms in a frame</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.TRZReader.numframes">
+<tt class="descname">numframes</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.numframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.numframes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total number of frames in a trajectory</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.TRZ.TRZReader.open_trajectory">
+<tt class="descname">open_trajectory</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.open_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.open_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the trajectory file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.TRZ.TRZReader.rewind">
+<tt class="descname">rewind</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.rewind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.rewind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reposition onto first frame</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRZ.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>TRZ custom Timestep</p>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep.dimensions">
+<tt class="descname">dimensions</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#Timestep.dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unit cell dimensions, (A, B, C, alpha, beta, gamma)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../selections_modules.html" title="6. Selection exporters"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="libxdrfile.html" title="5.17. The Gromacs xtc/trr library libxdrfile"
+             >previous</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

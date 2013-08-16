@@ -346,13 +346,18 @@ the new <em>tol_mass</em> keyword.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.rms_fit_trj">
-<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">rms_fit_trj</tt><big>(</big><em>traj</em>, <em>reference</em>, <em>select='all'</em>, <em>filename=None</em>, <em>rmsdfile=None</em>, <em>prefix='rmsfit_'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.1</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#rms_fit_trj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.rms_fit_trj" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.align.</tt><tt class="descname">rms_fit_trj</tt><big>(</big><em>traj</em>, <em>reference</em>, <em>select='all'</em>, <em>filename=None</em>, <em>rmsdfile=None</em>, <em>prefix='rmsfit_'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.1</em>, <em>force=True</em>, <em>quiet=False</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#rms_fit_trj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.rms_fit_trj" title="Permalink to this definition">¶</a></dt>
 <dd><p>RMS-fit trajectory to a reference structure using a selection.</p>
+<p>Both reference <em>ref</em> and trajectory <em>traj</em> must be
+<tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> instances. If they contain a
+trajectory then it is used. The output file format is determined
+by the file extension of <em>filename</em>. One can also use the same
+universe if one wants to fit to the current frame.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>traj</em></dt>
 <dd><p class="first last">trajectory, <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> object</p>
 </dd>
@@ -391,14 +396,40 @@ original trajectory filename (from <em>traj</em>) with <em>prefix</em> prepended
 <dd><p class="first last">Reject match if the atomic masses for matched atoms differ by more than
 <em>tol_mass</em> [0.1]</p>
 </dd>
+<dt><em>force</em></dt>
+<dd><ul class="first last simple">
+<li><tt class="docutils literal"><span class="pre">True</span></tt>: Overwrite an existing output trajectory (default)</li>
+<li><tt class="docutils literal"><span class="pre">False</span></tt>: simply return if the file already exists</li>
+</ul>
+</dd>
+<dt><em>quiet</em></dt>
+<dd><ul class="first simple">
+<li><tt class="docutils literal"><span class="pre">True</span></tt>: suppress progress and logging for levels INFO and below.</li>
+<li><tt class="docutils literal"><span class="pre">False</span></tt>: show all status messages and do not change the the logging
+level (default)</li>
+</ul>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If</p>
+</div>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed on the trajectory
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Writer" title="MDAnalysis.coordinates.base.Writer"><tt class="xref py py-class docutils literal"><span class="pre">Writer</span></tt></a>; this allows manipulating/fixing
+trajectories on the fly (e.g. change the output format by changing the extension of <em>filename</em>
+and setting different parameters as described for the corresponding writer).</p>
+</dd>
 </dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>filename</em> (either provided or auto-generated)</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>Both reference and trajectory must be <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>
-instances. If they contain a trajectory then it is used. The
-output file format is the same as the input <em>traj</em>.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8: </span>Added <em>kwargs</em> to be passed to the trajectory <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Writer" title="MDAnalysis.coordinates.base.Writer"><tt class="xref py py-class docutils literal"><span class="pre">Writer</span></tt></a> and
+<em>filename</em> is returned.</p>
 </dd></dl>
 
 </div>
@@ -558,9 +589,9 @@ than <em>tol_mass</em> the test is considered failed.</li>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
-    and Oliver Beckstein.
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

@@ -38,3 +38,4 @@ Programmers and anyone trying to implement new functionality should read the
    coordinates/XYZ
    coordinates/pdbextensions
    coordinates/libxdrfile
+   coordinates/TRZ

@@ -1,3 +1,33 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+#               Elizabeth J. Denning, Oliver Beckstein,
+#               and contributors (see website for details)
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
+#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
+#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
+#     doi:10.1002/jcc.21787
+#
+
+
+"""TRZ trajectory I/O  --- :mod:`MDAnalysis.coordinates.TRZ`
+============================================================
+ 
+Classes to read IBIsCO/YASP binary trajectories.
+Only coordinates are currently read from these.
+
+.. _IBIsCO: http://www.ncbi.nlm.nih.gov/pubmed/21425295
+
+.. _YASP: http://www.sciencedirect.com/science/article/pii/0010465593901442
+
+"""
+
 import os, errno
 import base
 from base import Timestep
@@ -15,28 +45,52 @@ class Timestep(base.Timestep):
         return self._unitcell
 
 class TRZReader(base.Reader):
-    """ Reads an IBIsCO or YASP trajectory file
-    TRZ format detailed below, each line is a single fortran write statement, so is surrounded by 4 bytes when written by fortran
-    In brackets after each entry is the size of the content of each line
-    Header :title(80c)
-            nrec (int4)
-    Frame  :nframe, ntrj*nframe, natoms, treal (3*int4, real8)
-            boxx, 0.0, 0.0, 0.0, boxy, 0.0, 0.0, 0.0, boxz (real8 * 9)
-            pressure, pt11, pt12, pt22, pt13, pt23, pt33 (real8 *7)
-            6, etot, ptot, ek, t, 0.0, 0.0 (int4, real8 * 6)
-            rx (real4 * natoms)
-            ry 
-            rz
-            vx
-            vy
-            vz
-    """
+    """ Reads an IBIsCO or YASP trajectory file 
+
+    :Data:
+        ts
+          :class:`~MDAnalysis.coordinates.base.Timestep` object
+          containing coordinates of current frame
+
+    :Methods:
+      ``len(trz)``
+        returns the number of frames
+      ``for ts in trz``
+        iterates through the trajectory
+
+    :Format:
+    TRZ format detailed below, each line is a single fortran write statement, so is surrounded by 4 bytes of metadata
+    In brackets after each entry is the size of the content of each line ::
+      Header 
+        title(80c)
+        nrec (int4)
+      Frame
+        nframe, ntrj*nframe, natoms, treal (3*int4, real8)
+        boxx, 0.0, 0.0, 0.0, boxy, 0.0, 0.0, 0.0, boxz (real8 * 9)
+        pressure, pt11, pt12, pt22, pt13, pt23, pt33 (real8 *7)
+        6, etot, ptot, ek, t, 0.0, 0.0 (int4, real8 * 6)
+        rx (real4 * natoms)
+        ry 
+        rz
+        vx
+        vy
+        vz
+"""
 
     format = "TRZ"
 
     units = {'time':'ps', 'length':'nm'}
 
     def __init__(self, trzfilename, numatoms=None, **kwargs):
+        """Creates a TRZ Reader
+
+        :Arguments:
+          *trzfilename*
+            name of input file
+          *numatoms*
+            number of atoms in trajectory, must taken from topology file!
+
+            """
         if numatoms is None:
             raise ValueError('TRZReader requires the numatoms keyword')
 
@@ -57,6 +111,7 @@ class TRZReader(base.Reader):
         self._read_next_timestep()
 
     def _read_trz_header(self):
+        """Reads the header of the trz trajectory"""
         #Read the header of the file
         #file.read(4)
         #title = struct.unpack('80c',file.read(80))

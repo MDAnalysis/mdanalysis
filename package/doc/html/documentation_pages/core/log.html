@@ -171,7 +171,7 @@ and the filter list to empty.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.core.log.ProgressMeter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">ProgressMeter</tt><big>(</big><em>numsteps</em>, <em>format=None</em>, <em>interval=10</em>, <em>offset=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/log.html#ProgressMeter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">ProgressMeter</tt><big>(</big><em>numsteps</em>, <em>format=None</em>, <em>interval=10</em>, <em>offset=0</em>, <em>quiet=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/log.html#ProgressMeter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple progress meter</p>
 <p>Usage:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
@@ -246,11 +246,17 @@ return <tt class="docutils literal"><span class="pre">\r</span></tt>.</p>
 <dd><p class="first last">number to add to <em>step</em>; e.g. if <em>step</em> is 0-based then one would
 set <em>offset</em> = 1 [0]</p>
 </dd>
+<dt><em>quiet</em></dt>
+<dd><p class="first last">If <tt class="docutils literal"><span class="pre">True</span></tt>, disable all output, <tt class="docutils literal"><span class="pre">False</span></tt> print all messages as
+specified, [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8: </span>Keyword argument <em>quiet</em> was added.</p>
 <dl class="method">
 <dt id="MDAnalysis.core.log.ProgressMeter.echo">
 <tt class="descname">echo</tt><big>(</big><em>step</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/log.html#ProgressMeter.echo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.log.ProgressMeter.echo" title="Permalink to this definition">¶</a></dt>
@@ -264,6 +270,13 @@ using the format string (in <tt class="xref py py-attr docutils literal"><span c
 carriage return is replaced with a new line for a cleaner display.</p>
 <p><em>kwargs</em> are additional attributes that can be references in
 the format string.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If <em>quiet</em> = <tt class="docutils literal"><span class="pre">True</span></tt> has been set in the
+constructor or if <tt class="xref py py-attr docutils literal"><span class="pre">ProgressMeter.quiet</span></tt> has
+been set to <tt class="docutils literal"><span class="pre">True</span></tt> the no messages will be
+printed.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -336,9 +349,9 @@ console.</p>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Manuel Nuno Melo, Danny Parton,
-    Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
-    and Oliver Beckstein.
+    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
