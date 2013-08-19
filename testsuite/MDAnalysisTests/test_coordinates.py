@@ -2038,10 +2038,13 @@ class RefTRZ(object):
 #    ref_coordinates = {}
 #    ref_distances = {'endtoend': }
     ref_numatoms = 8184
-    ref_unitcell = np.array([5.5422830581665039,5.5422830581665039,5.5422830581665039,90.,90.,90.], dtype=np.float32)
-    ref_volume = 170.241762765
+    ref_dimensions = np.array([55.422830581665039,55.422830581665039,55.422830581665039,90.,90.,90.],dtype=np.float32)
+    ref_volume = 170241.762765
     ref_numframes = 6
-
+    ref_coordinates = np.array([72.3163681 , -130.31130981,   19.97969055],dtype=np.float32)
+    ref_velocities  = np.array([[14.83297443,  18.02611542,   6.07733774]],dtype=np.float32)
+    ref_delta = 0.01 
+    ref_time = 0.01 
 
 class TestTRZReader(TestCase, RefTRZ):
     def setUp(self):
@@ -2059,20 +2062,35 @@ class TestTRZReader(TestCase, RefTRZ):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from PSF and TRZ")
 
-    def test_rewind_trz(self):
-        self.trz.rewind()
-        assert_equal(self.ts.frame, 1, "rewinding to frame 1")
-
     def test_next_trz(self):
         self.trz.rewind()
         self.trz.next()
         assert_equal(self.ts.frame, 2, "loading frame 2")
 
+    def test_rewind_trz(self):
+        self.trz.rewind()
+        assert_equal(self.ts.frame, 1, "rewinding to frame 1")
+
     def test_numframes(self):
         assert_equal(self.universe.trajectory.numframes, self.ref_numframes, "wrong number of frames in trz")
 
     def test_volume(self):
-        assert_almost_equal(self.ts.volume, self.ref_volume, self.prec, "wrong volume for trz")
+        assert_almost_equal(self.ts.volume, self.ref_volume, 1, "wrong volume for trz") # Lower precision here because errors seem to accumulate and throw this off (is rounded value**3)
 
     def test_unitcell(self):
-        assert_almost_equal(self.ts.dimensions, self.ref_unitcell, self.prec, "wrong unitcell for trz")
+        assert_almost_equal(self.ts.dimensions, self.ref_dimensions, self.prec, "wrong dimensions for trz")
+
+    def test_coordinates(self):
+        fortytwo = self.universe.atoms[41] #41 because is 0 based
+        assert_almost_equal(fortytwo.pos ,self.ref_coordinates, self.prec, "wrong coordinates in trz")
+    
+    def test_velocities(self):
+        fortytwo = self.universe.selectAtoms('bynum 42')
+        assert_almost_equal(fortytwo.velocities() , self.ref_velocities, self.prec, "wrong velocities in trz")
+
+    def test_delta(self):
+        assert_almost_equal(self.trz.delta, self.ref_delta, self.prec, "wrong time delta in trz")
+
+    def test_time(self):
+        self.trz.rewind()
+        assert_almost_equal(self.trz.time, self.ref_time, self.prec, "wrong time value in trz")
