@@ -202,6 +202,25 @@ class TestAtomGroup(TestCase):
     # TODO: add all other methods except selectAtoms(), see test_selections.py
 
     # add new methods here...
+    def test_packintobox(self):
+        """Tests application of periodic boundary conditions on coordinates
+        Reference system doesn't have dimensions, so an arbitrary box is imposed on the system
+        """
+        u = self.universe
+        u.trajectory.rewind() #just to make sure...
+        ag = u.atoms
+
+        def badpack(ag=ag):
+            ag.packintobox()
+        assert_raises(ValueError, badpack) #This system has no dimensions, so by default can't pack
+
+        ag.packintobox(box=numpy.array([5.,5.,5.])) #Provide arbitrary box
+        assert_array_almost_equal(ag.coordinates()[1000:2000:200],
+                                  array([[ 3.94543672,  2.5939188 ,  2.73179913],
+                                         [ 3.21632767,  0.879035  ,  0.32085133],
+                                         [ 2.07735443,  0.99395466,  4.09301519],
+                                         [ 1.35541916,  2.0690732 ,  4.67488003],
+                                         [ 1.73236561,  4.90658951,  0.6880455 ]], dtype=float32))
 
     def test_residues(self):
         u = self.universe

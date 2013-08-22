@@ -1580,6 +1580,32 @@ class AtomGroup(object):
         #print "axis = %r, angle = %f deg" % (ax, angle)
         return self.rotateby(angle, ax)
 
+    def packintobox(self, box=None):
+        """Shift all atoms to be within the box dimensions ie
+        all atoms will lie between 0 and boxlength in all dimensions
+
+        AtomGroup.packintobox([box])
+
+        Takes optional argument box which is the lengths of the three sides of the box.  
+        If this is not given, it is attempted to automatically take this from ts
+
+        Currently only works with orthogonal boxes.
+
+        """
+        if box == None: #Try and auto detect box dimensions
+            if (self.dimensions[6:9] == 90.).all(): #Check box is orthogonal
+                box = self.dimensions[0:3]
+            else:
+                raise ValueError("This atomgroup does not belong to a Universe with an orthogonal box")
+
+        if (box == 0).any(): #Check that a box dimension isn't zero
+            raise ValueError("One or more box dimensions is zero.  You can specify a boxsize with 'box='")
+
+        coords = self.universe.trajectory.ts._pos[self.indices()]
+        self.universe.trajectory.ts._pos[self.indices()] -= numpy.floor(coords/box)*box
+        #np.floor rounds down all numbers, ie floor(-0.1) = -1, floor(0.9) = 0
+        return 
+
     def selectAtoms(self, sel, *othersel):
         """Selection of atoms using the MDAnalysis selection syntax.
 
