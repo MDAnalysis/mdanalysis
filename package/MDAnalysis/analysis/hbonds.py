@@ -364,12 +364,28 @@ class HydrogenBondAnalysis(object):
                         N=1.31, O=1.31, P=1.58, S=1.55)
 
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
-                 update_selection1=False, update_selection2=False, filter_first=True,
+                 update_selection1=True, update_selection2=True, filter_first=True,
                  distance=3.0, angle=120.0,
                  forcefield='CHARMM27', donors=None, acceptors=None,
                  start=None, stop=None, step=None,
                  verbose=False, detect_hydrogens='distance'):
         """Set up calculation of hydrogen bonds between two selections in a universe.
+
+        .. Note::
+
+           In order to speed up processing, atoms are filtered by a coarse
+           distance criterion before a detailed hydrogen bonding analysis is
+           performed (*filter_first* = ``True``). If one of your selections is
+           e.g. the solvent then *update_selection1* (or *update_selection2*)
+           must also be ``True`` so that the list of candidate atoms is updated
+           at each step: this is now the default.
+
+           If your selections will essentially remain the same for all time
+           steps (i.e. residues are not moving farther than 3 *distance*), for
+           instance, if no water or large conformational changes are involved
+           or if the optimization is disabled (*filter_first* = ``False``) then
+           you can improve performance by setting the *update_selection*
+           keywords to ``False``.
 
         :Arguments:
           *universe*
@@ -445,6 +461,13 @@ class HydrogenBondAnalysis(object):
            New *forcefield* keyword to switch between different values of
            DEFAULT_DONORS/ACCEPTORS to accomodate different force fields.
            Also has an option "other" for no default values.
+
+        .. versionchanged:: 0.8
+           The new default for *update_selection1* and *update_selection2* is now
+           ``True`` (see `Issue 138`_). Set to ``False`` if your selections only
+           need to be determined once (will increase performance).
+
+        .. _`Issue 138`: http://code.google.com/p/mdanalysis/issues/detail?id=138
         """
         self._get_bonded_hydrogens_algorithms = {
             "distance": self._get_bonded_hydrogens_dist,      # 0.7.6 default

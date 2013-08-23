@@ -51,6 +51,8 @@ The rules for this file:
     never a simple list
   * removed Timeseries.principleAxis (probably was never working)
   * dependent on Biopython >= 1.59 (Issue 147)
+  * Hydrogen bond analysis defaults to updating selection 1 and 2 for
+    every timestep in order to avoid unexpected behavior (Issue 138)
 
   Fixes
 
