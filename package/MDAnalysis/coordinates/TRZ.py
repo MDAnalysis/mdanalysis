@@ -14,20 +14,17 @@
 #     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
 #     doi:10.1002/jcc.21787
 #
-
+# TRZ Reader written by Richard J. Gowers (2013)
 
 """TRZ trajectory I/O  --- :mod:`MDAnalysis.coordinates.TRZ`
 ============================================================
- 
-Classes to read IBIsCO/YASP binary trajectories.
-  
-Reads coordinates, velocities and more.  
 
-References 
-------------
+Classes to read `IBIsCO`_ / `YASP`_ binary trajectories.
+
+Reads coordinates, velocities and more (see attributes of the
+:class:`Timestep`).
 
 .. _IBIsCO: http://www.theo.chemie.tu-darmstadt.de/ibisco/IBISCO.html
-
 .. _YASP: http://www.theo.chemie.tu-darmstadt.de/group/services/yaspdoc/yaspdoc.html
 
 """
@@ -43,33 +40,34 @@ from MDAnalysis.coordinates.core import triclinic_box
 class Timestep(base.Timestep):
     """ TRZ custom Timestep
 
-    :Attributes:
-      ``frame``
-        Index of the frame, (1 based)
-      ``numatoms``
-        Number of atoms in the frame (will be constant through trajectory)
-      ``time``
-        Current time of the system in ps (will not always start at 0)
-      ``pressure``
-        Pressure of the system box in kPa
-      ``pressure_tensor``
-        Array containing pressure tensors in order: xx, xy, yy, xz, yz, zz 
-      ``total_energy``
-        Hamiltonian for the system in kJ/mol
-      ``potential_energy``
-        Potential energy of the system in kJ/mol
-      ``kinetic_energy``
-        Kinetic energy of the system in kJ/mol
-      ``temperature``
-        Temperature of the system in Kelvin
+    Attributes
+    .. attribute:: frame
+       Index of the frame, (1 based)
+    .. attribute:: numatoms
+       Number of atoms in the frame (will be constant through trajectory)
+    .. attribute:: time
+       Current time of the system in ps (will not always start at 0)
+    .. attribute:: pressure
+       Pressure of the system box in kPa
+    .. attribute:: pressure_tensor
+       Array containing pressure tensors in order: xx, xy, yy, xz, yz, zz
+    .. attribute:: total_energy
+       Hamiltonian for the system in kJ/mol
+    .. attribute:: potential_energy
+       Potential energy of the system in kJ/mol
+    .. attribute:: kinetic_energy
+       Kinetic energy of the system in kJ/mol
+    .. attribute:: temperature
+       Temperature of the system in Kelvin
 
-    :Private Attributes:
-      ``_unitcell``
-        Unitcell for system. [Lx, 0.0, 0.0, 0.0, Ly, 0.0, 0.0, 0.0, Lz]
-      ``_pos``
-        Position of particles in box (native nm)
-      ``_velocities``
-        Velocities of particles in box (native nm/ps)
+    Private Attributes
+    .. attribute:: _unitcell
+       Unitcell for system. ``[Lx, 0.0, 0.0, 0.0, Ly, 0.0, 0.0, 0.0, Lz]``.
+       Use the attribute :attr:`dimensions` to access this information.
+    .. attribute:: _pos
+       Position of particles in box (native nm)
+    .. attribute:: _velocities
+       Velocities of particles in box (native nm/ps)
     """
     def __init__(self, arg):
         if numpy.dtype(type(arg)) == numpy.dtype(int):
@@ -84,7 +82,7 @@ class Timestep(base.Timestep):
             self.temperature = 0.0 #Temperature in Kelvin
             self._pos        = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order ='F')
             self._velocities = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order ='F')
-            self._unitcell   = numpy.zeros((9),                dtype=numpy.float32, order ='F') 
+            self._unitcell   = numpy.zeros((9),                dtype=numpy.float32, order ='F')
         elif isinstance(arg, Timestep): # Copy constructor
             # This makes a deepcopy of the timestep
             self.frame = arg.frame
@@ -116,13 +114,12 @@ class Timestep(base.Timestep):
             raise ValueError("Cannot create an empty Timestep")
         self._x = self._pos[:,0]
         self._y = self._pos[:,1]
-        self._z = self._pos[:,2]  
+        self._z = self._pos[:,2]
 
     @property
     def dimensions(self):
         """
-        Unit cell dimensions, native format is
-
+        Unit cell dimensions ``[A,B,C,alpha,beta,gamma]``.
         """
         x = self._unitcell[0:3]
         y = self._unitcell[3:6]
@@ -130,13 +127,13 @@ class Timestep(base.Timestep):
         return triclinic_box(x,y,z)
 
 class TRZReader(base.Reader):
-    """ Reads an IBIsCO or YASP trajectory file 
+    """ Reads an IBIsCO or YASP trajectory file
 
     :Data:
         ts
           :class:`~MDAnalysis.coordinates.TRZ.Timestep` object
           containing coordinates of current frame
-        
+
     :Methods:
       ``len(trz)``
         returns the number of frames
@@ -145,21 +142,23 @@ class TRZReader(base.Reader):
 
     :Format:
       TRZ format detailed below, each line is a single fortran write statement, so is surrounded by 4 bytes of metadata
-      In brackets after each entry is the size of the content of each line ::
-        ``Header`` 
+      In brackets after each entry is the size of the content of each line:
+
+      ``Header``::
           title(80c)
           nrec (int4)
-        ``Frame``
+       ``Frame``::
           nframe, ntrj*nframe, natoms, treal (3*int4, real8)
           boxx, 0.0, 0.0, 0.0, boxy, 0.0, 0.0, 0.0, boxz (real8 * 9)
           pressure, pt11, pt12, pt22, pt13, pt23, pt33 (real8 *7)
           6, etot, ptot, ek, t, 0.0, 0.0 (int4, real8 * 6)
           rx (real4 * natoms)
-          ry 
+          ry
           rz
           vx
           vy
           vz
+
 """
 
     format = "TRZ"
@@ -252,7 +251,7 @@ class TRZReader(base.Reader):
             self.trzfile.seek(8,1)
             ts._velocities[:,1] = struct.unpack(readarg,self.trzfile.read(4*natoms))
             self.trzfile.seek(8,1)
-            ts._velocities[:,2] = struct.unpack(readarg,self.trzfile.read(4*natoms))         
+            ts._velocities[:,2] = struct.unpack(readarg,self.trzfile.read(4*natoms))
             self.trzfile.seek(4,1)
 
             ts.frame += 1
