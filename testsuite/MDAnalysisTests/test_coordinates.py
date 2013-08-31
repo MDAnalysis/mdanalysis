@@ -1795,7 +1795,7 @@ class TestTRRReader(_GromacsReader):
             assert_array_almost_equal(self.universe.atoms[index].velocity, v_known, self.prec,
                                   err_msg="atom[%d].velocity does not match known values" % index)
 
-if sys.version_info.major < 3:
+if sys.version_info[0] < 3:
     class TestTRRReader_UTF8(TestTRRReader):
         filename = unicode(TRR)
 
@@ -2043,8 +2043,8 @@ class RefTRZ(object):
     ref_numframes = 6
     ref_coordinates = np.array([72.3163681 , -130.31130981,   19.97969055],dtype=np.float32)
     ref_velocities  = np.array([[14.83297443,  18.02611542,   6.07733774]],dtype=np.float32)
-    ref_delta = 0.01 
-    ref_time = 0.01 
+    ref_delta = 0.01
+    ref_time = 0.01
 
 class TestTRZReader(TestCase, RefTRZ):
     def setUp(self):
@@ -2052,7 +2052,7 @@ class TestTRZReader(TestCase, RefTRZ):
         self.trz = self.universe.trajectory
         self.ts = self.universe.trajectory.ts
         self.prec = 3
-    
+
     def tearDown(self):
         del self.universe
         del self.trz
@@ -2083,7 +2083,7 @@ class TestTRZReader(TestCase, RefTRZ):
     def test_coordinates(self):
         fortytwo = self.universe.atoms[41] #41 because is 0 based
         assert_almost_equal(fortytwo.pos ,self.ref_coordinates, self.prec, "wrong coordinates in trz")
-    
+
     def test_velocities(self):
         fortytwo = self.universe.selectAtoms('bynum 42')
         assert_almost_equal(fortytwo.velocities() , self.ref_velocities, self.prec, "wrong velocities in trz")

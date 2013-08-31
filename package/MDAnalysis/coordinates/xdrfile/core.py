@@ -162,7 +162,7 @@ class TrjWriter(base.Writer):
         # Convert filename to ascii because of SWIG bug.
         # See: http://sourceforge.net/p/swig/feature-requests/75
         # Only needed for Python < 3
-        if sys.version_info.major < 3:
+        if sys.version_info[0] < 3:
             if isinstance(filename, unicode):
                 self.filename = filename.encode("UTF-8")
 
@@ -314,7 +314,7 @@ class TrjReader(base.Reader):
         # Convert filename to ascii because of SWIG bug.
         # See: http://sourceforge.net/p/swig/feature-requests/75
         # Only needed for Python < 3
-        if sys.version_info.major < 3:
+        if sys.version_info[0] < 3:
             if isinstance(filename, unicode):
                 self.filename = filename.encode("UTF-8")
 
