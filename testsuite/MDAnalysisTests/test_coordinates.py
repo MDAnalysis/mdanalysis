@@ -539,6 +539,15 @@ class TestPrimitivePDBReader(_SingleFrameReader):
         self.universe = mda.Universe(PDB_small, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
+class TestExtendedPDBReader(_SingleFrameReader):
+    def setUp(self):
+        self.universe = mda.Universe(PDB_small, topology_format="XPDB", format="XPDB")
+        self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+
+    def test_long_resSeq(self):
+        # TODO: check that it can read a 5-digit resid
+        raise NotImplementedError
+
 class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True)
