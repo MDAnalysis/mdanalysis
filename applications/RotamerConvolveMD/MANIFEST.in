@@ -1,0 +1,4 @@
+include README INSTALL LICENSE
+include ez_setup.py setup.py 
+recursive-include   doc *
+graft   rotamers/data
