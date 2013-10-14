@@ -4,7 +4,7 @@ use_setuptools()
 from setuptools import setup, find_packages
 
 if __name__ == '__main__':
-    RELEASE = "1.0"
+    RELEASE = "1.0-rc1"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = ['Development Status :: 4 - Beta',
@@ -18,17 +18,17 @@ if __name__ == '__main__':
                    'Topic :: Scientific/Engineering :: Chemistry',
                    'Topic :: Software Development :: Libraries :: Python Modules',
                    ]
-    setup(name              = 'rotamers',
+    setup(name              = 'RotamerConvolveMD',
           version           = RELEASE,
           description       = 'Analysis of spin label distances over structural ensembles',
           author            = 'Philip W. Fowler',
           author_email      = 'philip.fowler@bioch.ox.ac.uk',
           url               = 'http://mdanalysis.googlecode.com/',
           requires          = ['numpy (>=1.6)', 'MDAnalysis (>0.7.7)'],
-          provides          = ['rotamers'],
+          provides          = ['rotcon'],
           license           = 'GPL 2',
-          packages          = find_packages(exclude=['scripts', 'rotamers/data']),
-          package_data      = {'rotamers': ['data/*.pdb', 'data/*.dcd' ,'data/*.dat']},
+          packages          = find_packages(exclude=['scripts', 'rotcon/data']),
+          package_data      = {'rotcon': ['data/*.pdb', 'data/*.dcd' ,'data/*.dat']},
           scripts           = ['scripts/convolve-mtss-rotamers.py'],
           classifiers       = CLASSIFIERS,
           long_description  = LONG_DESCRIPTION,

@@ -24,8 +24,7 @@ import MDAnalysis
 import numpy as np
 import time
 
-import rotamers.convolve
-import rotamers.library
+import rotcon.convolve
 
 import logging
 logger = logging.getLogger("MDAnalysis.app")
@@ -77,7 +76,7 @@ if __name__ == "__main__":
                 options.dcdFilename = options.outputFile + "-tmp"
 
         startTime = time.time()
-        R = rotamers.convolve.RotamerDistances(proteinStructure, options.residues,
+        R = rotcon.convolve.RotamerDistances(proteinStructure, options.residues,
                                                outputFile=options.outputFile, dcdFilename=options.dcdFilename,
                                                libname=options.libname, discardFrames=options.discardFrames,
                                                clashDistance=options.clashDistance,

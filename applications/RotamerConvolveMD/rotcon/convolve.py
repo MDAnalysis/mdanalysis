@@ -21,7 +21,7 @@ import logging
 logger = logging.getLogger("MDAnalysis.app")
 
 
-import library
+import rotcon.library
 
 
 def rms_fit_trj(*args, **kwargs):
@@ -52,7 +52,7 @@ class RotamerDistances(object):
               [``'distances'``]
            *libname*
               library name; the library is loaded with
-              :class:`rotamers.library.RotamerLibrary` [``'MTSSL 298K'``]
+              :class:`rotcon.library.RotamerLibrary` [``'MTSSL 298K'``]
            *discardFrames*
               skip initial frames < *discardFrames* [``0``]
            *clashDistance*
@@ -81,7 +81,7 @@ class RotamerDistances(object):
         self.clashDistance = kwargs.pop('clashDistance', 2.2)  # Ångström
         histogramBins = kwargs.pop('histogramBins', (0.0, 100.0, 1.0))
 
-        self.lib = library.RotamerLibrary(kwargs.get('libname', 'MTSSL 298K'))
+        self.lib = rotcon.library.RotamerLibrary(kwargs.get('libname', 'MTSSL 298K'))
 
         # setup the main lists
         distances = []

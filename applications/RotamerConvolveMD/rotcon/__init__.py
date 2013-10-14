@@ -8,8 +8,8 @@
 # Includes a rotamer library for MTSS at 298 K by Gunnar Jeschke,
 # which is published under the same licence by permission.
 """\
-Convolve Rotamers
-=================
+:mod:`rotcon` --- Convolve Rotamers
+===================================
 
 :Author:  Philip Fowler, Oliver Beckstein
 :Year:    2011-2013
@@ -17,7 +17,8 @@ Convolve Rotamers
 
 Calculate a distribution of spin label distances from an MD trajectory
 or an arbitrary ensemble of conformations by fitting Gunnar Jeschke's
-rotamer library of MTSS (at 298 K).
+rotamer library of MTSS (at 298 K) to a MD trajectory or another
+ensemble of structures.
 
 """
 
