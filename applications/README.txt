@@ -2,6 +2,8 @@
  MDAnalysis Applications
 =========================
 
+http://code.google.com/p/mdanalysis/wiki/Applications
+
 The applications/ directory contains self-contained Python packages
 that make use of MDAnalysis as their primary dependency. Each package
 should be installable on its own but make use of dependency mechanisms
