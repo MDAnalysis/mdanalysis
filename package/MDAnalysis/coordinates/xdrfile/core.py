@@ -250,7 +250,7 @@ class TrjWriter(base.Writer):
                 if self.convert_units:
                     forces = self.convert_forces_to_native(ts._forces, inplace=False)
                 else:
-                    forces = ts._velocities
+                    forces = ts._forces
             else:
                 # 0-forces (no need to convert those); add it to ts as a sideeffect
                 # so that we don't have to reallocate next time
