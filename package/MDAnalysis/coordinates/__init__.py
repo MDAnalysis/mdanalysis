@@ -242,7 +242,7 @@ Methods
             update the Timesteps positions array with the contents of *arg*
 
       Anything else raises an exception; in particular it is not possible to
-      create a "empty" :class:`Timestep` instance.
+      create a "empty" :class:`~MDAnalysis.coordinates.base.Timestep` instance.
   ``__getitem__(atoms)``
       position(s) of atoms; can be a slice or numpy array and then returns
       coordinate array
@@ -263,7 +263,7 @@ Attributes
   ``dimensions``
       system box dimensions (`x, y, z, alpha, beta, gamma`)
       (typically implemented as a property because it needs to translate whatever is in the
-      underlying :attr:`Timestep._unitcell` attribute)
+      underlying :class:`~MDAnalysis.coordinates.base.Timestep._unitcell` attribute.
   ``volume``
       system box volume (derived as the determinant of the box vectors of ``dimensions``)
 
@@ -272,16 +272,18 @@ Private attributes
 
 These attributes are set directly by the underlying trajectory
 readers. Normally the user should not have to directly access those (although in
-some cases it is convenient to directly use :attr:`Timestep._pos`).
+some cases it is convenient to directly use :class:`~MDAnalysis.coordinates.base.Timestep._pos`).
 
   ``_pos``
       raw coordinates, a :class:`numpy.float32` array; ``X = _pos[:,0], Y =
       _pos[:,1], Z = _pos[:,2]``
 
   ``_unitcell``
-      unit cell dimensions and angles; the format depends on the underlying
-      trajectory format. A user should use :attr:`Timestep.dimensions` to
-      access the data in a standard format.
+      native unit cell description; the format depends on the
+      underlying trajectory format. A user should use the
+      :class:`~MDAnalysis.coordinates.base.Timestep.dimensions`
+      attribute to access the data in a canonical format instead of
+      accessing :class:`Timestep._unitcell` directly.
 
 Optional attributes (only implemented by some readers); if an optional
 attribute does not exist, a :exc:`AttributeError` is raised and the calling
@@ -332,9 +334,9 @@ The following methods must be implemented in a Reader class.
      past the last frame
  ``rewind()``
      reposition to first frame
-  ``__entry__()``
+ ``__entry__()``
      entry method of a `Context Manager`_ (returns self)
-  ``__exit__()``
+ ``__exit__()``
      exit method of a `Context Manager`_, should call ``close()``.
 
 
@@ -464,7 +466,7 @@ Attributes
 Trajectory Writer class
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Trajectory readers are derived from
+Trajectory writers are derived from
 :class:`MDAnalysis.coordinates.base.Writer`. They are used to write
 multiple frames to a trajectory file. Every time the
 :meth:`~MDAnalysis.coordinates.base.Writer.write` method is called,
