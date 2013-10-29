@@ -8,7 +8,8 @@
 :Year:      2013
 :Licence:   GNU Public Licence, version 2 (or higher)
 :Copyright: © 2013 Philip W Fowler, Oliver Beckstein
-:Citation:  LS Stelzl, PW Fowler, MSP Sansom, O Beckstein. J Mol Biol (2013)
+:Citation:  LS Stelzl, PW Fowler, MSP Sansom, O Beckstein. J Mol Biol
+            (2013). doi: 10.1016/j.jmb.2013.10.024
             
 This package contains the MTSL rotamer library R1A_298K provided by
 Gunnar Jeschke, which is published under the GPL with his permission.
@@ -134,16 +135,21 @@ References
 .. [Michaud-Agrawal2011] N. Michaud-Agrawal, E. J. Denning,
    T. B. Woolf, and O. Beckstein. MDAnalysis: A toolkit for the
    analysis of molecular dynamics simulations. J Comp Chem,
-   32:2319-2327, 2011. doi:
-   10.1002/jcc.21787. http://mdanalysis.googlecode.com
+   32:2319-2327, 2011. doi:`10.1002/jcc.21787`_. http://mdanalysis.googlecode.com
+
+.. _`10.1002/jcc.21787`: http://doi.org/10.1002/jcc.21787
 
 .. [Polyhach2011] Y. Polyhach, E. Bordignon, and G. Jeschke. Rotamer
    libraries of spin labelled cysteines for protein
    studies. Phys. Chem. Chem. Phys., 13:2356-2366, 2011. doi:
-   10.1039/C0CP01865A. URL http://dx.doi.org/ 10.1039/C0CP01865A.
+   `10.1039/C0CP01865A`_.
+
+.. _`10.1039/C0CP01865A`: http://dx.doi.org/10.1039/C0CP01865A
 
 .. [Stelzl2013] L. S. Stelz, P. W. Fowler, M. S. P. Sansom, and
    O. Beckstein. Flexible gates generate occluded intermediates in the
-   transport cycle of LacY. J Mol Biol, accepted, 2013.
+   transport cycle of LacY. J Mol Biol, 2013. doi:`10.1016/j.jmb.2013.10.024`_ 
+
+.. _`10.1016/j.jmb.2013.10.024`: http://dx.doi.org/10.1016/j.jmb.2013.10.024
 
 
