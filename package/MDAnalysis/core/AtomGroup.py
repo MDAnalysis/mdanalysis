@@ -1581,15 +1581,26 @@ class AtomGroup(object):
         return self.rotateby(angle, ax)
 
     def packintobox(self, box=None):
-        """Shift all atoms to be within the box dimensions ie
-        all atoms will lie between 0 and boxlength in all dimensions
+        """Shift all atoms in this group to be within the primary unit cell.
 
         AtomGroup.packintobox([box])
 
-        Takes optional argument box which is the lengths of the three sides of the box.  
-        If this is not given, it is attempted to automatically take this from ts
+        All atoms will be moved so that they lie between 0 and
+        boxlength :math:`L_i` in all dimensions, i.e. the lower left
+        corner of the simulation box is taken to be at (0,0,0):
 
-        Currently only works with orthogonal boxes.
+        .. math::
+           x_i' = x_i - \left\lfloor \frac{x_i}{L_i} \right\rfloor
+
+        The default is to take unit cell information from the
+        underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+        instance. The optional argument *box* can be used to provide
+        alternative unit cell information (in the MDAnalysis standard
+        format ``[Lx, Ly, Lz, alpha, beta, gamma]``).
+
+        .. Warning:: Currently only works with orthogonal boxes. See `Issue 136`_
+
+        .. _Issue 136: https://code.google.com/p/mdanalysis/issues/detail?id=136
 
         """
         if box == None: #Try and auto detect box dimensions
@@ -1604,7 +1615,6 @@ class AtomGroup(object):
         coords = self.universe.trajectory.ts._pos[self.indices()]
         self.universe.trajectory.ts._pos[self.indices()] -= numpy.floor(coords/box)*box
         #np.floor rounds down all numbers, ie floor(-0.1) = -1, floor(0.9) = 0
-        return 
 
     def selectAtoms(self, sel, *othersel):
         """Selection of atoms using the MDAnalysis selection syntax.

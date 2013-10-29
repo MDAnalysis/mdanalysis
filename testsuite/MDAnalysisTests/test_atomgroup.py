@@ -203,7 +203,8 @@ class TestAtomGroup(TestCase):
 
     # add new methods here...
     def test_packintobox(self):
-        """Tests application of periodic boundary conditions on coordinates
+        """test AtomGroup.packintobox(): Tests application of periodic boundary conditions on coordinates
+
         Reference system doesn't have dimensions, so an arbitrary box is imposed on the system
         """
         u = self.universe
