@@ -264,8 +264,8 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
     
     for a in atoms:
         if not a.type in vdwradii.keys(): 
-            print a.type + "has no defined vdw radius"
-            return bonds()
+            print a.type + " has no defined vdw radius"
+            return bonds
 
     # 1-D vector of the upper-triangle of all-to-all distance matrix    
     dist = distances.self_distance_array(coords)
