@@ -16,7 +16,8 @@
 #
 
 import MDAnalysis
-from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR
+from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
+                                      merge_protein, merge_water, merge_ligand
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup
 from MDAnalysis import NoDataError
@@ -791,6 +792,63 @@ def test_instantselection_termini():
     assert_equal(universe.residues[20].CA.name, 'CA', "CA of MET21 is not selected correctly")
     del universe
 
+
+class TestMerge(TestCase):
+    ext = "pdb"
+    def setUp(self):
+        u1 = MDAnalysis.Universe(merge_protein)
+        u2 = MDAnalysis.Universe(merge_ligand)
+        u3 = MDAnalysis.Universe(merge_water)
+        self.universes = [u1,u2,u3]
+        
+        suffix = '.' + self.ext
+        fd, self.outfile = tempfile.mkstemp(suffix=suffix)
+        os.close(fd)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        for u in self.universes: del u
+
+    
+    
+    
+    def test_merge(self):
+        u1,u2,u3 = self.universes
+        
+        ids_before = [a.number for u in [u1, u2, u3] for a in u.atoms]  
+        
+        # Do the merge
+        u0 = MDAnalysis.Merge(u1.atoms, u2.atoms, u3.atoms)
+        
+        # Check that the output Universe has the same number of atoms as the 
+        # starting AtomGroups
+        assert_equal(len(u0.atoms),(len(u1.atoms)+len(u2.atoms)+len(u3.atoms)))
+        
+        # Make sure that all the atoms in the new universe are assigned to only 
+        # one, new Universe
+        set0 = set([a.universe for a in u0.atoms])
+        assert_equal(len(set0), 1)
+        u = list(set0)[0]
+        assert_equal(u, u0)
+        
+        # Make sure that the atom ids of the original universes are unchanged, 
+        # ie we didn't make the original Universes 'dirty'
+        ids_after = [a.number for u in [u1, u2, u3] for a in u.atoms]
+        assert_equal(len(ids_after), (len(u1.atoms)+len(u2.atoms)+len(u3.atoms)))
+        assert_equal(ids_before, ids_after)
+        
+        # Test that we have a same number of atoms in a different way
+        ids_new = [a.number for a in u0.atoms]
+        assert_equal(len(ids_new), len(ids_before))
+    
+
+        u0.atoms.write(self.outfile)
+        u = MDAnalysis.Universe(self.outfile)
+        ids_new2 = [a.number for a in u.atoms]
+        assert_equal(ids_new, ids_new2)
 
 class TestUniverse(TestCase):
     def test_load(self):

@@ -217,7 +217,7 @@ class FileFormatWarning(Warning):
 
 # Bring some often used objects into the current namespace
 from core import Timeseries
-from core.AtomGroup import Universe, asUniverse
+from core.AtomGroup import Universe, asUniverse, Merge
 from coordinates.core import writer as Writer
 
 collection = Timeseries.TimeseriesCollection()

@@ -139,7 +139,7 @@ class Timestep(object):
             self.numatoms = arg.numatoms
             self._unitcell = numpy.array(arg._unitcell)
             self._pos = numpy.array(arg._pos, order='F')
-        elif isinstance(arg, numpy.ndarray):
+        elif isinstance(arg, numpy.ndarray): # Init using a 3N coordinate array
             if len(arg.shape) != 2:
                 raise ValueError("numpy array can only have 2 dimensions")
             self._unitcell = numpy.zeros((6), numpy.float32)

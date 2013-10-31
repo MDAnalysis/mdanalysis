@@ -242,9 +242,10 @@ import warnings
 import numpy
 import itertools
 
+import MDAnalysis
 from MDAnalysis import SelectionError, NoDataError, SelectionWarning
 import util
-
+import copy
 import logging
 logger = logging.getLogger("MDAnalysis.core.AtomGroup")
 
@@ -2385,7 +2386,7 @@ class Universe(object):
         .. versionchanged:: 0.7.4
            New *topology_format* and *format* parameters to override the file
            format detection.
-        """
+        """        
         from MDAnalysis.topology.core import get_parser_for, guess_format
         import MDAnalysis.core
 
@@ -2393,11 +2394,17 @@ class Universe(object):
         # attribute is also aliased as Universe.<EXT> where <EXT> is the
         # trajectory format type (i.e. the extension))
         self.__trajectory = None
-
+        
         kwargs.setdefault('coordinatefile', None)  # deprecated
         topology_format = kwargs.pop('topology_format', None)
         if kwargs.get('permissive', None) is None:
             kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
+
+        if len(args) == 0:
+            # create an empty universe
+            self.atoms = AtomGroup([])
+            self.trajectory = None 
+            return 
 
         try:
             topologyfile = args[0]
@@ -2405,6 +2412,7 @@ class Universe(object):
             raise ValueError("Universe requires at least a single topology or structure file.")
         # old behaviour (explicit coordfile) overrides new behaviour
         coordinatefile = args[1:] if kwargs['coordinatefile'] is None else kwargs['coordinatefile']
+        
         if len(args) == 1 and not coordinatefile:
             # special hacks to treat a coordinate file as a coordinate AND topology file
             # coordinatefile can be None or () (from an empty slice args[1:])
@@ -2481,8 +2489,7 @@ class Universe(object):
         self.segments = self.atoms.segments
         self.residues = self.atoms.residues
         self.universe = self    # for Writer.write(universe), see Issue 49
-
-
+        
     def _init_bonds(self):
         """Set bond information.
 
@@ -2767,3 +2774,44 @@ def asUniverse(*args, **kwargs):
         return args[0]
     return Universe(*args, **kwargs)
 
+
+def Merge(*args):
+    """Return a universe from 2 or more AtomGroups. 
+    AtomGroups can come from different Universes, or come from selectAtom 
+    command. 
+
+         u1 = Universe("protein.pdb")
+         u2 = Universe("ligand.pdb")
+         u3 = Universe("solvent.pdb")
+         u = Merge(u1.atoms, u2.atoms, u3.atoms)
+         u.atoms.write("system.pdb")
+    
+    Can also be used with a single AtomGroup if the user wants to, 
+    for example, re-order the atoms in the Universe.
+     
+    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
+    """
+    assert(len(args) >= 1) # one or more AtomGroups can be merged
+    
+    for a in args: assert(isinstance(a, AtomGroup))
+    for a in args: assert(len(a)) # cannot merge empty AtomGroup
+    
+    coords = numpy.vstack([a.coordinates() for a in args])
+    trajectory = MDAnalysis.coordinates.base.Reader()
+    ts = MDAnalysis.coordinates.base.Timestep(coords)
+    setattr(trajectory, "ts", ts)
+    trajectory.numframes = 1
+    
+    # create an empty Universe object
+    u = Universe()
+    u.trajectory = trajectory
+    
+    # create a list of Atoms, then convert it to an AtomGroup
+    atoms = [copy.copy(a) for gr in args for a in gr]
+    for a in atoms: a.universe = u
+    # adjust the atom numbering
+    for i, a in enumerate(atoms): 
+        a.number = i
+        a.serial = i+1
+    u.atoms = AtomGroup(atoms)
+    return u    
