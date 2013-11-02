@@ -717,6 +717,26 @@ class AtomGroup(object):
         """
         return numpy.array([s.name for s in self.segments])
 
+    def bondLists(self):
+        from MDAnalysis.topology.core import topologyDict
+        """TopologyDict of bonds within this atomGroup"""
+        if not 'bonds' in self.__cache:
+            self.__cache['bonds'] = topologyDict(atom.bonds for atom in self._atoms)
+        return self.__cache['bonds']
+
+    def numberOfBondTypes(self):
+        """Number of different bond types in this atomGroup"""
+        return len(self.bondLists())
+
+    def selectBonds(self, criteria):
+        if criteria in self.bondLists():
+            topgrp = []
+            for pair in self.bondLists()[criteria]:
+                topgrp += [self.universe.atoms[pair[0]] + self.universe.atoms[pair[1]]]
+            return topgrp
+        else:
+            return []
+
     def masses(self):
         """Array of atomic masses (as defined in the topology)"""
         if not 'masses' in self.__cache:

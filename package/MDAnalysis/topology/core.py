@@ -313,3 +313,63 @@ def guess_atom_charge(atomname):
     """
     # TODO: do something slightly smarter, at least use name/element
     return 0.0
+
+class topologyDict(object):
+    """
+    TopDict is a wrapper around a dictionary, which contains lists of different types of bonds.
+
+    One is needed for each type of topological group (bonds, angles, torsions etc).
+
+    The keys in the dictionary represent a type of bond ie, a C - C - H angle, with the values
+    being a list of the indices of each angle of this type.
+
+    Getting and setting types of bonds is done smartly, so a C - C - H angle is considered identical 
+    to a H - C - C angle
+
+    Duplicate entries are prevented on initialisation, (but not during setitem/getitem) 
+    but might need a method to purge duplicates!
+    """
+    def __init__(self, members):
+        self.dict = {}
+        for bonds in members: #loop through all atoms
+            for b in bonds: #loop through all bonds this atom has
+                pair = (b.atom1.number, b.atom2.number)
+                btype = (b.atom1.type, b.atom2.type)
+                if not pair in self[btype] or tuple(reversed(pair)) in self[btype]:
+                    self[btype] += [pair]
+
+    def __len__(self):
+        """Returns the number of types in the topology dictionary"""
+        return len(self.dict.keys())
+    def types(self):
+        """Returns a list of the different types of available"""
+        return self.dict.keys()
+    def __repr__(self):
+        return '<'+self.__class__.__name__+' with '+repr(len(self))+' types>'
+    def __getitem__(self, key):
+        """Returns list of atoms that match a given type (or reverse of type)"""
+        if key in self.dict:
+            return self.dict[key]
+        elif tuple(reversed(key)) in self.dict:
+            return self.dict[tuple(reversed(key))]
+        else:
+            #raise KeyError(key)
+            return [] #allows using += from start
+    def __setitem__(self, key, value):
+        #Adding items to the dictionary
+        if not key in self: #If it doesn't exist at all, add it
+            k = key
+        else: #If it does exist, is it "forwards" or "backwards"?
+            if key in self.dict: #This check doesn't do the reversal trick, so is "exact" match
+                k = key
+            else:
+                k = tuple(reversed(key))
+                
+            #Check against adding duplicates, ie a bond with atoms (1,2) is the same as with atoms (2,1)
+        self.dict[k] = value
+
+  #              self.dict[tuple(reversed(key))] = value
+    def __contains__(self, other):
+        """Returns boolean on whether a topology group exists within this dictionary"""
+        # For topology groups, 1-2-3 is considered the same as 3-2-1
+        return other in self.dict.keys() or tuple(reversed(other)) in self.dict.keys()
