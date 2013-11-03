@@ -62,6 +62,8 @@ cdef extern from "calc_distances.h":
     void calc_distance_array_noPBC(coordinate* ref, int numref, coordinate* conf, int numconf, double* distances)
     void calc_self_distance_array(coordinate* ref, int numref, float* box, double* distances, int distnum)
     void calc_self_distance_array_noPBC(coordinate* ref, int numref, double* distances, int distnum)
+    void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom, float*box, double* distances)
+    void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
 
 
 import numpy
@@ -195,5 +197,55 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
         calc_self_distance_array(<coordinate*>ref.data,refnum,<float*>box.data,<double*>distances.data, distnum)
     else:
         calc_self_distance_array_noPBC(<coordinate*>ref.data,refnum,<double*>distances.data,distnum)
+
+    return distances
+
+def bond_distance(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray box=None, c_numpy.ndarray result=None):
+    """Calculate distance between pairs in two lists of atoms
+
+    d = bond_distance(list1, list2, [box [,result]])
+
+    """
+    cdef c_numpy.ndarray atom1, atom2
+    cdef c_numpy.ndarray distances
+    cdef int numatom
+
+    atom1 = list1.copy('C')
+    atom2 = list2.copy('C')
+
+    if (atom1.nd != 2 or atom1.dimensions[1] != 3):
+        raise ValueError("list1 must be a sequence of 3 dimensional coordinates")
+    if (atom1.dtype!=numpy.dtype(numpy.float32)):
+        raise TypeError("coordinate data must be of type float32")
+    if (atom2.nd != 2 or atom2.dimensions[1] != 3):
+        raise ValueError("list2 must be a sequence of 3 dimensional coordinates")
+    if (atom2.dtype!=numpy.dtype(numpy.float32)):
+        raise TypeError("coordinate data must be of type float32")
+
+    if (atom1.dimensions[0] != atom2.dimensions[0]):
+        raise ValueError("list1 and list2 of different size")
+
+    with_PBC = (box is not None)
+    if with_PBC:
+        if (box.nd != 1 and box.dimensions[0] != 3):
+            raise ValueError("box must be a sequence of 3 dimensional coordinates")
+        if (box.dtype!=numpy.dtype(numpy.float32)):
+            raise TypeError("periodic boundaries must be of type float32")
+
+    numatom = atom1.dimensions[0]
+
+    if not result is None:
+        if (result.nd != 1 or result.dimensions[0] != numatom):
+            raise ValueError("result array has incorrect size - should be (%d)"%(numatom))
+        if (result.dtype != numpy.dtype(numpy.float64)):
+            raise TypeError("result array must be of type numpy.float64")
+        distances = numpy.asarray(result)
+    else:
+        distances = numpy.zeros((numatom,), numpy.float64)
+
+    if with_PBC:
+        calc_bond_distance(<coordinate*>atom1.data,<coordinate*>atom2.data,numatom,<float*>box.data,<double*>distances.data)
+    else:
+        calc_bond_distance_noPBC(<coordinate*>atom1.data,<coordinate*>atom2.data,numatom,<double*>distances.data)
 
     return distances

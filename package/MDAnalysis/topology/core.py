@@ -31,7 +31,8 @@ import os.path
 import MDAnalysis.topology
 import tables
 import MDAnalysis.core.distances as distances
-
+from MDAnalysis.core.util import norm
+import numpy
 import MDAnalysis.core.AtomGroup as AtomGroup
 
 def build_segments(atoms):
@@ -373,3 +374,54 @@ class topologyDict(object):
         """Returns boolean on whether a topology group exists within this dictionary"""
         # For topology groups, 1-2-3 is considered the same as 3-2-1
         return other in self.dict.keys() or tuple(reversed(other)) in self.dict.keys()
+
+
+class topologyGroup(object):
+    def __init__(self, atomgroups):
+        if len(atomgroups) == 2:
+            self.type = "bond"
+            self.atom1 = atomgroups[0] #will fail if Atoms not atomGroups are passed currently
+            self.atom2 = atomgroups[1]
+            if not len(self.atom1) == len(self.atom2):
+                raise TypeError("atomGroup lengths mismatched")
+            self.len = len(self.atom1)
+        else:
+            raise TypeError("Only bonds implemented currently")
+
+    def __len__(self):
+        """Number of bonds in the topology group"""
+        return self.len #checked on initialisation that all atomgroups are same length
+
+    def __getitem__(self,item):
+        """Returns a particular bond as an atomGroup"""
+        if numpy.dtype(type(item)) == numpy.dtype(int):
+            return self.atom1[item]  + self.atom2[item]
+        elif type(item) == slice:
+            return self.atom1[item] + self.atom2[item]
+
+    def __iter__(self):
+
+    def bondslow(self, pbc=False):
+        """Slow version of bond"""
+        if not self.type == 'bond':
+            return "This topologyGroup is not a bond group!"
+        else:
+            if not pbc:
+                return numpy.array([norm(a) for a in self.atom1.coordinates() - self.atom2.coordinates()])
+            else:
+                box = self.atom1.dimensions #assuming both atom1 and atom2 are same universe, maybe check this on initialisation?
+                if (box[6:9] == 90.).all() and not (box[0:3] == 0).any(): #orthogonal and divide by zero check
+                    distances = self.atom1.coordinates() - self.atom2.coordinates()
+                    return numpy.array([distances - numpy.rint(distances/box[0:3])*box[0:3]])
+
+    def bond(self, pbc=False, result=None):
+        """
+        Calculates the distance between all bonds in this topologyGroup
+        """
+        if not result:
+            result = numpy.zeros((self.len,), numpy.float64)
+        if not pbc:
+            return distances.bond_distance(self.atom1.coordinates(), self.atom2.coordinates(), result=result)
+        else:
+            return distances.bond_distance(self.atom1.coordinates(), self.atom2.coordinates(), box=self.atom1.dimensions[0:3], result=result)
+        

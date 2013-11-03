@@ -123,4 +123,42 @@ static void calc_self_distance_array_noPBC(coordinate* ref, int numref, double* 
 	}
 }
 
+static void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom, float* box, double* distances)
+{
+  int i;
+  double dx[3];
+  float inverse_box[3];
+  double rsq;
+
+  inverse_box[0] = 1.0/box[0];
+  inverse_box[1] = 1.0/box[1];
+  inverse_box[2] = 1.0/box[2];
+ 
+  for (i=0; i<numatom; i++) {
+    dx[0] = atom1[i][0] - atom2[i][0];
+    dx[1] = atom1[i][1] - atom2[i][1];
+    dx[2] = atom1[i][2] - atom2[i][2];
+    // PBC time!
+    minimum_image(dx, box, inverse_box);
+    rsq = (dx[0]*dx[0])+(dx[1]*dx[1])+(dx[2]*dx[2]);
+    *(distances+i) = sqrt(rsq);
+  }
+}
+
+  static void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
+{
+  int i;
+  double dx[3];
+  float inverse_box[3];
+  double rsq;
+ 
+  for (i=0; i<numatom; i++) {
+    dx[0] = atom1[i][0] - atom2[i][0];
+    dx[1] = atom1[i][1] - atom2[i][1];
+    dx[2] = atom1[i][2] - atom2[i][2];
+    rsq = (dx[0]*dx[0])+(dx[1]*dx[1])+(dx[2]*dx[2]);
+    *(distances+i) = sqrt(rsq);
+  }
+}
+
 #endif

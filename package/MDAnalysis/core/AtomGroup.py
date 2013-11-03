@@ -729,13 +729,18 @@ class AtomGroup(object):
         return len(self.bondLists())
 
     def selectBonds(self, criteria):
+        from MDAnalysis.topology.core import topologyGroup
         if criteria in self.bondLists():
-            topgrp = []
-            for pair in self.bondLists()[criteria]:
-                topgrp += [self.universe.atoms[pair[0]] + self.universe.atoms[pair[1]]]
-            return topgrp
+            #2 atomGroups, for a and b in bond(a,b)
+            pairs = self.bondLists()[criteria]
+            atom1 = self.universe.atoms[pairs[0][0]]
+            atom2 = self.universe.atoms[pairs[0][1]]
+            for pair in pairs[1:]:
+                atom1 += self.universe.atoms[pair[0]]
+                atom2 += self.universe.atoms[pair[1]]
+            return topologyGroup([atom1, atom2])
         else:
-            return []
+            return None
 
     def masses(self):
         """Array of atomic masses (as defined in the topology)"""
