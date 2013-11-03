@@ -149,7 +149,6 @@ static void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom
 {
   int i;
   double dx[3];
-  float inverse_box[3];
   double rsq;
  
   for (i=0; i<numatom; i++) {
