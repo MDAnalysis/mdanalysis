@@ -136,22 +136,85 @@ class Bond(object):
         return "< Bond between: Atom %d (%s of %s-%d) and Atom %s (%s of %s-%d), length %.2f A >" % \
           (a1.number+1, a1.name, a1.resname, a1.resid, a2.number+1, a2.name, a2.resname, a2.resid, self.length())
 
+class Angle(object):
+    """An angle between three :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
+    The angle is defined as atom1 \ atom2 / atom3"""
+    #currently a stub of a class, maybe add to this to make it as useful as bonds
+    def __init__(self, a1, a2, a3):
+        self.atom1 = a1
+        self.atom2 = a2 #middle atom in angle
+        self.atom3 = a3
+    def __repr__(self):
+        a1 = self.atom1
+        a2 = self.atom2
+        a3 = self.atom3
+        return "< Angle between: Atom %d (%s of %s-%d), Atom %d (%s of %s-%d) and Atom %d (%s of %s-%d) >" % \
+            (a1.number+1, a1.name, a1.resname, a1.resid,
+             a2.number+1, a2.name, a2.resname, a2.resid,
+             a3.number+1, a3.name, a3.resname, a3.resid)
 
-def build_bondlists(atoms, bonds):
-    """Construct the bond list of each :class:`~MDAnalysis.core.AtomGroup.Atom`.
+class Torsion(object):
+    """Torsion (dihedral angle) between four :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
+    The torsion is defined as the angle between the planes formed by atom1 atom2 and atom3, and atom2 atom3 and atom4."""
+    def __init__(self, a1, a2, a3, a4):
+        self.atom1 = a1
+        self.atom2 = a2
+        self.atom3 = a3
+        self.atom4 = a4
+    def __repr__(self):
+        a1 = self.atom1
+        a2 = self.atom2
+        a3 = self.atom3
+        a4 = self.atom4
+        return "< Torsion between Atom %d (%s of %s-%d), Atom %d (%s of %s-%d), Atom %d (%s of %s-%d) and Atom %d (%s of %s-%d) >" % \
+            (a1.number+1, a1.name, a1.resname, a1.resid,
+             a2.number+1, a2.name, a2.resname, a2.resid,
+             a3.number+1, a3.name, a3.resname, a3.resid,
+             a4.number+1, a4.name, a4.resname, a4.resid)
 
-    The bond list is stored in the attribute
-    :attr:`MDAnalysis.core.AtomGroup.Atom.bonds` and consists of a list of
-    :class:`Bond` instances.
+def build_bondlists(atoms, bonds=None, angles=None, torsions=None):
+    """Construct the topology lists of each :class:`~MDAnalysis.core.AtomGroup.Atom`.
+
+    The lists are stored in the attributes
+    :attr:`MDAnalysis.core.AtomGroup.Atom.bonds` 
+    :attr:`MDAnalysis.core.AtomGroup.Atom.angles` 
+    :attr:`MDAnalysis.core.AtomGroup.Atom.torsions` 
+    and consist of a list of
+    :class:`Bond` :class:`Angle` and :class:`Torsion` instances respectively
     """
-    for a in atoms:
-        a.bonds = []
-    for a1, a2 in bonds:
-        atom1 = atoms[a1]
-        atom2 = atoms[a2]
-        b = Bond(atom1, atom2)
-        atom1.bonds.append(b)
-        atom2.bonds.append(b)
+    if bonds:
+        for a in atoms:
+            a.bonds = []
+        for a1, a2 in bonds:
+            atom1 = atoms[a1]
+            atom2 = atoms[a2]
+            b = Bond(atom1, atom2)
+            atom1.bonds.append(b)
+            atom2.bonds.append(b)
+    if angles:
+        for a in atoms:
+            a.angles = []
+        for a1, a2, a3 in angles:
+            atom1 = atoms[a1]
+            atom2 = atoms[a2]
+            atom3 = atoms[a3]
+            b = Angle(atom1, atom2, atom3)
+            atom1.angles.append(b)
+            atom2.angles.append(b)
+            atom3.angles.append(b)
+    if torsions:
+        for a in atoms:
+            a.torsions = []
+        for a1, a2, a3, a4 in torsions:
+            atom1 = atoms[a1]
+            atom2 = atoms[a2]
+            atom3 = atoms[a3]
+            atom4 = atoms[a4]
+            b = Torsion(atom1, atom2, atom3, atom4)
+            atom1.torsions.append(b)
+            atom2.torsions.append(b)
+            atom3.torsions.append(b)
+            atom4.torsions.append(b)
 
 def get_parser_for(filename, permissive=False, bonds=False, format=None):
     """Return the appropriate topology parser for *filename*.
@@ -316,39 +379,91 @@ def guess_atom_charge(atomname):
     return 0.0
 
 class topologyDict(object):
+    ##TODO make sure groups are always in the same order, 
+    ## ie in a C-H bond, make sure atom1 is ALWAYS C
     """
-    TopDict is a wrapper around a dictionary, which contains lists of different types of bonds.
+    A class which serves as a wrapper around a dictionary, which contains lists of different types of bonds.
 
-    One is needed for each type of topological group (bonds, angles, torsions etc).
+    One is needed for each type of topological group (bonds, angles, torsions etc). These are built
+    lazily by calling bondLists angleLists or torsionsLists from an atomGroup.
 
-    The keys in the dictionary represent a type of bond ie, a C - C - H angle, with the values
-    being a list of the indices of each angle of this type.
+    The keys in the dictionary represent a type of bond ie, a C - C - H angle, with the value
+    for a given key being a list of tuples containing the Atoms in each angle of that type.
 
     Getting and setting types of bonds is done smartly, so a C - C - H angle is considered identical 
     to a H - C - C angle
-
-    Duplicate entries are prevented on initialisation, (but not during setitem/getitem) 
-    but might need a method to purge duplicates!
     """
-    def __init__(self, members):
+    def __init__(self, toptype, members):
         self.dict = {}
-        for bonds in members: #loop through all atoms
-            for b in bonds: #loop through all bonds this atom has
-                pair = (b.atom1.number, b.atom2.number)
-                btype = (b.atom1.type, b.atom2.type)
-                if not pair in self[btype] or tuple(reversed(pair)) in self[btype]:
-                    self[btype] += [pair]
+        self.toptype = toptype
+        if isinstance(members[0], dict): #combining two topologyDicts
+            for d in members:
+                for k in d.keys():
+                    if not k in self.dict:
+                        self.dict[k] = d[k]
+                    else:
+                        self.dict[k] += d[k]
+            self._removeDupes()
+        elif toptype == 'bond':
+            for atom in members: #loop through all atoms
+                for b in atom.bonds: #loop through all bonds this atom has
+                    pair = (b.atom1, b.atom2)
+                    btype = (b.atom1.type, b.atom2.type)
+                    if not pair in self[btype] or tuple(reversed(pair)) in self[btype]:
+                        self[btype] += [pair]
+        elif toptype == 'angle':
+            for atom in members:
+                for b in atom.angles:
+                    triple = (b.atom1, b.atom2, b.atom3)
+                    btype = (b.atom1.type, b.atom2.type, b.atom3.type)
+                    if not triple in self[btype] or tuple(reversed(triple)) in self[btype]:
+                        self[btype] += [triple]
+        elif toptype == 'torsion':
+            for atom in members:
+                for b in atom.torsions:
+                    quad = (b.atom1, b.atom2, b.atom3, b.atom4)
+                    btype = (b.atom1.type, b.atom2.type, b.atom3.type, b.atom4.type)
+                    if not quad in self[btype] or tuple(reversed(quad)) in self[btype]:
+                        self[btype] += [quad]
+
+    def _removeDupes(self):
+        """Sorts through contents and makes sure that there are no duplicate keys (through type reversal)
+        and that there are no duplicate entries (through atom reversal)
+        """
+        newdict = dict()
+        #First remove duplicate keys
+        for k in self.dict:
+            if not tuple(reversed(k)) in newdict:#newdict starts blank, so having k already is impossible
+                newdict[k] = []
+            else:
+                self.dict[k] += self.dict[tuple(reversed(k))] #if the reverse exists already, pile those values onto the reverse in old dict
+        #newdict now has unique set of keys but no values (yet!)
+        for k in newdict: #loop over only newdict's keys as all values are in these key values in the old dict
+            for v in self.dict[k]:
+                if not (v in newdict[k] or tuple(reversed(v)) in newdict[k]):
+                    newdict[k] += [v]
+        self.dict = newdict
+            
+    def __add__(self, other):
+        if not isinstance(other, topologyDict):
+            raise TypeError("Can only combine topologyDicts")
+        if not self.toptype == other.toptype:
+            raise TypeError("topologyDicts are of different type, cannot combine")
+        return topologyDict(self.toptype, [self.dict, other.dict])
 
     def __len__(self):
-        """Returns the number of types in the topology dictionary"""
+        """Returns the number of types of bond in the topology dictionary"""
         return len(self.dict.keys())
     def types(self):
-        """Returns a list of the different types of available"""
+        """Returns a list of the different types of available bonds"""
+        return self.dict.keys()
+    def keys(self):
+        """Returns a list of the different types of available bonds"""
         return self.dict.keys()
     def __repr__(self):
-        return '<'+self.__class__.__name__+' with '+repr(len(self))+' types>'
+        return '<'+self.__class__.__name__+' with '+repr(len(self))+' unique '+self.toptype+'s >'
     def __getitem__(self, key):
-        """Returns list of atoms that match a given type (or reverse of type)"""
+        """Returns list of tuples of atoms that match a given bond type (or reverse of type)"""
         if key in self.dict:
             return self.dict[key]
         elif tuple(reversed(key)) in self.dict:
@@ -359,17 +474,16 @@ class topologyDict(object):
     def __setitem__(self, key, value):
         #Adding items to the dictionary
         if not key in self: #If it doesn't exist at all, add it
-            k = key
-        else: #If it does exist, is it "forwards" or "backwards"?
+            self.dict[key] = value
+        else: #If it does exist, is the key "forwards" or "backwards"?
             if key in self.dict: #This check doesn't do the reversal trick, so is "exact" match
                 k = key
             else:
                 k = tuple(reversed(key))
-                
-            #Check against adding duplicates, ie a bond with atoms (1,2) is the same as with atoms (2,1)
-        self.dict[k] = value
+            self.dict[k] = value
 
-  #              self.dict[tuple(reversed(key))] = value
+        self._removeDupes()
+
     def __contains__(self, other):
         """Returns boolean on whether a topology group exists within this dictionary"""
         # For topology groups, 1-2-3 is considered the same as 3-2-1
@@ -379,14 +493,32 @@ class topologyDict(object):
 class topologyGroup(object):
     def __init__(self, atomgroups):
         if len(atomgroups) == 2:
-            self.type = "bond"
+            self.toptype = "bond"
             self.atom1 = atomgroups[0] #will fail if Atoms not atomGroups are passed currently
             self.atom2 = atomgroups[1]
             if not len(self.atom1) == len(self.atom2):
                 raise TypeError("atomGroup lengths mismatched")
-            self.len = len(self.atom1)
+        elif len(atomgroups) == 3:
+            self.toptype = "angle"
+            self.atom1 = atomgroups[0]
+            self.atom2 = atomgroups[1]
+            self.atom3 = atomgroups[2]
+            if not len(self.atom1) == len(self.atom2) == len(self.atom3):
+                raise TypeError("atomGroup lengths mismatched")
+        elif len(atomgroups) == 4:
+            self.toptype = "torsion"
+            self.atom1 = atomgroups[0]
+            self.atom2 = atomgroups[1]
+            self.atom3 = atomgroups[2]
+            self.atom4 = atomgroups[3]
+            if not (len(self.atom1) == len(self.atom2) and \
+            len(self.atom2) == len(self.atom3) and \
+            len(self.atom3) == len(self.atom4)):
+                raise TypeError("atomGroup lengths mismatched")
         else:
-            raise TypeError("Only bonds implemented currently")
+            raise TypeError("Only bonds and angles implemented currently")
+
+        self.len = len(self.atom1)
 
     def __len__(self):
         """Number of bonds in the topology group"""
@@ -399,7 +531,10 @@ class topologyGroup(object):
         elif type(item) == slice:
             return self.atom1[item] + self.atom2[item]
 
-    def __iter__(self):
+    def __repr__(self):
+        return "< "+self.__class__.__name__+" containing "+str(len(self))+" "+self.toptype+"s >"
+
+
 
     def bondslow(self, pbc=False):
         """Slow version of bond"""
