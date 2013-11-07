@@ -64,6 +64,8 @@ cdef extern from "calc_distances.h":
     void calc_self_distance_array_noPBC(coordinate* ref, int numref, double* distances, int distnum)
     void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom, float*box, double* distances)
     void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
+    void calc_angle(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, double* angles)
+    void calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, double* angles)
 
 
 import numpy
@@ -200,9 +202,9 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
 
     return distances
 
-def bond_distance(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray box=None, c_numpy.ndarray result=None):
+def calc_bonds(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray box=None, c_numpy.ndarray result=None):
     """Calculate distance between pairs in two lists of atoms
-
+    
     d = bond_distance(list1, list2, [box [,result]])
 
     """
@@ -249,3 +251,88 @@ def bond_distance(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray 
         calc_bond_distance_noPBC(<coordinate*>atom1.data,<coordinate*>atom2.data,numatom,<double*>distances.data)
 
     return distances
+
+
+def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray list3, c_numpy.ndarray result=None):
+    """
+    angles = calc_angles(list1, list2, list3 [,result])
+
+    Calculate the angle formed by bonds between atoms 1 & 2 and atoms 2 & 3 for a list of coordinates.
+
+    Returns an array of angles (in radians)
+    """
+    cdef c_numpy.ndarray atom1, atom2, atom3
+    cdef c_numpy.ndarray angles
+    cdef int numatom
+
+    atom1 = list1.copy('C')
+    atom2 = list2.copy('C')
+    atom3 = list3.copy('C')
+    numatom = atom1.dimensions[0]
+
+    #checks on input arrays
+    if (atom1.nd != 2 or atom1.dimensions[1] != 3):
+        raise ValueError("list1 must be an array of 3 dimensional coordinates")
+    if (atom2.nd != 2 or atom2.dimensions[1] != 3):
+        raise ValueError("list2 must be an array of 3 dimensional coordinates")
+    if (atom3.nd != 2 or atom3.dimensions[1] != 3):
+        raise ValueError("list3 must be an array of 3 dimensional coordinates")
+    if (atom2.dimensions[0] != numatom or atom3.dimensions[0] != numatom):
+        raise ValueError("all lists must be the same length")
+
+    if not result is None:
+        if (result.nd != 1 or result.dimensions[0] != numatom):
+            raise ValueError("result array has incorrect size - should be (%d)"%(numatom))
+        if (result.dtype != numpy.dtype(numpy.float64)):
+            raise TypeError("result array must be of type numpy.float64")
+        angles = numpy.asarray(result)
+    else:
+        angles = numpy.zeros((numatom,), numpy.float64)
+
+    calc_angle(<coordinate*>atom1.data,<coordinate*>atom2.data,<coordinate*>atom3.data,numatom,<double*>angles.data)
+
+    return angles
+
+def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray list3, c_numpy.ndarray list4, c_numpy.ndarray result=None):
+    """
+    torsions = calc_angles(list1, list2, list3, list4 [,result])
+
+    Calculate the dihedral angle formed by atoms 1,2,3 and 4
+
+    Returns an array of angles (in radians)
+    """
+    cdef c_numpy.ndarray atom1, atom2, atom3, atom4
+    cdef c_numpy.ndarray angles
+    cdef int numatom
+
+    atom1 = list1.copy('C')
+    atom2 = list2.copy('C')
+    atom3 = list3.copy('C')
+    atom4 = list4.copy('C')
+    numatom = atom1.dimensions[0]
+
+    #checks on input arrays
+    if (atom1.nd != 2 or atom1.dimensions[1] != 3):
+        raise ValueError("list1 must be an array of 3 dimensional coordinates")
+    if (atom2.nd != 2 or atom2.dimensions[1] != 3):
+        raise ValueError("list2 must be an array of 3 dimensional coordinates")
+    if (atom3.nd != 2 or atom3.dimensions[1] != 3):
+        raise ValueError("list3 must be an array of 3 dimensional coordinates")
+    if (atom4.nd != 2 or atom4.dimensions[1] != 3):
+        raise ValueError("list3 must be an array of 3 dimensional coordinates")
+    if (atom2.dimensions[0] != numatom or atom3.dimensions[0] != numatom or atom4.dimensions[0] != numatom):
+        raise ValueError("all lists must be the same length")
+
+    if not result is None:
+        if (result.nd != 1 or result.dimensions[0] != numatom):
+            raise ValueError("result array has incorrect size - should be (%d)"%(numatom))
+        if (result.dtype != numpy.dtype(numpy.float64)):
+            raise TypeError("result array must be of type numpy.float64")
+        angles = numpy.asarray(result)
+    else:
+        angles = numpy.zeros((numatom,), numpy.float64)
+
+    calc_torsion(<coordinate*>atom1.data,<coordinate*>atom2.data,<coordinate*>atom3.data,<coordinate*>atom4.data,
+                  numatom,<double*>angles.data)
+
+    return angles

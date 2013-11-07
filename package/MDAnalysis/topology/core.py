@@ -403,7 +403,6 @@ class topologyDict(object):
                         self.dict[k] = d[k]
                     else:
                         self.dict[k] += d[k]
-            self._removeDupes()
         elif toptype == 'bond':
             for atom in members: #loop through all atoms
                 for b in atom.bonds: #loop through all bonds this atom has
@@ -425,6 +424,8 @@ class topologyDict(object):
                     btype = (b.atom1.type, b.atom2.type, b.atom3.type, b.atom4.type)
                     if not quad in self[btype] or tuple(reversed(quad)) in self[btype]:
                         self[btype] += [quad]
+
+        self._removeDupes()
 
     def _removeDupes(self):
         """Sorts through contents and makes sure that there are no duplicate keys (through type reversal)
@@ -482,7 +483,7 @@ class topologyDict(object):
                 k = tuple(reversed(key))
             self.dict[k] = value
 
-        self._removeDupes()
+#        self._removeDupes() ## makes extremely slow
 
     def __contains__(self, other):
         """Returns boolean on whether a topology group exists within this dictionary"""
@@ -524,6 +525,25 @@ class topologyGroup(object):
         """Number of bonds in the topology group"""
         return self.len #checked on initialisation that all atomgroups are same length
 
+    def __add__(self, other):
+        """
+        Combine two topologyGroups together.
+
+        Currently only topologyGroups of the same type can be combined in such a way
+        """
+        if not isinstance(other, topologyGroup):
+            raise TypeError("Can only combine two topologyGroups")
+        elif self.toptype != other.toptype:
+            raise TypeError("Can only combine topologyGroups of the same type")
+
+        if self.toptype == 'bond': #could replace atom1 atom2 etc with atom[] to make this a lot simpler
+            return topologyGroup([self.atom1+other.atom1, self.atom2+other.atom2])
+        elif self.toptype == 'angle':
+            return topologyGroup([self.atom1+other.atom1, self.atom2+other.atom2, self.atom3+other.atom3])
+        elif self.toptype == 'torsion':
+            return topologyGroup([self.atom1+other.atom1, self.atom2+other.atom2, self.atom3+other.atom3, self.atom4+other.atom4])
+
+
     def __getitem__(self,item):
         """Returns a particular bond as an atomGroup"""
         if numpy.dtype(type(item)) == numpy.dtype(int):
@@ -534,11 +554,9 @@ class topologyGroup(object):
     def __repr__(self):
         return "< "+self.__class__.__name__+" containing "+str(len(self))+" "+self.toptype+"s >"
 
-
-
-    def bondslow(self, pbc=False):
-        """Slow version of bond"""
-        if not self.type == 'bond':
+    def _bondsSlow(self, pbc=False):
+        """Slow version of bond (numpy implementation)"""
+        if not self.toptype == 'bond':
             return "This topologyGroup is not a bond group!"
         else:
             if not pbc:
@@ -549,14 +567,65 @@ class topologyGroup(object):
                     distances = self.atom1.coordinates() - self.atom2.coordinates()
                     return numpy.array([distances - numpy.rint(distances/box[0:3])*box[0:3]])
 
-    def bond(self, pbc=False, result=None):
+    def bonds(self, pbc=False, result=None):
         """
         Calculates the distance between all bonds in this topologyGroup
+        
+        Uses cython implementation
         """
+        if not self.toptype == 'bond':
+            raise TypeError("topologyGroup is not of 'bond' type")
         if not result:
             result = numpy.zeros((self.len,), numpy.float64)
         if not pbc:
-            return distances.bond_distance(self.atom1.coordinates(), self.atom2.coordinates(), result=result)
+            return distances.calc_bonds(self.atom1.coordinates(), self.atom2.coordinates(), result=result)
         else:
-            return distances.bond_distance(self.atom1.coordinates(), self.atom2.coordinates(), box=self.atom1.dimensions[0:3], result=result)
+            return distances.calc_bonds(self.atom1.coordinates(), self.atom2.coordinates(), box=self.atom1.dimensions[0:3], result=result)
         
+    def _anglesSlow(self):
+        """Slow version of angle (numpy implementation)"""
+        if not self.toptype == 'angle':
+            raise TypeError("topology group is not of type 'angle'")
+        from MDAnalysis.core.util import angle as slowang
+        from itertools import izip
+        vec1 = self.atom1.coordinates() - self.atom2.coordinates()
+        vec2 = self.atom3.coordinates() - self.atom2.coordinates()
+
+        angles = numpy.array([slowang(a,b) for a,b in izip(vec1,vec2)])
+        return angles
+        
+    def angles(self, result=None):
+        """
+        Calculates the angle formed between a bond between atoms 1 and 2 and a bond between atoms 2 & 3
+
+        Implementation in cython
+        """
+        if not self.toptype == 'angle':
+            raise TypeError("topology group is not of type 'angle'")
+        if not result:
+            result = numpy.zeros((self.len,), numpy.float64)
+        return distances.calc_angles(self.atom1.coordinates(),self.atom2.coordinates(),self.atom3.coordinates(),result=result)
+
+    def _torsionsSlow(self):
+        """Slow version of torsion (numpy implementation)"""
+        if not self.toptype == 'torsion':
+            raise TypeError("topology group is not of type 'torsion'")
+        from MDAnalysis.core.util import dihedral
+        from itertools import izip
+
+        vec1 = self.atom2.coordinates() - self.atom1.coordinates()
+        vec2 = self.atom3.coordinates() - self.atom2.coordinates()
+        vec3 = self.atom4.coordinates() - self.atom3.coordinates()
+
+        return numpy.array([dihedral(a,b,c) for a,b,c in izip(vec1,vec2,vec3)])
+
+    def torsions(self, result=None):
+        """
+        Calculate the torsional angle for this topology group.
+        """
+        if not self.toptype == 'torsion':
+            raise TypeError("topology group is not of type 'torsion'")
+        if not result:
+            result = numpy.zeros((self.len,), numpy.float64)   
+        return distances.calc_torsions(self.atom1.coordinates(), self.atom2.coordinates(),
+                                       self.atom3.coordinates(), self.atom4.coordinates(), result=result)

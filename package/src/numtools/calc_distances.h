@@ -145,7 +145,7 @@ static void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom
   }
 }
 
-  static void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
+static void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
 {
   int i;
   double dx[3];
@@ -160,4 +160,68 @@ static void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom
   }
 }
 
+static void calc_angle(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, double* angles)
+{
+  int i;
+  double rij[3], rjk[3];
+  double dotp, norm[2];
+
+  for (i=0; i<numatom; i++) {
+    rij[0] = atom1[i][0] - atom2[i][0];
+    rij[1] = atom1[i][1] - atom2[i][1];
+    rij[2] = atom1[i][2] - atom2[i][2];
+    norm[0] = sqrt(rij[0]*rij[0] + rij[1]*rij[1] + rij[2]*rij[2]);
+
+    rjk[0] = atom3[i][0] - atom2[i][0];
+    rjk[1] = atom3[i][1] - atom2[i][1];
+    rjk[2] = atom3[i][2] - atom2[i][2];
+    norm[1] = sqrt(rjk[0]*rjk[0] + rjk[1]*rjk[1] + rjk[2]*rjk[2]);
+
+    dotp = rij[0] * rjk[0] + rij[1] * rjk[1] + rij[2] * rjk[2];
+
+    *(angles+i) = acos(dotp/norm[0]/norm[1]);
+  }
+}
+
+static void calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4,
+                         int numatom, double* angles)
+{
+  int i;
+  double va[3], vb[3], vc[3];
+  double rm[3], rn[3];
+  double m, n, dotp;
+
+  for (i=0; i<numatom; i++) {
+    // connecting vectors between all 4 atoms: 1 -va-> 2 -vb-> 3 -vc-> 4
+    va[0] = atom2[i][0] - atom1[i][0];
+    va[1] = atom2[i][1] - atom1[i][1];
+    va[2] = atom2[i][2] - atom1[i][2];
+
+    vb[0] = atom3[i][0] - atom2[i][0];
+    vb[1] = atom3[i][1] - atom2[i][1];
+    vb[2] = atom3[i][2] - atom2[i][2];
+
+    vc[0] = atom4[i][0] - atom3[i][0];
+    vc[1] = atom4[i][1] - atom3[i][1];
+    vc[2] = atom4[i][2] - atom3[i][2];
+
+    // rm is normal vector to va vb
+    // rn is normal vector is vb vc
+    // m & n are norms to these vectors
+    rm[0] = va[1]*vb[2] - va[2]*vb[1];
+    rm[1] = va[0]*vb[2] - va[2]*vb[0];
+    rm[2] = va[0]*vb[1] - va[1]*vb[0];
+    m = sqrt(rm[0]*rm[0] + rm[1]*rm[1] + rm[2]*rm[2]);
+
+    rn[0] = vb[1]*vc[2] - vb[2]*vc[1];
+    rn[1] = vb[0]*vc[2] - vb[2]*vc[0];
+    rn[2] = vb[0]*vc[1] - vb[1]*vc[0];
+    n = sqrt(rn[0]*rn[0] + rn[1]*rn[1] + rn[2]*rn[2]);
+
+    dotp = rm[0]*rn[0] + rm[1]*rn[1] + rm[2]*rn[2];
+
+    *(angles + i) = acos(dotp/m/n);
+  }
+
+}
 #endif
