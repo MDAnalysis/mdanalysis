@@ -19,7 +19,6 @@
 #define __DISTANCES_H
 
 #include <math.h>
-
 #include <float.h>
 typedef float coordinate[3];
 
@@ -163,33 +162,38 @@ static void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int n
 static void calc_angle(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, double* angles)
 {
   int i;
-  double rij[3], rjk[3];
-  double dotp, norm[2];
+  double rji[3], rjk[3];
+  double x, y, xp[3];
 
   for (i=0; i<numatom; i++) {
-    rij[0] = atom1[i][0] - atom2[i][0];
-    rij[1] = atom1[i][1] - atom2[i][1];
-    rij[2] = atom1[i][2] - atom2[i][2];
-    norm[0] = sqrt(rij[0]*rij[0] + rij[1]*rij[1] + rij[2]*rij[2]);
+    rji[0] = atom1[i][0] - atom2[i][0];
+    rji[1] = atom1[i][1] - atom2[i][1];
+    rji[2] = atom1[i][2] - atom2[i][2];
 
     rjk[0] = atom3[i][0] - atom2[i][0];
     rjk[1] = atom3[i][1] - atom2[i][1];
     rjk[2] = atom3[i][2] - atom2[i][2];
-    norm[1] = sqrt(rjk[0]*rjk[0] + rjk[1]*rjk[1] + rjk[2]*rjk[2]);
 
-    dotp = rij[0] * rjk[0] + rij[1] * rjk[1] + rij[2] * rjk[2];
+    x = rji[0]*rjk[0] + rji[1]*rjk[1] + rji[2]*rjk[2];
 
-    *(angles+i) = acos(dotp/norm[0]/norm[1]);
+    xp[0] = rji[1]*rjk[2] - rji[2]*rjk[1];
+    xp[1] =-rji[0]*rjk[2] + rji[2]*rjk[0];
+    xp[2] = rji[0]*rjk[1] - rji[1]*rjk[0];
+
+    y = sqrt(xp[0]*xp[0] + xp[1]*xp[1] + xp[2]*xp[2]);
+
+    *(angles+i) = atan2(y,x);
   }
 }
 
 static void calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4,
-                         int numatom, double* angles)
+                             int numatom, double* angles)
 {
   int i;
   double va[3], vb[3], vc[3];
-  double rm[3], rn[3];
-  double m, n, dotp;
+  double n1[3], n2[3];
+  double xp[3];
+  double x, y;
 
   for (i=0; i<numatom; i++) {
     // connecting vectors between all 4 atoms: 1 -va-> 2 -vb-> 3 -vc-> 4
@@ -205,22 +209,27 @@ static void calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3
     vc[1] = atom4[i][1] - atom3[i][1];
     vc[2] = atom4[i][2] - atom3[i][2];
 
-    // rm is normal vector to va vb
-    // rn is normal vector is vb vc
-    // m & n are norms to these vectors
-    rm[0] = va[1]*vb[2] - va[2]*vb[1];
-    rm[1] = va[0]*vb[2] - va[2]*vb[0];
-    rm[2] = va[0]*vb[1] - va[1]*vb[0];
-    m = sqrt(rm[0]*rm[0] + rm[1]*rm[1] + rm[2]*rm[2]);
+    //n1 is normal vector to -va, vb
+    //n2 is normal vector to -vb, vc
+    n1[0] =-va[1]*vb[2] + va[2]*vb[1];
+    n1[1] = va[0]*vb[2] - va[2]*vb[0];
+    n1[2] =-va[0]*vb[1] + va[1]*vb[0];
 
-    rn[0] = vb[1]*vc[2] - vb[2]*vc[1];
-    rn[1] = vb[0]*vc[2] - vb[2]*vc[0];
-    rn[2] = vb[0]*vc[1] - vb[1]*vc[0];
-    n = sqrt(rn[0]*rn[0] + rn[1]*rn[1] + rn[2]*rn[2]);
+    n2[0] =-vb[1]*vc[2] + vb[2]*vc[1];
+    n2[1] = vb[0]*vc[2] - vb[2]*vc[0];
+    n2[2] =-vb[0]*vc[1] + vb[1]*vc[0];
 
-    dotp = rm[0]*rn[0] + rm[1]*rn[1] + rm[2]*rn[2];
+    // x = dot(n1,n2) = cos theta
+    // y = norm(cross(n1,n2)) = sin theta
+    // tan theta = y/x
+    x = (n1[0]*n2[0] + n1[1]*n2[1] + n1[2]*n2[2]);
 
-    *(angles + i) = acos(dotp/m/n);
+    xp[0] = n1[1]*n2[2] - n1[2]*n2[1];
+    xp[1] =-n1[0]*n2[2] + n1[2]*n2[0];
+    xp[2] = n1[0]*n2[1] - n1[1]*n2[0];
+    y = sqrt(xp[0]*xp[0] + xp[1]*xp[1] + xp[2]*xp[2]);
+
+    *(angles + i) = atan2(y,x); //atan2 is better conditioned than acos
   }
 
 }

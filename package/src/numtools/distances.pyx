@@ -67,7 +67,6 @@ cdef extern from "calc_distances.h":
     void calc_angle(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, double* angles)
     void calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, double* angles)
 
-
 import numpy
 def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_numpy.ndarray box=None, c_numpy.ndarray result=None):
     """Calculate all distances between a reference set and another configuration.
@@ -279,6 +278,11 @@ def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray li
         raise ValueError("list3 must be an array of 3 dimensional coordinates")
     if (atom2.dimensions[0] != numatom or atom3.dimensions[0] != numatom):
         raise ValueError("all lists must be the same length")
+    #type check
+    if (atom1.dtype != numpy.dtype(numpy.float32) or atom2.dtype != numpy.dtype(numpy.float32) 
+        or atom3.dtype != numpy.dtype(numpy.float32) ):
+        raise TypeError("all coordinates must be of type numpy.float32")
+
 
     if not result is None:
         if (result.nd != 1 or result.dimensions[0] != numatom):
@@ -322,6 +326,10 @@ def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray 
         raise ValueError("list3 must be an array of 3 dimensional coordinates")
     if (atom2.dimensions[0] != numatom or atom3.dimensions[0] != numatom or atom4.dimensions[0] != numatom):
         raise ValueError("all lists must be the same length")
+   #type check
+    if (atom1.dtype != numpy.dtype(numpy.float32) or atom2.dtype != numpy.dtype(numpy.float32) 
+        or atom3.dtype != numpy.dtype(numpy.float32) or atom4.dtype != numpy.dtype(numpy.float32) ):
+        raise TypeError("all coordinates must be of type numpy.float32")
 
     if not result is None:
         if (result.nd != 1 or result.dimensions[0] != numatom):
