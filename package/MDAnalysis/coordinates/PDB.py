@@ -500,11 +500,11 @@ class PrimitivePDBReader(base.Reader):
         atoms = []
 
         unitcell = numpy.zeros(6, dtype=numpy.float32)
-        
+
         class Struct:
-            def __init__(self, **entries): 
+            def __init__(self, **entries):
                 self.__dict__.update(entries)
-                
+
         with util.openany(filename, 'r') as pdbfile:
             for i, line in enumerate(pdbfile):
                 def _c(start, stop, typeclass=float):
@@ -542,7 +542,12 @@ class PrimitivePDBReader(base.Reader):
                     name = _c(13, 16, str).strip()
                     resName = _c(18, 21, str).strip()
                     chainID = _c(22, 22, str)  # empty chainID is a single space ' '!
-                    resSeq = _c(23, 26, int)
+                    if self.format == "XPDB":
+                        resSeq = _c(23, 27, int)  # extended non-standard format used by VMD
+                    else:
+                        assert self.format == "PDB"
+                        resSeq = _c(23, 26, int)
+                        insertCode = _c(27, 27, str)  # not used
                     x, y, z = _c(31, 38), _c(39, 46), _c(47, 54)
                     occupancy = _c(55, 60)
                     tempFactor = _c(61, 66)
@@ -550,7 +555,7 @@ class PrimitivePDBReader(base.Reader):
                     element = _c(77, 78, str).strip()
                     coords.append((x, y, z))
                     atom = Struct(**dict(zip(("serial", "name", "resName", "chainID", "resSeq", "occupancy", "tempFactor", "segID", "element"),\
-                    (serial, name, resName, chainID, resSeq, occupancy, tempFactor, segID, element))))
+                                                 (serial, name, resName, chainID, resSeq, occupancy, tempFactor, segID, element))))
                     atoms.append(atom)
 
         self.header = header
@@ -925,7 +930,7 @@ class PrimitivePDBWriter(base.Writer):
 
         # TODO: The bonds should not be a list of ints, as are now, but a list
         #       of Atom objects.
-        
+
         if not self.bonds:
             return
 
@@ -936,15 +941,15 @@ class PrimitivePDBWriter(base.Writer):
             pass
             #logger.error("PDB CONECT records not written because this only works correctly for a whole Universe.")
             #raise NotImplementedError("PDB CONECT records not written because this only works correctly for a whole Universe.")
-        
+
         bonds = set()
 
         [[bonds.add(b) for b in a.bonds] for a in self.obj.atoms]
-        
+
         atoms = set([a.number for a in self.obj.atoms])
-        
+
         mapping = dict([(atom.number, i) for i, atom in enumerate(self.obj.atoms)])
-        
+
         # Write out only the bonds that were defined in CONECT records
         if self.bonds == "conect":
             bonds = [(bond.atom1.number, bond.atom2.number) for bond in bonds if not bond.is_guessed]
@@ -953,21 +958,21 @@ class PrimitivePDBWriter(base.Writer):
         else :
             raise ValueError("bonds has to be either None, 'conect' or 'all'")
         con = {}
-        
+
         for a1, a2 in bonds:
              if not (a1 in atoms and a2 in atoms): continue
              if not con.has_key(a1): con[a1] = []
              if not con.has_key(a2): con[a2] = []
              con[a2].append(a1)
              con[a1].append(a2)
-        
+
         #print con
         atoms = sorted([a.number for a in self.obj.atoms])
 
         conect = [([a,] + sorted(con[a])) for a in atoms if con.has_key(a)]
-        
+
         conect = [[mapping[e] for e in row] for row in conect]
-        
+
         for c in conect:
             self.CONECT(c)
 
@@ -1315,6 +1320,24 @@ class PrimitivePDBWriter(base.Writer):
         conect = "".join(conect)
         self.pdbfile.write(self.fmt['CONECT'] % conect)
 
+
+class ExtendedPDBReader(PrimitivePDBReader):
+    """PDBReader that reads a PDB-formatted file with five-digit residue numbers.
+
+    This reader does not conform to the `PDB standard`_ because it allows
+    five-digit residue numbers that may take up columns 23 to 27 (inclusive)
+    instead of being confined to 23-26 (with column 27 being reserved for the
+    insertion code in the PDB standard). PDB files in this format are written
+    by popular programs such as VMD_.
+
+    .. SeeAlso:: :class:`PrimitivePDBReader`
+
+    .. _PDB standard: http://www.wwpdb.org/documentation/format32/sect9.html
+    .. _VMD: http://www.ks.uiuc.edu/Research/vmd/
+
+    .. versionadded:: 0.8
+    """
+    format = "XPDB"
 
 class MultiPDBWriter(PrimitivePDBWriter):
     """PDB writer that implements a subset of the `PDB 3.2 standard`_ .

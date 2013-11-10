@@ -37,6 +37,7 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "PDB_closed",
            "PDB_multiframe",
            "PDB_helix",
+           "XPDB_small",
            "NUCL",                            # nucleic acid (PDB)
            "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",   # Gromacs (AdK)
            "PDB_xvf", "TPR_xvf", "TRR_xvf",     # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
@@ -95,6 +96,7 @@ PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
 TRR_xvf = resource_filename(__name__, 'data/cobrotoxin.trr')
 
+XPDB_small = resource_filename(__name__, 'data/5digitResid.pdb')
 # number is the gromacs version
 TPR400 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.0.tpr')
 TPR402 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.0.2.tpr')

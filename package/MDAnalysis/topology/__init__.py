@@ -50,6 +50,12 @@ The following table lists the currently supported topology formats.
                                 :mod:`MDAnalysis.topology.PrimitivePDBParser` and
                                 :mod:`MDAnalysis.topology.PDBParser`
 
+   XPDB             pdb         Extended PDB format (can use 5-digit residue
+                                numbers). To use, specify the format "XPBD"
+                                explicitly:
+                                ``Universe(..., topology_format="XPDB")``.
+                                Module :MDAnalysis.coordinates.PDB`
+
    PQR [#a]_        pqr         PDB-like but whitespace-separated files with charge
                                 and radius information;
                                 :mod:`MDAnalysis.topology.PQRParser`
@@ -202,7 +208,7 @@ __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser', 'CRDParse
 
 import core
 import PSFParser, TOPParser, \
-    PDBParser, PrimitivePDBParser, PQRParser, GROParser, CRDParser, \
+    PDBParser, PrimitivePDBParser, ExtendedPDBParser, PQRParser, GROParser, CRDParser, \
     PDBQTParser, DMSParser, TPRParser
 
 # dictionary of known file formats and the corresponding file parser
@@ -211,6 +217,7 @@ import PSFParser, TOPParser, \
 # are the known topology formats.
 _topology_parsers = {'PSF': PSFParser.parse,
                      'PDB': PDBParser.parse,
+                     'XPDB': ExtendedPDBParser.parse,
                      'PQR': PQRParser.parse,
                      'GRO': GROParser.parse,
                      'CRD': CRDParser.parse,
