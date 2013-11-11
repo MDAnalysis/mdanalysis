@@ -226,8 +226,7 @@ def calc_bonds(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray box
     if (atom1.dimensions[0] != atom2.dimensions[0]):
         raise ValueError("list1 and list2 of different size")
 
-    with_PBC = (box is not None)
-    if with_PBC:
+    if not box is None:
         if (box.nd != 1 and box.dimensions[0] != 3):
             raise ValueError("box must be a sequence of 3 dimensional coordinates")
         if (box.dtype!=numpy.dtype(numpy.float32)):
@@ -244,7 +243,7 @@ def calc_bonds(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray box
     else:
         distances = numpy.zeros((numatom,), numpy.float64)
 
-    if with_PBC:
+    if not box is None:
         calc_bond_distance(<coordinate*>atom1.data,<coordinate*>atom2.data,numatom,<float*>box.data,<double*>distances.data)
     else:
         calc_bond_distance_noPBC(<coordinate*>atom1.data,<coordinate*>atom2.data,numatom,<double*>distances.data)
