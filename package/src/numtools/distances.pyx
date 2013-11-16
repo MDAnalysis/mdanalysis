@@ -45,6 +45,36 @@ Overview
    provided in *result* then this preallocated array is filled. This can speed
    up calculations.
 
+.. function:: calc_bonds(atom1, atom2, [box, [,result]])
+
+   Calculate all distances between a pair of atoms.  *atom1* and *atom2* are both
+   arrays of coordinates, where atom1[i] and atom2[i] represent a bond.  The 
+   optional argument *box* applies minimum image convention if supplied.
+
+   If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is
+   provided in *result* then this preallocated array is filled. This can speed
+   up calculations.
+
+.. function:: calc_angles(atom1, atom2, atom3 [, result])
+
+   Calculates the angle formed between three atoms, over a list of coordinates.
+   All *atom* inputs are lists of coordinates of equal length, with *atom2* 
+   representing the apex of the angle.  Returns the angle in radians.
+
+   If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is
+   provided in *result* then this preallocated array is filled. This can speed
+   up calculations.
+
+.. function:: calc_torsions(atom1, atom2, atom3, atom4 [, result])
+
+   Calculate the torsional angle formed by four atoms, over a list of coordinates.
+   Returns the angle in radians.
+
+   If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is
+   provided in *result* then this preallocated array is filled. This can speed
+   up calculations.
+
+
 Functions
 ---------
 """

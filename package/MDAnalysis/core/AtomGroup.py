@@ -720,64 +720,68 @@ class AtomGroup(object):
         """
         return numpy.array([s.name for s in self.segments])
 
-    def bondLists(self):
-        from MDAnalysis.topology.core import topologyDict
-        """TopologyDict of bonds within this atomGroup"""
+    @property
+    def bondDict(self):
+        """A :class:`MDAnalysis.topology.core.TopologyDict` of bonds 
+        within this AtomGroup.
+        """
         if not 'bonds' in self.__cache:
-            self.__cache['bonds'] = topologyDict('bond', self._atoms)
+            from MDAnalysis.topology.core import TopologyDict
+            self.__cache['bonds'] = TopologyDict('bond', self._atoms)
         return self.__cache['bonds']
-    def angleLists(self):
-        from MDAnalysis.topology.core import topologyDict
-        """TopologyDict of angles within this atomGroup"""
+
+    @property
+    def angleDict(self):
+        """A :class:`MDAnalysis.topology.core.TopologyDict` of angles 
+        within this AtomGroup.
+        """     
         if not 'angles' in self.__cache:
-            self.__cache['angles'] = topologyDict('angle',self.__atoms)
+            from MDAnalysis.topology.core import TopologyDict
+            self.__cache['angles'] = TopologyDict('angle',self._atoms)
         return self.__cache['angles']
-    def torsionLists(self):
-        from MDAnalysis.topology.core import topologyDict
-        """TopologyDict of torsions within this atomGroup"""
+
+    @property
+    def torsionDict(self):
+        """A :class:`MDAnalysis.topology.core.TopologyDict` of angles 
+        within this AtomGroup.
+        """     
         if not 'torsions' in self.__cache:
-            self.__cache['torsions'] = topologyDict('torsion',self.__atoms)
+            from MDAnalysis.topology.core import TopologyDict
+            self.__cache['torsions'] = TopologyDict('torsion',self._atoms)
         return self.__cache['torsions']
 
     def numberOfBondTypes(self):
-        """Number of different bond types in this atomGroup"""
-        return len(self.bondLists())
+        """Number of different bond types in this AtomGroup"""
+        return len(self.bondDict)
     def numberOfAngleTypes(self):
-        """Number of different angle types in this atomGroup"""
-        return len(self.angleLists())
+        """Number of different angle types in this AtomGroup"""
+        return len(self.angleDict)
     def numberOfTorsionTypes(self):
-        """Number of different torsions types in this atomGroup"""
-        return len(self.torsionLists())
+        """Number of different torsions types in this AtomGroup"""
+        return len(self.torsionDict)
 
-    def selectBonds(self, btype, criteria):
-        """Select a bond, angle or torsion from the topologyDicts created
-        usage: selectBonds(btype, criteria) 
-        btype is either 'bond' 'angle' or 'torsion'
-        criteria must match a key from the topologyDicts for this atomgroup        
+    def selectBonds(self, criteria):
+        """Select all of a given bond, angle or torsion type from the 
+        AtomGroup.  This method makes use of the :class:`MDAnalysis.topology.core.TopologyDict`
+        instances for this AtomGroup.
+
+        Usage:: 
+          ag.selectBonds(criteria) 
+
+        *criteria* must match a key from the appropriate TopologyDict, 
+        viewable through the :meth:`MDAnalysis.topology.core.TopologyDict.keys` method.
+        These keys are a tuple of the atom types in the bond.
+
+        :Returns: a :class:`MDAnalysis.topology.core.TopologyGroup`
         """
-        from MDAnalysis.topology.core import topologyGroup
-        if btype == 'bond' and criteria in self.bondLists():
-            selection = self.bondLists()[criteria]
-            atom1 = AtomGroup([pair[0] for pair in selection])
-            atom2 = AtomGroup([pair[1] for pair in selection])
-            return topologyGroup([atom1, atom2])
-        elif btype == 'angle' and criteria in self.angleLists():
-            selection = self.angleLists()[criteria]
-            atom1 = AtomGroup([pair[0] for pair in selection])
-            atom2 = AtomGroup([pair[1] for pair in selection])
-            atom3 = AtomGroup([pair[2] for pair in selection])
-            return topologyGroup([atom1, atom2, atom3])
-        elif btype == 'torsion' and criteria in self.torsionLists():
-            selection = self.torsionLists()[criteria]
-            atom1 = AtomGroup([pair[0] for pair in selection])
-            atom2 = AtomGroup([pair[1] for pair in selection])
-            atom3 = AtomGroup([pair[2] for pair in selection])
-            atom4 = AtomGroup([pair[3] for pair in selection])
-            return topologyGroup([atom1, atom2, atom3, atom4])
+        if len(criteria) == 2 and criteria in self.bondDict:
+            return self.bondDict[criteria]
+        elif len(criteria) == 3 and criteria in self.angleDict:
+            return self.angleDict[criteria]
+        elif len(criteria) == 4 and criteria in self.torsionDict:
+            return self.torsionDict[criteria]
         else:
-            print "Criteria not recognised \n"
-            print self.selectBonds.__doc__
-            return None
+            raise KeyError("Criteria not recognised")
 
     def masses(self):
         """Array of atomic masses (as defined in the topology)"""
@@ -2593,7 +2597,7 @@ class Universe(object):
                 self.bonds.add(bond)
                 continue
             i,j = bond
-            a1, a2 = self.atoms[i-1],self.atoms[j-1]
+            a1, a2 = self.atoms[i],self.atoms[j] #indexes have been reduced by one in reading psf file, so do not need to adjust by -1 here
             bond = Bond(a1, a2)
             if struc.has_key("_guessed_bonds") and \
                     set([i,j]) in struc["_guessed_bonds"] and \

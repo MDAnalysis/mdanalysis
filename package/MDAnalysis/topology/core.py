@@ -138,7 +138,7 @@ class Bond(object):
 
 class Angle(object):
     """An angle between three :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
-    The angle is defined as atom1 \ atom2 / atom3"""
+    Atom 2 is the apex of the angle"""
     #currently a stub of a class, maybe add to this to make it as useful as bonds
     def __init__(self, a1, a2, a3):
         self.atom1 = a1
@@ -154,8 +154,7 @@ class Angle(object):
              a3.number+1, a3.name, a3.resname, a3.resid)
 
 class Torsion(object):
-    """Torsion (dihedral angle) between four :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
-    The torsion is defined as the angle between the planes formed by atom1 atom2 and atom3, and atom2 atom3 and atom4."""
+    """Torsion (dihedral angle) between four :class:`~MDAnalysis.core.AtomGroup.Atom` instances."""
     def __init__(self, a1, a2, a3, a4):
         self.atom1 = a1
         self.atom2 = a2
@@ -378,23 +377,44 @@ def guess_atom_charge(atomname):
     # TODO: do something slightly smarter, at least use name/element
     return 0.0
 
-class topologyDict(object):
-    ##TODO make sure groups are always in the same order, 
-    ## ie in a C-H bond, make sure atom1 is ALWAYS C
+
+class TopologyDict(object):
     """
-    A class which serves as a wrapper around a dictionary, which contains lists of different types of bonds.
+    A class which serves as a wrapper around a dictionary, which 
+    contains lists of different types of bonds.
 
-    One is needed for each type of topological group (bonds, angles, torsions etc). These are built
-    lazily by calling bondLists angleLists or torsionsLists from an atomGroup.
+    Usage::
 
-    The keys in the dictionary represent a type of bond ie, a C - C - H angle, with the value
-    for a given key being a list of tuples containing the Atoms in each angle of that type.
+      topologydict = TopologyDict(topologytype, atoms)
 
-    Getting and setting types of bonds is done smartly, so a C - C - H angle is considered identical 
-    to a H - C - C angle
+    *topologytype* is one of 'bond' 'angle' or 'torsion', a single 
+    TopologyDict can only handle one type of topology.
+
+    *atoms* is a list of :class:`MDAnalysis.core.AtomGroup.Atom` objects.
+
+    TopologyDicts are built lazily from a :class:`MDAnalysis.core.AtomGroup.AtomGroup` 
+    using the bondDict angleDict or torsionDict methods.
+
+    The TopologyDict collects all the given topology type from the 
+    atoms and categorises them according to the types of the atoms.  
+    Getting and setting types of bonds is done smartly, so a C-C-H 
+    angle is considered identical to a H-C-C angle.
+
+    Duplicate entries are automatically removed upon creation and 
+    combination of different Dicts.  For example, a bond between atoms
+    1 and 2 will only ever appear once in a dict despite both atoms 1 
+    and 2 having the bond in their .bond attribute.
+
+    A :class:`TopologyGroup` containing all of a given bond type can
+    be made by querying with the appropriate key.  The keys to the 
+    topologyDict are a tuple of the atom types that the bond represents 
+    and can be viewed using the keys() method.
+
+    Two TopologyDicts can be combined using addition, this will not
+    create any duplicate bonds in the process.
     """
     def __init__(self, toptype, members):
-        self.dict = {}
+        self.dict = dict()
         self.toptype = toptype
         if isinstance(members[0], dict): #combining two topologyDicts
             for d in members:
@@ -406,30 +426,33 @@ class topologyDict(object):
         elif toptype == 'bond':
             for atom in members: #loop through all atoms
                 for b in atom.bonds: #loop through all bonds this atom has
-                    pair = (b.atom1, b.atom2)
                     btype = (b.atom1.type, b.atom2.type)
-                    if not pair in self[btype] or tuple(reversed(pair)) in self[btype]:
-                        self[btype] += [pair]
+                    try:
+                        self.dict[btype] += [b]
+                    except KeyError:
+                        self.dict[btype] = [b]
         elif toptype == 'angle':
             for atom in members:
                 for b in atom.angles:
-                    triple = (b.atom1, b.atom2, b.atom3)
                     btype = (b.atom1.type, b.atom2.type, b.atom3.type)
-                    if not triple in self[btype] or tuple(reversed(triple)) in self[btype]:
-                        self[btype] += [triple]
+                    try:
+                        self.dict[btype] += [b]
+                    except KeyError:
+                        self.dict[btype] = [b]
         elif toptype == 'torsion':
             for atom in members:
                 for b in atom.torsions:
-                    quad = (b.atom1, b.atom2, b.atom3, b.atom4)
                     btype = (b.atom1.type, b.atom2.type, b.atom3.type, b.atom4.type)
-                    if not quad in self[btype] or tuple(reversed(quad)) in self[btype]:
-                        self[btype] += [quad]
+                    try:
+                        self.dict[btype] += [b]
+                    except KeyError:
+                        self.dict[btype] = [b]
 
         self._removeDupes()
 
     def _removeDupes(self):
-        """Sorts through contents and makes sure that there are no duplicate keys (through type reversal)
-        and that there are no duplicate entries (through atom reversal)
+        """Sorts through contents and makes sure that there are no duplicate keys 
+        (through type reversal)
         """
         newdict = dict()
         #First remove duplicate keys
@@ -441,7 +464,7 @@ class topologyDict(object):
         #newdict now has unique set of keys but no values (yet!)
         for k in newdict: #loop over only newdict's keys as all values are in these key values in the old dict
             for v in self.dict[k]:
-                if not (v in newdict[k] or tuple(reversed(v)) in newdict[k]):
+                if not v in newdict[k]:
                     newdict[k] += [v]
         self.dict = newdict
             
@@ -455,101 +478,134 @@ class topologyDict(object):
     def __len__(self):
         """Returns the number of types of bond in the topology dictionary"""
         return len(self.dict.keys())
-    def types(self):
-        """Returns a list of the different types of available bonds"""
-        return self.dict.keys()
+
     def keys(self):
         """Returns a list of the different types of available bonds"""
         return self.dict.keys()
+
+    def __iter__(self):
+        """Iterator over keys in this dictionary"""
+        return iter(self.dict)
+
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(len(self))+' unique '+self.toptype+'s >'
-    def __getitem__(self, key):
-        """Returns list of tuples of atoms that match a given bond type (or reverse of type)"""
-        if key in self.dict:
-            return self.dict[key]
-        elif tuple(reversed(key)) in self.dict:
-            return self.dict[tuple(reversed(key))]
-        else:
-            #raise KeyError(key)
-            return [] #allows using += from start
-    def __setitem__(self, key, value):
-        #Adding items to the dictionary
-        if not key in self: #If it doesn't exist at all, add it
-            self.dict[key] = value
-        else: #If it does exist, is the key "forwards" or "backwards"?
-            if key in self.dict: #This check doesn't do the reversal trick, so is "exact" match
-                k = key
-            else:
-                k = tuple(reversed(key))
-            self.dict[k] = value
 
-#        self._removeDupes() ## makes extremely slow
+    def __getitem__(self, key):
+        """Returns a TopologyGroup matching the criteria if possible, otherwise returns None"""
+        if key in self:
+            if key in self.dict:
+                selection =  self.dict[key]
+            else:
+                selection =  self.dict[tuple(reversed(key))]
+
+            return TopologyGroup(selection)
+        else:
+            raise KeyError(key)
 
     def __contains__(self, other):
         """Returns boolean on whether a topology group exists within this dictionary"""
         # For topology groups, 1-2-3 is considered the same as 3-2-1
-        return other in self.dict.keys() or tuple(reversed(other)) in self.dict.keys()
+        return other in self.dict or tuple(reversed(other)) in self.dict
 
 
-class topologyGroup(object):
-    def __init__(self, atomgroups):
-        if len(atomgroups) == 2:
+class TopologyGroup(object):
+    """ A container for a group of bonds (either bonds, angles or torsions)::
+    
+      tg = :class:`MDAnalysis.core.AtomGroup.AtomGroup`.selectBonds(key)
+      tg = :class:`TopologyDict`[key]
+
+    *key* describes the desired bond as a tuple of the involved atom 
+    types (as defined by the .type atom attribute). A list of available
+    topology keys can be displayed using the .keys() method.
+
+    The TopologyGroup contains :class:`MDAnalysis.core.AtomGroup.AtomGroup` 
+    instances which correspond to the components of the bonds the 
+    TopologyGroup contains. Ie a bond has 2 AtomGroups whereas an angle
+    has 3.
+
+    The :meth:`bonds`, :meth:`angles` and :meth:`torsions` methods offer
+    a "shortcut" to the Cython distance calculation functions in 
+    :class:`MDAnalysis.core.distances`.
+
+    TopologyGroups can be combined with TopologyGroups of the same bond
+    type (ie can combine two angle containing TopologyGroups).
+    
+    TopologyGroups can be indexed to return a single :class:`Bond` 
+    :class:`Angle` or :class:`Torsion` ::
+    
+      tg[0], tg[-2]
+
+    Or sliced to return a TopologyGroup containing a subset of the original::
+
+      tg[4:-4]
+
+    """
+    def __init__(self, bondlist):
+        self.bondlist = bondlist
+        if isinstance(self.bondlist[0], Bond):
             self.toptype = "bond"
-            self.atom1 = atomgroups[0] #will fail if Atoms not atomGroups are passed currently
-            self.atom2 = atomgroups[1]
-            if not len(self.atom1) == len(self.atom2):
-                raise TypeError("atomGroup lengths mismatched")
-        elif len(atomgroups) == 3:
+        elif isinstance(self.bondlist[0], Angle):
             self.toptype = "angle"
-            self.atom1 = atomgroups[0]
-            self.atom2 = atomgroups[1]
-            self.atom3 = atomgroups[2]
-            if not len(self.atom1) == len(self.atom2) == len(self.atom3):
-                raise TypeError("atomGroup lengths mismatched")
-        elif len(atomgroups) == 4:
+        elif isinstance(self.bondlist[0], Torsion):
             self.toptype = "torsion"
-            self.atom1 = atomgroups[0]
-            self.atom2 = atomgroups[1]
-            self.atom3 = atomgroups[2]
-            self.atom4 = atomgroups[3]
-            if not (len(self.atom1) == len(self.atom2) and \
-            len(self.atom2) == len(self.atom3) and \
-            len(self.atom3) == len(self.atom4)):
-                raise TypeError("atomGroup lengths mismatched")
         else:
-            raise TypeError("Only bonds and angles implemented currently")
+            raise ValueError("Input not recognised")
+
+        self._removeDupes()
+
+        self._buildAtomGroups()
 
         self.len = len(self.atom1)
 
+    def _removeDupes(self):
+        """Removes duplicate bonds from a TopologyGroup
+
+        Will rearrange the order of the bondlist within the TopologyGroup after use.
+        """
+        self.bondlist = list(set(self.bondlist))
+
+    def _buildAtomGroups(self):
+        """Builds the "vertical" AtomGroups which are used by the coordinate methods"""
+        self.atom1 = AtomGroup.AtomGroup([bond.atom1 for bond in self.bondlist])
+        self.atom2 = AtomGroup.AtomGroup([bond.atom2 for bond in self.bondlist])
+        if not self.toptype == 'bond':
+            self.atom3 = AtomGroup.AtomGroup([bond.atom3 for bond in self.bondlist])
+        if self.toptype == 'torsion':
+            self.atom4 = AtomGroup.AtomGroup([bond.atom4 for bond in self.bondlist])
+
     def __len__(self):
         """Number of bonds in the topology group"""
-        return self.len #checked on initialisation that all atomgroups are same length
+        return self.len
 
     def __add__(self, other):
         """
-        Combine two topologyGroups together.
+        Combine two TopologyGroups together.
 
-        Currently only topologyGroups of the same type can be combined in such a way
+        Currently only TopologyGroups of the same type can be combined in such a way
         """
-        if not isinstance(other, topologyGroup):
-            raise TypeError("Can only combine two topologyGroups")
+        if not isinstance(other, TopologyGroup):
+            raise TypeError("Can only combine two TopologyGroups")
         elif self.toptype != other.toptype:
-            raise TypeError("Can only combine topologyGroups of the same type")
+            raise TypeError("Can only combine TopologyGroups of the same type")
 
-        if self.toptype == 'bond': #could replace atom1 atom2 etc with atom[] to make this a lot simpler
-            return topologyGroup([self.atom1+other.atom1, self.atom2+other.atom2])
-        elif self.toptype == 'angle':
-            return topologyGroup([self.atom1+other.atom1, self.atom2+other.atom2, self.atom3+other.atom3])
-        elif self.toptype == 'torsion':
-            return topologyGroup([self.atom1+other.atom1, self.atom2+other.atom2, self.atom3+other.atom3, self.atom4+other.atom4])
-
+        return TopologyGroup(self.bondlist + other.bondlist)
 
     def __getitem__(self,item):
-        """Returns a particular bond as an atomGroup"""
-        if numpy.dtype(type(item)) == numpy.dtype(int):
-            return self.atom1[item]  + self.atom2[item]
-        elif type(item) == slice:
-            return self.atom1[item] + self.atom2[item]
+        """Returns a particular bond as single object or a subset of 
+        this TopologyGroup as another TopologyGroup
+        """
+        if numpy.dtype(type(item)) == numpy.dtype(int): #return a single bond
+            return self.bondlist[item]
+        elif type(item) == slice: #return a subset of this TopologyGroup
+            return TopologyGroup(self.bondlist[item])
+
+    def __iter__(self):
+        """Iterator over all bonds"""
+        return iter(self.bondlist)
+
+    def __contains__(self, item):
+        """Tests if this TopologyGroup contains a bond"""
+        return item in self.bondlist
 
     def __repr__(self):
         return "< "+self.__class__.__name__+" containing "+str(len(self))+" "+self.toptype+"s >"
@@ -557,35 +613,38 @@ class topologyGroup(object):
     def _bondsSlow(self, pbc=False):
         """Slow version of bond (numpy implementation)"""
         if not self.toptype == 'bond':
-            return "This topologyGroup is not a bond group!"
+            return "This TopologyGroup is not a bond group!"
         else:
-            if not pbc:
-                return numpy.array([norm(a) for a in self.atom1.coordinates() - self.atom2.coordinates()])
-            else:
-                box = self.atom1.dimensions #assuming both atom1 and atom2 are same universe, maybe check this on initialisation?
+            bond_dist = self.atom1.coordinates() - self.atom2.coordinates()
+            if pbc:
+                box = self.atom1.dimensions 
                 if (box[6:9] == 90.).all() and not (box[0:3] == 0).any(): #orthogonal and divide by zero check
-                    distances = self.atom1.coordinates() - self.atom2.coordinates()
-                    return numpy.array([distances - numpy.rint(distances/box[0:3])*box[0:3]])
+                    bond_dist -= numpy.rint(bond_dist/box[0:3])*box[0:3]
+                else:
+                    raise ValueError("Only orthogonal boxes supported")
+
+            return numpy.array([norm(a) for a in bond_dist])
 
     def bonds(self, pbc=False, result=None):
-        """
-        Calculates the distance between all bonds in this topologyGroup
+        """Calculates the distance between all bonds in this TopologyGroup
         
         Uses cython implementation
         """
         if not self.toptype == 'bond':
-            raise TypeError("topologyGroup is not of 'bond' type")
+            raise TypeError("TopologyGroup is not of 'bond' type")
         if not result:
             result = numpy.zeros((self.len,), numpy.float64)
         if not pbc:
-            return distances.calc_bonds(self.atom1.coordinates(), self.atom2.coordinates(), result=result)
+            return distances.calc_bonds(self.atom1.coordinates(), self.atom2.coordinates(), 
+                                        result=result)
         else:
-            return distances.calc_bonds(self.atom1.coordinates(), self.atom2.coordinates(), box=self.atom1.dimensions[0:3], result=result)
+            return distances.calc_bonds(self.atom1.coordinates(), self.atom2.coordinates(), 
+                                        box=self.atom1.dimensions[0:3], result=result)
         
     def _anglesSlow(self):
         """Slow version of angle (numpy implementation)"""
         if not self.toptype == 'angle':
-            raise TypeError("topology group is not of type 'angle'")
+            raise TypeError("TopologyGroup is not of type 'angle'")
         from MDAnalysis.core.util import angle as slowang
         from itertools import izip
         vec1 = self.atom1.coordinates() - self.atom2.coordinates()
@@ -595,16 +654,17 @@ class topologyGroup(object):
         return angles
         
     def angles(self, result=None):
-        """
-        Calculates the angle formed between a bond between atoms 1 and 2 and a bond between atoms 2 & 3
+        """Calculates the angle in radians formed between a bond 
+        between atoms 1 and 2 and a bond between atoms 2 & 3
 
-        Implementation in cython
+        Uses cython implementation
         """
         if not self.toptype == 'angle':
             raise TypeError("topology group is not of type 'angle'")
         if not result:
             result = numpy.zeros((self.len,), numpy.float64)
-        return distances.calc_angles(self.atom1.coordinates(),self.atom2.coordinates(),self.atom3.coordinates(),result=result)
+        return distances.calc_angles(self.atom1.coordinates(),self.atom2.coordinates(),
+                                     self.atom3.coordinates(),result=result)
 
     def _torsionsSlow(self):
         """Slow version of torsion (numpy implementation)"""
@@ -620,12 +680,18 @@ class topologyGroup(object):
         return numpy.array([dihedral(a,b,c) for a,b,c in izip(vec1,vec2,vec3)])
 
     def torsions(self, result=None):
-        """
-        Calculate the torsional angle for this topology group.
+        """Calculate the torsional angle in radians for this topology
+        group.
+
+        Defined as the angle between a plane formed by atoms 1, 2 and 
+        3 and a plane formed by atoms 2, 3 and 4.
+
+        Uses cython implementation. 
         """
         if not self.toptype == 'torsion':
             raise TypeError("topology group is not of type 'torsion'")
         if not result:
             result = numpy.zeros((self.len,), numpy.float64)   
         return distances.calc_torsions(self.atom1.coordinates(), self.atom2.coordinates(),
-                                       self.atom3.coordinates(), self.atom4.coordinates(), result=result)
+                                       self.atom3.coordinates(), self.atom4.coordinates(), 
+                                       result=result)
