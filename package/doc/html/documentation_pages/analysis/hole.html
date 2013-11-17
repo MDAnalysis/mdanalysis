@@ -78,7 +78,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="rms.html"
-                        title="previous chapter">3.1.5. Calculating root mean square quantities &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a></p>
+                        title="previous chapter">3.1.5. Calculating root mean square quantities &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="leaflet.html"
                         title="next chapter">3.2.2. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
@@ -206,7 +206,7 @@ iterate over the sorted profiles (see <a class="reference internal" href="#MDAna
 </div>
 <div class="section" id="data-structures">
 <h2>3.2.1.2. Data structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
-<p>A profile is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>:</p>
+<p>A profile is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.8)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>:</p>
 <div class="highlight-python"><pre>frame   rxncoord   radius</pre>
 </div>
 <dl class="docutils">
@@ -450,7 +450,7 @@ file. [&#8220;hole.sph&#8221;]</p>
 (e.g. <tt class="docutils literal"><span class="pre">/opt/hole/exe/hole</span></tt>); the other programs
 <strong class="program">sph_process</strong> and <strong class="program">sos_triangle</strong> are assumed
 to live in the same directory as <strong class="program">hole</strong>. If
-<strong class="program">hole</strong> is found on the <span class="target" id="index-0"></span><a class="reference external" href="http://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v1.3.0)"><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt></a> then the bare
+<strong class="program">hole</strong> is found on the <span class="target" id="index-0"></span><a class="reference external" href="http://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v1.3.1)"><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt></a> then the bare
 executable name is sufficient.  [&#8220;hole&#8221;]</p>
 </div></blockquote>
 </td>
@@ -503,7 +503,7 @@ with the <em>tmpdir</em> keyword (e.g. one can use &#8220;/tmp&#8221;).</p>
 </div>
 <p>The method saves the result as <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE.profiles" title="MDAnalysis.analysis.hole.HOLE.profiles"><tt class="xref py py-attr docutils literal"><span class="pre">HOLE.profiles</span></tt></a>, a dictionary
 indexed by the frame number. Each entry is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.8)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
 <p>If the keyword <em>outdir</em> is supplied (e.g. &#8221;.&#8221;) then each profile is
 saved to a gzipped data file.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -577,7 +577,7 @@ the <em>ignore_residues</em> keyword.</p>
 <tt class="docutils literal"><span class="pre">None</span></tt> will use <em>cmap</em> instead [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>linestyle</em></dt>
-<dd><p class="first last">linestyle supported by <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.3.0)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>;
+<dd><p class="first last">linestyle supported by <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.3.1)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>;
 an iterable will be applied in turn [&#8216;-&#8216;]</p>
 </dd>
 <dt><em>yshift</em></dt>
@@ -595,7 +595,7 @@ is set to &#8220;_nolegend_&#8221; or <tt class="docutils literal"><span class="
 legend is displayed</p>
 </dd>
 <dt><em>ax</em></dt>
-<dd><p class="first last"><a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.3.0)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a> instance to plot into
+<dd><p class="first last"><a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.3.1)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a> instance to plot into
 [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
@@ -603,7 +603,7 @@ legend is displayed</p>
 </tr>
 </tbody>
 </table>
-<p>All other <em>kwargs</em> are passed to <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.3.0)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>.</p>
+<p>All other <em>kwargs</em> are passed to <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.3.1)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -756,7 +756,7 @@ as a guess. <em>selection</em> is &#8220;protein&#8221; by default.</p>
 <tt class="docutils literal"><span class="pre">None</span></tt> will use <em>cmap</em> instead [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>linestyle</em></dt>
-<dd><p class="first last">linestyle supported by <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.3.0)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>;
+<dd><p class="first last">linestyle supported by <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.3.1)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>;
 an iterable will be applied in turn [&#8216;-&#8216;]</p>
 </dd>
 <dt><em>yshift</em></dt>
@@ -774,7 +774,7 @@ is set to &#8220;_nolegend_&#8221; or <tt class="docutils literal"><span class="
 legend is displayed</p>
 </dd>
 <dt><em>ax</em></dt>
-<dd><p class="first last"><a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.3.0)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a> instance to plot into
+<dd><p class="first last"><a class="reference external" href="http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v1.3.1)"><tt class="xref py py-class docutils literal"><span class="pre">matplotlib.axes.Axes</span></tt></a> instance to plot into
 [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
@@ -782,7 +782,7 @@ legend is displayed</p>
 </tr>
 </tbody>
 </table>
-<p>All other <em>kwargs</em> are passed to <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.3.0)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>.</p>
+<p>All other <em>kwargs</em> are passed to <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot" title="(in Matplotlib v1.3.1)"><tt class="xref py py-func docutils literal"><span class="pre">matplotlib.pyplot.plot()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">

@@ -71,7 +71,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="PQR.html"
-                        title="previous chapter">5.11. PQR file format &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></p>
+                        title="previous chapter">5.11. PQR file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="TRR.html"
                         title="next chapter">5.13. Gromacs TRR file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a></p>
@@ -130,20 +130,20 @@ space for both coordinates and velocities;</li>
 <li>another <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance, in which case a copy is made (If the copied Timestep
 does not contain velocities but <em>velocities</em> = <tt class="docutils literal"><span class="pre">True</span></tt> is provided, then space for
 velocities is allocated);</li>
-<li>a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <tt class="docutils literal"><span class="pre">(numatoms,</span> <span class="pre">3)</span></tt> (for positions only) or
+<li>a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <tt class="docutils literal"><span class="pre">(numatoms,</span> <span class="pre">3)</span></tt> (for positions only) or
 <tt class="docutils literal"><span class="pre">(numatoms,</span> <span class="pre">6)</span></tt> (for positions and velocities): <tt class="docutils literal"><span class="pre">positions</span> <span class="pre">=</span> <span class="pre">arg[:,:3]</span></tt>,
 <tt class="docutils literal"><span class="pre">velocities</span> <span class="pre">=</span> <span class="pre">arg[:3:6]</span></tt>.</li>
 </ol>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._pos">
 <tt class="descname">_pos</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>coordinates of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(numatoms, 3)</cite></p>
+<dd><p>coordinates of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(numatoms, 3)</cite></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._velocities">
 <tt class="descname">_velocities</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._velocities" title="Permalink to this definition">¶</a></dt>
-<dd><p>velocities of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(numatoms, 3)</cite>;
+<dd><p>velocities of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(numatoms, 3)</cite>;
 only available if the trajectory contains velocities or if the
 <em>velocities</em> = <tt class="docutils literal"><span class="pre">True</span></tt> keyword has been supplied.</p>
 </dd></dl>
