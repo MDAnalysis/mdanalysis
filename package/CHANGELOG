@@ -12,7 +12,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/13  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
-	  rmcgibbo, richardjgowers,  lennardvanderfeltz
+	  rmcgibbo, richardjgowers, lennardvanderfeltz, alejandro.bernardin
 
   * 0.8.0
 
@@ -46,6 +46,9 @@ The rules for this file:
     five-digit residue numbers
   * util.convert_aa_code() recognizes non-standard residue names such
     as HSE, GLUH, GLH, ...
+  * functionality extension to geometric selection "prop". Now it is
+    possible to operate with the members of the inequation
+  * added new geometrics selections: sphlayer, sphzone, cylayer, cyzone
 
   Changes
 

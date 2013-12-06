@@ -105,12 +105,37 @@ class TestSelectionsCHARMM(TestCase):
     def test_not(self):
         sel = self.universe.selectAtoms('not backbone')
         assert_equal(len(sel), 2486)
+        
+    def test_around(self):
+        sel = self.universe.selectAtoms('around 4.0 bynum 1943')
+        assert_equal(len(sel), 32)
 
+    def test_sphlayer(self):
+        sel = self.universe.selectAtoms('sphlayer 4.0 6.0 bynum 1281')
+        assert_equal(len(sel), 66)
+        
+    def test_sphzone(self):
+        sel = self.universe.selectAtoms('sphzone 6.0 bynum 1281')
+        assert_equal(len(sel), 86)
+        
+    def test_cylayer(self):
+        sel = self.universe.selectAtoms('cylayer 4.0 6.0 10 -10 bynum 1281')
+        assert_equal(len(sel), 91)
 
+    def test_cyzone(self):
+        sel = self.universe.selectAtoms('cyzone 6.0 10 -10 bynum 1281')
+        assert_equal(len(sel), 179)
+
+    def test_prop(self):
+        sel = self.universe.selectAtoms('prop x * x + y * y <= 16')
+        sel2 = self.universe.selectAtoms('prop abs z < 8')
+        assert_equal(len(sel), 115)
+        assert_equal(len(sel2), 2001)
+              
     # TODO:
-    # add more test cases for around, point, prop, byres, bynum
+    # add more test cases for byres, bynum
     # and also for selection keywords such as 'nucleic'
-
+        
     def test_empty_selection(self):
         """Test that empty selection can be processed (see Issue 12)"""
         assert_equal(len(self.universe.selectAtoms('resname TRP')), 0)  # no Trp in AdK
