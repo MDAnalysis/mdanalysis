@@ -12,7 +12,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/13  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
-	  rmcgibbo, richardjgowers
+	  rmcgibbo, richardjgowers, alejandro.bernardin
 
   * 0.8.0
 
@@ -44,6 +44,9 @@ The rules for this file:
   * new methods for AtomGroup: packintobox() (only orthorhombic boxes)
   * added non-standard "extended" PDB format (XPDB) that reads
     five-digit residue numbers
+  * functionality extension to geometric selection "prop". Now it is
+    possible to operate with the members of the inequation
+  * added new geometrics selections: sphlayer, sphzone, cylayer, cyzone
 
   Changes
 
