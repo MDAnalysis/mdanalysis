@@ -102,7 +102,8 @@ For details see the report for `Issue 87`_.
                                     'data/*.prmtop', 'data/*.top', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',
                                     'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
                                     'data/*.fasta',
-                                    'data/*.dms'
+                                    'data/*.dms',
+                                    'data/merge/2zmm/*.pdb'
                                     ],
                                },
           classifiers       = CLASSIFIERS,
