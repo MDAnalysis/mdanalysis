@@ -44,6 +44,8 @@ The rules for this file:
   * new methods for AtomGroup: packintobox() (only orthorhombic boxes)
   * added non-standard "extended" PDB format (XPDB) that reads
     five-digit residue numbers
+  * util.convert_aa_code() recognizes non-standard residue names such
+    as HSE, GLUH, GLH, ...
 
   Changes
 

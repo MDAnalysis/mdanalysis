@@ -338,6 +338,7 @@ class ProteinSelection(Selection):
 
       * still missing: Amber N- and C-terminal residue names
 
+    .. SeeAlso:: :func:`MDAnalysis.core.util.convert_aa_code`
     """
     #: Dictionary of recognized residue names (3- or 4-letter).
     prot_res = dict([(x,None) for x in [
@@ -355,7 +356,7 @@ class ProteinSelection(Selection):
                 'ASN1', 'CYS1', 'HISA', 'HISB', 'HIS2',
                 # from Gromacs 4.5.3 amber03.ff/aminoacids.rtp
                 # Amber: there are also the C-term aas: 'CALA', 'CGLY', 'CSER', ...
-                # Amber: there are also the B-term aas: 'NALA', 'NGLY', 'NSER', ...
+                # Amber: there are also the N-term aas: 'NALA', 'NGLY', 'NSER', ...
                 'HID', 'HIE', 'HIP', 'ORN', 'DAB', 'LYN', 'HYP', 'CYM', 'CYX', 'ASH',
                 'GLH',
                 'ACE', 'NME',
