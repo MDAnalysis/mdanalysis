@@ -418,10 +418,11 @@ class PDBWriter(base.Writer):
 class PrimitivePDBReader(base.Reader):
     """PDBReader that reads a PDB-formatted file, no frills.
 
-    Records read (see `PDB coordinate section`_ for details):
-     - CRYST1 for unitcell A,B,C, alpha,beta,gamm
-     - ATOM or HETATM for x,y,z
+    The following PDB records are parsed (see `PDB coordinate section`_ for details):
+     - CRYST1 for unitcell A,B,C, alpha,beta,gamma
+     - ATOM or HETATM for serial,name,resName,chainID,resSeq,x,y,z,occupancy,tempFactor
      - HEADER, TITLE, COMPND
+     - all other lines are ignored
 
     Reads multi-`MODEL`_ PDB files as trajectories.
 
@@ -509,7 +510,7 @@ class PrimitivePDBReader(base.Reader):
             for i, line in enumerate(pdbfile):
                 def _c(start, stop, typeclass=float):
                     return self._col(line, start, stop, typeclass=typeclass)
-                if line.split()[0] == 'END':
+                if line[:3] == 'END':
                     break
                 elif line[:6] == 'CRYST1':
                     A, B, C = _c(7, 15), _c(16, 24), _c(25, 33)
