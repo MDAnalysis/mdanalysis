@@ -30,7 +30,7 @@ format (DMS_) coordinate files (as used by the Desmond_ MD package).
 
 from MDAnalysis.core.AtomGroup import Atom
 from MDAnalysis.topology.core import guess_atom_type, Bond
-import numpy, sqlite3
+import sqlite3, os
 
 class DMSParseError(Exception):
         pass
@@ -47,6 +47,10 @@ def parse(filename):
                      :func:`MDAnalysis.topology.PSFParser.parse`.
 
         """
+        # Fix by SB: Needed because sqlite3.connect does not raise anything if file is not there
+        if not os.path.isfile(filename):
+            raise IOError("No such file: %s" % filename)
+
         def dict_factory(cursor, row):
             """
             Fetch SQL records as dictionaries, rather than the default tuples.

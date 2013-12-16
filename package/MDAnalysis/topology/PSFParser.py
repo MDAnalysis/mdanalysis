@@ -204,8 +204,9 @@ def __parseatoms_(lines, atoms_per, attr, structure, numlines, **kwargs):
             atom_parser = atom_parsers['NAMD']
             iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove = atom_parser(line)
             atom_desc = Atom(int(iatom)-1,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge))
-            warnings.warn("Guessing that this is actually a NAMD-type PSF file... continuing with fingers crossed!",
-                          category=FileFormatWarning)
+            # SB: Commenting out the warning to avoid redundancy with the logger
+            # warnings.warn("Guessing that this is actually a NAMD-type PSF file... continuing with fingers crossed!",
+            #              category=FileFormatWarning)
             logger.warn("Guessing that this is actually a NAMD-type PSF file... continuing with fingers crossed!")
             logger.debug("First NAMD-type line: %d: %r", i, line.rstrip())
 
