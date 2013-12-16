@@ -2423,6 +2423,10 @@ class Universe(object):
             if guess_format(topologyfile, format=kwargs.get('format', None)) in \
                     MDAnalysis.coordinates._topology_coordinates_readers:
                 coordinatefile = topologyfile         # hack for pdb/gro/crd - only
+            # Fix by SB: make sure coordinatefile is never an empty tuple
+            if len(coordinatefile) == 0:
+                coordinatefile = None
+
 
         # build the topology (or at least a list of atoms)
         self.filename = topologyfile
