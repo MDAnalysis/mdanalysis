@@ -111,6 +111,11 @@ except ImportError:
     raise ImportError("""numpy>=1.3  is required to run the test suite. Please install it first. """
                       """(For example, try "easy_install 'numpy>=1.3'").""")
 
+try:
+    import nose
+except ImportError:
+    raise ImportError("""nose is requires to run the test suite. Please install it first. """
+                      """(For example, try "easy_install nose").""")
 
 try:
     import MDAnalysis
@@ -119,3 +124,15 @@ try:
 except ImportError:
     raise ImportError("MDAnalysis release %s must be installed to run the tests, not %s" %
                       (__version__, MDAnalysis.__version__))
+
+def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionError):
+    def knownfailure_decorator(f):
+        def inner(*args, **kwargs):
+            try:
+                f(*args, **kwargs)
+            except exc_type:
+                raise nose.SkipTest(msg)
+            else:
+                raise AssertionError('Failure expected')
+        return nose.tools.make_decorator(f)(inner)
+    return knownfailure_decorator
