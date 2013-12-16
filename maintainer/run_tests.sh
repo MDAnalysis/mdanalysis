@@ -19,6 +19,7 @@ echo ""
 # Build core
 echo "Building MDAnalysis..."
 cd "$root_dir/package"
+rm -rf build
 python setup.py build
 cd "$cur_dir"
 
@@ -26,6 +27,7 @@ cd "$cur_dir"
 echo
 echo "Building MDAnalysis Testsuite..."
 cd "$root_dir/testsuite"
+rm -rf build
 python setup.py build
 cd "$cur_dir"
 
