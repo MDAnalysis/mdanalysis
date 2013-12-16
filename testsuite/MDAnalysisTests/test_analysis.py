@@ -14,14 +14,13 @@
 #     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
 #     doi:10.1002/jcc.21787
 #
-
+from __future__ import print_function
 import MDAnalysis
 import MDAnalysis.analysis.distances
 import MDAnalysis.analysis.align
 import MDAnalysis.analysis.hbonds
 from MDAnalysis import SelectionError
 
-import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
@@ -244,11 +243,13 @@ class TestHoleModule(TestCase):
             resource.setrlimit(resource.RLIMIT_NOFILE, (64, self.hard_max_open_files))
         except ImportError:
             raise NotImplementedError("Test cannot be run without the resource module.")
-
+        import errno
         from MDAnalysis.analysis.hole import HOLEtraj
         # will need to have the 'hole' command available in the path
         os.chdir(self.dir_name)
         H = HOLEtraj(self.universe,cvect=[0,1,0],sample=20.0)
+
+
         # pretty unlikely that the code will get through 2 rounds if the MDA
         # issue 129 isn't fixed, although this depends on the file descriptor
         # open limit for the machine in question
@@ -257,9 +258,13 @@ class TestHoleModule(TestCase):
                 # will typically get an OSError for too many files being open after
                 # about 2 seconds if issue 129 isn't resolved
                 H.run()
-        except OSError, err:
+        except OSError as err:
             if err.errno == errno.EMFILE:
                 raise AssertionError("HOLEtraj does not close file descriptors (Issue 129)")
+            elif err.errno == errno.ENOENT:
+                import warnings
+                warnings.warn("HOLE binary not found, test is skipped")
+                return
             raise
         finally:
             # make sure to restore open file limit !!
