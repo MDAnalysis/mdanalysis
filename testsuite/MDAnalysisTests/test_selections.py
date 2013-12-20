@@ -127,13 +127,13 @@ class TestSelectionsCHARMM(TestCase):
         assert_equal(len(sel), 179)
 
     def test_prop(self):
-        sel = self.universe.selectAtoms('prop x * x + y * y <= 16')
+        sel = self.universe.selectAtoms('prop y <= 16')
         sel2 = self.universe.selectAtoms('prop abs z < 8')
-        assert_equal(len(sel), 115)
+        assert_equal(len(sel), 3194)
         assert_equal(len(sel2), 2001)
               
     # TODO:
-    # add more test cases for byres, bynum
+    # add more test cases for byres, bynum, point
     # and also for selection keywords such as 'nucleic'
         
     def test_empty_selection(self):

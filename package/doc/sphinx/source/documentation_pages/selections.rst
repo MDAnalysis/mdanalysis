@@ -118,11 +118,10 @@ Geometric
         all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0, 5.0) 
     prop [abs] *property*  *operator*  *value*
         selects atoms based on position, using *property*  **x**, **y**, or
-        **z** coordinate. Supports the **abs** (for absolute value), **cos**, **sin**, **tan** keyword  and
+        **z** coordinate. Supports the **abs** keyword (for absolute value) and
         the following *operators*: **<, >, <=, >=, ==, !=**. For example, ``prop z >= 5.0``
         selects all atoms with z coordinate greater than 5.0; ``prop abs z <= 5.0`` 
-	selects all atoms within -5.0 <= z <= 5.0; ``prop (x - 1.32702) * (x - 1.32702) + (y - 18.6267) * (y - 18.6267) <= cos(50) + 6``
-        selects all atoms within a cylinder of radius sqrt(cos(50)+6) centered in point (1.32702,18.6267).    
+	selects all atoms within -5.0 <= z <= 5.0.  
 
 From version 0.6 onwards, some geometrics selections (around, sphlayer, sphzone, point) 
 can use a k-d tree based, fast search algorithm (about three times faster than the
