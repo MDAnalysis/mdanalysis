@@ -189,3 +189,132 @@ class TestSelfDistanceArrayDCD(TestCase):
 
 
 
+class TestTriclinicDistances(TestCase):
+    """Unit tests for the Triclinic PBC functions.
+    Tests:
+      # transforming to and form S space (fractional coords)
+      mda.core.distances.transform_StoR
+      mda.core.distances.transform_RtoS
+      # distance calculations with PBC 
+      mda.core.distances.self_distance_array
+      mda.core.distances.distance_array
+    """
+
+    def setUp(self):
+        self.prec = 4
+        rawbox = np.array([[200, 100, 0],[50,300,0],[50,50,200]], 
+                          dtype=np.float32) #triclinic box
+        # Converting to vectors and back makes self.box be centred around x axis, ie box[0] = [lx, 0.0, 0.0]
+        self.boxV = MDAnalysis.coordinates.core.triclinic_box(rawbox[0], rawbox[1], rawbox[2])
+        self.box = MDAnalysis.coordinates.core.triclinic_vectors(self.boxV)
+        self.S_mol1 = np.array([[0.5, 0.0, 0.0], #fractional coords all in box
+                                [0.5, 0.5, 0.5],
+                                [1.0, 1.0, 1.0],
+                                [0.0, 0.5, 0.5]], dtype=np.float32)
+        self.S_mol2 = np.array([[4.5, 0.5, 0.0], #fractional coords that go outside box
+                                [0.75, -3.5, 0.25],
+                                [0.5, 0.0, 2.5],
+                                [2.5, 2.25, -3.25]], dtype=np.float32)
+
+
+    def tearDown(self):
+        del self.boxV
+        del self.box
+        del self.S_mol1
+        del self.S_mol2
+        del self.prec
+
+    def test_transforms(self):
+        from MDAnalysis.core.distances import transform_StoR, transform_RtoS
+        # To check the cython coordinate transform, the same operation is done in numpy
+        # Is a matrix multiplication of Coords x Box = NewCoords, so can use np.dot
+
+        # Test transformation
+        R_mol1 = transform_StoR(self.S_mol1, self.box)
+        R_np1 = np.dot(self.S_mol1, self.box)
+        
+        # Test transformation when given box in different form
+        R_mol2 = transform_StoR(self.S_mol2, self.boxV)
+        R_np2 = np.dot(self.S_mol2, self.box)
+
+        assert_almost_equal(R_mol1, R_np1, self.prec, err_msg="StoR transform failed with box")
+        assert_almost_equal(R_mol2, R_np2, self.prec, err_msg="StoR transform failed with boxV")
+
+        # Round trip test
+        S_test1 = transform_RtoS(R_mol1, self.boxV) # boxV here althought initial transform with box
+        S_test2 = transform_RtoS(R_mol2, self.box) # and vice versa, should still work
+        
+        assert_almost_equal(S_test1, self.S_mol1, self.prec, err_msg="Round trip failed in transform")
+        assert_almost_equal(S_test2, self.S_mol2, self.prec, err_msg="Round trip failed in transform")
+                            
+    def test_selfdist(self):
+        from MDAnalysis.core.distances import self_distance_array
+        from MDAnalysis.core.distances import transform_RtoS, transform_StoR
+
+        R_coords = transform_StoR(self.S_mol1, self.box)
+        # Transform functions are tested elsewhere so taken as working here
+        dists = self_distance_array(R_coords, box = self.box)
+        # Manually calculate self_distance_array
+        manual = np.zeros(len(dists), dtype = np.float64)
+        distpos = 0
+        for i, Ri in enumerate(R_coords):
+            for Rj in R_coords[i+1:]:
+                Rij = Rj - Ri
+                Rij -= round(Rij[2]/self.box[2][2])*self.box[2]
+                Rij -= round(Rij[1]/self.box[1][1])*self.box[1]
+                Rij -= round(Rij[0]/self.box[0][0])*self.box[0]
+                Rij = np.linalg.norm(Rij) # find norm of Rij vector
+                manual[distpos] = Rij # and done, phew
+                distpos += 1
+
+        assert_almost_equal(dists, manual, self.prec, 
+                            err_msg="self_distance_array failed with input 1")
+
+        # Do it again for input 2 (has wider separation in points)
+        # Also use boxV here in self_dist calculation
+        R_coords = transform_StoR(self.S_mol2, self.box)
+        # Transform functions are tested elsewhere so taken as working here
+        dists = self_distance_array(R_coords, box = self.boxV)
+        # Manually calculate self_distance_array
+        manual = np.zeros(len(dists), dtype = np.float64)
+        distpos = 0
+        for i, Ri in enumerate(R_coords):
+            for Rj in R_coords[i+1:]:
+                Rij = Rj - Ri
+                Rij -= round(Rij[2]/self.box[2][2])*self.box[2]
+                Rij -= round(Rij[1]/self.box[1][1])*self.box[1]
+                Rij -= round(Rij[0]/self.box[0][0])*self.box[0]
+                Rij = np.linalg.norm(Rij) # find norm of Rij vector
+                manual[distpos] = Rij # and done, phew
+                distpos += 1
+                
+        assert_almost_equal(dists, manual, self.prec, 
+                            err_msg="self_distance_array failed with input 2")
+                
+    def test_distarray(self):
+        from MDAnalysis.core.distances import distance_array
+        from MDAnalysis.core.distances import transform_StoR, transform_RtoS
+
+        R_mol1 = transform_StoR(self.S_mol1, self.box)
+        R_mol2 = transform_StoR(self.S_mol2, self.box)
+
+        # Try with box
+        dists = distance_array(R_mol1, R_mol2, box=self.box)
+        # Manually calculate distance_array
+        manual = np.zeros((len(R_mol1),len(R_mol2)))
+        for i, Ri in enumerate(R_mol1):
+            for j, Rj in enumerate(R_mol2):
+                Rij = Rj - Ri
+                Rij -= round(Rij[2]/self.box[2][2])*self.box[2]
+                Rij -= round(Rij[1]/self.box[1][1])*self.box[1]
+                Rij -= round(Rij[0]/self.box[0][0])*self.box[0]
+                Rij = np.linalg.norm(Rij) # find norm of Rij vector
+                manual[i][j] = Rij
+
+        assert_almost_equal(dists, manual, self.prec,
+                            err_msg="distance_array failed with box")
+    
+        # Now check using boxV
+        dists = distance_array(R_mol1, R_mol2, box=self.boxV)
+        assert_almost_equal(dists, manual, self.prec,
+                            err_msg="distance_array failed with boxV")
