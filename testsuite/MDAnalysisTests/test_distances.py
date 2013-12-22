@@ -313,3 +313,12 @@ class TestTriclinicDistances(TestCase):
         dists = distance_array(R_mol1, R_mol2, box=self.boxV)
         assert_almost_equal(dists, manual, self.prec,
                             err_msg="distance_array failed with boxV")
+
+    def test_pbc_dist(self):
+        from MDAnalysis.core.distances import distance_array
+        results = np.array([[37.629944]])
+
+        dists = distance_array(self.S_mol1, self.S_mol2, box=self.boxV)
+
+        assert_almost_equal(dists, results, self.prec,
+                            err_msg="distance_array failed to retrieve PBC distance")
