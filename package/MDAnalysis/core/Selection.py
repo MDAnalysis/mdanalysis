@@ -261,6 +261,8 @@ class CylindricalLayerSelection(Selection):
         self.sel = sel
         self.inRadius = inRadius
         self.exRadius = exRadius
+        self.inRadiusSq = inRadius * inRadius
+        self.exRadiusSq = exRadius * exRadius
         self.zmax = zmax
         self.zmin = zmin
         self.periodic = flags['use_periodic_selections']
@@ -270,14 +272,17 @@ class CylindricalLayerSelection(Selection):
     def _apply_distmat(self,group):
         sel_atoms = self.sel._apply(group)
         sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
-        sys_atoms_list = [a for a in (self._group_atoms)]  
-        sys_ag = AtomGroup(sys_atoms_list)
-        sel_CoG_exRad = str("prop ( x - ") + str(sel_CoG[0]) +") * ( x - "+str(sel_CoG[0])+") + ( y -  "+str(sel_CoG[1])+") * ( y - " +str(sel_CoG[1])+") <= "+ str(self.exRadius*self.exRadius)  
-        sel_CoG_inRad = str("prop ( x - ") + str(sel_CoG[0]) +") * ( x - "+str(sel_CoG[0])+") + ( y -  "+str(sel_CoG[1])+") * ( y - " +str(sel_CoG[1])+") >= "+ str(self.inRadius * self.inRadius)  
-        sel_Cog_z = str("prop z > ") + str(self.zmin) +" and prop z < "+ str(self.zmax)
-        sel_str = sel_CoG_exRad +" and  "+sel_CoG_inRad+" and "+sel_Cog_z
-        sel =  sys_ag.selectAtoms(sel_str)
-        res_atoms = sel
+        x = Selection.coord._x
+        y = Selection.coord._y
+        z = Selection.coord._z
+        sel_CoG_Zone = (x - sel_CoG[0]) * ( x - sel_CoG[0]) + ( y - sel_CoG[1]) * ( y - sel_CoG[1])
+        sel_CoG_Zone_array = numpy.array([[i] for i in sel_CoG_Zone ])
+        Selection.coord._znp = numpy.array([[i] for i in z ])
+        res_atomsA = [i for i in numpy.any(numpy.logical_and(sel_CoG_Zone_array <= self.exRadiusSq, sel_CoG_Zone_array >= self.inRadiusSq),axis=1).nonzero()[0]] 
+        res_atomsB = [i for i in numpy.any(numpy.logical_and(Selection.coord._znp > self.zmin,Selection.coord._znp < self.zmax),axis=1).nonzero()[0]]   
+        intersectionAB = numpy.intersect1d(res_atomsA,res_atomsB)
+        res_atoms = [self._group_atoms_list[i] for i in intersectionAB ]
+        res_atoms = set(res_atoms)
         if self.periodic:
             box = group.dimensions[:3]  
         else:
@@ -291,6 +296,7 @@ class CylindricalZoneSelection(Selection):
         Selection.__init__(self)
         self.sel = sel
         self.exRadius = exRadius
+        self.exRadiusSq = exRadius * exRadius
         self.zmax = zmax
         self.zmin = zmin
         self.periodic = flags['use_periodic_selections']
@@ -300,13 +306,17 @@ class CylindricalZoneSelection(Selection):
     def _apply_distmat(self,group):
         sel_atoms = self.sel._apply(group) 
         sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
-        sys_atoms_list = [a for a in (self._group_atoms)]  # list needed for back-indexing
-        sys_ag = AtomGroup(sys_atoms_list)
-        sel_CoG_exRad = str("prop ( x - ") + str(sel_CoG[0]) +") * ( x - "+str(sel_CoG[0])+") + ( y -  "+str(sel_CoG[1])+") * ( y - " +str(sel_CoG[1])+") <= "+ str(self.exRadius*self.exRadius)  
-        sel_Cog_z = str("prop z > ") + str(self.zmin) +" and prop z < "+ str(self.zmax)  
-        sel_str = sel_CoG_exRad +" and "+sel_Cog_z
-        sel = sys_ag.selectAtoms(sel_str)
-        res_atoms = sel
+        x = Selection.coord._x
+        y = Selection.coord._y
+        z = Selection.coord._z
+        sel_CoG_exRad = (x - sel_CoG[0]) * ( x - sel_CoG[0]) + ( y - sel_CoG[1]) * ( y - sel_CoG[1])
+        sel_CoG_exRad_array = numpy.array([[i] for i in sel_CoG_exRad ])
+        Selection.coord._znp = numpy.array([[i] for i in z ])
+        res_atomsA = [i for i in numpy.any(sel_CoG_exRad_array <= self.exRadiusSq,axis=1).nonzero()[0]] 
+        res_atomsB = [i for i in numpy.any(numpy.logical_and(Selection.coord._znp > self.zmin,Selection.coord._znp < self.zmax),axis=1).nonzero()[0]]   
+        intersectionAB = numpy.intersect1d(res_atomsA,res_atomsB)
+        res_atoms = [self._group_atoms_list[i] for i in intersectionAB ]
+        res_atoms = set(res_atoms)
         if self.periodic:
             box = group.dimensions[:3]  
         else:
@@ -614,8 +624,7 @@ class BondedSelection(Selection):
         return "<'BondedSelection' to "+ repr(self.sel)+" >"
 
 class PropertySelection(Selection):
-    """
-    Some of the possible properties:
+    """Some of the possible properties:
     x, y, z, radius, mass,
     """
     def __init__(self, prop, operator, value, abs=False):
@@ -625,32 +634,21 @@ class PropertySelection(Selection):
         self.value = value
         self.abs = abs
     def _apply(self, group):
-        verificationArray = self.prop.split() +  self.value.split()
-        if 'x' in verificationArray or 'y' in verificationArray or 'z' in verificationArray:
-            if 'x' in verificationArray:
-                px = numpy.array(getattr(Selection.coord, '_'+'x'))
-            if 'y' in verificationArray:
-                py = numpy.array(getattr(Selection.coord, '_'+'y'))
-            if 'z' in verificationArray:
-                pz = numpy.array(getattr(Selection.coord, '_'+'z'))
-            #left side of the inequation    
-            new_prop = self.prop.replace('x','px').replace('y','py').replace('z','pz').\
-            replace('cos','numpy.cos').replace('sin','numpy.sin').replace('tan',' numpy.tan')
-            #right side of the inequation
-            new_value = self.value.replace('x','px').replace('y','py').replace('z','pz').\
-            replace('cos','numpy.cos').replace('sin','numpy.sin').replace('tan','numpy.tan')
+        # For efficiency, get a reference to the actual numpy position arrays
+        if self.prop in ("x", "y", "z"):
+            p = getattr(Selection.coord, '_'+self.prop)
+            indices = numpy.array([a.number for a in group.atoms])
             if not self.abs:
-                if 'x' or 'y' or 'z' in (self.prop.split() or self.value.split()):
-                    #eval(), numpy function to evaluate both sides of the inequation
-                    res = numpy.nonzero(self.operator(eval(new_prop), eval(new_value))) 
+                # XXX Hack for difference in numpy.nonzero between version < 1. and version > 1
+                res = numpy.nonzero(self.operator(p[indices], self.value))
             else:
-                res = numpy.nonzero(self.operator(numpy.abs(eval(new_prop)), eval(new_value)))
+                res = numpy.nonzero(self.operator(numpy.abs(p[indices]), self.value))
             if type(res) == tuple: res = res[0]
             result_set = [group.atoms[i] for i in res]
         elif self.prop == "mass":
-            result_set = [a for a in group.atoms if self.operator(a.mass,eval(self.value))]
+            result_set = [a for a in group.atoms if self.operator(a.mass,self.value)]
         elif self.prop == "charge":
-            result_set = [a for a in group.atoms if self.operator(a.charge,eval(self.value))]
+            result_set = [a for a in group.atoms if self.operator(a.charge,self.value)]
         return set(result_set)
     def __repr__(self):
         if self.abs: abs_str = " abs "
@@ -852,25 +850,13 @@ class SelectionParser:
                 lower, upper = map(int, selrange.groups())
             return self.classdict[op](lower,upper)
         elif op == self.PROP:
-            prop = "" #left side parser
-            while True:
-                a = self.__consume_token()
-                if ( a != '<' and a != '>' and a != '<=' and a != '>=' and a != '!=' and a != '==') :
-                    prop += a+" "
-                else:
-                    oper = a
-                    break
-            if prop.split()[0] == str("abs") :
+            prop = self.__consume_token()
+            if prop == "abs":
                 abs = True
-                prop = prop.split(' ',1)[1]
-            else: abs = False            
-            value = ""#right side parser
-            while True:
-                a = self.__peek_token()
-                if ( a != 'and' and a != 'or' and a != 'not' and a != 'EOF') :
-                    value += self.__consume_token()+" "
-                else:
-                    break
+                prop = self.__consume_token()
+            else: abs = False
+            oper = self.__consume_token()
+            value = float(self.__consume_token())
             ops = dict([(self.GT, numpy.greater), (self.LT, numpy.less),
                         (self.GE, numpy.greater_equal), (self.LE, numpy.less_equal),
                         (self.EQ, numpy.equal), (self.NE, numpy.not_equal)])
