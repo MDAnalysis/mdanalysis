@@ -27,7 +27,8 @@ from nose.plugins.attrib import attr
 import os, errno
 import tempfile
 
-from MDAnalysis.tests.datafiles import PSF,DCD,CRD,FASTA,PDB_helix,PDB_HOLE,XTC_HOLE
+from .datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE
+from . import knownfailure
 
 class TestContactMatrix(TestCase):
     def setUp(self):
@@ -231,6 +232,7 @@ class TestHoleModule(TestCase):
 
     @attr('slow')
     @attr('issue')
+    @knownfailure("Test skipped because HOLE not found", OSError)
     def test_hole_module_fd_closure(self):
         """Issue 129: ensure low level file descriptors to PDB files used by Hole program are properly closed"""
         # If Issue 129 isn't resolved, this function will produce an OSError on
@@ -262,9 +264,7 @@ class TestHoleModule(TestCase):
             if err.errno == errno.EMFILE:
                 raise AssertionError("HOLEtraj does not close file descriptors (Issue 129)")
             elif err.errno == errno.ENOENT:
-                import warnings
-                warnings.warn("HOLE binary not found, test is skipped")
-                return
+                raise OSError("HOLE binary not found")
             raise
         finally:
             # make sure to restore open file limit !!
