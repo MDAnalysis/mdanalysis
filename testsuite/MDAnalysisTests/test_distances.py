@@ -23,7 +23,7 @@ from numpy.testing import *
 del test
 from nose.plugins.attrib import attr
 
-from MDAnalysis.tests.datafiles import PSF,DCD
+from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 
 
 
@@ -201,23 +201,18 @@ class TestTriclinicDistances(TestCase):
     """
 
     def setUp(self):
-        self.prec = 4
-        rawbox = np.array([[200, 100, 0],[50,300,0],[50,50,200]], 
-                          dtype=np.float32) #triclinic box
-        # Converting to vectors and back makes self.box be centred around x axis, ie box[0] = [lx, 0.0, 0.0]
-        self.boxV = MDAnalysis.coordinates.core.triclinic_box(rawbox[0], rawbox[1], rawbox[2])
-        self.box = MDAnalysis.coordinates.core.triclinic_vectors(self.boxV)
-        self.S_mol1 = np.array([[0.5, 0.0, 0.0], #fractional coords all in box
-                                [0.5, 0.5, 0.5],
-                                [1.0, 1.0, 1.0],
-                                [0.0, 0.5, 0.5]], dtype=np.float32)
-        self.S_mol2 = np.array([[4.5, 0.5, 0.0], #fractional coords that go outside box
-                                [0.75, -3.5, 0.25],
-                                [0.5, 0.0, 2.5],
-                                [2.5, 2.25, -3.25]], dtype=np.float32)
+        self.universe = MDAnalysis.Universe(TRIC)
+        self.prec = 2
+
+        self.box = MDAnalysis.coordinates.core.triclinic_vectors(self.universe.dimensions)
+        self.boxV = MDAnalysis.coordinates.core.triclinic_box(self.box[0], self.box[1], self.box[2])
+
+        self.S_mol1 = np.array([self.universe.atoms[383].pos])
+        self.S_mol2 = np.array([self.universe.atoms[390].pos])
 
 
     def tearDown(self):
+        del self.universe
         del self.boxV
         del self.box
         del self.S_mol1

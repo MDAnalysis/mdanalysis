@@ -60,6 +60,7 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "DMS",
            "CONECT",                             # HIV Reverse Transcriptase with inhibitor
            "TRZ", "TRZ_psf",
+           "TRIC",
            "merge_protein", "merge_ligand", "merge_water"
            ]
 
@@ -148,6 +149,8 @@ CONECT = resource_filename(__name__, 'data/1hvr.pdb')
 
 TRZ = resource_filename(__name__, 'data/trzfile.trz')
 TRZ_psf = resource_filename(__name__, 'data/trz_psf.psf')
+
+TRIC = resource_filename(__name__, 'data/dppc_vesicle_hg.gro')
 
 
 merge_protein = resource_filename(__name__, "data/merge/2zmm/protein.pdb")
