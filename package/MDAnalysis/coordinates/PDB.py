@@ -511,27 +511,27 @@ class PrimitivePDBReader(base.Reader):
                 line = line.strip() # Remove extra spaces
                 if len(line) == 0: # Skip line if empty
                     continue
-                section = line.split()[0]
+                record = line[:6].strip()
                 def _c(start, stop, typeclass=float):
                     return self._col(line, start, stop, typeclass=typeclass)
-                if section == 'END':
+                if record == 'END':
                     break
-                elif section == 'CRYST1':
+                elif record == 'CRYST1':
                     A, B, C = _c(7, 15), _c(16, 24), _c(25, 33)
                     alpha, beta, gamma = _c(34, 40), _c(41, 47), _c(48, 54)
                     unitcell[:] = A, B, C, alpha, beta, gamma
                     continue
-                elif section == 'HEADER':
+                elif record == 'HEADER':
                     header = line[6:-1]
                     continue
-                elif section == 'COMPND':
+                elif record == 'COMPND':
                     l = line[6:-1]
                     compound.append(l)
                     continue
-                elif section == 'REMARK':
+                elif record == 'REMARK':
                     content = line[6:-1]
                     remarks.append(content)
-                elif section == 'MODEL':
+                elif record == 'MODEL':
                     frames[len(frames) + 1] = i  # 1-based indexing
                 elif line[:6] in ('ATOM  ', 'HETATM'):
                     # skip atom/hetatm for frames other than the first - they will be read in when next() is called on the trajectory reader
