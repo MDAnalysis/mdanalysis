@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.4.2. HELANAL — analysis of protein helices &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    <title>3.4.2. HELANAL — analysis of protein helices &mdash; MDAnalysis 0.8.0rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0-dev',
+        VERSION:     '0.8.0rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0-dev documentation"
+          title="Search within MDAnalysis 0.8.0rc1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc1 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.5.1. Generating densities from trajectories — MDAnalysis.analysis.density" href="density.html" />
     <link rel="prev" title="3.4.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" /> 
@@ -51,7 +49,7 @@
         <li class="right" >
           <a href="gnm.html" title="3.4.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -72,10 +70,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="gnm.html"
-                        title="previous chapter">3.4.1. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></p>
+                        title="previous chapter">3.4.1. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="density.html"
-                        title="next chapter">3.5.1. Generating densities from trajectories &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
+                        title="next chapter">3.5.1. Generating densities from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/analysis/helanal.txt"
@@ -117,10 +115,10 @@
 </tbody>
 </table>
 <p>The <a class="reference internal" href="#module-MDAnalysis.analysis.helanal" title="MDAnalysis.analysis.helanal"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.helanal</span></tt></a> module is a Python implementation of the
-<a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html">HELANAL</a> algorithm <a class="reference internal" href="#bansal2000">[Bansal2000]</a> in <a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.f">helanal.f</a>, which is also available
+<a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html">HELANAL</a> algorithm <a class="reference internal" href="#bansal2000" id="id1">[Bansal2000]</a> in <a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.f">helanal.f</a>, which is also available
 through the <a class="reference external" href="http://nucleix.mbu.iisc.ernet.in/helanal/helanal.shtml">HELANAL webserver</a>.</p>
-<p>Please cite the paper <a class="reference internal" href="#bansal2000">[Bansal2000]</a> (and possibly <a class="reference internal" href="#kumar1996">[Kumar1996]</a> and
-<a class="reference internal" href="#kumar1998">[Kumar1998]</a>) in published work when using
+<p>Please cite the paper <a class="reference internal" href="#bansal2000" id="id2">[Bansal2000]</a> (and possibly <a class="reference internal" href="#kumar1996" id="id3">[Kumar1996]</a> and
+<a class="reference internal" href="#kumar1998" id="id4">[Kumar1998]</a>) in published work when using
 <a class="reference internal" href="#MDAnalysis.analysis.helanal.helanal_trajectory" title="MDAnalysis.analysis.helanal.helanal_trajectory"><tt class="xref py py-mod docutils literal"><span class="pre">helanal_trajectory</span></tt></a> or
 <a class="reference internal" href="#MDAnalysis.analysis.helanal.helanal_main" title="MDAnalysis.analysis.helanal.helanal_main"><tt class="xref py py-mod docutils literal"><span class="pre">helanal_main</span></tt></a>.</p>
 <p><a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html">HELANAL</a> quantifies the geometry of helices in proteins on the basis of their Cα
@@ -141,7 +139,7 @@ structures.</p>
 <p><a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html">HELANAL</a> can be used to characterize the geometry of helices with a minimum 9
 residues. The geometry of an alpha helix is characterized by computing local
 helix axes and local helix origins for four contiguous C-Alpha atoms, using the
-procedure of Sugeta and Miyazawa <a class="reference internal" href="#sugeta1967">[Sugeta1967]</a> and sliding this window over
+procedure of Sugeta and Miyazawa <a class="reference internal" href="#sugeta1967" id="id5">[Sugeta1967]</a> and sliding this window over
 the length of the helix in steps of one C-alpha atom.</p>
 <p>The angles between successive local helix axes can identify <em>local bends</em> or
 <em>kinks</em> as well as occurrence of <em>smooth curvature</em> in the helix. A matrix, whose
@@ -206,14 +204,14 @@ helix, e.g. with &#8220;name CA and resid 1:20&#8221; or use start=1, stop=20.</
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a></p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>selection</em></dt>
 <dd><p class="first last">selection string that selects Calpha atoms [&#8220;name CA&#8221;]</p>
 </dd>
@@ -306,7 +304,7 @@ the helix, e.g. with &#8220;name CA and resid 1:20&#8221;.</p>
         <li class="right" >
           <a href="gnm.html" title="3.4.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -316,7 +314,7 @@ the helix, e.g. with &#8220;name CA and resid 1:20&#8221;.</p>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

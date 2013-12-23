@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.TRZ &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    <title>MDAnalysis.coordinates.TRZ &mdash; MDAnalysis 0.8.0rc1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0-dev',
+        VERSION:     '0.8.0rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0-dev documentation"
+          title="Search within MDAnalysis 0.8.0rc1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -43,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -91,29 +89,18 @@
 <span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
 <span class="c">#     doi:10.1002/jcc.21787</span>
 <span class="c">#</span>
-
+<span class="c"># TRZ Reader written by Richard J. Gowers (2013)</span>
 
 <span class="sd">&quot;&quot;&quot;TRZ trajectory I/O  --- :mod:`MDAnalysis.coordinates.TRZ`</span>
 <span class="sd">============================================================</span>
-<span class="sd"> </span>
-<span class="sd">Classes to read IBIsCO/YASP binary trajectories.</span>
-<span class="sd">Only coordinates are currently read from these.</span>
 
-<span class="sd">.. SeeAlso::</span>
+<span class="sd">Classes to read `IBIsCO`_ / `YASP`_ binary trajectories.</span>
 
-<span class="sd">.. _IBIsCO: ibisco url</span>
-<span class="sd">.. _YASP: yasp url</span>
+<span class="sd">Reads coordinates, velocities and more (see attributes of the</span>
+<span class="sd">:class:`Timestep`).</span>
 
-<span class="sd">Classes</span>
-<span class="sd">-------</span>
-
-<span class="sd">.. autoclass:: Timestep</span>
-<span class="sd">   :members:</span>
-<span class="sd">   :inherited-members:</span>
-<span class="sd">.. autoclass:: TRZReader</span>
-<span class="sd">   :members:</span>
-<span class="sd">   :inherited-members:</span>
-
+<span class="sd">.. _IBIsCO: http://www.theo.chemie.tu-darmstadt.de/ibisco/IBISCO.html</span>
+<span class="sd">.. _YASP: http://www.theo.chemie.tu-darmstadt.de/group/services/yaspdoc/yaspdoc.html</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -123,52 +110,164 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis.core</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.coordinates.core</span> <span class="kn">import</span> <span class="n">triclinic_box</span>
 
 <div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; TRZ custom Timestep</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    .. attribute:: frame</span>
+<span class="sd">       Index of the frame, (1 based)</span>
+<span class="sd">    .. attribute:: numatoms</span>
+<span class="sd">       Number of atoms in the frame (will be constant through trajectory)</span>
+<span class="sd">    .. attribute:: time</span>
+<span class="sd">       Current time of the system in ps (will not always start at 0)</span>
+<span class="sd">    .. attribute:: pressure</span>
+<span class="sd">       Pressure of the system box in kPa</span>
+<span class="sd">    .. attribute:: pressure_tensor</span>
+<span class="sd">       Array containing pressure tensors in order: xx, xy, yy, xz, yz, zz</span>
+<span class="sd">    .. attribute:: total_energy</span>
+<span class="sd">       Hamiltonian for the system in kJ/mol</span>
+<span class="sd">    .. attribute:: potential_energy</span>
+<span class="sd">       Potential energy of the system in kJ/mol</span>
+<span class="sd">    .. attribute:: kinetic_energy</span>
+<span class="sd">       Kinetic energy of the system in kJ/mol</span>
+<span class="sd">    .. attribute:: temperature</span>
+<span class="sd">       Temperature of the system in Kelvin</span>
+
+<span class="sd">    Private Attributes</span>
+<span class="sd">    .. attribute:: _unitcell</span>
+<span class="sd">       Unitcell for system. ``[Lx, 0.0, 0.0, 0.0, Ly, 0.0, 0.0, 0.0, Lz]``.</span>
+<span class="sd">       Use the attribute :attr:`dimensions` to access this information.</span>
+<span class="sd">    .. attribute:: _pos</span>
+<span class="sd">       Position of particles in box (native nm)</span>
+<span class="sd">    .. attribute:: _velocities</span>
+<span class="sd">       Velocities of particles in box (native nm/ps)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">arg</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c">#System time in ps</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c">#pressure in kPa</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pressure_tensor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="c">#ptxx, ptxy, ptyy, ptxz, ptyz, ptzz</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_energy</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c"># Energies all kJ mol-1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">potential_energy</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kinetic_energy</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c">#Temperature in Kelvin</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span>        <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span>   <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">9</span><span class="p">),</span>                <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Timestep</span><span class="p">):</span> <span class="c"># Copy constructor</span>
+            <span class="c"># This makes a deepcopy of the timestep</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">frame</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">numatoms</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">pressure</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pressure_tensor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">pressure_tensor</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_energy</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">total_energy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">potential_energy</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">potential_energy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kinetic_energy</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">kinetic_energy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">temperature</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_pos</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_velocities</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;numpy array can only have 2 dimensions&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">9</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="c"># Or should an exception be raised if coordinate</span>
+                <span class="c"># structure is not 3-dimensional? Maybe velocities</span>
+                <span class="c"># could be read one day... [DP]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s">&#39;Fortran&#39;</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Cannot create an empty Timestep&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Timestep.dimensions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.Timestep.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unit cell dimensions, (A, B, C, alpha, beta, gamma)</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unit cell dimensions ``[A,B,C,alpha,beta,gamma]``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">triclinic_box</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
 </div></div>
 <div class="viewcode-block" id="TRZReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader">[docs]</a><span class="k">class</span> <span class="nc">TRZReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Reads an IBIsCO or YASP trajectory file</span>
-<span class="sd">    TRZ format detailed below, each line is a single fortran write statement, so is surrounded by 4 bytes when written by fortran</span>
-<span class="sd">    In brackets after each entry is the size of the content of each line</span>
-<span class="sd">    Header :title(80c)</span>
-<span class="sd">            nrec (int4)</span>
-<span class="sd">    Frame  :nframe, ntrj*nframe, natoms, treal (3*int4, real8)</span>
-<span class="sd">            boxx, 0.0, 0.0, 0.0, boxy, 0.0, 0.0, 0.0, boxz (real8 * 9)</span>
-<span class="sd">            pressure, pt11, pt12, pt22, pt13, pt23, pt33 (real8 *7)</span>
-<span class="sd">            6, etot, ptot, ek, t, 0.0, 0.0 (int4, real8 * 6)</span>
-<span class="sd">            rx (real4 * natoms)</span>
-<span class="sd">            ry </span>
-<span class="sd">            rz</span>
-<span class="sd">            vx</span>
-<span class="sd">            vy</span>
-<span class="sd">            vz</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="sd">    :Data:</span>
+<span class="sd">        ts</span>
+<span class="sd">          :class:`~MDAnalysis.coordinates.TRZ.Timestep` object</span>
+<span class="sd">          containing coordinates of current frame</span>
+
+<span class="sd">    :Methods:</span>
+<span class="sd">      ``len(trz)``</span>
+<span class="sd">        returns the number of frames</span>
+<span class="sd">      ``for ts in trz``</span>
+<span class="sd">        iterates through the trajectory</span>
+
+<span class="sd">    :Format:</span>
+<span class="sd">      TRZ format detailed below, each line is a single fortran write statement, so is surrounded by 4 bytes of metadata</span>
+<span class="sd">      In brackets after each entry is the size of the content of each line:</span>
+
+<span class="sd">      ``Header``::</span>
+<span class="sd">          title(80c)</span>
+<span class="sd">          nrec (int4)</span>
+<span class="sd">       ``Frame``::</span>
+<span class="sd">          nframe, ntrj*nframe, natoms, treal (3*int4, real8)</span>
+<span class="sd">          boxx, 0.0, 0.0, 0.0, boxy, 0.0, 0.0, 0.0, boxz (real8 * 9)</span>
+<span class="sd">          pressure, pt11, pt12, pt22, pt13, pt23, pt33 (real8 *7)</span>
+<span class="sd">          6, etot, ptot, ek, t, 0.0, 0.0 (int4, real8 * 6)</span>
+<span class="sd">          rx (real4 * natoms)</span>
+<span class="sd">          ry</span>
+<span class="sd">          rz</span>
+<span class="sd">          vx</span>
+<span class="sd">          vy</span>
+<span class="sd">          vz</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
 
     <span class="n">format</span> <span class="o">=</span> <span class="s">&quot;TRZ&quot;</span>
 
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span><span class="s">&#39;ps&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span><span class="s">&#39;nm&#39;</span><span class="p">}</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span><span class="s">&#39;ps&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span><span class="s">&#39;nm&#39;</span><span class="p">,</span> <span class="s">&#39;velocity&#39;</span><span class="p">:</span><span class="s">&#39;nm/ps&#39;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trzfilename</span><span class="p">,</span> <span class="n">numatoms</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trzfilename</span><span class="p">,</span> <span class="n">numatoms</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a TRZ Reader</span>
+
+<span class="sd">        :Arguments:</span>
+<span class="sd">          *trzfilename*</span>
+<span class="sd">            name of input file</span>
+<span class="sd">          *numatoms*</span>
+<span class="sd">            number of atoms in trajectory, must taken from topology file!</span>
+<span class="sd">          *convert_units*</span>
+<span class="sd">            converts units to MDAnalysis defaults</span>
+<span class="sd">            &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">numatoms</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;TRZReader requires the numatoms keyword&#39;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">convert_units</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_gromacs_lengths&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">trzfilename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span> <span class="o">=</span> <span class="nb">file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="c">#file() is like open()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__numatoms</span> <span class="o">=</span> <span class="n">numatoms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__delta</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span> <span class="o">=</span> <span class="mi">0</span> <span class="c">#Are any atoms fixed in place? Not used in trz files</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="mi">1</span> <span class="c">#Step size for iterating through trajectory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="bp">False</span> <span class="c"># Box info for PBC</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;delta&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="c"># Length of timestep</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip_timestep</span> <span class="o">=</span> <span class="mi">1</span> <span class="c"># Number of steps between frames, can be found in trz files</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_trz_header</span><span class="p">()</span>
@@ -176,6 +275,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_read_trz_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads the header of the trz trajectory&quot;&quot;&quot;</span>
         <span class="c">#Read the header of the file</span>
         <span class="c">#file.read(4)</span>
         <span class="c">#title = struct.unpack(&#39;80c&#39;,file.read(80))</span>
@@ -194,20 +294,25 @@
             <span class="c">#Skip into frame</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="c"># Seek forward 12 bytes from current position (1)</span>
             <span class="n">natoms</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;i&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span> <span class="c"># Real time of the system</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="c"># Real time of the system</span>
             <span class="c">#Read box data</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="c">#Includes 4 from previous write statement</span>
-            <span class="n">box</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;9d&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">72</span><span class="p">)))</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c"># lx, 0.0, 0.0</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="c"># 0.0, ly, 0.0</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="c"># 0.0, 0.0, lz</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">]</span> <span class="c">#Assume box is orthagonal</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;9d&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">72</span><span class="p">))</span> <span class="c">#3x3 matrix with lengths along diagonal</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-            <span class="c">#Skip some more stuff</span>
-            <span class="n">midskip</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">8</span><span class="o">*</span><span class="mi">7</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">8</span><span class="o">*</span><span class="mi">6</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="c">#Skip energy and pressure entries</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">midskip</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c">#Pressure data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">pressure</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">pressure_tensor</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;6d&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="mi">6</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c">#Energy data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="c">#4 byte buffer + meaningless integer skip</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">total_energy</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">potential_energy</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">kinetic_energy</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="mi">8</span><span class="o">+</span><span class="mi">4</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span> <span class="c">#2 empty doubles and 4 byte end buffer</span>
             <span class="c">#Read coordinate data</span>
-            <span class="n">readarg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;f&#39;</span>
+            <span class="n">readarg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;f&#39;</span> <span class="c">#Argument for struct.unpack</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">_x</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">readarg</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">natoms</span><span class="p">))</span> <span class="c"># ts._pos[:,0] = x coord</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
@@ -215,12 +320,22 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">_z</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">readarg</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">natoms</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-            <span class="c">#Skip velocities at end of frame</span>
-            <span class="c"># ts._velocities[:,0] is vx</span>
-            <span class="n">endskip</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="p">(</span><span class="mi">4</span> <span class="o">+</span> <span class="n">natoms</span><span class="o">*</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="c"># 3 real4 arrays natoms in length bookended by 4 bytes, velocity info</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">endskip</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c">#Velocities</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">readarg</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">natoms</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">readarg</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">natoms</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">readarg</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">natoms</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 
             <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span> <span class="c">#Convert things read into MDAnalysis&#39; native formats (nm -&gt; angstroms in this case)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">)</span>
+
             <span class="k">return</span> <span class="n">ts</span>
         <span class="k">except</span> <span class="n">struct</span><span class="o">.</span><span class="n">error</span><span class="p">:</span> <span class="c">#End of file reached if struct fails to unpack</span>
             <span class="k">raise</span> <span class="ne">IOError</span>
@@ -272,6 +387,27 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
                 <span class="k">return</span> <span class="n">framecounter</span>
 
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="TRZReader.delta"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.delta">[docs]</a>    <span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Time step between frames in ps</span>
+
+<span class="sd">        Assumes that this step is constant (ie. 2 trajectories with different steps haven&#39;t been</span>
+<span class="sd">        stitched together)</span>
+<span class="sd">        Returns 0 in case of IOError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__delta</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__delta</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+            <span class="n">t1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__delta</span> <span class="o">=</span> <span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__delta</span>
+</div>
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
@@ -283,7 +419,7 @@
                 <span class="k">raise</span> <span class="ne">StopIteration</span>
 
 <div class="viewcode-block" id="TRZReader.rewind"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Reposition onto first frame&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Reposition reader onto first frame&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 </div>
@@ -335,7 +471,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -346,7 +482,7 @@
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

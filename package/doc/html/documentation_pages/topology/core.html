@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.2. Common functions for topology building — MDAnalysis.topology.core &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    <title>4.2. Common functions for topology building — MDAnalysis.topology.core &mdash; MDAnalysis 0.8.0rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0-dev',
+        VERSION:     '0.8.0rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0-dev documentation"
+          title="Search within MDAnalysis 0.8.0rc1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc1 documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.3. MDAnalysis topology tables" href="tables.html" />
     <link rel="prev" title="4.1. Topology readers — MDAnalysis.topology" href="init.html" /> 
@@ -51,7 +49,7 @@
         <li class="right" >
           <a href="init.html" title="4.1. Topology readers — MDAnalysis.topology"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc1 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -96,7 +94,7 @@
 <h1>4.2. Common functions for topology building &#8212; <a class="reference internal" href="#module-MDAnalysis.topology.core" title="MDAnalysis.topology.core"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt></a><a class="headerlink" href="#common-functions-for-topology-building-mdanalysis-topology-core" title="Permalink to this headline">¶</a></h1>
 <p>The various topology parsers make use of functions and classes in this
 module. They are mostly of use to developers.</p>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></tt></a> for some hard-coded atom
 information that is used by functions such as <a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_type" title="MDAnalysis.topology.core.guess_atom_type"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_type()</span></tt></a> and
@@ -125,7 +123,7 @@ information that is used by functions such as <a class="reference internal" href
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.build_residues">
-<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">build_residues</tt><big>(</big><em>atoms</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.build_residues" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">build_residues</tt><big>(</big><em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#build_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.build_residues" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a list <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> instances from a list of <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
 <p>Updating residues also changes the underlying
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances, which record
@@ -134,12 +132,13 @@ to which residue an atom belongs.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">List of <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> instances</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> instances</td>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.8.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -155,7 +154,7 @@ to which residue and segment an atom belongs.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">structure dict, which associates a segname with a
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">structure dict, which associates a segname with a
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Segment" title="MDAnalysis.core.AtomGroup.Segment"><tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt></a></td>
 </tr>
 </tbody>
@@ -198,7 +197,7 @@ provided.</p>
 <p>Looks in dict to see if element is found, otherwise it uses the first character in the atomname.
 The table comes from CHARMM and AMBER atom types, where the first character is not sufficient to
 determine the atom type. Some GROMOS ions have also been added.</p>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_type" title="MDAnalysis.topology.core.guess_atom_type"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_type()</span></tt></a> and
 <a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></tt></a> (where the data are stored)</p>
@@ -223,7 +222,7 @@ masses you might want to double check.</p>
 <dd><p>Guess atom type from the name.</p>
 <p>At the moment, this function simply returns the element, as
 guessed by <a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></tt></a>.</p>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></tt></a> and <a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></tt></a></p>
 </div>
@@ -248,8 +247,9 @@ structure is correct. This is wrong and will burn somebody.</p>
 <li>Reference: <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html">http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html</a></li>
 <li>Author: Jan Domanski</li>
 </ul>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.7.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -285,7 +285,7 @@ individual packages (e.g. as static methods).</p>
         <li class="right" >
           <a href="init.html" title="4.1. Topology readers — MDAnalysis.topology"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc1 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -295,7 +295,7 @@ individual packages (e.g. as static methods).</p>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.18. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    <title>5.18. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ &mdash; MDAnalysis 0.8.0rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0-dev',
+        VERSION:     '0.8.0rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0-dev documentation"
+          title="Search within MDAnalysis 0.8.0rc1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc1 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="6. Selection exporters" href="../selections_modules.html" />
     <link rel="prev" title="5.17. The Gromacs xtc/trr library libxdrfile" href="libxdrfile.html" /> 
@@ -51,7 +49,7 @@
         <li class="right" >
           <a href="libxdrfile.html" title="5.17. The Gromacs xtc/trr library libxdrfile"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -60,14 +58,6 @@
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-  <h3><a href="../../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">5.18. TRZ trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a><ul>
-<li><a class="reference internal" href="#references">5.18.1. References</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
   <p class="topless"><a href="libxdrfile.html"
                         title="previous chapter">5.17. The Gromacs xtc/trr library <tt class="docutils literal"><span class="pre">libxdrfile</span></tt></a></p>
@@ -102,10 +92,9 @@
             
   <span class="target" id="module-MDAnalysis.coordinates.TRZ"></span><div class="section" id="trz-trajectory-i-o-mdanalysis-coordinates-trz">
 <h1>5.18. TRZ trajectory I/O  &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.TRZ" title="MDAnalysis.coordinates.TRZ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a><a class="headerlink" href="#trz-trajectory-i-o-mdanalysis-coordinates-trz" title="Permalink to this headline">¶</a></h1>
-<p>Classes to read IBIsCO/YASP binary trajectories.</p>
-<p>Reads coordinates, velocities and more.</p>
-<div class="section" id="references">
-<h2>5.18.1. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p>Classes to read <a class="reference external" href="http://www.theo.chemie.tu-darmstadt.de/ibisco/IBISCO.html">IBIsCO</a> / <a class="reference external" href="http://www.theo.chemie.tu-darmstadt.de/group/services/yaspdoc/yaspdoc.html">YASP</a> binary trajectories.</p>
+<p>Reads coordinates, velocities and more (see attributes of the
+<a class="reference internal" href="#MDAnalysis.coordinates.TRZ.Timestep" title="MDAnalysis.coordinates.TRZ.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>).</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRZ.TRZReader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRZ.</tt><tt class="descname">TRZReader</tt><big>(</big><em>trzfilename</em>, <em>numatoms=None</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader" title="Permalink to this definition">¶</a></dt>
@@ -114,7 +103,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Data :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Data:</th><td class="field-body"><dl class="first docutils">
 <dt>ts</dt>
 <dd><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.TRZ.Timestep" title="MDAnalysis.coordinates.TRZ.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> object
 containing coordinates of current frame</p>
@@ -122,7 +111,7 @@ containing coordinates of current frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Methods :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Methods:</th><td class="field-body"><dl class="first docutils">
 <dt><tt class="docutils literal"><span class="pre">len(trz)</span></tt></dt>
 <dd><p class="first last">returns the number of frames</p>
 </dd>
@@ -132,23 +121,30 @@ containing coordinates of current frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Format :</th><td class="field-body"><p class="first">TRZ format detailed below, each line is a single fortran write statement, so is surrounded by 4 bytes of metadata
-In brackets after each entry is the size of the content of each line</p>
-<div class="last highlight-python"><pre>``Header`` 
-  title(80c)
-  nrec (int4)
-``Frame``
-  nframe, ntrj*nframe, natoms, treal (3*int4, real8)
-  boxx, 0.0, 0.0, 0.0, boxy, 0.0, 0.0, 0.0, boxz (real8 * 9)
-  pressure, pt11, pt12, pt22, pt13, pt23, pt33 (real8 *7)
-  6, etot, ptot, ek, t, 0.0, 0.0 (int4, real8 * 6)
-  rx (real4 * natoms)
-  ry 
-  rz
-  vx
-  vy
-  vz</pre>
-</div>
+<tr class="field-odd field"><th class="field-name">Format:</th><td class="field-body"><p class="first">TRZ format detailed below, each line is a single fortran write statement, so is surrounded by 4 bytes of metadata
+In brackets after each entry is the size of the content of each line:</p>
+<dl class="last docutils">
+<dt><tt class="docutils literal"><span class="pre">Header</span></tt>::</dt>
+<dd><blockquote class="first">
+<div><p>title(80c)
+nrec (int4)</p>
+</div></blockquote>
+<dl class="last docutils">
+<dt><tt class="docutils literal"><span class="pre">Frame</span></tt>::</dt>
+<dd><p class="first last">nframe, ntrj*nframe, natoms, treal (3*int4, real8)
+boxx, 0.0, 0.0, 0.0, boxy, 0.0, 0.0, 0.0, boxz (real8 * 9)
+pressure, pt11, pt12, pt22, pt13, pt23, pt33 (real8 <a href="#id1"><span class="problematic" id="id2">*</span></a>7)
+6, etot, ptot, ek, t, 0.0, 0.0 (int4, real8 * 6)
+rx (real4 * natoms)
+ry
+rz
+vx
+vy
+vz</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -158,7 +154,7 @@ In brackets after each entry is the size of the content of each line</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>trzfilename</em></dt>
 <dd><p class="first last">name of input file</p>
 </dd>
@@ -181,7 +177,7 @@ In brackets after each entry is the size of the content of each line</p>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRZ.TRZReader.delta">
-<tt class="descname">delta</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.delta" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">delta</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.delta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time step between frames in ps</p>
 <p>Assumes that this step is constant (ie. 2 trajectories with different steps haven&#8217;t been
 stitched together)
@@ -218,66 +214,93 @@ Returns 0 in case of IOError</p>
 <dt id="MDAnalysis.coordinates.TRZ.Timestep">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRZ.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>TRZ custom Timestep</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Attributes :</th><td class="field-body"><dl class="first docutils">
-<dt><tt class="docutils literal"><span class="pre">frame</span></tt></dt>
-<dd><p class="first last">Index of the frame, (1 based)</p>
-</dd>
-<dt><tt class="docutils literal"><span class="pre">numatoms</span></tt></dt>
-<dd><p class="first last">Number of atoms in the frame (will be constant through trajectory)</p>
-</dd>
-<dt><tt class="docutils literal"><span class="pre">time</span></tt></dt>
-<dd><p class="first last">Current time of the system in ps (will not always start at 0)</p>
-</dd>
-<dt><tt class="docutils literal"><span class="pre">pressure</span></tt></dt>
-<dd><p class="first last">Pressure of the system box in kPa</p>
-</dd>
-<dt><tt class="docutils literal"><span class="pre">pressure_tensor</span></tt></dt>
-<dd><p class="first last">Array containing pressure tensors in order: xx, xy, yy, xz, yz, zz</p>
-</dd>
-<dt><tt class="docutils literal"><span class="pre">total_energy</span></tt></dt>
-<dd><p class="first last">Hamiltonian for the system in kJ/mol</p>
-</dd>
-<dt><tt class="docutils literal"><span class="pre">potential_energy</span></tt></dt>
-<dd><p class="first last">Potential energy of the system in kJ/mol</p>
-</dd>
-<dt><tt class="docutils literal"><span class="pre">kinetic_energy</span></tt></dt>
-<dd><p class="first last">Kinetic energy of the system in kJ/mol</p>
-</dd>
-<dt><tt class="docutils literal"><span class="pre">temperature</span></tt></dt>
-<dd><p class="first last">Temperature of the system in Kelvin</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Private Attributes:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><dl class="first last docutils">
-<dt><tt class="docutils literal"><span class="pre">_unitcell</span></tt></dt>
-<dd><p class="first last">Unitcell for system. [Lx, 0.0, 0.0, 0.0, Ly, 0.0, 0.0, 0.0, Lz]</p>
-</dd>
-<dt><tt class="docutils literal"><span class="pre">_pos</span></tt></dt>
-<dd><p class="first last">Position of particles in box (native nm)</p>
-</dd>
-<dt><tt class="docutils literal"><span class="pre">_velocities</span></tt></dt>
-<dd><p class="first last">Velocities of particles in box (native nm/ps)</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
+<p>Attributes
+.. attribute:: frame</p>
+<blockquote>
+<div>Index of the frame, (1 based)</div></blockquote>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep.numatoms">
+<tt class="descname">numatoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep.numatoms" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Number of atoms in the frame (will be constant through trajectory)</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep.time">
+<tt class="descname">time</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep.time" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Current time of the system in ps (will not always start at 0)</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep.pressure">
+<tt class="descname">pressure</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep.pressure" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Pressure of the system box in kPa</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep.pressure_tensor">
+<tt class="descname">pressure_tensor</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep.pressure_tensor" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Array containing pressure tensors in order: xx, xy, yy, xz, yz, zz</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep.total_energy">
+<tt class="descname">total_energy</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep.total_energy" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Hamiltonian for the system in kJ/mol</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep.potential_energy">
+<tt class="descname">potential_energy</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep.potential_energy" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Potential energy of the system in kJ/mol</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep.kinetic_energy">
+<tt class="descname">kinetic_energy</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep.kinetic_energy" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Kinetic energy of the system in kJ/mol</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep.temperature">
+<tt class="descname">temperature</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep.temperature" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Temperature of the system in Kelvin</tt></dt>
+<dd></dd></dl>
+
+<p>Private Attributes
+.. attribute:: _unitcell</p>
+<blockquote>
+<div>Unitcell for system. <tt class="docutils literal"><span class="pre">[Lx,</span> <span class="pre">0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0,</span> <span class="pre">Ly,</span> <span class="pre">0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0,</span> <span class="pre">Lz]</span></tt>.
+Use the attribute <a class="reference internal" href="#MDAnalysis.coordinates.TRZ.Timestep.dimensions" title="MDAnalysis.coordinates.TRZ.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">dimensions</span></tt></a> to access this information.</div></blockquote>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep._pos">
+<tt class="descname">_pos</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep._pos" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Position of particles in box (native nm)</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep._velocities">
+<tt class="descname">_velocities</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep._velocities" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Velocities of particles in box (native nm/ps)</tt></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRZ.Timestep.dimensions">
 <tt class="descname">dimensions</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#Timestep.dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unit cell dimensions, native format is</p>
+<dd><p>Unit cell dimensions <tt class="docutils literal"><span class="pre">[A,B,C,alpha,beta,gamma]</span></tt>.</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
 </div>
 
 
@@ -301,7 +324,7 @@ Returns 0 in case of IOError</p>
         <li class="right" >
           <a href="libxdrfile.html" title="5.17. The Gromacs xtc/trr library libxdrfile"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -311,7 +334,7 @@ Returns 0 in case of IOError</p>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

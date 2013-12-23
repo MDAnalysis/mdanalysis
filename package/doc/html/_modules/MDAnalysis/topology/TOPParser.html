@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.topology.TOPParser &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    <title>MDAnalysis.topology.TOPParser &mdash; MDAnalysis 0.8.0rc1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0-dev',
+        VERSION:     '0.8.0rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0-dev documentation"
+          title="Search within MDAnalysis 0.8.0rc1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -43,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -134,116 +132,116 @@
 <span class="sd">    :Returns: MDAnalysis internal *structure* dict.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">formatversion</span> <span class="o">=</span> <span class="mi">10</span>
-    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%F</span><span class="s">LAG ATOMIC_NUMBER&quot;</span><span class="p">):</span>
-           <span class="n">formatversion</span> <span class="o">=</span> <span class="mi">12</span>
-           <span class="k">break</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">topfile</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">topfile</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%F</span><span class="s">LAG ATOMIC_NUMBER&quot;</span><span class="p">):</span>
+                <span class="n">formatversion</span> <span class="o">=</span> <span class="mi">12</span>
+                <span class="k">break</span>
     <span class="c"># Open and check top validity</span>
     <span class="c">######  Reading header info POINTERS  #################</span>
-    <span class="n">topfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
-    <span class="n">next_line</span> <span class="o">=</span> <span class="n">skip_line</span> <span class="o">=</span> <span class="n">topfile</span><span class="o">.</span><span class="n">next</span>
-    <span class="n">header</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">header</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;%VE&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">TOPParseError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid TOP file&quot;</span> <span class="o">%</span> <span class="n">topfile</span><span class="p">)</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;TITLE&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">TOPParseError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid TOP file&quot;</span> <span class="o">%</span> <span class="n">topfile</span><span class="p">)</span>
-    <span class="k">while</span> <span class="n">header</span><span class="p">[:</span><span class="mi">14</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;</span><span class="si">%F</span><span class="s">LAG POINTERS&#39;</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">topfile</span><span class="p">:</span>
+        <span class="n">next_line</span> <span class="o">=</span> <span class="n">skip_line</span> <span class="o">=</span> <span class="n">topfile</span><span class="o">.</span><span class="n">next</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span>
-    <span class="n">header</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span>
-    <span class="n">topremarks</span> <span class="o">=</span> <span class="p">[</span><span class="n">next_line</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
-    <span class="n">sys_info</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">topremarks</span><span class="p">:</span>
-        <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">j</span><span class="p">:</span>
-            <span class="n">sys_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
-    <span class="c">########################################################</span>
+        <span class="k">if</span> <span class="n">header</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;%VE&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TOPParseError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid TOP file&quot;</span> <span class="o">%</span> <span class="n">topfile</span><span class="p">)</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;TITLE&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TOPParseError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid TOP file&quot;</span> <span class="o">%</span> <span class="n">topfile</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">header</span><span class="p">[:</span><span class="mi">14</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;</span><span class="si">%F</span><span class="s">LAG POINTERS&#39;</span><span class="p">:</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span>
+        <span class="n">topremarks</span> <span class="o">=</span> <span class="p">[</span><span class="n">next_line</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
+        <span class="n">sys_info</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">topremarks</span><span class="p">:</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">j</span><span class="p">:</span>
+                <span class="n">sys_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+        <span class="c">########################################################</span>
 
-    <span class="n">structure</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">final_structure</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">final_structure</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">parse_sec</span><span class="p">(</span><span class="n">section_info</span><span class="p">):</span>
-        <span class="n">desc</span><span class="p">,</span> <span class="n">atoms_per</span><span class="p">,</span> <span class="n">per_line</span><span class="p">,</span> <span class="n">parsefunc</span><span class="p">,</span> <span class="n">data_struc</span><span class="p">,</span> <span class="n">sect_num</span> <span class="o">=</span> <span class="n">section_info</span>
-        <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
-        <span class="c"># Get the number</span>
-        <span class="n">num</span> <span class="o">=</span> <span class="n">sys_info</span><span class="p">[</span><span class="n">sect_num</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">data_struc</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;_resname&quot;</span><span class="p">,</span><span class="s">&quot;_bond&quot;</span><span class="p">]:</span>
-                <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-                <span class="n">header</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">parse_sec</span><span class="p">(</span><span class="n">section_info</span><span class="p">):</span>
+            <span class="n">desc</span><span class="p">,</span> <span class="n">atoms_per</span><span class="p">,</span> <span class="n">per_line</span><span class="p">,</span> <span class="n">parsefunc</span><span class="p">,</span> <span class="n">data_struc</span><span class="p">,</span> <span class="n">sect_num</span> <span class="o">=</span> <span class="n">section_info</span>
+            <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+            <span class="c"># Get the number</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="n">sys_info</span><span class="p">[</span><span class="n">sect_num</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">data_struc</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;_resname&quot;</span><span class="p">,</span><span class="s">&quot;_bond&quot;</span><span class="p">]:</span>
+                    <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                    <span class="n">header</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span>
 
-        <span class="c"># Now figure out how many lines to read</span>
-        <span class="n">numlines</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">num</span><span class="p">)</span><span class="o">/</span><span class="n">per_line</span><span class="p">))</span>
-        <span class="c">#print data_struc, numlines</span>
-        <span class="k">if</span> <span class="n">parsefunc</span> <span class="o">==</span> <span class="n">__parsebond_</span><span class="p">:</span>
-                <span class="n">parsefunc</span><span class="p">(</span><span class="n">next_line</span><span class="p">,</span> <span class="n">atoms_per</span><span class="p">,</span> <span class="n">data_struc</span><span class="p">,</span> <span class="n">final_structure</span><span class="p">,</span> <span class="n">numlines</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-                <span class="n">parsefunc</span><span class="p">(</span><span class="n">next_line</span><span class="p">,</span> <span class="n">atoms_per</span><span class="p">,</span> <span class="n">data_struc</span><span class="p">,</span> <span class="n">structure</span><span class="p">,</span> <span class="n">numlines</span><span class="p">)</span>
+            <span class="c"># Now figure out how many lines to read</span>
+            <span class="n">numlines</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">num</span><span class="p">)</span><span class="o">/</span><span class="n">per_line</span><span class="p">))</span>
+            <span class="c">#print data_struc, numlines</span>
+            <span class="k">if</span> <span class="n">parsefunc</span> <span class="o">==</span> <span class="n">__parsebond_</span><span class="p">:</span>
+                    <span class="n">parsefunc</span><span class="p">(</span><span class="n">next_line</span><span class="p">,</span> <span class="n">atoms_per</span><span class="p">,</span> <span class="n">data_struc</span><span class="p">,</span> <span class="n">final_structure</span><span class="p">,</span> <span class="n">numlines</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                    <span class="n">parsefunc</span><span class="p">(</span><span class="n">next_line</span><span class="p">,</span> <span class="n">atoms_per</span><span class="p">,</span> <span class="n">data_struc</span><span class="p">,</span> <span class="n">structure</span><span class="p">,</span> <span class="n">numlines</span><span class="p">)</span>
 
-    <span class="n">sections</span> <span class="o">=</span> <span class="p">{</span><span class="mi">12</span><span class="p">:</span>
-                    <span class="p">[(</span><span class="s">&quot;ATOM_NAME&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">__parseatoms_</span><span class="p">,</span> <span class="s">&quot;_name&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;CHARGE&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parsesection_</span><span class="p">,</span><span class="s">&quot;_charge&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;ATOMIC_NUMBER&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parsesectionint_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;MASS&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parsesection_</span><span class="p">,</span><span class="s">&quot;_mass&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;ATOM_TYPE_INDEX&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parsesectionint_</span><span class="p">,</span><span class="s">&quot;_atom_type&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;NUMBER_EXCLUDED_ATOMS&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;NONBONDED_PARM_INDEX&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;RESIDUE_LABEL&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">__parseatoms_</span><span class="p">,</span> <span class="s">&quot;_resname&quot;</span><span class="p">,</span><span class="mi">11</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;RESIDUE_POINTER&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parsesectionint_</span><span class="p">,</span><span class="s">&quot;_respoint&quot;</span><span class="p">,</span><span class="mi">11</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;BOND_FORCE_CONSTANT&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;BOND_EQUIL_VALUE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;ANGLE_FORCE_CONSTANT&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;ANGLE_EQUIL_VALUE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;DIHEDRAL_FORCE_CONSTANT&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;DIHEDRAL_PERIODICITY&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;DIHEDRAL_PHASE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;SOLTY&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;LENNARD_JONES_ACOEF&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;LENNARD_JONES_BCOEF&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="c">#(&quot;BONDS_INC_HYDROGEN&quot;, 2, 4, __parsebond_, &quot;_bonds&quot;,2),</span>
-                     <span class="c">#(&quot;ANGLES_INC_HYDROGEN&quot;, 3, 3, __parsesection_, &quot;_angles&quot;),</span>
-                     <span class="c">#(&quot;DIHEDRALS_INC_HYDROGEN&quot;, 4, 2, __parsesection_, &quot;_dihe&quot;),</span>
-                     <span class="c">#(&quot;NIMPHI&quot;, 4, 2, __parsesection_, &quot;_impr&quot;),</span>
-                     <span class="c">#(&quot;NDON&quot;, 2, 4, __parsesection_,&quot;_donors&quot;),</span>
-                     <span class="c">#(&quot;NACC&quot;, 2, 4, __parsesection_,&quot;_acceptors&quot;),</span>
-                     <span class="p">],</span>
-                <span class="mi">10</span><span class="p">:</span>
-                    <span class="p">[(</span><span class="s">&quot;ATOM_NAME&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">__parseatoms_</span><span class="p">,</span> <span class="s">&quot;_name&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;CHARGE&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parsesection_</span><span class="p">,</span><span class="s">&quot;_charge&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;MASS&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parsesection_</span><span class="p">,</span><span class="s">&quot;_mass&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;ATOM_TYPE_INDEX&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parsesectionint_</span><span class="p">,</span><span class="s">&quot;_atom_type&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;NUMBER_EXCLUDED_ATOMS&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;NONBONDED_PARM_INDEX&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;RESIDUE_LABEL&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">__parseatoms_</span><span class="p">,</span> <span class="s">&quot;_resname&quot;</span><span class="p">,</span><span class="mi">11</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;RESIDUE_POINTER&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parsesectionint_</span><span class="p">,</span><span class="s">&quot;_respoint&quot;</span><span class="p">,</span><span class="mi">11</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;BOND_FORCE_CONSTANT&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;BOND_EQUIL_VALUE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;ANGLE_FORCE_CONSTANT&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;ANGLE_EQUIL_VALUE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;DIHEDRAL_FORCE_CONSTANT&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;DIHEDRAL_PERIODICITY&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;DIHEDRAL_PHASE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;SOLTY&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;LENNARD_JONES_ACOEF&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s">&quot;LENNARD_JONES_BCOEF&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
-                     <span class="c">#(&quot;BONDS_INC_HYDROGEN&quot;, 2, 4, __parsebond_, &quot;_bonds&quot;,2),</span>
-                     <span class="c">#(&quot;ANGLES_INC_HYDROGEN&quot;, 3, 3, __parsesection_, &quot;_angles&quot;),</span>
-                     <span class="c">#(&quot;DIHEDRALS_INC_HYDROGEN&quot;, 4, 2, __parsesection_, &quot;_dihe&quot;)]</span>
-                     <span class="c">#(&quot;NIMPHI&quot;, 4, 2, __parsesection_, &quot;_impr&quot;),</span>
-                     <span class="c">#(&quot;NDON&quot;, 2, 4, __parsesection_,&quot;_donors&quot;),</span>
-                     <span class="c">#(&quot;NACC&quot;, 2, 4, __parsesection_,&quot;_acceptors&quot;)]</span>
-                     <span class="p">],</span>
-                <span class="p">}</span>
-    <span class="n">structure</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">[</span><span class="n">formatversion</span><span class="p">]:</span>
-             <span class="n">parse_sec</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">TOPParseError</span><span class="p">(</span><span class="s">&quot;The TOP file didn&#39;t contain the minimum required section of ATOM_NAME&quot;</span><span class="p">)</span>
-    <span class="c"># Completing info respoint to include all atoms in last resid</span>
-    <span class="n">structure</span><span class="p">[</span><span class="s">&quot;_respoint&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sys_info</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">structure</span><span class="p">[</span><span class="s">&quot;_respoint&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">structure</span><span class="p">[</span><span class="s">&quot;_respoint&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">topfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">sections</span> <span class="o">=</span> <span class="p">{</span><span class="mi">12</span><span class="p">:</span>
+                        <span class="p">[(</span><span class="s">&quot;ATOM_NAME&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">__parseatoms_</span><span class="p">,</span> <span class="s">&quot;_name&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;CHARGE&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parsesection_</span><span class="p">,</span><span class="s">&quot;_charge&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;ATOMIC_NUMBER&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parsesectionint_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;MASS&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parsesection_</span><span class="p">,</span><span class="s">&quot;_mass&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;ATOM_TYPE_INDEX&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parsesectionint_</span><span class="p">,</span><span class="s">&quot;_atom_type&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;NUMBER_EXCLUDED_ATOMS&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;NONBONDED_PARM_INDEX&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;RESIDUE_LABEL&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">__parseatoms_</span><span class="p">,</span> <span class="s">&quot;_resname&quot;</span><span class="p">,</span><span class="mi">11</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;RESIDUE_POINTER&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parsesectionint_</span><span class="p">,</span><span class="s">&quot;_respoint&quot;</span><span class="p">,</span><span class="mi">11</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;BOND_FORCE_CONSTANT&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;BOND_EQUIL_VALUE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;ANGLE_FORCE_CONSTANT&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;ANGLE_EQUIL_VALUE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;DIHEDRAL_FORCE_CONSTANT&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;DIHEDRAL_PERIODICITY&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;DIHEDRAL_PHASE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;SOLTY&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;LENNARD_JONES_ACOEF&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;LENNARD_JONES_BCOEF&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="c">#(&quot;BONDS_INC_HYDROGEN&quot;, 2, 4, __parsebond_, &quot;_bonds&quot;,2),</span>
+                         <span class="c">#(&quot;ANGLES_INC_HYDROGEN&quot;, 3, 3, __parsesection_, &quot;_angles&quot;),</span>
+                         <span class="c">#(&quot;DIHEDRALS_INC_HYDROGEN&quot;, 4, 2, __parsesection_, &quot;_dihe&quot;),</span>
+                         <span class="c">#(&quot;NIMPHI&quot;, 4, 2, __parsesection_, &quot;_impr&quot;),</span>
+                         <span class="c">#(&quot;NDON&quot;, 2, 4, __parsesection_,&quot;_donors&quot;),</span>
+                         <span class="c">#(&quot;NACC&quot;, 2, 4, __parsesection_,&quot;_acceptors&quot;),</span>
+                         <span class="p">],</span>
+                    <span class="mi">10</span><span class="p">:</span>
+                        <span class="p">[(</span><span class="s">&quot;ATOM_NAME&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">__parseatoms_</span><span class="p">,</span> <span class="s">&quot;_name&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;CHARGE&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parsesection_</span><span class="p">,</span><span class="s">&quot;_charge&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;MASS&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parsesection_</span><span class="p">,</span><span class="s">&quot;_mass&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;ATOM_TYPE_INDEX&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parsesectionint_</span><span class="p">,</span><span class="s">&quot;_atom_type&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;NUMBER_EXCLUDED_ATOMS&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;NONBONDED_PARM_INDEX&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;RESIDUE_LABEL&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">__parseatoms_</span><span class="p">,</span> <span class="s">&quot;_resname&quot;</span><span class="p">,</span><span class="mi">11</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;RESIDUE_POINTER&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">__parsesectionint_</span><span class="p">,</span><span class="s">&quot;_respoint&quot;</span><span class="p">,</span><span class="mi">11</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;BOND_FORCE_CONSTANT&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;BOND_EQUIL_VALUE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;ANGLE_FORCE_CONSTANT&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;ANGLE_EQUIL_VALUE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;DIHEDRAL_FORCE_CONSTANT&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;DIHEDRAL_PERIODICITY&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;DIHEDRAL_PHASE&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;SOLTY&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;LENNARD_JONES_ACOEF&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&quot;LENNARD_JONES_BCOEF&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">__parseskip_</span><span class="p">,</span><span class="s">&quot;_skip&quot;</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span>
+                         <span class="c">#(&quot;BONDS_INC_HYDROGEN&quot;, 2, 4, __parsebond_, &quot;_bonds&quot;,2),</span>
+                         <span class="c">#(&quot;ANGLES_INC_HYDROGEN&quot;, 3, 3, __parsesection_, &quot;_angles&quot;),</span>
+                         <span class="c">#(&quot;DIHEDRALS_INC_HYDROGEN&quot;, 4, 2, __parsesection_, &quot;_dihe&quot;)]</span>
+                         <span class="c">#(&quot;NIMPHI&quot;, 4, 2, __parsesection_, &quot;_impr&quot;),</span>
+                         <span class="c">#(&quot;NDON&quot;, 2, 4, __parsesection_,&quot;_donors&quot;),</span>
+                         <span class="c">#(&quot;NACC&quot;, 2, 4, __parsesection_,&quot;_acceptors&quot;)]</span>
+                         <span class="p">],</span>
+                    <span class="p">}</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">[</span><span class="n">formatversion</span><span class="p">]:</span>
+                 <span class="n">parse_sec</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TOPParseError</span><span class="p">(</span><span class="s">&quot;The TOP file didn&#39;t contain the minimum required section of ATOM_NAME&quot;</span><span class="p">)</span>
+        <span class="c"># Completing info respoint to include all atoms in last resid</span>
+        <span class="n">structure</span><span class="p">[</span><span class="s">&quot;_respoint&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sys_info</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">structure</span><span class="p">[</span><span class="s">&quot;_respoint&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">structure</span><span class="p">[</span><span class="s">&quot;_respoint&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,]</span><span class="o">*</span><span class="n">sys_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">Atom</span>
@@ -350,7 +348,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -361,7 +359,7 @@
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>
