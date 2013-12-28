@@ -28,7 +28,7 @@ import os, errno
 import tempfile
 
 from .datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE
-from . import knownfailure
+from . import executable_not_found_runtime
 
 class TestContactMatrix(TestCase):
     def setUp(self):
@@ -184,6 +184,8 @@ class TestHydrogenBondAnalysisHeuristic(TestHydrogenBondAnalysis):
         super(TestHydrogenBondAnalysisHeuristic, self).setUp()
         self.detect_hydrogens = "heuristic"
 
+
+
 class TestAlignmentProcessing(TestCase):
     def setUp(self):
         self.seq = FASTA
@@ -209,15 +211,27 @@ class TestAlignmentProcessing(TestCase):
         assert_equal(len(sel['mobile']), 30623, err_msg="selection string has unexpected length")
 
     @attr('issue')
+    @dec.skipif(executable_not_found_runtime("clustalw2"),
+                msg="Test skipped because clustalw executable not found")
     def test_fasta2select_ClustalW(self):
         """test align.fasta2select() with calling ClustalW (Issue 113)"""
-        # note: will fail if clustalw is not installed
+        # note: will not be run if clustalw is not installed
         from MDAnalysis.analysis.align import fasta2select
         sel = fasta2select(self.seq, is_aligned=False, alnfilename=self.alnfile, treefilename=self.treefile)
         # numbers computed from alignment with clustalw 2.1 on Mac OS X [orbeckst]
         # length of the output strings, not residues or anything real...
         assert_equal(len(sel['reference']), 23080, err_msg="selection string has unexpected length")
         assert_equal(len(sel['mobile']), 23090, err_msg="selection string has unexpected length")
+
+def rlimits_missing():
+    # return True if resources module not accesible (ie setting of rlimits)
+    try:
+        # on Unix we can manipulate our limits: http://docs.python.org/2/library/resource.html
+        import resource
+        soft_max_open_files, hard_max_open_files = resource.getrlimit(resource.RLIMIT_NOFILE)
+    except ImportError:
+        return True
+    return False
 
 class TestHoleModule(TestCase):
     def setUp(self):
@@ -232,7 +246,8 @@ class TestHoleModule(TestCase):
 
     @attr('slow')
     @attr('issue')
-    @knownfailure("Test skipped because HOLE not found", OSError)
+    @dec.skipif(rlimits_missing,  msg="Test skipped because platform does not allow setting rlimits")
+    @dec.skipif(executable_not_found_runtime("hole"),  msg="Test skipped because HOLE not found")
     def test_hole_module_fd_closure(self):
         """Issue 129: ensure low level file descriptors to PDB files used by Hole program are properly closed"""
         # If Issue 129 isn't resolved, this function will produce an OSError on
@@ -247,10 +262,16 @@ class TestHoleModule(TestCase):
             raise NotImplementedError("Test cannot be run without the resource module.")
         import errno
         from MDAnalysis.analysis.hole import HOLEtraj
-        # will need to have the 'hole' command available in the path
         os.chdir(self.dir_name)
-        H = HOLEtraj(self.universe,cvect=[0,1,0],sample=20.0)
-
+        try:
+            # will need to have the 'hole' command available in the path
+            H = HOLEtraj(self.universe,cvect=[0,1,0],sample=20.0)
+        except OSError as err:
+            if err.errno == errno.ENOENT:
+                raise OSError(errno.ENOENT, "HOLE binary not found")
+            raise
+        finally:
+            self._restore_rlimits()
 
         # pretty unlikely that the code will get through 2 rounds if the MDA
         # issue 129 isn't fixed, although this depends on the file descriptor
@@ -264,18 +285,21 @@ class TestHoleModule(TestCase):
             if err.errno == errno.EMFILE:
                 raise AssertionError("HOLEtraj does not close file descriptors (Issue 129)")
             elif err.errno == errno.ENOENT:
-                raise OSError("HOLE binary not found")
+                raise OSError(errno.ENOENT, "HOLE binary not found")
             raise
         finally:
             # make sure to restore open file limit !!
-            resource.setrlimit(resource.RLIMIT_NOFILE, (self.soft_max_open_files, self.hard_max_open_files))
+            self._restore_rlimits()
 
-    def tearDown(self):
+    def _restore_rlimits(self):
         try:
             import resource
             resource.setrlimit(resource.RLIMIT_NOFILE, (self.soft_max_open_files, self.hard_max_open_files))
         except ImportError:
             pass
+
+    def tearDown(self):
+        self._restore_rlimits()
         del self.universe
         import shutil
         shutil.rmtree(self.dir_name, ignore_errors=True)
