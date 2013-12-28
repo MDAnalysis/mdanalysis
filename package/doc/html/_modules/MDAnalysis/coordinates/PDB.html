@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.8.0rc1 documentation</title>
+    <title>MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.8.0rc2 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0rc1',
+        VERSION:     '0.8.0rc2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc1 documentation"
+          title="Search within MDAnalysis 0.8.0rc2 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc1 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc2 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -586,27 +586,27 @@
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="c"># Remove extra spaces</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c"># Skip line if empty</span>
                     <span class="k">continue</span>
-                <span class="n">section</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">record</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="k">def</span> <span class="nf">_c</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">typeclass</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_col</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">typeclass</span><span class="o">=</span><span class="n">typeclass</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">section</span> <span class="o">==</span> <span class="s">&#39;END&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;END&#39;</span><span class="p">:</span>
                     <span class="k">break</span>
-                <span class="k">elif</span> <span class="n">section</span> <span class="o">==</span> <span class="s">&#39;CRYST1&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;CRYST1&#39;</span><span class="p">:</span>
                     <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">33</span><span class="p">)</span>
                     <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mi">47</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">54</span><span class="p">)</span>
                     <span class="n">unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span>
                     <span class="k">continue</span>
-                <span class="k">elif</span> <span class="n">section</span> <span class="o">==</span> <span class="s">&#39;HEADER&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;HEADER&#39;</span><span class="p">:</span>
                     <span class="n">header</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="k">continue</span>
-                <span class="k">elif</span> <span class="n">section</span> <span class="o">==</span> <span class="s">&#39;COMPND&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;COMPND&#39;</span><span class="p">:</span>
                     <span class="n">l</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="n">compound</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
                     <span class="k">continue</span>
-                <span class="k">elif</span> <span class="n">section</span> <span class="o">==</span> <span class="s">&#39;REMARK&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;REMARK&#39;</span><span class="p">:</span>
                     <span class="n">content</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="n">remarks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">section</span> <span class="o">==</span> <span class="s">&#39;MODEL&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;MODEL&#39;</span><span class="p">:</span>
                     <span class="n">frames</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>  <span class="c"># 1-based indexing</span>
                 <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;ATOM  &#39;</span><span class="p">,</span> <span class="s">&#39;HETATM&#39;</span><span class="p">):</span>
                     <span class="c"># skip atom/hetatm for frames other than the first - they will be read in when next() is called on the trajectory reader</span>
@@ -1457,7 +1457,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
