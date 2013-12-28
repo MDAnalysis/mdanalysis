@@ -550,7 +550,7 @@ class TestExtendedPDBReader(_SingleFrameReader):
         self.universe = mda.Universe(XPDB_small, topology_format="XPDB")
         u = self.universe.selectAtoms('resid 1 or resid 10 or resid 100 or resid 1000 or resid 10000')
         assert_equal(u[4].resid, 10000, "can't read a five digit resid")
-        
+
 class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True)
@@ -1524,8 +1524,6 @@ class TestChainReader(TestCase):
         print self.trajectory.ts, self.trajectory.ts.frame
         assert_equal(self.trajectory.ts.frame, self.trajectory.numframes, "indexing last frame with trajectory[-1]")
 
-    # Fix by SB: decorator removed since the test is passing without it
-    #@knownfailure("full slicing not implemented for chained reader")
     def test_slice_trajectory(self):
         frames = [ts.frame for ts in self.trajectory[5:17:3]]
         assert_equal(frames, [6, 9, 12, 15], "slicing dcd [5:17:3]")
