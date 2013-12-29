@@ -2609,7 +2609,7 @@ class Universe(object):
                 self.bonds.add(bond)
                 continue
             i,j = bond
-            a1, a2 = self.atoms[i],self.atoms[j] #indexes have been reduced by one in reading psf file, so do not need to adjust by -1 here
+            a1, a2 = self.atoms[i-1],self.atoms[j-1]
             bond = Bond(a1, a2)
             if struc.has_key("_guessed_bonds") and \
                     set([i,j]) in struc["_guessed_bonds"] and \
