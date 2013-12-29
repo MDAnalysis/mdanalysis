@@ -67,7 +67,7 @@ cdef extern from "calc_distances.h":
     void calc_self_distance_array_triclinic(coordinate* ref, int numref, coordinate* box, double* distances, int distnum)
 
 import numpy
-from MDAnalysis.coordinates.core import triclinic_vectors
+from MDAnalysis.coordinates.core import triclinic_vectors, triclinic_box
 
 def boxCheck(box):
     """Take a box input and deduce what type of system it represents based
