@@ -33,6 +33,7 @@ topology file format in the *topology_format* keyword argument to
    topology/GROParser
    topology/PDBParser
    topology/PrimitivePDBParser
+   topology/ExtendedPDBParser
    topology/PDBQTParser
    topology/PQRParser
    topology/DMSParser

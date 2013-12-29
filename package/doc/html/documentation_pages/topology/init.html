@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.1. Topology readers — MDAnalysis.topology &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    <title>4.1. Topology readers — MDAnalysis.topology &mdash; MDAnalysis 0.8.0rc2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0-dev',
+        VERSION:     '0.8.0rc2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +27,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0-dev documentation"
+          title="Search within MDAnalysis 0.8.0rc2 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc2 documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.2. Common functions for topology building — MDAnalysis.topology.core" href="core.html" />
     <link rel="prev" title="4. Topology modules" href="../topology_modules.html" /> 
@@ -51,7 +51,7 @@
         <li class="right" >
           <a href="../topology_modules.html" title="4. Topology modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -151,37 +151,45 @@ supplying the <cite>permissive=False</cite> flag to
 <a class="reference internal" href="PrimitivePDBParser.html#module-MDAnalysis.topology.PrimitivePDBParser" title="MDAnalysis.topology.PrimitivePDBParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PrimitivePDBParser</span></tt></a> and
 <a class="reference internal" href="PDBParser.html#module-MDAnalysis.topology.PDBParser" title="MDAnalysis.topology.PDBParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PDBParser</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td>PQR <a class="footnote-reference" href="#a" id="id3">[1]</a></td>
+<tr class="row-odd"><td>XPDB</td>
+<td>pdb</td>
+<td>Extended PDB format (can use 5-digit residue
+numbers). To use, specify the format &#8220;XPBD&#8221;
+explicitly:
+<tt class="docutils literal"><span class="pre">Universe(...,</span> <span class="pre">topology_format=&quot;XPDB&quot;)</span></tt>.
+Module :MDAnalysis.coordinates.PDB`</td>
+</tr>
+<tr class="row-even"><td>PQR <a class="footnote-reference" href="#a" id="id3">[1]</a></td>
 <td>pqr</td>
 <td>PDB-like but whitespace-separated files with charge
 and radius information;
 <a class="reference internal" href="PQRParser.html#module-MDAnalysis.topology.PQRParser" title="MDAnalysis.topology.PQRParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PQRParser</span></tt></a></td>
 </tr>
-<tr class="row-even"><td>PDBQT <a class="footnote-reference" href="#a" id="id4">[1]</a></td>
+<tr class="row-odd"><td>PDBQT <a class="footnote-reference" href="#a" id="id4">[1]</a></td>
 <td>pdbqt</td>
 <td>file format used by AutoDock with atom types <em>t</em>
 and partial charges <em>q</em>. Module:
 <a class="reference internal" href="PDBQTParser.html#module-MDAnalysis.topology.PDBQTParser" title="MDAnalysis.topology.PDBQTParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PDBQTParser</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td>GROMOS96 <a class="footnote-reference" href="#a" id="id5">[1]</a></td>
+<tr class="row-even"><td>GROMOS96 <a class="footnote-reference" href="#a" id="id5">[1]</a></td>
 <td>gro</td>
 <td>GROMOS96 coordinate file;
 <a class="reference internal" href="GROParser.html#module-MDAnalysis.topology.GROParser" title="MDAnalysis.topology.GROParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.GROParser</span></tt></a></td>
 </tr>
-<tr class="row-even"><td>AMBER</td>
+<tr class="row-odd"><td>AMBER</td>
 <td>top,
 prmtop</td>
 <td>simple AMBER format reader (only supports a subset
 of flags);
 <a class="reference internal" href="TOPParser.html#module-MDAnalysis.topology.TOPParser" title="MDAnalysis.topology.TOPParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.TOPParser</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td>DESRES <a class="footnote-reference" href="#a" id="id6">[1]</a></td>
+<tr class="row-even"><td>DESRES <a class="footnote-reference" href="#a" id="id6">[1]</a></td>
 <td>dms</td>
 <td>DESRES molecular sturcture reader (only supports
 the atom and bond records);
 <a class="reference internal" href="DMSParser.html#module-MDAnalysis.topology.DMSParser" title="MDAnalysis.topology.DMSParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.DMSParser</span></tt></a></td>
 </tr>
-<tr class="row-even"><td>TPR</td>
+<tr class="row-odd"><td>TPR</td>
 <td>tpr</td>
 <td>Gromacs portable run input reader (limited
 experimental support for some of the more recent
@@ -316,7 +324,7 @@ topology file defines improper dihedrals..</p>
         <li class="right" >
           <a href="../topology_modules.html" title="4. Topology modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>

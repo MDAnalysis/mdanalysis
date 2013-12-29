@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.5. Fast distance array computation — MDAnalysis.core.distances &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    <title>7.5. Fast distance array computation — MDAnalysis.core.distances &mdash; MDAnalysis 0.8.0rc2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0-dev',
+        VERSION:     '0.8.0rc2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +27,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0-dev documentation"
+          title="Search within MDAnalysis 0.8.0rc2 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc2 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations" href="transformations.html" />
     <link rel="prev" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries" href="Timeseries.html" /> 
@@ -51,7 +51,7 @@
         <li class="right" >
           <a href="Timeseries.html" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -129,6 +129,38 @@ provided in <em>result</em> then this preallocated array is filled. This can spe
 up calculations.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="MDAnalysis.core.distances.calc_bonds">
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">calc_bonds</tt><big>(</big><em>atom1</em>, <em>atom2</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.calc_bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate all distances between a pair of atoms.  <em>atom1</em> and <em>atom2</em> are both
+arrays of coordinates, where atom1[i] and atom2[i] represent a bond.  The 
+optional argument <em>box</em> applies minimum image convention if supplied.</p>
+<p>If a 1D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with <tt class="docutils literal"><span class="pre">len(atom1)</span></tt> elements is
+provided in <em>result</em> then this preallocated array is filled. This can speed
+up calculations.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.distances.calc_angles">
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">calc_angles</tt><big>(</big><em>atom1</em>, <em>atom2</em>, <em>atom3</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.calc_angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the angle formed between three atoms, over a list of coordinates.
+All <em>atom</em> inputs are lists of coordinates of equal length, with <em>atom2</em> 
+representing the apex of the angle.  Returns the angle in radians.</p>
+<p>If a 1D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with <tt class="docutils literal"><span class="pre">len(atom1)</span></tt> elements is
+provided in <em>result</em> then this preallocated array is filled. This can speed
+up calculations.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.distances.calc_torsions">
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">calc_torsions</tt><big>(</big><em>atom1</em>, <em>atom2</em>, <em>atom3</em>, <em>atom4</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.calc_torsions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the torsional angle formed by four atoms, over a list of coordinates.
+Returns the angle in radians.</p>
+<p>If a 1D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with <tt class="docutils literal"><span class="pre">len(atom1)</span></tt> elements is
+provided in <em>result</em> then this preallocated array is filled. This can speed
+up calculations.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="functions">
 <h2>7.5.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
@@ -156,7 +188,7 @@ up calculations.</p>
         <li class="right" >
           <a href="Timeseries.html" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>

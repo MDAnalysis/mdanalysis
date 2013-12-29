@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.2. Common functions for topology building — MDAnalysis.topology.core &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    <title>4.2. Common functions for topology building — MDAnalysis.topology.core &mdash; MDAnalysis 0.8.0rc2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0-dev',
+        VERSION:     '0.8.0rc2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +27,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0-dev documentation"
+          title="Search within MDAnalysis 0.8.0rc2 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc2 documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.3. MDAnalysis topology tables" href="tables.html" />
     <link rel="prev" title="4.1. Topology readers — MDAnalysis.topology" href="init.html" /> 
@@ -51,7 +51,7 @@
         <li class="right" >
           <a href="init.html" title="4.1. Topology readers — MDAnalysis.topology"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -107,6 +107,8 @@ information that is used by functions such as <a class="reference internal" href
 <em class="property">class </em><tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">Angle</tt><big>(</big><em>a1</em>, <em>a2</em>, <em>a3</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.Angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>An angle between three <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.
 Atom 2 is the apex of the angle</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="class">
@@ -149,6 +151,8 @@ topologyDict are a tuple of the atom types that the bond represents
 and can be viewed using the keys() method.</p>
 <p>Two TopologyDicts can be combined using addition, this will not
 create any duplicate bonds in the process.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyDict.keys">
 <tt class="descname">keys</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.TopologyDict.keys" title="Permalink to this definition">¶</a></dt>
@@ -173,7 +177,7 @@ TopologyGroup contains. Ie a bond has 2 AtomGroups whereas an angle
 has 3.</p>
 <p>The <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.bonds" title="MDAnalysis.topology.core.TopologyGroup.bonds"><tt class="xref py py-meth docutils literal"><span class="pre">bonds()</span></tt></a>, <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.angles" title="MDAnalysis.topology.core.TopologyGroup.angles"><tt class="xref py py-meth docutils literal"><span class="pre">angles()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.torsions" title="MDAnalysis.topology.core.TopologyGroup.torsions"><tt class="xref py py-meth docutils literal"><span class="pre">torsions()</span></tt></a> methods offer
 a &#8220;shortcut&#8221; to the Cython distance calculation functions in 
-<tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.distanaces</span></tt>.</p>
+<a class="reference internal" href="../core/distances.html#module-MDAnalysis.core.distances" title="MDAnalysis.core.distances"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.distances</span></tt></a>.</p>
 <p>TopologyGroups can be combined with TopologyGroups of the same bond
 type (ie can combine two angle containing TopologyGroups).</p>
 <p>TopologyGroups can be indexed to return a single <a class="reference internal" href="#MDAnalysis.topology.core.Bond" title="MDAnalysis.topology.core.Bond"><tt class="xref py py-class docutils literal"><span class="pre">Bond</span></tt></a> 
@@ -185,6 +189,8 @@ type (ie can combine two angle containing TopologyGroups).</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">tg</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
 </pre></div>
 </div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyGroup.angles">
 <tt class="descname">angles</tt><big>(</big><em>result=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.angles" title="Permalink to this definition">¶</a></dt>
@@ -216,6 +222,8 @@ group.</p>
 <dt id="MDAnalysis.topology.core.Torsion">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">Torsion</tt><big>(</big><em>a1</em>, <em>a2</em>, <em>a3</em>, <em>a4</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.Torsion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Torsion (dihedral angle) between four <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="function">
@@ -228,6 +236,8 @@ group.</p>
 <tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.torsions</span></tt> 
 and consist of a list of
 <a class="reference internal" href="#MDAnalysis.topology.core.Bond" title="MDAnalysis.topology.core.Bond"><tt class="xref py py-class docutils literal"><span class="pre">Bond</span></tt></a> <a class="reference internal" href="#MDAnalysis.topology.core.Angle" title="MDAnalysis.topology.core.Angle"><tt class="xref py py-class docutils literal"><span class="pre">Angle</span></tt></a> and <a class="reference internal" href="#MDAnalysis.topology.core.Torsion" title="MDAnalysis.topology.core.Torsion"><tt class="xref py py-class docutils literal"><span class="pre">Torsion</span></tt></a> instances respectively</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="function">
@@ -392,7 +402,7 @@ individual packages (e.g. as static methods).</p>
         <li class="right" >
           <a href="init.html" title="4.1. Topology readers — MDAnalysis.topology"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
