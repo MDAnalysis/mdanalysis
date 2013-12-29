@@ -138,7 +138,10 @@ class Bond(object):
 
 class Angle(object):
     """An angle between three :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
-    Atom 2 is the apex of the angle"""
+    Atom 2 is the apex of the angle
+    
+    .. versionadded:: 0.8
+    """
     #currently a stub of a class, maybe add to this to make it as useful as bonds
     def __init__(self, a1, a2, a3):
         self.atom1 = a1
@@ -154,7 +157,10 @@ class Angle(object):
              a3.number+1, a3.name, a3.resname, a3.resid)
 
 class Torsion(object):
-    """Torsion (dihedral angle) between four :class:`~MDAnalysis.core.AtomGroup.Atom` instances."""
+    """Torsion (dihedral angle) between four :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
+
+    .. versionadded:: 0.8
+    """
     def __init__(self, a1, a2, a3, a4):
         self.atom1 = a1
         self.atom2 = a2
@@ -180,6 +186,8 @@ def build_bondlists(atoms, bonds=None, angles=None, torsions=None):
     :attr:`MDAnalysis.core.AtomGroup.Atom.torsions` 
     and consist of a list of
     :class:`Bond` :class:`Angle` and :class:`Torsion` instances respectively
+
+    .. versionchanged:: 0.8
     """
     if bonds:
         for a in atoms:
@@ -412,6 +420,8 @@ class TopologyDict(object):
 
     Two TopologyDicts can be combined using addition, this will not
     create any duplicate bonds in the process.
+
+    .. versionadded:: 0.8
     """
     def __init__(self, toptype, members):
         self.dict = dict()
@@ -539,6 +549,7 @@ class TopologyGroup(object):
 
       tg[4:-4]
 
+    .. versionadded:: 0.8
     """
     def __init__(self, bondlist):
         self.bondlist = bondlist

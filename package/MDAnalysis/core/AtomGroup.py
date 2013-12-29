@@ -724,6 +724,8 @@ class AtomGroup(object):
     def bondDict(self):
         """A :class:`MDAnalysis.topology.core.TopologyDict` of bonds 
         within this AtomGroup.
+
+        .. versionadded:: 0.8
         """
         if not 'bonds' in self.__cache:
             from MDAnalysis.topology.core import TopologyDict
@@ -734,6 +736,8 @@ class AtomGroup(object):
     def angleDict(self):
         """A :class:`MDAnalysis.topology.core.TopologyDict` of angles 
         within this AtomGroup.
+
+        .. versionadded:: 0.8
         """     
         if not 'angles' in self.__cache:
             from MDAnalysis.topology.core import TopologyDict
@@ -744,6 +748,8 @@ class AtomGroup(object):
     def torsionDict(self):
         """A :class:`MDAnalysis.topology.core.TopologyDict` of angles 
         within this AtomGroup.
+
+        .. versionadded:: 0.8
         """     
         if not 'torsions' in self.__cache:
             from MDAnalysis.topology.core import TopologyDict
@@ -773,6 +779,8 @@ class AtomGroup(object):
         These keys are a tuple of the atom types in the bond.
 
         :Returns: a :class:`MDAnalysis.topology.core.TopologyGroup`
+
+        .. versionadded:: 0.8
         """
         if len(criteria) == 2 and criteria in self.bondDict:
             return self.bondDict[criteria]
@@ -781,7 +789,7 @@ class AtomGroup(object):
         elif len(criteria) == 4 and criteria in self.torsionDict:
             return self.torsionDict[criteria]
         else:
-            raise KeyError("Criteria not recognised")
+            raise SelectionError("No bond exists of type "+str(criteria))
 
     def masses(self):
         """Array of atomic masses (as defined in the topology)"""

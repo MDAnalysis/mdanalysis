@@ -42,6 +42,7 @@ The rules for this file:
     i.e. Universe(topology, [traj1, traj2, ...])
   * Added support for YASP and IBIsCO formats (.trz)
   * new methods for AtomGroup: packintobox() (only orthorhombic boxes)
+  * Added TopologyDict and TopologyGroup classes for bond analysis
 
   Changes
 
