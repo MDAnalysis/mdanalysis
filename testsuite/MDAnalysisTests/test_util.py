@@ -22,13 +22,47 @@ from numpy import pi, sin, cos
 
 import MDAnalysis.core.util as util
 
-class TestStringFunctions(TestCase):
+def check_parse_residue(rstring, residue):
+    assert_equal(util.parse_residue(rstring), residue)
+
+def check_convert_aa_3to1(resname3, resname1):
+    assert_equal(util.convert_aa_code(resname3), resname1)
+
+def check_convert_aa_1to3(resname1, resname3_canonical):
+    assert_equal(util.convert_aa_code(resname1), resname3_canonical)
+
+class TestStringFunctions(object):
+    # (1-letter, (canonical 3 letter, other 3/4 letter, ....))
+    aa = [('H', ('HIS', 'HISA', 'HISB', 'HSE', 'HSD', 'HIS1', 'HIS2', 'HIE', 'HID')),
+          ('K', ('LYS', 'LYSH', 'LYN')),
+          ('A', ('ALA',)),
+          ('D', ('ASP', 'ASPH', 'ASH')),
+          ('E', ('GLU', 'GLUH', 'GLH')),
+          ('N', ('ASN',)),
+          ('Q', ('GLN',)),
+          ('C', ('CYS', 'CYSH', 'CYS1', 'CYS2')),
+          ]
+
+    residues = [("LYS300:HZ1", ("LYS", 300, "HZ1")),
+                ("K300:HZ1", ("LYS", 300, "HZ1")),
+                ("K300", ("LYS", 300, None)),
+                ("LYS 300:HZ1", ("LYS", 300, "HZ1")),
+                ("M1:CA", ("MET", 1, "CA")),
+                ]
+
     def testParse_residue(self):
-        assert_equal(util.parse_residue("LYS300:HZ1"), ("LYS", 300, "HZ1"))
-        assert_equal(util.parse_residue("K300:HZ1"), ("LYS", 300, "HZ1"))
-        assert_equal(util.parse_residue("K300"), ("LYS", 300, None))
-        assert_equal(util.parse_residue("LYS 300:HZ1"), ("LYS", 300, "HZ1"))
-        assert_equal(util.parse_residue("M1:CA"), ("MET", 1, "CA"))
+        for rstring, residue in self.residues:
+            yield check_parse_residue, rstring, residue
+
+    def test_convert_aa_code_long(self):
+        for resname1, strings in self.aa:
+            for resname3 in strings:
+                yield check_convert_aa_3to1, resname3, resname1
+
+    def test_convert_aa_code_short(self):
+        for resname1, strings in self.aa:
+            yield check_convert_aa_1to3, resname1, strings[0]
+
 
 class TestIterable(TestCase):
     def test_lists(self):

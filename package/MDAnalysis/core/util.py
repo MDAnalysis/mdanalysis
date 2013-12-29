@@ -492,26 +492,43 @@ def dihedral(ab, bc, cd):
 # String functions
 # ----------------
 
-# TODO: make it work for non-default charge state amino acids.
-#: translation table for 1-letter codes --> 3-letter codes
-#: .. Note: This does not work for HISB and non-default charge state aa!
-amino_acid_codes = {'A':'ALA', 'C':'CYS', 'D':'ASP', 'E':'GLU',
-                    'F':'PHE', 'G':'GLY', 'H':'HIS', 'I':'ILE',
-                    'K':'LYS', 'L':'LEU', 'M':'MET', 'N':'ASN',
-                    'P':'PRO', 'Q':'GLN', 'R':'ARG', 'S':'SER',
-                    'T':'THR', 'V':'VAL', 'W':'TRP', 'Y':'TYR'}
-inverse_aa_codes = dict([(three, one) for one,three in amino_acid_codes.items()])
+#: translation table for 3-letter codes --> 1-letter codes
+#: .. SeeAlso:: :data:`alternative_inverse_aa_codes`
+canonical_inverse_aa_codes = {'ALA':'A', 'CYS':'C', 'ASP':'D', 'GLU':'E',
+                              'PHE':'F', 'GLY':'G', 'HIS':'H', 'ILE':'I',
+                              'LYS':'K', 'LEU':'L', 'MET':'M', 'ASN':'N',
+                              'PRO':'P', 'GLN':'Q', 'ARG':'R', 'SER':'S',
+                              'THR':'T', 'VAL':'V', 'TRP':'W', 'TYR':'Y'}
+#: translation table for 1-letter codes --> *canonical* 3-letter codes.
+#: The table is used for :func:`convert_aa_code`.
+amino_acid_codes = dict([(one, three) for three,one in canonical_inverse_aa_codes.items()])
+#: non-default charge state amino acids or special charge state descriptions
+#: (Not fully synchronized with :class:`MDAnalysis.core.Selection.ProteinSelection`.)
+alternative_inverse_aa_codes = {'HISA':'H', 'HISB':'H', 'HSE':'H', 'HSD':'H', 'HID':'H', 'HIE':'H', 'HIS1':'H', 'HIS2':'H',
+                                'ASPH': 'D', 'ASH': 'D',
+                                'GLUH': 'E', 'GLH': 'E',
+                                'LYSH': 'K', 'LYN': 'K',
+                                'ARGN': 'R',
+                                'CYSH':'C', 'CYS1':'C', 'CYS2':'C'}
+#: lookup table from 3/4 letter resnames to 1-letter codes. Note that non-standard residue names
+#: for tautomers or different protonation states such as HSE are converted to canonical 1-letter codes ("H").
+#: The table is used for :func:`convert_aa_code`.
+#: .. SeeAlso:: :data:`canonical_inverse_aa_codes` and :data:`alternative_inverse_aa_codes`
+inverse_aa_codes = {}
+inverse_aa_codes.update(canonical_inverse_aa_codes)
+inverse_aa_codes.update(alternative_inverse_aa_codes)
 
-# from GromacsWrapper utilities
 def convert_aa_code(x):
-    """Converts between 3-letter and 1-letter amino acid codes."""
+    """Converts between 3-letter and 1-letter amino acid codes.
+
+    .. SeeAlso:: Data are defined in :data:`amino_acid_codes` and :data:`inverse_aa_codes`.
+    """
     if len(x) == 1:
         return amino_acid_codes[x.upper()]
-    elif len(x) == 3:
+    elif len(x) > 1:
         return inverse_aa_codes[x.upper()]
     else:
-        raise ValueError("Can only convert 1-letter or 3-letter amino acid codes, "
-                         "not %r" % x)
+        raise ValueError("No conversion for {} found (1 letter -> 3 letter or 3/4 letter -> 1 letter)".format(x))
 
 
 #: Regular expression to match and parse a residue-atom selection; will match

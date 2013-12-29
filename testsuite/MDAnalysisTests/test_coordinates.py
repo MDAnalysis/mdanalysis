@@ -25,10 +25,11 @@ from numpy.testing import *
 from nose.plugins.attrib import attr
 import sys
 
-from MDAnalysis.tests.datafiles import PSF, DCD, DCD_empty, PDB_small, PDB_closed, PDB_multiframe, \
+from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, \
     PDB, CRD, XTC, TRR, GRO, DMS, CONECT, \
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf
+from . import knownfailure
 
 import os
 import tempfile
@@ -538,6 +539,17 @@ class TestPrimitivePDBReader(_SingleFrameReader):
     def setUp(self):
         self.universe = mda.Universe(PDB_small, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+
+class TestExtendedPDBReader(_SingleFrameReader):
+    def setUp(self):
+        self.universe = mda.Universe(PDB_small, topology_format="XPDB", format="XPDB")
+        self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+
+    def test_long_resSeq(self):
+        #it checks that it can read a 5-digit resid
+        self.universe = mda.Universe(XPDB_small, topology_format="XPDB")
+        u = self.universe.selectAtoms('resid 1 or resid 10 or resid 100 or resid 1000 or resid 10000')
+        assert_equal(u[4].resid, 10000, "can't read a five digit resid")
 
 class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
     def setUp(self):
@@ -1512,7 +1524,6 @@ class TestChainReader(TestCase):
         print self.trajectory.ts, self.trajectory.ts.frame
         assert_equal(self.trajectory.ts.frame, self.trajectory.numframes, "indexing last frame with trajectory[-1]")
 
-    @dec.knownfailureif(True, "full slicing not implemented for chained reader")
     def test_slice_trajectory(self):
         frames = [ts.frame for ts in self.trajectory[5:17:3]]
         assert_equal(frames, [6, 9, 12, 15], "slicing dcd [5:17:3]")
@@ -1535,7 +1546,7 @@ class TestChainReader(TestCase):
         assert_array_equal(self.universe.atoms.coordinates(), coord0,
                            "coordinates at frame 1 and 100 should be the same!")
 
-    @dec.knownfailureif(True, "time attribute not implemented for chained reader")
+    @knownfailure("time attribute not implemented for chained reader", ValueError)
     def test_time(self):
         self.trajectory[30]  # index is 0-based but frames are 1-based
         assert_almost_equal(self.universe.trajectory.time, 31.0, 5,

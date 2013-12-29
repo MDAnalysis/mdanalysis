@@ -41,6 +41,7 @@ installation.
 # If you want EasyInstall features then enable the next three lines and comment
 # out the preceding line 'from distutils.core import ...'
 #
+from __future__ import print_function
 from ez_setup import use_setuptools
 use_setuptools()
 from setuptools import setup, Extension
@@ -52,14 +53,14 @@ import glob
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 6):
-    print "MDAnalysis requires Python 2.6 or better. Python %d.%d detected" % \
-        sys.version_info[:2]
-    print "Please upgrade your version of Python."
+    print("MDAnalysis requires Python 2.6 or better. Python %d.%d detected" % \
+        sys.version_info[:2])
+    print("Please upgrade your version of Python.")
     sys.exit(-1)
 
 
 if __name__ == '__main__':
-    RELEASE = "0.8.0-dev"         # this must be in-sync with MDAnalysis
+    RELEASE = "0.8.0rc2"         # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
 """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
@@ -95,12 +96,15 @@ For details see the report for `Issue 87`_.
           package_dir       = {'MDAnalysisTests': 'MDAnalysisTests'},
           package_data      = {'MDAnalysisTests':
                                    ['data/*.psf','data/*.dcd','data/*.pdb',
-                                    'data/tprs/*.tpr',
+                                    'data/tprs/*.tpr','data/*.tpr',
                                     'data/*.gro', 'data/*.xtc','data/*.trr',
                                     'data/*.crd', 'data/*.xyz',
                                     'data/*.prmtop', 'data/*.top', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',
                                     'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
                                     'data/*.fasta',
+                                    'data/*.dms',
+                                    'data/merge/2zmm/*.pdb',
+                                    'data/*.trz',
                                     ],
                                },
           classifiers       = CLASSIFIERS,

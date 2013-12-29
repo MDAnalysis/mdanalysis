@@ -92,16 +92,49 @@ cdef extern from "calc_distances.h":
     void calc_distance_array_noPBC(coordinate* ref, int numref, coordinate* conf, int numconf, double* distances)
     void calc_self_distance_array(coordinate* ref, int numref, float* box, double* distances, int distnum)
     void calc_self_distance_array_noPBC(coordinate* ref, int numref, double* distances, int distnum)
+    void coord_transform(coordinate* coords, int numCoords, coordinate* box)
+    void calc_distance_array_triclinic(coordinate* ref, int numref, coordinate* conf, int numconf, coordinate* box, double* distances)
+    void calc_self_distance_array_triclinic(coordinate* ref, int numref, coordinate* box, double* distances, int distnum)
     void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom, float*box, double* distances)
     void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
     void calc_angle(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, double* angles)
     void calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, double* angles)
 
 import numpy
+from MDAnalysis.coordinates.core import triclinic_vectors, triclinic_box
+
+def boxCheck(box):
+    """Take a box input and deduce what type of system it represents based
+    on the shape of the array and whether all angles are 90.
+    
+    :Returns:
+      'ortho' orthogonal box
+      'tri_vecs' triclinic box vectors
+      'tri_box' triclinic box lengths and angles
+      'unknown' boxCheck default, indicates no match found
+    """
+    boxtype = 'unknown'
+    if box.shape == (3,):
+        boxtype = 'ortho'
+    elif box.shape == (3,3):
+        if numpy.all([box[0][1] == 0.0, #Checks that tri box is properly formatted
+                      box[0][2] == 0.0,
+                      box[1][2] == 0.0]):
+            boxtype = 'tri_vecs'
+        else:
+            boxtype = 'tri_vecs_bad'
+    elif box.shape == (6,):
+        if numpy.all(box[3:] == 90.):
+            boxtype = 'ortho'
+        else:
+            boxtype = 'tri_box'
+
+    return boxtype
+
 def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_numpy.ndarray box=None, c_numpy.ndarray result=None):
     """Calculate all distances between a reference set and another configuration.
 
-    d = distance_array(ref,conf,box[,result=d])
+    d = distance_array(ref,conf[,box[,result=d]])
 
     :Arguments:
                 *ref*
@@ -109,9 +142,10 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
                 *conf*
                         configuration coordinate array
                 *box*
-                        orthorhombic unit cell dimensions (minimum image convention is applied) or None [None]
+                        cell dimensions (minimum image convention is applied) or None [None]
                 *result*
-                        optional preallocated result array which must have the shape (len(ref),len(conf)) and dtype=numpy.float64. Avoids creating the              array which saves time when the function is called repeatedly. [None]
+                        optional preallocated result array which must have the shape (len(ref),len(conf)) and dtype=numpy.float64. Avoids creating the              
+                        array which saves time when the function is called repeatedly. [None]
 
     :Returns:
                 *d*
@@ -136,10 +170,16 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
         raise ValueError("ref must be a sequence of 3 dimensional coordinates")
     if (conf.dtype!=numpy.dtype(numpy.float32) or ref.dtype!=numpy.dtype(numpy.float32)):
         raise TypeError("coordinate data must be of type float32")
+
     with_PBC = (box is not None)
-    if with_PBC is True:
-        if (box.nd != 1 and box.dimensions[0] != 3):
-            raise ValueError("box must be a sequence of 3 dimensional coordinates")
+    if with_PBC:
+        boxtype = boxCheck(box)
+        if (boxtype == 'unknown'):
+            raise ValueError("box input not recognised, must be an array of box dimensions")
+        if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+            box = triclinic_vectors(box)
+        if (boxtype == 'tri_vecs_bad'):
+            box = triclinic_vectors(triclinic_box(box))
         if (box.dtype!=numpy.dtype(numpy.float32)):
             raise TypeError("periodic boundaries must be of type float32")
 
@@ -156,7 +196,12 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
         distances = numpy.zeros((refnum, confnum), numpy.float64)
 
     if with_PBC:
-        calc_distance_array(<coordinate*>ref.data, refnum, <coordinate*>conf.data, confnum, <float*>box.data, <double*>distances.data)
+        if boxtype == 'ortho':
+            calc_distance_array(<coordinate*>ref.data, refnum, <coordinate*>conf.data, confnum, 
+                                <float*>box.data, <double*>distances.data)
+        else: 
+            calc_distance_array_triclinic(<coordinate*> ref.data, refnum, <coordinate*> conf.data, confnum, 
+                                          <coordinate*>box.data, <double*> distances.data)
     else:
         calc_distance_array_noPBC(<coordinate*>ref.data, refnum, <coordinate*>conf.data, confnum, <double*>distances.data)
 
@@ -165,14 +210,13 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
 def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_numpy.ndarray result=None):
     """Calculate all distances d_ij between atoms i and j within a configuration *ref*.
 
-    d = self_distance_array(ref,box[,result=d])
+    d = self_distance_array(ref[,box[,result=d]])
 
     :Arguments:
                 *ref*
                         reference coordinate array with N=len(ref) coordinates
                 *box*
-                        orthorhombic unit cell dimensions (minimum image convention
-                           is applied) or None [None]
+                        cell dimensions (minimum image convention is applied) or None [None]
                 *result*
                         optional preallocated result array which must have the shape
                            (N*(N-1)/2,) and dtype ``numpy.float64``. Avoids creating
@@ -205,10 +249,16 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
         raise ValueError("ref must be a sequence of 3 dimensional coordinates")
     if (ref.dtype!=numpy.dtype(numpy.float32)):
         raise TypeError("coordinate data must be of type float32")
+
     with_PBC = (box is not None)
     if with_PBC:
-        if (box.nd != 1 and box.dimensions[0] != 3):
-            raise ValueError("box must be a sequence of 3 dimensional coordinates")
+        boxtype = boxCheck(box)
+        if (boxtype == 'unknown'):
+            raise ValueError("box input not recognised, must be an array of box dimensions")
+        if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+            box = triclinic_vectors(box)
+        if (boxtype == 'tri_vecs_bad'):
+            box = triclinic_vectors(triclinic_box(box))
         if (box.dtype!=numpy.dtype(numpy.float32)):
             raise TypeError("periodic boundaries must be of type float32")
 
@@ -225,11 +275,120 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
         distances = numpy.zeros((distnum,), numpy.float64)
 
     if with_PBC:
-        calc_self_distance_array(<coordinate*>ref.data,refnum,<float*>box.data,<double*>distances.data, distnum)
+        if boxtype == 'ortho':
+            calc_self_distance_array(<coordinate*>ref.data,refnum,<float*>box.data,
+                                     <double*>distances.data, distnum)
+        else:
+            calc_self_distance_array_triclinic(<coordinate*>ref.data,refnum,<coordinate*>box.data,
+                                               <double*>distances.data, distnum)
     else:
         calc_self_distance_array_noPBC(<coordinate*>ref.data,refnum,<double*>distances.data,distnum)
 
     return distances
+
+def transform_RtoS(c_numpy.ndarray inputcoords, c_numpy.ndarray box):
+    """Transform an array of coordinates from real space to S space (aka lambda space)
+
+    S space represents fractional space within the unit cell for this system
+
+    Reciprocal operation to :meth:`transform_StoR
+
+    :Arguments:
+      *inputcoords*
+                      An n x 3 array of coordinate data, of type np.float32
+      *box*
+                      The unitcell dimesions for this system
+
+    :Returns:
+       *outcoords*
+                      An n x 3 array of fracional coordiantes
+
+    """
+
+    cdef c_numpy.ndarray coords, inv
+    cdef int numcoords
+
+    #Create contiguous array
+    coords = inputcoords.copy('C')
+    numcoords = coords.dimensions[0]
+
+    boxtype = boxCheck(box)
+    if (boxtype == 'unknown'):
+        raise ValueError("box input not recognised, must be an array of box dimensions")
+
+    if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        box = triclinic_vectors(box)
+    if (boxtype == 'tri_vecs_bad'):
+        box = triclinic_vectors(triclinic_box(box))
+    elif (boxtype == 'ortho'):
+        box = numpy.array([[box[0], 0.0, 0.0],
+                           [0.0, box[1], 0.0],
+                           [0.0, 0.0, box[2]]], dtype = numpy.float32)
+
+    #Create inverse matrix of box
+    inv = numpy.array(numpy.matrix(box).I, dtype = numpy.float32, order='C') # need order C here
+
+    # Checks on input arrays
+    if (box.dtype!=numpy.dtype(numpy.float32)):
+        raise TypeError("periodic boundaries must be of type float32")
+    if (box.dimensions[0] != 3 or box.dimensions[1] != 3):
+        raise ValueError("Box format not recognised, please use system dimensions")
+    if (coords.nd != 2 or coords.dimensions[1] != 3):
+        raise ValueError("Coordinates must be a sequence of 3 dimensional coordinates")
+    if (coords.dtype != numpy.dtype(numpy.float32)):
+        raise TypeError("Coordinate data must be of type numpy float32")
+    
+    coord_transform(<coordinate*> coords.data, numcoords, <coordinate*> inv.data)
+
+    return coords
+
+def transform_StoR(c_numpy.ndarray inputcoords, c_numpy.ndarray box):
+    """Transform an array of coordinates from S space into real space.
+
+    S space represents fractional space within the unit cell for this system    
+
+    Reciprocal operation to :meth:`transform_RtoS`
+
+    :Arguments:
+      *inputcoords*
+                      An n x 3 array of coordinate data, of type np.float32
+      *box*
+                      The unitcell dimesions for this system
+
+    :Returns:
+       *outcoords*
+                      An n x 3 array of fracional coordiantes
+    """
+
+    cdef c_numpy.ndarray coords
+    cdef int numcoords
+
+    #Create contiguous array
+    coords = inputcoords.copy('C')
+    numcoords = coords.dimensions[0]
+
+    boxtype = boxCheck(box)
+    if (boxtype == 'unknown'):
+        raise ValueError("box input not recognised, must be an array of box dimensions")
+
+    if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        box = triclinic_vectors(box)
+    elif (boxtype == 'ortho'):
+        box = numpy.array([[box[0], 0.0, 0.0],
+                           [0.0, box[1], 0.0],
+                           [0.0, 0.0, box[2]]], dtype = numpy.float32)
+
+    # Checks on input arrays
+    if (box.dtype!=numpy.dtype(numpy.float32)):
+        raise TypeError("periodic boundaries must be of type float32")
+    if (coords.nd != 2 or coords.dimensions[1] != 3):
+        raise ValueError("Coordinates must be a sequence of 3 dimensional coordinates")
+    if (coords.dtype != numpy.dtype(numpy.float32)):
+        raise TypeError("Coordinate data must be of type numpy float32")
+    
+    coord_transform(<coordinate*> coords.data, numcoords, <coordinate*> box.data)
+
+    return coords
 
 def calc_bonds(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray box=None, c_numpy.ndarray result=None):
     """Calculate distance between pairs in two lists of atoms

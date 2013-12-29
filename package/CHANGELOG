@@ -12,7 +12,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/13  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
-	  rmcgibbo, richardjgowers
+	  rmcgibbo, richardjgowers, lennardvanderfeltz, alejandro.bernardin
 
   * 0.8.0
 
@@ -40,9 +40,16 @@ The rules for this file:
   * Can load multiple trajectories as Universe(topology, traj2, traj2,
     ...) in addition to providing all trajectories as a list,
     i.e. Universe(topology, [traj1, traj2, ...])
-  * Added support for YASP and IBIsCO formats (.trz)
+  * added support for YASP and IBIsCO formats (.trz) (Issue 152)
   * new methods for AtomGroup: packintobox() (only orthorhombic boxes)
-  * Added TopologyDict and TopologyGroup classes for bond analysis
+  * added non-standard "extended" PDB format (XPDB) that reads
+    five-digit residue numbers
+  * util.convert_aa_code() recognizes non-standard residue names such
+    as HSE, GLUH, GLH, ...
+  * functionality extension to geometric selection "prop". Now it is
+    possible to operate with the members of the inequation
+  * added new geometrics selections: sphlayer, sphzone, cylayer, cyzone
+  * added TopologyDict and TopologyGroup classes for bond analysis
 
   Changes
 
@@ -75,6 +82,7 @@ The rules for this file:
     users of Mac OS X 10.7 and 10.8 to build MDAnalysis using Apple's
     C-compiler (clang) (Issue 142) although they will not get a parallel
     version of distance_array.
+  * PDB with blank lines gave IndexError (Issue 158)
  
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux

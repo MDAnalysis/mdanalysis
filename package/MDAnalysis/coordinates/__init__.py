@@ -133,6 +133,11 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | are supported but require the *multiframe* keyword.  |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.PDB`             |
    +---------------+-----------+-------+------------------------------------------------------+
+   | XPDB          | pdb       |   r   | Extended PDB format (can use 5-digit residue         |
+   |               |           |       | numbers). To use, specify the format "XPBD"          |
+   |               |           |       | explicitly: ``Universe(..., format="XPDB")``.        |
+   |               |           |       | Module :MDAnalysis.coordinates.PDB`                  |
+   +---------------+-----------+-------+------------------------------------------------------+
    | PDBQT [#a]_   | pdbqt     | r/w   | file format used by AutoDock with atom types *t*     |
    |               |           |       | and partial charges *q*. Module:                     |
    |               |           |       | :mod:`MDAnalysis.coordinates.PDBQT`                  |
@@ -600,6 +605,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'XYZ': XYZ.XYZReader,
                        'TRR': TRR.TRRReader,
                        'PDB': PDB.PDBReader,
+                       'XPDB': PDB.ExtendedPDBReader,
                        'PDBQT': PDBQT.PDBQTReader,
                        'CRD': CRD.CRDReader,
                        'GRO': GRO.GROReader,
@@ -619,7 +625,8 @@ _compressed_formats = ['XYZ', 'TRJ', 'MDCRD', 'PQR', 'PDBQT']
 #: readers of files that contain both topology/atom data and coordinates
 #: (currently only the keys are used)
 _topology_coordinates_readers = {
-                       'PDB': PDB.PrimitivePDBReader,
+                       'PDB': PDB.PrimitivePDBReader,     # FIXME: should be able to use BioPython PDBReader for topolgy if permissive=False!
+                       'XPDB': PDB.ExtendedPDBReader,
                        'PDBQT': PDBQT.PDBQTReader,
                        'GRO': GRO.GROReader,
                        'CRD': CRD.CRDReader,

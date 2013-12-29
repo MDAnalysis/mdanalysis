@@ -2428,10 +2428,10 @@ class Universe(object):
              individual list member. [``None``]
           *bonds*
              bond handling for PDB files. The default is to read and store the
-             CONECT records only. When set to 'True' it will attempt to guess
+             CONECT records only. When set to ``True`` it will attempt to guess
              connectivity between all atoms in the Universe.
              Each bond knows if it was guessed or was a CONECT record, so when
-             saving out use can specify which ones to write out by ::
+             saving out one can specify which ones to write out by ::
 
                u = Universe("example.pdb")
                u.atoms.write("output.pdb", bonds="conect") # default, only CONECT
@@ -2497,6 +2497,10 @@ class Universe(object):
             if guess_format(topologyfile, format=kwargs.get('format', None)) in \
                     MDAnalysis.coordinates._topology_coordinates_readers:
                 coordinatefile = topologyfile         # hack for pdb/gro/crd - only
+            # Fix by SB: make sure coordinatefile is never an empty tuple
+            if len(coordinatefile) == 0:
+                coordinatefile = None
+
 
         # build the topology (or at least a list of atoms)
         self.filename = topologyfile
