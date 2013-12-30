@@ -176,6 +176,81 @@ class TestPSF_Issue121(TestCase):
         assert_equal(u.atoms.numberOfAtoms(), 98)
         assert_equal(u.atoms.segids(), ["SYSTEM"])
 
+class TestPSF_bonds(object):
+    """Tests reading of bonds angles and torsions in psf files"""
+    topology = PSF
+    u = MDAnalysis.Universe(topology)
+    # bonds
+    # check quantity
+    assert_equal(len(u._psf['_bonds']), 3365)
+    assert_equal(len(u.atoms[0].bonds), 4)
+    assert_equal(len(u.atoms[42].bonds), 1)
+    # check identity of atoms in bonds
+    assert_equal(u.atoms[0].bonds[0].atom1, u.atoms[0])
+    assert_equal(u.atoms[0].bonds[0].atom2, u.atoms[4])
+
+    # angles, similar tests
+    assert_equal(len(u._psf['_angles']), 6123)
+    assert_equal(len(u.atoms[0].angles), 9)
+    assert_equal(len(u.atoms[42].angles), 2)
+
+    assert_equal(u.atoms[0].angles[0].atom1, u.atoms[1])
+    assert_equal(u.atoms[0].angles[0].atom2, u.atoms[0])
+    assert_equal(u.atoms[0].angles[0].atom3, u.atoms[2])
+
+    # torsions
+    assert_equal(len(u._psf['_dihe']), 8921)
+    assert_equal(len(u.atoms[0].torsions), 14)
+
+    assert_equal(u.atoms[0].torsions[0].atom1, u.atoms[0])
+    assert_equal(u.atoms[0].torsions[0].atom2, u.atoms[4])
+    assert_equal(u.atoms[0].torsions[0].atom3, u.atoms[6])
+    assert_equal(u.atoms[0].torsions[0].atom4, u.atoms[7])
+
+
+
+class TestPSF_TopologyGroup(TestCase):
+    """Tests TopologyDict and TopologyGroup classes with psf input"""
+    def setUp(self):
+        topology = PSF
+        self.u = MDAnalysis.Universe(topology)
+    
+    def tearDown(self):
+        del self.u
+
+    def testBonds(self):
+        assert_equal(len(self.u.atoms.bondDict), 57)
+
+        res1 = self.u.residues[0]
+        assert_equal(res1.numberOfBondTypes(), 12)
+
+    def testAngles(self):
+        assert_equal(len(self.u.atoms.angleDict), 130)
+        
+    def testTorsions(self):
+        assert_equal(len(self.u.atoms.torsionDict), 220)
+
+    def testTopGroups(self):
+        res1 = self.u.residues[0]
+        res2 = self.u.residues[1]
+
+        res1_tg = res1.bondDict['23', '3'] # make a tg
+        assert_equal(len(res1_tg), 4)
+        testbond = self.u.atoms[7].bonds[0]
+        assert_equal(testbond in res1_tg, True) # check a known bond is present
+
+        res2_tg = res2.selectBonds(('23', '3'))
+        assert_equal(len(res2_tg), 6)
+    
+        combined_tg = res1_tg + res2_tg # add tgs together
+        assert_equal(len(combined_tg), 10)
+
+        big_tg = self.u.atoms.bondDict['23', '3']
+        assert_equal(len(big_tg), 494)
+
+        big_tg += combined_tg # try and add some already included bonds
+        assert_equal(len(big_tg), 494) # check len doesn't change
+
 # AMBER
 
 class RefCappedAla(object):

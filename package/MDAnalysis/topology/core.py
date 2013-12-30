@@ -228,8 +228,8 @@ def build_bondlists(atoms, bonds=None, angles=None, torsions=None):
         for a in atoms:
             a.bonds = []
         for a1, a2 in bonds:
-            atom1 = atoms[a1]
-            atom2 = atoms[a2]
+            atom1 = atoms[a1 - 1]
+            atom2 = atoms[a2 - 1]
             b = Bond(atom1, atom2)
             atom1.bonds.append(b)
             atom2.bonds.append(b)
@@ -237,9 +237,9 @@ def build_bondlists(atoms, bonds=None, angles=None, torsions=None):
         for a in atoms:
             a.angles = []
         for a1, a2, a3 in angles:
-            atom1 = atoms[a1]
-            atom2 = atoms[a2]
-            atom3 = atoms[a3]
+            atom1 = atoms[a1 - 1]
+            atom2 = atoms[a2 - 1]
+            atom3 = atoms[a3 - 1]
             b = Angle(atom1, atom2, atom3)
             atom1.angles.append(b)
             atom2.angles.append(b)
@@ -248,10 +248,10 @@ def build_bondlists(atoms, bonds=None, angles=None, torsions=None):
         for a in atoms:
             a.torsions = []
         for a1, a2, a3, a4 in torsions:
-            atom1 = atoms[a1]
-            atom2 = atoms[a2]
-            atom3 = atoms[a3]
-            atom4 = atoms[a4]
+            atom1 = atoms[a1 - 1]
+            atom2 = atoms[a2 - 1]
+            atom3 = atoms[a3 - 1]
+            atom4 = atoms[a4 - 1]
             b = Torsion(atom1, atom2, atom3, atom4)
             atom1.torsions.append(b)
             atom2.torsions.append(b)
