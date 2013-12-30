@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
@@ -275,10 +275,16 @@ Zr    91.224
 #: :data:`atomelements`.
 masses = kv2dict(TABLE_MASSES, convertor=float)
 
+#: Van der Waals radii (taken from GROMACS_, ``/usr/share/gromacs/top/vdwradii.dat``)
+#: and converted to ångström.
+#: .. _GROMACS: http://www.gromacs.org
+#:
+#: .. SeeAlso:: :func:`MDAnalysis.topology.core.guess_bonds`
 vdwradii = {  "C":     1.5,
               "F":     1.2,
               "H":     0.4,
               "N":     1.10,
               "O":     1.05,
               "S":     1.6,
-              "P":     1.6,}
+              "P":     1.6,
+              }

@@ -347,11 +347,10 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
     of the atoms and :math:`f` is an ad-hoc *fudge_factor*. This is
     the `same algorithm that VMD uses`_.
 
-    The table of van der Waals radii wastaken from GROMACS_
-    (``/usr/share/gromacs/top/vdwradii.dat``) and hard-coded as
+    The table of van der Waals radii is hard-coded as
     :data:`MDAnalysis.topology.tables.vdwradii` or a user-specified
     table can be provided as a dictionary in the keyword argument
-    *vdwradii*.
+    *vdwradii*. Atoms are found by their :attr:`Atom.type`.
 
     .. warning::
 
@@ -362,11 +361,10 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
 
     .. _`same algorithm that VMD uses`:
        http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html
-    .. _GROMACS: http://www.gromacs.org
 
     .. versionadded:: 0.7.7
     """
-    # Taken from GROMACS gromacs/top/vdwradii.dat; in nm
+    # Taken from GROMACS gromacs/top/vdwradii.dat
     # FIXME by JD: these should be stored in an asset file, rather than in
     # source code.
     # FIXME this is not the whole periodic table... (eg halogens are missing)
@@ -378,22 +376,20 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
     bonds = set()
     for a in atoms:
         if not a.type in vdwradii.keys():
-            logger.error("guess_bonds(): %s has no defined vdw radius", a.type)
+            logger.error("guess_bonds(): %s has no defined vdw radius, cannot guess bonds", a.type)
             return bonds
     # 1-D vector of the upper-triangle of all-to-all distance matrix
     dist = distances.self_distance_array(coords)
     N = len(coords)
 
-    pairs = list()
-    [[pairs.append((i,j)) for j in xrange(i + 1, N)] for i in xrange(N)]
-
+    pairs = ((i,j) for i in xrange(N) for j in xrange(i + 1, N))
     for x, (d, (i, j)) in enumerate(itertools.izip(dist, pairs)):
         a1, a2 = atoms[i], atoms[j]
         r1, r2 = vdwradii[a1.type], vdwradii[a2.type]
         if (r1 + r2) * fudge_factor <= dist[x]:
             continue
         #print "BOND", ((r1 + r2) * 10 * fudge_factor), dist[i,j]
-        bonds.add(frozenset([i+1,j+1]))
+        bonds.add(frozenset([a1.number, a2.number]))  # orbeckst: Atom.number are 0-based, do not add 1.
 
     return bonds
 
