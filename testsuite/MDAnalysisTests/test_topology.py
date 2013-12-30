@@ -16,9 +16,8 @@
 #
 
 import MDAnalysis
-import MDAnalysis as mda
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
-from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS
+from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -121,14 +120,25 @@ class TestMagnesium(_TestGuessAtomType):
 # CHARMM and NAMD PSF
 
 class _TestTopology(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(self.topology)
+
+    def tearDown(self):
+        del self.universe
+
     def test_parser(self):
-        U = MDAnalysis.Universe(self.topology)
-        assert_equal(U.atoms.numberOfAtoms(),
+        assert_equal(self.universe.atoms.numberOfAtoms(),
                      self.ref_numatoms,
                      "wrong number of atoms in topology")
-        assert_equal(U.atoms.numberOfResidues(),
+        assert_equal(self.universe.atoms.numberOfResidues(),
                      self.ref_numresidues,
                      "wrong number of residues in topology")
+
+    def test_atom_number(self):
+        assert_equal(self.universe.atoms[0].number, 0,
+                     "first atom should have Atom.number 0")
+        assert_equal(self.universe.atoms[-1].number, self.ref_numatoms - 1,
+                     "last atom has wrong Atom.number")
 
 class RefAdKSmall(object):
     """Mixin class to provide comparison numbers.
@@ -195,10 +205,21 @@ class TestAMBER(_TestTopology, RefCappedAla):
 class TestAMBER12(_TestTopology, RefAMBER12):
     """Testing AMBER 12 PRMTOP parser (Issue 100)"""
 
+# PDB
+
+class RefPDB(object):
+    topology = PDB_small
+    ref_numatoms = 3341
+    ref_numresidues = 214
+
+class TestPDB(_TestTopology, RefPDB):
+    """Testing PDB topology parsing (PrimitivePDB)"""
+
+# DESRES
 
 class TestDMSReader(TestCase):
     def setUp(self):
-        self.universe = mda.Universe(DMS)
+        self.universe = MDAnalysis.Universe(DMS)
         self.ts = self.universe.trajectory.ts
 
     def tearDown(self):
@@ -208,7 +229,7 @@ class TestDMSReader(TestCase):
     def test_number_of_bonds(self):
         # Desired value taken from VMD
         #      Info)    Atoms: 3341
-        assert_equal(len(self.universe.bonds),3365) 
+        assert_equal(len(self.universe.bonds),3365)
 
     def test_bond_order(self):
         pass
@@ -216,18 +237,26 @@ class TestDMSReader(TestCase):
     def test_segid(self):
         segid = set([a.segid for a in self.universe.atoms])
         assert_equal(segid, set(("4AKE",) ))
-    
+
     def test_atomsels(self):
         # Desired value taken from VMD atomsel
         s0 = self.universe.selectAtoms("name CA")
         assert_equal(len(s0), 214)
-        
+
         s1 = self.universe.selectAtoms("resid 33")
         assert_equal(len(s1), 12)
-        
+
         s2 = self.universe.selectAtoms("segid 4AKE")
         assert_equal(len(s2), 3341)
-        
+
         s3 = self.universe.selectAtoms("resname ALA")
         assert_equal(len(s3), 190)
-        
+
+    def test_atom_number(self):
+        assert_equal(self.universe.atoms[0].number, 0,
+                     "first atom should have Atom.number 0")
+        assert_equal(self.universe.atoms[-1].number, 3341 - 1,
+                     "last atom has wrong Atom.number")
+
+# GROMACS TPR
+# see test_tprparser
