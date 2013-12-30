@@ -135,9 +135,9 @@ def parse(tprfile):
     try:
         th = U.read_tpxheader(data)                    # tpxheader
     except EOFError:
-        logger.exception()
-        raise ValueError(
-            "{0}: Invalid tpr file or cannot be recognized".format(tprfile))
+        msg = "{0}: Invalid tpr file or cannot be recognized".format(tprfile)
+        logger.critical(msg)
+        raise ValueError(msg)
 
     log_header(th)
 
@@ -165,8 +165,9 @@ def parse(tprfile):
             '_impr': tpr_top.impr
             }
     else:
-        logger.exception()
-        raise ValueError("{0}: No topology found in tpr file".formation(tprfile))
+        msg = "{0}: No topology found in tpr file".formation(tprfile)
+        logger.critical(msg)
+        raise ValueError(msg)
 
     # THE FOLLOWING CODE IS WORKING FOR TPX VERSION 58, BUT SINCE THESE INFO IS
     # NOT INTERESTED, SO IT'S NOT COVERED IN ALL VERSIONS. PARSING STOPS HERE.
