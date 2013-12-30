@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.5. DCD trajectory I/O — MDAnalysis.coordinates.DCD &mdash; MDAnalysis 0.8.0rc2 documentation</title>
+    <title>5.5. DCD trajectory I/O — MDAnalysis.coordinates.DCD &mdash; MDAnalysis 0.8.0rc3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0rc2',
+        VERSION:     '0.8.0rc3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc2 documentation"
+          title="Search within MDAnalysis 0.8.0rc3 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc2 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc3 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.6. DESRES file format — MDAnalysis.coordinates.DMS" href="DMS.html" />
     <link rel="prev" title="5.4. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" href="CRD.html" /> 
@@ -51,7 +49,7 @@
         <li class="right" >
           <a href="CRD.html" title="5.4. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc3 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -107,7 +105,7 @@ Trajectory API.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Data :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Data:</th><td class="field-body"><dl class="first docutils">
 <dt>ts</dt>
 <dd><p class="first last"><a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> object
 containing coordinates of current frame</p>
@@ -115,7 +113,7 @@ containing coordinates of current frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Methods :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Methods:</th><td class="field-body"><dl class="first last docutils">
 <dt><tt class="docutils literal"><span class="pre">dcd</span> <span class="pre">=</span> <span class="pre">DCD(dcdfilename)</span></tt></dt>
 <dd><p class="first last">open dcd file and read header</p>
 </dd>
@@ -151,14 +149,14 @@ containing coordinates of current frame</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output DCD trajectory</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
 <dt><em>numatoms</em></dt>
 <dd><p class="first last">number of atoms</p>
 </dd>
@@ -177,7 +175,7 @@ containing coordinates of current frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="MDAnalysis.coordinates.DCD.DCDWriter"><tt class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></tt></a></p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="MDAnalysis.coordinates.DCD.DCDWriter"><tt class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -198,7 +196,7 @@ according to the CHARMM format. The time between two frames would be
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>timeseries</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection" title="MDAnalysis.core.Timeseries.TimeseriesCollection"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.Timeseries.TimeseriesCollection</span></tt></a></p>
 </dd>
@@ -220,7 +218,7 @@ according to the CHARMM format. The time between two frames would be
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>asel</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> object</p>
 </dd>
@@ -251,7 +249,7 @@ coordinates)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Methods :</th><td class="field-body"><tt class="docutils literal"><span class="pre">d</span> <span class="pre">=</span> <span class="pre">DCDWriter(dcdfilename,</span> <span class="pre">numatoms,</span> <span class="pre">start,</span> <span class="pre">step,</span> <span class="pre">delta,</span> <span class="pre">remarks)</span></tt></td>
+<tr class="field-odd field"><th class="field-name">Methods:</th><td class="field-body"><tt class="docutils literal"><span class="pre">d</span> <span class="pre">=</span> <span class="pre">DCDWriter(dcdfilename,</span> <span class="pre">numatoms,</span> <span class="pre">start,</span> <span class="pre">step,</span> <span class="pre">delta,</span> <span class="pre">remarks)</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -260,7 +258,7 @@ coordinates)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
@@ -307,10 +305,11 @@ as [A,alpha,B,beta,gamma,C]</p>
 <tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter.write_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>write a new timestep to the dcd file</p>
 <p><em>ts</em> - timestep object containing coordinates to be written to dcd file</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Raises <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> instead of generic <tt class="xref py py-exc docutils literal"><span class="pre">Exception</span></tt>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Raises <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> instead of generic <tt class="xref py py-exc docutils literal"><span class="pre">Exception</span></tt>
 if wrong number of atoms supplied and <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt>
 if no coordinates to be written.</p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -338,7 +337,7 @@ if no coordinates to be written.</p>
         <li class="right" >
           <a href="CRD.html" title="5.4. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc3 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -348,7 +347,7 @@ if no coordinates to be written.</p>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

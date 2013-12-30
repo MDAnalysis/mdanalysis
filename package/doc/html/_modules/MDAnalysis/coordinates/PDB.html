@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.8.0rc2 documentation</title>
+    <title>MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.8.0rc3 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0rc2',
+        VERSION:     '0.8.0rc3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc2 documentation"
+          title="Search within MDAnalysis 0.8.0rc3 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc2 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc3 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -43,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc3 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -278,7 +276,6 @@
 <span class="sd">.. _END: http://www.wwpdb.org/documentation/format32/sect11.html#END</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="c"># BioPython is overkill but potentially extensible (altLoc etc)</span>
@@ -496,10 +493,11 @@
 <div class="viewcode-block" id="PrimitivePDBReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader">[docs]</a><span class="k">class</span> <span class="nc">PrimitivePDBReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;PDBReader that reads a PDB-formatted file, no frills.</span>
 
-<span class="sd">    Records read (see `PDB coordinate section`_ for details):</span>
-<span class="sd">     - CRYST1 for unitcell A,B,C, alpha,beta,gamm</span>
-<span class="sd">     - ATOM or HETATM for x,y,z</span>
+<span class="sd">    The following PDB records are parsed (see `PDB coordinate section`_ for details):</span>
+<span class="sd">     - CRYST1 for unitcell A,B,C, alpha,beta,gamma</span>
+<span class="sd">     - ATOM or HETATM for serial,name,resName,chainID,resSeq,x,y,z,occupancy,tempFactor</span>
 <span class="sd">     - HEADER, TITLE, COMPND</span>
+<span class="sd">     - all other lines are ignored</span>
 
 <span class="sd">    Reads multi-`MODEL`_ PDB files as trajectories.</span>
 
@@ -578,39 +576,38 @@
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        
+
         <span class="k">class</span> <span class="nc">Struct</span><span class="p">:</span>
-            <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">entries</span><span class="p">):</span> 
+            <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">entries</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">entries</span><span class="p">)</span>
-                
+
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pdbfile</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="c"># Remove extra spaces</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c"># Skip line if empty</span>
+                    <span class="k">continue</span>
+                <span class="n">record</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="k">def</span> <span class="nf">_c</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">typeclass</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_col</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">typeclass</span><span class="o">=</span><span class="n">typeclass</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;END&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;END&#39;</span><span class="p">:</span>
                     <span class="k">break</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;CRYST1&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;CRYST1&#39;</span><span class="p">:</span>
                     <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">33</span><span class="p">)</span>
                     <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mi">47</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">54</span><span class="p">)</span>
                     <span class="n">unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span>
                     <span class="k">continue</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;HEADER&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;HEADER&#39;</span><span class="p">:</span>
                     <span class="n">header</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="k">continue</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;COMPND&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;COMPND&#39;</span><span class="p">:</span>
                     <span class="n">l</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="n">compound</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
                     <span class="k">continue</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;REMARK&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;REMARK&#39;</span><span class="p">:</span>
                     <span class="n">content</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="n">remarks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;MODEL&#39;</span><span class="p">:</span>
-                    <span class="n">frameno</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="k">if</span> <span class="n">frameno</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="c"># detect if MODEL starts at 0 or at 1; switch model_offset appropriately</span>
-                        <span class="c"># Will break/lose frames if MODELs are nonconsecutive in the PDB file...</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">model_offset</span> <span class="o">=</span> <span class="mi">1</span>
-                    <span class="n">frames</span><span class="p">[</span><span class="n">frameno</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_offset</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span> <span class="c"># 1-based indexing</span>
+                <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;MODEL&#39;</span><span class="p">:</span>
+                    <span class="n">frames</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>  <span class="c"># 1-based indexing</span>
                 <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;ATOM  &#39;</span><span class="p">,</span> <span class="s">&#39;HETATM&#39;</span><span class="p">):</span>
                     <span class="c"># skip atom/hetatm for frames other than the first - they will be read in when next() is called on the trajectory reader</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -620,7 +617,12 @@
                     <span class="n">name</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="n">resName</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="n">chainID</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>  <span class="c"># empty chainID is a single space &#39; &#39;!</span>
-                    <span class="n">resSeq</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&quot;XPDB&quot;</span><span class="p">:</span>
+                        <span class="n">resSeq</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>  <span class="c"># extended non-standard format used by VMD</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&quot;PDB&quot;</span>
+                        <span class="n">resSeq</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+                        <span class="n">insertCode</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>  <span class="c"># not used</span>
                     <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">39</span><span class="p">,</span> <span class="mi">46</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">54</span><span class="p">)</span>
                     <span class="n">occupancy</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">55</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
                     <span class="n">tempFactor</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">61</span><span class="p">,</span> <span class="mi">66</span><span class="p">)</span>
@@ -628,7 +630,7 @@
                     <span class="n">element</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">77</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
                     <span class="n">atom</span> <span class="o">=</span> <span class="n">Struct</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">((</span><span class="s">&quot;serial&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;resName&quot;</span><span class="p">,</span> <span class="s">&quot;chainID&quot;</span><span class="p">,</span> <span class="s">&quot;resSeq&quot;</span><span class="p">,</span> <span class="s">&quot;occupancy&quot;</span><span class="p">,</span> <span class="s">&quot;tempFactor&quot;</span><span class="p">,</span> <span class="s">&quot;segID&quot;</span><span class="p">,</span> <span class="s">&quot;element&quot;</span><span class="p">),</span>\
-                    <span class="p">(</span><span class="n">serial</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="n">resSeq</span><span class="p">,</span> <span class="n">occupancy</span><span class="p">,</span> <span class="n">tempFactor</span><span class="p">,</span> <span class="n">segID</span><span class="p">,</span> <span class="n">element</span><span class="p">))))</span>
+                                                 <span class="p">(</span><span class="n">serial</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="n">resSeq</span><span class="p">,</span> <span class="n">occupancy</span><span class="p">,</span> <span class="n">tempFactor</span><span class="p">,</span> <span class="n">segID</span><span class="p">,</span> <span class="n">element</span><span class="p">))))</span>
                     <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">header</span>
@@ -1003,7 +1005,7 @@
 
         <span class="c"># TODO: The bonds should not be a list of ints, as are now, but a list</span>
         <span class="c">#       of Atom objects.</span>
-        
+
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -1014,15 +1016,15 @@
             <span class="k">pass</span>
             <span class="c">#logger.error(&quot;PDB CONECT records not written because this only works correctly for a whole Universe.&quot;)</span>
             <span class="c">#raise NotImplementedError(&quot;PDB CONECT records not written because this only works correctly for a whole Universe.&quot;)</span>
-        
+
         <span class="n">bonds</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
         <span class="p">[[</span><span class="n">bonds</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">bonds</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="p">]</span>
-        
+
         <span class="n">atoms</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">number</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span>
-        
+
         <span class="n">mapping</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">atom</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="p">)])</span>
-        
+
         <span class="c"># Write out only the bonds that were defined in CONECT records</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span> <span class="o">==</span> <span class="s">&quot;conect&quot;</span><span class="p">:</span>
             <span class="n">bonds</span> <span class="o">=</span> <span class="p">[(</span><span class="n">bond</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">bond</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">bonds</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">bond</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">]</span>
@@ -1031,21 +1033,21 @@
         <span class="k">else</span> <span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;bonds has to be either None, &#39;conect&#39; or &#39;all&#39;&quot;</span><span class="p">)</span>
         <span class="n">con</span> <span class="o">=</span> <span class="p">{}</span>
-        
+
         <span class="k">for</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="ow">in</span> <span class="n">bonds</span><span class="p">:</span>
              <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">a1</span> <span class="ow">in</span> <span class="n">atoms</span> <span class="ow">and</span> <span class="n">a2</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">):</span> <span class="k">continue</span>
              <span class="k">if</span> <span class="ow">not</span> <span class="n">con</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">a1</span><span class="p">):</span> <span class="n">con</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
              <span class="k">if</span> <span class="ow">not</span> <span class="n">con</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">a2</span><span class="p">):</span> <span class="n">con</span><span class="p">[</span><span class="n">a2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
              <span class="n">con</span><span class="p">[</span><span class="n">a2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a1</span><span class="p">)</span>
              <span class="n">con</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
-        
+
         <span class="c">#print con</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">number</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span>
 
         <span class="n">conect</span> <span class="o">=</span> <span class="p">[([</span><span class="n">a</span><span class="p">,]</span> <span class="o">+</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">con</span><span class="p">[</span><span class="n">a</span><span class="p">]))</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span> <span class="k">if</span> <span class="n">con</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">a</span><span class="p">)]</span>
-        
+
         <span class="n">conect</span> <span class="o">=</span> <span class="p">[[</span><span class="n">mapping</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">conect</span><span class="p">]</span>
-        
+
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">conect</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">CONECT</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 
@@ -1394,6 +1396,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s">&#39;CONECT&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="n">conect</span><span class="p">)</span>
 
 </div></div>
+<span class="k">class</span> <span class="nc">ExtendedPDBReader</span><span class="p">(</span><span class="n">PrimitivePDBReader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;PDBReader that reads a PDB-formatted file with five-digit residue numbers.</span>
+
+<span class="sd">    This reader does not conform to the `PDB standard`_ because it allows</span>
+<span class="sd">    five-digit residue numbers that may take up columns 23 to 27 (inclusive)</span>
+<span class="sd">    instead of being confined to 23-26 (with column 27 being reserved for the</span>
+<span class="sd">    insertion code in the PDB standard). PDB files in this format are written</span>
+<span class="sd">    by popular programs such as VMD_.</span>
+
+<span class="sd">    .. SeeAlso:: :class:`PrimitivePDBReader`</span>
+
+<span class="sd">    .. _PDB standard: http://www.wwpdb.org/documentation/format32/sect9.html</span>
+<span class="sd">    .. _VMD: http://www.ks.uiuc.edu/Research/vmd/</span>
+
+<span class="sd">    .. versionadded:: 0.8</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="s">&quot;XPDB&quot;</span>
+
 <div class="viewcode-block" id="MultiPDBWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.MultiPDBWriter">[docs]</a><span class="k">class</span> <span class="nc">MultiPDBWriter</span><span class="p">(</span><span class="n">PrimitivePDBWriter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;PDB writer that implements a subset of the `PDB 3.2 standard`_ .</span>
 
@@ -1437,7 +1457,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc3 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -1448,7 +1468,7 @@
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

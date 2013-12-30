@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.align &mdash; MDAnalysis 0.8.0rc2 documentation</title>
+    <title>MDAnalysis.analysis.align &mdash; MDAnalysis 0.8.0rc3 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0rc2',
+        VERSION:     '0.8.0rc3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc2 documentation"
+          title="Search within MDAnalysis 0.8.0rc3 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc2 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc3 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -43,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc3 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -97,7 +95,7 @@
 <span class="sd">=====================================================================</span>
 
 <span class="sd">:Author: Oliver Beckstein, Joshua Adelman</span>
-<span class="sd">:Year: 2010--2011</span>
+<span class="sd">:Year: 2010--2013</span>
 <span class="sd">:Copyright: GNU Public License v3</span>
 
 <span class="sd">The module contains functions to fit a target structure to a reference</span>
@@ -227,7 +225,7 @@
 <span class="sd">normal users.</span>
 
 <span class="sd">.. autofunction:: fasta2select</span>
-
+<span class="sd">.. autofunction:: check_same_atoms</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
@@ -294,7 +292,7 @@
 
 
 <div class="viewcode-block" id="alignto"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.alignto">[docs]</a><span class="k">def</span> <span class="nf">alignto</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s">&quot;all&quot;</span><span class="p">,</span> <span class="n">mass_weighted</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-            <span class="n">subselection</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+            <span class="n">subselection</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Spatially align *mobile* to *reference* by doing a RMSD fit on *select* atoms.</span>
 
 <span class="sd">    The superposition is done in the following way:</span>
@@ -344,6 +342,9 @@
 <span class="sd">      *mass_weighted* : boolean</span>
 <span class="sd">         ``True`` uses the masses :meth:`reference.masses` as weights for the</span>
 <span class="sd">         RMSD fit.</span>
+<span class="sd">      *tol_mass*</span>
+<span class="sd">         Reject match if the atomic masses for matched atoms differ by more than</span>
+<span class="sd">         *tol_mass* [0.1]</span>
 <span class="sd">      *subselection*</span>
 <span class="sd">         Apply the transformation only to this selection.</span>
 
@@ -360,6 +361,10 @@
 
 <span class="sd">    .. SeeAlso:: For RMSD-fitting trajectories it is more efficient to</span>
 <span class="sd">                 use :func:`rms_fit_trj`.</span>
+
+<span class="sd">    .. versionchanged:: 0.8</span>
+<span class="sd">       Added check that the two groups describe the same atoms including</span>
+<span class="sd">       the new *tol_mass* keyword.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">select</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;all&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span>
         <span class="c"># keep the EXACT order in the input AtomGroups; selectAtoms(&#39;all&#39;)</span>
@@ -371,6 +376,9 @@
         <span class="n">select</span> <span class="o">=</span> <span class="n">_process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
         <span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s">&#39;mobile&#39;</span><span class="p">])</span>
         <span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s">&#39;reference&#39;</span><span class="p">])</span>
+
+    <span class="n">check_same_atoms</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">mass_weighted</span><span class="p">:</span>
         <span class="n">weights</span> <span class="o">=</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">()</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">())</span>
         <span class="n">ref_com</span> <span class="o">=</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">()</span>
@@ -405,8 +413,14 @@
 
 </div>
 <div class="viewcode-block" id="rms_fit_trj"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.rms_fit_trj">[docs]</a><span class="k">def</span> <span class="nf">rms_fit_trj</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">rmsdfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s">&#39;rmsfit_&#39;</span><span class="p">,</span>
-                <span class="n">mass_weighted</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+                <span class="n">mass_weighted</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;RMS-fit trajectory to a reference structure using a selection.</span>
+
+<span class="sd">    Both reference *ref* and trajectory *traj* must be</span>
+<span class="sd">    :class:`MDAnalysis.Universe` instances. If they contain a</span>
+<span class="sd">    trajectory then it is used. The output file format is determined</span>
+<span class="sd">    by the file extension of *filename*. One can also use the same</span>
+<span class="sd">    universe if one wants to fit to the current frame.</span>
 
 <span class="sd">    :Arguments:</span>
 <span class="sd">      *traj*</span>
@@ -438,48 +452,61 @@
 <span class="sd">      *tol_mass*</span>
 <span class="sd">         Reject match if the atomic masses for matched atoms differ by more than</span>
 <span class="sd">         *tol_mass* [0.1]</span>
+<span class="sd">      *force*</span>
+<span class="sd">         - ``True``: Overwrite an existing output trajectory (default)</span>
+<span class="sd">         - ``False``: simply return if the file already exists</span>
+<span class="sd">      *quiet*</span>
+<span class="sd">         - ``True``: suppress progress and logging for levels INFO and below.</span>
+<span class="sd">         - ``False``: show all status messages and do not change the the logging</span>
+<span class="sd">           level (default)</span>
 
-<span class="sd">    Both reference and trajectory must be :class:`MDAnalysis.Universe`</span>
-<span class="sd">    instances. If they contain a trajectory then it is used. The</span>
-<span class="sd">    output file format is the same as the input *traj*.</span>
+<span class="sd">         .. Note:: If</span>
+
+
+<span class="sd">      *kwargs*</span>
+<span class="sd">         All other keyword arguments are passed on the trajectory</span>
+<span class="sd">         :class:`~MDAnalysis.coordinates.base.Writer`; this allows manipulating/fixing</span>
+<span class="sd">         trajectories on the fly (e.g. change the output format by changing the extension of *filename*</span>
+<span class="sd">         and setting different parameters as described for the corresponding writer).</span>
+
+<span class="sd">    :Returns: *filename* (either provided or auto-generated)</span>
 
 <span class="sd">    .. _ClustalW: http://www.clustal.org/</span>
 <span class="sd">    .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/</span>
+
+<span class="sd">    .. versionchanged:: 0.8</span>
+<span class="sd">       Added *kwargs* to be passed to the trajectory :class:`~MDAnalysis.coordinates.base.Writer` and</span>
+<span class="sd">       *filename* is returned.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">frames</span> <span class="o">=</span> <span class="n">traj</span><span class="o">.</span><span class="n">trajectory</span>
 
+    <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
+        <span class="c"># should be part of a try ... finally to guarantee restoring the log level</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">)</span>
+
+    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;remarks&#39;</span><span class="p">,</span> <span class="s">&#39;RMS fitted trajectory to reference&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">path</span><span class="p">,</span><span class="n">fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">frames</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">prefix</span><span class="o">+</span><span class="n">fn</span><span class="p">)</span>
-        <span class="n">writer</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">remarks</span><span class="o">=</span><span class="s">&#39;RMS fitted trajectory to reference&#39;</span><span class="p">)</span>
+        <span class="n">_Writer</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">Writer</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">writer</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">OtherWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">_Writer</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">OtherWriter</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;{0} already exists and will NOT be overwritten; use force=True if you want this&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">filename</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="n">_Writer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">_Writer</span>
 
     <span class="n">select</span> <span class="o">=</span> <span class="n">_process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
 
     <span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s">&#39;reference&#39;</span><span class="p">])</span>
     <span class="n">traj_atoms</span> <span class="o">=</span> <span class="n">traj</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s">&#39;mobile&#39;</span><span class="p">])</span>
     <span class="n">natoms</span> <span class="o">=</span> <span class="n">traj_atoms</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">traj_atoms</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="s">&quot;Reference and trajectory atom selections do not contain &quot;</span><span class="o">+</span>
-                             <span class="s">&quot;the same number of atoms: N_ref=</span><span class="si">%d</span><span class="s">, N_traj=</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> \
-                             <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">traj_atoms</span><span class="p">)))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;RMS-fitting on </span><span class="si">%d</span><span class="s"> atoms.&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">))</span>
-    <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">()</span> <span class="o">-</span> <span class="n">traj_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">())</span> <span class="o">&gt;</span> <span class="n">tol_mass</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mass_mismatches</span><span class="p">):</span>
-        <span class="c"># diagnostic output:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Atoms: reference | trajectory&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">ar</span><span class="p">,</span><span class="n">at</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">,</span><span class="n">traj_atoms</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">ar</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%4s</span><span class="s"> </span><span class="si">%3d</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%6.3f</span><span class="s">  |  </span><span class="si">%4s</span><span class="s"> </span><span class="si">%3d</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%6.3f</span><span class="s">&quot;</span> <span class="o">%</span>  \
-                      <span class="p">(</span><span class="n">ar</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span>
-                       <span class="n">at</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">mass</span><span class="p">,))</span>
-        <span class="n">errmsg</span> <span class="o">=</span> <span class="s">&quot;Inconsistent selections, masses differ by more than </span><span class="si">%f</span><span class="s">; mis-matching atoms are shown above.&quot;</span> <span class="o">%</span> <span class="n">tol_mass</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-    <span class="k">del</span> <span class="n">mass_mismatches</span>
 
+    <span class="n">check_same_atoms</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="n">traj_atoms</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;RMS-fitting on </span><span class="si">%d</span><span class="s"> atoms.&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">mass_weighted</span><span class="p">:</span>
         <span class="c"># if performing a mass-weighted alignment/rmsd calculation</span>
         <span class="n">weight</span> <span class="o">=</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">()</span><span class="o">/</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -504,7 +531,7 @@
     <span class="n">rot</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>      <span class="c"># allocate space for calculation</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 
-    <span class="n">percentage</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="n">nframes</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">percentage</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="n">nframes</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="n">quiet</span><span class="p">,</span>
                                <span class="n">format</span><span class="o">=</span><span class="s">&quot;Fitted frame </span><span class="si">%(step)5d</span><span class="s">/</span><span class="si">%(numsteps)d</span><span class="s">  [</span><span class="si">%(percentage)5.1f%%</span><span class="s">]</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
@@ -536,6 +563,12 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">rmsdfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">rmsdfile</span><span class="p">,</span><span class="n">rmsd</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Wrote RMSD timeseries  to file </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">rmsdfile</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
+        <span class="c"># should be part of a try ... finally to guarantee restoring the log level</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">filename</span>
 </div>
 <div class="viewcode-block" id="fasta2select"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.fasta2select">[docs]</a><span class="k">def</span> <span class="nf">fasta2select</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">,</span><span class="n">is_aligned</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">ref_resids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">target_resids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -724,7 +757,51 @@
     <span class="n">ref_selection</span> <span class="o">=</span>  <span class="s">&quot; or &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sel</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">target_selection</span> <span class="o">=</span>  <span class="s">&quot; or &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sel</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;reference&#39;</span><span class="p">:</span><span class="n">ref_selection</span><span class="p">,</span> <span class="s">&#39;mobile&#39;</span><span class="p">:</span><span class="n">target_selection</span><span class="p">}</span>
-</pre></div></div>
+
+</div>
+<div class="viewcode-block" id="check_same_atoms"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.check_same_atoms">[docs]</a><span class="k">def</span> <span class="nf">check_same_atoms</span><span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test if the two :class:`~MDAnalysis.core.AtomGroup.AtomGroup` *ag1* and *ag2* consist of the same atoms.</span>
+
+<span class="sd">    Two tests are performed:</span>
+
+<span class="sd">    1. The two groups must contain the same number of atoms.</span>
+<span class="sd">    2. The masses of corresponding atoms are compared and if any masses differ by more</span>
+<span class="sd">       than *tol_mass* the test is considered failed.</span>
+
+<span class="sd">    :Arguments:</span>
+<span class="sd">      *ag1*, *ag2*</span>
+<span class="sd">         :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances that are compared</span>
+<span class="sd">    :Keywords:</span>
+<span class="sd">      *tol_mass*</span>
+<span class="sd">         Reject if the atomic masses for matched atoms differ by more than</span>
+<span class="sd">         *tol_mass* [0.1]</span>
+
+<span class="sd">    :Raises: :exc:`SelectionError` if any of the tests fails.</span>
+
+<span class="sd">    .. versionadded:: 0.8</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag2</span><span class="p">):</span>
+        <span class="c"># Test 1 failed</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="s">&quot;Reference and trajectory atom selections do not contain &quot;</span>\
+            <span class="s">&quot;the same number of atoms: N_ref={0}, N_traj={1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag2</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+    <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">masses</span><span class="p">()</span> <span class="o">-</span> <span class="n">ag2</span><span class="o">.</span><span class="n">masses</span><span class="p">())</span> <span class="o">&gt;</span> <span class="n">tol_mass</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mass_mismatches</span><span class="p">):</span>
+        <span class="c"># Test 2 failed.</span>
+        <span class="c"># diagnostic output:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Atoms: reference | trajectory&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ar</span><span class="p">,</span><span class="n">at</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">ar</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%4s</span><span class="s"> </span><span class="si">%3d</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%6.3f</span><span class="s">  |  </span><span class="si">%4s</span><span class="s"> </span><span class="si">%3d</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%6.3f</span><span class="s">&quot;</span> <span class="o">%</span>  \
+                      <span class="p">(</span><span class="n">ar</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span>
+                       <span class="n">at</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">mass</span><span class="p">,))</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="s">&quot;Inconsistent selections, masses differ by more than {}; mis-matching atoms are shown above.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tol_mass</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">True</span></div>
+</pre></div>
 
           </div>
         </div>
@@ -740,7 +817,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc3 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -751,7 +828,7 @@
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>
