@@ -35,6 +35,8 @@ from MDAnalysis.core.util import norm
 import numpy
 import MDAnalysis.core.AtomGroup as AtomGroup
 
+import itertools
+
 def build_segments(atoms):
     """Create all :class:`~MDAnalysis.core.AtomGroup.Segment` instancess from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
 
@@ -109,37 +111,70 @@ def build_residues(atoms):
     return residues
 
 class Bond(object):
-    """A bond between two :class:`~MDAnalysis.core.AtomGroup.Atom` instances."""
+    """A bond between two :class:`~MDAnalysis.core.AtomGroup.Atom`
+
+    Two :class:`Bond` instances can be compared with the ``==`` and
+    ``!=`` operators. A bond is equal to another if the same atom
+    numbers are connected and they have the same bond order. The
+    ordering of the two atom numbers is ignored as is the fact that a
+    bond was guessed.
+    """
     def __init__(self, a1, a2, order=None):
         self.atom1 = a1
         self.atom2 = a2
         a1.bonds.append(self)
         a2.bonds.append(self)
-        self.order = order 
-        self.is_guessed = False
+        self.order = order
+        self.__is_guessed = False
     def partner(self, atom):
         if atom is self.atom1:
             return self.atom2
         else: return self.atom1
-    def set_is_guessed(self, b):
-        self.is_guessed = b
-    def get_is_guessed(self):
-        return self.is_guessed
+    @property
+    def is_guessed(self):
+        """``True`` if the bond was guessed.
+
+        .. SeeAlso:: :func:`guess_bonds`
+        """
+        return self.__is_guessed
+    @is_guessed.setter
+    def is_guessed(self, b):
+        self.__is_guessed = b
     def length(self):
         """Length of the bond."""
         bond = self.atom1.pos - self.atom2.pos
-        import math
         return math.sqrt((bond[0]**2)+(bond[1]**2)+(bond[2]**2))
     def __repr__(self):
         a1 = self.atom1
         a2 = self.atom2
         return "< Bond between: Atom %d (%s of %s-%d) and Atom %s (%s of %s-%d), length %.2f A >" % \
           (a1.number+1, a1.name, a1.resname, a1.resid, a2.number+1, a2.name, a2.resname, a2.resid, self.length())
+    def __eq__(self, other):
+        """This bond is equal to *other* if the same atom numbers are connected.
+
+        The bond order must also be the same. Only two :class:`Bond`
+        istances can be compared with each other.
+
+        The ordering of the two atom numbers is ignored as is the fact
+        that a bond was guessed.
+        """
+        if type(other) is type(self):
+            return self.order == other.order and \
+                set((self.atom1.number, self.atom2.number)) == set((other.atom1.number, other.atom2.number))
+        else:
+            return False
+    def __ne__(self, other):
+        """This bond is not equal to *other* if different atom  numbers are connected.
+
+
+        .. SeeAlso:: This is the logical opposite of :meth:`Bond.__eq__`.
+        """
+        return not self.__eq__(other)
 
 class Angle(object):
     """An angle between three :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
     Atom 2 is the apex of the angle
-    
+
     .. versionadded:: 0.8
     """
     #currently a stub of a class, maybe add to this to make it as useful as bonds
@@ -181,9 +216,9 @@ def build_bondlists(atoms, bonds=None, angles=None, torsions=None):
     """Construct the topology lists of each :class:`~MDAnalysis.core.AtomGroup.Atom`.
 
     The lists are stored in the attributes
-    :attr:`MDAnalysis.core.AtomGroup.Atom.bonds` 
-    :attr:`MDAnalysis.core.AtomGroup.Atom.angles` 
-    :attr:`MDAnalysis.core.AtomGroup.Atom.torsions` 
+    :attr:`MDAnalysis.core.AtomGroup.Atom.bonds`
+    :attr:`MDAnalysis.core.AtomGroup.Atom.angles`
+    :attr:`MDAnalysis.core.AtomGroup.Atom.torsions`
     and consist of a list of
     :class:`Bond` :class:`Angle` and :class:`Torsion` instances respectively
 
@@ -300,56 +335,63 @@ def guess_atom_element(atomname):
         return atomname[0]
 
 def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
-    """
-    Bond between two atoms is created, if the two atoms are within R1 * R2 * 0.6
-    of each other, where R1 and R2 are the VdW radii of the atoms and 0.6 is an 
-    ad-hoc factor. This is false (and the reference provided below is wrong).
-    
-    Here the bond is created, when sum of the radii multiplied by some fudge_factor
-    (0.7 by default) is greater than the distance between the two atoms.
-    
-    The VMD radii table is taken from GROMACS (/usr/share/gromacs/top/vdwradii.dat)
-    
-    .. warning:: 
+    """Guess if bonds exist between two atoms based on their distance.
 
-       No check is done after the bonds are guesses to see if Lewis
+    Bond between two atoms is created, if the two atoms are within
+
+    .. math::
+
+          d < f * (R_1 + R_2)
+
+    of each other, where :math:`R_1` and :math:`R_2` are the VdW radii
+    of the atoms and :math:`f` is an ad-hoc *fudge_factor*. This is
+    the `same algorithm that VMD uses`_.
+
+    The table of van der Waals radii wastaken from GROMACS_
+    (``/usr/share/gromacs/top/vdwradii.dat``) and hard-coded as
+    :data:`MDAnalysis.topology.tables.vdwradii` or a user-specified
+    table can be provided as a dictionary in the keyword argument
+    *vdwradii*.
+
+    .. warning::
+
+       No check is done after the bonds are guessed to see if Lewis
        structure is correct. This is wrong and will burn somebody.
-    
-    The code is also in pure python now, so it's slow. 
-    
-    * Reference: http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html
-    * Author: Jan Domanski
+
+    The code is also in pure python now, so it's slow.
+
+    .. _`same algorithm that VMD uses`:
+       http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html
+    .. _GROMACS: http://www.gromacs.org
 
     .. versionadded:: 0.7.7
     """
     # Taken from GROMACS gromacs/top/vdwradii.dat; in nm
-    # FIXME by JD: these should be stored in an asset file, rather than in 
+    # FIXME by JD: these should be stored in an asset file, rather than in
     # source code.
     # FIXME this is not the whole periodic table... (eg halogens are missing)
-    if not vdwradii:
+    if vdwradii is None:
         vdwradii = tables.vdwradii
-    
-    assert len([a for a in atoms if a]) == coords.shape[0]
-    
-    bonds = set()
-    
-    for a in atoms:
-        if not a.type in vdwradii.keys(): 
-            print a.type + " has no defined vdw radius"
-            return bonds
 
-    # 1-D vector of the upper-triangle of all-to-all distance matrix    
+    assert len([a for a in atoms if a]) == coords.shape[0]
+
+    bonds = set()
+    for a in atoms:
+        if not a.type in vdwradii.keys():
+            logger.error("guess_bonds(): %s has no defined vdw radius", a.type)
+            return bonds
+    # 1-D vector of the upper-triangle of all-to-all distance matrix
     dist = distances.self_distance_array(coords)
     N = len(coords)
-    
+
     pairs = list()
-    [[pairs.append((i,j)) for j in range(i + 1, N)] for i in range(N)]
-       
-    for x, (d, (i, j)) in enumerate(zip(dist, pairs)):
+    [[pairs.append((i,j)) for j in xrange(i + 1, N)] for i in xrange(N)]
+
+    for x, (d, (i, j)) in enumerate(itertools.izip(dist, pairs)):
         a1, a2 = atoms[i], atoms[j]
-        r1, r2 = vdwradii[a1.type], vdwradii[a2.type] 
-        # 10 comes from scaling nm to A        
-        if not ((r1 + r2) * fudge_factor) > dist[x] : continue
+        r1, r2 = vdwradii[a1.type], vdwradii[a2.type]
+        if (r1 + r2) * fudge_factor <= dist[x]:
+            continue
         #print "BOND", ((r1 + r2) * 10 * fudge_factor), dist[i,j]
         bonds.add(frozenset([i+1,j+1]))
 
@@ -388,34 +430,34 @@ def guess_atom_charge(atomname):
 
 class TopologyDict(object):
     """
-    A class which serves as a wrapper around a dictionary, which 
+    A class which serves as a wrapper around a dictionary, which
     contains lists of different types of bonds.
 
     Usage::
 
       topologydict = TopologyDict(topologytype, atoms)
 
-    *topologytype* is one of 'bond' 'angle' or 'torsion', a single 
+    *topologytype* is one of 'bond' 'angle' or 'torsion', a single
     TopologyDict can only handle one type of topology.
 
     *atoms* is a list of :class:`MDAnalysis.core.AtomGroup.Atom` objects.
 
-    TopologyDicts are built lazily from a :class:`MDAnalysis.core.AtomGroup.AtomGroup` 
+    TopologyDicts are built lazily from a :class:`MDAnalysis.core.AtomGroup.AtomGroup`
     using the bondDict angleDict or torsionDict methods.
 
-    The TopologyDict collects all the given topology type from the 
-    atoms and categorises them according to the types of the atoms.  
-    Getting and setting types of bonds is done smartly, so a C-C-H 
+    The TopologyDict collects all the given topology type from the
+    atoms and categorises them according to the types of the atoms.
+    Getting and setting types of bonds is done smartly, so a C-C-H
     angle is considered identical to a H-C-C angle.
 
-    Duplicate entries are automatically removed upon creation and 
+    Duplicate entries are automatically removed upon creation and
     combination of different Dicts.  For example, a bond between atoms
-    1 and 2 will only ever appear once in a dict despite both atoms 1 
+    1 and 2 will only ever appear once in a dict despite both atoms 1
     and 2 having the bond in their .bond attribute.
 
     A :class:`TopologyGroup` containing all of a given bond type can
-    be made by querying with the appropriate key.  The keys to the 
-    topologyDict are a tuple of the atom types that the bond represents 
+    be made by querying with the appropriate key.  The keys to the
+    topologyDict are a tuple of the atom types that the bond represents
     and can be viewed using the keys() method.
 
     Two TopologyDicts can be combined using addition, this will not
@@ -461,7 +503,7 @@ class TopologyDict(object):
         self._removeDupes()
 
     def _removeDupes(self):
-        """Sorts through contents and makes sure that there are no duplicate keys 
+        """Sorts through contents and makes sure that there are no duplicate keys
         (through type reversal)
         """
         newdict = dict()
@@ -477,7 +519,7 @@ class TopologyDict(object):
                 if not v in newdict[k]:
                     newdict[k] += [v]
         self.dict = newdict
-            
+
     def __add__(self, other):
         if not isinstance(other, topologyDict):
             raise TypeError("Can only combine topologyDicts")
@@ -520,29 +562,29 @@ class TopologyDict(object):
 
 class TopologyGroup(object):
     """ A container for a group of bonds (either bonds, angles or torsions)::
-    
+
       tg = :class:`MDAnalysis.core.AtomGroup.AtomGroup`.selectBonds(key)
       tg = :class:`TopologyDict`[key]
 
-    *key* describes the desired bond as a tuple of the involved atom 
+    *key* describes the desired bond as a tuple of the involved atom
     types (as defined by the .type atom attribute). A list of available
     topology keys can be displayed using the .keys() method.
 
-    The TopologyGroup contains :class:`MDAnalysis.core.AtomGroup.AtomGroup` 
-    instances which correspond to the components of the bonds the 
+    The TopologyGroup contains :class:`MDAnalysis.core.AtomGroup.AtomGroup`
+    instances which correspond to the components of the bonds the
     TopologyGroup contains. Ie a bond has 2 AtomGroups whereas an angle
     has 3.
 
     The :meth:`bonds`, :meth:`angles` and :meth:`torsions` methods offer
-    a "shortcut" to the Cython distance calculation functions in 
+    a "shortcut" to the Cython distance calculation functions in
     :class:`MDAnalysis.core.distances`.
 
     TopologyGroups can be combined with TopologyGroups of the same bond
     type (ie can combine two angle containing TopologyGroups).
-    
-    TopologyGroups can be indexed to return a single :class:`Bond` 
+
+    TopologyGroups can be indexed to return a single :class:`Bond`
     :class:`Angle` or :class:`Torsion` ::
-    
+
       tg[0], tg[-2]
 
     Or sliced to return a TopologyGroup containing a subset of the original::
@@ -602,7 +644,7 @@ class TopologyGroup(object):
         return TopologyGroup(self.bondlist + other.bondlist)
 
     def __getitem__(self,item):
-        """Returns a particular bond as single object or a subset of 
+        """Returns a particular bond as single object or a subset of
         this TopologyGroup as another TopologyGroup
         """
         if numpy.dtype(type(item)) == numpy.dtype(int): #return a single bond
@@ -628,7 +670,7 @@ class TopologyGroup(object):
         else:
             bond_dist = self.atom1.coordinates() - self.atom2.coordinates()
             if pbc:
-                box = self.atom1.dimensions 
+                box = self.atom1.dimensions
                 if (box[6:9] == 90.).all() and not (box[0:3] == 0).any(): #orthogonal and divide by zero check
                     bond_dist -= numpy.rint(bond_dist/box[0:3])*box[0:3]
                 else:
@@ -638,7 +680,7 @@ class TopologyGroup(object):
 
     def bonds(self, pbc=False, result=None):
         """Calculates the distance between all bonds in this TopologyGroup
-        
+
         Uses cython implementation
         """
         if not self.toptype == 'bond':
@@ -646,12 +688,12 @@ class TopologyGroup(object):
         if not result:
             result = numpy.zeros((self.len,), numpy.float64)
         if not pbc:
-            return distances.calc_bonds(self.atom1.coordinates(), self.atom2.coordinates(), 
+            return distances.calc_bonds(self.atom1.coordinates(), self.atom2.coordinates(),
                                         result=result)
         else:
-            return distances.calc_bonds(self.atom1.coordinates(), self.atom2.coordinates(), 
+            return distances.calc_bonds(self.atom1.coordinates(), self.atom2.coordinates(),
                                         box=self.atom1.dimensions[0:3], result=result)
-        
+
     def _anglesSlow(self):
         """Slow version of angle (numpy implementation)"""
         if not self.toptype == 'angle':
@@ -663,9 +705,9 @@ class TopologyGroup(object):
 
         angles = numpy.array([slowang(a,b) for a,b in izip(vec1,vec2)])
         return angles
-        
+
     def angles(self, result=None):
-        """Calculates the angle in radians formed between a bond 
+        """Calculates the angle in radians formed between a bond
         between atoms 1 and 2 and a bond between atoms 2 & 3
 
         Uses cython implementation
@@ -694,15 +736,15 @@ class TopologyGroup(object):
         """Calculate the torsional angle in radians for this topology
         group.
 
-        Defined as the angle between a plane formed by atoms 1, 2 and 
+        Defined as the angle between a plane formed by atoms 1, 2 and
         3 and a plane formed by atoms 2, 3 and 4.
 
-        Uses cython implementation. 
+        Uses cython implementation.
         """
         if not self.toptype == 'torsion':
             raise TypeError("topology group is not of type 'torsion'")
         if not result:
-            result = numpy.zeros((self.len,), numpy.float64)   
+            result = numpy.zeros((self.len,), numpy.float64)
         return distances.calc_torsions(self.atom1.coordinates(), self.atom2.coordinates(),
-                                       self.atom3.coordinates(), self.atom4.coordinates(), 
+                                       self.atom3.coordinates(), self.atom4.coordinates(),
                                        result=result)

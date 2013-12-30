@@ -628,15 +628,18 @@ class TestMultiPDBReader(TestCase):
         del self.multiverse
         del self.conect
 
+    @attr('slow')
     def test_numframes(self):
         assert_equal(self.multiverse.trajectory.numframes, 24, "Wrong number of frames read from PDB muliple model file")
 
+    @attr('slow')
     def test_numatoms_frame(self):
         u = self.multiverse
         desired = 392
         for frame in u.trajectory:
             assert_equal(len(u.atoms), desired, err_msg="The number of atoms in the Universe (%d) does not match the number of atoms in the test case (%d) at frame %d" % (len(u.atoms), desired, u.trajectory.frame))
 
+    @attr('slow')
     def test_rewind(self):
         u = self.multiverse
         u.trajectory[11]
@@ -644,6 +647,7 @@ class TestMultiPDBReader(TestCase):
         u.trajectory.rewind()
         assert_equal(u.trajectory.ts.frame, 1, "Failed to rewind to first frame (frame index 0)")
 
+    @attr('slow')
     def test_iteration(self):
         u = self.multiverse
         frames = []
@@ -657,6 +661,7 @@ class TestMultiPDBReader(TestCase):
                      "iterated number of frames %d is not the expected number %d; "
                      "trajectory iterator fails to rewind" % (len(frames), u.trajectory.numframes))
 
+    @attr('slow')
     def test_slice_iteration(self):
         u = self.multiverse
         frames = []
@@ -666,31 +671,41 @@ class TestMultiPDBReader(TestCase):
                      np.arange(u.trajectory.numframes)[4:-2:4],
                      err_msg="slicing did not produce the expected frames")
 
-    def test_conect(self):
+    @attr('slow')
+    def test_conect_bonds_conect(self):
         conect = self.conect
-
         assert_equal(len(conect.atoms), 1890)
-
         assert_equal(len(conect.bonds), 1922)
 
-        fd, outfile1 = tempfile.mkstemp(suffix=".pdb")
-        os.close(fd)
-        self.conect.atoms.write(outfile1, bonds="conect")
-        u1 = mda.Universe(outfile1, bonds=True)
+        try:
+            fd, outfile = tempfile.mkstemp(suffix=".pdb")
+            os.close(fd)
+            self.conect.atoms.write(outfile, bonds="conect")
+            u1 = mda.Universe(outfile, bonds=True)
+        finally:
+            os.unlink(outfile)
         assert_equal(len(u1.atoms), 1890)
         assert_equal(len(u1.bonds), 1922)
 
+    @attr('slow')
+    def test_conect_bonds_all(self):
+        conect = self.conect
+        assert_equal(len(conect.atoms), 1890)
+        assert_equal(len(conect.bonds), 1922)
 
-        fd, outfile2 = tempfile.mkstemp(suffix=".pdb")
-        os.close(fd)
-        self.conect.atoms.write(outfile2, bonds="all")
-        u2 = mda.Universe(outfile2, bonds=True)
-        assert_equal(len(u1.atoms), 1890)
-        assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922 )
-
+        try:
+            fd, outfile = tempfile.mkstemp(suffix=".pdb")
+            os.close(fd)
+            self.conect.atoms.write(outfile, bonds="all")
+            u2 = mda.Universe(outfile, bonds=True)
+        finally:
+            os.unlink(outfile)
+        assert_equal(len(u2.atoms), 1890)
+        assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922)
 
         #assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
 
+    @attr('slow')
     def test_numconnections(self):
         u = self.multiverse
 
@@ -772,6 +787,7 @@ class TestMultiPDBWriter(TestCase):
             pass
         del self.universe, self.multiverse, self.universe2
 
+    @attr('slow')
     def test_write_atomselection(self):
         """Test if multiframe writer can write selected frames for an atomselection."""
         u = self.multiverse
@@ -787,6 +803,7 @@ class TestMultiPDBWriter(TestCase):
 
         assert_equal(len(u2.trajectory), desired_frames, err_msg="MultiPDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
 
+    @attr('slow')
     def test_write_all_timesteps(self):
         """
         Test write_all_timesteps() of the  multiframe writer (selected frames for an atomselection)
@@ -803,6 +820,7 @@ class TestMultiPDBWriter(TestCase):
 
         assert_equal(len(u2.trajectory), desired_frames, err_msg="MultiPDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
 
+    @attr('slow')
     def test_write_atoms(self):
         u = self.universe2
         W = mda.Writer(self.outfile, multiframe=True)
