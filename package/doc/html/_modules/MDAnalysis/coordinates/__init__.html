@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.__init__ &mdash; MDAnalysis 0.8.0rc2 documentation</title>
+    <title>MDAnalysis.coordinates.__init__ &mdash; MDAnalysis 0.8.0rc3 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0rc2',
+        VERSION:     '0.8.0rc3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc2 documentation"
+          title="Search within MDAnalysis 0.8.0rc3 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc2 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc3 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -43,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc3 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -130,6 +128,30 @@
 <span class="sd">.. _duck typing: http://c2.com/cgi/wiki?DuckTyping</span>
 
 
+<span class="sd">Using Readers</span>
+<span class="sd">-------------</span>
+
+<span class="sd">Normally, one does not explicitly need to select a reader. This is handled</span>
+<span class="sd">automatically when creating a :class:`~MDAnalysis.core.AtomGroup.Universe` and</span>
+<span class="sd">the appropriate reader for the file type is selected (typically by the file</span>
+<span class="sd">extension but this choice can be overriden with the ``format`` argument to</span>
+<span class="sd">:class:`~MDAnalysis.core.AtomGroup.Universe`).</span>
+
+<span class="sd">Using Writers</span>
+<span class="sd">-------------</span>
+
+<span class="sd">A typical approach is to generate a new trajectory from an old one, e.g. to</span>
+<span class="sd">only keep the protein::</span>
+
+<span class="sd">  u = MDAnalysis.Universe(PDB, XTC)</span>
+<span class="sd">  protein = u.selectAtoms(&quot;protein&quot;)</span>
+<span class="sd">  with MDAnalysis.Writer(&quot;protein.xtc&quot;, protein.numberOfAtoms()) as W:</span>
+<span class="sd">      for ts in u.trajectory:</span>
+<span class="sd">          W.write(protein)</span>
+
+<span class="sd">Using the :func:`with` statement will automatically close the trajectory when</span>
+<span class="sd">the last frame has been written.</span>
+
 
 <span class="sd">Supported coordinate formats</span>
 <span class="sd">----------------------------</span>
@@ -186,6 +208,11 @@
 <span class="sd">   |               |           |       | are supported but require the *multiframe* keyword.  |</span>
 <span class="sd">   |               |           |       | Module :mod:`MDAnalysis.coordinates.PDB`             |</span>
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
+<span class="sd">   | XPDB          | pdb       |   r   | Extended PDB format (can use 5-digit residue         |</span>
+<span class="sd">   |               |           |       | numbers). To use, specify the format &quot;XPBD&quot;          |</span>
+<span class="sd">   |               |           |       | explicitly: ``Universe(..., format=&quot;XPDB&quot;)``.        |</span>
+<span class="sd">   |               |           |       | Module :MDAnalysis.coordinates.PDB`                  |</span>
+<span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
 <span class="sd">   | PDBQT [#a]_   | pdbqt     | r/w   | file format used by AutoDock with atom types *t*     |</span>
 <span class="sd">   |               |           |       | and partial charges *q*. Module:                     |</span>
 <span class="sd">   |               |           |       | :mod:`MDAnalysis.coordinates.PDBQT`                  |</span>
@@ -203,6 +230,9 @@
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
 <span class="sd">   | DESRES [#a]_  | dms       |  r    | DESRES Molecular Structure file format reader.       |</span>
 <span class="sd">   |               |           |       | Module :mod:`MDAnalysis.coordinates.DMS`             |</span>
+<span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
+<span class="sd">   | IBIsCO/YASP   | trz       |  r    | Binary IBIsCO or YASP trajectories Module            |</span>
+<span class="sd">   |               |           |       | :mod:`MDAnalysis.coordinates.TRZ`                    |</span>
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
 
 <span class="sd">.. [#a] This format can also be used to provide basic *topology*</span>
@@ -244,9 +274,10 @@
 <span class="sd">- 2012-02-11 added _velocities to Timestep</span>
 <span class="sd">- 2012-05-24 multiframe keyword to distinguish trajectory from single frame writers</span>
 <span class="sd">- 2012-06-04 missing implementations of Reader.__getitem__ should raise :exc:`TypeError`</span>
+<span class="sd">- 2013-08-02 Readers/Writers must conform to the Python `Context Manager`_ API</span>
 
 <span class="sd">.. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49</span>
-
+<span class="sd">.. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers</span>
 
 <span class="sd">Registry</span>
 <span class="sd">~~~~~~~~</span>
@@ -291,7 +322,7 @@
 <span class="sd">            update the Timesteps positions array with the contents of *arg*</span>
 
 <span class="sd">      Anything else raises an exception; in particular it is not possible to</span>
-<span class="sd">      create a &quot;empty&quot; :class:`Timestep` instance.</span>
+<span class="sd">      create a &quot;empty&quot; :class:`~MDAnalysis.coordinates.base.Timestep` instance.</span>
 <span class="sd">  ``__getitem__(atoms)``</span>
 <span class="sd">      position(s) of atoms; can be a slice or numpy array and then returns</span>
 <span class="sd">      coordinate array</span>
@@ -312,7 +343,7 @@
 <span class="sd">  ``dimensions``</span>
 <span class="sd">      system box dimensions (`x, y, z, alpha, beta, gamma`)</span>
 <span class="sd">      (typically implemented as a property because it needs to translate whatever is in the</span>
-<span class="sd">      underlying :attr:`Timestep._unitcell` attribute)</span>
+<span class="sd">      underlying :class:`~MDAnalysis.coordinates.base.Timestep._unitcell` attribute.</span>
 <span class="sd">  ``volume``</span>
 <span class="sd">      system box volume (derived as the determinant of the box vectors of ``dimensions``)</span>
 
@@ -321,16 +352,18 @@
 
 <span class="sd">These attributes are set directly by the underlying trajectory</span>
 <span class="sd">readers. Normally the user should not have to directly access those (although in</span>
-<span class="sd">some cases it is convenient to directly use :attr:`Timestep._pos`).</span>
+<span class="sd">some cases it is convenient to directly use :class:`~MDAnalysis.coordinates.base.Timestep._pos`).</span>
 
 <span class="sd">  ``_pos``</span>
 <span class="sd">      raw coordinates, a :class:`numpy.float32` array; ``X = _pos[:,0], Y =</span>
 <span class="sd">      _pos[:,1], Z = _pos[:,2]``</span>
 
 <span class="sd">  ``_unitcell``</span>
-<span class="sd">      unit cell dimensions and angles; the format depends on the underlying</span>
-<span class="sd">      trajectory format. A user should use :attr:`Timestep.dimensions` to</span>
-<span class="sd">      access the data in a standard format.</span>
+<span class="sd">      native unit cell description; the format depends on the</span>
+<span class="sd">      underlying trajectory format. A user should use the</span>
+<span class="sd">      :class:`~MDAnalysis.coordinates.base.Timestep.dimensions`</span>
+<span class="sd">      attribute to access the data in a canonical format instead of</span>
+<span class="sd">      accessing :class:`Timestep._unitcell` directly.</span>
 
 <span class="sd">Optional attributes (only implemented by some readers); if an optional</span>
 <span class="sd">attribute does not exist, a :exc:`AttributeError` is raised and the calling</span>
@@ -381,6 +414,10 @@
 <span class="sd">     past the last frame</span>
 <span class="sd"> ``rewind()``</span>
 <span class="sd">     reposition to first frame</span>
+<span class="sd"> ``__entry__()``</span>
+<span class="sd">     entry method of a `Context Manager`_ (returns self)</span>
+<span class="sd"> ``__exit__()``</span>
+<span class="sd">     exit method of a `Context Manager`_, should call ``close()``.</span>
 
 
 <span class="sd">**Optional methods**</span>
@@ -509,7 +546,7 @@
 <span class="sd">Trajectory Writer class</span>
 <span class="sd">~~~~~~~~~~~~~~~~~~~~~~~</span>
 
-<span class="sd">Trajectory readers are derived from</span>
+<span class="sd">Trajectory writers are derived from</span>
 <span class="sd">:class:`MDAnalysis.coordinates.base.Writer`. They are used to write</span>
 <span class="sd">multiple frames to a trajectory file. Every time the</span>
 <span class="sd">:meth:`~MDAnalysis.coordinates.base.Writer.write` method is called,</span>
@@ -632,7 +669,7 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;reader&#39;</span><span class="p">,</span> <span class="s">&#39;writer&#39;</span><span class="p">]</span>
 
-<span class="kn">import</span> <span class="nn">PDB</span><span class="o">,</span> <span class="nn">PQR</span><span class="o">,</span> <span class="nn">DCD</span><span class="o">,</span> <span class="nn">CRD</span><span class="o">,</span> <span class="nn">XTC</span><span class="o">,</span> <span class="nn">TRR</span><span class="o">,</span> <span class="nn">GRO</span><span class="o">,</span> <span class="nn">XYZ</span><span class="o">,</span> <span class="nn">TRJ</span><span class="o">,</span> <span class="nn">PDBQT</span><span class="o">,</span> <span class="nn">LAMMPS</span><span class="o">,</span> <span class="nn">DMS</span>
+<span class="kn">import</span> <span class="nn">PDB</span><span class="o">,</span> <span class="nn">PQR</span><span class="o">,</span> <span class="nn">DCD</span><span class="o">,</span> <span class="nn">CRD</span><span class="o">,</span> <span class="nn">XTC</span><span class="o">,</span> <span class="nn">TRR</span><span class="o">,</span> <span class="nn">GRO</span><span class="o">,</span> <span class="nn">XYZ</span><span class="o">,</span> <span class="nn">TRJ</span><span class="o">,</span> <span class="nn">PDBQT</span><span class="o">,</span> <span class="nn">LAMMPS</span><span class="o">,</span> <span class="nn">DMS</span><span class="o">,</span> <span class="nn">TRZ</span>
 <span class="kn">import</span> <span class="nn">base</span>
 <span class="kn">from</span> <span class="nn">core</span> <span class="kn">import</span> <span class="n">reader</span><span class="p">,</span> <span class="n">writer</span>
 
@@ -643,6 +680,7 @@
                        <span class="s">&#39;XYZ&#39;</span><span class="p">:</span> <span class="n">XYZ</span><span class="o">.</span><span class="n">XYZReader</span><span class="p">,</span>
                        <span class="s">&#39;TRR&#39;</span><span class="p">:</span> <span class="n">TRR</span><span class="o">.</span><span class="n">TRRReader</span><span class="p">,</span>
                        <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PDBReader</span><span class="p">,</span>
+                       <span class="s">&#39;XPDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">ExtendedPDBReader</span><span class="p">,</span>
                        <span class="s">&#39;PDBQT&#39;</span><span class="p">:</span> <span class="n">PDBQT</span><span class="o">.</span><span class="n">PDBQTReader</span><span class="p">,</span>
                        <span class="s">&#39;CRD&#39;</span><span class="p">:</span> <span class="n">CRD</span><span class="o">.</span><span class="n">CRDReader</span><span class="p">,</span>
                        <span class="s">&#39;GRO&#39;</span><span class="p">:</span> <span class="n">GRO</span><span class="o">.</span><span class="n">GROReader</span><span class="p">,</span>
@@ -653,6 +691,7 @@
                        <span class="s">&#39;LAMMPS&#39;</span><span class="p">:</span> <span class="n">LAMMPS</span><span class="o">.</span><span class="n">DCDReader</span><span class="p">,</span>
                        <span class="s">&#39;CHAIN&#39;</span><span class="p">:</span> <span class="n">base</span><span class="o">.</span><span class="n">ChainReader</span><span class="p">,</span>
                        <span class="s">&#39;DMS&#39;</span><span class="p">:</span> <span class="n">DMS</span><span class="o">.</span><span class="n">DMSReader</span><span class="p">,</span>
+                       <span class="s">&#39;TRZ&#39;</span><span class="p">:</span> <span class="n">TRZ</span><span class="o">.</span><span class="n">TRZReader</span><span class="p">,</span>
                        <span class="p">}</span>
 
 <span class="c">#: formats of readers that can also handle gzip or bzip2 compressed files</span>
@@ -661,7 +700,8 @@
 <span class="c">#: readers of files that contain both topology/atom data and coordinates</span>
 <span class="c">#: (currently only the keys are used)</span>
 <span class="n">_topology_coordinates_readers</span> <span class="o">=</span> <span class="p">{</span>
-                       <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PrimitivePDBReader</span><span class="p">,</span>
+                       <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PrimitivePDBReader</span><span class="p">,</span>     <span class="c"># FIXME: should be able to use BioPython PDBReader for topolgy if permissive=False!</span>
+                       <span class="s">&#39;XPDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">ExtendedPDBReader</span><span class="p">,</span>
                        <span class="s">&#39;PDBQT&#39;</span><span class="p">:</span> <span class="n">PDBQT</span><span class="o">.</span><span class="n">PDBQTReader</span><span class="p">,</span>
                        <span class="s">&#39;GRO&#39;</span><span class="p">:</span> <span class="n">GRO</span><span class="o">.</span><span class="n">GROReader</span><span class="p">,</span>
                        <span class="s">&#39;CRD&#39;</span><span class="p">:</span> <span class="n">CRD</span><span class="o">.</span><span class="n">CRDReader</span><span class="p">,</span>
@@ -718,7 +758,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc3 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -729,7 +769,7 @@
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

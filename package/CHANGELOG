@@ -46,8 +46,6 @@ The rules for this file:
     five-digit residue numbers
   * util.convert_aa_code() recognizes non-standard residue names such
     as HSE, GLUH, GLH, ...
-  * functionality extension to geometric selection "prop". Now it is
-    possible to operate with the members of the inequation
   * added new geometrics selections: sphlayer, sphzone, cylayer, cyzone
   * added TopologyDict and TopologyGroup classes for bond analysis
 
