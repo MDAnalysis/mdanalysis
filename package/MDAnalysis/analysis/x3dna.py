@@ -39,7 +39,7 @@ separately.
 .. [Lu2008] Xiang-Jun Lu & Wilma K. Olson (2008).
            3DNA: a versatile, integrated software system for the analysis, rebuilding
            and visualization of three-dimensional nucleic-acid structures.
-               Nat Protoc. 3(7), 1213-27.
+           Nat Protoc. 3(7), 1213-27.
 
 .. _X3DNA: http://http://x3dna.org/
 
@@ -341,8 +341,7 @@ class X3DNA(BaseX3DNA):
 
     .. versionadded:: 0.8
 
-    .. _X3DNA: http://x3dna.org
-    .. _`X3DNA docs`: http://http://forum.x3dna.org/
+    .. _`X3DNA docs`: http://forum.x3dna.org/
     """
 
     def __init__(self, filename, **kwargs):
@@ -443,7 +442,7 @@ class X3DNA(BaseX3DNA):
     def collect(self, **kwargs):
         """Parse the output from a X3DNA run into numpy recarrays.
 
-        Can deal with outputs containing multiple frames. Output format::
+        Can deal with outputs containing multiple frames. Output format:
 
 
         The method saves the result as :attr:`X3DNA.profiles`, a dictionary

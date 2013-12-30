@@ -96,6 +96,8 @@ Dihedral angles
 
 .. autofunction:: hydroxyl
 
+.. autofunction:: pseudo_dihe_baseflip
+
                                                                                                                                             """
 
 from MDAnalysis.core.util import norm
@@ -523,8 +525,9 @@ def tors_chi(universe,seg,i):
 
 def hydroxyl(universe,seg,i):
     """2-hydroxyl dihedral. Useful only for RNA calculations. 
+
      :Note: This dihedral calculation will only work if using atom names 
-     as documented by charmm force field parameters. 
+      as documented by charmm force field parameters. 
 
      :Arguments:
        *universe* 
@@ -547,8 +550,7 @@ def pseudo_dihe_baseflip(universe,bp1,bp2,i,seg1="SYSTEM",seg2="SYSTEM",seg3="SY
      
      The dihedral is computed based on position atoms for resid *i*
     
-     :Note: This dihedral calculation will only work if using atom names 
-     as documented by charmm force field parameters. 
+     :Note: This dihedral calculation will only work if using atom names as documented by charmm force field parameters. 
 
      :Arguments:
        *universe* 

@@ -40,7 +40,7 @@ from MDAnalysis.coordinates.core import triclinic_box
 class Timestep(base.Timestep):
     """ TRZ custom Timestep
 
-    Attributes
+    :Attributes:
     .. attribute:: frame
        Index of the frame, (1 based)
     .. attribute:: numatoms
