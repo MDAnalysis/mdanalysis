@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. Selection Commands &mdash; MDAnalysis 0.8.0rc3 documentation</title>
+    <title>2. Selection Commands &mdash; MDAnalysis 0.8.0rc4 documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.8.0rc3',
+        VERSION:     '0.8.0rc4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc3 documentation"
+          title="Search within MDAnalysis 0.8.0rc4 documentation"
           href="../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc3 documentation" href="../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../index.html" />
     <link rel="next" title="3. Analysis modules" href="analysis_modules.html" />
     <link rel="prev" title="1. Overview over MDAnalysis" href="overview.html" /> 
   </head>
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="overview.html" title="1. Overview over MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.8.0rc3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -222,15 +222,13 @@ and creates a cylinder of external radius 15, maximum z value 4 and minimum z va
 <dd>selects all atoms within a cutoff of a point in space, make sure
 coordinate is separated by spaces, e.g. <tt class="docutils literal"><span class="pre">point</span> <span class="pre">5.0</span> <span class="pre">5.0</span> <span class="pre">5.0</span>&nbsp; <span class="pre">3.5</span></tt> selects
 all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0, 5.0)</dd>
-</dl>
-<p>prop [abs] <em>property</em>  <em>operator</em>  <em>value</em>
-prop [abs] <em>property</em>  <em>operator</em>  <em>value</em></p>
-<blockquote>
-<div>selects atoms based on position, using <em>property</em>  <strong>x</strong>, <strong>y</strong>, or
+<dt>prop [abs] <em>property</em>  <em>operator</em>  <em>value</em></dt>
+<dd>selects atoms based on position, using <em>property</em>  <strong>x</strong>, <strong>y</strong>, or
 <strong>z</strong> coordinate. Supports the <strong>abs</strong> keyword (for absolute value) and
 the following <em>operators</em>: <strong>&lt;, &gt;, &lt;=, &gt;=, ==, !=</strong>. For example, <tt class="docutils literal"><span class="pre">prop</span> <span class="pre">z</span> <span class="pre">&gt;=</span> <span class="pre">5.0</span></tt>
 selects all atoms with z coordinate greater than 5.0; <tt class="docutils literal"><span class="pre">prop</span> <span class="pre">abs</span> <span class="pre">z</span> <span class="pre">&lt;=</span> <span class="pre">5.0</span></tt>
-selects all atoms within -5.0 &lt;= z &lt;= 5.0.</div></blockquote>
+selects all atoms within -5.0 &lt;= z &lt;= 5.0.</dd>
+</dl>
 </div></blockquote>
 <p>From version 0.6 onwards, some geometrics selections (around, sphlayer, sphzone, point)
 can use a k-d tree based, fast search algorithm (about three times faster than the
@@ -443,7 +441,7 @@ might expect:</p>
         <li class="right" >
           <a href="overview.html" title="1. Overview over MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.8.0rc3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

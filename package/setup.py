@@ -147,7 +147,7 @@ def detect_openmp():
     return hasopenmp, needs_gomp
 
 if __name__ == '__main__':
-    RELEASE = "0.8.0rc3"     # NOTE: keep in sync with MDAnalysis.version in __init__.py
+    RELEASE = "0.8.0rc4"     # NOTE: keep in sync with MDAnalysis.version in __init__.py
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = ['Development Status :: 4 - Beta',

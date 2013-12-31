@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.8.0rc3 documentation</title>
+    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.8.0rc4 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0rc3',
+        VERSION:     '0.8.0rc4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc3 documentation"
+          title="Search within MDAnalysis 0.8.0rc4 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc3 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
     <link rel="prev" title="7.1. Core functions of MDAnalysis" href="init.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -725,7 +725,7 @@ i.e. <em>axis</em> = 0) with the z-axis:</p>
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.angleDict">
 <tt class="descname">angleDict</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.angleDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.angleDict" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.topology.core.TopologyDict</span></tt></a> of angles 
+<dd><p>A <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.topology.core.TopologyDict</span></tt></a> of angles
 within this AtomGroup.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.8.</span></p>
@@ -808,7 +808,7 @@ provide a unified interface to querying properties:
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.bondDict">
 <tt class="descname">bondDict</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.bondDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bondDict" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.topology.core.TopologyDict</span></tt></a> of bonds 
+<dd><p>A <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.topology.core.TopologyDict</span></tt></a> of bonds
 within this AtomGroup.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.8.</span></p>
@@ -1291,14 +1291,14 @@ and the translation vectort M[:3,3].</p>
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.selectBonds">
 <tt class="descname">selectBonds</tt><big>(</big><em>criteria</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.selectBonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.selectBonds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select all of a given bond, angle or torsion type from the 
+<dd><p>Select all of a given bond, angle or torsion type from the
 AtomGroup.  This method makes use of the <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.topology.core.TopologyDict</span></tt></a>
 instances for this AtomGroup.</p>
 <dl class="docutils">
-<dt>Usage:: </dt>
+<dt>Usage::</dt>
 <dd>ag.selectBonds(criteria)</dd>
 </dl>
-<p><em>criteria</em> must match a key from the appropriate TopologyDict, 
+<p><em>criteria</em> must match a key from the appropriate TopologyDict,
 viewable through the <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyDict.keys" title="MDAnalysis.topology.core.TopologyDict.keys"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.topology.core.TopologyDict.keys()</span></tt></a> method.
 These keys are a tuple of the atom types in the bond.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1621,7 +1621,7 @@ attribute access.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.torsionDict">
 <tt class="descname">torsionDict</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.torsionDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.torsionDict" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.topology.core.TopologyDict</span></tt></a> of angles 
+<dd><p>A <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.topology.core.TopologyDict</span></tt></a> of angles
 within this AtomGroup.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.8.</span></p>
@@ -2358,7 +2358,7 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
