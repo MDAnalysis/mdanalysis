@@ -111,7 +111,7 @@ def build_residues(atoms):
     return residues
 
 class Bond(object):
-    """A bond between two :class:`~MDAnalysis.core.AtomGroup.Atom`
+    """A bond between two :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
 
     Two :class:`Bond` instances can be compared with the ``==`` and
     ``!=`` operators. A bond is equal to another if the same atom
@@ -126,10 +126,12 @@ class Bond(object):
         a2.bonds.append(self)
         self.order = order
         self.__is_guessed = False
+
     def partner(self, atom):
         if atom is self.atom1:
             return self.atom2
         else: return self.atom1
+
     @property
     def is_guessed(self):
         """``True`` if the bond was guessed.
@@ -140,15 +142,22 @@ class Bond(object):
     @is_guessed.setter
     def is_guessed(self, b):
         self.__is_guessed = b
+
     def length(self):
         """Length of the bond."""
         bond = self.atom1.pos - self.atom2.pos
         return math.sqrt((bond[0]**2)+(bond[1]**2)+(bond[2]**2))
+
     def __repr__(self):
-        a1 = self.atom1
-        a2 = self.atom2
-        return "< Bond between: Atom %d (%s of %s-%d) and Atom %s (%s of %s-%d), length %.2f A >" % \
-          (a1.number+1, a1.name, a1.resname, a1.resid, a2.number+1, a2.name, a2.resname, a2.resid, self.length())
+        a1, a2 = self.atom1, self.atom2
+        s_id = "< Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid}) and "\
+            "Atom {2:d} ({3.name} of {3.resname} {3.resid})".format(a1.number+1, a1, a2.number+1, a2)
+        try:
+            s_length = ", length {0:.2f} A".format(self.length())
+        except AttributeError:
+            s_length = ""  # no trajectory/coordinates available
+        return s_id + s_length + ">"
+
     def __eq__(self, other):
         """This bond is equal to *other* if the same atom numbers are connected.
 
@@ -163,6 +172,7 @@ class Bond(object):
                 set((self.atom1.number, self.atom2.number)) == set((other.atom1.number, other.atom2.number))
         else:
             return False
+
     def __ne__(self, other):
         """This bond is not equal to *other* if different atom  numbers are connected.
 
