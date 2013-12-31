@@ -158,6 +158,9 @@ class Bond(object):
             s_length = ""  # no trajectory/coordinates available
         return s_id + s_length + ">"
 
+    def __contains__(self, other):
+        return other == self.atom1 or other == self.atom2
+
     def __eq__(self, other):
         """This bond is equal to *other* if the same atom numbers are connected.
 
@@ -201,6 +204,9 @@ class Angle(object):
              a2.number+1, a2.name, a2.resname, a2.resid,
              a3.number+1, a3.name, a3.resname, a3.resid)
 
+    def __contains__(self, other):
+        return other == self.atom1 or other == self.atom2 or other == self.atom3
+
 class Torsion(object):
     """Torsion (dihedral angle) between four :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
 
@@ -221,6 +227,10 @@ class Torsion(object):
              a2.number+1, a2.name, a2.resname, a2.resid,
              a3.number+1, a3.name, a3.resname, a3.resid,
              a4.number+1, a4.name, a4.resname, a4.resid)
+    def __contains__(self, other):
+        return other == self.atom1 or other == self.atom2 or \
+            other == self.atom3 or other == self.atom4
+        
 
 def build_bondlists(atoms, bonds=None, angles=None, torsions=None):
     """Construct the topology lists of each :class:`~MDAnalysis.core.AtomGroup.Atom`.
