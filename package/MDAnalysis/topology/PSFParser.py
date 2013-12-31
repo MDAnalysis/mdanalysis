@@ -219,8 +219,9 @@ def __parsesection_(lines, atoms_per, attr, structure, numlines, **kwargs):
     #for l in lines:
     for i in xrange(numlines):
         l = lines()
-
-        fields = map(int, l.split())
+        # Subtract 1 from each number to ensure zero-indexing for the atoms
+        f = map(int, l.split())
+        fields = [a-1 for a in f]
         for j in range(0, len(fields), atoms_per):
             section.append(tuple(fields[j:j+atoms_per]))
     structure[attr] = section
