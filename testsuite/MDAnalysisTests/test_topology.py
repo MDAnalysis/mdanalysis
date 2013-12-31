@@ -192,12 +192,19 @@ class TestPSF_bonds(TestCase):
         assert_equal(len(self.universe.atoms[42].bonds), 1)
 
     def test_bonds_identity(self):
-        # NOTE: the ordering of bonds in bonds[0] appears random (?); the
-        # previous test case actually looked at bonds[0]; I changed it to
-        # bonds[3] so that this test passes (it contains the correct atoms) but
-        # we might have to look into making this test more robust [orbeckst]
-        assert_equal(self.universe.atoms[0].bonds[3].atom1, self.universe.atoms[0])
-        assert_equal(self.universe.atoms[0].bonds[3].atom2, self.universe.atoms[4])
+        a1 = self.universe.atoms[0]
+        a2 = self.universe.atoms[1]
+        a3 = self.universe.atoms[2]
+        a4 = self.universe.atoms[3]
+        a5 = self.universe.atoms[4]
+        a42 = self.universe.atoms[41]
+        # Bonds might change order, so use any checks through bond list
+        assert_equal(all([a1 in b for b in a1.bonds]), True) # check all bonds have this atom
+        assert_equal(any([a2 in b for b in a1.bonds]), True) # then check certain atoms are present
+        assert_equal(any([a3 in b for b in a1.bonds]), True)
+        assert_equal(any([a4 in b for b in a1.bonds]), True)
+        assert_equal(any([a5 in b for b in a1.bonds]), True)
+        assert_equal(any([a42 in b for b in a1.bonds]), False) # and check everything isn't True
 
     def test_angles_counts(self):
         assert_equal(len(self.universe._psf['_angles']), 6123)
@@ -205,19 +212,35 @@ class TestPSF_bonds(TestCase):
         assert_equal(len(self.universe.atoms[42].angles), 2)
 
     def test_angles_identity(self):
-        assert_equal(self.universe.atoms[0].angles[0].atom1, self.universe.atoms[1])
-        assert_equal(self.universe.atoms[0].angles[0].atom2, self.universe.atoms[0])
-        assert_equal(self.universe.atoms[0].angles[0].atom3, self.universe.atoms[2])
+        a1 = self.universe.atoms[0]
+        a2 = self.universe.atoms[1]
+        a3 = self.universe.atoms[2]
+        a5 = self.universe.atoms[4]
+        a6 = self.universe.atoms[5]
+        a42 = self.universe.atoms[41]     
+        assert_equal(all([a1 in b for b in a1.angles]), True)
+        assert_equal(any([a2 in b and a3 in b for b in a1.angles]), True)
+        assert_equal(any([a5 in b and a6 in b for b in a1.angles]), True)
+        assert_equal(any([a42 in b for b in a1.angles]), False)
+        assert_equal(any([a2 in b and a6 in b for b in a1.angles]), False) #both a2 and a6 feature, but never simultaneously 
 
     def test_torsions_counts(self):
         assert_equal(len(self.universe._psf['_dihe']), 8921)
         assert_equal(len(self.universe.atoms[0].torsions), 14)
 
     def test_torsions_identity(self):
-        assert_equal(self.universe.atoms[0].torsions[0].atom1, self.universe.atoms[0])
-        assert_equal(self.universe.atoms[0].torsions[0].atom2, self.universe.atoms[4])
-        assert_equal(self.universe.atoms[0].torsions[0].atom3, self.universe.atoms[6])
-        assert_equal(self.universe.atoms[0].torsions[0].atom4, self.universe.atoms[7])
+        a1 = self.universe.atoms[0]
+        a2 = self.universe.atoms[1]
+        a3 = self.universe.atoms[2]
+        a5 = self.universe.atoms[4]
+        a6 = self.universe.atoms[5]
+        a7 = self.universe.atoms[6]
+        a42 = self.universe.atoms[41]  
+        assert_equal(all([a1 in b for b in a1.torsions]), True)
+        assert_equal(any([a2 in b and a5 in b and a6 in b for b in a1.torsions]), True)
+        assert_equal(any([a2 in b and a5 in b and a7 in b for b in a1.torsions]), True)
+        assert_equal(any([a42 in b for b in a1.torsions]), False)
+        assert_equal(any([a2 in b and a3 in b and a6 in b for b in a1.torsions]), False)
 
 class TestPSF_TopologyGroup(TestCase):
     """Tests TopologyDict and TopologyGroup classes with psf input"""

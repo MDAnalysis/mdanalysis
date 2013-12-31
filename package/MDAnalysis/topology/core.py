@@ -80,7 +80,7 @@ def build_segments(atoms):
             curr_resnum = a.resid
             curr_resname = a.resname
             curr_segname = a.segid
-            # Add the last segment
+    # Add the last segment
     residues.append(AtomGroup.Residue(curr_resname, curr_resnum, resatomlist))
     struc[curr_segname] = AtomGroup.Segment(curr_segname, residues)
     return struc
@@ -111,7 +111,7 @@ def build_residues(atoms):
             resatomlist = [a]
             curr_resnum = a.resid
             curr_resname = a.resname
-            # Add the last residue
+    # Add the last residue
     residues.append(AtomGroup.Residue(curr_resname, curr_resnum, resatomlist))
     return residues
 
@@ -168,6 +168,9 @@ class Bond(object):
             s_length = ""  # no trajectory/coordinates available
         return s_id + s_length + ">"
 
+    def __contains__(self, other):
+        return other == self.atom1 or other == self.atom2
+
     def __eq__(self, other):
         """This bond is equal to *other* if the same atom numbers are connected.
 
@@ -213,6 +216,8 @@ class Angle(object):
                 a2.number + 1, a2.name, a2.resname, a2.resid,
                 a3.number + 1, a3.name, a3.resname, a3.resid)
 
+    def __contains__(self, other):
+        return other == self.atom1 or other == self.atom2 or other == self.atom3
 
 class Torsion(object):
     """Torsion (dihedral angle) between four :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
@@ -236,6 +241,10 @@ class Torsion(object):
                 a2.number + 1, a2.name, a2.resname, a2.resid,
                 a3.number + 1, a3.name, a3.resname, a3.resid,
                 a4.number + 1, a4.name, a4.resname, a4.resid)
+
+    def __contains__(self, other):
+        return other == self.atom1 or other == self.atom2 or \
+            other == self.atom3 or other == self.atom4
 
 
 def build_bondlists(atoms, bonds=None, angles=None, torsions=None):
@@ -410,7 +419,7 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
             # SB: logger is not defined. printting to stderr instead
             print("ERROR: guess_bonds(): %s has no defined vdw radius, cannot guess bonds" % a.type, file=sys.stderr)
             return bonds
-            # 1-D vector of the upper-triangle of all-to-all distance matrix
+    # 1-D vector of the upper-triangle of all-to-all distance matrix
     dist = distances.self_distance_array(coords)
     N = len(coords)
 
@@ -420,7 +429,7 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
         r1, r2 = vdwradii[a1.type], vdwradii[a2.type]
         if (r1 + r2) * fudge_factor <= dist[x]:
             continue
-            #print "BOND", ((r1 + r2) * 10 * fudge_factor), dist[i,j]
+        #print "BOND", ((r1 + r2) * 10 * fudge_factor), dist[i,j]
         bonds.add(frozenset([a1.number, a2.number]))  # orbeckst: Atom.number are 0-based, do not add 1.
 
     return bonds
@@ -544,9 +553,8 @@ class TopologyDict(object):
             if not tuple(reversed(k)) in newdict:#newdict starts blank, so having k already is impossible
                 newdict[k] = []
             else:
-                self.dict[k] += self.dict[
-                    tuple(reversed(k))] #if the reverse exists already, pile those values onto the reverse in old dict
-                #newdict now has unique set of keys but no values (yet!)
+                self.dict[k] += self.dict[tuple(reversed(k))] #if the reverse exists already, pile those values onto the reverse in old dict
+        #newdict now has unique set of keys but no values (yet!)
         for k in newdict: #loop over only newdict's keys as all values are in these key values in the old dict
             for v in self.dict[k]:
                 if not v in newdict[k]:
