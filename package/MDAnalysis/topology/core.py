@@ -14,7 +14,6 @@
 #     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
 #     doi:10.1002/jcc.21787
 #
-
 """
 Common functions for topology building --- :mod:`MDAnalysis.topology.core`
 ==========================================================================
@@ -27,15 +26,20 @@ module. They are mostly of use to developers.
    :func:`guess_atom_mass`.
 
 """
-import os.path
-import MDAnalysis.topology
-import tables
-import MDAnalysis.core.distances as distances
-from MDAnalysis.core.util import norm
-import numpy
-import MDAnalysis.core.AtomGroup as AtomGroup
-
+from __future__ import print_function
+# Global imports
 import itertools
+import os.path
+from math import sqrt
+import numpy
+import sys
+
+# Local imports
+from . import tables
+from ..core import distances
+from ..core.util import norm
+from ..core import AtomGroup
+
 
 def build_segments(atoms):
     """Create all :class:`~MDAnalysis.core.AtomGroup.Segment` instancess from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
@@ -58,8 +62,8 @@ def build_segments(atoms):
     curr_resnum = atoms[0].resid
     curr_resname = atoms[0].resname
     for a in atoms:
-        if (a.segid == curr_segname):
-            if (a.resid == curr_resnum):
+        if a.segid == curr_segname:
+            if a.resid == curr_resnum:
                 resatomlist.append(a)
             else:
                 # New residue
@@ -76,10 +80,11 @@ def build_segments(atoms):
             curr_resnum = a.resid
             curr_resname = a.resname
             curr_segname = a.segid
-    # Add the last segment
+            # Add the last segment
     residues.append(AtomGroup.Residue(curr_resname, curr_resnum, resatomlist))
     struc[curr_segname] = AtomGroup.Segment(curr_segname, residues)
     return struc
+
 
 def build_residues(atoms):
     """Create a list :class:`~MDAnalysis.core.AtomGroup.Residue` instances from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
@@ -98,7 +103,7 @@ def build_residues(atoms):
     curr_resnum = atoms[0].resid
     curr_resname = atoms[0].resname
     for a in atoms:
-        if (a.resid == curr_resnum):
+        if a.resid == curr_resnum:
             resatomlist.append(a)
         else:
             # New residue
@@ -106,9 +111,10 @@ def build_residues(atoms):
             resatomlist = [a]
             curr_resnum = a.resid
             curr_resname = a.resname
-    # Add the last residue
+            # Add the last residue
     residues.append(AtomGroup.Residue(curr_resname, curr_resnum, resatomlist))
     return residues
+
 
 class Bond(object):
     """A bond between two :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
@@ -119,6 +125,7 @@ class Bond(object):
     ordering of the two atom numbers is ignored as is the fact that a
     bond was guessed.
     """
+
     def __init__(self, a1, a2, order=None):
         self.atom1 = a1
         self.atom2 = a2
@@ -130,7 +137,8 @@ class Bond(object):
     def partner(self, atom):
         if atom is self.atom1:
             return self.atom2
-        else: return self.atom1
+        else:
+            return self.atom1
 
     @property
     def is_guessed(self):
@@ -139,6 +147,7 @@ class Bond(object):
         .. SeeAlso:: :func:`guess_bonds`
         """
         return self.__is_guessed
+
     @is_guessed.setter
     def is_guessed(self, b):
         self.__is_guessed = b
@@ -146,12 +155,13 @@ class Bond(object):
     def length(self):
         """Length of the bond."""
         bond = self.atom1.pos - self.atom2.pos
-        return math.sqrt((bond[0]**2)+(bond[1]**2)+(bond[2]**2))
+        bond2 = bond * bond
+        return sqrt(bond2[0] + bond2[1] + bond2[2])
 
     def __repr__(self):
         a1, a2 = self.atom1, self.atom2
-        s_id = "< Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid}) and "\
-            "Atom {2:d} ({3.name} of {3.resname} {3.resid})".format(a1.number+1, a1, a2.number+1, a2)
+        s_id = "< Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid}) and " \
+               "Atom {2:d} ({3.name} of {3.resname} {3.resid})".format(a1.number + 1, a1, a2.number + 1, a2)
         try:
             s_length = ", length {0:.2f} A".format(self.length())
         except AttributeError:
@@ -168,8 +178,8 @@ class Bond(object):
         that a bond was guessed.
         """
         if type(other) is type(self):
-            return self.order == other.order and \
-                set((self.atom1.number, self.atom2.number)) == set((other.atom1.number, other.atom2.number))
+            return self.order == other.order and\
+                   {self.atom1.number, self.atom2.number} == {other.atom1.number, other.atom2.number}
         else:
             return False
 
@@ -181,6 +191,7 @@ class Bond(object):
         """
         return not self.__eq__(other)
 
+
 class Angle(object):
     """An angle between three :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
     Atom 2 is the apex of the angle
@@ -190,37 +201,42 @@ class Angle(object):
     #currently a stub of a class, maybe add to this to make it as useful as bonds
     def __init__(self, a1, a2, a3):
         self.atom1 = a1
-        self.atom2 = a2 #middle atom in angle
+        self.atom2 = a2 # middle atom in angle
         self.atom3 = a3
+
     def __repr__(self):
         a1 = self.atom1
         a2 = self.atom2
         a3 = self.atom3
         return "< Angle between: Atom %d (%s of %s-%d), Atom %d (%s of %s-%d) and Atom %d (%s of %s-%d) >" % \
-            (a1.number+1, a1.name, a1.resname, a1.resid,
-             a2.number+1, a2.name, a2.resname, a2.resid,
-             a3.number+1, a3.name, a3.resname, a3.resid)
+               (a1.number + 1, a1.name, a1.resname, a1.resid,
+                a2.number + 1, a2.name, a2.resname, a2.resid,
+                a3.number + 1, a3.name, a3.resname, a3.resid)
+
 
 class Torsion(object):
     """Torsion (dihedral angle) between four :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
 
     .. versionadded:: 0.8
     """
+
     def __init__(self, a1, a2, a3, a4):
         self.atom1 = a1
         self.atom2 = a2
         self.atom3 = a3
         self.atom4 = a4
+
     def __repr__(self):
         a1 = self.atom1
         a2 = self.atom2
         a3 = self.atom3
         a4 = self.atom4
         return "< Torsion between Atom %d (%s of %s-%d), Atom %d (%s of %s-%d), Atom %d (%s of %s-%d) and Atom %d (%s of %s-%d) >" % \
-            (a1.number+1, a1.name, a1.resname, a1.resid,
-             a2.number+1, a2.name, a2.resname, a2.resid,
-             a3.number+1, a3.name, a3.resname, a3.resid,
-             a4.number+1, a4.name, a4.resname, a4.resid)
+               (a1.number + 1, a1.name, a1.resname, a1.resid,
+                a2.number + 1, a2.name, a2.resname, a2.resid,
+                a3.number + 1, a3.name, a3.resname, a3.resid,
+                a4.number + 1, a4.name, a4.resname, a4.resid)
+
 
 def build_bondlists(atoms, bonds=None, angles=None, torsions=None):
     """Construct the topology lists of each :class:`~MDAnalysis.core.AtomGroup.Atom`.
@@ -268,18 +284,21 @@ def build_bondlists(atoms, bonds=None, angles=None, torsions=None):
             atom3.torsions.append(b)
             atom4.torsions.append(b)
 
+
 def get_parser_for(filename, permissive=False, bonds=False, format=None):
     """Return the appropriate topology parser for *filename*.
 
     Automatic detection is disabled when an explicit *format* is
     provided.
     """
+    from . import _topology_parsers_permissive, _topology_parsers, _topology_parsers_bonds
     format = guess_format(filename, format=format)
     if permissive and not bonds:
-        return MDAnalysis.topology._topology_parsers_permissive[format]
+        return _topology_parsers_permissive[format]
     if permissive and bonds:
-        return MDAnalysis.topology._topology_parsers_bonds[format]
-    return MDAnalysis.topology._topology_parsers[format]
+        return _topology_parsers_bonds[format]
+    return _topology_parsers[format]
+
 
 def guess_format(filename, format=None):
     """Returns the type of topology file *filename*.
@@ -290,7 +309,7 @@ def guess_format(filename, format=None):
 
     If *format* is supplied then it overrides the auto detection.
     """
-
+    from . import _topology_parsers
     if format is None:
         # simple extension checking... something more complicated is left
         # for the ambitious
@@ -306,9 +325,9 @@ def guess_format(filename, format=None):
         format = str(format).upper()
 
     # sanity check
-    if not format in MDAnalysis.topology._topology_parsers:
+    if not format in _topology_parsers:
         raise TypeError("Unknown topology format %r for %r; only %r are implemented in MDAnalysis." %
-                        (format, filename, MDAnalysis.topology._topology_parsers.keys()))
+                        (format, filename, _topology_parsers.keys()))
     return format
 
 # following guess_* used by PDB parser
@@ -322,6 +341,7 @@ def guess_atom_type(atomname):
     .. SeeAlso:: :func:`guess_atom_element` and :mod:`MDAnalysis.topology.tables`
     """
     return guess_atom_element(atomname)
+
 
 def guess_atom_element(atomname):
     """Guess the element of the atom from the name.
@@ -343,6 +363,7 @@ def guess_atom_element(atomname):
             # catch 1HH etc
             return atomname[1]
         return atomname[0]
+
 
 def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
     """Guess if bonds exist between two atoms based on their distance.
@@ -386,22 +407,24 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
     bonds = set()
     for a in atoms:
         if not a.type in vdwradii.keys():
-            logger.error("guess_bonds(): %s has no defined vdw radius, cannot guess bonds", a.type)
+            # SB: logger is not defined. printting to stderr instead
+            print("ERROR: guess_bonds(): %s has no defined vdw radius, cannot guess bonds" % a.type, file=sys.stderr)
             return bonds
-    # 1-D vector of the upper-triangle of all-to-all distance matrix
+            # 1-D vector of the upper-triangle of all-to-all distance matrix
     dist = distances.self_distance_array(coords)
     N = len(coords)
 
-    pairs = ((i,j) for i in xrange(N) for j in xrange(i + 1, N))
+    pairs = ((i, j) for i in xrange(N) for j in xrange(i + 1, N))
     for x, (d, (i, j)) in enumerate(itertools.izip(dist, pairs)):
         a1, a2 = atoms[i], atoms[j]
         r1, r2 = vdwradii[a1.type], vdwradii[a2.type]
         if (r1 + r2) * fudge_factor <= dist[x]:
             continue
-        #print "BOND", ((r1 + r2) * 10 * fudge_factor), dist[i,j]
+            #print "BOND", ((r1 + r2) * 10 * fudge_factor), dist[i,j]
         bonds.add(frozenset([a1.number, a2.number]))  # orbeckst: Atom.number are 0-based, do not add 1.
 
     return bonds
+
 
 def get_atom_mass(element):
     """Return the atomic mass in u for *element*.
@@ -415,6 +438,7 @@ def get_atom_mass(element):
     except KeyError:
         return 0.000
 
+
 def guess_atom_mass(atomname):
     """Guess a mass based on the atom name.
 
@@ -424,6 +448,7 @@ def guess_atom_mass(atomname):
                  masses you might want to double check.
     """
     return get_atom_mass(guess_atom_element(atomname))
+
 
 def guess_atom_charge(atomname):
     """Guess atom charge from the name.
@@ -471,6 +496,7 @@ class TopologyDict(object):
 
     .. versionadded:: 0.8
     """
+
     def __init__(self, toptype, members):
         self.dict = dict()
         self.toptype = toptype
@@ -518,8 +544,9 @@ class TopologyDict(object):
             if not tuple(reversed(k)) in newdict:#newdict starts blank, so having k already is impossible
                 newdict[k] = []
             else:
-                self.dict[k] += self.dict[tuple(reversed(k))] #if the reverse exists already, pile those values onto the reverse in old dict
-        #newdict now has unique set of keys but no values (yet!)
+                self.dict[k] += self.dict[
+                    tuple(reversed(k))] #if the reverse exists already, pile those values onto the reverse in old dict
+                #newdict now has unique set of keys but no values (yet!)
         for k in newdict: #loop over only newdict's keys as all values are in these key values in the old dict
             for v in self.dict[k]:
                 if not v in newdict[k]:
@@ -527,11 +554,11 @@ class TopologyDict(object):
         self.dict = newdict
 
     def __add__(self, other):
-        if not isinstance(other, topologyDict):
+        if not isinstance(other, TopologyDict):
             raise TypeError("Can only combine topologyDicts")
         if not self.toptype == other.toptype:
             raise TypeError("topologyDicts are of different type, cannot combine")
-        return topologyDict(self.toptype, [self.dict, other.dict])
+        return TopologyDict(self.toptype, [self.dict, other.dict])
 
     def __len__(self):
         """Returns the number of types of bond in the topology dictionary"""
@@ -546,15 +573,15 @@ class TopologyDict(object):
         return iter(self.dict)
 
     def __repr__(self):
-        return '<'+self.__class__.__name__+' with '+repr(len(self))+' unique '+self.toptype+'s >'
+        return '<' + self.__class__.__name__ + ' with ' + repr(len(self)) + ' unique ' + self.toptype + 's >'
 
     def __getitem__(self, key):
         """Returns a TopologyGroup matching the criteria if possible, otherwise returns None"""
         if key in self:
             if key in self.dict:
-                selection =  self.dict[key]
+                selection = self.dict[key]
             else:
-                selection =  self.dict[tuple(reversed(key))]
+                selection = self.dict[tuple(reversed(key))]
 
             return TopologyGroup(selection)
         else:
@@ -599,6 +626,7 @@ class TopologyGroup(object):
 
     .. versionadded:: 0.8
     """
+
     def __init__(self, bondlist):
         self.bondlist = bondlist
         if isinstance(self.bondlist[0], Bond):
@@ -649,7 +677,7 @@ class TopologyGroup(object):
 
         return TopologyGroup(self.bondlist + other.bondlist)
 
-    def __getitem__(self,item):
+    def __getitem__(self, item):
         """Returns a particular bond as single object or a subset of
         this TopologyGroup as another TopologyGroup
         """
@@ -667,7 +695,7 @@ class TopologyGroup(object):
         return item in self.bondlist
 
     def __repr__(self):
-        return "< "+self.__class__.__name__+" containing "+str(len(self))+" "+self.toptype+"s >"
+        return "< " + self.__class__.__name__ + " containing " + str(len(self)) + " " + self.toptype + "s >"
 
     def _bondsSlow(self, pbc=False):
         """Slow version of bond (numpy implementation)"""
@@ -677,8 +705,8 @@ class TopologyGroup(object):
             bond_dist = self.atom1.coordinates() - self.atom2.coordinates()
             if pbc:
                 box = self.atom1.dimensions
-                if (box[6:9] == 90.).all() and not (box[0:3] == 0).any(): #orthogonal and divide by zero check
-                    bond_dist -= numpy.rint(bond_dist/box[0:3])*box[0:3]
+                if (box[6:9] == 90.).all() and not (box[0:3] == 0).any():  # orthogonal and divide by zero check
+                    bond_dist -= numpy.rint(bond_dist / box[0:3]) * box[0:3]
                 else:
                     raise ValueError("Only orthogonal boxes supported")
 
@@ -706,10 +734,11 @@ class TopologyGroup(object):
             raise TypeError("TopologyGroup is not of type 'angle'")
         from MDAnalysis.core.util import angle as slowang
         from itertools import izip
+
         vec1 = self.atom1.coordinates() - self.atom2.coordinates()
         vec2 = self.atom3.coordinates() - self.atom2.coordinates()
 
-        angles = numpy.array([slowang(a,b) for a,b in izip(vec1,vec2)])
+        angles = numpy.array([slowang(a, b) for a, b in izip(vec1, vec2)])
         return angles
 
     def angles(self, result=None):
@@ -722,8 +751,8 @@ class TopologyGroup(object):
             raise TypeError("topology group is not of type 'angle'")
         if not result:
             result = numpy.zeros((self.len,), numpy.float64)
-        return distances.calc_angles(self.atom1.coordinates(),self.atom2.coordinates(),
-                                     self.atom3.coordinates(),result=result)
+        return distances.calc_angles(self.atom1.coordinates(), self.atom2.coordinates(),
+                                     self.atom3.coordinates(), result=result)
 
     def _torsionsSlow(self):
         """Slow version of torsion (numpy implementation)"""
@@ -736,7 +765,7 @@ class TopologyGroup(object):
         vec2 = self.atom3.coordinates() - self.atom2.coordinates()
         vec3 = self.atom4.coordinates() - self.atom3.coordinates()
 
-        return numpy.array([dihedral(a,b,c) for a,b,c in izip(vec1,vec2,vec3)])
+        return numpy.array([dihedral(a, b, c) for a, b, c in izip(vec1, vec2, vec3)])
 
     def torsions(self, result=None):
         """Calculate the torsional angle in radians for this topology
