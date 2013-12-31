@@ -176,6 +176,87 @@ class TestPSF_Issue121(TestCase):
         assert_equal(u.atoms.numberOfAtoms(), 98)
         assert_equal(u.atoms.segids(), ["SYSTEM"])
 
+class TestPSF_bonds(TestCase):
+    """Tests reading of bonds angles and torsions in psf files"""
+
+    def setUp(self):
+        topology = PSF
+        self.universe = MDAnalysis.Universe(topology)
+
+    def tearDown(self):
+        del self.universe
+
+    def test_bonds_counts(self):
+        assert_equal(len(self.universe._psf['_bonds']), 3365)
+        assert_equal(len(self.universe.atoms[0].bonds), 4)
+        assert_equal(len(self.universe.atoms[42].bonds), 1)
+
+    def test_bonds_identity(self):
+        assert_equal(self.universe.atoms[0].bonds[0].atom1, self.universe.atoms[0])
+        assert_equal(self.universe.atoms[0].bonds[0].atom2, self.universe.atoms[4])
+
+    def test_angles_counts(self):
+        assert_equal(len(self.universe._psf['_angles']), 6123)
+        assert_equal(len(self.universe.atoms[0].angles), 9)
+        assert_equal(len(self.universe.atoms[42].angles), 2)
+
+    def test_angles_identity(self):
+        assert_equal(self.universe.atoms[0].angles[0].atom1, self.universe.atoms[1])
+        assert_equal(self.universe.atoms[0].angles[0].atom2, self.universe.atoms[0])
+        assert_equal(self.universe.atoms[0].angles[0].atom3, self.universe.atoms[2])
+
+    def test_torsions_counts(self):
+        assert_equal(len(self.universe._psf['_dihe']), 8921)
+        assert_equal(len(self.universe.atoms[0].torsions), 14)
+
+    def test_torsions_identity(self):
+        assert_equal(self.universe.atoms[0].torsions[0].atom1, self.universe.atoms[0])
+        assert_equal(self.universe.atoms[0].torsions[0].atom2, self.universe.atoms[4])
+        assert_equal(self.universe.atoms[0].torsions[0].atom3, self.universe.atoms[6])
+        assert_equal(self.universe.atoms[0].torsions[0].atom4, self.universe.atoms[7])
+
+class TestPSF_TopologyGroup(TestCase):
+    """Tests TopologyDict and TopologyGroup classes with psf input"""
+    def setUp(self):
+        topology = PSF
+        self.universe = MDAnalysis.Universe(topology)
+        self.res1 = self.universe.residues[0]
+        self.res2 = self.universe.residues[1]
+
+    def tearDown(self):
+        del self.universe
+
+    def test_bonds(self):
+        assert_equal(len(self.universe.atoms.bondDict), 57)
+        assert_equal(self.res1.numberOfBondTypes(), 12)
+
+    def test_angles(self):
+        assert_equal(len(self.universe.atoms.angleDict), 130)
+
+    def test_torsions(self):
+        assert_equal(len(self.universe.atoms.torsionDict), 220)
+
+    def test_create_TopologyGroup(self):
+        res1_tg = self.res1.bondDict['23', '3'] # make a tg
+        assert_equal(len(res1_tg), 4)
+
+        testbond = self.universe.atoms[7].bonds[0]
+        assert_equal(testbond in res1_tg, True) # check a known bond is present
+
+    def test_add_TopologyGroups(self):
+        res1_tg = self.res1.bondDict['23', '3']
+        res2_tg = self.res2.selectBonds(('23', '3'))
+        assert_equal(len(res2_tg), 6)
+
+        combined_tg = res1_tg + res2_tg # add tgs together
+        assert_equal(len(combined_tg), 10)
+
+        big_tg = self.universe.atoms.bondDict['23', '3']
+        assert_equal(len(big_tg), 494)
+
+        big_tg += combined_tg # try and add some already included bonds
+        assert_equal(len(big_tg), 494) # check len doesn't change
+
 # AMBER
 
 class RefCappedAla(object):
