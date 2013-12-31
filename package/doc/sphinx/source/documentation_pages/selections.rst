@@ -117,7 +117,6 @@ Geometric
         coordinate is separated by spaces, e.g. ``point 5.0 5.0 5.0  3.5`` selects
         all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0, 5.0) 
     prop [abs] *property*  *operator*  *value*
-    prop [abs] *property*  *operator*  *value*
         selects atoms based on position, using *property*  **x**, **y**, or
         **z** coordinate. Supports the **abs** keyword (for absolute value) and
         the following *operators*: **<, >, <=, >=, ==, !=**. For example, ``prop z >= 5.0``
