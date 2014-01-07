@@ -1613,7 +1613,7 @@ class TestTRRReader_Sub(TestCase):
         usol = mda.Universe(PDB_sub_sol, TRR_sub_sol)
         atoms = usol.selectAtoms("not resname SOL")
         self.pos = atoms.positions
-        self.vel = atoms.velocities()
+        self.vel = atoms.velocities
         self.force = atoms.forces
         self.sub = atoms.indices()
         # universe from un-solvated protein
@@ -1633,7 +1633,7 @@ class TestTRRReader_Sub(TestCase):
         self.udry.load_new(TRR_sub_sol, sub=self.sub)
         assert_array_almost_equal(self.pos, self.udry.atoms.positions,
                                   err_msg="positions differ")
-        assert_array_almost_equal(self.vel, self.udry.atoms.velocities(),
+        assert_array_almost_equal(self.vel, self.udry.atoms.velocities,
                                   err_msg="positions differ")
         assert_array_almost_equal(self.force, self.udry.atoms.forces,
                                   err_msg="positions differ")
@@ -1817,8 +1817,8 @@ class TestTRRReader(_GromacsReader):
         assert_array_almost_equal(self.universe.trajectory.ts._velocities[[47675,47676]], v_base, self.prec,
                                   err_msg="ts._velocities for indices 47675,47676 do not match known values")
 
-        assert_array_almost_equal(self.universe.atoms.velocities()[[47675,47676]], v_base, self.prec,
-                                  err_msg="velocities() for indices 47675,47676 do not match known values")
+        assert_array_almost_equal(self.universe.atoms.velocities[[47675,47676]], v_base, self.prec,
+                                  err_msg="velocities for indices 47675,47676 do not match known values")
 
         for index, v_known in zip([47675,47676], v_base):
             assert_array_almost_equal(self.universe.atoms[index].velocity, v_known, self.prec,
@@ -2115,7 +2115,7 @@ class TestTRZReader(TestCase, RefTRZ):
 
     def test_velocities(self):
         fortytwo = self.universe.selectAtoms('bynum 42')
-        assert_almost_equal(fortytwo.velocities() , self.ref_velocities, self.prec, "wrong velocities in trz")
+        assert_almost_equal(fortytwo.velocities , self.ref_velocities, self.prec, "wrong velocities in trz")
 
     def test_delta(self):
         assert_almost_equal(self.trz.delta, self.ref_delta, self.prec, "wrong time delta in trz")

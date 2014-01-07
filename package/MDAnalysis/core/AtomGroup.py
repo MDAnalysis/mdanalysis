@@ -314,17 +314,22 @@ class Atom(object):
 
     @property
     def pos(self):
-        """
-        deprecated, use position,
-        get the Current cartesian coordinates of the atom.
+        """coordinates of the atom
+
+        Get the current cartesian coordinates of the atom (read-only).
+
+        .. deprecated:: 0.8
+           use :attr:`position`
         """
         return self.position
 
     @property
     def position(self):
-        """
+        """coordinates of the atom
+
         Get the current cartesian coordinates of the atom.
-        @return: a numpy 1x3 array
+
+        :Returns: a numpy 1x3 array
         """
         return self.universe.coord[self.number] # internal numbering starts at 0
 
@@ -813,18 +818,10 @@ class AtomGroup(object):
         """Array of atomic radii (as defined in the PQR file)"""
         return numpy.array([atom.radius for atom in self._atoms])
 
-    # TODO release 0.8: make this a method again (in MDAnalysis 0.8)
     @property
     def bfactors(self):
         """Crystallographic B-factors (from PDB) in A**2.
-
-        .. deprecated:: 0.8
-           This managed attribute will become a method in 0.8 in order to
-           provide a unified interface to querying properties:
-           :attr:`AtomGroup.bfactors` will become :meth:`AtomGroup.bfactors`
         """
-        warnings.warn("AtomGroup.bfactors will become AtomGroup.bfactors() in MDAnalysis 0.8",
-                      DeprecationWarning)
         return numpy.array([atom.bfactor for atom in self._atoms])
 
     def _set_attribute(self, groupname, name, value, **kwargs):
@@ -1409,8 +1406,8 @@ class AtomGroup(object):
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
 
-    def velocities(self, **kwargs):
-        """NumPy array of the velocities of the atoms in the group.
+    velocities = property(get_velocities, set_velocities, doc="""\
+        NumPy array of the velocities of the atoms in the group.
 
         If the trajectory does not contain velocity information then a
         :exc:`~MDAnalysis.NoDataError` is raised.
@@ -1419,14 +1416,9 @@ class AtomGroup(object):
         .. deprecated:: 0.7.6
            In 0.8 this will become an attribute! You can already use :meth:`get_velocities`
            and :meth:`set_velocities`.
-        """
-        warnings.warn("velocities() will become an attribute 'velocities' in 0.8",
-                      category=DeprecationWarning)
-        return self.get_velocities(**kwargs)
-
-    # TODO for 0.8
-    #velocities = property(get_velocities, set_velocities, doc="velocities of the atoms\n\n.. versionchanged:: 0.8")
-
+        .. versionchanged:: 0.8
+           Became an attribute.
+    """)
 
     def get_forces(self, ts=None, copy=False, dtype=numpy.float32):
         """

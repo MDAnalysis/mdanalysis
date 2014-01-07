@@ -39,7 +39,7 @@ class TestGROVelocities(TestCase):
         u = MDAnalysis.Universe(GRO_velocity)
         all_atoms = u.selectAtoms('all')
         #check for read-in and unit conversion for .gro file velocities for the entire AtomGroup:
-        assert_almost_equal(all_atoms.velocities(), self.reference_velocities, self.prec,
+        assert_almost_equal(all_atoms.velocities, self.reference_velocities, self.prec,
                             err_msg="problem reading .gro file velocities")
         #likewise for each individual atom (to be robust--in case someone alters the individual atom property code):
         assert_almost_equal(all_atoms[0].velocity,self.reference_velocities[0], self.prec,
