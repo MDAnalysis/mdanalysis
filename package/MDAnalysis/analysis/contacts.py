@@ -540,12 +540,18 @@ class ContactAnalysis1(object):
         """
         return os.path.isfile(self.output) and not (self.force or force)
 
-    def run(self, store=True, force=False):
+    def run(self, store=True, force=False, start_frame=1,end_frame=None,step_value=1):
         """Analyze trajectory and produce timeseries.
 
         Stores results in :attr:`ContactAnalysis1.timeseries` (if store=True)
         and writes them to a data file. The average q is written to a second
         data file.
+        *start_frame*
+            The value of the first frame number in the trajectory to be used (default: frame 1)
+        *end_frame*
+            The value of the last frame number in the trajectory to be used (default: None -- use all frames)
+        *step_value*
+            The number of frames to skip during trajectory iteration (default: use every frame)
         """
         if self.output_exists(force=force):
             import warnings
@@ -561,7 +567,11 @@ class ContactAnalysis1(object):
             records = []
             self.qavg *= 0  # average contact existence
             A,B = self.selections
-            for ts in self.universe.trajectory:
+            #determine the end_frame value to use:
+            total_frames = self.universe.trajectory.numframes
+            if not end_frame: #use the total number of frames in trajectory if no final value specified
+                end_frame = total_frames
+            for ts in self.universe.trajectory[start_frame:end_frame:step_value]:
                 frame = ts.frame
                 # use pre-allocated distance array to save a little bit of time
                 distance_array(A.coordinates(), B.coordinates(), result=self.d)
@@ -573,7 +583,8 @@ class ContactAnalysis1(object):
                 out.write("%(frame)4d  %(q1)8.6f %(n1)5d\n" % vars())
         if store:
             self.timeseries = numpy.array(records).T
-        self.qavg /= self.universe.trajectory.numframes
+        numframes = len(range(total_frames)[start_frame:end_frame:step_value])
+        self.qavg /= numframes
         numpy.savetxt(self.outarray, self.qavg, fmt="%8.6f")
         return self.output
 
