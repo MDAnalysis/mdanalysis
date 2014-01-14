@@ -656,9 +656,7 @@ class TestAtomGroupVelocities(TestCase):
         ref_v = numpy.array([[ -3.61757946,  -4.9867239 ,   2.46281552],
                              [  2.57792854,   3.25411797,  -0.75065529],
                              [ 13.91627216,  30.17778587, -12.16669178]])
-        v = ag.velocities()
-        # TODO: for 0.8 change to
-        ##v = self.ag.velocities
+        v = ag.velocities
         assert_almost_equal(v, ref_v, err_msg="velocities were not read correctly")
 
     @dec.slow

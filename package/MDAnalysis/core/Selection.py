@@ -161,6 +161,170 @@ class AroundSelection(Selection):
     def __repr__(self):
         return "<'AroundSelection' "+repr(self.cutoff)+" around "+repr(self.sel)+">"
 
+class SphericalLayerSelection(Selection):
+    def __init__(self, sel, inRadius, exRadius, periodic=None):
+        Selection.__init__(self)
+        self.sel = sel
+        self.inRadius = inRadius
+        self.exRadius = exRadius
+        if periodic is None:
+            self.periodic = flags['use_periodic_selections']
+    def _apply(self,group):
+        # make choosing _fast/_slow configurable (while testing)
+        if flags['use_KDTree_routines'] in (True,'fast','always'):
+            return self._apply_KDTree(group)
+        else:
+            return self._apply_distmat(group)
+    def _apply_KDTree(self, group):
+        """Selection using KDTree but periodic = True not supported.
+        (KDTree routine is ca 15% slower than the distance matrix one)
+        """
+        sys_indices = numpy.array([a.number for a in self._group_atoms_list])
+        sys_coor = Selection.coord[sys_indices]
+        sel_atoms = self.sel._apply(group) ## group is wrong, should be universe (?!)
+        sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
+        self.ref = numpy.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
+        if self.periodic:
+            pass # or warn? -- no periodic functionality with KDTree search
+        from MDAnalysis.KDTree.NeighborSearch import CoordinateNeighborSearch
+        CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
+        found_ExtIndices = CNS.search(self.ref,self.exRadius)
+        found_IntIndices = CNS.search(self.ref,self.inRadius)
+        found_indices = list(set(found_ExtIndices) - set(found_IntIndices))
+        res_atoms = [self._group_atoms_list[i] for i in found_indices]  
+        return set(res_atoms)
+    def _apply_distmat(self,group):
+        sel_atoms = self.sel._apply(group) ## group is wrong, should be universe (?!)
+        sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
+        sys_atoms_list = [a for a in (self._group_atoms)]  # list needed for back-indexing
+        sys_ag = AtomGroup(sys_atoms_list)
+        sel_CoG_str = str("point ") + str(sel_CoG[0]) +" "+str(sel_CoG[1])+ " "+str(sel_CoG[2])+ " "+str(self.exRadius)+" and not point "+str(sel_CoG[0]) +" "+str(sel_CoG[1])+ " "+str(sel_CoG[2])+ " "+str(self.inRadius)
+        sel = sys_ag.selectAtoms(sel_CoG_str)
+        res_atoms = AtomGroup(set(sel))
+        if self.periodic:
+            box = group.dimensions[:3]  # ignored with KDTree
+        else:
+            box = None
+        return set(res_atoms)
+    def __repr__(self):
+        return "<'SphericalLayerSelection' inner radius "+repr(self.inRadius)+", external radius "+repr(self.exRadius)+" centered in "+repr(self.sel)+">"
+
+class SphericalZoneSelection(Selection):
+    def __init__(self, sel, cutoff, periodic=None):
+        Selection.__init__(self)
+        self.sel = sel
+        self.cutoff = cutoff
+        self.sqdist = cutoff*cutoff
+        if periodic is None:
+            self.periodic = flags['use_periodic_selections']
+    def _apply(self,group):
+        # make choosing _fast/_slow configurable (while testing)
+        if flags['use_KDTree_routines'] in (True,'fast','always'):
+            return self._apply_KDTree(group)
+        else:
+            return self._apply_distmat(group)
+    def _apply_KDTree(self, group):
+        """Selection using KDTree but periodic = True not supported.
+        (KDTree routine is ca 15% slower than the distance matrix one)
+        """
+        sys_indices = numpy.array([a.number for a in self._group_atoms_list])
+        sys_coor = Selection.coord[sys_indices]
+        sel_atoms = self.sel._apply(group) ## group is wrong, should be universe (?!)
+        sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
+        self.ref = numpy.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
+        if self.periodic:
+            pass # or warn? -- no periodic functionality with KDTree search
+        from MDAnalysis.KDTree.NeighborSearch import CoordinateNeighborSearch
+        CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
+        found_indices = CNS.search(self.ref,self.cutoff)
+        res_atoms = [self._group_atoms_list[i] for i in found_indices]  # make list numpy array and use fancy indexing?
+        return set(res_atoms)
+    def _apply_distmat(self,group):
+        sel_atoms = self.sel._apply(group) ## group is wrong, should be universe (?!)
+        sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
+        sys_atoms_list = [a for a in (self._group_atoms)]  # list needed for back-indexing
+        sys_ag = AtomGroup(sys_atoms_list)
+        sel_CoG_str = str("point ") + str(sel_CoG[0]) +" "+str(sel_CoG[1])+ " "+str(sel_CoG[2])+ " "+str(self.cutoff)
+        sel = sys_ag.selectAtoms(sel_CoG_str)
+        res_atoms = AtomGroup(set(sel))
+        if self.periodic:
+            box = group.dimensions[:3]  # ignored with KDTree
+        else:
+            box = None
+        return set(res_atoms)
+    def __repr__(self):
+        return "<'SphericalZoneSelection' radius "+repr(self.cutoff)+" centered in "+repr(self.sel)+">"
+
+class CylindricalLayerSelection(Selection):    
+    def __init__(self, sel, inRadius, exRadius, zmax, zmin ,periodic=None):
+        Selection.__init__(self)
+        self.sel = sel
+        self.inRadius = inRadius
+        self.exRadius = exRadius
+        self.inRadiusSq = inRadius * inRadius
+        self.exRadiusSq = exRadius * exRadius
+        self.zmax = zmax
+        self.zmin = zmin
+        self.periodic = flags['use_periodic_selections']
+    def _apply(self,group):
+        #KDTree function not implementable
+        return self._apply_distmat(group)
+    def _apply_distmat(self,group):
+        sel_atoms = self.sel._apply(group)
+        sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
+        x = Selection.coord._x
+        y = Selection.coord._y
+        z = Selection.coord._z
+        sel_CoG_Zone = (x - sel_CoG[0]) * ( x - sel_CoG[0]) + ( y - sel_CoG[1]) * ( y - sel_CoG[1])
+        sel_CoG_Zone_array = numpy.array([[i] for i in sel_CoG_Zone ])
+        Selection.coord._znp = numpy.array([[i] for i in z ])
+        res_atomsA = [i for i in numpy.any(numpy.logical_and(sel_CoG_Zone_array <= self.exRadiusSq, sel_CoG_Zone_array >= self.inRadiusSq),axis=1).nonzero()[0]] 
+        res_atomsB = [i for i in numpy.any(numpy.logical_and(Selection.coord._znp > self.zmin,Selection.coord._znp < self.zmax),axis=1).nonzero()[0]]   
+        intersectionAB = numpy.intersect1d(res_atomsA,res_atomsB)
+        res_atoms = [self._group_atoms_list[i] for i in intersectionAB ]
+        res_atoms = set(res_atoms)
+        if self.periodic:
+            box = group.dimensions[:3]  
+        else:
+            box = None
+        return set(res_atoms)
+    def __repr__(self):
+        return "<'CylindricalLayerSelection' inner radius "+repr(self.inRadius)+", external radius "+repr(self.exRadius)+", zmax "+repr(self.zmax)+", zmin "+repr(self.zmin)+">"
+
+class CylindricalZoneSelection(Selection):    
+    def __init__(self, sel, exRadius, zmax, zmin ,periodic=None):
+        Selection.__init__(self)
+        self.sel = sel
+        self.exRadius = exRadius
+        self.exRadiusSq = exRadius * exRadius
+        self.zmax = zmax
+        self.zmin = zmin
+        self.periodic = flags['use_periodic_selections']
+    def _apply(self,group):
+        #KDTree function not implementable
+        return self._apply_distmat(group)
+    def _apply_distmat(self,group):
+        sel_atoms = self.sel._apply(group) 
+        sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
+        x = Selection.coord._x
+        y = Selection.coord._y
+        z = Selection.coord._z
+        sel_CoG_exRad = (x - sel_CoG[0]) * ( x - sel_CoG[0]) + ( y - sel_CoG[1]) * ( y - sel_CoG[1])
+        sel_CoG_exRad_array = numpy.array([[i] for i in sel_CoG_exRad ])
+        Selection.coord._znp = numpy.array([[i] for i in z ])
+        res_atomsA = [i for i in numpy.any(sel_CoG_exRad_array <= self.exRadiusSq,axis=1).nonzero()[0]] 
+        res_atomsB = [i for i in numpy.any(numpy.logical_and(Selection.coord._znp > self.zmin,Selection.coord._znp < self.zmax),axis=1).nonzero()[0]]   
+        intersectionAB = numpy.intersect1d(res_atomsA,res_atomsB)
+        res_atoms = [self._group_atoms_list[i] for i in intersectionAB ]
+        res_atoms = set(res_atoms)
+        if self.periodic:
+            box = group.dimensions[:3]  
+        else:
+            box = None
+        return set(res_atoms)
+    def __repr__(self):
+        return "<'CylindricalZoneSelection' radius "+repr(self.exRadius)+", zmax "+repr(self.zmax)+", zmin "+repr(self.zmin)+">"
+
 class PointSelection(Selection):
     def __init__(self, x, y, z, cutoff, periodic=None):
         Selection.__init__(self)
@@ -520,6 +684,10 @@ class SelectionParser:
     AND = 'and'
     OR = 'or'
     AROUND = 'around'
+    SPHLAYER = 'sphlayer'
+    SPHZONE = 'sphzone'
+    CYLAYER = 'cylayer'
+    CYZONE = 'cyzone'
     POINT = 'point'
     BYRES = 'byres'
     BONDED = 'bonded'
@@ -554,14 +722,15 @@ class SelectionParser:
                       (RESNAME, ResidueNameSelection), (NAME, AtomNameSelection),
                       (TYPE, AtomTypeSelection), (BYRES, ByResSelection),
                       (BYNUM, ByNumSelection), (PROP, PropertySelection),
-                      (AROUND, AroundSelection), (POINT, PointSelection),
-                      (NUCLEIC, NucleicSelection), (PROTEIN, ProteinSelection),
+                      (AROUND, AroundSelection),(SPHLAYER, SphericalLayerSelection),(SPHZONE, SphericalZoneSelection),  
+                      (CYLAYER, CylindricalLayerSelection), (CYZONE, CylindricalZoneSelection),
+                      (POINT, PointSelection),(NUCLEIC, NucleicSelection), (PROTEIN, ProteinSelection),
                       (BB, BackboneSelection), (NBB, NucleicBackboneSelection),
                       (BASE, BaseSelection), (SUGAR, NucleicSugarSelection),
                       #(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists
                       (ATOM, AtomSelection)])
     associativity = dict([(AND, "left"), (OR, "left")])
-    precedence = dict([(AROUND, 1), (POINT, 1), (BYRES, 1), (BONDED, 1), (AND, 3), (OR, 3), (NOT,5 )])
+    precedence = dict([(AROUND, 1),(SPHLAYER, 1),(SPHZONE, 1),(CYLAYER, 1),(CYZONE, 1), (POINT, 1), (BYRES, 1), (BONDED, 1), (AND, 3), (OR, 3), (NOT,5)])
 
     # Borg pattern: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66531
     _shared_state = {}
@@ -614,6 +783,28 @@ class SelectionParser:
             dist = self.__consume_token()
             exp = self.__parse_expression(self.precedence[op])
             return self.classdict[op](exp, float(dist))
+        elif op in (self.SPHLAYER):
+            inRadius = self.__consume_token()
+            exRadius = self.__consume_token()
+            exp = self.__parse_expression(self.precedence[op])
+            return self.classdict[op](exp, float(inRadius), float(exRadius))
+        elif op in (self.SPHZONE):
+            dist = self.__consume_token()
+            exp = self.__parse_expression(self.precedence[op])
+            return self.classdict[op](exp, float(dist))
+        elif op in (self.CYLAYER):
+            inRadius = self.__consume_token()
+            exRadius = self.__consume_token()
+            zmax = self.__consume_token()
+            zmin = self.__consume_token()            
+            exp = self.__parse_expression(self.precedence[op])
+            return self.classdict[op](exp, float(inRadius), float(exRadius), float(zmax), float(zmin))
+        elif op in (self.CYZONE):
+            exRadius = self.__consume_token()
+            zmax = self.__consume_token()
+            zmin = self.__consume_token()            
+            exp = self.__parse_expression(self.precedence[op])
+            return self.classdict[op](exp, float(exRadius), float(zmax), float(zmin))
         elif op in (self.POINT):
             dist = self.__consume_token()
             x = self.__consume_token()

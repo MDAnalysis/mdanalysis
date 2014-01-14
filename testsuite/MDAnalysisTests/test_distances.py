@@ -23,7 +23,7 @@ from numpy.testing import *
 del test
 from nose.plugins.attrib import attr
 
-from MDAnalysis.tests.datafiles import PSF,DCD
+from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 
 
 
@@ -187,5 +187,299 @@ class TestSelfDistanceArrayDCD(TestCase):
         assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value with PBC")
 
+class TestTriclinicDistances(TestCase):
+    """Unit tests for the Triclinic PBC functions.
+    Tests:
+      # transforming to and form S space (fractional coords)
+      mda.core.distances.transform_StoR
+      mda.core.distances.transform_RtoS
+      # distance calculations with PBC 
+      mda.core.distances.self_distance_array
+      mda.core.distances.distance_array
+    """
+
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(TRIC)
+        self.prec = 2
+
+        self.box = MDAnalysis.coordinates.core.triclinic_vectors(self.universe.dimensions)
+        self.boxV = MDAnalysis.coordinates.core.triclinic_box(self.box[0], self.box[1], self.box[2])
+
+        self.S_mol1 = np.array([self.universe.atoms[383].pos])
+        self.S_mol2 = np.array([self.universe.atoms[390].pos])
 
 
+    def tearDown(self):
+        del self.universe
+        del self.boxV
+        del self.box
+        del self.S_mol1
+        del self.S_mol2
+        del self.prec
+
+    def test_transforms(self):
+        from MDAnalysis.core.distances import transform_StoR, transform_RtoS
+        # To check the cython coordinate transform, the same operation is done in numpy
+        # Is a matrix multiplication of Coords x Box = NewCoords, so can use np.dot
+
+        # Test transformation
+        R_mol1 = transform_StoR(self.S_mol1, self.box)
+        R_np1 = np.dot(self.S_mol1, self.box)
+        
+        # Test transformation when given box in different form
+        R_mol2 = transform_StoR(self.S_mol2, self.boxV)
+        R_np2 = np.dot(self.S_mol2, self.box)
+
+        assert_almost_equal(R_mol1, R_np1, self.prec, err_msg="StoR transform failed with box")
+        assert_almost_equal(R_mol2, R_np2, self.prec, err_msg="StoR transform failed with boxV")
+
+        # Round trip test
+        S_test1 = transform_RtoS(R_mol1, self.boxV) # boxV here althought initial transform with box
+        S_test2 = transform_RtoS(R_mol2, self.box) # and vice versa, should still work
+        
+        assert_almost_equal(S_test1, self.S_mol1, self.prec, err_msg="Round trip failed in transform")
+        assert_almost_equal(S_test2, self.S_mol2, self.prec, err_msg="Round trip failed in transform")
+                            
+    def test_selfdist(self):
+        from MDAnalysis.core.distances import self_distance_array
+        from MDAnalysis.core.distances import transform_RtoS, transform_StoR
+
+        R_coords = transform_StoR(self.S_mol1, self.box)
+        # Transform functions are tested elsewhere so taken as working here
+        dists = self_distance_array(R_coords, box = self.box)
+        # Manually calculate self_distance_array
+        manual = np.zeros(len(dists), dtype = np.float64)
+        distpos = 0
+        for i, Ri in enumerate(R_coords):
+            for Rj in R_coords[i+1:]:
+                Rij = Rj - Ri
+                Rij -= round(Rij[2]/self.box[2][2])*self.box[2]
+                Rij -= round(Rij[1]/self.box[1][1])*self.box[1]
+                Rij -= round(Rij[0]/self.box[0][0])*self.box[0]
+                Rij = np.linalg.norm(Rij) # find norm of Rij vector
+                manual[distpos] = Rij # and done, phew
+                distpos += 1
+
+        assert_almost_equal(dists, manual, self.prec, 
+                            err_msg="self_distance_array failed with input 1")
+
+        # Do it again for input 2 (has wider separation in points)
+        # Also use boxV here in self_dist calculation
+        R_coords = transform_StoR(self.S_mol2, self.box)
+        # Transform functions are tested elsewhere so taken as working here
+        dists = self_distance_array(R_coords, box = self.boxV)
+        # Manually calculate self_distance_array
+        manual = np.zeros(len(dists), dtype = np.float64)
+        distpos = 0
+        for i, Ri in enumerate(R_coords):
+            for Rj in R_coords[i+1:]:
+                Rij = Rj - Ri
+                Rij -= round(Rij[2]/self.box[2][2])*self.box[2]
+                Rij -= round(Rij[1]/self.box[1][1])*self.box[1]
+                Rij -= round(Rij[0]/self.box[0][0])*self.box[0]
+                Rij = np.linalg.norm(Rij) # find norm of Rij vector
+                manual[distpos] = Rij # and done, phew
+                distpos += 1
+                
+        assert_almost_equal(dists, manual, self.prec, 
+                            err_msg="self_distance_array failed with input 2")
+                
+    def test_distarray(self):
+        from MDAnalysis.core.distances import distance_array
+        from MDAnalysis.core.distances import transform_StoR, transform_RtoS
+
+        R_mol1 = transform_StoR(self.S_mol1, self.box)
+        R_mol2 = transform_StoR(self.S_mol2, self.box)
+
+        # Try with box
+        dists = distance_array(R_mol1, R_mol2, box=self.box)
+        # Manually calculate distance_array
+        manual = np.zeros((len(R_mol1),len(R_mol2)))
+        for i, Ri in enumerate(R_mol1):
+            for j, Rj in enumerate(R_mol2):
+                Rij = Rj - Ri
+                Rij -= round(Rij[2]/self.box[2][2])*self.box[2]
+                Rij -= round(Rij[1]/self.box[1][1])*self.box[1]
+                Rij -= round(Rij[0]/self.box[0][0])*self.box[0]
+                Rij = np.linalg.norm(Rij) # find norm of Rij vector
+                manual[i][j] = Rij
+
+        assert_almost_equal(dists, manual, self.prec,
+                            err_msg="distance_array failed with box")
+    
+        # Now check using boxV
+        dists = distance_array(R_mol1, R_mol2, box=self.boxV)
+        assert_almost_equal(dists, manual, self.prec,
+                            err_msg="distance_array failed with boxV")
+
+    def test_pbc_dist(self):
+        from MDAnalysis.core.distances import distance_array
+        results = np.array([[37.629944]])
+
+        dists = distance_array(self.S_mol1, self.S_mol2, box=self.boxV)
+
+        assert_almost_equal(dists, results, self.prec,
+                            err_msg="distance_array failed to retrieve PBC distance")
+
+class TestCythonFunctions(TestCase):
+    # Unit tests for calc_bonds calc_angles and calc_torsions in core.distances
+    # Tests both numerical results as well as input types as Cython will silently 
+    # produce nonsensical results if given wrong data types otherwise.
+    def setUp(self):
+        self.prec = 5
+        self.box = np.array([10., 10., 10.], dtype=np.float32)
+        # dummy atom data
+        self.a = np.array([[0., 0., 0.],
+                           [0., 0., 0.],
+                           [0., 11., 0.],
+                           [1., 1., 1.]
+                           ], dtype=np.float32)
+        self.b = np.array([[0., 0., 0.],
+                           [1., 1., 1.],
+                           [0., 0., 0.],
+                           [29., -21., 99.]
+                           ], dtype=np.float32)
+        self.c = np.array([[0., 0., 0.],
+                           [2., 2., 2.],
+                           [11., 0., 0.],
+                           [1., 9., 9.]
+                           ], dtype=np.float32)
+        self.d = np.array([[0., 0., 0.],
+                           [3., 3., 3.],
+                           [11., -11., 0.],
+                           [65., -65., 65.]
+                           ], dtype=np.float32)
+        self.wrongtype = np.array([[0., 0., 0.],
+                                   [3., 3., 3.],
+                                   [3., 3., 3.],
+                                   [3., 3., 3.]
+                                  ], dtype=np.float64) #declared as float64 and should raise TypeError
+        self.wronglength = np.array([[0., 0., 0.],
+                                     [3., 3., 3.]
+                                    ], dtype=np.float32)#has a different length to other inputs and should raise ValueError
+
+    def tearDown(self):
+        del self.box
+        del self.a
+        del self.b
+        del self.c
+        del self.d
+        del self.wrongtype
+        del self.wronglength
+
+    def test_bonds(self):
+        dists = MDAnalysis.core.distances.calc_bonds(self.a, self.b)
+        assert_equal(len(dists), 4, err_msg="calc_bonds results have wrong length")
+        dists_pbc = MDAnalysis.core.distances.calc_bonds(self.a, self.b, box=self.box)
+        #tests 0 length
+        assert_almost_equal(dists[0], 0.0, self.prec, err_msg="Zero length calc_bonds fail")
+        assert_almost_equal(dists[1], 1.7320508075688772, self.prec, 
+                            err_msg="Standard length calc_bonds fail") # arbitrary length check
+        #PBC checks, 2 without, 2 with
+        assert_almost_equal(dists[2], 11.0, self.prec, 
+                            err_msg="PBC check #1 w/o box") # pbc check 1, subtract single box length
+        assert_almost_equal(dists_pbc[2], 1.0, self.prec, 
+                            err_msg="PBC check #1 with box")
+        assert_almost_equal(dists[3], 104.26888318, self.prec, # pbc check 2, subtract multiple box
+                            err_msg="PBC check #2 w/o box")    # lengths in all directions
+        assert_almost_equal(dists_pbc[3], 3.46410072, self.prec, 
+                            err_msg="PBC check #w with box")
+        #Bad input checking
+        badboxtype = np.array([10., 10., 10.], dtype=np.float64)
+        badboxsize = np.array([[10., 10.],[10.,10.,]], dtype=np.float32)
+        badresult = np.zeros(len(self.a)-1)
+        assert_raises(TypeError, MDAnalysis.core.distances.calc_bonds, self.a, self.wrongtype)
+        assert_raises(TypeError, MDAnalysis.core.distances.calc_bonds, self.wrongtype, self.b)
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.a, self.wronglength)
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.wronglength, self.b)
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.a, self.b, 
+                      box=badboxsize) # Bad box data
+        assert_raises(TypeError, MDAnalysis.core.distances.calc_bonds, self.a, self.b, 
+                      box=badboxtype) # Bad box type
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.a, self.b, 
+                      result=badresult) # Bad result array
+        
+    def test_angles(self):
+        angles = MDAnalysis.core.distances.calc_angles(self.a, self.b, self.c)
+        # Check calculated values
+        assert_equal(len(angles), 4, err_msg="calc_angles results have wrong length")
+#        assert_almost_equal(angles[0], 0.0, self.prec, 
+#                           err_msg="Zero length angle calculation failed") # What should this be?
+        assert_almost_equal(angles[1], np.pi, self.prec, 
+                            err_msg="180 degree angle calculation failed")
+        assert_almost_equal(np.rad2deg(angles[2]), 90., self.prec, 
+                            err_msg="Ninety degree angle in calc_angles failed")
+        assert_almost_equal(angles[3], 0.098174833, self.prec, 
+                            err_msg="Small angle failed in calc_angles")
+        # Check data type checks
+        badresult = np.zeros(len(self.a)-1)       
+        assert_raises(TypeError, MDAnalysis.core.distances.calc_angles, 
+                      self.a, self.wrongtype, self.c) # try inputting float64 values
+        assert_raises(TypeError, MDAnalysis.core.distances.calc_angles, 
+                      self.wrongtype, self.b, self.c)
+        assert_raises(TypeError, MDAnalysis.core.distances.calc_angles, 
+                      self.a, self.b, self.wrongtype)
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_angles, 
+                      self.a, self.wronglength, self.c) # try inputting arrays of different length
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_angles, 
+                      self.wronglength, self.b, self.c)
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_angles, 
+                      self.a, self.b, self.wronglength)
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_angles, 
+                      self.a, self.b, self.c, result=badresult) # Bad result array
+
+    def test_torsions(self):
+        torsions = MDAnalysis.core.distances.calc_torsions(self.a, self.b, self.c, self.d)
+        # Check calculated values
+        assert_equal(len(torsions), 4, err_msg="calc_torsions results have wrong length")
+#        assert_almost_equal(torsions[0], 0.0, self.prec, err_msg="Zero length torsion failed")
+#        assert_almost_equal(torsions[1], 0.0, self.prec, err_msg="Straight line torsion failed")
+        assert_almost_equal(torsions[2], np.pi, self.prec, err_msg="180 degree torsion failed")
+        assert_almost_equal(torsions[3], 0.50714064, self.prec, 
+                            err_msg="arbitrary torsion angle failed")
+        # Check data type checks
+        badresult = np.zeros(len(self.a)-1)       
+        assert_raises(TypeError, MDAnalysis.core.distances.calc_torsions, 
+                      self.a, self.wrongtype, self.c, self.d) # try inputting float64 values
+        assert_raises(TypeError, MDAnalysis.core.distances.calc_torsions, 
+                      self.wrongtype, self.b, self.c, self.d)
+        assert_raises(TypeError, MDAnalysis.core.distances.calc_torsions, 
+                      self.a, self.b, self.wrongtype, self.d)
+        assert_raises(TypeError, MDAnalysis.core.distances.calc_torsions, 
+                      self.a, self.b, self.c, self.wrongtype)
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions, 
+                      self.a, self.wronglength, self.c, self.d)
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions, 
+                      self.wronglength, self.b, self.c, self.d)
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions, 
+                      self.a, self.b, self.wronglength, self.d)
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions, 
+                      self.a, self.b, self.c, self.wronglength)
+        assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions, 
+                      self.a, self.b, self.c, self.d, result=badresult) # Bad result array      
+
+    def test_numpy_compliance(self):
+        # Checks that the cython functions give identical results to the numpy versions
+        bonds = MDAnalysis.core.distances.calc_bonds(self.a, self.b)
+        angles = MDAnalysis.core.distances.calc_angles(self.a, self.b, self.c)
+        torsions = MDAnalysis.core.distances.calc_torsions(self.a, self.b, self.c, self.d)
+
+        bonds_numpy = np.array([MDAnalysis.core.util.norm(y - x) for x, y in zip(self.a, self.b)])
+        vec1 = self.a - self.b
+        vec2 = self.c - self.b
+        angles_numpy = np.array([MDAnalysis.core.util.angle(x, y) for x, y in zip(vec1, vec2)])
+        ab = self.b - self.a
+        bc = self.c - self.b
+        cd = self.d - self.c
+        torsions_numpy = np.array([MDAnalysis.core.util.dihedral(x, y, z) for x, y, z in zip(ab, bc, cd)])
+
+        assert_almost_equal(bonds, bonds_numpy, self.prec, 
+                            err_msg="Cython bonds didn't match numpy calculations")
+        # numpy 0 angle returns NaN rather than 0
+        assert_almost_equal(angles[1:], angles_numpy[1:], self.prec,
+                            err_msg="Cython angles didn't match numpy calcuations")
+        # same issue with first two torsions
+        assert_almost_equal(torsions[2:], torsions_numpy[2:], self.prec,
+                            err_msg="Cython torsions didn't match numpy calculations")
+
+        

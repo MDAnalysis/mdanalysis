@@ -95,7 +95,23 @@ Geometric
     around *distance*  *selection*
         selects all atoms a certain cutoff away from another selection,
         e.g. ``around 3.5 protein`` selects all atoms not belonging to protein
-        that are within 3.5 Angstroms from the protein 
+        that are within 3.5 Angstroms from the protein
+    sphlayer *innerRadius* *externalRadius* *selection*
+        selects all atoms within a sphere layer centered in the center of geometry (COG) of a given selection, 
+        e.g. ``inside 2.4 6.0 ( protein and ( resid 130 or resid 80 ) )`` selects the center of geometry of protein, resid 130, resid 80 
+        and creates a spherical layer of inner radius 2.4 and external radius 6.0 around the COG.
+    sphzone *externalRadius* *selection*
+        selects all atoms within a sphere zone centered in the center of geometry (COG) of a given selection,
+        e.g. ``inside 6.0 ( protein and ( resid 130 or resid 80 ) )`` selects the center of geometry of protein, resid 130, 
+	resid 80 and creates a sphere of radius 6.0 around the COG.                
+    cylayer *innerRadius* *externalRadius* *zMax* *zMin* *selection*
+        selects all atoms within a cylindric layer centered in the center of geometry (COG) of a given selection, 
+        e.g. ``clayer 5 10 10 -10 protein`` selects the center of geometry of protein, 
+        and creates a cylindrical layer of inner radius 5, external radius 10, maximum z value 10 and minimum z value -10 around the COG.
+    cyzone *externalRadius* *zMax* *zMin* *selection*                       
+        selects all atoms within a cylindric zone centered in the center of geometry (COG) of a given selection,
+        e.g. ``clayer 15 4 -8 protein and resid 42`` selects the center of geometry of protein and resid 42, 
+        and creates a cylinder of external radius 15, maximum z value 4 and minimum z value -8 around the COG.
     point *x* *y* *z*  *distance* 
         selects all atoms within a cutoff of a point in space, make sure
         coordinate is separated by spaces, e.g. ``point 5.0 5.0 5.0  3.5`` selects
@@ -105,17 +121,17 @@ Geometric
         **z** coordinate. Supports the **abs** keyword (for absolute value) and
         the following *operators*: **<, >, <=, >=, ==, !=**. For example, ``prop z >= 5.0``
         selects all atoms with z coordinate greater than 5.0; ``prop abs z <= 5.0`` 
-	selects all atoms within -5.0 <= z <= 5.0.  
+        selects all atoms within -5.0 <= z <= 5.0.    
 
-From version 0.6 onwards, geometric selections can use a k-d tree
-based, fast search algorithm (about three times faster than the
+From version 0.6 onwards, some geometrics selections (around, sphlayer, sphzone, point) 
+can use a k-d tree based, fast search algorithm (about three times faster than the
 previous version). However, it does not take periodicity into
 account. The fast algorithm is the default for *around*. Periodicity
 is only taken into account with the
 :func:`~MDAnalysis.analysis.distances.distance_array` functions via a
 minimum image convention (and this only works for rectangular
 simulation cells). If periodic boundary conditions should be taken
-into account then change the default behaviour of MDAnalysi by setting
+into account then change the default behaviour of MDAnalysis by setting
 these two flags::
 
   MDAnalysis.core.flags['use_periodic_selections'] = True

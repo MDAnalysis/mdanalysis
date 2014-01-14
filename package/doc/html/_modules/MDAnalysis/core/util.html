@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.core.util &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    <title>MDAnalysis.core.util &mdash; MDAnalysis 0.8.0rc4 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0-dev',
+        VERSION:     '0.8.0rc4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0-dev documentation"
+          title="Search within MDAnalysis 0.8.0rc4 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -43,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -75,7 +73,7 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.core.util</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-</span>
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
@@ -154,7 +152,6 @@
 <span class="sd">.. autofunction:: stp</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
 
 <span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext en&quot;</span>
 
@@ -294,7 +291,7 @@
 <div class="viewcode-block" id="realpath"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.realpath">[docs]</a><span class="k">def</span> <span class="nf">realpath</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Join all args and return the real path, rooted at /.</span>
 
-<span class="sd">    Expands &#39;~&#39;, &#39;~user&#39;, and environment variables such as $HOME.</span>
+<span class="sd">    Expands &#39;~&#39;, &#39;~user&#39;, and environment variables such as :envvar`$HOME`.</span>
 
 <span class="sd">    Returns ``None`` if any of the args is ``None``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -500,7 +497,7 @@
 
 <span class="c"># geometric functions</span></div>
 <div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.norm">[docs]</a><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the length of a vector, ``sqrt(v.v)``.</span>
+    <span class="sd">r&quot;&quot;&quot;Returns the length of a vector, ``sqrt(v.v)``.</span>
 
 <span class="sd">    .. math::</span>
 
@@ -511,7 +508,7 @@
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">v</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="normal"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.normal">[docs]</a><span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the unit vector normal to two vectors.</span>
+    <span class="sd">r&quot;&quot;&quot;Returns the unit vector normal to two vectors.</span>
 
 <span class="sd">    .. math::</span>
 
@@ -536,14 +533,19 @@
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="stp"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.stp">[docs]</a><span class="k">def</span> <span class="nf">stp</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">,</span> <span class="n">vec3</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Takes the scalar triple product of three vectors.</span>
+    <span class="sd">r&quot;&quot;&quot;Takes the scalar triple product of three vectors.</span>
 
-<span class="sd">    :Returns: v3 . (v1 x v2)</span>
+<span class="sd">    Returns the volume *V* of the parallel epiped spanned by the three</span>
+<span class="sd">    vectors</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec3</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="dihedral"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.dihedral">[docs]</a><span class="k">def</span> <span class="nf">dihedral</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the dihedral angle in radians between vectors connecting A,B,C,D.</span>
+    <span class="sd">r&quot;&quot;&quot;Returns the dihedral angle in radians between vectors connecting A,B,C,D.</span>
 
 <span class="sd">    The dihedral measures the rotation around bc::</span>
 
@@ -554,9 +556,9 @@
 <span class="sd">                C----&gt;D</span>
 <span class="sd">                  cd</span>
 
-<span class="sd">    The dihedral angle is -pi &lt;= x &lt;= pi.</span>
+<span class="sd">    The dihedral angle is restricted to the range -π &lt;= x &lt;= π.</span>
 
-<span class="sd">    .. versionadded:: 0.7.8</span>
+<span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">normal</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">),</span> <span class="n">normal</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">))</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="k">if</span> <span class="n">stp</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="o">-</span><span class="n">x</span><span class="p">)</span>
@@ -565,26 +567,43 @@
 <span class="c"># String functions</span>
 <span class="c"># ----------------</span>
 
-<span class="c"># TODO: make it work for non-default charge state amino acids.</span>
-<span class="c">#: translation table for 1-letter codes --&gt; 3-letter codes</span>
-<span class="c">#: .. Note: This does not work for HISB and non-default charge state aa!</span></div>
-<span class="n">amino_acid_codes</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;A&#39;</span><span class="p">:</span><span class="s">&#39;ALA&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">:</span><span class="s">&#39;CYS&#39;</span><span class="p">,</span> <span class="s">&#39;D&#39;</span><span class="p">:</span><span class="s">&#39;ASP&#39;</span><span class="p">,</span> <span class="s">&#39;E&#39;</span><span class="p">:</span><span class="s">&#39;GLU&#39;</span><span class="p">,</span>
-                    <span class="s">&#39;F&#39;</span><span class="p">:</span><span class="s">&#39;PHE&#39;</span><span class="p">,</span> <span class="s">&#39;G&#39;</span><span class="p">:</span><span class="s">&#39;GLY&#39;</span><span class="p">,</span> <span class="s">&#39;H&#39;</span><span class="p">:</span><span class="s">&#39;HIS&#39;</span><span class="p">,</span> <span class="s">&#39;I&#39;</span><span class="p">:</span><span class="s">&#39;ILE&#39;</span><span class="p">,</span>
-                    <span class="s">&#39;K&#39;</span><span class="p">:</span><span class="s">&#39;LYS&#39;</span><span class="p">,</span> <span class="s">&#39;L&#39;</span><span class="p">:</span><span class="s">&#39;LEU&#39;</span><span class="p">,</span> <span class="s">&#39;M&#39;</span><span class="p">:</span><span class="s">&#39;MET&#39;</span><span class="p">,</span> <span class="s">&#39;N&#39;</span><span class="p">:</span><span class="s">&#39;ASN&#39;</span><span class="p">,</span>
-                    <span class="s">&#39;P&#39;</span><span class="p">:</span><span class="s">&#39;PRO&#39;</span><span class="p">,</span> <span class="s">&#39;Q&#39;</span><span class="p">:</span><span class="s">&#39;GLN&#39;</span><span class="p">,</span> <span class="s">&#39;R&#39;</span><span class="p">:</span><span class="s">&#39;ARG&#39;</span><span class="p">,</span> <span class="s">&#39;S&#39;</span><span class="p">:</span><span class="s">&#39;SER&#39;</span><span class="p">,</span>
-                    <span class="s">&#39;T&#39;</span><span class="p">:</span><span class="s">&#39;THR&#39;</span><span class="p">,</span> <span class="s">&#39;V&#39;</span><span class="p">:</span><span class="s">&#39;VAL&#39;</span><span class="p">,</span> <span class="s">&#39;W&#39;</span><span class="p">:</span><span class="s">&#39;TRP&#39;</span><span class="p">,</span> <span class="s">&#39;Y&#39;</span><span class="p">:</span><span class="s">&#39;TYR&#39;</span><span class="p">}</span>
-<span class="n">inverse_aa_codes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">three</span><span class="p">,</span> <span class="n">one</span><span class="p">)</span> <span class="k">for</span> <span class="n">one</span><span class="p">,</span><span class="n">three</span> <span class="ow">in</span> <span class="n">amino_acid_codes</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+<span class="c">#: translation table for 3-letter codes --&gt; 1-letter codes</span>
+<span class="c">#: .. SeeAlso:: :data:`alternative_inverse_aa_codes`</span></div>
+<span class="n">canonical_inverse_aa_codes</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;ALA&#39;</span><span class="p">:</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;CYS&#39;</span><span class="p">:</span><span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;ASP&#39;</span><span class="p">:</span><span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;GLU&#39;</span><span class="p">:</span><span class="s">&#39;E&#39;</span><span class="p">,</span>
+                              <span class="s">&#39;PHE&#39;</span><span class="p">:</span><span class="s">&#39;F&#39;</span><span class="p">,</span> <span class="s">&#39;GLY&#39;</span><span class="p">:</span><span class="s">&#39;G&#39;</span><span class="p">,</span> <span class="s">&#39;HIS&#39;</span><span class="p">:</span><span class="s">&#39;H&#39;</span><span class="p">,</span> <span class="s">&#39;ILE&#39;</span><span class="p">:</span><span class="s">&#39;I&#39;</span><span class="p">,</span>
+                              <span class="s">&#39;LYS&#39;</span><span class="p">:</span><span class="s">&#39;K&#39;</span><span class="p">,</span> <span class="s">&#39;LEU&#39;</span><span class="p">:</span><span class="s">&#39;L&#39;</span><span class="p">,</span> <span class="s">&#39;MET&#39;</span><span class="p">:</span><span class="s">&#39;M&#39;</span><span class="p">,</span> <span class="s">&#39;ASN&#39;</span><span class="p">:</span><span class="s">&#39;N&#39;</span><span class="p">,</span>
+                              <span class="s">&#39;PRO&#39;</span><span class="p">:</span><span class="s">&#39;P&#39;</span><span class="p">,</span> <span class="s">&#39;GLN&#39;</span><span class="p">:</span><span class="s">&#39;Q&#39;</span><span class="p">,</span> <span class="s">&#39;ARG&#39;</span><span class="p">:</span><span class="s">&#39;R&#39;</span><span class="p">,</span> <span class="s">&#39;SER&#39;</span><span class="p">:</span><span class="s">&#39;S&#39;</span><span class="p">,</span>
+                              <span class="s">&#39;THR&#39;</span><span class="p">:</span><span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="s">&#39;VAL&#39;</span><span class="p">:</span><span class="s">&#39;V&#39;</span><span class="p">,</span> <span class="s">&#39;TRP&#39;</span><span class="p">:</span><span class="s">&#39;W&#39;</span><span class="p">,</span> <span class="s">&#39;TYR&#39;</span><span class="p">:</span><span class="s">&#39;Y&#39;</span><span class="p">}</span>
+<span class="c">#: translation table for 1-letter codes --&gt; *canonical* 3-letter codes.</span>
+<span class="c">#: The table is used for :func:`convert_aa_code`.</span>
+<span class="n">amino_acid_codes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">one</span><span class="p">,</span> <span class="n">three</span><span class="p">)</span> <span class="k">for</span> <span class="n">three</span><span class="p">,</span><span class="n">one</span> <span class="ow">in</span> <span class="n">canonical_inverse_aa_codes</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+<span class="c">#: non-default charge state amino acids or special charge state descriptions</span>
+<span class="c">#: (Not fully synchronized with :class:`MDAnalysis.core.Selection.ProteinSelection`.)</span>
+<span class="n">alternative_inverse_aa_codes</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;HISA&#39;</span><span class="p">:</span><span class="s">&#39;H&#39;</span><span class="p">,</span> <span class="s">&#39;HISB&#39;</span><span class="p">:</span><span class="s">&#39;H&#39;</span><span class="p">,</span> <span class="s">&#39;HSE&#39;</span><span class="p">:</span><span class="s">&#39;H&#39;</span><span class="p">,</span> <span class="s">&#39;HSD&#39;</span><span class="p">:</span><span class="s">&#39;H&#39;</span><span class="p">,</span> <span class="s">&#39;HID&#39;</span><span class="p">:</span><span class="s">&#39;H&#39;</span><span class="p">,</span> <span class="s">&#39;HIE&#39;</span><span class="p">:</span><span class="s">&#39;H&#39;</span><span class="p">,</span> <span class="s">&#39;HIS1&#39;</span><span class="p">:</span><span class="s">&#39;H&#39;</span><span class="p">,</span> <span class="s">&#39;HIS2&#39;</span><span class="p">:</span><span class="s">&#39;H&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;ASPH&#39;</span><span class="p">:</span> <span class="s">&#39;D&#39;</span><span class="p">,</span> <span class="s">&#39;ASH&#39;</span><span class="p">:</span> <span class="s">&#39;D&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;GLUH&#39;</span><span class="p">:</span> <span class="s">&#39;E&#39;</span><span class="p">,</span> <span class="s">&#39;GLH&#39;</span><span class="p">:</span> <span class="s">&#39;E&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;LYSH&#39;</span><span class="p">:</span> <span class="s">&#39;K&#39;</span><span class="p">,</span> <span class="s">&#39;LYN&#39;</span><span class="p">:</span> <span class="s">&#39;K&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;ARGN&#39;</span><span class="p">:</span> <span class="s">&#39;R&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;CYSH&#39;</span><span class="p">:</span><span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;CYS1&#39;</span><span class="p">:</span><span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;CYS2&#39;</span><span class="p">:</span><span class="s">&#39;C&#39;</span><span class="p">}</span>
+<span class="c">#: lookup table from 3/4 letter resnames to 1-letter codes. Note that non-standard residue names</span>
+<span class="c">#: for tautomers or different protonation states such as HSE are converted to canonical 1-letter codes (&quot;H&quot;).</span>
+<span class="c">#: The table is used for :func:`convert_aa_code`.</span>
+<span class="c">#: .. SeeAlso:: :data:`canonical_inverse_aa_codes` and :data:`alternative_inverse_aa_codes`</span>
+<span class="n">inverse_aa_codes</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">inverse_aa_codes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">canonical_inverse_aa_codes</span><span class="p">)</span>
+<span class="n">inverse_aa_codes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">alternative_inverse_aa_codes</span><span class="p">)</span>
 
-<span class="c"># from GromacsWrapper utilities</span>
 <div class="viewcode-block" id="convert_aa_code"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.convert_aa_code">[docs]</a><span class="k">def</span> <span class="nf">convert_aa_code</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Converts between 3-letter and 1-letter amino acid codes.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Converts between 3-letter and 1-letter amino acid codes.</span>
+
+<span class="sd">    .. SeeAlso:: Data are defined in :data:`amino_acid_codes` and :data:`inverse_aa_codes`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">amino_acid_codes</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">inverse_aa_codes</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Can only convert 1-letter or 3-letter amino acid codes, &quot;</span>
-                         <span class="s">&quot;not </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;No conversion for {} found (1 letter -&gt; 3 letter or 3/4 letter -&gt; 1 letter)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
 
 <span class="c">#: Regular expression to match and parse a residue-atom selection; will match</span>
@@ -665,7 +684,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -676,7 +695,7 @@
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

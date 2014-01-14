@@ -34,7 +34,45 @@ static void minimum_image(double *x, float *box, float *inverse_box)
         }
     }
 }
+static void minimum_image_triclinic(double *dx, coordinate* box, float* box_half)
+{
+  // Minimum image convention for triclinic systems, modelled after domain.cpp in LAMMPS
+  // Assumes that there is a maximum separation of 1 box length (enforced in dist functions
+  // by moving all particles to inside the box before calculating separations)
+  // Requires a box 
+  // Assumes box having zero values for box[0][1], box[0][2] and box [1][2]
 
+  // z
+  if (fabs(dx[2]) > box_half[2]) {
+    if (dx[2] < 0.0 ) {
+      dx[2] += box[2][2];
+      dx[1] += box[2][1];
+      dx[0] += box[2][0];
+    } else {
+      dx[2] -= box[2][2];
+      dx[1] -= box[2][1];
+      dx[0] -= box[2][0];
+    }
+  }
+  // y
+  if (fabs(dx[1]) > box_half[1]) {
+    if (dx[1] < 0.0) {
+      dx[1] += box[1][1];
+      dx[0] += box[1][0];
+    } else {
+      dx[1] -= box[1][1];
+      dx[0] -= box[1][0];
+    }
+  }
+  // x
+  if ( fabs(dx[0]) > box_half[0]) {
+    if (dx[0] < 0.0) {
+      dx[0] += box[0][0];
+    } else {
+      dx[0] -= box[0][0];
+    }
+  }
+}
 static void calc_distance_array(coordinate* ref, int numref, coordinate* conf, int numconf, float* box, double* distances)
 {
 	int i, j;
@@ -121,6 +159,218 @@ static void calc_self_distance_array_noPBC(coordinate* ref, int numref, double* 
 			distpos += 1;
 		}
 	}
+}
+
+static void coord_transform(coordinate* coords, int numCoords, coordinate* box)
+{
+  int i, j, k;
+  float new[3];
+  // Matrix multiplication inCoords * box = outCoords  
+  // Multiplication done in place using temp array 'new'
+  // Used to transform coordinates to/from S/R space in trilinic boxes
+  for (i=0; i < numCoords; i++){
+    new[0] = 0.0;
+    new[1] = 0.0;
+    new[2] = 0.0;    
+    for (j=0; j < 3; j++){
+      for (k=0; k < 3; k++){
+        new[j] += coords[i][k] * box[k][j];
+      }
+    }
+    coords[i][0] = new[0];
+    coords[i][1] = new[1];
+    coords[i][2] = new[2];
+  }
+}
+static void triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse){
+  int i, s;
+  // Moves all coordinates to within the box boundaries for a triclinic box
+  // Assumes box having zero values for box[0][1], box[0][2] and box [1][2]
+  for (i=0; i < numcoords; i++){
+    // z
+    s = floor(coords[i][2] * box_inverse[2]);
+    coords[i][2] -= s * box[2][2];
+    coords[i][1] -= s * box[2][1];
+    coords[i][0] -= s * box[2][0];
+    // y
+    s = floor(coords[i][1] * box_inverse[1]);
+    coords[i][1] -= s * box[1][1];
+    coords[i][0] -= s * box[1][0];
+    // x
+    s = floor(coords[i][0] * box_inverse[0]);
+    coords[i][0] -= s * box[0][0];
+  }
+}
+static void calc_distance_array_triclinic(coordinate* ref, int numref, coordinate* conf, int numconf, coordinate* box, double* distances)
+{
+  int i, j;
+  double dx[3];
+  float box_half[3], box_inverse[3];
+  double rsq;
+  
+  box_half[0] = 0.5 * box[0][0];
+  box_half[1] = 0.5 * box[1][1];
+  box_half[2] = 0.5 * box[2][2];
+
+  box_inverse[0] = 1.0 / box[0][0];
+  box_inverse[1] = 1.0 / box[1][1];
+  box_inverse[2] = 1.0 / box[2][2];
+  // Move coords to inside box
+  triclinic_pbc(ref, numref, box, box_inverse);
+  triclinic_pbc(conf, numconf, box, box_inverse);
+
+  for (i=0; i < numref; i++){
+    for (j=0; j < numconf; j++){
+      dx[0] = conf[j][0] - ref[i][0];
+      dx[1] = conf[j][1] - ref[i][1];
+      dx[2] = conf[j][2] - ref[i][2];
+      minimum_image_triclinic(dx, box, box_half);
+      rsq = (dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]);
+      *(distances + i*numconf + j) = sqrt(rsq);
+    }
+  }
+}
+static void calc_self_distance_array_triclinic(coordinate* ref, int numref, coordinate* box, double *distances, int distnum)
+{
+  int i, j, distpos;
+  double dx[3];
+  double rsq;
+  float box_half[3], box_inverse[3];
+
+  box_half[0] = 0.5 * box[0][0];
+  box_half[1] = 0.5 * box[1][1];
+  box_half[2] = 0.5 * box[2][2];
+
+  box_inverse[0] = 1.0 / box[0][0];
+  box_inverse[1] = 1.0 / box[1][1];
+  box_inverse[2] = 1.0 / box[2][2];
+
+  triclinic_pbc(ref, numref, box, box_inverse);
+
+  distpos = 0;
+  for (i=0; i < numref; i++){
+    for (j=i+1; j < numref; j++){
+      dx[0] = ref[j][0] - ref[i][0];
+      dx[1] = ref[j][1] - ref[i][1];
+      dx[2] = ref[j][2] - ref[i][2];
+      minimum_image_triclinic(dx, box, box_half);
+      rsq = (dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]);
+      *(distances + distpos) = sqrt(rsq);
+      distpos += 1;
+    }
+  }
+}
+
+static void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom, float* box, double* distances)
+{
+  int i;
+  double dx[3];
+  float inverse_box[3];
+  double rsq;
+
+  inverse_box[0] = 1.0/box[0];
+  inverse_box[1] = 1.0/box[1];
+  inverse_box[2] = 1.0/box[2];
+ 
+  for (i=0; i<numatom; i++) {
+    dx[0] = atom1[i][0] - atom2[i][0];
+    dx[1] = atom1[i][1] - atom2[i][1];
+    dx[2] = atom1[i][2] - atom2[i][2];
+    // PBC time!
+    minimum_image(dx, box, inverse_box);
+    rsq = (dx[0]*dx[0])+(dx[1]*dx[1])+(dx[2]*dx[2]);
+    *(distances+i) = sqrt(rsq);
+  }
+}
+
+static void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
+{
+  int i;
+  double dx[3];
+  double rsq;
+ 
+  for (i=0; i<numatom; i++) {
+    dx[0] = atom1[i][0] - atom2[i][0];
+    dx[1] = atom1[i][1] - atom2[i][1];
+    dx[2] = atom1[i][2] - atom2[i][2];
+    rsq = (dx[0]*dx[0])+(dx[1]*dx[1])+(dx[2]*dx[2]);
+    *(distances+i) = sqrt(rsq);
+  }
+}
+
+static void calc_angle(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, double* angles)
+{
+  int i;
+  double rji[3], rjk[3];
+  double x, y, xp[3];
+
+  for (i=0; i<numatom; i++) {
+    rji[0] = atom1[i][0] - atom2[i][0];
+    rji[1] = atom1[i][1] - atom2[i][1];
+    rji[2] = atom1[i][2] - atom2[i][2];
+
+    rjk[0] = atom3[i][0] - atom2[i][0];
+    rjk[1] = atom3[i][1] - atom2[i][1];
+    rjk[2] = atom3[i][2] - atom2[i][2];
+
+    x = rji[0]*rjk[0] + rji[1]*rjk[1] + rji[2]*rjk[2];
+
+    xp[0] = rji[1]*rjk[2] - rji[2]*rjk[1];
+    xp[1] =-rji[0]*rjk[2] + rji[2]*rjk[0];
+    xp[2] = rji[0]*rjk[1] - rji[1]*rjk[0];
+
+    y = sqrt(xp[0]*xp[0] + xp[1]*xp[1] + xp[2]*xp[2]);
+
+    *(angles+i) = atan2(y,x);
+  }
+}
+
+static void calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4,
+                             int numatom, double* angles)
+{
+  int i;
+  double va[3], vb[3], vc[3];
+  double n1[3], n2[3];
+  double xp[3];
+  double x, y;
+
+  for (i=0; i<numatom; i++) {
+    // connecting vectors between all 4 atoms: 1 -va-> 2 -vb-> 3 -vc-> 4
+    va[0] = atom2[i][0] - atom1[i][0];
+    va[1] = atom2[i][1] - atom1[i][1];
+    va[2] = atom2[i][2] - atom1[i][2];
+
+    vb[0] = atom3[i][0] - atom2[i][0];
+    vb[1] = atom3[i][1] - atom2[i][1];
+    vb[2] = atom3[i][2] - atom2[i][2];
+
+    vc[0] = atom4[i][0] - atom3[i][0];
+    vc[1] = atom4[i][1] - atom3[i][1];
+    vc[2] = atom4[i][2] - atom3[i][2];
+
+    //n1 is normal vector to -va, vb
+    //n2 is normal vector to -vb, vc
+    n1[0] =-va[1]*vb[2] + va[2]*vb[1];
+    n1[1] = va[0]*vb[2] - va[2]*vb[0];
+    n1[2] =-va[0]*vb[1] + va[1]*vb[0];
+
+    n2[0] =-vb[1]*vc[2] + vb[2]*vc[1];
+    n2[1] = vb[0]*vc[2] - vb[2]*vc[0];
+    n2[2] =-vb[0]*vc[1] + vb[1]*vc[0];
+
+    // x = dot(n1,n2) = cos theta
+    // y = norm(cross(n1,n2)) = sin theta
+    // tan theta = y/x
+    x = (n1[0]*n2[0] + n1[1]*n2[1] + n1[2]*n2[2]);
+
+    xp[0] = n1[1]*n2[2] - n1[2]*n2[1];
+    xp[1] =-n1[0]*n2[2] + n1[2]*n2[0];
+    xp[2] = n1[0]*n2[1] - n1[1]*n2[0];
+    y = sqrt(xp[0]*xp[0] + xp[1]*xp[1] + xp[2]*xp[2]);
+
+    *(angles + i) = atan2(y,x); //atan2 is better conditioned than acos
+  }
+
 }
 
 #endif

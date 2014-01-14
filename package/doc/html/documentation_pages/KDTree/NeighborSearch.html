@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>8.2. Fast atom neighbor lookup using a KD tree (implemented in C++) — MDAnalysis.KDTree.NeighborSearch &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    <title>8.2. Fast atom neighbor lookup using a KD tree (implemented in C++) — MDAnalysis.KDTree.NeighborSearch &mdash; MDAnalysis 0.8.0rc4 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0-dev',
+        VERSION:     '0.8.0rc4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0-dev documentation"
+          title="Search within MDAnalysis 0.8.0rc4 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../index.html" />
     <link rel="up" title="8. KDTree module" href="../KDTree_modules.html" />
     <link rel="prev" title="8.1. KDTree — MDAnalysis.KDTree.KDTree" href="KDTree.html" /> 
   </head>
@@ -47,7 +45,7 @@
         <li class="right" >
           <a href="KDTree.html" title="8.1. KDTree — MDAnalysis.KDTree.KDTree"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
           <li><a href="../KDTree_modules.html" accesskey="U">8. KDTree module</a> &raquo;</li> 
       </ul>
     </div>
@@ -58,7 +56,7 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="KDTree.html"
-                        title="previous chapter">8.1. KDTree &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></tt></a></p>
+                        title="previous chapter">8.1. KDTree &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/KDTree/NeighborSearch.txt"
@@ -120,20 +118,18 @@ a fixed radius of each other.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>atom_list</em></dt>
-<dd><p class="first last">list of atoms (<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>) or a
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>.
-This list is used in the queries. It can contain atoms from different structures.</p>
-</dd>
-<dt><em>bucket_size</em></dt>
-<dd><p class="first last">bucket size of KD tree. You can play around with this to optimize speed if you feel like it.</p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt><em>atom_list</em></dt>
+<dd>list of atoms (<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>) or a
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>.
+This list is used in the queries. It can contain atoms from different structures.</dd>
+<dt><em>bucket_size</em></dt>
+<dd>bucket size of KD tree. You can play around with this to optimize speed if you feel like it.</dd>
+</dl>
 <dl class="method">
 <dt id="MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch.search">
 <tt class="descname">search</tt><big>(</big><em>center</em>, <em>radius</em>, <em>level='A'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/NeighborSearch.html#AtomNeighborSearch.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.AtomNeighborSearch.search" title="Permalink to this definition">¶</a></dt>
@@ -144,7 +140,7 @@ that have at least one atom within <em>radius</em> of <em>center</em>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>center</em></dt>
 <dd><p class="first last">numpy array of shape 3  (cartesian coordinates)</p>
 </dd>
@@ -179,7 +175,7 @@ functions.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>radius</em></dt>
 <dd><p class="first last">float</p>
 </dd>
@@ -207,7 +203,7 @@ AtomNeighborSearch and B are the other atoms.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>other</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or list of <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances</p>
 </dd>
@@ -241,19 +237,17 @@ a fixed radius of each other.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>coordinates</em></dt>
-<dd><p class="first last">list of N coordinates (Nx3 numpy array)</p>
-</dd>
-<dt><em>bucket_size</em></dt>
-<dd><p class="first last">bucket size of KD tree. You can play around with this to
-optimize speed if you feel like it.</p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt><em>coordinates</em></dt>
+<dd>list of N coordinates (Nx3 numpy array)</dd>
+<dt><em>bucket_size</em></dt>
+<dd>bucket size of KD tree. You can play around with this to
+optimize speed if you feel like it.</dd>
+</dl>
 <dl class="method">
 <dt id="MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search">
 <tt class="descname">search</tt><big>(</big><em>center</em>, <em>radius</em>, <em>distances=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/NeighborSearch.html#CoordinateNeighborSearch.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.NeighborSearch.CoordinateNeighborSearch.search" title="Permalink to this definition">¶</a></dt>
@@ -264,7 +258,7 @@ one atom within <em>radius</em> of <em>center</em>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first last">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last">
 <li><dl class="first docutils">
 <dt>center</dt>
 <dd><p class="first last">numpy array</p>
@@ -299,7 +293,7 @@ one atom within <em>radius</em> of <em>center</em>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>radius</em></dt>
 <dd><p class="first last">float</p>
 </dd>
@@ -326,7 +320,7 @@ are the centers.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>centers</em></dt>
 <dd><p class="first last">Mx3 numpy array of M centers</p>
 </dd>
@@ -362,7 +356,7 @@ are the centers.</p>
         <li class="right" >
           <a href="KDTree.html" title="8.1. KDTree — MDAnalysis.KDTree.KDTree"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
           <li><a href="../KDTree_modules.html" >8. KDTree module</a> &raquo;</li> 
       </ul>
     </div>
@@ -372,7 +366,7 @@ are the centers.</p>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

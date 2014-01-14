@@ -118,13 +118,13 @@ class PrimitivePDBParser(object):
             guessed_bonds = guess_bonds(self.structure["_atoms"], np.array(primitive_pdb_reader.ts))
 
         #
-        # Mapping between the atom array indicies and atom ids in the original PDB file
+        # Mapping between the atom array indicies a.number and atom ids (serial) in the original PDB file
         #
-        mapping =  dict([(a.serial, i+1) for i, a in  enumerate(self.structure["_atoms"])])
+        mapping =  dict((a.serial, a.number) for a in  self.structure["_atoms"])
 
         bonds = set()
         with open(filename , "r") as filename:
-            lines = [(num, line[6:].split()) for num,line in enumerate(filename) if line[:6] == "CONECT"]
+            lines = ((num, line[6:].split()) for num,line in enumerate(filename) if line[:6] == "CONECT")
             for num, bond in lines:
                 atom, atoms = int(bond[0]) , map(int,bond[1:])
                 for a in atoms:

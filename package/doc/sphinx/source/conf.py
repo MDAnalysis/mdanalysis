@@ -55,8 +55,10 @@ master_doc = 'index'
 # General information about the project.
 # (take the list from AUTHORS)
 authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein"""
 project = u'MDAnalysis'

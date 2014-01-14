@@ -23,11 +23,11 @@ Test cases for MDAnalysis
 The test cases and the test data are kept in this package,
 MDAnalysisTests. They will only run when MDAnalysis is also
 installed. MDAnalysis and MDAnalysisTests *must* have the same release
-number, which can be found :data:`MDAnalysis.__version__` and
+number, which can be found in :data:`MDAnalysis.__version__` and
 :data:`MDAnalysisTests.__version__`. If the versions don't match then
 an :exc:`ImportError` is raised.
 
-We are using the NumPy_ testing frame work; thus, numpy *must* be
+We are using the NumPy_ testing frame work; thus, :mod:`numpy` *must* be
 installed for the tests to run at all.
 
 Run all the tests with
@@ -91,7 +91,7 @@ examples in the ``MDAnalysisTests`` directory.
 The `SciPy testing guidelines`_ are a good howto for writing test cases,
 especially as we are directly using this framework (imported from numpy).
 
-
+.. _NumPy: http://www.numpy.org/
 .. _nose:
    http://somethingaboutorange.com/mrl/projects/nose/0.11.3/index.html
 .. _nose commandline options:
@@ -102,7 +102,7 @@ especially as we are directly using this framework (imported from numpy).
 .. _Gromacs: http://www.gromacs.org
 """
 
-__version__ = "0.8.0-dev"   # keep in sync with RELEASE in setup.py
+__version__ = "0.8.0rc4"   # keep in sync with RELEASE in setup.py
 
 try:
     from numpy.testing import Tester
@@ -125,7 +125,10 @@ except ImportError:
     raise ImportError("MDAnalysis release %s must be installed to run the tests, not %s" %
                       (__version__, MDAnalysis.__version__))
 
+import MDAnalysis.core.util
+
 def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionError):
+    """If decorated function raises exception *exc_type* skip test, else raise AssertionError."""
     def knownfailure_decorator(f):
         def inner(*args, **kwargs):
             try:
@@ -136,3 +139,27 @@ def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionE
                 raise AssertionError('Failure expected')
         return nose.tools.make_decorator(f)(inner)
     return knownfailure_decorator
+
+def executable_not_found(*args):
+    """Return ``True`` if not at least one of the executables in args can be found.
+
+    ``False`` otherwise (i.e. at least one was found).
+    """
+    for name in args:
+        found = MDAnalysis.core.util.which(name) is not None
+        if found:
+            break
+    return not found
+
+def executable_not_found_runtime(*args):
+    """Factory function that returns a :func:`executable_not_found`.
+
+    The returned function has its input set to *args* but is only
+    evaluated at run time.
+
+    To be used as the argument of::
+
+      @dec.skipif(executable_not_found_runtime("binary_name"), msg="skip test because binary_name not available")
+      ...
+    """
+    return lambda : executable_not_found(*args)

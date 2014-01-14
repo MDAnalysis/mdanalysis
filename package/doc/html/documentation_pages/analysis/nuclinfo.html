@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.3.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    <title>3.3.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo &mdash; MDAnalysis 0.8.0rc4 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0-dev',
+        VERSION:     '0.8.0rc4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0-dev documentation"
+          title="Search within MDAnalysis 0.8.0rc4 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.3.2. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.x3dna" href="x3dna.html" />
     <link rel="prev" title="3.2.2. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" /> 
@@ -51,7 +49,7 @@
         <li class="right" >
           <a href="leaflet.html" title="3.2.2. Leaflet identification — MDAnalysis.analysis.leaflet"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -72,10 +70,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="leaflet.html"
-                        title="previous chapter">3.2.2. Leaflet identification &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
+                        title="previous chapter">3.2.2. Leaflet identification &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="x3dna.html"
-                        title="next chapter">3.3.2. Generation and Analysis of X3DNA helicoidal parameter profiles &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.x3dna</span></tt></a></p>
+                        title="next chapter">3.3.2. Generation and Analysis of X3DNA helicoidal parameter profiles &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.x3dna</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/analysis/nuclinfo.txt"
@@ -124,7 +122,7 @@ particular</p>
 <li>AS or CP phase angles,</li>
 <li>Watson-Crick N1-N3 distances, C2-O2 distances, N6-O4 distances, O6-N4 distances.</li>
 </ul>
-<p>For applications of this kind of analysis see <a class="reference internal" href="#denning2011">[Denning2011]</a> and <a class="reference internal" href="#denning2012">[Denning2012]</a>.</p>
+<p>For applications of this kind of analysis see <a class="reference internal" href="#denning2011" id="id1">[Denning2011]</a> and <a class="reference internal" href="#denning2012" id="id2">[Denning2012]</a>.</p>
 <p>All functions take a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> as an argument
 together with further parameters that specify the base or bases in question. Angles are 
 in degrees. The functions use standard CHARMM names for nucleic acids and atom names.</p>
@@ -158,7 +156,7 @@ computed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
 </dd>
@@ -180,8 +178,9 @@ computed.</p>
 </tbody>
 </table>
 <p>NOTE: if failure occurs be sure to check the segment identification</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -194,7 +193,7 @@ computed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
 </dd>
@@ -216,8 +215,9 @@ computed.</p>
 </tbody>
 </table>
 <p>NOTE: if failure occurs be sure to check the segment identification</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -230,7 +230,7 @@ computed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em> </dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory       <em>i</em></p>
 </dd>
@@ -252,8 +252,9 @@ computed.</p>
 </tbody>
 </table>
 <p>NOTE: if failure occurs be sure to check the segment identification</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 </div>
@@ -269,7 +270,7 @@ using the CP method</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em> </dt>
 <dd><blockquote class="first">
 <div><p><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
@@ -288,8 +289,9 @@ using the CP method</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -301,7 +303,7 @@ using the CP method</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em> </dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
 </dd>
@@ -316,8 +318,9 @@ using the CP method</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 </div>
@@ -332,7 +335,7 @@ using the CP method</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em> </dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
 </dd>
@@ -359,7 +362,7 @@ using the CP method</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
 </dd>
@@ -374,8 +377,9 @@ using the CP method</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -387,7 +391,7 @@ using the CP method</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em> </dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
 </dd>
@@ -402,8 +406,9 @@ using the CP method</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -416,7 +421,7 @@ using the CP method</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em> </dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
 </dd>
@@ -431,8 +436,9 @@ using the CP method</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -444,7 +450,7 @@ using the CP method</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em> </dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
 </dd>
@@ -459,8 +465,9 @@ using the CP method</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -472,7 +479,7 @@ using the CP method</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em> </dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
 </dd>
@@ -487,8 +494,9 @@ using the CP method</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -500,7 +508,7 @@ using the CP method</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em> </dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
 </dd>
@@ -515,17 +523,18 @@ using the CP method</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.tors_chi">
 <tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">tors_chi</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_chi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_chi" title="Permalink to this definition">¶</a></dt>
-<dd><p>chi nucleic acid dihedral
-The dihedral is computed based on position atoms for resid <em>i</em></p>
-<blockquote>
-<div><table class="docutils field-list" frame="void" rules="none">
+<dd><dl class="docutils">
+<dt>chi nucleic acid dihedral</dt>
+<dd><p class="first">The dihedral is computed based on position atoms for resid <em>i</em></p>
+<table class="last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -544,19 +553,28 @@ The dihedral is computed based on position atoms for resid <em>i</em></p>
 </tr>
 </tbody>
 </table>
-</div></blockquote>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.hydroxyl">
 <tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">hydroxyl</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#hydroxyl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.hydroxyl" title="Permalink to this definition">¶</a></dt>
-<dd><p>2-hydroxyl dihedral. Useful only for RNA calculations. 
-:Note: This dihedral calculation will only work if using atom names</p>
-<blockquote>
-<div><p>as documented by charmm force field parameters.</p>
-<table class="docutils field-list" frame="void" rules="none">
+<dd><dl class="docutils">
+<dt>2-hydroxyl dihedral. Useful only for RNA calculations. </dt>
+<dd><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body">This dihedral calculation will only work if using atom names</td>
+</tr>
+</tbody>
+</table>
+<p>as documented by charmm force field parameters.</p>
+<table class="last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -575,9 +593,11 @@ The dihedral is computed based on position atoms for resid <em>i</em></p>
 </tr>
 </tbody>
 </table>
-</div></blockquote>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 </div>
@@ -604,7 +624,7 @@ The dihedral is computed based on position atoms for resid <em>i</em></p>
         <li class="right" >
           <a href="leaflet.html" title="3.2.2. Leaflet identification — MDAnalysis.analysis.leaflet"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -614,7 +634,7 @@ The dihedral is computed based on position atoms for resid <em>i</em></p>
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

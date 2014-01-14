@@ -136,6 +136,11 @@ stored as :attr:`MDAnalysis.AtomGroup.Universe._psf`.
    provided here is solely for developers who need to work with the
    existing parsers.
 
+.. SeeAlso:: `Topology Data Structures Wiki page`_
+
+.. _`Topology Data Structures Wiki page`:
+   http://code.google.com/p/mdanalysis/wiki/TopologyDataStructures
+
 The format of the individual keys is the following (see
 :mod:`PSFParser` for a reference implementation):
 

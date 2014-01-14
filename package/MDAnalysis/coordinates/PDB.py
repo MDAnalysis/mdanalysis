@@ -508,32 +508,31 @@ class PrimitivePDBReader(base.Reader):
 
         with util.openany(filename, 'r') as pdbfile:
             for i, line in enumerate(pdbfile):
+                line = line.strip() # Remove extra spaces
+                if len(line) == 0: # Skip line if empty
+                    continue
+                record = line[:6].strip()
                 def _c(start, stop, typeclass=float):
                     return self._col(line, start, stop, typeclass=typeclass)
-                if line[:3] == 'END':
+                if record == 'END':
                     break
-                elif line[:6] == 'CRYST1':
+                elif record == 'CRYST1':
                     A, B, C = _c(7, 15), _c(16, 24), _c(25, 33)
                     alpha, beta, gamma = _c(34, 40), _c(41, 47), _c(48, 54)
                     unitcell[:] = A, B, C, alpha, beta, gamma
                     continue
-                elif line[:6] == 'HEADER':
+                elif record == 'HEADER':
                     header = line[6:-1]
                     continue
-                elif line[:6] == 'COMPND':
+                elif record == 'COMPND':
                     l = line[6:-1]
                     compound.append(l)
                     continue
-                elif line[:6] == 'REMARK':
+                elif record == 'REMARK':
                     content = line[6:-1]
                     remarks.append(content)
-                elif line[:5] == 'MODEL':
-                    frameno = int(line.split()[1])
-                    if frameno == 0:
-                        # detect if MODEL starts at 0 or at 1; switch model_offset appropriately
-                        # Will break/lose frames if MODELs are nonconsecutive in the PDB file...
-                        self.model_offset = 1
-                    frames[frameno + self.model_offset] = i # 1-based indexing
+                elif record == 'MODEL':
+                    frames[len(frames) + 1] = i  # 1-based indexing
                 elif line[:6] in ('ATOM  ', 'HETATM'):
                     # skip atom/hetatm for frames other than the first - they will be read in when next() is called on the trajectory reader
                     if len(frames) > 1:

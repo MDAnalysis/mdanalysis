@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.core.Timeseries &mdash; MDAnalysis 0.8.0-dev documentation</title>
+    <title>MDAnalysis.core.Timeseries &mdash; MDAnalysis 0.8.0rc4 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0-dev',
+        VERSION:     '0.8.0rc4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0-dev documentation"
+          title="Search within MDAnalysis 0.8.0rc4 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -43,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -370,39 +368,39 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">mass</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="WaterDipole"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.WaterDipole">[docs]</a><span class="k">class</span> <span class="nc">WaterDipole</span><span class="p">(</span><span class="n">Timeseries</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Create a Timeseries that returns a timeseries for the bisector vector of a 3-site water</span>
+    <span class="sd">r&#39;&#39;&#39;Create a Timeseries that returns a timeseries for the bisector vector of a 3-site water</span>
 
 <span class="sd">           d = WaterDipole(atoms)</span>
-
-<span class="sd">        The vector, multiplied by the partial charge on the oxygen</span>
-<span class="sd">        atom (e.g. *q* = -0.0.834 for TIP3P water), gives the actual</span>
-<span class="sd">        dipole moment.</span>
 
 <span class="sd">        *atoms* must contain 3 :class:`~MDAnalysis.core.AtomGroup.Atom`</span>
 <span class="sd">        objects, either as a list or an</span>
 <span class="sd">        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`; the first one *must* be</span>
-<span class="sd">        the oxygen, the other two are the hydrogens. The vector is calculated</span>
-<span class="sd">        from the positions of the oygen atom</span>
-<span class="sd">        (&lt;math&gt;\mathbf{x}_{\mathrm{O}}&lt;/math&gt;) and the two hydrogen atoms</span>
-<span class="sd">        (&lt;math&gt;\mathbf{x}_{\mathrm{H}_1}&lt;/math&gt;,</span>
-<span class="sd">        &lt;math&gt;\mathbf{x}_{\mathrm{H}_2}&lt;/math&gt;) as</span>
+<span class="sd">        the oxygen, the other two are the hydrogens.</span>
+
+<span class="sd">        The vector ``d``, multiplied by the partial charge on the oxygen atom</span>
+<span class="sd">        (e.g. *q* = -0.0.834 for TIP3P water), gives the actual dipole moment.</span>
+
+<span class="sd">        The vector is calculated from the positions of the oxygen atom</span>
+<span class="sd">        (:math:`\mathbf{x}_{\text{O}}`) and the two hydrogen atoms</span>
+<span class="sd">        (:math:`\mathbf{x}_{\text{H}_1}`, :math:`\mathbf{x}_{\text{H}_2}`) as</span>
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">           \mathbf{d} = \mathbf{x}_{\mathrm{O}} - \frac{1}{2}(\mathbf{x}_{\mathrm{H}_1} + \mathbf{x}_{\mathrm{H}_2})</span>
+<span class="sd">           \mathbf{d} = \mathbf{x}_{\text{O}} - \frac{1}{2}(\mathbf{x}_{\text{H}_1} + \mathbf{x}_{\text{H}_2})</span>
 
 <span class="sd">        and the dipole moment vector is</span>
 
 <span class="sd">         .. math::</span>
 
-<span class="sd">           \mathbf{\mu} = q_{\mathrm{O}} d</span>
+<span class="sd">           \boldsymbol{\mu} = q_{\text{O}} \mathbf{d}</span>
 
 <span class="sd">        .. Note::</span>
 
 <span class="sd">           This will only work for water models that have half of the oxygen</span>
-<span class="sd">           charge on each hydrogen. The vector &lt;math&gt;\mathbf{d}&lt;/math&gt; has the</span>
+<span class="sd">           charge on each hydrogen. The vector :math:`\mathbf{d}` has the</span>
 <span class="sd">           opposite direction of the dipole moment; multiplying with the oxygen</span>
-<span class="sd">           charge (&lt;math&gt;q_{\mathrm{O}}&lt;0&lt;/math&gt;!) will flip the direction.</span>
+<span class="sd">           charge (:math:`q_{\text{O}}&lt;0`) will flip the direction and produce</span>
+<span class="sd">           the correct orientation.</span>
 
 <span class="sd">           There are no sanity checks; *if the first atom in a water</span>
 <span class="sd">           molecule is not oxygen then results will be wrong.*</span>
@@ -428,7 +426,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -439,7 +437,7 @@
     Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

@@ -12,12 +12,14 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/13  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
-	  rmcgibbo, richardjgowers,  lennardvanderfeltz
+	  rmcgibbo, richardjgowers, lennardvanderfeltz, bernardin.alejandro
 
   * 0.8.0
 
   Enhancements
 
+  * MDAnalysis.analysis.contacts.ContactAnalysis1 run() method
+    now allows trajectory slicing (Issue 161)
   * Merge AtomGroups into a new Universe (Issue 157)
   * TPR parser (currently limited to versions 58, 73 and 83 of the
     Gromacs TPR format (Gromacs 4.0 to 4.6.1), see Issue 2)
@@ -46,6 +48,8 @@ The rules for this file:
     five-digit residue numbers
   * util.convert_aa_code() recognizes non-standard residue names such
     as HSE, GLUH, GLH, ...
+  * added new geometrics selections: sphlayer, sphzone, cylayer, cyzone
+  * added TopologyDict and TopologyGroup classes for bond analysis
 
   Changes
 
@@ -59,6 +63,8 @@ The rules for this file:
   * dependent on Biopython >= 1.59 (Issue 147)
   * Hydrogen bond analysis defaults to updating selection 1 and 2 for
     every timestep in order to avoid unexpected behavior (Issue 138)
+  * AtomGroup.velocities is now a (managed) attribute and not a method
+    anymore: replace 'ag.velocities()' with 'ag.velocities'
 
   Fixes
 

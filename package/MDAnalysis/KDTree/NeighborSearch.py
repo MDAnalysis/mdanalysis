@@ -78,6 +78,7 @@ class CoordinateNeighborSearch(object):
          *bucket_size*
             bucket size of KD tree. You can play around with this to
             optimize speed if you feel like it.
+
         """
         # to Nx3 array of type float (required for the C++ code)
         ## (also force a copy by default and make sure that the array order is compatible
@@ -174,6 +175,7 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
             This list is used in the queries. It can contain atoms from different structures.
           *bucket_size*
             bucket size of KD tree. You can play around with this to optimize speed if you feel like it.
+
         """
         self.atom_list=atom_list
         if not hasattr(atom_list,'coordinates'):

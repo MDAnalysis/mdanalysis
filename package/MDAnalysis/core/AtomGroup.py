@@ -266,7 +266,8 @@ class Atom(object):
     """
 
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
-                 "mass", "charge", "residue", "segment", "bonds", "__universe",
+                 "mass", "charge", "residue", "segment", "bonds", "angles", "torsions",
+                 "__universe",
                  "radius", "bfactor", "resnum", "serial")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
@@ -287,6 +288,8 @@ class Atom(object):
         self.bfactor = bfactor
         self.serial = serial
         self.bonds = []
+        self.angles = []
+        self.torsions = []
 
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
@@ -311,17 +314,22 @@ class Atom(object):
 
     @property
     def pos(self):
-        """
-        deprecated, use position,
-        get the Current cartesian coordinates of the atom.
+        """coordinates of the atom
+
+        Get the current cartesian coordinates of the atom (read-only).
+
+        .. deprecated:: 0.8
+           use :attr:`position`
         """
         return self.position
 
     @property
     def position(self):
-        """
+        """coordinates of the atom
+
         Get the current cartesian coordinates of the atom.
-        @return: a numpy 1x3 array
+
+        :Returns: a numpy 1x3 array
         """
         return self.universe.coord[self.number] # internal numbering starts at 0
 
@@ -717,6 +725,77 @@ class AtomGroup(object):
         """
         return numpy.array([s.name for s in self.segments])
 
+    @property
+    def bondDict(self):
+        """A :class:`MDAnalysis.topology.core.TopologyDict` of bonds
+        within this AtomGroup.
+
+        .. versionadded:: 0.8
+        """
+        if not 'bonds' in self.__cache:
+            from MDAnalysis.topology.core import TopologyDict
+            self.__cache['bonds'] = TopologyDict('bond', self._atoms)
+        return self.__cache['bonds']
+
+    @property
+    def angleDict(self):
+        """A :class:`MDAnalysis.topology.core.TopologyDict` of angles
+        within this AtomGroup.
+
+        .. versionadded:: 0.8
+        """
+        if not 'angles' in self.__cache:
+            from MDAnalysis.topology.core import TopologyDict
+            self.__cache['angles'] = TopologyDict('angle',self._atoms)
+        return self.__cache['angles']
+
+    @property
+    def torsionDict(self):
+        """A :class:`MDAnalysis.topology.core.TopologyDict` of angles
+        within this AtomGroup.
+
+        .. versionadded:: 0.8
+        """
+        if not 'torsions' in self.__cache:
+            from MDAnalysis.topology.core import TopologyDict
+            self.__cache['torsions'] = TopologyDict('torsion',self._atoms)
+        return self.__cache['torsions']
+
+    def numberOfBondTypes(self):
+        """Number of different bond types in this AtomGroup"""
+        return len(self.bondDict)
+    def numberOfAngleTypes(self):
+        """Number of different angle types in this AtomGroup"""
+        return len(self.angleDict)
+    def numberOfTorsionTypes(self):
+        """Number of different torsions types in this AtomGroup"""
+        return len(self.torsionDict)
+
+    def selectBonds(self, criteria):
+        """Select all of a given bond, angle or torsion type from the
+        AtomGroup.  This method makes use of the :class:`MDAnalysis.topology.core.TopologyDict`
+        instances for this AtomGroup.
+
+        Usage::
+          ag.selectBonds(criteria)
+
+        *criteria* must match a key from the appropriate TopologyDict,
+        viewable through the :meth:`MDAnalysis.topology.core.TopologyDict.keys` method.
+        These keys are a tuple of the atom types in the bond.
+
+        :Returns: a :class:`MDAnalysis.topology.core.TopologyGroup`
+
+        .. versionadded:: 0.8
+        """
+        if len(criteria) == 2 and criteria in self.bondDict:
+            return self.bondDict[criteria]
+        elif len(criteria) == 3 and criteria in self.angleDict:
+            return self.angleDict[criteria]
+        elif len(criteria) == 4 and criteria in self.torsionDict:
+            return self.torsionDict[criteria]
+        else:
+            raise SelectionError("No bond exists of type "+str(criteria))
+
     def masses(self):
         """Array of atomic masses (as defined in the topology)"""
         if not 'masses' in self.__cache:
@@ -739,18 +818,10 @@ class AtomGroup(object):
         """Array of atomic radii (as defined in the PQR file)"""
         return numpy.array([atom.radius for atom in self._atoms])
 
-    # TODO release 0.8: make this a method again (in MDAnalysis 0.8)
     @property
     def bfactors(self):
         """Crystallographic B-factors (from PDB) in A**2.
-
-        .. deprecated:: 0.8
-           This managed attribute will become a method in 0.8 in order to
-           provide a unified interface to querying properties:
-           :attr:`AtomGroup.bfactors` will become :meth:`AtomGroup.bfactors`
         """
-        warnings.warn("AtomGroup.bfactors will become AtomGroup.bfactors() in MDAnalysis 0.8",
-                      DeprecationWarning)
         return numpy.array([atom.bfactor for atom in self._atoms])
 
     def _set_attribute(self, groupname, name, value, **kwargs):
@@ -1335,8 +1406,8 @@ class AtomGroup(object):
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
 
-    def velocities(self, **kwargs):
-        """NumPy array of the velocities of the atoms in the group.
+    velocities = property(get_velocities, set_velocities, doc="""\
+        NumPy array of the velocities of the atoms in the group.
 
         If the trajectory does not contain velocity information then a
         :exc:`~MDAnalysis.NoDataError` is raised.
@@ -1345,14 +1416,9 @@ class AtomGroup(object):
         .. deprecated:: 0.7.6
            In 0.8 this will become an attribute! You can already use :meth:`get_velocities`
            and :meth:`set_velocities`.
-        """
-        warnings.warn("velocities() will become an attribute 'velocities' in 0.8",
-                      category=DeprecationWarning)
-        return self.get_velocities(**kwargs)
-
-    # TODO for 0.8
-    #velocities = property(get_velocities, set_velocities, doc="velocities of the atoms\n\n.. versionchanged:: 0.8")
-
+        .. versionchanged:: 0.8
+           Became an attribute.
+    """)
 
     def get_forces(self, ts=None, copy=False, dtype=numpy.float32):
         """
@@ -2386,7 +2452,7 @@ class Universe(object):
         .. versionchanged:: 0.7.4
            New *topology_format* and *format* parameters to override the file
            format detection.
-        """        
+        """
         from MDAnalysis.topology.core import get_parser_for, guess_format
         import MDAnalysis.core
 
@@ -2394,7 +2460,7 @@ class Universe(object):
         # attribute is also aliased as Universe.<EXT> where <EXT> is the
         # trajectory format type (i.e. the extension))
         self.__trajectory = None
-        
+
         kwargs.setdefault('coordinatefile', None)  # deprecated
         topology_format = kwargs.pop('topology_format', None)
         if kwargs.get('permissive', None) is None:
@@ -2403,8 +2469,8 @@ class Universe(object):
         if len(args) == 0:
             # create an empty universe
             self.atoms = AtomGroup([])
-            self.trajectory = None 
-            return 
+            self.trajectory = None
+            return
 
         try:
             topologyfile = args[0]
@@ -2412,7 +2478,7 @@ class Universe(object):
             raise ValueError("Universe requires at least a single topology or structure file.")
         # old behaviour (explicit coordfile) overrides new behaviour
         coordinatefile = args[1:] if kwargs['coordinatefile'] is None else kwargs['coordinatefile']
-        
+
         if len(args) == 1 and not coordinatefile:
             # special hacks to treat a coordinate file as a coordinate AND topology file
             # coordinatefile can be None or () (from an empty slice args[1:])
@@ -2462,7 +2528,16 @@ class Universe(object):
         # segment instant selectors
         self._build_segments()
 
-        #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
+        # Not sure what the best way to load angles and torsions into universe is, so it's here for now - RG
+        if "_angles" in struc:
+            angles = struc["_angles"]
+        else:
+            angles = None
+        if "_dihe" in struc:
+            torsions = struc["_dihe"]
+        else:
+            torsions = None
+        MDAnalysis.topology.core.build_bondlists(self.atoms, angles=angles, torsions=torsions)
         # Let atoms access the universe
         for a in self.atoms:
             a.universe = self
@@ -2493,7 +2568,7 @@ class Universe(object):
         self.segments = self.atoms.segments
         self.residues = self.atoms.residues
         self.universe = self    # for Writer.write(universe), see Issue 49
-        
+
     def _init_bonds(self):
         """Set bond information.
 
@@ -2526,12 +2601,12 @@ class Universe(object):
                 self.bonds.add(bond)
                 continue
             i,j = bond
-            a1, a2 = self.atoms[i-1],self.atoms[j-1]
+            a1, a2 = self.atoms[i],self.atoms[j]
             bond = Bond(a1, a2)
             if struc.has_key("_guessed_bonds") and \
                     set([i,j]) in struc["_guessed_bonds"] and \
                     set([i,j]) not in struc["_bonds"]:
-                bond.set_is_guessed(True)
+                bond.is_guessed = True
             self.bonds.add(bond)
         self.bonds = list(self.bonds)
 
@@ -2780,42 +2855,42 @@ def asUniverse(*args, **kwargs):
 
 
 def Merge(*args):
-    """Return a universe from 2 or more AtomGroups. 
-    AtomGroups can come from different Universes, or come from selectAtom 
-    command. 
+    """Return a universe from 2 or more AtomGroups.
+    AtomGroups can come from different Universes, or come from selectAtom
+    command.
 
          u1 = Universe("protein.pdb")
          u2 = Universe("ligand.pdb")
          u3 = Universe("solvent.pdb")
          u = Merge(u1.atoms, u2.atoms, u3.atoms)
          u.atoms.write("system.pdb")
-    
-    Can also be used with a single AtomGroup if the user wants to, 
+
+    Can also be used with a single AtomGroup if the user wants to,
     for example, re-order the atoms in the Universe.
-     
+
     :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
     """
     assert(len(args) >= 1) # one or more AtomGroups can be merged
-    
+
     for a in args: assert(isinstance(a, AtomGroup))
     for a in args: assert(len(a)) # cannot merge empty AtomGroup
-    
+
     coords = numpy.vstack([a.coordinates() for a in args])
     trajectory = MDAnalysis.coordinates.base.Reader()
     ts = MDAnalysis.coordinates.base.Timestep(coords)
     setattr(trajectory, "ts", ts)
     trajectory.numframes = 1
-    
+
     # create an empty Universe object
     u = Universe()
     u.trajectory = trajectory
-    
+
     # create a list of Atoms, then convert it to an AtomGroup
     atoms = [copy.copy(a) for gr in args for a in gr]
     for a in atoms: a.universe = u
     # adjust the atom numbering
-    for i, a in enumerate(atoms): 
+    for i, a in enumerate(atoms):
         a.number = i
         a.serial = i+1
     u.atoms = AtomGroup(atoms)
-    return u    
+    return u

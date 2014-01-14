@@ -550,7 +550,7 @@ class TestExtendedPDBReader(_SingleFrameReader):
         self.universe = mda.Universe(XPDB_small, topology_format="XPDB")
         u = self.universe.selectAtoms('resid 1 or resid 10 or resid 100 or resid 1000 or resid 10000')
         assert_equal(u[4].resid, 10000, "can't read a five digit resid")
-        
+
 class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True)
@@ -628,15 +628,18 @@ class TestMultiPDBReader(TestCase):
         del self.multiverse
         del self.conect
 
+    @attr('slow')
     def test_numframes(self):
         assert_equal(self.multiverse.trajectory.numframes, 24, "Wrong number of frames read from PDB muliple model file")
 
+    @attr('slow')
     def test_numatoms_frame(self):
         u = self.multiverse
         desired = 392
         for frame in u.trajectory:
             assert_equal(len(u.atoms), desired, err_msg="The number of atoms in the Universe (%d) does not match the number of atoms in the test case (%d) at frame %d" % (len(u.atoms), desired, u.trajectory.frame))
 
+    @attr('slow')
     def test_rewind(self):
         u = self.multiverse
         u.trajectory[11]
@@ -644,6 +647,7 @@ class TestMultiPDBReader(TestCase):
         u.trajectory.rewind()
         assert_equal(u.trajectory.ts.frame, 1, "Failed to rewind to first frame (frame index 0)")
 
+    @attr('slow')
     def test_iteration(self):
         u = self.multiverse
         frames = []
@@ -657,6 +661,7 @@ class TestMultiPDBReader(TestCase):
                      "iterated number of frames %d is not the expected number %d; "
                      "trajectory iterator fails to rewind" % (len(frames), u.trajectory.numframes))
 
+    @attr('slow')
     def test_slice_iteration(self):
         u = self.multiverse
         frames = []
@@ -666,31 +671,41 @@ class TestMultiPDBReader(TestCase):
                      np.arange(u.trajectory.numframes)[4:-2:4],
                      err_msg="slicing did not produce the expected frames")
 
-    def test_conect(self):
+    @attr('slow')
+    def test_conect_bonds_conect(self):
         conect = self.conect
-
         assert_equal(len(conect.atoms), 1890)
-
         assert_equal(len(conect.bonds), 1922)
 
-        fd, outfile1 = tempfile.mkstemp(suffix=".pdb")
-        os.close(fd)
-        self.conect.atoms.write(outfile1, bonds="conect")
-        u1 = mda.Universe(outfile1, bonds=True)
+        try:
+            fd, outfile = tempfile.mkstemp(suffix=".pdb")
+            os.close(fd)
+            self.conect.atoms.write(outfile, bonds="conect")
+            u1 = mda.Universe(outfile, bonds=True)
+        finally:
+            os.unlink(outfile)
         assert_equal(len(u1.atoms), 1890)
         assert_equal(len(u1.bonds), 1922)
 
+    @attr('slow')
+    def test_conect_bonds_all(self):
+        conect = self.conect
+        assert_equal(len(conect.atoms), 1890)
+        assert_equal(len(conect.bonds), 1922)
 
-        fd, outfile2 = tempfile.mkstemp(suffix=".pdb")
-        os.close(fd)
-        self.conect.atoms.write(outfile2, bonds="all")
-        u2 = mda.Universe(outfile2, bonds=True)
-        assert_equal(len(u1.atoms), 1890)
-        assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922 )
-
+        try:
+            fd, outfile = tempfile.mkstemp(suffix=".pdb")
+            os.close(fd)
+            self.conect.atoms.write(outfile, bonds="all")
+            u2 = mda.Universe(outfile, bonds=True)
+        finally:
+            os.unlink(outfile)
+        assert_equal(len(u2.atoms), 1890)
+        assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922)
 
         #assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
 
+    @attr('slow')
     def test_numconnections(self):
         u = self.multiverse
 
@@ -772,6 +787,7 @@ class TestMultiPDBWriter(TestCase):
             pass
         del self.universe, self.multiverse, self.universe2
 
+    @attr('slow')
     def test_write_atomselection(self):
         """Test if multiframe writer can write selected frames for an atomselection."""
         u = self.multiverse
@@ -787,6 +803,7 @@ class TestMultiPDBWriter(TestCase):
 
         assert_equal(len(u2.trajectory), desired_frames, err_msg="MultiPDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
 
+    @attr('slow')
     def test_write_all_timesteps(self):
         """
         Test write_all_timesteps() of the  multiframe writer (selected frames for an atomselection)
@@ -803,6 +820,7 @@ class TestMultiPDBWriter(TestCase):
 
         assert_equal(len(u2.trajectory), desired_frames, err_msg="MultiPDBWriter trajectory written for an AtomGroup contains %d frames, it should have %d" % (len(u.trajectory), desired_frames))
 
+    @attr('slow')
     def test_write_atoms(self):
         u = self.universe2
         W = mda.Writer(self.outfile, multiframe=True)
@@ -1524,8 +1542,6 @@ class TestChainReader(TestCase):
         print self.trajectory.ts, self.trajectory.ts.frame
         assert_equal(self.trajectory.ts.frame, self.trajectory.numframes, "indexing last frame with trajectory[-1]")
 
-    # Fix by SB: decorator removed since the test is passing without it
-    #@knownfailure("full slicing not implemented for chained reader")
     def test_slice_trajectory(self):
         frames = [ts.frame for ts in self.trajectory[5:17:3]]
         assert_equal(frames, [6, 9, 12, 15], "slicing dcd [5:17:3]")
@@ -1597,7 +1613,7 @@ class TestTRRReader_Sub(TestCase):
         usol = mda.Universe(PDB_sub_sol, TRR_sub_sol)
         atoms = usol.selectAtoms("not resname SOL")
         self.pos = atoms.positions
-        self.vel = atoms.velocities()
+        self.vel = atoms.velocities
         self.force = atoms.forces
         self.sub = atoms.indices()
         # universe from un-solvated protein
@@ -1617,7 +1633,7 @@ class TestTRRReader_Sub(TestCase):
         self.udry.load_new(TRR_sub_sol, sub=self.sub)
         assert_array_almost_equal(self.pos, self.udry.atoms.positions,
                                   err_msg="positions differ")
-        assert_array_almost_equal(self.vel, self.udry.atoms.velocities(),
+        assert_array_almost_equal(self.vel, self.udry.atoms.velocities,
                                   err_msg="positions differ")
         assert_array_almost_equal(self.force, self.udry.atoms.forces,
                                   err_msg="positions differ")
@@ -1801,8 +1817,8 @@ class TestTRRReader(_GromacsReader):
         assert_array_almost_equal(self.universe.trajectory.ts._velocities[[47675,47676]], v_base, self.prec,
                                   err_msg="ts._velocities for indices 47675,47676 do not match known values")
 
-        assert_array_almost_equal(self.universe.atoms.velocities()[[47675,47676]], v_base, self.prec,
-                                  err_msg="velocities() for indices 47675,47676 do not match known values")
+        assert_array_almost_equal(self.universe.atoms.velocities[[47675,47676]], v_base, self.prec,
+                                  err_msg="velocities for indices 47675,47676 do not match known values")
 
         for index, v_known in zip([47675,47676], v_base):
             assert_array_almost_equal(self.universe.atoms[index].velocity, v_known, self.prec,
@@ -2099,7 +2115,7 @@ class TestTRZReader(TestCase, RefTRZ):
 
     def test_velocities(self):
         fortytwo = self.universe.selectAtoms('bynum 42')
-        assert_almost_equal(fortytwo.velocities() , self.ref_velocities, self.prec, "wrong velocities in trz")
+        assert_almost_equal(fortytwo.velocities , self.ref_velocities, self.prec, "wrong velocities in trz")
 
     def test_delta(self):
         assert_almost_equal(self.trz.delta, self.ref_delta, self.prec, "wrong time delta in trz")
