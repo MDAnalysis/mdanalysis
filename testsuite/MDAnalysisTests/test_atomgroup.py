@@ -416,8 +416,8 @@ class TestAtomGroup(TestCase):
         nres_new = self.universe.atoms.numberOfResidues()
         r_merged = self.universe.selectAtoms("resid 12:14").residues
         natoms_new = self.universe.selectAtoms("resid 12").numberOfAtoms()
-        assert_equal(len(r_merged), 1, err_msg="set_resid failed to merge residues: merged = {}".format(r_merged))
-        assert_equal(nres_new, nres_old - 2, err_msg="set_resid failed to merge residues: merged = {}".format(r_merged))
+        assert_equal(len(r_merged), 1, err_msg="set_resid failed to merge residues: merged = {0}".format(r_merged))
+        assert_equal(nres_new, nres_old - 2, err_msg="set_resid failed to merge residues: merged = {0}".format(r_merged))
         assert_equal(natoms_new, natoms_old, err_msg="set_resid lost atoms on merge".format(r_merged))
 
     def test_set_mass(self):
@@ -427,7 +427,7 @@ class TestAtomGroup(TestCase):
         # check individual atoms
         assert_equal([a.mass for a in ag],
                      mass*numpy.ones(ag.numberOfAtoms()),
-                     err_msg="failed to set_mass H* atoms in resid 12:42 to {}".format(mass))
+                     err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(mass))
 
     def test_set_segid(self):
         u = self.universe
@@ -435,7 +435,7 @@ class TestAtomGroup(TestCase):
         u.selectAtoms("resid 122-159").set_segid("LID")
         u.selectAtoms("resid 30-59").set_segid("NMP")
         assert_equal(u.atoms.segids(), ["CORE", "NMP", "CORE", "LID", "CORE"],
-                     err_msg="failed to change segids = {}".format(u.atoms.segids()))
+                     err_msg="failed to change segids = {0}".format(u.atoms.segids()))
 
 class TestResidue(TestCase):
     def setUp(self):
@@ -535,8 +535,8 @@ class TestResidueGroup(TestCase):
         nres_new = self.universe.atoms.numberOfResidues()
         r_merged = self.universe.selectAtoms("resid 12:14").residues
         natoms_new = self.universe.selectAtoms("resid 12").numberOfAtoms()
-        assert_equal(len(r_merged), 1, err_msg="set_resid failed to merge residues: merged = {}".format(r_merged))
-        assert_equal(nres_new, nres_old - 2, err_msg="set_resid failed to merge residues: merged = {}".format(r_merged))
+        assert_equal(len(r_merged), 1, err_msg="set_resid failed to merge residues: merged = {0}".format(r_merged))
+        assert_equal(nres_new, nres_old - 2, err_msg="set_resid failed to merge residues: merged = {0}".format(r_merged))
         assert_equal(natoms_new, natoms_old, err_msg="set_resid lost atoms on merge".format(r_merged))
 
         assert_equal(self.universe.residues.numberOfResidues(), self.universe.atoms.numberOfResidues(),
@@ -549,7 +549,7 @@ class TestResidueGroup(TestCase):
         # check individual atoms
         assert_equal([a.mass for a in rg.atoms],
                      mass*numpy.ones(rg.numberOfAtoms()),
-                     err_msg="failed to set_mass H* atoms in resid 12:42 to {}".format(mass))
+                     err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(mass))
 
 class TestSegment(TestCase):
     def setUp(self):
@@ -637,7 +637,7 @@ class TestSegmentGroup(TestCase):
         # check individual atoms
         assert_equal([a.mass for a in g.atoms],
                      mass*numpy.ones(g.numberOfAtoms()),
-                     err_msg="failed to set_mass in segment of  H* atoms in resid 12:42 to {}".format(mass))
+                     err_msg="failed to set_mass in segment of  H* atoms in resid 12:42 to {0}".format(mass))
 
 class TestAtomGroupVelocities(TestCase):
     """Tests of velocity-related functions in AtomGroup"""

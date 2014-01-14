@@ -528,7 +528,7 @@ def convert_aa_code(x):
     elif len(x) > 1:
         return inverse_aa_codes[x.upper()]
     else:
-        raise ValueError("No conversion for {} found (1 letter -> 3 letter or 3/4 letter -> 1 letter)".format(x))
+        raise ValueError("No conversion for {0} found (1 letter -> 3 letter or 3/4 letter -> 1 letter)".format(x))
 
 
 #: Regular expression to match and parse a residue-atom selection; will match

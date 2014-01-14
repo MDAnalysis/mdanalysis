@@ -73,7 +73,7 @@ if __name__ == "__main__":
         if options.residues is None or len(options.residues) != 2:
             raise ValueError("Provide residue ids in --residues R1 R2")
 
-        logger.info("Loading trajectory data as Universe({})".format(*args))
+        logger.info("Loading trajectory data as Universe({0})".format(*args))
 
         if not options.dcdFilename:
                 options.dcdFilename = options.outputFile + "-tmp"

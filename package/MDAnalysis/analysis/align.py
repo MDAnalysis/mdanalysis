@@ -722,7 +722,7 @@ def check_same_atoms(ag1, ag2, tol_mass=0.1):
                 logger.error("%4s %3d %3s %3s %6.3f  |  %4s %3d %3s %3s %6.3f" %  \
                       (ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
                        at.segid, at.resid, at.resname, at.name, at.mass,))
-        errmsg = "Inconsistent selections, masses differ by more than {}; mis-matching atoms are shown above.".format(tol_mass)
+        errmsg = "Inconsistent selections, masses differ by more than {0}; mis-matching atoms are shown above.".format(tol_mass)
         logger.error(errmsg)
         raise SelectionError(errmsg)
     return True
