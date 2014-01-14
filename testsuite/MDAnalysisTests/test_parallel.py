@@ -19,7 +19,18 @@ from MDAnalysis.core.distances import distance_array as distance_array_reference
 
 import numpy as np
 from numpy.testing import *
-from numpy.ma.testutils import assert_allclose
+try:
+    from numpy.testing import assert_allclose
+except ImportError:
+    # not implemented in numpy 1.3 ... 1.4.1
+    def assert_allclose(actual, desired, rtol=1e-7, atol=0, err_msg='', verbose=True):
+        # from numpy/testing/utils.py (1.6.1)
+        import numpy.testing.utils
+        def compare(x, y):
+            return np.allclose(x, y, rtol=rtol, atol=atol)
+        actual, desired = np.asanyarray(actual), np.asanyarray(desired)
+        header = 'Not equal to tolerance rtol=%g, atol=%g' % (rtol, atol)
+        numpy.testing.utils.assert_array_compare(compare, actual, desired, err_msg=str(err_msg), verbose=verbose, header=header)
 
 class TestDistances(TestCase):
     """
