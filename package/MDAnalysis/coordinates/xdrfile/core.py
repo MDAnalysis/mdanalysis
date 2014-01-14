@@ -327,12 +327,6 @@ class TrjReader(base.Reader):
             if isinstance(filename, unicode):
                 self.filename = filename.encode("UTF-8")
 
-        # Check if file is not too big file for a 32-bit.
-        # underlying xdrfile is indeed limited by the max integer value
-        if os.path.getsize(filename) > sys.maxint: # This test works even on a 32-bit system
-            raise OSError("Filesize is too big to be handled by xdrfile library (filesize: %.1fMB - max size: %.1fMB)"
-                          % (os.path.getsize(filename)/1.e6, sys.maxint/1.e6))
-
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
         self.convert_units = convert_units  # convert length and time to base units on the fly?
@@ -470,16 +464,24 @@ class TrjReader(base.Reader):
         return
 
     def save_offsets(self, filename):
-        """Saves current trajectory offsets into filename (numpy format)."""
+        """Saves current trajectory offsets into *filename*, in numpy format. A ".npy" suffix will be appended to *filename* if not already present.
+
+        :Arguments:
+          *filename*
+              filename in which to save the frame offset numpy array.
+        """
         if self.__offsets is None:
             self._read_trj_numframes(self.filename)
-        with open(filename, 'w') as OFILE:
-            numpy.save(OFILE, self.__offsets)
+        numpy.save(filename, self.__offsets)
 
     def load_offsets(self, filename):
-        """Loads current trajectory offsets from filename (numpy format)."""
-        with open(filename, 'r') as OFILE:
-            self.__offsets = numpy.load(OFILE)
+        """Loads current trajectory offsets from *filename* (in numpy format). No error checking is performed.
+
+        :Arguments:
+          *filename*
+              filename of a saved numpy array with the frame offsets for the loaded trajectory.
+        """
+        self.__offsets = numpy.load(filename)
         self.__numframes = len(self.__offsets)
 
     def open_trajectory(self):
@@ -701,7 +703,7 @@ class TrjReader(base.Reader):
             else:
                 status = libxdrfile.xdr_seek(self.xdrfile, long(pos), libxdrfile.SEEK_SET)
             if status != libxdrfile.exdrOK:
-                raise IOError(errno.EIO, "Problem seeking to offset %d (relative to current = %s) on file %s, status %s" % (pos, rel, self.filename, status))
+                raise IOError(errno.EIO, "Problem seeking to offset %d (relative to current = %s) on file %s, status %s.\nPerhaps you are trying to read too large a file and your system does not support large files (>2GB)?" % (pos, rel, self.filename, status))
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
 

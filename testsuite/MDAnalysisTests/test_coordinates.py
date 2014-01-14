@@ -26,7 +26,7 @@ from nose.plugins.attrib import attr
 import sys
 
 from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, \
-    PDB, CRD, XTC, TRR, GRO, DMS, CONECT, \
+    PDB, CRD, XTC, XTC_offsets, TRR, TRR_offsets, GRO, DMS, CONECT, \
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf
 from . import knownfailure
@@ -1646,6 +1646,8 @@ class _GromacsReader(TestCase):
     filename = None
     ref_unitcell = np.array([ 80.017,  80.017,  80.017,  60., 60., 90.], dtype=np.float32)
     ref_volume = 362270.0  # computed with Gromacs: 362.26999999999998 nm**3 * 1000 A**3/nm**3
+    ref_offsets = None
+    ref_offset_file = None
 
     def setUp(self):
         # default flag--just make sure!... but can lead to race conditions
@@ -1660,10 +1662,13 @@ class _GromacsReader(TestCase):
         ext = os.path.splitext(self.filename)[1]
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
         os.close(fd)
+        fd, self.outfile_offsets = tempfile.mkstemp(suffix='.npy')
+        os.close(fd)
 
     def tearDown(self):
         try:
             os.unlink(self.outfile)
+            os.unlink(self.outfile_offsets)
         except:
             pass
         del self.universe
@@ -1720,8 +1725,8 @@ class _GromacsReader(TestCase):
         assert_array_almost_equal(ca.coordinates(), ca_Angstrom, 2,
                                   err_msg="coords of Ca of resid 122 do not match for frame 3")
 
-    @dec.slow
     @attr('issue')
+    @dec.slow
     def test_unitcell(self):
         """Test that xtc/trr unitcell is read correctly (Issue 34)"""
         self.universe.trajectory.rewind()
@@ -1758,6 +1763,20 @@ class _GromacsReader(TestCase):
         self.trajectory[4]  # index is 0-based but frames are 1-based
         assert_almost_equal(self.universe.trajectory.time, 500.0, 5,
                             err_msg="wrong time of frame")
+    
+    @dec.slow
+    def test_offsets(self):
+        if self.trajectory._TrjReader__offsets is None:
+            self.trajectory.numframes
+        assert_array_almost_equal(self.trajectory._TrjReader__offsets, self.ref_offsets, err_msg="wrong frame offsets")
+        # Loading
+        self.trajectory.load_offsets(self.ref_offset_file)
+        assert_array_almost_equal(self.trajectory._TrjReader__offsets, self.ref_offsets, err_msg="error loading frame offsets")
+        # Saving
+        self.trajectory.save_offsets(self.outfile_offsets)
+        saved_offsets = np.load(self.outfile_offsets)
+        assert_array_almost_equal(self.trajectory._TrjReader__offsets, saved_offsets, err_msg="error saving frame offsets")
+        assert_array_almost_equal(self.ref_offsets, saved_offsets, err_msg="saved frame offsets don't match the known ones")
 
     @dec.slow
     def test_get_Writer(self):
@@ -1782,6 +1801,8 @@ class _GromacsReader(TestCase):
 
 class TestXTCReader(_GromacsReader):
     filename = XTC
+    ref_offsets = np.load(XTC_offsets)
+    ref_offset_file = XTC_offsets
 
 class TestXTCReaderClass(TestCase):
     def test_with_statement(self):
@@ -1798,8 +1819,9 @@ class TestXTCReaderClass(TestCase):
 
 class TestTRRReader(_GromacsReader):
     filename = TRR
+    ref_offsets = np.load(TRR_offsets)
+    ref_offset_file = TRR_offsets
 
-    @dec.slow
     def test_velocities(self):
 
         # frame 0, v in nm/ps

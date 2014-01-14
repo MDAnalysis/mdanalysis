@@ -4,6 +4,7 @@
  *
  * Copyright (c) Erik Lindahl, David van der Spoel 2003,2004.
  * Coordinate compression (c) by Frans van Hoesel. 
+ * Additions for seeking and XTC/TRR indexing (c) by Manuel Melo.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -22,15 +23,12 @@
 #include <math.h>
 #include <limits.h>
 
-#define _FILE_OFFSET_BITS  64
-
 /* get fixed-width types if we are using ANSI C99 */
 #ifdef HAVE_STDINT_H
 #  include <stdint.h>
 #elif (defined HAVE_INTTYPES_H)
 #  include <inttypes.h>
 #endif
-
 
 #ifdef HAVE_RPC_XDR_H
 #  include <rpc/rpc.h>
@@ -2583,13 +2581,13 @@ xdrstdio_putbytes (XDR *xdrs, char *addr, unsigned int len)
 static off_t
 xdrstdio_getpos (XDR *xdrs)
 {
-    return ftell ((FILE *) xdrs->x_private);
+    return ftello((FILE *) xdrs->x_private);
 }
 
 static int
 xdrstdio_setpos (XDR *xdrs, off_t pos, int whence)
 {
-	return fseek ((FILE *) xdrs->x_private, pos, whence) < 0 ? exdrNR : exdrOK;
+	return fseeko((FILE *) xdrs->x_private, pos, whence) < 0 ? exdrNR : exdrOK;
 }
 
 

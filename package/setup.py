@@ -172,6 +172,11 @@ if __name__ == '__main__':
     else:
         extra_compile_args = ''
         define_macros = []
+    
+    # Needed for large-file seeking under 32bit systems (for xtc/trr indexing and access).
+    largefile_macros = [('_LARGEFILE_SOURCE',None),
+                        ('_LARGEFILE64_SOURCE',None),
+                        ('_FILE_OFFSET_BITS','64')]
 
     has_openmp, needs_gomp = detect_openmp()
     parallel_args = ['-fopenmp'] if has_openmp else []
@@ -215,7 +220,8 @@ if __name__ == '__main__':
                                      'src/xdrfile/xdrfile.c',
                                      'src/xdrfile/xdrfile_trr.c',
                                      'src/xdrfile/xdrfile_xtc.c'],
-                            include_dirs = include_dirs),
+                            include_dirs = include_dirs,
+                            define_macros=largefile_macros)
                   ]
 
     setup(name              = 'MDAnalysis',
