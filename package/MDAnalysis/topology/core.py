@@ -175,20 +175,19 @@ class Bond(object):
         """This bond is equal to *other* if the same atom numbers are connected.
 
         The bond order must also be the same. Only two :class:`Bond`
-        istances can be compared with each other.
+        instances can be compared with each other.
 
         The ordering of the two atom numbers is ignored as is the fact
         that a bond was guessed.
         """
         if type(other) is type(self):
-            return self.order == other.order and\
-                   {self.atom1.number, self.atom2.number} == {other.atom1.number, other.atom2.number}
+            return self.order == other.order and \
+                   set((self.atom1.number, self.atom2.number)) == set((other.atom1.number, other.atom2.number))
         else:
             return False
 
     def __ne__(self, other):
         """This bond is not equal to *other* if different atom  numbers are connected.
-
 
         .. SeeAlso:: This is the logical opposite of :meth:`Bond.__eq__`.
         """
