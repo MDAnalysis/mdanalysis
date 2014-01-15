@@ -9,7 +9,7 @@
 :Licence:   GNU Public Licence, version 2 (or higher)
 :Copyright: © 2013 Philip W Fowler, Oliver Beckstein
 :Citation:  LS Stelzl, PW Fowler, MSP Sansom, O Beckstein. J Mol Biol
-            (2013). doi: 10.1016/j.jmb.2013.10.024
+            426 (2014), 735-751. doi: 10.1016/j.jmb.2013.10.024
             
 This package contains the MTSL rotamer library R1A_298K provided by
 Gunnar Jeschke, which is published under the GPL with his permission.
@@ -63,7 +63,7 @@ which allowed us to estimate distance distributions for entire
 simulation trajectories. 
 
 Examples of the application of this approach can be found in
-[Stelzl2013]_.
+[Stelzl2014]_.
 
 
 Installation
@@ -141,14 +141,15 @@ References
 
 .. [Polyhach2011] Y. Polyhach, E. Bordignon, and G. Jeschke. Rotamer
    libraries of spin labelled cysteines for protein
-   studies. Phys. Chem. Chem. Phys., 13:2356-2366, 2011. doi:
-   `10.1039/C0CP01865A`_.
+   studies. Phys. Chem. Chem. Phys., 13:2356-2366, 2011. 
+   doi: `10.1039/C0CP01865A`_.
 
 .. _`10.1039/C0CP01865A`: http://dx.doi.org/10.1039/C0CP01865A
 
-.. [Stelzl2013] L. S. Stelz, P. W. Fowler, M. S. P. Sansom, and
+.. [Stelzl2014] L. S. Stelz, P. W. Fowler, M. S. P. Sansom, and
    O. Beckstein. Flexible gates generate occluded intermediates in the
-   transport cycle of LacY. J Mol Biol, 2013. doi:`10.1016/j.jmb.2013.10.024`_ 
+   transport cycle of LacY. J Mol Biol, 426:735-751, 2013. 
+   doi: `10.1016/j.jmb.2013.10.024`_ 
 
 .. _`10.1016/j.jmb.2013.10.024`: http://dx.doi.org/10.1016/j.jmb.2013.10.024
 

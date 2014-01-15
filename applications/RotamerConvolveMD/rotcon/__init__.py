@@ -70,7 +70,7 @@ which allowed us to estimate distance distributions for entire
 simulation trajectories.
 
 Examples of the application of this approach can be found in
-[Stelzl2013]_.
+[Stelzl2014]_.
 
 
 References
@@ -92,9 +92,10 @@ References
 
 .. _`10.1039/C0CP01865A`: http://dx.doi.org/10.1039/C0CP01865A
 
-.. [Stelzl2013] L. S. Stelz, P. W. Fowler, M. S. P. Sansom, and
+.. [Stelzl2014] L. S. Stelz, P. W. Fowler, M. S. P. Sansom, and
    O. Beckstein. Flexible gates generate occluded intermediates in the
-   transport cycle of LacY. J Mol Biol, 2013. doi:`10.1016/j.jmb.2013.10.024`_
+   transport cycle of LacY. J Mol Biol, 426:735-751, 2014.
+   doi: `10.1016/j.jmb.2013.10.024`_
 
 .. _`10.1016/j.jmb.2013.10.024`: http://dx.doi.org/10.1016/j.jmb.2013.10.024
 

@@ -4,7 +4,7 @@ use_setuptools()
 from setuptools import setup, find_packages
 
 if __name__ == '__main__':
-    RELEASE = "1.0-rc1"
+    RELEASE = "1.0"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = ['Development Status :: 4 - Beta',

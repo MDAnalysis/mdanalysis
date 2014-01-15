@@ -17,8 +17,8 @@ Provide either a topology and trajectory data (multiple trajectories
 are concatenated on the fly) or just a structure file such as a PDB or
 GRO file.
 
-For details on the method see Stelzl et al, J Mol Biol (2013), doi:
-10.1016/j.jmb.2013.10.024.
+For details on the method see Stelzl et al, J Mol Biol 426 (2014),
+735-751, doi:10.1016/j.jmb.2013.10.024.
 """
 
 import os.path
@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
         MDAnalysis.start_logging()
         logger.info("Rotamer Convolve MD --- Copyright (c) Philip W Fowler, Oliver Beckstein 2011-2013")
-        logger.info("Please cite: LS Stelzl, PW Fowler, MSP Sansom, O Beckstein. J Mol Biol (2013), doi:10.1016/j.jmb.2013.10.024")
+        logger.info("Please cite: LS Stelzl, PW Fowler, MSP Sansom, O Beckstein. J Mol Biol 426 (2014), 735-751, doi:10.1016/j.jmb.2013.10.024")
 
         # load the reference protein structure
         try:
