@@ -61,6 +61,7 @@ if __name__ == "__main__":
 
         MDAnalysis.start_logging()
         logger.info("Rotamer Convolve MD --- Copyright (c) Philip W Fowler, Oliver Beckstein 2011-2013")
+        logger.info("Released under the GNU Public Licence, version 2 (or higher)")
         logger.info("Please cite: LS Stelzl, PW Fowler, MSP Sansom, O Beckstein. J Mol Biol 426 (2014), 735-751, doi:10.1016/j.jmb.2013.10.024")
 
         # load the reference protein structure
@@ -68,7 +69,6 @@ if __name__ == "__main__":
             proteinStructure = MDAnalysis.Universe(*args)
         except:
             logger.critical("protein structure and/or trajectory not correctly specified")
-            #raise SystemExit
             raise
         if options.residues is None or len(options.residues) != 2:
             raise ValueError("Provide residue ids in --residues R1 R2")
