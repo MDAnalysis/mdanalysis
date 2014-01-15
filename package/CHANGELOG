@@ -68,6 +68,7 @@ The rules for this file:
 
   Fixes
 
+  * fixed XDR writer incorrect use of delta parameter (Issue 154)
   * fixed incorrect computation of distances in serial and parallel 
     distance_array() with PBC (Issue 151)
   * fixed Issue 129 (hole.py module pipe/file closure)

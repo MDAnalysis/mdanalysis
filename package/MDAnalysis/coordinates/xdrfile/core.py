@@ -130,7 +130,7 @@ class TrjWriter(base.Writer):
     #: override to define trajectory format of the reader (XTC or TRR)
     format = None
 
-    def __init__(self, filename, numatoms, start=0, step=1, delta=1.0, precision=1000.0, remarks=None,
+    def __init__(self, filename, numatoms, start=0, step=1, delta=None, precision=1000.0, remarks=None,
                   convert_units=None):
         ''' Create a new TrjWriter
 
@@ -142,11 +142,13 @@ class TrjWriter(base.Writer):
 
         :Keywords:
           *start*
-             starting timestep
+             starting timestep; only used when *delta* is set.
           *step*
-             skip between subsequent timesteps
+             skip between subsequent timesteps; only used when *delta* is set.
           *delta*
-             timestep
+             timestep to use. If set will override any time information contained in the
+             passed :class:`Timestep` objects; otherwise that will be used (defaulting to
+             1ns if unavailable)
           *precision*
              accuracy for lossy XTC format [1000]
           *convert_units*
@@ -208,6 +210,19 @@ class TrjWriter(base.Writer):
         """Generic writer for XTC and TRR with minimum intelligence; override if necessary."""
 
         # (1) data common to XTC and TRR
+
+        # Time-writing logic: if the writer was created with a delta parameter,
+        #  use delta*(start+step*frames_written)
+        #  otherwise use the provided Timestep obj time attribute; bail out if not present.
+        if self.delta is None:
+            try:
+                time = ts.time
+            except AttributeError:
+                # Default to 1ns timestep.
+                time = self.start+self.step*self.frames_written
+        else:
+            time = (self.start+self.step*self.frames_written)*self.delta
+
         if self.convert_units:
             # make a copy of the scaled positions so that the in-memory
             # timestep is not changed (would have lead to wrong results if
@@ -216,16 +231,9 @@ class TrjWriter(base.Writer):
             # very big systems because we temporarily create a new array pos
             # for each frame written
             pos = self.convert_pos_to_native(ts._pos, inplace=False)
-            try:
-                time = self.convert_time_to_native(ts.time, inplace=False)
-            except AttributeError:
-                time = ts.frame * self.convert_time_to_native(self.delta, inplace=False)
+            time = self.convert_time_to_native(time, inplace=False)
         else:
             pos = ts._pos
-            try:
-                time = ts.time
-            except AttributeError:
-                time = ts.frame * self.delta
         if not hasattr(ts, 'step'):
             # bogus, should be actual MD step number, i.e. frame * delta/dt
             ts.step = ts.frame
