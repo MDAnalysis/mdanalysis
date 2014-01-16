@@ -703,7 +703,7 @@ class TrjReader(base.Reader):
             else:
                 status = libxdrfile.xdr_seek(self.xdrfile, long(pos), libxdrfile.SEEK_SET)
             if status != libxdrfile.exdrOK:
-                raise IOError(errno.EIO, "Problem seeking to offset %d (relative to current = %s) on file %s, status %s.\nPerhaps you are trying to read too large a file and your system does not support large files (>2GB)?" % (pos, rel, self.filename, status))
+                raise IOError(errno.EIO, "Problem seeking to offset %d (relative to current = %s) on file %s, status %s.\nPerhaps you are trying to read a file >2GB and your system does not have large file support?" % (pos, rel, self.filename, status))
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
 

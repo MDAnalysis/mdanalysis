@@ -1,5 +1,5 @@
 /* -*- C -*-  (not really, but good for syntax highlighting) */
-/* SWIG interface for Gromacs libxdrfile 1.1 with the xtc and trr code 
+/* SWIG interface for Gromacs libxdrfile 2.0 with the xtc and trr code 
    Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
    Published under the GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher)
 
@@ -9,16 +9,17 @@
 "
 :Author:  Oliver Beckstein <orbeckst@gmail.com>
 :Year:    2010
-:Licence: GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher)
+:Licence: GNU GENERAL PUBLIC LICENSE Version 3 (or higher)
 
 
 The Gromacs xtc/trr library :mod:`libxdrfile`
 =============================================
 
 :mod:`libxdrfile` provides an interface to some high-level functions in the
-Gromacs_ `XTC Library`_ version 1.1.1. Only functions required for reading and
+Gromacs_ `XTC Library`_ version 2.0. Only functions required for reading and
 processing whole trajectories are exposed at the moment; low-level routines to
-read individual numbers are not provided.
+read individual numbers are not provided. From version 2.0 functions exist to
+allow fast frame indexing and XDR file seeking.
 
 The functions querying the numbers of atoms in a trajectory frame
 (:func:`read_xtc_natoms` and :func:`read_trr_natoms`) open a file themselves and
@@ -31,7 +32,8 @@ with :func:`xdrfile_close`.
 
 The functions fill or read existing arrays of coordinates; they never allocate
 these arrays themselves. Hence they need to be setup outside libxdrfile as
-numpy arrays.
+numpy arrays. The exception to these are the indexing ones functions that take
+care of array allocation and transference to a garbage-collectable memory object.
 
 
 .. _Gromacs: http://www.gromacs.org
@@ -159,13 +161,12 @@ The advantage of XTC over TRR is its significantly reduced size.
               :Raises: :exc:`IOError` if the supplied filed is not a XTC 
                        or if it is not readable.
 
-.. function:: read_xtc_numframes(fn) -> numframes
+.. function:: read_xtc_numframes(fn) -> (numframes, offsets)
 
-              Read through the whole trajectory (!) to obtaine the total number of frames. 
-              This can take a long time but it might still be advantageous to obtain 
-              *numframes* in this way before setting up a complicated analysis. Unlike the DCD
-              format, there is no way to obtain the total number of frames in the trajectory 
-              except iterating through the whole trajectory.
+              Read through the whole trajectory headers to obtain the total number of frames. 
+              The process is speeded up by reading frame headers for the amount of data in the frame,
+              and then skipping directly to the next header. An array of frame offsets is also
+              returned, which can later be used to seek direcly to arbitrary frames in the trajectory. 
 
               :Arguments:
                 *fn*
@@ -240,13 +241,12 @@ calculations. Velocities and forces are optional in the sense that they can be a
               :Raises: :exc:`IOError` if the supplied filed is not a TRR
                        or if it is not readable.
 
-.. function:: read_trr_numframes(fn) -> numframes
+.. function:: read_trr_numframes(fn) -> (numframes, offsets)
 
-              Read through the whole trajectory (!) to obtaine the total number of frames. 
-              This can take a long time but it might still be advantageous to obtain 
-              *numframes* in this way before setting up a complicated analysis. (This is a 
-              poor implementation that loops through the *whole* trajectory and counts the 
-              frames---please supply a better one.)
+              Read through the whole trajectory headers to obtain the total number of frames. 
+              The process is speeded up by reading frame headers for the amount of data in the frame,
+              and then skipping directly to the next header. An array of frame offsets is also
+              returned, which can later be used to seek direcly to arbitrary frames in the trajectory. 
 
               :Arguments:
                 *fn*
@@ -321,7 +321,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
 
 
 %{
-/* Python SWIG interface to some functions in Gromacs libxdr v 1.1
+/* Python SWIG interface to some functions in Gromacs libxdr v 2.0
    Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
    Published under the GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher)
    See http://mdanalysis.googlecode.com for details.

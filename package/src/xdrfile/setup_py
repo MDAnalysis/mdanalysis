@@ -30,12 +30,12 @@ include_dirs = [numpy_include]
 
 if __name__ == '__main__':
     setup(name              = 'xdrfile',
-          version           = '0.1-libxdrfile1.1',
+          version           = '0.1-libxdrfile2.0',
           description       = 'Python interface to Gromacs XTC/TRR library libxdrfile',
-          author            = 'David van der Spoel, Erik Lindahl, Oliver Beckstein',
+          author            = 'David van der Spoel, Erik Lindahl, Oliver Beckstein, Manuel Melo',
           author_email      = 'orbeckst@gmail.com',
           url               = 'http://mdanalysis.googlecode.com/',
-          license           = 'GPL 2',
+          license           = 'GPL 3',
           packages          = ['xdrfile'],
           package_dir       = {'xdrfile': 'xdrfile'},
           ext_package       = 'xdrfile',

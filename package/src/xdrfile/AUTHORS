@@ -36,16 +36,40 @@ Oliver Beckstein wrote
  * libxdrfile.i
 
 ``libxdrfile_wrap.c`` and ``coordinates/xdrfile/libxdrfile.py`` are
-generated from ``libxdrfile.i`` with::
+generated from ``libxdrfile.i`` with:
 
      swig -python -outdir MDAnalysis/coordinates/xdrfile src/xdrfile/libxdrfile.i
 
-The files 
+Up to and including MDAnalysis version 0.7.7 the files 
 
  * libxdrfile.i
  * libxdrfile_wrap.c
  * libxdrfile.py
 
-are published under the GNU LESSER GENERAL PUBLIC LICENSE Version 3
-(or higher).
-   
+are published under the GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher).
+
+
+XTC/TRR frame indexing
+======================
+
+For MDAnalysis versions above 0.7.7 indexing functionality was added to the xdr
+reading library. Its version number was changed to 2.0. All the modified files
+mentioned below are published under the GNU GENERAL PUBLIC LICENSE Version 3
+(or higher) for MDAnalysis versions above 0.7.7.
+
+Manuel Melo added indexing functions to
+ * xdrfile_trr.c
+ * xdrfile_xtc.c
+and seeking functions to
+ * xdrfile.c
+and their corresponding prototypes to
+ * xdrfile.h
+ * xdrfile_trr.h
+ * xdrfile_xtc.h
+
+The files
+ * libxdrfile.i
+ * libxdrfile_wrap.c
+ * libxdrfile.py
+were updated to match the new functionality
+

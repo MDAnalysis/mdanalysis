@@ -1725,8 +1725,8 @@ class _GromacsReader(TestCase):
         assert_array_almost_equal(ca.coordinates(), ca_Angstrom, 2,
                                   err_msg="coords of Ca of resid 122 do not match for frame 3")
 
-    @attr('issue')
     @dec.slow
+    @attr('issue')
     def test_unitcell(self):
         """Test that xtc/trr unitcell is read correctly (Issue 34)"""
         self.universe.trajectory.rewind()
@@ -1822,6 +1822,7 @@ class TestTRRReader(_GromacsReader):
     ref_offsets = np.load(TRR_offsets)
     ref_offset_file = TRR_offsets
 
+    @dec.slow
     def test_velocities(self):
 
         # frame 0, v in nm/ps
