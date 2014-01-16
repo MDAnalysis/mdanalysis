@@ -156,7 +156,7 @@ also recognized when they are compressed with :program:`gzip` or
    | DESRES [#a]_  | dms       |  r    | DESRES Molecular Structure file format reader.       |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.DMS`             |
    +---------------+-----------+-------+------------------------------------------------------+
-   | IBIsCO/YASP   | trz       |  r    | Binary IBIsCO or YASP trajectories Module            |
+   | IBIsCO/YASP   | trz       |  r/w  | Binary IBIsCO or YASP trajectories Module            |
    |               |           |       | :mod:`MDAnalysis.coordinates.TRZ`                    |
    +---------------+-----------+-------+------------------------------------------------------+
 
@@ -666,5 +666,6 @@ _trajectory_writers = {'DCD': DCD.DCDWriter,
                        'LAMMPS': LAMMPS.DCDWriter,
                        'PDB': PDB.MultiPDBWriter,
                        'NCDF': TRJ.NCDFWriter,
+                       'TRZ':TRZ.TRZWriter,
                        }
 

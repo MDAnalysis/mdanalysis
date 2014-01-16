@@ -34,7 +34,6 @@ import base
 from base import Timestep
 import MDAnalysis.core
 import numpy
-import struct
 from MDAnalysis.coordinates.core import triclinic_box
 
 class Timestep(base.Timestep):
@@ -72,20 +71,22 @@ class Timestep(base.Timestep):
     def __init__(self, arg, **kwargs):
         if numpy.dtype(type(arg)) == numpy.dtype(int):
             self.frame = 0
+            self.step = 0
             self.numatoms = arg
             self.time = 0.0 #System time in ps
             self.pressure = 0.0 #pressure in kPa
-            self.pressure_tensor = numpy.zeros((6), dtype=numpy.float32) #ptxx, ptxy, ptyy, ptxz, ptyz, ptzz
+            self.pressure_tensor = numpy.zeros((6), dtype=numpy.float64) #ptxx, ptxy, ptyy, ptxz, ptyz, ptzz
             self.total_energy = 0.0 # Energies all kJ mol-1
             self.potential_energy = 0.0
             self.kinetic_energy = 0.0
             self.temperature = 0.0 #Temperature in Kelvin
             self._pos        = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order ='F')
             self._velocities = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order ='F')
-            self._unitcell   = numpy.zeros((9),                dtype=numpy.float32, order ='F')
+            self._unitcell   = numpy.zeros((9),                dtype=numpy.float64, order ='F')
         elif isinstance(arg, Timestep): # Copy constructor
             # This makes a deepcopy of the timestep
             self.frame = arg.frame
+            self.step = arg.step
             self.numatoms = arg.numatoms
             self.time = arg.time
             self.pressure = arg.pressure
@@ -100,15 +101,18 @@ class Timestep(base.Timestep):
         elif isinstance(arg, numpy.ndarray):
             if len(arg.shape) != 2:
                 raise ValueError("numpy array can only have 2 dimensions")
-            self._unitcell = numpy.zeros((9), dtype=numpy.float32)
+            self._unitcell = numpy.zeros((9), dtype=numpy.float64)
             self.frame = 0
-            if arg.shape[1] == 3:
-                self.numatoms = arg.shape[0]
-            else:
-                self.numatoms = arg.shape[0]
-                # Or should an exception be raised if coordinate
-                # structure is not 3-dimensional? Maybe velocities
-                # could be read one day... [DP]
+            self.step = 0
+            self.numatoms = arg.shape[0]
+            self.time = 0.0
+            self.pressure = 0.0
+            self.pressure_tensor = numpy.zeros((6), dtype=numpy.float64)
+            self.total_energy = 0.0
+            self.potential_energy = 0.0
+            self.kinetic_energy = 0.0
+            self.temperature = 0.0 #Temperature in Kelvin
+            self._velocities = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order ='F')
             self._pos = arg.astype(numpy.float32).copy('Fortran',)
         else:
             raise ValueError("Cannot create an empty Timestep")
@@ -189,11 +193,43 @@ class TRZReader(base.Reader):
         self.__numatoms = numatoms
         self.__numframes = None
         self.__delta = None
+        self.__dt = None
+        self.__skip_timestep = None
 
         self.fixed = 0 #Are any atoms fixed in place? Not used in trz files
         self.skip = 1 #Step size for iterating through trajectory
         self.periodic = False # Box info for PBC
-        self.skip_timestep = 1 # Number of steps between frames, can be found in trz files
+
+        # structured dtype of a single trajectory frame
+        readarg = str(numatoms) + 'f4'
+        self._dtype = numpy.dtype([('p1','i4'),
+                                   ('nframe','i4'),
+                                   ('ntrj','i4'),
+                                   ('natoms','i4'),
+                                   ('treal','f8'),
+                                   ('p2','2i4'),
+                                   ('box','9f8'),
+                                   ('p3','2i4'),
+                                   ('pressure','f8'),
+                                   ('ptensor','6f8'),
+                                   ('p4','3i4'),
+                                   ('etot','f8'),
+                                   ('ptot','f8'),
+                                   ('ek','f8'),
+                                   ('T','f8'),
+                                   ('p5','6i4'),
+                                   ('rx',readarg),
+                                   ('pad2','2i4'),
+                                   ('ry',readarg),
+                                   ('pad3','2i4'),
+                                   ('rz',readarg),
+                                   ('pad4','2i4'),
+                                   ('vx',readarg),
+                                   ('pad5','2i4'),
+                                   ('vy',readarg),
+                                   ('pad6','2i4'),
+                                   ('vz',readarg),
+                                   ('pad7','i4')])
 
         self._read_trz_header()
         self.ts = Timestep(self.numatoms)
@@ -202,13 +238,11 @@ class TRZReader(base.Reader):
     def _read_trz_header(self):
         """Reads the header of the trz trajectory"""
         #Read the header of the file
-        #file.read(4)
-        #title = struct.unpack('80c',file.read(80))
-        #file.read(4)
-        #file.read(4)
-        #nrec = struct.unpack('i',file.read(4))
-        #file.read(4)
-        self.trzfile.seek(100,1) # Header is 100 bytes in total, but contains nothing "useful"
+        headerdtype = numpy.dtype([('p1','i4'),
+                                   ('title','80c'),
+                                   ('p2','4i4')])
+        data = numpy.fromfile(self.trzfile, dtype=headerdtype, count=1)
+        self.title = ''.join(data['title'][0])
 
     def _read_next_timestep(self, ts=None): # self.next() is from base Reader class and calls this
         #Read a timestep from binary file
@@ -216,45 +250,23 @@ class TRZReader(base.Reader):
             ts = self.ts
 
         try:
-            #Skip into frame
-            self.trzfile.seek(12,1) # Seek forward 12 bytes from current position (1)
-            natoms = struct.unpack('i',self.trzfile.read(4))[0]
-            ts.time = struct.unpack('d',self.trzfile.read(8))[0] # Real time of the system
-            #Read box data
-            self.trzfile.seek(8,1) #Includes 4 from previous write statement
-            ts._unitcell[:] = struct.unpack('9d',self.trzfile.read(72)) #3x3 matrix with lengths along diagonal
-            self.trzfile.seek(4,1)
-            #Pressure data
-            self.trzfile.seek(4,1)
-            ts.pressure = struct.unpack('d',self.trzfile.read(8))
-            ts.pressure_tensor[:] = struct.unpack('6d',self.trzfile.read(8*6))
-            self.trzfile.seek(4,1)
-            #Energy data
-            self.trzfile.seek(8,1) #4 byte buffer + meaningless integer skip
-            ts.total_energy = struct.unpack('d',self.trzfile.read(8))
-            ts.potential_energy = struct.unpack('d',self.trzfile.read(8))
-            ts.kinetic_energy = struct.unpack('d',self.trzfile.read(8))
-            ts.temperature = struct.unpack('d',self.trzfile.read(8))
-            self.trzfile.seek((2*8+4),1) #2 empty doubles and 4 byte end buffer
-            #Read coordinate data
-            readarg = str(natoms) + 'f' #Argument for struct.unpack
-            self.trzfile.seek(4,1)
-            ts._x[:] = struct.unpack(readarg,self.trzfile.read(4*natoms)) # ts._pos[:,0] = x coord
-            self.trzfile.seek(8,1)
-            ts._y[:] = struct.unpack(readarg,self.trzfile.read(4*natoms))
-            self.trzfile.seek(8,1)
-            ts._z[:] = struct.unpack(readarg,self.trzfile.read(4*natoms))
-            self.trzfile.seek(4,1)
-            #Velocities
-            self.trzfile.seek(4,1)
-            ts._velocities[:,0] = struct.unpack(readarg,self.trzfile.read(4*natoms))
-            self.trzfile.seek(8,1)
-            ts._velocities[:,1] = struct.unpack(readarg,self.trzfile.read(4*natoms))
-            self.trzfile.seek(8,1)
-            ts._velocities[:,2] = struct.unpack(readarg,self.trzfile.read(4*natoms))
-            self.trzfile.seek(4,1)
-
-            ts.frame += 1
+            data = numpy.fromfile(self.trzfile, dtype=self._dtype, count=1)
+            ts.frame = data['nframe'][0]
+            ts.step = data['ntrj'][0]
+            ts.time = data['treal'][0]
+            ts._unitcell[:] = data['box']
+            ts.pressure = data['pressure']
+            ts.pressure_tensor[:] = data['ptensor']
+            ts.total_energy = data['etot']
+            ts.potential_energy = data['ptot']
+            ts.kinetic_energy = data['ek']
+            ts.temperature = data['T']
+            ts._x[:] = data['rx']
+            ts._y[:] = data['ry']
+            ts._z[:] = data['rz']
+            ts._velocities[:,0] = data['vx']
+            ts._velocities[:,1] = data['vy']
+            ts._velocities[:,2] = data['vz']         
 
             if self.convert_units: #Convert things read into MDAnalysis' native formats (nm -> angstroms in this case)
                 self.convert_pos_from_native(self.ts._pos)
@@ -262,7 +274,7 @@ class TRZReader(base.Reader):
                 self.convert_velocities_from_native(self.ts._velocities)
 
             return ts
-        except struct.error: #End of file reached if struct fails to unpack
+        except IndexError: #Raises indexerror if data has no data (EOF)
             raise IOError
 
     @property
@@ -278,12 +290,12 @@ class TRZReader(base.Reader):
         else:
             return self.__numatoms
 
-    def _read_trz_natoms(self, f):
+    def _read_trz_natoms(self, trzfile):
         #Read start of next frame and reopen file
         try:
-            f.seek(12,1) #Reads 4 bytes at start, then nframe, ntrj*nframe
-            natoms = struct.unpack('i',f.read(4))
-        except struct.error:
+            data = numpy.fromfile(trzfile, dtype=self._dtype, count=1)
+            natoms = data['natoms']
+        except IndexError:
             raise IOError
         else:
             self._reopen()
@@ -313,28 +325,51 @@ class TRZReader(base.Reader):
                 return framecounter
 
     @property
-    def delta(self):
+    def dt(self):
         """Time step between frames in ps
 
         Assumes that this step is constant (ie. 2 trajectories with different steps haven't been
         stitched together)
         Returns 0 in case of IOError
         """
-        if not self.__delta is None:
-            return self.__delta
+        if not self.__dt is None:
+            return self.__dt
         try:
             t0 = self.ts.time
             self.next()
             t1 = self.ts.time
-            self.__delta = t1 - t0
+            self.__dt = t1 - t0
         except IOError:
             return 0
         finally:
             self.rewind()
+        return self.__dt
+
+    @property
+    def delta(self):
+        """MD integration timestep"""
+        if not self.__delta is None:
+            return self.__delta
+        self.__delta = self.dt / self.skip_timestep
         return self.__delta
 
+    @property
+    def skip_timestep(self):
+        """Timesteps between trajectory frames"""
+        if not self.__skip_timestep is None:
+            return self.__skip_timestep
+        try:
+            t0 = self.ts.step
+            self.next()
+            t1 = self.ts.step
+            self.__skip_timestep = t1 - t0
+        except IOERROR:
+            return 0
+        finally:
+            self.rewind()
+        return self.__skip_timestep
+
     def __iter__(self):
-        self.ts.frame = 0
         self._reopen()
         while True:
             try:
@@ -342,6 +377,19 @@ class TRZReader(base.Reader):
             except IOError:
                 self.rewind()
                 raise StopIteration
+
+    # can use base.Reader __getitem__ implementation
+    def _read_frame(self, frame):
+        """Move to *frame* and fill timestep with data."""
+        move = frame  - (self.ts.frame - 1) # difference from current frame to desired frame
+        if move < 0: # if a backward frame is wanted
+            self.rewind() #reopen and start from beginning
+            for i in range(frame):
+                self.next()
+        else:
+            for i in range(move): # else skip ahead the required number
+                self.next()
+        return self.ts
 
     def rewind(self):
         """Reposition reader onto first frame"""
@@ -370,6 +418,12 @@ class TRZReader(base.Reader):
         ts.time = 0
         return self.trzfile
 
+    def Writer(self, filename, numatoms=None):
+        if numatoms == None:
+            # guess that they want to write the whole timestep unless told otherwise?
+            numatoms = self.ts.numatoms
+        return TRZWriter(filename, numatoms)
+
     def close(self):
         """Close trz file if it was open"""
         if self.trzfile is None:
@@ -381,3 +435,135 @@ class TRZReader(base.Reader):
         if not self.trzfile is None:
             self.close()
 
+class TRZWriter(base.Writer):
+    """
+    Writes TRZ format.
+    """
+
+    format='TRZ'
+
+    units = {'time':'ps', 'length':'nm', 'velocity':'nm/ps'}   
+
+    def __init__(self, filename, numatoms, title='TRZ', convert_units=None):
+        """Create a TRZWriter
+
+        :Arguments:
+         *filename*
+          name of output file
+         *numatoms*
+          number of atoms in trajectory
+
+        :Keywords:
+         *title*
+          title of the trajectory
+        
+        """
+        self.filename = filename
+        if numatoms is None:
+            raise ValueError("TRZWriter requires the numatoms keyword")
+        if numatoms == 0:
+            raise ValueError("TRZWriter: no atoms in output trajectory")
+        self.numatoms = numatoms
+
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+        self.convert_units = convert_units
+
+        self.trzfile = open(self.filename, 'wb')
+
+        self._writeheader(title)
+        
+        floatsize = str(numatoms) + 'f4'
+        self.frameDtype = numpy.dtype([('p1a','i4'),
+                                       ('nframe','i4'),
+                                       ('ntrj','i4'),
+                                       ('natoms','i4'),
+                                       ('treal','f8'),
+                                       ('p1b','i4'),
+                                       ('p2a','i4'),
+                                       ('box','9f8'),
+                                       ('p2b','i4'),
+                                       ('p3a','i4'),
+                                       ('pressure','f8'),
+                                       ('ptensor','6f8'),
+                                       ('p3b','i4'),
+                                       ('p4a','i4'),
+                                       ('six','i4'),
+                                       ('etot','f8'),
+                                       ('ptot','f8'),
+                                       ('ek','f8'),
+                                       ('T','f8'),
+                                       ('blanks','2f8'),
+                                       ('p4b','i4'),
+                                       ('p5a','i4'),
+                                       ('rx',floatsize),
+                                       ('p5b','i4'),
+                                       ('p6a','i4'),
+                                       ('ry',floatsize),
+                                       ('p6b','i4'),
+                                       ('p7a','i4'),
+                                       ('rz',floatsize),
+                                       ('p7b','i4'),
+                                       ('p8a','i4'),
+                                       ('vx',floatsize),
+                                       ('p8b','i4'),
+                                       ('p9a','i4'),
+                                       ('vy',floatsize),
+                                       ('p9b','i4'),
+                                       ('p10a','i4'),
+                                       ('vz',floatsize),
+                                       ('p10b','i4')])
+
+    def _writeheader(self, title):
+        hdt = numpy.dtype([('pad1','i4'),('title','80c'),('pad2','i4'),
+                           ('pad3','i4'),('nrec','i4'),('pad4','i4')]) 
+        out = numpy.zeros((), dtype = hdt)
+        out['pad1'], out['pad2'] = 80, 80
+        out['title'] = title
+        out['pad3'], out['pad4'] = 4, 4
+        out['nrec'] = 10
+        out.tofile(self.trzfile)
+        
+    def write_next_timestep(self, ts):    
+        # Check size of ts is same as initial
+        if not ts.numatoms == self.numatoms:
+            raise ValueError("Number of atoms in ts different to initialisation")
+
+        out = numpy.zeros((), dtype=self.frameDtype)
+        out['p1a'], out['p1b'] = 20, 20
+        out['nframe'] = ts.frame
+        out['ntrj'] = ts.step
+        out['treal'] = ts.time
+        out['p2a'], out['p2b'] = 72, 72
+        out['box'] = self.convert_pos_to_native(ts._unitcell, inplace=False)
+        out['p3a'], out['p3b'] = 56, 56
+        out['pressure'] = ts.pressure
+        out['ptensor'] = ts.pressure_tensor
+        out['p4a'], out['p4b'] = 60, 60
+        out['six'] = 6
+        out['etot'] = ts.total_energy
+        out['ptot'] = ts.potential_energy
+        out['ek'] = ts.kinetic_energy
+        out['T'] = ts.temperature
+        out['blanks'] = 0.0, 0.0
+        size = ts.numatoms * 4 # size of float for vels & coords
+        out['p5a'], out['p5b'] = size, size
+        out['rx'] = self.convert_pos_to_native(ts._x, inplace=False)
+        out['p6a'], out['p6b'] = size, size
+        out['ry'] = self.convert_pos_to_native(ts._y, inplace=False)
+        out['p7a'], out['p7b'] = size, size
+        out['rz'] = self.convert_pos_to_native(ts._z, inplace=False)
+        out['p8a'], out['p8b'] = size, size
+        out['vx'] = self.convert_velocities_to_native(ts._velocities[:,0], inplace=False)
+        out['p9a'], out['p9b'] = size, size
+        out['vy'] = self.convert_velocities_to_native(ts._velocities[:,1], inplace=False)
+        out['p10a'], out['p10b'] = size, size
+        out['vz'] = self.convert_velocities_to_native(ts._velocities[:,2], inplace=False)
+        out.tofile(self.trzfile)
+
+    def close(self):
+        """Close if it was open"""
+        if self.trzfile is None:
+            return
+        self.trzfile.close()
+        self.trzfile = None

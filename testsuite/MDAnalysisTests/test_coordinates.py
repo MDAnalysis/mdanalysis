@@ -2133,7 +2133,7 @@ class RefTRZ(object):
     ref_numframes = 6
     ref_coordinates = np.array([72.3163681 , -130.31130981,   19.97969055],dtype=np.float32)
     ref_velocities  = np.array([[14.83297443,  18.02611542,   6.07733774]],dtype=np.float32)
-    ref_delta = 0.01
+    ref_delta = 0.001
     ref_time = 0.01
 
 class TestTRZReader(TestCase, RefTRZ):
@@ -2184,6 +2184,46 @@ class TestTRZReader(TestCase, RefTRZ):
     def test_time(self):
         self.trz.rewind()
         assert_almost_equal(self.trz.time, self.ref_time, self.prec, "wrong time value in trz")
+
+class TRZWriter(TestCase, RefTRZ):
+    def setUp(self):
+        self.universe = mda.Universe(TRZ_psf, TRZ)
+        self.prec = 3
+        fd, self.outfile = tempfile.mkstemp(suffix='.trz')
+        os.close(fd)
+        self.Writer = MDAnalysis.coordinates.TRZ.TRZWriter
+
+    def tearDown(self):
+        del self.universe
+        del self.prec
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.Writer
+
+    def test_write_trajectory(self):
+        t = self.universe.trajectory
+        W = self.Writer(self.outfile, t.numatoms)
+        self._copy_traj(W)
+
+    def _copy_traj(self, writer):
+        for ts in self.universe.trajectory:
+            writer.write_next_timestep(ts)
+        writer.close()
+        
+        uw = mda.Universe(TRZ_psf, self.outfile)
+
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+            assert_array_almost_equal(orig_ts._pos, written_ts._pos, self.prec,
+                                      err_msg="Coordinate mismatch between orig and written at frame %d" %orig_ts.frame)
+            assert_array_almost_equal(orig_ts._velocities, written_ts._velocities, self.prec,
+                                      err_msg="Coordinate mismatch between orig and written at frame %d" %orig_ts.frame)
+            assert_array_almost_equal(orig_ts._unitcell, written_ts._unitcell, self.prec,
+                                      err_msg="Unitcell mismatch between orig and written at frame %d" %orig_ts.frame)
+            for attr in orig_ts.__dict__.keys():
+                assert_array_almost_equal(orig_ts.__getattribute__(attr), written_ts.__getattribute__(attr), self.prec,  
+                                          err_msg="TS equal failed for %s" %attr)
 
 
 class TestTimestep_Copy(TestCase):
