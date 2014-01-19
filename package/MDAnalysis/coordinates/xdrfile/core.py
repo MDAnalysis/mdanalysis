@@ -58,6 +58,7 @@ from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
 
 import MDAnalysis.core
 
+# This is the XTC class. The TRR overrides with it's own.
 class Timestep(base.Timestep):
     """Timestep for a Gromacs trajectory."""
     def __init__(self, arg):
@@ -78,7 +79,10 @@ class Timestep(base.Timestep):
             self.frame = arg.frame
             self.numatoms = arg.numatoms
             self._unitcell = numpy.array(arg._unitcell)
-            self._pos = numpy.array(arg._pos)
+            try:
+                self._pos = numpy.array(arg._pos, dtype=numpy.float32)
+            except ValueError as err:
+                raise ValueError("Attempted to create a Timestep with invalid coordinate data: " + err.message)
             for attr in ('status', 'step', 'time', 'prec', 'lmbda'):
                 if hasattr(arg, attr):
                     self.__setattr__(attr, arg.__getattribute__(attr))
@@ -148,7 +152,7 @@ class TrjWriter(base.Writer):
           *delta*
              timestep to use. If set will override any time information contained in the
              passed :class:`Timestep` objects; otherwise that will be used. If in the 
-             latter case :attr:`Timestep.time` is unavailable the TrjWriter will default
+             latter case :attr:`~Timestep.time` is unavailable the TrjWriter will default
              to setting the trajectory time at 1 MDAnalysis unit (typically 1ps) per step.
           *precision*
              accuracy for lossy XTC format [1000]
@@ -156,6 +160,11 @@ class TrjWriter(base.Writer):
              ``True``: units are converted to the MDAnalysis base format; ``None`` selects
              the value of :data:`MDAnalysis.core.flags` ['convert_gromacs_lengths'].
              (see :ref:`flags-label`)
+
+        .. versionchanged:: 0.8.0
+           The TRR writer is now able to write TRRs without coordnates/velocities/forces,
+           depending on the properties available in the :class:`Timestep` objects passed to
+           :meth:`~TRRWriter.write`.
         '''
         assert self.format in ('XTC', 'TRR')
 
@@ -183,6 +192,9 @@ class TrjWriter(base.Writer):
         self.xdrfile = libxdrfile.xdrfile_open(self.filename, 'w')
 
         self.ts = None
+        # To flag empty properties to be skipped when writing a TRR it suffices to pass an empty 2D array with shape(natoms,0)
+        if self.format == 'TRR':
+            self._emptyarr = numpy.array([], dtype=numpy.float32).reshape(self.numatoms,0)
 
     def write_next_timestep(self, ts=None):
         ''' write a new timestep to the trj file
@@ -225,45 +237,65 @@ class TrjWriter(base.Writer):
             time = (self.start+self.step*self.frames_written)*self.delta
 
         if self.convert_units:
-            # make a copy of the scaled positions so that the in-memory
-            # timestep is not changed (would have lead to wrong results if
-            # analysed *after* writing a time step to disk). The new
-            # implementation could lead to memory problems and/or slow-down for
-            # very big systems because we temporarily create a new array pos
-            # for each frame written
-            pos = self.convert_pos_to_native(ts._pos, inplace=False)
             time = self.convert_time_to_native(time, inplace=False)
-        else:
-            pos = ts._pos
+
         if not hasattr(ts, 'step'):
             # bogus, should be actual MD step number, i.e. frame * delta/dt
             ts.step = ts.frame
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
 
+        # make a copy of the scaled positions so that the in-memory
+        # timestep is not changed (would have lead to wrong results if
+        # analysed *after* writing a time step to disk). The new
+        # implementation could lead to memory problems and/or slow-down for
+        # very big systems because we temporarily create a new array pos
+        # for each frame written
+        #
+        # For TRR only go through the trouble if the frame actually has valid
+        #  coords/vels/forces; otherwise they won't be written anyway (pointers
+        #  set to an empty array that libxdrfile.py knows it should set to NULL).
+        #
         # (2) have to treat XTC and TRR somewhat differently
         if self.format == 'XTC':
+            if self.convert_units:
+                pos = self.convert_pos_to_native(ts._pos, inplace=False)
+            else:
+                pos = ts._pos
             status = libxdrfile.write_xtc(self.xdrfile, int(ts.step), float(time), unitcell, pos, self.precision)
+        #
         elif self.format == 'TRR':
             if not hasattr(ts, 'lmbda'):
                 ts.lmbda = 1.0
-            if hasattr(ts, '_velocities'):
+            # Same assignment logic as for TRR Timestep creation (because we might be getting here frames from
+            #  other formats' Timesteps that don't have 'has_' flags).
+            has_x = ts.__dict__.get("has_x", True)
+            has_v = ts.__dict__.get("has_v", hasattr(ts, "_velocities"))
+            has_f = ts.__dict__.get("has_f", hasattr(ts, "_forces"))
+            # COORDINATES
+            if has_x:
+                if self.convert_units:
+                    pos = self.convert_pos_to_native(ts._pos, inplace=False)
+                else:
+                    pos = ts._pos 
+            else:
+                pos = self._emptyarr 
+            #VELOCITIES
+            if has_v:
                 if self.convert_units:
                     velocities = self.convert_velocities_to_native(ts._velocities, inplace=False)
                 else:
                     velocities = ts._velocities
             else:
-                # 0-velocities (no need to convert those); add it to ts as a sideeffect
-                # so that we don't have to reallocate next time
-                velocities = ts._velocities = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
-            if hasattr(ts, '_forces'):
+                velocities = self._emptyarr
+            # FORCES
+            if has_f:
                 if self.convert_units:
                     forces = self.convert_forces_to_native(ts._forces, inplace=False)
                 else:
                     forces = ts._forces
             else:
-                # 0-forces (no need to convert those); add it to ts as a sideeffect
-                # so that we don't have to reallocate next time
-                forces = ts._forces = numpy.zeros((3,ts.numatoms), dtype=numpy.float32)
+                forces = self._emptyarr
+            #
             status = libxdrfile.write_trr(self.xdrfile, int(ts.step), float(time), float(ts.lmbda), unitcell,
                                           pos, velocities, forces)
         else:
@@ -291,6 +323,13 @@ class TrjReader(base.Reader):
        reader = TrjReader("file.trj")
        for ts in reader:
           print ts
+
+    .. versionchanged:: 0.8.0
+       :class:`Timestep` objects returned from TRR files now have.
+       :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, and :attr:`~Timestep.has_f`
+       flags reflecting whether coordinetes/velocities/forces were read.
+       Attempting to read such data when the corresponding flag is set to ``False``
+       will raise a :exc:`NoDataError`.
     """
     #: units of time (ps) and length (nm) in Gromacs
     units = {'time': 'ps', 'length': 'nm'}
@@ -364,7 +403,7 @@ class TrjReader(base.Reader):
                 raise ValueError("sub MUST be less than or equal to the number of actual trr atoms, {} in this case".
                                  format(self.__trr_numatoms))
             if numpy.max(sub) >= self.__trr_numatoms or numpy.min(sub) < 0:
-                raise IndexError("sub contains out of range elements for the given trajectory")
+                raise IndexError("sub contains out-of-range elements for the given trajectory")
             # sub appears to be valid
             self.__sub = sub
 
@@ -569,6 +608,9 @@ class TrjReader(base.Reader):
         """Generic ts reader with minimum intelligence. Override if necessary."""
         if ts is None:
             ts = self.ts
+        elif self.format == 'TRR' and not hasattr(ts, '_tpos'): # If a foreign Timestep is passed as the receptacle of the data
+            ts = TRR.Timestep(ts)                               #  we must make sure the access-checking stuff gets set up.
+
         if self.xdrfile is None:
             self.open_trajectory()
 
@@ -580,14 +622,14 @@ class TrjReader(base.Reader):
                 ts._pos[:] = self.__pos_buf[self.__sub]
         elif self.format == 'TRR':
             if self.__sub is None:
-                ts.status, ts.step, ts.time, ts.lmbda, has_x, has_v, has_f = libxdrfile.read_trr(self.xdrfile, ts._unitcell, ts._pos,
-                                                                            ts._velocities, ts._forces)
+                ts.status, ts.step, ts.time, ts.lmbda, ts.has_x, ts.has_v, ts.has_f = libxdrfile.read_trr(self.xdrfile, ts._unitcell, ts._tpos,
+                                                                            ts._tvelocities, ts._tforces)
             else:
-                ts.status, ts.step, ts.time, ts.lmbda, has_x, has_v, has_f  = libxdrfile.read_trr(self.xdrfile, ts._unitcell, self.__pos_buf,
+                ts.status, ts.step, ts.time, ts.lmbda, ts.has_x, ts.has_v, ts.has_f  = libxdrfile.read_trr(self.xdrfile, ts._unitcell, self.__pos_buf,
                                                                             self.__velocities_buf, self.__forces_buf)
-                ts._pos[:] = self.__pos_buf[self.__sub]
-                ts._velocities[:] = self.__velocities_buf[self.__sub]
-                ts._forces[:] = self.__forces_buf[self.__sub]
+                ts._tpos[:] = self.__pos_buf[self.__sub]
+                ts._tvelocities[:] = self.__velocities_buf[self.__sub]
+                ts._tforces[:] = self.__forces_buf[self.__sub]
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
 
@@ -601,14 +643,14 @@ class TrjReader(base.Reader):
                           (self.format, statno.errorcode[ts.status]), self.filename)
         if self.convert_units:
             # TRRs have the annoying possibility of frames without coordinates/velocities/forces...
-            if self.format == 'XTC' or has_x:
+            if self.format == 'XTC' or ts.has_x:
                 self.convert_pos_from_native(ts._pos)         # in-place !
             self.convert_pos_from_native(ts._unitcell)        # in-place ! (note: xtc/trr contain unit vecs!)
             ts.time = self.convert_time_from_native(ts.time)  # in-place does not work with scalars
             if self.format == 'TRR':
-                if has_v:
+                if ts.has_v:
                     self.convert_velocities_from_native(ts._velocities) # in-place
-                if has_f:
+                if ts.has_f:
                     self.convert_forces_from_native(ts._forces)     # in-place
         ts.frame += 1
         return ts

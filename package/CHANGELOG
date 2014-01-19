@@ -18,6 +18,8 @@ The rules for this file:
 
   Enhancements
 
+  * TRR file handling is now fully aware of missing coordinate/velocity/force
+    information when reading and writing frames.
   * MDAnalysis.analysis.contacts.ContactAnalysis1 run() method
     now allows trajectory slicing (Issue 161)
   * Merge AtomGroups into a new Universe (Issue 157)

@@ -61,7 +61,8 @@ and the mode coordinates are filling the
 
    W = Writer('pca.trr', numatoms=N)            # TRR writer
    ts = MDAnalysis.coordinates.TRR.Timestep(N)  # TRR time step
-
+   ts.has_x = True                              # TRR handling now requires this flag to be set
+                                                # before low-level assignment to ts._pos.
    for frame,mode in enumerate(modes[4:16]):
        ts.lmbda = -1
        if frame<=1:

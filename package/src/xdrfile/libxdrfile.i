@@ -310,6 +310,11 @@ calculations. Velocities and forces are optional in the sense that they can be a
                 *f*
                    numpy ``array((natoms, DIM),dtype=nump.float32)``
                    which contains the **forces** from the frame
+
+              .. versionchanged:: 0.8.0
+                   either one of *x*, *v*, or *f* can now be set as a 0-atom
+                   numpy ``array((0, DIM),dtype=nump.float32)``. This will cause the
+                   corresponding property to be skipped when writing to file.
  
               :Returns: *status*, integer status (0 = OK), see the ``libxdrfile.exdr*`` 
                         constants under `Status symbols`_ for other values)
@@ -568,13 +573,17 @@ int my_write_xtc(XDRFILE *xd, int step, float time,
 }
 %}
 
-%feature("autodoc", "write_xtc(XDRFILE, step, time, lambda, box, x, v, f) -> status") my_write_trr;
+%feature("autodoc", "write_trr(XDRFILE, step, time, lambda, box, x, v, f) -> status") my_write_trr;
 %rename (write_trr) my_write_trr;
 %inline %{
 int my_write_trr(XDRFILE *xd, int step, float time, float lmbda, matrix box, 
 		 int natoms,  int _DIM,  float *x, 
 		 int vnatoms, int v_DIM, float *v, 
 		 int fnatoms, int f_DIM, float *f) { 
+  /* Preparing for the case of empty arrays - NULL pointers tell the library to skip this property. */
+  if (_DIM == 0) x = NULL;
+  if (v_DIM == 0) v = NULL;
+  if (f_DIM == 0) f = NULL;
   return write_trr(xd, natoms, step, time, lmbda, box, (rvec *)x, (rvec *)v, (rvec *)f);
 }
 %}

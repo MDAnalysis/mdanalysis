@@ -1956,6 +1956,44 @@ class TestTRRWriter(_GromacsWriter):
             assert_array_almost_equal(written_ts._velocities, orig_ts._velocities, 3,
                                       err_msg="velocities mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
 
+    def test_gaps(self):
+        """Tests the writing and reading back of TRRs with gaps in any of the coordinates/velocities properties."""
+        t = self.universe.trajectory
+        W = self.Writer(self.outfile, t.numatoms, delta=t.delta, step=t.skip_timestep)
+        for ts in self.universe.trajectory:
+            # Inset some gaps in the properties: coords every 4 steps, vels every 2.
+            if not ts.frame %4:
+                ts.has_x = False
+            if not ts.frame %2:
+                ts.has_v = False
+            W.write_next_timestep(ts)
+        W.close()
+
+        uw = mda.Universe(GRO, self.outfile)
+
+        # check that the velocities are identical for each time step, except for the gaps (that we must make sure to raise exceptions on).
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+            try:
+                assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
+                    err_msg="coordinates mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+            except mda.NoDataError:
+                assert_(not orig_ts.frame % 4, 
+                    msg="failed to read coordinates from TRR with gaps between original and written (with gaps) trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+            else:
+                assert_(orig_ts.frame % 4, 
+                    msg="failed to flag gap in coordinates from TRR at frame %d." % (written_ts.frame))
+
+            try:
+                assert_array_almost_equal(written_ts._velocities, orig_ts._velocities, 3,
+                    err_msg="velocities mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+            except mda.NoDataError:
+                assert_(not orig_ts.frame % 2, 
+                    msg="failed to read velocities from TRR with gaps between original and written (with gaps) trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+            else:
+                assert_(orig_ts.frame % 2, 
+                    msg="failed to flag gap in velocities from TRR at frame %d." % (written_ts.frame))
+
+
 class _GromacsWriterIssue101(TestCase):
     Writers = {'.trr': MDAnalysis.coordinates.TRR.TRRWriter,
                '.xtc': MDAnalysis.coordinates.XTC.XTCWriter,
