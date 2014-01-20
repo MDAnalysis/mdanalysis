@@ -147,8 +147,9 @@ class TrjWriter(base.Writer):
              skip between subsequent timesteps; only used when *delta* is set.
           *delta*
              timestep to use. If set will override any time information contained in the
-             passed :class:`Timestep` objects; otherwise that will be used (defaulting to
-             1ns if unavailable)
+             passed :class:`Timestep` objects; otherwise that will be used. If in the 
+             latter case :attr:`Timestep.time` is unavailable the TrjWriter will default
+             to setting the trajectory time at 1 MDAnalysis unit (typically 1ps) per step.
           *precision*
              accuracy for lossy XTC format [1000]
           *convert_units*
@@ -213,12 +214,12 @@ class TrjWriter(base.Writer):
 
         # Time-writing logic: if the writer was created with a delta parameter,
         #  use delta*(start+step*frames_written)
-        #  otherwise use the provided Timestep obj time attribute; bail out if not present.
+        #  otherwise use the provided Timestep obj time attribute. Fallback to 1 if not present.
         if self.delta is None:
             try:
                 time = ts.time
             except AttributeError:
-                # Default to 1ns timestep.
+                # Default to 1 time unit.
                 time = self.start+self.step*self.frames_written
         else:
             time = (self.start+self.step*self.frames_written)*self.delta
@@ -526,7 +527,7 @@ class TrjReader(base.Reader):
           *numatoms*
               number of atoms
           *delta*
-              Time interval between frames in ps.
+              Time interval between frames.
           *precision*
               accuracy for lossy XTC format as a power of 10 (ignored
               for TRR) [1000.0]
@@ -534,9 +535,12 @@ class TrjReader(base.Reader):
         :Returns: appropriate :class:`TrjWriter`
         """
         numatoms = kwargs.pop('numatoms', self.numatoms)
-        kwargs.pop('start', None)            # ignored by TrjWriter
-        kwargs['step'] = self.skip_timestep  # ignored/fixed to 1
+        kwargs['step'] = self.skip_timestep 
         kwargs.setdefault('delta', self.delta)
+        try:
+            kwargs['start'] = self[0].time/kwargs['delta']
+        except (AttributeError, ZeroDivisionError):
+            kwargs['start'] = 0
         try:
             kwargs.setdefault('precision', self.precision)
         except AttributeError:
