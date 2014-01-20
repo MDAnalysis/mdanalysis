@@ -31,9 +31,15 @@ Options:
 Output
 ------
 
-The results are hydrogen bond data per frame (# indicates comments
-that are not part of the output), stored in
-:attr:`HydrogenBondAnalysis.timeseries`::
+The results are
+  - the **identities** of donor and acceptor heavy-atoms,
+  - the **distance** between the heavy atom acceptor atom and the hydrogen atom
+    that is bonded to the heavy atom donor,
+  - the **angle** donor-hydrogen-acceptor angle (180º is linear).
+
+Hydrogen bond data are returned per frame, which is stored in
+:attr:`HydrogenBondAnalysis.timeseries` (In the following description, ``#``
+indicates comments that are not part of the output.)::
 
     results = [
         [ # frame 1
