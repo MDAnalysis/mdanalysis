@@ -8,7 +8,8 @@
 %define DOCSTRING
 "
 :Author:  Oliver Beckstein <orbeckst@gmail.com>
-:Year:    2010
+:Author:  Manuel Nuno Melo <manuel.nuno.melo@gmail.com>
+:Year:    2014
 :Licence: GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher)
 
 

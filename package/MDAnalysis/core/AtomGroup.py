@@ -1405,7 +1405,7 @@ class AtomGroup(object):
             ts = self.universe.trajectory.ts
         try:
             if hasattr(ts, 'has_v'):  # TRR handling must be told frame now holds valid velocity info.
-                ts.has_x = True
+                ts.has_v = True
             ts._velocities[self.indices(), :] = v
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
@@ -1490,6 +1490,8 @@ class AtomGroup(object):
         if ts == None:
             ts = self.universe.trajectory.ts
         try:
+            if hasattr(ts, 'has_f'):  # TRR handling must be told frame now holds valid force info.
+                ts.has_f = True
             ts._forces[self.indices(), :] = forces
         except AttributeError:
             raise NoDataError("Timestep does not contain forces")
