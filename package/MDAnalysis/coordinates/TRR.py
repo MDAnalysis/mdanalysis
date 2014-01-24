@@ -59,10 +59,12 @@ and the mode coordinates are filling the
 
    N = len(xav)   # number of atoms, i.e. number of coordinates
 
-   W = Writer('pca.trr', numatoms=N)            # TRR writer
-   ts = MDAnalysis.coordinates.TRR.Timestep(N)  # TRR time step
-   ts.has_x = True                              # TRR handling now requires this flag to be set
-                                                # before low-level assignment to ts._pos.
+   W = Writer('pca.trr', numatoms=N)                        # TRR writer
+   ts = MDAnalysis.coordinates.TRR.Timestep(N, has_x=True)  # TRR time step
+                                                            #   TRR handling now requires 'has_x' to be set
+                                                            #   before low-level assignment to ts._pos.
+                                                            #   (likewise for 'has_v' and 'has_f' for assignment
+                                                            #   to ts._velocites and ts._forces)
    for frame,mode in enumerate(modes[4:16]):
        ts.lmbda = -1
        if frame<=1:

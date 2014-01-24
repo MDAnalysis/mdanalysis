@@ -54,23 +54,25 @@ class Timestep(core.Timestep):
        Accessing either kind of information while the corresponding flag is set to ``False``
        wil raise a :exc:`NoDataError`.
        When doing low-level writing to :attr:`~Timestep._pos`, :attr:`~Timestep._velocities`,
-       or :attr:`~Timestep._forces:attr:, the corresponding flags must be set beforehand.
+       or :attr:`~Timestep._forces:attr:, the corresponding flags must be set beforehand. The
+       TRR :class:`Timestep` constructor allows for the named boolean arguments *has_x*,
+       *has_v*, and *has_f* to be passed for automatic setting of the corresponding flag.
     """
     # The exception error
     _nodataerr = "You are accessing the %s of a Timestep but there are none in this frame. \
 It might be the case that your trajectory doesn't have %s, or not every frame. In the latter case you can \
 (1) get rid of %s-less frames before passing the trajectory to MDAnalysis, or \
 (2) reflow your code to not access %s when they're not there, by making use of the '%s' flag of Timestep objects."
-    def __init__(self, arg):
+    def __init__(self, arg, **kwargs):
         DIM = libxdrfile.DIM    # compiled-in dimension (most likely 3)
         # These flags control which attributes were actually initialized in this Timestep. Due to the possibility of TRR
         #  frames with no coords/vels/forces, and the way reading is handled, the _tpos, _tvelocities and _tforces arrays
         #  may end up containing data from different frames when the relevant attribute is missing in the trajectory.
         #  This is flagged and exceptions can be raised whenever there is an attempt to read flagged data.
-        self.has_x = False
-        self.has_v = False
-        self.has_f = False
         if numpy.dtype(type(arg)) == numpy.dtype(int):
+            self.has_x = kwargs.pop('has_x', False)
+            self.has_v = kwargs.pop('has_v', False)
+            self.has_f = kwargs.pop('has_f', False)
             self.frame = 0
             self.numatoms = arg
             # C floats and C-order for arrays (see libxdrfile.i)
@@ -89,11 +91,12 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
             self.numatoms = arg.numatoms
             self._unitcell = numpy.array(arg._unitcell)
             # The 'has_' flags are set to True if the passed ts has them set to True OR if there is no such flag
-            #  and the attributes are there.
-            # has_x is an exception because we can assume the _pos attribute will always be there.
-            self.has_x = arg.__dict__.get("has_x", True)
-            self.has_v = arg.__dict__.get("has_v", hasattr(arg, "_velocities"))
-            self.has_f = arg.__dict__.get("has_f", hasattr(arg, "_forces"))
+            #  and the attributes are there. This is overriden by the has_ named arguments passed to the constructor.
+            # has_x is an exception because we can assume that, if the flag doesn't exist, the _pos attribute will
+            # always be there.
+            self.has_x = kwargs.pop('has_x', arg.__dict__.get("has_x", True))
+            self.has_v = kwargs.pop('has_v', arg.__dict__.get("has_v", hasattr(arg, "_velocities")))
+            self.has_f = kwargs.pop('has_f', arg.__dict__.get("has_f", hasattr(arg, "_forces")))
             # We now either copy the properties or initialize a zeros array, depending on whether the passed ts
             #  has the appropriate 'has_' flags set or has the attribute. If the attribute is there but the 'has_'
             #  flag is False we initialize to zeros (it's just as slow and it makes no sense to copy data from 
@@ -137,9 +140,11 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
             # which contains pos = arg[:,0:3], v = arg[:,3:6], f = arg[:, 6:9]
             # or just positions: pos = arg[:,0:3] == arg
             #
-            # This method can now be used to set the 'has_' flags at Timestep creation:
-            # setting any section (coords/vels/forces) of the passed ndarray to 'nan' values 
-            #  will cause the corresponding flag to be set to False.
+            # The 'has_' flags are set from the named arguments passed to the constructor,
+            # but default to what fields are available from the input array.
+            self.has_x = kwargs.pop('has_x', True)
+            self.has_v = kwargs.pop('has_v', arg.shape[1] == 3*DIM)
+            self.has_f = kwargs.pop('has_f', arg.shape[1] == 3*DIM)
             if len(arg.shape) != 2:
                 raise ValueError("packed numpy array (x,v,f) can only have 2 dimensions")
             self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
@@ -147,29 +152,25 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
             if (arg.shape[0] == 3*DIM and arg.shape[1] != 3*DIM) or \
                     (arg.shape[0] == DIM and arg.shape[1] != DIM):
                 # wrong order (but need to exclude case where natoms == DIM or natoms == 3*DIM!)
-                raise ValueError("TRR timestep is to be initialized from an array with dimensions (natoms, 3*%d) or (natoms, %d). If you wish to skip a property assign 'nan' to the corresponding array segment." % (DIM, DIM))
+                raise ValueError("TRR timestep is to be initialized from an array with dimensions (natoms, 3*%d) or (natoms, %d). \
+                        If you wish to skip a property set the corresponding 'has_' flag to False on construction." % (DIM, DIM))
             self.numatoms = arg.shape[0]
             if arg.shape[1] != DIM and arg.shape[1] != 3*DIM:
                 raise ValueError("TRR timestep doesn't have second dimension %d or 3*%d: shape=%r" % (DIM,DIM,arg.shape))
             # COORDINATES
-            if numpy.any(numpy.isnan(arg[:,:DIM])):
-                self._tpos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
-            else:
-                self._tpos = arg[:,0:DIM].copy('C')                   # C-order
-                self.has_x = True
+            self._tpos = arg[:,0:DIM].copy('C')                   # C-order
             # Velocities and forces, if the array seems to have them.
             # VELOCITIES
-            if arg.shape[1] == DIM or numpy.any(numpy.isnan(arg[:,DIM:2*DIM])):
-                self._tvelocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
-            else:
+            if arg.shape[1] == DIM:
                 self._tvelocities = arg[:,DIM:2*DIM].copy('C')    # C-order
-                self.has_v = True
             # FORCES
-            if arg.shape[1] == DIM or numpy.any(numpy.isnan(arg[:,2*DIM:3*DIM])):
-                self._tforces = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
-            else:
                 self._tforces = arg[:,2*DIM:3*DIM].copy('C')      # C-order
-                self.has_f = True
+            else:
+                self._tvelocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
+                self._tforces = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
+                self.has_v = False
+                self.has_f = False
+
             # additional data for trr
             self.status = libxdrfile.exdrOK
             self.step = 0

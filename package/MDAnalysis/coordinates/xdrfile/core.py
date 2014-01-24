@@ -61,7 +61,7 @@ import MDAnalysis.core
 # This is the XTC class. The TRR overrides with it's own.
 class Timestep(base.Timestep):
     """Timestep for a Gromacs trajectory."""
-    def __init__(self, arg):
+    def __init__(self, arg, **kwargs):
         DIM = libxdrfile.DIM    # compiled-in dimension (most likely 3)
         if numpy.dtype(type(arg)) == numpy.dtype(int):
             self.frame = 0
@@ -328,7 +328,7 @@ class TrjReader(base.Reader):
        :class:`Timestep` objects returned from TRR files now have.
        :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, and :attr:`~Timestep.has_f`
        flags reflecting whether coordinetes/velocities/forces were read.
-       Attempting to read such data when the corresponding flag is set to ``False``
+       Attempting to access such data when the corresponding flag is set to ``False``
        will raise a :exc:`NoDataError`.
     """
     #: units of time (ps) and length (nm) in Gromacs

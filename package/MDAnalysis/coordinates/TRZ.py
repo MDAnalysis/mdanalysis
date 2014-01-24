@@ -69,7 +69,7 @@ class Timestep(base.Timestep):
     .. attribute:: _velocities
        Velocities of particles in box (native nm/ps)
     """
-    def __init__(self, arg):
+    def __init__(self, arg, **kwargs):
         if numpy.dtype(type(arg)) == numpy.dtype(int):
             self.frame = 0
             self.numatoms = arg

@@ -10,7 +10,8 @@
 """
 
 :Author:  Oliver Beckstein <orbeckst@gmail.com>
-:Year:    2010
+:Author:  Manuel Nuno Melo <manuel.nuno.melo@gmail.com>
+:Year:    2014
 :Licence: GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher)
 
 
@@ -314,8 +315,8 @@ calculations. Velocities and forces are optional in the sense that they can be a
                    which contains the **forces** from the frame
 
               .. versionchanged:: 0.8.0
-                   either one of *x*, *v*, or *f* can now be set as a 0-atom
-                   numpy ``array((0, DIM),dtype=nump.float32)``. This will cause the
+                   either one of *x*, *v*, or *f* can now be set as a natom,0-DIM
+                   numpy ``array((natom, 0),dtype=nump.float32)``. This will cause the
                    corresponding property to be skipped when writing to file.
  
               :Returns: *status*, integer status (0 = OK), see the ``libxdrfile.exdr*`` 

@@ -126,7 +126,7 @@ class Timestep(object):
 
          iterate of the coordinates, atom by atom
     """
-    def __init__(self, arg):
+    def __init__(self, arg, **kwargs):
         if numpy.dtype(type(arg)) == numpy.dtype(int):
             self.frame = 0
             self.numatoms = arg
