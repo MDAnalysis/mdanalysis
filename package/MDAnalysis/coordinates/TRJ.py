@@ -157,7 +157,7 @@ class Timestep(base.Timestep):
            velocities is allocated);
         3. a :class:`numpy.ndarray` of shape ``(numatoms, 3)`` (for positions only) or
            ``(numatoms, 6)`` (for positions and velocities): ``positions = arg[:,:3]``,
-           ``velocities = arg[:3:6]``.
+           ``velocities = arg[:,3:6]``.
 
         """
         # based on TRR Timestep (MDAnalysis.coordinates.xdrfile.TRR.Timestep)

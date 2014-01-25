@@ -47,6 +47,18 @@ from MDAnalysis import NoDataError
 
 class Timestep(core.Timestep):
     """Timestep for a Gromacs TRR trajectory.
+        The Timestep can be initialized with *arg* being
+
+        1. an integer (the number of atoms)
+        2. another :class:`Timestep` instance, in which case a copy is made. Attention:
+           loss of attributes that do not exist within the TRR :class:`Timestep` may occur.
+        3. a :class:`numpy.ndarray` of shape ``(numatoms, 3)`` (for positions only) or
+           ``(numatoms, 9)`` (for positions, velocities, and forces): ``positions = arg[:,:3]``,
+           ``velocities = arg[:,3:6]``, and ``forces = arg[:,6:]``.
+
+        The constructor also takes the named arguments *has_x*, *has_v*, and *has_f*, which
+        are used to set :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, :attr:`~Timestep.has_f`.
+
     .. versionchanged:: 0.8.0
        TRR :class:`Timestep` objects are now fully aware of the existence or not of
        coordinate/velocity/force information in frames, reflected in the
