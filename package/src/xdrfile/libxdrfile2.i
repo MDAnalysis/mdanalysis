@@ -1,25 +1,28 @@
 /* -*- C -*-  (not really, but good for syntax highlighting) */
-/* SWIG interface for Gromacs libxdrfile 2.0 with the xtc and trr code 
+/* SWIG interface for Gromacs libxdrfile2 with the xtc and trr code 
    Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
-   Published under the GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher)
+   Copyright (c) 2013,2014 Manuel Melo <manuel.nuno.melo@gmail.com>
+   Published under the GNU GENERAL PUBLIC LICENSE Version 2 (or higher)
 
-   swig -python -outdir MDAnalysis/coordinates/xdrfile src/xdrfile/libxdrfile.i
+   swig -python -outdir MDAnalysis/coordinates/xdrfile src/xdrfile/libxdrfile2.i
 */
 %define DOCSTRING
 "
 :Author:  Oliver Beckstein <orbeckst@gmail.com>
-:Year:    2010
-:Licence: GNU GENERAL PUBLIC LICENSE Version 3 (or higher)
+:Author:  Manuel Melo <manuel.nuno.melo@gmail.com>
+:Year:    2014
+:Licence: GNU GENERAL PUBLIC LICENSE Version 2 (or higher)
 
 
-The Gromacs xtc/trr library :mod:`libxdrfile`
-=============================================
+The Gromacs xtc/trr library :mod:`libxdrfile2`
+==============================================
 
-:mod:`libxdrfile` provides an interface to some high-level functions in the
-Gromacs_ `XTC Library`_ version 2.0. Only functions required for reading and
-processing whole trajectories are exposed at the moment; low-level routines to
-read individual numbers are not provided. From version 2.0 functions exist to
-allow fast frame indexing and XDR file seeking.
+:mod:`libxdrfile2` provides an interface to some high-level functions in the
+libxdrfile2 library, a derivative of Gromacs_ `libxdrfile library`_. Only functions
+required for reading and processing whole trajectories are exposed at the
+moment; low-level routines to read individual numbers are not provided. In
+addition, libxdrfile2 exposes functions to allow fast frame indexing and XDR
+file seeking.
 
 The functions querying the numbers of atoms in a trajectory frame
 (:func:`read_xtc_natoms` and :func:`read_trr_natoms`) open a file themselves and
@@ -31,13 +34,13 @@ has to be opened with :func:`xdrfile_open`. When done, close the trajectory
 with :func:`xdrfile_close`.
 
 The functions fill or read existing arrays of coordinates; they never allocate
-these arrays themselves. Hence they need to be setup outside libxdrfile as
+these arrays themselves. Hence they need to be setup outside libxdrfile2 as
 numpy arrays. The exception to these are the indexing ones functions that take
 care of array allocation and transference to a garbage-collectable memory object.
 
 
 .. _Gromacs: http://www.gromacs.org
-.. _XTC Library: http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
+.. _libxdrfile library: http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
 
 
 Example: Reading from a xtc
@@ -46,7 +49,7 @@ Example: Reading from a xtc
 In the example we read coordinate frames from an existing xtc trajectory::
 
   import numpy as np
-  from libxdrfile import xdrfile_open, xdrfile_close, read_xtc_natoms, read_xtc, DIM, exdrOK
+  from libxdrfile2 import xdrfile_open, xdrfile_close, read_xtc_natoms, read_xtc, DIM, exdrOK
   xtc = 'md.xtc'
   
   # get number of atoms
@@ -220,7 +223,7 @@ The advantage of XTC over TRR is its significantly reduced size.
                 *precision*
                    precision of the lossy xtc format (typically 1000.0)
 
-              :Returns: *status*, integer status (0 = OK), see the ``libxdrfile.exdr*`` 
+              :Returns: *status*, integer status (0 = OK), see the ``libxdrfile2.exdr*`` 
                         constants under `Status symbols`_ for other values)
 
 TRR functions
@@ -276,7 +279,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
 
               :Returns: The function returns a tuple containing
                 *status*
-                   integer status (0 = exdrOK), see the ``libxdrfile.exdr*`` constants 
+                   integer status (0 = exdrOK), see the ``libxdrfile2.exdr*`` constants 
                    under `Status symbols`_ for other values)
                 *step*
                    simulation step
@@ -284,6 +287,12 @@ calculations. Velocities and forces are optional in the sense that they can be a
                    simulation time in ps
                 *lambda*
                    current lambda value (only interesting for free energy perturbation)
+                *has_x*
+                   boolean indicating whether coordinates were read from the TRR
+                *has_v*
+                   boolean indicating whether velocities were read from the TRR
+                *has_f*
+                   boolean indicating whether forces were read from the TRR
 
 .. function:: write_trr(XDRFILE, step, time, lambda, box, x, v, f) -> status
 
@@ -311,13 +320,13 @@ calculations. Velocities and forces are optional in the sense that they can be a
                    numpy ``array((natoms, DIM),dtype=nump.float32)``
                    which contains the **forces** from the frame
  
-              :Returns: *status*, integer status (0 = OK), see the ``libxdrfile.exdr*`` 
+              :Returns: *status*, integer status (0 = OK), see the ``libxdrfile2.exdr*`` 
                         constants under `Status symbols`_ for other values)
 
 "
 %enddef
 
-%module(docstring=DOCSTRING) libxdrfile
+%module(docstring=DOCSTRING) libxdrfile2
 
 
 %{

@@ -22,7 +22,7 @@ Reading of `Gromacs TRR trajectories`_.
 .. _Gromacs: http://www.gromacs.org
 
 
-.. SeeAlso:: :mod:`MDAnalysis.coordinates.xdrfile.libxdrfile` for low-level
+.. SeeAlso:: :mod:`MDAnalysis.coordinates.xdrfile.libxdrfile2` for low-level
    bindings to the Gromacs trajectory file formats
 
 Classes
@@ -42,22 +42,22 @@ Classes
 import numpy
 
 import core
-import libxdrfile
+import libxdrfile2
 
 class Timestep(core.Timestep):
     """Timestep for a Gromacs TRR trajectory."""
     def __init__(self, arg):
-        DIM = libxdrfile.DIM    # compiled-in dimension (most likely 3)
+        DIM = libxdrfile2.DIM    # compiled-in dimension (most likely 3)
         if numpy.dtype(type(arg)) == numpy.dtype(int):
             self.frame = 0
             self.numatoms = arg
-            # C floats and C-order for arrays (see libxdrfile.i)
+            # C floats and C-order for arrays (see libxdrfile2.i)
             self._pos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             self._velocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             self._forces = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
             # additional data for xtc
-            self.status = libxdrfile.exdrOK
+            self.status = libxdrfile2.exdrOK
             self.step = 0
             self.time = 0
             self.lmbda = 0
@@ -95,7 +95,7 @@ class Timestep(core.Timestep):
             else:
                 raise ValueError("TRR timestep has not second dimension 3 or 9: shape=%r" % (arg.shape,))
             # additional data for trr
-            self.status = libxdrfile.exdrOK
+            self.status = libxdrfile2.exdrOK
             self.step = 0
             self.time = 0
             self.lmbda = 0
