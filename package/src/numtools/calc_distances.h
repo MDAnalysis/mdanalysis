@@ -182,6 +182,18 @@ static void coord_transform(coordinate* coords, int numCoords, coordinate* box)
     coords[i][2] = new[2];
   }
 }
+static void ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse){
+  int i, s[3];
+  // Moves all coordinates to within the box boundaries for a orthogonal box
+  for (i=0; i < numcoords; i++){
+    s[0] = floor(coords[i][0] * box_inverse[0]);
+    s[1] = floor(coords[i][1] * box_inverse[1]);
+    s[2] = floor(coords[i][2] * box_inverse[2]);
+    coords[i][0] -= s[0] * box[0];
+    coords[i][1] -= s[1] * box[1];
+    coords[i][2] -= s[2] * box[2];
+  }
+}
 static void triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse){
   int i, s;
   // Moves all coordinates to within the box boundaries for a triclinic box
@@ -282,7 +294,34 @@ static void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom
     *(distances+i) = sqrt(rsq);
   }
 }
+static void calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2, int numatom, coordinate* box, double* distances)
+{
+  int i;
+  double dx[3];
+  float box_half[3], box_inverse[3];
+  double rsq;
 
+  box_half[0] = 0.5 * box[0][0];
+  box_half[1] = 0.5 * box[1][1];
+  box_half[2] = 0.5 * box[2][2];
+
+  box_inverse[0] = 1.0/box[0][0];
+  box_inverse[1] = 1.0/box[1][1];
+  box_inverse[2] = 1.0/box[2][2];
+ 
+  triclinic_pbc(atom1, numatom, box, box_inverse);
+  triclinic_pbc(atom2, numatom, box, box_inverse);
+
+  for (i=0; i<numatom; i++) {
+    dx[0] = atom1[i][0] - atom2[i][0];
+    dx[1] = atom1[i][1] - atom2[i][1];
+    dx[2] = atom1[i][2] - atom2[i][2];
+    // PBC time!
+    minimum_image_triclinic(dx, box, box_half);
+    rsq = (dx[0]*dx[0])+(dx[1]*dx[1])+(dx[2]*dx[2]);
+    *(distances+i) = sqrt(rsq);
+  }
+}
 static void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
 {
   int i;

@@ -216,7 +216,7 @@ class TestAtomGroup(TestCase):
             ag.packintobox()
         assert_raises(ValueError, badpack) #This system has no dimensions, so by default can't pack
 
-        ag.packintobox(box=numpy.array([5.,5.,5.])) #Provide arbitrary box
+        ag.packintobox(box=numpy.array([5.,5.,5.],  dtype=numpy.float32)) #Provide arbitrary box
         assert_array_almost_equal(ag.coordinates()[1000:2000:200],
                                   array([[ 3.94543672,  2.5939188 ,  2.73179913],
                                          [ 3.21632767,  0.879035  ,  0.32085133],

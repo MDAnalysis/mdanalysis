@@ -51,6 +51,8 @@ Overview
    arrays of coordinates, where atom1[i] and atom2[i] represent a bond.  The 
    optional argument *box* applies minimum image convention if supplied.
 
+   *box* can be either orthogonal or triclinic
+
    If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is
    provided in *result* then this preallocated array is filled. This can speed
    up calculations.
@@ -74,6 +76,12 @@ Overview
    provided in *result* then this preallocated array is filled. This can speed
    up calculations.
 
+.. function:: applyPBC(coordinates, box)
+
+   Shift a set of coordinates to lie within the primary unit cell
+
+   Works with both orthogonal and triclinic boxes
+
 
 Functions
 ---------
@@ -96,9 +104,12 @@ cdef extern from "calc_distances.h":
     void calc_distance_array_triclinic(coordinate* ref, int numref, coordinate* conf, int numconf, coordinate* box, double* distances)
     void calc_self_distance_array_triclinic(coordinate* ref, int numref, coordinate* box, double* distances, int distnum)
     void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom, float*box, double* distances)
+    void calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2, int numatom, coordinate* box, double* distances)
     void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
     void calc_angle(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, double* angles)
     void calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, double* angles)
+    void ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse)
+    void triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
 
 import numpy
 from MDAnalysis.coordinates.core import triclinic_vectors, triclinic_box
@@ -179,7 +190,7 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
         if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
             box = triclinic_vectors(box)
         if (boxtype == 'tri_vecs_bad'):
-            box = triclinic_vectors(triclinic_box(box))
+            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
         if (box.dtype!=numpy.dtype(numpy.float32)):
             raise TypeError("periodic boundaries must be of type float32")
 
@@ -258,7 +269,7 @@ def self_distance_array(c_numpy.ndarray reference, c_numpy.ndarray box=None, c_n
         if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
             box = triclinic_vectors(box)
         if (boxtype == 'tri_vecs_bad'):
-            box = triclinic_vectors(triclinic_box(box))
+            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
         if (box.dtype!=numpy.dtype(numpy.float32)):
             raise TypeError("periodic boundaries must be of type float32")
 
@@ -319,7 +330,7 @@ def transform_RtoS(c_numpy.ndarray inputcoords, c_numpy.ndarray box):
     if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
         box = triclinic_vectors(box)
     if (boxtype == 'tri_vecs_bad'):
-        box = triclinic_vectors(triclinic_box(box))
+        box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
     elif (boxtype == 'ortho'):
         box = numpy.array([[box[0], 0.0, 0.0],
                            [0.0, box[1], 0.0],
@@ -395,6 +406,10 @@ def calc_bonds(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray box
     
     d = bond_distance(list1, list2, [box [,result]])
 
+    *box* can be either orthogonal or triclinic, if supplied minimum image convention will be applied
+
+    .. versionadded:: 0.8
+
     """
     cdef c_numpy.ndarray atom1, atom2
     cdef c_numpy.ndarray distances
@@ -415,9 +430,15 @@ def calc_bonds(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray box
     if (atom1.dimensions[0] != atom2.dimensions[0]):
         raise ValueError("list1 and list2 of different size")
 
-    if not box is None:
-        if (box.nd != 1 and box.dimensions[0] != 3):
-            raise ValueError("box must be a sequence of 3 dimensional coordinates")
+    with_PBC = (box is not None)
+    if with_PBC:
+        boxtype = boxCheck(box)
+        if (boxtype == 'unknown'):
+            raise ValueError("box input not recognised, must be an array of box dimensions")
+        if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+            box = triclinic_vectors(box)
+        if (boxtype == 'tri_vecs_bad'):
+            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
         if (box.dtype!=numpy.dtype(numpy.float32)):
             raise TypeError("periodic boundaries must be of type float32")
 
@@ -432,8 +453,11 @@ def calc_bonds(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray box
     else:
         distances = numpy.zeros((numatom,), numpy.float64)
 
-    if not box is None:
-        calc_bond_distance(<coordinate*>atom1.data,<coordinate*>atom2.data,numatom,<float*>box.data,<double*>distances.data)
+    if with_PBC:
+        if boxtype == 'ortho':
+            calc_bond_distance(<coordinate*>atom1.data,<coordinate*>atom2.data,numatom,<float*>box.data,<double*>distances.data)
+        else:
+            calc_bond_distance_triclinic(<coordinate*>atom1.data, <coordinate*>atom2.data, numatom, <coordinate*>box.data, <double*> distances.data)
     else:
         calc_bond_distance_noPBC(<coordinate*>atom1.data,<coordinate*>atom2.data,numatom,<double*>distances.data)
 
@@ -447,6 +471,8 @@ def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray li
     Calculate the angle formed by bonds between atoms 1 & 2 and atoms 2 & 3 for a list of coordinates.
 
     Returns an array of angles (in radians)
+    
+    .. versionadded:: 0.8
     """
     cdef c_numpy.ndarray atom1, atom2, atom3
     cdef c_numpy.ndarray angles
@@ -492,6 +518,8 @@ def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray 
     Calculate the dihedral angle formed by atoms 1,2,3 and 4
 
     Returns an array of angles (in radians)
+
+    .. versionadded:: 0.8
     """
     cdef c_numpy.ndarray atom1, atom2, atom3, atom4
     cdef c_numpy.ndarray angles
@@ -532,3 +560,59 @@ def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray 
                   numatom,<double*>angles.data)
 
     return angles
+
+def applyPBC(c_numpy.ndarray incoords, c_numpy.ndarray box):
+    """Moves a set of coordinates to all be within the primary unit cell
+
+    newcoords = applyPBC(coords, box)
+
+    :Arguments:
+                *coords*
+                          coordinate array (of type numpy.float32)
+                *box*
+                          box dimensions, can be either orthogonal or triclinic information
+
+    :Returns:
+                *newcoords*
+                          coordinates that are now all within the primary unit cell, as defined by box
+
+    .. versionadded:: 0.8
+    """
+    cdef c_numpy.ndarray coords
+    cdef c_numpy.ndarray box_inv
+    cdef int coordnum
+
+    coords = incoords.copy('C')
+
+    # checks in input array
+    if (coords.nd != 2 or coords.dimensions[1] != 3):
+        raise ValueError("conf must be a sequence of 3 dimensional coordinates")
+    if (coords.dtype != numpy.dtype(numpy.float32)):
+        raise TypeError("coordinate data must be of type float32")
+
+    coordnum = coords.dimensions[0]
+
+    # determine boxtype
+    boxtype = boxCheck(box)
+    if (boxtype == 'unknown'):
+        raise ValueError("box input not recognised, must be an array of box dimensions")
+    if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        box = triclinic_vectors(box)
+    if (boxtype == 'tri_vecs_bad'):
+        box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
+    if (box.dtype!=numpy.dtype(numpy.float32)):
+        raise TypeError("periodic boundaries must be of type float32")
+
+    box_inv = numpy.zeros((3), dtype=numpy.float32)
+    if boxtype == 'ortho':
+        box_inv[0] = 1.0 / box[0]
+        box_inv[1] = 1.0 / box[1]
+        box_inv[2] = 1.0 / box[2]
+        ortho_pbc(<coordinate*> coords.data, coordnum, <float*> box.data, <float*> box_inv.data)
+    else:
+        box_inv[0] = 1.0 / box[0][0]
+        box_inv[1] = 1.0 / box[1][1]
+        box_inv[2] = 1.0 / box[2][2]
+        triclinic_pbc(<coordinate*> coords.data, coordnum, <coordinate*> box.data, <float*> box_inv.data)
+
+    return coords
