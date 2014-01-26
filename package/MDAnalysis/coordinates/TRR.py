@@ -64,12 +64,15 @@ and the mode coordinates are filling the
 
    N = len(xav)   # number of atoms, i.e. number of coordinates
 
-   W = Writer('pca.trr', numatoms=N)                        # TRR writer
-   ts = MDAnalysis.coordinates.TRR.Timestep(N, has_x=True)  # TRR time step
-                                                            #   TRR handling now requires 'has_x' to be set
-                                                            #   before low-level assignment to ts._pos.
-                                                            #   (likewise for 'has_v' and 'has_f' for assignment
-                                                            #   to ts._velocites and ts._forces)
+   W = Writer('pca.trr', numatoms=N)            # TRR writer
+   ts = MDAnalysis.coordinates.TRR.Timestep(N)  # TRR time step
+                                                #   TRR handling requires 'has_x' to be set
+                                                #   before low-level assignment to ts._pos.
+                                                #   (likewise for 'has_v' and 'has_f' for assignment
+                                                #   to ts._velocites and ts._forces). The default of
+                                                #   the Timestep constructor is to set 'has_x' to True
+                                                #   (but not 'has_v' or 'has_f') when only the number
+                                                #   of atoms is passed.
    for frame,mode in enumerate(modes[4:16]):
        ts.lmbda = -1
        if frame<=1:

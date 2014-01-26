@@ -75,11 +75,26 @@ class Timestep(core.Timestep):
        coordinate/velocity/force information in frames, reflected in the
        :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, and :attr:`~Timestep.has_f` flags.
        Accessing either kind of information while the corresponding flag is set to ``False``
-       wil raise a :exc:`NoDataError`.
+       wil raise a :exc:`NoDataError`. Internally, however, the arrays are always populated,
+       even when the flags are ``False``; upon creation of a :class:`Timestep` they are
+       zero-filled, but this might not always be the case later on for properties flagged as
+       ``False`` if the same :class:`Timestep` instance is used to read from a TRR frame.
+
        When doing low-level writing to :attr:`~Timestep._pos`, :attr:`~Timestep._velocities`,
        or :attr:`~Timestep._forces:attr:, the corresponding flags must be set beforehand. The
        TRR :class:`Timestep` constructor allows for the named boolean arguments *has_x*,
        *has_v*, and *has_f* to be passed for automatic setting of the corresponding flag.
+       An exception to this is assignment to the full property array thus::
+
+           ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms
+           ts._velocities = vel_array   # Where vel_array is an existing array of shape (N, DIM)
+                                        #  This will also automatically set 'has_v' to True.
+
+       Attempting to populate the array instead will, however, raise a NoDataError exception::
+
+           ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms
+           ts._velocities[:] = vel_array   #  This will fail if 'has_v' hasn't been set to True.
+
     """
     # The exception error
     _nodataerr = "You are accessing the %s of a Timestep but there are none in this frame. \
@@ -176,7 +191,7 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
                     (arg.shape[0] == DIM and arg.shape[1] != DIM):
                 # wrong order (but need to exclude case where natoms == DIM or natoms == 3*DIM!)
                 raise ValueError("TRR timestep is to be initialized from an array with dimensions (natoms, 3*%d) or (natoms, %d). \
-                        If you wish to skip a property set the corresponding 'has_' flag to False on construction." % (DIM, DIM))
+If you wish to skip a property set the corresponding 'has_' flag to False on construction." % (DIM, DIM))
             self.numatoms = arg.shape[0]
             if arg.shape[1] != DIM and arg.shape[1] != 3*DIM:
                 raise ValueError("TRR timestep doesn't have second dimension %d or 3*%d: shape=%r" % (DIM,DIM,arg.shape))
@@ -212,8 +227,13 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
             raise NoDataError(self._nodataerr % ("coordinates","coordinates","coordinate","coordinates","has_x"))
     @_pos.setter
     def _pos(self, x):
-        self._tpos = x
-        self.has_x = True
+        if x.shape == (self.numatoms, libxdrfile2.DIM):
+            self._tpos = x
+            self.has_x = True
+        else:
+            raise ValueError("You are attempting to set the positions array of a Timestep with an array \
+that doesn't have the same number of atoms or the same number of dimensions. The Timestep \
+has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((self.numatoms,libxdrfile2.DIM),x.shape))
     #
     @property
     def _x(self):
@@ -243,9 +263,14 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
             raise NoDataError(self._nodataerr % ("velocities","velocities","velocity","velocities","has_v"))
     @_velocities.setter
     def _velocities(self, v):
-        self._tvelocities = v
-        self.has_v = True
-
+        if v.shape == (self.numatoms, libxdrfile2.DIM):
+            self._tvelocities = v
+            self.has_v = True
+        else:
+            raise ValueError("You are attempting to set the velocities array of a Timestep with an array \
+that doesn't have the same number of atoms or the same number of dimensions. The Timestep \
+has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((self.numatoms,libxdrfile2.DIM),v.shape))
+    
     #FORCES
     @property
     def _forces(self):
@@ -255,8 +280,13 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
             raise NoDataError(self._nodataerr % ("forces","forces","force","forces","has_f"))
     @_forces.setter
     def _forces(self, f):
-        self._tforces = f
-        self.has_f = True
+        if f.shape == (self.numatoms, libxdrfile2.DIM):
+            self._tforces = f
+            self.has_f = True
+        else:
+            raise ValueError("You are attempting to set the forces array of a Timestep with an array \
+that doesn't have the same number of atoms or the same number of dimensions. The Timestep \
+has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((self.numatoms,libxdrfile2.DIM),f.shape))
 
 class TRRWriter(core.TrjWriter):
     """Write a Gromacs_ TRR trajectory."""
