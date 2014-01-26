@@ -10,18 +10,20 @@
 """
 
 :Author:  Oliver Beckstein <orbeckst@gmail.com>
-:Author:  Manuel Nuno Melo <manuel.nuno.melo@gmail.com>
+:Author:  Manuel Melo <manuel.nuno.melo@gmail.com>
 :Year:    2014
-:Licence: GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher)
+:Licence: GNU GENERAL PUBLIC LICENSE Version 2 (or higher)
 
 
-The Gromacs xtc/trr library :mod:`libxdrfile`
-=============================================
+The Gromacs xtc/trr library :mod:`libxdrfile2`
+==============================================
 
-:mod:`libxdrfile` provides an interface to some high-level functions in the
-Gromacs_ `XTC Library`_ version 1.1.1. Only functions required for reading and
-processing whole trajectories are exposed at the moment; low-level routines to
-read individual numbers are not provided.
+:mod:`libxdrfile2` provides an interface to some high-level functions in the
+libxdrfile2 library, a derivative of the Gromacs_ `libxdrfile library`_. Only
+functions required for reading and processing whole trajectories are exposed at
+the moment; low-level routines to read individual numbers are not provided. In
+addition, :mod:`libxdrfile2` exposes functions to allow fast frame indexing and XDR
+file seeking.
 
 The functions querying the numbers of atoms in a trajectory frame
 (:func:`read_xtc_natoms` and :func:`read_trr_natoms`) open a file themselves and
@@ -33,12 +35,20 @@ has to be opened with :func:`xdrfile_open`. When done, close the trajectory
 with :func:`xdrfile_close`.
 
 The functions fill or read existing arrays of coordinates; they never allocate
-these arrays themselves. Hence they need to be setup outside libxdrfile as
-numpy arrays.
+these arrays themselves. Hence they need to be setup outside libxdrfile2 as
+numpy arrays. The exception to these are the indexing ones functions that take
+care of array allocation and transference to a garbage-collectable memory object.
 
 
 .. _Gromacs: http://www.gromacs.org
-.. _XTC Library: http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
+.. _libxdrfile library: http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
+
+.. versionchanged:: 0.8.0
+:mod:`libxdrfile2` is now used instead of :mod:`libxdrfile`. :mod:`libxdrfile2` is
+based on :mod:`libxdrfile` but interfaces with libxdrfile2, which has xdr seeking
+and indexing capabilities. Unlike :mod:`libxdrfile` and libxdrfile before them,
+:mod:`libxdrfile2` and libxdrfile2 are distributed under the GNU GENERAL PUBLIC
+LICENSE, version 2 (or higher).
 
 
 Example: Reading from a xtc
@@ -47,7 +57,7 @@ Example: Reading from a xtc
 In the example we read coordinate frames from an existing xtc trajectory::
 
   import numpy as np
-  from libxdrfile import xdrfile_open, xdrfile_close, read_xtc_natoms, read_xtc, DIM, exdrOK
+  from libxdrfile2 import xdrfile_open, xdrfile_close, read_xtc_natoms, read_xtc, DIM, exdrOK
   xtc = 'md.xtc'
   
   # get number of atoms
@@ -162,17 +172,22 @@ The advantage of XTC over TRR is its significantly reduced size.
               :Raises: :exc:`IOError` if the supplied filed is not a XTC 
                        or if it is not readable.
 
-.. function:: read_xtc_numframes(fn) -> numframes
+.. function:: read_xtc_numframes(fn) -> (numframes, offsets)
 
-              Read through the whole trajectory (!) to obtaine the total number of frames. 
-              This can take a long time but it might still be advantageous to obtain 
-              *numframes* in this way before setting up a complicated analysis. Unlike the DCD
-              format, there is no way to obtain the total number of frames in the trajectory 
-              except iterating through the whole trajectory.
+              Read through the whole trajectory headers to obtain the total number of frames. 
+              The process is speeded up by reading frame headers for the amount of data in the frame,
+              and then skipping directly to the next header. An array of frame offsets is also
+              returned, which can later be used to seek direcly to arbitrary frames in the trajectory. 
 
               :Arguments:
                 *fn*
                    file name of an xtc file
+
+              :Returns: The function returns a tuple containing
+                *numframes*
+                   an int with the total frame count in the trajectory
+                *offsets*
+                   a numpy array of int64 recording the starting byte offset of each frame
 
               :Raises: :exc:`IOError` if the supplied filed is not a XTC 
                        or if it is not readable.
@@ -222,7 +237,7 @@ The advantage of XTC over TRR is its significantly reduced size.
                 *precision*
                    precision of the lossy xtc format (typically 1000.0)
 
-              :Returns: *status*, integer status (0 = OK), see the ``libxdrfile.exdr*`` 
+              :Returns: *status*, integer status (0 = OK), see the ``libxdrfile2.exdr*`` 
                         constants under `Status symbols`_ for other values)
 
 TRR functions
@@ -243,17 +258,22 @@ calculations. Velocities and forces are optional in the sense that they can be a
               :Raises: :exc:`IOError` if the supplied filed is not a TRR
                        or if it is not readable.
 
-.. function:: read_trr_numframes(fn) -> numframes
+.. function:: read_trr_numframes(fn) -> (numframes, offsets)
 
-              Read through the whole trajectory (!) to obtaine the total number of frames. 
-              This can take a long time but it might still be advantageous to obtain 
-              *numframes* in this way before setting up a complicated analysis. (This is a 
-              poor implementation that loops through the *whole* trajectory and counts the 
-              frames---please supply a better one.)
+              Read through the whole trajectory headers to obtain the total number of frames. 
+              The process is speeded up by reading frame headers for the amount of data in the frame,
+              and then skipping directly to the next header. An array of frame offsets is also
+              returned, which can later be used to seek direcly to arbitrary frames in the trajectory. 
 
               :Arguments:
                 *fn*
                    file name of an xtc file
+
+              :Returns: The function returns a tuple containing
+                *numframes*
+                   an int with the total frame count in the trajectory
+                *offsets*
+                   a numpy array of int64 recording the starting byte offset of each frame
 
               :Raises: :exc:`IOError` if the supplied filed is not a TRR or if it is not readable.
 
@@ -279,7 +299,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
 
               :Returns: The function returns a tuple containing
                 *status*
-                   integer status (0 = exdrOK), see the ``libxdrfile.exdr*`` constants 
+                   integer status (0 = exdrOK), see the ``libxdrfile2.exdr*`` constants 
                    under `Status symbols`_ for other values)
                 *step*
                    simulation step
@@ -287,6 +307,12 @@ calculations. Velocities and forces are optional in the sense that they can be a
                    simulation time in ps
                 *lambda*
                    current lambda value (only interesting for free energy perturbation)
+                *has_x*
+                   boolean indicating whether coordinates were read from the TRR
+                *has_v*
+                   boolean indicating whether velocities were read from the TRR
+                *has_f*
+                   boolean indicating whether forces were read from the TRR
 
 .. function:: write_trr(XDRFILE, step, time, lambda, box, x, v, f) -> status
 
@@ -319,7 +345,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
                    numpy ``array((natom, 0),dtype=nump.float32)``. This will cause the
                    corresponding property to be skipped when writing to file.
  
-              :Returns: *status*, integer status (0 = OK), see the ``libxdrfile.exdr*`` 
+              :Returns: *status*, integer status (0 = OK), see the ``libxdrfile2.exdr*`` 
                         constants under `Status symbols`_ for other values)
 
 
@@ -333,20 +359,20 @@ if version_info >= (2,6,0):
         import imp
         fp = None
         try:
-            fp, pathname, description = imp.find_module('_libxdrfile', [dirname(__file__)])
+            fp, pathname, description = imp.find_module('_libxdrfile2', [dirname(__file__)])
         except ImportError:
-            import _libxdrfile
-            return _libxdrfile
+            import _libxdrfile2
+            return _libxdrfile2
         if fp is not None:
             try:
-                _mod = imp.load_module('_libxdrfile', fp, pathname, description)
+                _mod = imp.load_module('_libxdrfile2', fp, pathname, description)
             finally:
                 fp.close()
             return _mod
-    _libxdrfile = swig_import_helper()
+    _libxdrfile2 = swig_import_helper()
     del swig_import_helper
 else:
-    import _libxdrfile
+    import _libxdrfile2
 del version_info
 try:
     _swig_property = property
@@ -387,72 +413,72 @@ except AttributeError:
     _newclass = 0
 
 
-exdrOK = _libxdrfile.exdrOK
-exdrHEADER = _libxdrfile.exdrHEADER
-exdrSTRING = _libxdrfile.exdrSTRING
-exdrDOUBLE = _libxdrfile.exdrDOUBLE
-exdrINT = _libxdrfile.exdrINT
-exdrFLOAT = _libxdrfile.exdrFLOAT
-exdrUINT = _libxdrfile.exdrUINT
-exdr3DX = _libxdrfile.exdr3DX
-exdrCLOSE = _libxdrfile.exdrCLOSE
-exdrMAGIC = _libxdrfile.exdrMAGIC
-exdrNOMEM = _libxdrfile.exdrNOMEM
-exdrENDOFFILE = _libxdrfile.exdrENDOFFILE
-exdrFILENOTFOUND = _libxdrfile.exdrFILENOTFOUND
-exdrNR = _libxdrfile.exdrNR
-SEEK_SET = _libxdrfile.SEEK_SET
-SEEK_CUR = _libxdrfile.SEEK_CUR
-SEEK_END = _libxdrfile.SEEK_END
+exdrOK = _libxdrfile2.exdrOK
+exdrHEADER = _libxdrfile2.exdrHEADER
+exdrSTRING = _libxdrfile2.exdrSTRING
+exdrDOUBLE = _libxdrfile2.exdrDOUBLE
+exdrINT = _libxdrfile2.exdrINT
+exdrFLOAT = _libxdrfile2.exdrFLOAT
+exdrUINT = _libxdrfile2.exdrUINT
+exdr3DX = _libxdrfile2.exdr3DX
+exdrCLOSE = _libxdrfile2.exdrCLOSE
+exdrMAGIC = _libxdrfile2.exdrMAGIC
+exdrNOMEM = _libxdrfile2.exdrNOMEM
+exdrENDOFFILE = _libxdrfile2.exdrENDOFFILE
+exdrFILENOTFOUND = _libxdrfile2.exdrFILENOTFOUND
+exdrNR = _libxdrfile2.exdrNR
+SEEK_SET = _libxdrfile2.SEEK_SET
+SEEK_CUR = _libxdrfile2.SEEK_CUR
+SEEK_END = _libxdrfile2.SEEK_END
 
 def xdrfile_open(*args):
   """xdrfile_open(path, mode) -> XDRFILE *"""
-  return _libxdrfile.xdrfile_open(*args)
+  return _libxdrfile2.xdrfile_open(*args)
 
 def xdrfile_close(*args):
   """xdrfile_close(fp) -> int"""
-  return _libxdrfile.xdrfile_close(*args)
+  return _libxdrfile2.xdrfile_close(*args)
 
 def read_xtc_natoms(*args):
   """read_xtc_natoms(fn) -> int"""
-  return _libxdrfile.read_xtc_natoms(*args)
+  return _libxdrfile2.read_xtc_natoms(*args)
 
 def read_xtc_numframes(*args):
   """read_xtc_numframes(fn) -> PyObject *"""
-  return _libxdrfile.read_xtc_numframes(*args)
+  return _libxdrfile2.read_xtc_numframes(*args)
 
 def read_trr_natoms(*args):
   """read_trr_natoms(fn) -> int"""
-  return _libxdrfile.read_trr_natoms(*args)
+  return _libxdrfile2.read_trr_natoms(*args)
 
 def read_trr_numframes(*args):
   """read_trr_numframes(fn) -> PyObject *"""
-  return _libxdrfile.read_trr_numframes(*args)
-DIM = _libxdrfile.DIM
+  return _libxdrfile2.read_trr_numframes(*args)
+DIM = _libxdrfile2.DIM
 
 def read_xtc(*args):
   """read_xtc(XDRFILE, box, x) -> (status, step, time, precision)"""
-  return _libxdrfile.read_xtc(*args)
+  return _libxdrfile2.read_xtc(*args)
 
 def read_trr(*args):
   """read_trr(XDRFILE, box, x, v, f) -> (status, step, time, lambda)"""
-  return _libxdrfile.read_trr(*args)
+  return _libxdrfile2.read_trr(*args)
 
 def write_xtc(*args):
   """write_xtc(XDRFILE, step, time, box, x, prec) -> status"""
-  return _libxdrfile.write_xtc(*args)
+  return _libxdrfile2.write_xtc(*args)
 
 def write_trr(*args):
   """write_trr(XDRFILE, step, time, lambda, box, x, v, f) -> status"""
-  return _libxdrfile.write_trr(*args)
+  return _libxdrfile2.write_trr(*args)
 
 def xdr_seek(*args):
   """xdr_seek(xd, pos, whence) -> int"""
-  return _libxdrfile.xdr_seek(*args)
+  return _libxdrfile2.xdr_seek(*args)
 
 def xdr_tell(*args):
   """xdr_tell(xd) -> long long"""
-  return _libxdrfile.xdr_tell(*args)
+  return _libxdrfile2.xdr_tell(*args)
 # This file is compatible with both classic and new-style classes.
 
 

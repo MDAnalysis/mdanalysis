@@ -21,7 +21,7 @@
 .. _Gromacs: http://www.gromacs.org
 
 
-.. SeeAlso:: :mod:`MDAnalysis.coordinates.xdrfile.libxdrfile` for low-level
+.. SeeAlso:: :mod:`MDAnalysis.coordinates.xdrfile.libxdrfile2` for low-level
    bindings to the Gromacs trajectory file formats
 
 Classes

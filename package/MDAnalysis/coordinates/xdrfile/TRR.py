@@ -22,7 +22,7 @@ Reading of `Gromacs TRR trajectories`_.
 .. _Gromacs: http://www.gromacs.org
 
 
-.. SeeAlso:: :mod:`MDAnalysis.coordinates.xdrfile.libxdrfile` for low-level
+.. SeeAlso:: :mod:`MDAnalysis.coordinates.xdrfile.libxdrfile2` for low-level
    bindings to the Gromacs trajectory file formats
 
 Classes
@@ -42,7 +42,7 @@ Classes
 import numpy
 
 import core
-import libxdrfile
+import libxdrfile2
 from MDAnalysis import NoDataError
 
 class Timestep(core.Timestep):
@@ -58,6 +58,17 @@ class Timestep(core.Timestep):
 
         The constructor also takes the named arguments *has_x*, *has_v*, and *has_f*, which
         are used to set :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, :attr:`~Timestep.has_f`.
+        Depending on the *arg* use-case above, the defaults set for these flags will vary:
+        1. when *arg* is an integer :attr:`~Timestep.has_x` defaults to ``True`` and
+           :attr:`~Timestep.has_v` and :attr:`~Timestep.has_f` to ``False``.
+        2. when *arg* is another :class:`Timestep` instance the flags will default to being
+           copied from the passed :class:`Timestep`. If that instance has no 'has_' flags
+           the behavior is to assign them to ``True`` depending on the existence of
+           :attr:`~Timestep._velocities` and :attr:`~Timestep._forces` (:attr:`~Timestep._pos`
+           is assumed to always be there, so in this case :attr:`~Timestep.has_x` defaults to
+           ``True``).
+        3. when *arg* is a numpy array, the default flags will reflect what information is passed
+           in the array.
 
     .. versionchanged:: 0.8.0
        TRR :class:`Timestep` objects are now fully aware of the existence or not of
@@ -76,24 +87,24 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
 (1) get rid of %s-less frames before passing the trajectory to MDAnalysis, or \
 (2) reflow your code to not access %s when they're not there, by making use of the '%s' flag of Timestep objects."
     def __init__(self, arg, **kwargs):
-        DIM = libxdrfile.DIM    # compiled-in dimension (most likely 3)
+        DIM = libxdrfile2.DIM    # compiled-in dimension (most likely 3)
         # These flags control which attributes were actually initialized in this Timestep. Due to the possibility of TRR
         #  frames with no coords/vels/forces, and the way reading is handled, the _tpos, _tvelocities and _tforces arrays
         #  may end up containing data from different frames when the relevant attribute is missing in the trajectory.
         #  This is flagged and exceptions can be raised whenever there is an attempt to read flagged data.
         if numpy.dtype(type(arg)) == numpy.dtype(int):
-            self.has_x = kwargs.pop('has_x', False)
+            self.has_x = kwargs.pop('has_x', True)
             self.has_v = kwargs.pop('has_v', False)
             self.has_f = kwargs.pop('has_f', False)
             self.frame = 0
             self.numatoms = arg
-            # C floats and C-order for arrays (see libxdrfile.i)
+            # C floats and C-order for arrays (see libxdrfile2.i)
             self._tpos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             self._tvelocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             self._tforces = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
             # additional data for xtc
-            self.status = libxdrfile.exdrOK
+            self.status = libxdrfile2.exdrOK
             self.step = 0
             self.time = 0
             self.lmbda = 0
@@ -180,11 +191,9 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
             else:
                 self._tvelocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
                 self._tforces = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
-                self.has_v = False
-                self.has_f = False
 
             # additional data for trr
-            self.status = libxdrfile.exdrOK
+            self.status = libxdrfile2.exdrOK
             self.step = 0
             self.time = 0
             self.lmbda = 0

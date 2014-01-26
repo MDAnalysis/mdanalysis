@@ -1,6 +1,7 @@
-# Python bindings for libxdrfile
+# Python bindings for libxdrfile2
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
-# Published under the GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher)
+# Copyright (c) 2013,2014 Manuel Melo <manuel.nuno.melo@gmail.com>
+# Published under the GNU GENERAL PUBLIC LICENSE Version 2 (or higher)
 """Distutils setup for the stand-alone xdrfile package
 
 Copy this file to the parent directory of xdrfile and rename it to
@@ -30,17 +31,17 @@ include_dirs = [numpy_include]
 
 if __name__ == '__main__':
     setup(name              = 'xdrfile',
-          version           = '0.1-libxdrfile1.1',
-          description       = 'Python interface to Gromacs XTC/TRR library libxdrfile',
-          author            = 'David van der Spoel, Erik Lindahl, Oliver Beckstein',
+          version           = '0.1-libxdrfile2',
+          description       = 'Python interface to libxdrfile2 library',
+          author            = 'David van der Spoel, Erik Lindahl, Oliver Beckstein, Manuel Melo',
           author_email      = 'orbeckst@gmail.com',
           url               = 'http://mdanalysis.googlecode.com/',
           license           = 'GPL 2',
           packages          = ['xdrfile'],
           package_dir       = {'xdrfile': 'xdrfile'},
           ext_package       = 'xdrfile',
-          ext_modules       = [Extension('_libxdrfile',
-                                         sources=['xdrfile/libxdrfile_wrap.c',
+          ext_modules       = [Extension('_libxdrfile2',
+                                         sources=['xdrfile/libxdrfile2_wrap.c',
                                                   'xdrfile/xdrfile.c', 	
                                                   'xdrfile/xdrfile_trr.c',
                                                   'xdrfile/xdrfile_xtc.c'],

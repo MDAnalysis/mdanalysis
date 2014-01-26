@@ -2928,16 +2928,16 @@ static swig_module_info swig_module = {swig_types, 4, 0, 0, 0, 0};
 #endif
 
 /*-----------------------------------------------
-              @(target):= _libxdrfile.so
+              @(target):= _libxdrfile2.so
   ------------------------------------------------*/
 #if PY_VERSION_HEX >= 0x03000000
-#  define SWIG_init    PyInit__libxdrfile
+#  define SWIG_init    PyInit__libxdrfile2
 
 #else
-#  define SWIG_init    init_libxdrfile
+#  define SWIG_init    init_libxdrfile2
 
 #endif
-#define SWIG_name    "_libxdrfile"
+#define SWIG_name    "_libxdrfile2"
 
 #define SWIGVERSION 0x020011 
 #define SWIG_VERSION SWIGVERSION
@@ -2947,7 +2947,7 @@ static swig_module_info swig_module = {swig_types, 4, 0, 0, 0, 0};
 #define SWIG_as_voidptrptr(a) ((void)SWIG_as_voidptr(*a),(void**)(a)) 
 
 
-/* Python SWIG interface to some functions in Gromacs libxdr v 1.1
+/* Python SWIG interface to some functions in Gromacs libxdr v 2.0
    Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
    Published under the GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher)
    See http://mdanalysis.googlecode.com for details.

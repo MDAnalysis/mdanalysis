@@ -59,6 +59,8 @@ various sources. The authors (as far as we know them) are listed here.
 libxdrfile
   - David van der Spoel <spoel@gromacs.org>
   - Erik Lindahl <lindahl@gromacs.org>
+  As of MDAnalysis version 0.8.0 libxdrfile is no longer used, having
+  been replaced by libxdrfile2, a GPLv2 derivative of libxdrfile.
 
 numpy.i
   - Bill Spotz

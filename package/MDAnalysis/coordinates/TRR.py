@@ -33,6 +33,11 @@ process other data such as modes from a principal component analysis.
 .. _TRR trajectory format:
    http://www.gromacs.org/Documentation/File_Formats/.trr_File
 
+.. versionchanged:: 0.8.0
+The TRR I/O interface now uses :mod:`libxdrfile2`, which has seeking and
+indexing capabilities. Note that unlike :mod:`libxdrfile` before it,
+:mod:`libxdrfile2` is distributed under the GNU GENERAL PUBLIC LICENSE,
+version 2 (or higher).
 
 Tips and Tricks
 ---------------

@@ -16,10 +16,11 @@
 #
 
 import MDAnalysis
+import numpy as np
 from numpy.testing import *
-from MDAnalysis.tests.datafiles import XTC, TRR
+from MDAnalysis.tests.datafiles import XTC, XTC_offsets, TRR, TRR_offsets
 
-import MDAnalysis.coordinates.xdrfile.libxdrfile as xdr
+import MDAnalysis.coordinates.xdrfile.libxdrfile2 as xdr
 
 # FIXES: test_xdropen: error because assert_ not found in numpy < 1.3
 # maybe move this into separate module together with
@@ -48,27 +49,27 @@ class TestLib(TestCase):
 
     def test_xdropen(self):
         XDR = xdr.xdrfile_open(XTC, 'r')
-        assert_(XDR != None, "Failed top open xtc file")
+        assert_(XDR != None, "Failed to open xtc file")
         rc = xdr.xdrfile_close(XDR)
         assert_equal(rc, 0, "Failed to close xtc file")  # this can segfault
-
 
 class TestXTC(TestCase):
     def test_numatoms(self):
         natoms = xdr.read_xtc_natoms(XTC)
         assert_equal(natoms, 47681, "Number of atoms in XTC frame")
 
-    def test_numframes(self):
+    def test_numframes_offsets(self):
         numframes, offsets = xdr.read_xtc_numframes(XTC)
         assert_equal(numframes, 10, "Number of frames in XTC trajectory")
-
+        assert_array_almost_equal(offsets,np.load(XTC_offsets), err_msg="wrong xtc frame offsets")
 
 class TestTRR(TestCase):
     def test_numatoms(self):
         natoms = xdr.read_trr_natoms(TRR)
         assert_equal(natoms, 47681, "Number of atoms in TRR frame")
 
-    def test_numframes(self):
+    def test_numframes_offsets(self): 
         numframes, offsets = xdr.read_trr_numframes(TRR)
         assert_equal(numframes, 10, "Number of frames in TRR trajectory")
+        assert_array_almost_equal(offsets,np.load(TRR_offsets), err_msg="wrong trr frame offsets")
 

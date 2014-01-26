@@ -1,6 +1,27 @@
+libxdrfile2 and XTC/TRR frame indexing
+======================================
+
+For MDAnalysis versions above 0.7.7 Manuel Melo added indexing functionality
+to the xdr reading library. The name of this derivative library is now libxdrfile2.
+All the modified files mentioned below are part of libxdr2 and are published under
+the GNU GENERAL PUBLIC LICENSE Version 2 (or higher):
+
+ * xdrfile_trr.c
+ * xdrfile_xtc.c
+ * xdrfile.c
+ * xdrfile.h
+ * xdrfile_trr.h
+ * xdrfile_xtc.h
+ * libxdrfile2.i
+ * libxdrfile2_wrap.c
+ * libxdrfile2.py
+
+
 libxdrfile
 ==========
 
+libxdrfile was used in MDAnalysis for TRR/XTC trajectory reading
+up until version 0.7.7.
 libxdrfile is available from git://git.gromacs.org/libxdrfile.git 
 
 Current developers:
@@ -36,16 +57,15 @@ Oliver Beckstein wrote
  * libxdrfile.i
 
 ``libxdrfile_wrap.c`` and ``coordinates/xdrfile/libxdrfile.py`` are
-generated from ``libxdrfile.i`` with::
+generated from ``libxdrfile.i`` with:
 
      swig -python -outdir MDAnalysis/coordinates/xdrfile src/xdrfile/libxdrfile.i
 
-The files 
+Up to and including MDAnalysis version 0.7.7 the files 
 
  * libxdrfile.i
  * libxdrfile_wrap.c
  * libxdrfile.py
 
-are published under the GNU LESSER GENERAL PUBLIC LICENSE Version 3
-(or higher).
-   
+are published under the GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher).
+

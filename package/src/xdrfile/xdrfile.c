@@ -3,12 +3,26 @@
  * $Id$
  *
  * Copyright (c) Erik Lindahl, David van der Spoel 2003,2004.
+ * Copyright (c) Manuel Melo <manuel.nuno.melo@gmail.com> 2013,2014.
  * Coordinate compression (c) by Frans van Hoesel. 
+ * XTC/TRR seeking and indexing (c) Manuel Melo.
  *
+ *    This file is part of libxdrfile2.
+ * 
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License
- * as published by the Free Software Foundation; either version 3
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+ * USA.
  */
 
 /* Get HAVE_RPC_XDR_H, F77_FUNC from config.h if available */
@@ -22,15 +36,12 @@
 #include <math.h>
 #include <limits.h>
 
-#define _FILE_OFFSET_BITS  64
-
 /* get fixed-width types if we are using ANSI C99 */
 #ifdef HAVE_STDINT_H
 #  include <stdint.h>
 #elif (defined HAVE_INTTYPES_H)
 #  include <inttypes.h>
 #endif
-
 
 #ifdef HAVE_RPC_XDR_H
 #  include <rpc/rpc.h>
@@ -2583,13 +2594,13 @@ xdrstdio_putbytes (XDR *xdrs, char *addr, unsigned int len)
 static off_t
 xdrstdio_getpos (XDR *xdrs)
 {
-    return ftell ((FILE *) xdrs->x_private);
+    return ftello((FILE *) xdrs->x_private);
 }
 
 static int
 xdrstdio_setpos (XDR *xdrs, off_t pos, int whence)
 {
-	return fseek ((FILE *) xdrs->x_private, pos, whence) < 0 ? exdrNR : exdrOK;
+	return fseeko((FILE *) xdrs->x_private, pos, whence) < 0 ? exdrNR : exdrOK;
 }
 
 

@@ -27,7 +27,7 @@ A generic Gromacs_ trajectory is simply called "trj" within this
 module.
 
 .. SeeAlso:: :mod:`MDAnalysis.coordinates.base` for the generic MDAnalysis base
-             classes and :mod:`MDAnalysis.coordinates.xdrfile.libxdrfile` for
+             classes and :mod:`MDAnalysis.coordinates.xdrfile.libxdrfile2` for
              the low-level bindings to the XDR trajectories.
 
 .. _Gromacs: http://www.gromacs.org
@@ -37,6 +37,12 @@ Generic xdr trj classes
 
 The generic classes are subclassed to generate the specific classes
 for the XTC and TRR format.
+
+.. versionchanged:: 0.8.0
+The XTC/TRR I/O interface now uses :mod:`libxdrfile2`, which has seeking and
+indexing capabilities. Note that unlike :mod:`libxdrfile` before it,
+:mod:`libxdrfile2` is distributed under the GNU GENERAL PUBLIC LICENSE,
+version 2 (or higher).
 
 .. autoclass:: Timestep
    :members:
@@ -52,7 +58,7 @@ import errno
 import numpy
 import sys
 
-import libxdrfile, statno
+import libxdrfile2, statno
 from MDAnalysis.coordinates import base
 from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
 
@@ -62,15 +68,15 @@ import MDAnalysis.core
 class Timestep(base.Timestep):
     """Timestep for a Gromacs trajectory."""
     def __init__(self, arg, **kwargs):
-        DIM = libxdrfile.DIM    # compiled-in dimension (most likely 3)
+        DIM = libxdrfile2.DIM    # compiled-in dimension (most likely 3)
         if numpy.dtype(type(arg)) == numpy.dtype(int):
             self.frame = 0
             self.numatoms = arg
-            # C floats and C-order for arrays (see libxdrfile.i)
+            # C floats and C-order for arrays (see libxdrfile2.i)
             self._pos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
             # additional data for xtc
-            self.status = libxdrfile.exdrOK
+            self.status = libxdrfile2.exdrOK
             self.step = 0
             self.time = 0
             self.prec = 0
@@ -99,7 +105,7 @@ class Timestep(base.Timestep):
                 raise ValueError("XDR timestep has not second dimension 3: shape=%r" % (arg.shape,))
             self._pos = arg.astype(numpy.float32).copy('C')  ## C-order
             # additional data for xtc
-            self.status = libxdrfile.exdrOK
+            self.status = libxdrfile2.exdrOK
             self.step = 0
             self.time = 0
             self.prec = 0
@@ -189,7 +195,7 @@ class TrjWriter(base.Writer):
         self.delta = delta
         self.remarks = remarks
         self.precision = precision  # only for XTC
-        self.xdrfile = libxdrfile.xdrfile_open(self.filename, 'w')
+        self.xdrfile = libxdrfile2.xdrfile_open(self.filename, 'w')
 
         self.ts = None
         # To flag empty properties to be skipped when writing a TRR it suffices to pass an empty 2D array with shape(natoms,0)
@@ -215,7 +221,7 @@ class TrjWriter(base.Writer):
 
         status = self._write_next_timestep(ts)
 
-        if status != libxdrfile.exdrOK:
+        if status != libxdrfile2.exdrOK:
             raise IOError(errno.EIO, "Error writing %s file (status %d)" % (self.format, status), self.filename)
         self.frames_written += 1
 
@@ -253,7 +259,7 @@ class TrjWriter(base.Writer):
         #
         # For TRR only go through the trouble if the frame actually has valid
         #  coords/vels/forces; otherwise they won't be written anyway (pointers
-        #  set to an empty array that libxdrfile.py knows it should set to NULL).
+        #  set to an empty array that libxdrfile2.py knows it should set to NULL).
         #
         # (2) have to treat XTC and TRR somewhat differently
         if self.format == 'XTC':
@@ -261,7 +267,7 @@ class TrjWriter(base.Writer):
                 pos = self.convert_pos_to_native(ts._pos, inplace=False)
             else:
                 pos = ts._pos
-            status = libxdrfile.write_xtc(self.xdrfile, int(ts.step), float(time), unitcell, pos, self.precision)
+            status = libxdrfile2.write_xtc(self.xdrfile, int(ts.step), float(time), unitcell, pos, self.precision)
         #
         elif self.format == 'TRR':
             if not hasattr(ts, 'lmbda'):
@@ -296,16 +302,16 @@ class TrjWriter(base.Writer):
             else:
                 forces = self._emptyarr
             #
-            status = libxdrfile.write_trr(self.xdrfile, int(ts.step), float(time), float(ts.lmbda), unitcell,
+            status = libxdrfile2.write_trr(self.xdrfile, int(ts.step), float(time), float(ts.lmbda), unitcell,
                                           pos, velocities, forces)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return status
 
     def close(self):
-        status = libxdrfile.exdrCLOSE
+        status = libxdrfile2.exdrCLOSE
         if not self.xdrfile is None:
-            status = libxdrfile.xdrfile_close(self.xdrfile)
+            status = libxdrfile2.xdrfile_close(self.xdrfile)
             self.xdrfile = None
         return status
 
@@ -366,12 +372,6 @@ class TrjReader(base.Reader):
             if isinstance(filename, unicode):
                 self.filename = filename.encode("UTF-8")
 
-        # Check if file is not too big file for a 32-bit.
-        # underlying xdrfile is indeed limited by the max integer value
-        if os.path.getsize(filename) > sys.maxint: # This test works even on a 32-bit system
-            raise OSError("Filesize is too big to be handled by xdrfile library (filesize: %.1fMB - max size: %.1fMB)"
-                          % (os.path.getsize(filename)/1.e6, sys.maxint/1.e6))
-
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
         self.convert_units = convert_units  # convert length and time to base units on the fly?
@@ -390,7 +390,7 @@ class TrjReader(base.Reader):
         self.__trr_numatoms = self._read_trj_natoms(self.filename)
 
         # logic for handling sub sections of trr:
-        # this class has some tmp buffers into which the libxdrfile functions read the
+        # this class has some tmp buffers into which the libxdrfile2 functions read the
         # entire frame, then this class copies the relevant sub section into the timestep.
         # the sub section logic is contained entierly within this class.
 
@@ -408,8 +408,8 @@ class TrjReader(base.Reader):
             self.__sub = sub
 
             # make tmp buffers
-            # C floats and C-order for arrays (see libxdrfile.i)
-            DIM = libxdrfile.DIM    # compiled-in dimension (most likely 3)
+            # C floats and C-order for arrays (see libxdrfile2.i)
+            DIM = libxdrfile2.DIM    # compiled-in dimension (most likely 3)
             # both xdr and trr have positions
             self.__pos_buf = numpy.zeros((self.__trr_numatoms, DIM), dtype=numpy.float32, order='C')
             if self.format == "TRR":
@@ -491,9 +491,9 @@ class TrjReader(base.Reader):
     def _read_trj_natoms(self, filename):
         """Generic number-of-atoms extractor with minimum intelligence. Override if necessary."""
         if self.format == 'XTC':
-            numatoms = libxdrfile.read_xtc_natoms(filename)
+            numatoms = libxdrfile2.read_xtc_natoms(filename)
         elif self.format == 'TRR':
-            numatoms = libxdrfile.read_trr_natoms(filename)
+            numatoms = libxdrfile2.read_trr_natoms(filename)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return numatoms
@@ -501,24 +501,32 @@ class TrjReader(base.Reader):
     def _read_trj_numframes(self, filename):
         """Number-of-frames extractor/indexer for XTC and TRR."""
         if self.format == 'XTC':
-            self.__numframes, self.__offsets = libxdrfile.read_xtc_numframes(filename)
+            self.__numframes, self.__offsets = libxdrfile2.read_xtc_numframes(filename)
         elif self.format == 'TRR':
-            self.__numframes, self.__offsets = libxdrfile.read_trr_numframes(filename)
+            self.__numframes, self.__offsets = libxdrfile2.read_trr_numframes(filename)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return
 
     def save_offsets(self, filename):
-        """Saves current trajectory offsets into filename (numpy format)."""
+        """Saves current trajectory offsets into *filename*, in numpy format. A ".npy" suffix will be appended to *filename* if not already present.
+
+        :Arguments:
+          *filename*
+              filename in which to save the frame offset numpy array.
+        """
         if self.__offsets is None:
             self._read_trj_numframes(self.filename)
-        with open(filename, 'w') as OFILE:
-            numpy.save(OFILE, self.__offsets)
+        numpy.save(filename, self.__offsets)
 
     def load_offsets(self, filename):
-        """Loads current trajectory offsets from filename (numpy format)."""
-        with open(filename, 'r') as OFILE:
-            self.__offsets = numpy.load(OFILE)
+        """Loads current trajectory offsets from *filename* (in numpy format). No error checking is performed.
+
+        :Arguments:
+          *filename*
+              filename of a saved numpy array with the frame offsets for the loaded trajectory.
+        """
+        self.__offsets = numpy.load(filename)
         self.__numframes = len(self.__offsets)
 
     def open_trajectory(self):
@@ -533,10 +541,10 @@ class TrjReader(base.Reader):
         if not os.path.exists(self.filename):
             # must check; otherwise might segmentation fault
             raise IOError(errno.ENOENT, 'XDR file not found', self.filename)
-        self.xdrfile = libxdrfile.xdrfile_open(self.filename, 'r')
+        self.xdrfile = libxdrfile2.xdrfile_open(self.filename, 'r')
         # reset ts
         ts = self.ts
-        ts.status = libxdrfile.exdrOK
+        ts.status = libxdrfile2.exdrOK
         ts.frame = 0
         ts.step = 0
         ts.time = 0
@@ -550,7 +558,7 @@ class TrjReader(base.Reader):
         """Close xdr trajectory file if it was open."""
         if self.xdrfile is None:
             return
-        libxdrfile.xdrfile_close(self.xdrfile)
+        libxdrfile2.xdrfile_close(self.xdrfile)
         self.xdrfile = None  # guard against  crashing with a double-free pointer
 
     def Writer(self, filename, **kwargs):
@@ -616,16 +624,16 @@ class TrjReader(base.Reader):
 
         if self.format == 'XTC':
             if self.__sub is None:
-                ts.status, ts.step, ts.time, ts.prec = libxdrfile.read_xtc(self.xdrfile, ts._unitcell, ts._pos)
+                ts.status, ts.step, ts.time, ts.prec = libxdrfile2.read_xtc(self.xdrfile, ts._unitcell, ts._pos)
             else:
-                ts.status, ts.step, ts.time, ts.prec = libxdrfile.read_xtc(self.xdrfile, ts._unitcell, self.__pos_buf)
+                ts.status, ts.step, ts.time, ts.prec = libxdrfile2.read_xtc(self.xdrfile, ts._unitcell, self.__pos_buf)
                 ts._pos[:] = self.__pos_buf[self.__sub]
         elif self.format == 'TRR':
             if self.__sub is None:
-                ts.status, ts.step, ts.time, ts.lmbda, ts.has_x, ts.has_v, ts.has_f = libxdrfile.read_trr(self.xdrfile, ts._unitcell, ts._tpos,
+                ts.status, ts.step, ts.time, ts.lmbda, ts.has_x, ts.has_v, ts.has_f = libxdrfile2.read_trr(self.xdrfile, ts._unitcell, ts._tpos,
                                                                             ts._tvelocities, ts._tforces)
             else:
-                ts.status, ts.step, ts.time, ts.lmbda, ts.has_x, ts.has_v, ts.has_f  = libxdrfile.read_trr(self.xdrfile, ts._unitcell, self.__pos_buf,
+                ts.status, ts.step, ts.time, ts.lmbda, ts.has_x, ts.has_v, ts.has_f  = libxdrfile2.read_trr(self.xdrfile, ts._unitcell, self.__pos_buf,
                                                                             self.__velocities_buf, self.__forces_buf)
                 ts._tpos[:] = self.__pos_buf[self.__sub]
                 ts._tvelocities[:] = self.__velocities_buf[self.__sub]
@@ -633,12 +641,12 @@ class TrjReader(base.Reader):
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
 
-        if (ts.status == libxdrfile.exdrENDOFFILE) or \
-                (ts.status == libxdrfile.exdrINT and self.format == 'TRR'):
+        if (ts.status == libxdrfile2.exdrENDOFFILE) or \
+                (ts.status == libxdrfile2.exdrINT and self.format == 'TRR'):
             # seems that trr files can get a exdrINT when reaching EOF (??)
             raise IOError(errno.ENODATA, "End of file reached for %s file" % self.format,
                           self.filename)
-        elif not ts.status == libxdrfile.exdrOK:
+        elif not ts.status == libxdrfile2.exdrOK:
             raise IOError(errno.EFAULT, "Problem with %s file, status %s" %
                           (self.format, statno.errorcode[ts.status]), self.filename)
         if self.convert_units:
@@ -739,18 +747,18 @@ class TrjReader(base.Reader):
         """Traj seeker"""
         if self.format == 'XTC' or self.format == 'TRR':
             if rel:
-                status = libxdrfile.xdr_seek(self.xdrfile, long(pos), libxdrfile.SEEK_CUR)
+                status = libxdrfile2.xdr_seek(self.xdrfile, long(pos), libxdrfile2.SEEK_CUR)
             else:
-                status = libxdrfile.xdr_seek(self.xdrfile, long(pos), libxdrfile.SEEK_SET)
-            if status != libxdrfile.exdrOK:
-                raise IOError(errno.EIO, "Problem seeking to offset %d (relative to current = %s) on file %s, status %s" % (pos, rel, self.filename, status))
+                status = libxdrfile2.xdr_seek(self.xdrfile, long(pos), libxdrfile2.SEEK_SET)
+            if status != libxdrfile2.exdrOK:
+                raise IOError(errno.EIO, "Problem seeking to offset %d (relative to current = %s) on file %s, status %s.\nPerhaps you are trying to read a file >2GB and your system does not have large file support?" % (pos, rel, self.filename, status))
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
 
     def _tell(self):
         """Traj pos getter"""
         if self.format == 'XTC' or self.format == 'TRR':
-            offset = libxdrfile.xdr_tell(self.xdrfile)
+            offset = libxdrfile2.xdr_tell(self.xdrfile)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return offset
