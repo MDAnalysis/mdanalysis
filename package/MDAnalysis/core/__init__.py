@@ -362,6 +362,25 @@ _flags = [
             keyword to :class:`MDAnalysis.Universe`.
          """
          ),
+    _Flag('use_pbc',
+          False,
+          {True: True, False: False},
+          """
+          Choose whether to consider periodic boundary conditions when performing
+          many AtomGroup methods.  This is set to ``False`` by default, can be enabled
+          with: 
+
+          >>> MDAnalysis.core.flags['use_pbc'] = True
+
+          Values for flag:
+
+          * True - Move all atoms within the primary unit cell before calculation
+          * False - Use coordinates as supplied
+
+          .. Warning:: Changing this to *True* changes the default behaviour of commonly
+          used AtomGroup methods such as centerOfMass and centerOfGeometry!
+          """),
+
     ]
 
 #: Global flag registry for :mod:`core`.

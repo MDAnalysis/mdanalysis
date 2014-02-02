@@ -328,6 +328,9 @@ class TestCythonFunctions(TestCase):
     def setUp(self):
         self.prec = 5
         self.box = np.array([10., 10., 10.], dtype=np.float32)
+        self.box2 = np.array([[10., 0., 0.],
+                              [1., 10., 0.,],
+                              [1., 0., 10.]], dtype=np.float32)
         # dummy atom data
         self.a = np.array([[0., 0., 0.],
                            [0., 0., 0.],
@@ -360,6 +363,7 @@ class TestCythonFunctions(TestCase):
 
     def tearDown(self):
         del self.box
+        del self.box2
         del self.a
         del self.b
         del self.c
@@ -399,6 +403,11 @@ class TestCythonFunctions(TestCase):
         assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.a, self.b, 
                       result=badresult) # Bad result array
         
+    def test_bonds_triclinic(self):
+        dists = MDAnalysis.core.distances.calc_bonds(self.a, self.b, box=self.box2)
+        reference = np.array([0.0, 1.7320508, 1.4142136, 2.82842712])
+        assert_almost_equal(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
+
     def test_angles(self):
         angles = MDAnalysis.core.distances.calc_angles(self.a, self.b, self.c)
         # Check calculated values
@@ -483,3 +492,47 @@ class TestCythonFunctions(TestCase):
                             err_msg="Cython torsions didn't match numpy calculations")
 
         
+class test_apply_PBC(TestCase):
+    def setUp(self):
+        self.prec = 6
+
+    def tearDown(self):
+        del self.prec
+        
+    def test_ortho_PBC(self):
+        from MDAnalysis.core.distances import applyPBC
+        U = MDAnalysis.Universe(PSF, DCD)
+        atoms = U.atoms.coordinates()
+        box1 = np.array([2.5, 2.5, 3.5], dtype=np.float32)
+        box2 = np.array([2.5, 2.5, 3.5, 90., 90., 90.], dtype=np.float32) 
+
+        cyth1 = applyPBC(atoms, box1)
+        cyth2 = applyPBC(atoms, box2)
+        reference = atoms - np.floor(atoms/box1)*box1
+
+        assert_almost_equal(cyth1, reference, self.prec, err_msg = "Ortho applyPBC #1 failed comparison with np")
+        assert_almost_equal(cyth2, reference, self.prec, err_msg = "Ortho applyPBC #2 failed comparison with np")
+
+    def test_tric_PBC(self):
+        from MDAnalysis.core.distances import applyPBC
+        U = MDAnalysis.Universe(TRIC)
+        atoms = U.atoms.coordinates()
+        box1 = U.dimensions
+        box2 = MDAnalysis.coordinates.core.triclinic_vectors(box1)
+
+        print box2
+        print box2.shape
+
+        def numpy_PBC(coords, box):
+            coords -= np.array([box[2]*val for val in np.floor(coords[:,2] / box[2][2]) ] )
+            coords -= np.array([box[1]*val for val in np.floor(coords[:,1] / box[1][1]) ] )
+            coords -= np.array([box[0]*val for val in np.floor(coords[:,0] / box[0][0]) ] )
+
+            return coords
+
+        cyth1 = applyPBC(atoms, box1)
+        cyth2 = applyPBC(atoms, box2)
+        reference = numpy_PBC(atoms, box2)
+
+        assert_almost_equal(cyth1, reference, self.prec, err_msg="Triclinic applyPBC failed comparison with np")
+        assert_almost_equal(cyth2, reference, self.prec, err_msg="Trlclinic applyPBC failed comparison with np")

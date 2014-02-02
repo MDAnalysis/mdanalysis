@@ -17,7 +17,8 @@
 
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
-                                      merge_protein, merge_water, merge_ligand
+                                      merge_protein, merge_water, merge_ligand, \
+                                      TRZ, TRZ_psf
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup
 from MDAnalysis import NoDataError
@@ -204,7 +205,7 @@ class TestAtomGroup(TestCase):
 
     # add new methods here...
     def test_packintobox(self):
-        """test AtomGroup.packintobox(): Tests application of periodic boundary conditions on coordinates
+        """test AtomGroup.packIntoBox(): Tests application of periodic boundary conditions on coordinates
 
         Reference system doesn't have dimensions, so an arbitrary box is imposed on the system
         """
@@ -213,10 +214,10 @@ class TestAtomGroup(TestCase):
         ag = u.atoms
 
         def badpack(ag=ag):
-            ag.packintobox()
+            ag.packIntoBox()
         assert_raises(ValueError, badpack) #This system has no dimensions, so by default can't pack
 
-        ag.packintobox(box=numpy.array([5.,5.,5.])) #Provide arbitrary box
+        ag.packIntoBox(box=numpy.array([5.,5.,5.],  dtype=numpy.float32)) #Provide arbitrary box
         assert_array_almost_equal(ag.coordinates()[1000:2000:200],
                                   array([[ 3.94543672,  2.5939188 ,  2.73179913],
                                          [ 3.21632767,  0.879035  ,  0.32085133],
@@ -891,3 +892,104 @@ class TestUniverse(TestCase):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.numframes, 2*ref.trajectory.numframes)
 
+class TestPBCFlag(TestCase):
+    def setUp(self):
+        self.prec = 5
+        self.universe = MDAnalysis.Universe(TRZ_psf, TRZ)
+        self.ref_noPBC = {'COG':numpy.array([ 4.23789883,  0.62429816,  2.43123484], dtype=float32),
+                          'COM':numpy.array([ 4.1673783 ,  0.70507009,  2.21175832]),
+                          'ROG':119.30368949900134, 'Shape':0.6690026954813445,
+                          'Asph':0.5305456387833748,
+                          'MOI':numpy.array([[ 152117.06620921,   55149.54042136,  -26630.46034023],
+                                             [  55149.54042136,   72869.64061494,   21998.1778074 ],
+                                             [ -26630.46034023,   21998.1778074 ,  162388.70002471]]),
+                          'BBox':numpy.array([[ -75.74159241, -144.86634827,  -94.47974396],
+                                              [  95.83090973,  115.11561584,   88.09812927]], dtype=float32),
+                          'BSph':(173.40482, numpy.array([ 4.23789883,  0.62429816,  2.43123484], dtype=float32)),
+                          'PAxes':numpy.array([[ 0.46294889, -0.85135849,  0.24671249],
+                                               [ 0.40611024,  0.45112859,  0.7947059 ],
+                                               [-0.78787867, -0.26771575,  0.55459488]])
+                          }
+        self.ref_PBC = {'COG':numpy.array([ 26.82960892,  31.5592289 ,  30.98238945], dtype=float32),
+                        'COM':numpy.array([ 26.67781143,  31.2104336 ,  31.19796289]),
+                        'ROG':27.713008969174918, 'Shape':0.0017390512580463542,
+                        'Asph':0.020601215358731016,
+                        'MOI':numpy.array([[ 7333.79167791,  -211.8997285 ,  -721.50785456],
+                                           [ -211.8997285 ,  7059.07470427,   -91.32156884],
+                                           [ -721.50785456,   -91.32156884,  6509.31735029]]),
+                        'BBox':numpy.array([[  1.45964116e-01,   1.85623169e-02,   4.31785583e-02],
+                                            [  5.53314018e+01,   5.54227829e+01,   5.54158211e+01]], dtype=float32),
+                        'BSph':(47.923367, numpy.array([ 26.82960892,  31.5592289 ,  30.98238945], dtype=float32)),
+                        'PAxes':numpy.array([[-0.50622389, -0.18364489, -0.84262206],
+                                             [-0.07520116, -0.96394227,  0.25526473],
+                                             [-0.85911708,  0.19258726,  0.4741603 ]])
+                        }
+        self.ag = self.universe.residues[0:3]
+
+    def tearDown(self):
+        MDAnalysis.core.flags['use_pbc'] = False
+        del self.prec
+        del self.universe
+        del self.ref_noPBC
+        del self.ref_PBC
+        del self.ag
+
+    def test_flag(self):
+        # Test default setting of flag
+        assert_equal(MDAnalysis.core.flags['use_pbc'], False)
+
+    def test_default(self):
+        # Test regular behaviour
+        assert_almost_equal(self.ag.centerOfGeometry(), self.ref_noPBC['COG'], self.prec)
+        assert_almost_equal(self.ag.centerOfMass(), self.ref_noPBC['COM'], self.prec)
+        assert_almost_equal(self.ag.radiusOfGyration(), self.ref_noPBC['ROG'], self.prec)
+        assert_almost_equal(self.ag.shapeParameter(), self.ref_noPBC['Shape'], self.prec)
+        assert_almost_equal(self.ag.asphericity(), self.ref_noPBC['Asph'], self.prec)
+        assert_almost_equal(self.ag.momentOfInertia(), self.ref_noPBC['MOI'], self.prec)
+        assert_almost_equal(self.ag.bbox(), self.ref_noPBC['BBox'], self.prec)
+        assert_almost_equal(self.ag.bsphere()[0], self.ref_noPBC['BSph'][0], self.prec)        
+        assert_almost_equal(self.ag.bsphere()[1], self.ref_noPBC['BSph'][1], self.prec)
+        assert_almost_equal(self.ag.principalAxes(), self.ref_noPBC['PAxes'], self.prec)
+
+    def test_pbcflag(self):
+        # Test using ag method flag
+        assert_almost_equal(self.ag.centerOfGeometry(pbc=True), self.ref_PBC['COG'], self.prec)
+        assert_almost_equal(self.ag.centerOfMass(pbc=True), self.ref_PBC['COM'], self.prec)
+        assert_almost_equal(self.ag.radiusOfGyration(pbc=True), self.ref_PBC['ROG'], self.prec)
+        assert_almost_equal(self.ag.shapeParameter(pbc=True), self.ref_PBC['Shape'], self.prec)
+        assert_almost_equal(self.ag.asphericity(pbc=True), self.ref_PBC['Asph'], self.prec)
+        assert_almost_equal(self.ag.momentOfInertia(pbc=True), self.ref_PBC['MOI'], self.prec)
+        assert_almost_equal(self.ag.bbox(pbc=True), self.ref_PBC['BBox'], self.prec)
+        assert_almost_equal(self.ag.bsphere(pbc=True)[0], self.ref_PBC['BSph'][0], self.prec)
+        assert_almost_equal(self.ag.bsphere(pbc=True)[1], self.ref_PBC['BSph'][1], self.prec)
+        assert_almost_equal(self.ag.principalAxes(pbc=True), self.ref_PBC['PAxes'], self.prec)
+
+    def test_usepbc_flag(self):
+        # Test using the core.flags flag 
+        MDAnalysis.core.flags['use_pbc'] = True
+        assert_almost_equal(self.ag.centerOfGeometry(), self.ref_PBC['COG'], self.prec)
+        assert_almost_equal(self.ag.centerOfMass(), self.ref_PBC['COM'], self.prec)
+        assert_almost_equal(self.ag.radiusOfGyration(), self.ref_PBC['ROG'], self.prec)
+        assert_almost_equal(self.ag.shapeParameter(), self.ref_PBC['Shape'], self.prec)
+        assert_almost_equal(self.ag.asphericity(), self.ref_PBC['Asph'], self.prec)
+        assert_almost_equal(self.ag.momentOfInertia(), self.ref_PBC['MOI'], self.prec)
+        assert_almost_equal(self.ag.bbox(), self.ref_PBC['BBox'], self.prec)
+        assert_almost_equal(self.ag.bsphere()[0], self.ref_PBC['BSph'][0], self.prec)        
+        assert_almost_equal(self.ag.bsphere()[1], self.ref_PBC['BSph'][1], self.prec)
+        assert_almost_equal(self.ag.principalAxes(), self.ref_PBC['PAxes'], self.prec)
+        MDAnalysis.core.flags['use_pbc'] = False
+
+    def test_override_flag(self):
+        # Test using the core.flags flag, then overriding
+        MDAnalysis.core.flags['use_pbc'] = True
+        assert_almost_equal(self.ag.centerOfGeometry(pbc=False), self.ref_noPBC['COG'], self.prec)
+        assert_almost_equal(self.ag.centerOfMass(pbc=False), self.ref_noPBC['COM'], self.prec)
+        assert_almost_equal(self.ag.radiusOfGyration(pbc=False), self.ref_noPBC['ROG'], self.prec)
+        assert_almost_equal(self.ag.shapeParameter(pbc=False), self.ref_noPBC['Shape'], self.prec)
+        assert_almost_equal(self.ag.asphericity(pbc=False), self.ref_noPBC['Asph'], self.prec)
+        assert_almost_equal(self.ag.momentOfInertia(pbc=False), self.ref_noPBC['MOI'], self.prec)
+        assert_almost_equal(self.ag.bbox(pbc=False), self.ref_noPBC['BBox'], self.prec)
+        assert_almost_equal(self.ag.bsphere(pbc=False)[0], self.ref_noPBC['BSph'][0], self.prec)        
+        assert_almost_equal(self.ag.bsphere(pbc=False)[1], self.ref_noPBC['BSph'][1], self.prec)
+        assert_almost_equal(self.ag.principalAxes(pbc=False), self.ref_noPBC['PAxes'], self.prec)
+        MDAnalysis.core.flags['use_pbc'] = False

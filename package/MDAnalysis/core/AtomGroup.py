@@ -1069,31 +1069,89 @@ class AtomGroup(object):
         """
         self.set("bfactor", bfactor, conversion=float)
 
-    def centerOfGeometry(self):
-        """Center of geometry (also known as centroid) of the selection."""
-        return numpy.sum(self.coordinates(), axis=0)/self.numberOfAtoms()
+    def centerOfGeometry(self, **kwargs):
+        """Center of geometry (also known as centroid) of the selection.
+
+        :Keywords:
+          *pbc*
+            ``True``: Move all atoms within the primary unit cell before calculation [``False``]
+
+        .. Note:: 
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+            flag to be used by default.
+
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
+        if pbc:
+            return numpy.sum(self.packIntoBox(inplace=False), axis=0) / self.numberOfAtoms()
+        else:
+            return numpy.sum(self.coordinates(), axis=0)/self.numberOfAtoms()
     centroid = centerOfGeometry
 
-    def centerOfMass(self):
-        """Center of mass of the selection."""
-        return numpy.sum(self.coordinates()*self.masses()[:,numpy.newaxis],axis=0)/self.totalMass()
+    def centerOfMass(self, **kwargs):
+        """Center of mass of the selection.
+        
+        :Keywords:
+          *pbc*
+            ``True``: Move all atoms within the primary unit cell before calculation [``False``]
 
-    def radiusOfGyration(self):
-        """Radius of gyration."""
+        .. Note:: 
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+            flag to be used by default.
+
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
+        if pbc:
+            return numpy.sum(self.packIntoBox(inplace=False)*self.masses()[:,numpy.newaxis],axis=0)/self.totalMass()
+        else:
+            return numpy.sum(self.coordinates()*self.masses()[:,numpy.newaxis],axis=0)/self.totalMass()
+
+    def radiusOfGyration(self, **kwargs):
+        """Radius of gyration.
+
+        :Keywords:
+          *pbc*
+            ``True``: Move all atoms within the primary unit cell before calculation [``False``]
+
+        .. Note:: 
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+            flag to be used by default.
+
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
         masses = self.masses()
-        recenteredpos = self.coordinates() - self.centerOfMass()
+        if pbc:
+            recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
+        else:
+            recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
         rog_sq = numpy.sum(masses*numpy.sum(numpy.power(recenteredpos, 2), axis=1))/self.totalMass()
         return numpy.sqrt(rog_sq)
 
-    def shapeParameter(self):
+    def shapeParameter(self, **kwargs):
         """Shape parameter.
 
         See [Dima2004]_ for background information.
 
+        :Keywords:
+          *pbc*
+            ``True``: Move all atoms within the primary unit cell before calculation [``False``]
+
+        .. Note:: 
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+            flag to be used by default.
+
         .. versionadded:: 0.7.7
+        .. versionchanged:: 0.8 Added *pbc* keyword
         """
+        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
         masses = self.masses()
-        recenteredpos = self.coordinates() - self.centerOfMass()
+        if pbc:
+            recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
+        else:
+            recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
         tensor = numpy.zeros((3,3))
         for x in xrange(recenteredpos.shape[0]):
             tensor += masses[x] * numpy.outer(recenteredpos[x,:],
@@ -1103,15 +1161,28 @@ class AtomGroup(object):
         shape = 27.0 * numpy.prod(eig_vals-numpy.mean(eig_vals)) / numpy.power(numpy.sum(eig_vals),3)
         return shape
 
-    def asphericity(self):
+    def asphericity(self, **kwargs):
         """Asphericity.
 
         See [Dima2004]_ for background information.
 
+        :Keywords:
+          *pbc*
+            ``True``: Move all atoms within primary unit cell before calculation [``False``]
+
+        .. Note:: 
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+            flag to be used by default.
+
         .. versionadded:: 0.7.7
+        .. versionchanged:: 0.8 Added *pbc* keyword
         """
+        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
         masses = self.masses()
-        recenteredpos = self.coordinates() - self.centerOfMass()
+        if pbc:
+            recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
+        else:
+            recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
         tensor = numpy.zeros((3,3))
         for x in xrange(recenteredpos.shape[0]):
             tensor += masses[x] * numpy.outer(recenteredpos[x,:],
@@ -1121,10 +1192,25 @@ class AtomGroup(object):
         shape = (3.0 / 2.0) * numpy.sum(numpy.power(eig_vals-numpy.mean(eig_vals),2)) / numpy.power(numpy.sum(eig_vals),2)
         return shape
 
-    def momentOfInertia(self):
-        """Tensor of inertia as 3x3 NumPy array."""
+    def momentOfInertia(self, **kwargs):
+        """Tensor of inertia as 3x3 NumPy array.
+
+        :Keywords:
+          *pbc*
+            ``True``: Move all atoms within the primary unit cell before calculation [``False``]
+
+        .. Note:: 
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+            flag to be used by default.
+
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
         # Convert to local coordinates
-        recenteredpos = self.coordinates() - self.centerOfMass()
+        if pbc:
+            recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
+        else:
+            recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
         masses = self.masses()
         values = zip(masses, recenteredpos)
         # Create the inertia tensor
@@ -1142,7 +1228,7 @@ class AtomGroup(object):
         Iyz = Izy = -1*reduce(lambda t,a: t+a[0]*a[1][1]*a[1][2], values, 0.)
         return numpy.array([[Ixx, Ixy, Ixz],[Iyx, Iyy, Iyz],[Izx, Izy, Izz]])
 
-    def bbox(self):
+    def bbox(self, **kwargs):
         """Return the bounding box of the selection.
 
         The lengths A,B,C of the orthorhombic enclosing box are ::
@@ -1150,28 +1236,55 @@ class AtomGroup(object):
           L = AtomGroup.bbox()
           A,B,C = L[1] - L[0]
 
+        :Keywords:
+          *pbc*
+            ``True``: Move all atoms within the primary unit cell before calculation [``False``]
+
+        .. Note:: 
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+            flag to be used by default.
+
         :Returns: [[xmin, ymin, zmin], [xmax, ymax, zmax]]
 
         .. versionadded:: 0.7.2
+        .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        x = self.coordinates()
+        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
+        if pbc:
+            x = self.packIntoBox(inplace=False)
+        else:
+            x = self.coordinates()
         return numpy.array([x.min(axis=0), x.max(axis=0)])
 
-    def bsphere(self):
+    def bsphere(self, **kwargs):
         """Return the bounding sphere of the selection.
 
         The sphere is calculated relative to the centre of geometry.
 
+        :Keywords:
+          *pbc*
+            ``True``: Move all atoms within primary unit cell before calculation [``False``]
+
+        .. Note:: 
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+            flag to be used by default.
+
         :Returns: `(R, [xcen,ycen,zcen])`
 
         .. versionadded:: 0.7.3
+        .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        x = self.coordinates()
-        centroid = self.centerOfGeometry()
+        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
+        if pbc:
+            x = self.packIntoBox(inplace=False)
+            centroid = self.centerOfGeometry(pbc=True)
+        else:
+            x = self.coordinates()
+            centroid = self.centerOfGeometry(pbc=False)
         R = numpy.sqrt(numpy.max(numpy.sum(numpy.square(x-centroid), axis=1)))
         return R, centroid
 
-    def bond(self):
+    def bond(self, minimage=False):
         """Returns the distance between atoms in a 2-atom group.
 
         Distance between atoms 0 and 1::
@@ -1184,11 +1297,19 @@ class AtomGroup(object):
            :class:`Atom`; anything else will raise a
            :exc:`ValueError`.
 
+        :Keywords:
+          *minimage*
+            ``True``: Account for minimum image convention when calculating [``False``]
+
         .. versionadded:: 0.7.3
+        .. versionchanged:: 0.8 Added *minimage* keyword
         """
         if len(self) != 2:
                 raise ValueError("distance computation only makes sense for a group with exactly 2 atoms")
-        return numpy.linalg.norm(self[0].pos - self[1].pos)
+        if not minimage:
+            return numpy.linalg.norm(self[0].pos - self[1].pos)
+        else:
+            return MDAnalysis.core.distances.self_distance_array(self.coordinates(), box=self.dimensions)[0]
 
     def angle(self):
         """Returns the angle in degrees between atoms 0, 1, 2.
@@ -1260,7 +1381,7 @@ class AtomGroup(object):
         cd = C - D
         return numpy.rad2deg(util.dihedral(ab, bc, cd))
 
-    def principalAxes(self):
+    def principalAxes(self, **kwargs):
         """Calculate the principal axes from the moment of inertia.
 
         e1,e2,e3 = AtomGroup.principalAxes()
@@ -1268,11 +1389,25 @@ class AtomGroup(object):
         The eigenvectors are sorted by eigenvalue, i.e. the first one
         corresponds to the highest eigenvalue and is thus the first principal axes.
 
+        :Keywords:
+          *pbc*
+            ``True``: Move all atoms within primary unit cell before calculation
+
+        .. Note:: 
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+            flag to be used by default.
+
         :Returns: numpy.array ``v`` with ``v[0]`` as first, ``v[1]`` as second,
                   and ``v[2]`` as third eigenvector.
+                  
+        .. versionchanged:: 0.8 Added *pbc* keyword
         """
         from numpy.linalg import eig
-        eigenval, eigenvec = eig(self.momentOfInertia())
+        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
+        if pbc:
+            eigenval, eigenvec = eig(self.momentOfInertia(pbc=True))
+        else:
+            eigenval, eigenvec = eig(self.momentOfInertia(pbc=False))
         # Sort
         indices = numpy.argsort(eigenval)
         # Return transposed in more logical form. See Issue 33.
@@ -1298,7 +1433,7 @@ class AtomGroup(object):
                NumPy Data type of the array; the default is usually
                entirely appropriate. Most C-code actually requires the
                default  [:class:`numpy.float32`]
-
+        
         Coordinates can also be directly obtained from the attribute
         :attr:`~AtomGroup.positions`.
 
@@ -1313,6 +1448,7 @@ class AtomGroup(object):
         if ts == None:
             ts = self.universe.trajectory.ts
         return numpy.array(ts[self.indices()], copy=copy, dtype=dtype)
+
 
     coordinates = get_positions
     """NumPy array of the coordinates.
@@ -1653,10 +1789,17 @@ class AtomGroup(object):
         #print "axis = %r, angle = %f deg" % (ax, angle)
         return self.rotateby(angle, ax)
 
-    def packintobox(self, box=None):
+    def packIntoBox(self, box=None, inplace=True):
         """Shift all atoms in this group to be within the primary unit cell.
 
-        AtomGroup.packintobox([box])
+        AtomGroup.packintobox([box, [inplace=True]])
+
+        :Keywords:
+          *box*
+            Unit cell to move atoms inside of.
+          *inplace*
+            ``True``: Change coordinates in place and return
+            ``False``: Only return the coordinates
 
         All atoms will be moved so that they lie between 0 and
         boxlength :math:`L_i` in all dimensions, i.e. the lower left
@@ -1671,23 +1814,29 @@ class AtomGroup(object):
         alternative unit cell information (in the MDAnalysis standard
         format ``[Lx, Ly, Lz, alpha, beta, gamma]``).
 
-        .. Warning:: Currently only works with orthogonal boxes. See `Issue 136`_
+        Works with either orthogonal or triclinic box types.
 
-        .. _Issue 136: https://code.google.com/p/mdanalysis/issues/detail?id=136
+        By default the coordinates are changed in place and returned
 
+        .. versionchanged:: 0.8
         """
         if box == None: #Try and auto detect box dimensions
-            if (self.dimensions[6:9] == 90.).all(): #Check box is orthogonal
-                box = self.dimensions[0:3]
-            else:
-                raise ValueError("This atomgroup does not belong to a Universe with an orthogonal box")
-
-        if (box == 0).any(): #Check that a box dimension isn't zero
-            raise ValueError("One or more box dimensions is zero.  You can specify a boxsize with 'box='")
+            box = self.dimensions # Can accept any box
+                
+        if box.shape == (3,3):
+            if (box.diagonal() == 0.0).any(): # for a vector representation, diagonal cannot be zero
+                raise ValueError("One or more box dimensions is zero.  You can specify a boxsize with 'box ='")
+        else:
+            if (box == 0).any(): #Check that a box dimension isn't zero
+                raise ValueError("One or more box dimensions is zero.  You can specify a boxsize with 'box='")
 
         coords = self.universe.trajectory.ts._pos[self.indices()]
-        self.universe.trajectory.ts._pos[self.indices()] -= numpy.floor(coords/box)*box
-        #np.floor rounds down all numbers, ie floor(-0.1) = -1, floor(0.9) = 0
+        if not inplace:
+            return MDAnalysis.core.distances.applyPBC(coords, box)
+        
+        self.universe.trajectory.ts._pos[self.indices()] = MDAnalysis.core.distances.applyPBC(coords, box)
+
+        return self.universe.trajectory.ts._pos[self.indices()]
 
     def selectAtoms(self, sel, *othersel):
         """Selection of atoms using the MDAnalysis selection syntax.
