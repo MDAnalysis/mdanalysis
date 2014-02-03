@@ -762,13 +762,24 @@ class AtomGroup(object):
         return self.__cache['torsions']
 
     def numberOfBondTypes(self):
-        """Number of different bond types in this AtomGroup"""
+        """Number of different bond types in this AtomGroup
+
+        .. versionadded:: 0.8
+        """
         return len(self.bondDict)
+
     def numberOfAngleTypes(self):
-        """Number of different angle types in this AtomGroup"""
+        """Number of different angle types in this AtomGroup
+
+        .. versionadded:: 0.8
+        """
         return len(self.angleDict)
+
     def numberOfTorsionTypes(self):
-        """Number of different torsions types in this AtomGroup"""
+        """Number of different torsions types in this AtomGroup
+
+        .. versionadded:: 0.8
+        """
         return len(self.torsionDict)
 
     def selectBonds(self, criteria):
@@ -1076,8 +1087,8 @@ class AtomGroup(object):
           *pbc*
             ``True``: Move all atoms within the primary unit cell before calculation [``False``]
 
-        .. Note:: 
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+        .. Note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*
             flag to be used by default.
 
         .. versionchanged:: 0.8 Added *pbc* keyword
@@ -1091,13 +1102,13 @@ class AtomGroup(object):
 
     def centerOfMass(self, **kwargs):
         """Center of mass of the selection.
-        
+
         :Keywords:
           *pbc*
             ``True``: Move all atoms within the primary unit cell before calculation [``False``]
 
-        .. Note:: 
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+        .. Note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*
             flag to be used by default.
 
         .. versionchanged:: 0.8 Added *pbc* keyword
@@ -1115,8 +1126,8 @@ class AtomGroup(object):
           *pbc*
             ``True``: Move all atoms within the primary unit cell before calculation [``False``]
 
-        .. Note:: 
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+        .. Note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*
             flag to be used by default.
 
         .. versionchanged:: 0.8 Added *pbc* keyword
@@ -1139,8 +1150,8 @@ class AtomGroup(object):
           *pbc*
             ``True``: Move all atoms within the primary unit cell before calculation [``False``]
 
-        .. Note:: 
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+        .. Note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*
             flag to be used by default.
 
         .. versionadded:: 0.7.7
@@ -1170,8 +1181,8 @@ class AtomGroup(object):
           *pbc*
             ``True``: Move all atoms within primary unit cell before calculation [``False``]
 
-        .. Note:: 
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+        .. Note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*
             flag to be used by default.
 
         .. versionadded:: 0.7.7
@@ -1199,8 +1210,8 @@ class AtomGroup(object):
           *pbc*
             ``True``: Move all atoms within the primary unit cell before calculation [``False``]
 
-        .. Note:: 
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+        .. Note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*
             flag to be used by default.
 
         .. versionchanged:: 0.8 Added *pbc* keyword
@@ -1240,8 +1251,8 @@ class AtomGroup(object):
           *pbc*
             ``True``: Move all atoms within the primary unit cell before calculation [``False``]
 
-        .. Note:: 
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+        .. Note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*
             flag to be used by default.
 
         :Returns: [[xmin, ymin, zmin], [xmax, ymax, zmax]]
@@ -1265,8 +1276,8 @@ class AtomGroup(object):
           *pbc*
             ``True``: Move all atoms within primary unit cell before calculation [``False``]
 
-        .. Note:: 
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+        .. Note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*
             flag to be used by default.
 
         :Returns: `(R, [xcen,ycen,zcen])`
@@ -1393,13 +1404,13 @@ class AtomGroup(object):
           *pbc*
             ``True``: Move all atoms within primary unit cell before calculation
 
-        .. Note:: 
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc* 
+        .. Note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*
             flag to be used by default.
 
         :Returns: numpy.array ``v`` with ``v[0]`` as first, ``v[1]`` as second,
                   and ``v[2]`` as third eigenvector.
-                  
+
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         from numpy.linalg import eig
@@ -1433,7 +1444,7 @@ class AtomGroup(object):
                NumPy Data type of the array; the default is usually
                entirely appropriate. Most C-code actually requires the
                default  [:class:`numpy.float32`]
-        
+
         Coordinates can also be directly obtained from the attribute
         :attr:`~AtomGroup.positions`.
 
@@ -1649,14 +1660,17 @@ class AtomGroup(object):
 
 
     def transform(self, M):
-        """Apply homogenous transformation matrix *M* to the coordinates.
+        r"""Apply homogenous transformation matrix *M* to the coordinates.
 
         The matrix *M* must be a 4x4 matrix, with the rotation in
-        ``M[:3,:3]`` and the translation in ``M[:3,3]``.
+        `R = `M[:3,:3]`` and the translation in ``t = M[:3,3]``.
 
-        The rotation is applied before the translation::
+        The rotation :math:`\mathsl{R}` is applied before the
+        translation :math:`\mathbf{t}`:
 
-           x' = R.x + t
+        .. math::
+
+           \mathbf{x}' = \mathsl{R}\mathbf{x} + \mathbf{t}
 
         .. SeeAlso: :mod:`MDAnalysis.core.transformations`
         """
@@ -1670,15 +1684,17 @@ class AtomGroup(object):
         return R
 
     def translate(self, t):
-        """Apply translation vector *t* to the selection's coordinates.
+        r"""Apply translation vector *t* to the selection's coordinates.
 
           >>> AtomGroup.translate(t)
           >>> AtomGroup.translate((A, B))
 
         The method applies a translation to the AtomGroup from current
-        coordinates x to new coordinates x'::
+        coordinates :math:`\mathbf{x}` to new coordinates :math:`\mathbf{x}'`:
 
-            x' = x + t
+        .. math::
+
+            \mathbf{x}' = \mathbf{x} + \mathbf{t}
 
         The translation can also be given as a tuple of two MDAnalysis objects
         such as two selections `(selA, selB)`, i.e. two :class:`AtomGroup`, or
@@ -1698,13 +1714,16 @@ class AtomGroup(object):
         return vector
 
     def rotate(self, R):
-        """Apply a rotation matrix *R* to the selection's coordinates.
+        r"""Apply a rotation matrix *R* to the selection's coordinates.
 
         AtomGroup.rotate(R)
 
-        *R* is a 3x3 orthogonal matrix that transforms x --> x':
+        :math:`\mathsf{R}` is a 3x3 orthogonal matrix that transforms a vector
+        :math:`\mathbf{x} \rightarrow \mathbf{x}'`:
 
-            x' = R.x
+        .. math::
+
+            \mathbf{x}' = \mathsf{R}\mathbf{x}
         """
         R = numpy.matrix(R, copy=False, dtype=numpy.float32)
         # changes the coordinates (in place)
@@ -1714,16 +1733,19 @@ class AtomGroup(object):
         return R
 
     def rotateby(self, angle, axis, point=None):
-        """Apply a rotation to the selection's coordinates.
+        r"""Apply a rotation to the selection's coordinates.
 
         AtomGroup.rotateby(angle,axis[,point])
 
-        The transformation from current coordinates x to new coordinates x' is
+        The transformation from current coordinates :math:`\mathbf{x}`
+        to new coordinates :math:`\mathbf{x}'` is
 
-          x' = R.(x-p) + p
+        .. math::
 
-        where R is the rotation by *angle* around the *axis* going through
-        *point* p.
+          \mathbf{x}' = \mathsl{R}\,(\mathbf{x}-\mathbf{p}) + \mathbf{p}
+
+        where :math:`\mathsl{R}` is the rotation by *angle* around the
+        *axis* going through *point* :math:`\mathbf{p}`.
 
         :Arguments:
           *angle*
@@ -1739,8 +1761,8 @@ class AtomGroup(object):
              can be a 3-tuple, list, or array or a MDAnalysis object (in which
              case its :meth:`centroid` is used).
 
-        :Returns: The 4x4 matrix which consists of the rotation matrix M[:3,:3]
-                  and the translation vectort M[:3,3].
+        :Returns: The 4x4 matrix which consists of the rotation matrix ``M[:3,:3]``
+                  and the translation vector ``M[:3,3]``.
         """
         from transformations import rotation_matrix
         alpha = numpy.radians(angle)
@@ -1790,7 +1812,7 @@ class AtomGroup(object):
         return self.rotateby(angle, ax)
 
     def packIntoBox(self, box=None, inplace=True):
-        """Shift all atoms in this group to be within the primary unit cell.
+        r"""Shift all atoms in this group to be within the primary unit cell.
 
         AtomGroup.packintobox([box, [inplace=True]])
 
@@ -1806,7 +1828,8 @@ class AtomGroup(object):
         corner of the simulation box is taken to be at (0,0,0):
 
         .. math::
-           x_i' = x_i - \left\lfloor \frac{x_i}{L_i} \right\rfloor
+
+           x_i' = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor
 
         The default is to take unit cell information from the
         underlying :class:`~MDAnalysis.coordinates.base.Timestep`
@@ -1818,11 +1841,12 @@ class AtomGroup(object):
 
         By default the coordinates are changed in place and returned
 
-        .. versionchanged:: 0.8
+        .. versionadded:: 0.8
+
         """
         if box == None: #Try and auto detect box dimensions
             box = self.dimensions # Can accept any box
-                
+
         if box.shape == (3,3):
             if (box.diagonal() == 0.0).any(): # for a vector representation, diagonal cannot be zero
                 raise ValueError("One or more box dimensions is zero.  You can specify a boxsize with 'box ='")
@@ -1833,7 +1857,7 @@ class AtomGroup(object):
         coords = self.universe.trajectory.ts._pos[self.indices()]
         if not inplace:
             return MDAnalysis.core.distances.applyPBC(coords, box)
-        
+
         self.universe.trajectory.ts._pos[self.indices()] = MDAnalysis.core.distances.applyPBC(coords, box)
 
         return self.universe.trajectory.ts._pos[self.indices()]
@@ -1872,12 +1896,17 @@ class AtomGroup(object):
                 format string for default filename; use substitution tokens
                 'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
           *bonds*
-                how to handle bond information, especially relevant for PDBs
-                ["conect"] - write only the CONECT records defined in the original
-                file
-                "all" - write out all bonds, both the original defined and those
-                      guessed by MDAnalysis
-                None  - do not write out bonds
+                how to handle bond information, especially relevant for PDBs;
+                default is ``"conect"``.
+
+                * ``"conect"``: write only the CONECT records defined in the original
+                  file
+
+                * ``"all"``: write out all bonds, both the original defined and those
+                  guessed by MDAnalysis
+
+                * ``None``: do not write out bonds
+
         """
         import util
         import os.path
