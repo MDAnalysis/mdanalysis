@@ -799,7 +799,7 @@ class TestMerge(TestCase):
         u2 = MDAnalysis.Universe(merge_ligand)
         u3 = MDAnalysis.Universe(merge_water)
         self.universes = [u1,u2,u3]
-        
+
         suffix = '.' + self.ext
         fd, self.outfile = tempfile.mkstemp(suffix=suffix)
         os.close(fd)
@@ -811,38 +811,38 @@ class TestMerge(TestCase):
             pass
         for u in self.universes: del u
 
-    
-    
-    
+
+
+
     def test_merge(self):
         u1,u2,u3 = self.universes
-        
-        ids_before = [a.number for u in [u1, u2, u3] for a in u.atoms]  
-        
+
+        ids_before = [a.number for u in [u1, u2, u3] for a in u.atoms]
+
         # Do the merge
         u0 = MDAnalysis.Merge(u1.atoms, u2.atoms, u3.atoms)
-        
-        # Check that the output Universe has the same number of atoms as the 
+
+        # Check that the output Universe has the same number of atoms as the
         # starting AtomGroups
         assert_equal(len(u0.atoms),(len(u1.atoms)+len(u2.atoms)+len(u3.atoms)))
-        
-        # Make sure that all the atoms in the new universe are assigned to only 
+
+        # Make sure that all the atoms in the new universe are assigned to only
         # one, new Universe
         set0 = set([a.universe for a in u0.atoms])
         assert_equal(len(set0), 1)
         u = list(set0)[0]
         assert_equal(u, u0)
-        
-        # Make sure that the atom ids of the original universes are unchanged, 
+
+        # Make sure that the atom ids of the original universes are unchanged,
         # ie we didn't make the original Universes 'dirty'
         ids_after = [a.number for u in [u1, u2, u3] for a in u.atoms]
         assert_equal(len(ids_after), (len(u1.atoms)+len(u2.atoms)+len(u3.atoms)))
         assert_equal(ids_before, ids_after)
-        
+
         # Test that we have a same number of atoms in a different way
         ids_new = [a.number for a in u0.atoms]
         assert_equal(len(ids_new), len(ids_before))
-    
+
 
         u0.atoms.write(self.outfile)
         u = MDAnalysis.Universe(self.outfile)
@@ -894,7 +894,7 @@ class TestUniverse(TestCase):
 
 class TestPBCFlag(TestCase):
     def setUp(self):
-        self.prec = 5
+        self.prec = 3
         self.universe = MDAnalysis.Universe(TRZ_psf, TRZ)
         self.ref_noPBC = {'COG':numpy.array([ 4.23789883,  0.62429816,  2.43123484], dtype=float32),
                           'COM':numpy.array([ 4.1673783 ,  0.70507009,  2.21175832]),
@@ -928,7 +928,6 @@ class TestPBCFlag(TestCase):
 
     def tearDown(self):
         MDAnalysis.core.flags['use_pbc'] = False
-        del self.prec
         del self.universe
         del self.ref_noPBC
         del self.ref_PBC
@@ -947,7 +946,7 @@ class TestPBCFlag(TestCase):
         assert_almost_equal(self.ag.asphericity(), self.ref_noPBC['Asph'], self.prec)
         assert_almost_equal(self.ag.momentOfInertia(), self.ref_noPBC['MOI'], self.prec)
         assert_almost_equal(self.ag.bbox(), self.ref_noPBC['BBox'], self.prec)
-        assert_almost_equal(self.ag.bsphere()[0], self.ref_noPBC['BSph'][0], self.prec)        
+        assert_almost_equal(self.ag.bsphere()[0], self.ref_noPBC['BSph'][0], self.prec)
         assert_almost_equal(self.ag.bsphere()[1], self.ref_noPBC['BSph'][1], self.prec)
         assert_almost_equal(self.ag.principalAxes(), self.ref_noPBC['PAxes'], self.prec)
 
@@ -965,7 +964,7 @@ class TestPBCFlag(TestCase):
         assert_almost_equal(self.ag.principalAxes(pbc=True), self.ref_PBC['PAxes'], self.prec)
 
     def test_usepbc_flag(self):
-        # Test using the core.flags flag 
+        # Test using the core.flags flag
         MDAnalysis.core.flags['use_pbc'] = True
         assert_almost_equal(self.ag.centerOfGeometry(), self.ref_PBC['COG'], self.prec)
         assert_almost_equal(self.ag.centerOfMass(), self.ref_PBC['COM'], self.prec)
@@ -974,7 +973,7 @@ class TestPBCFlag(TestCase):
         assert_almost_equal(self.ag.asphericity(), self.ref_PBC['Asph'], self.prec)
         assert_almost_equal(self.ag.momentOfInertia(), self.ref_PBC['MOI'], self.prec)
         assert_almost_equal(self.ag.bbox(), self.ref_PBC['BBox'], self.prec)
-        assert_almost_equal(self.ag.bsphere()[0], self.ref_PBC['BSph'][0], self.prec)        
+        assert_almost_equal(self.ag.bsphere()[0], self.ref_PBC['BSph'][0], self.prec)
         assert_almost_equal(self.ag.bsphere()[1], self.ref_PBC['BSph'][1], self.prec)
         assert_almost_equal(self.ag.principalAxes(), self.ref_PBC['PAxes'], self.prec)
         MDAnalysis.core.flags['use_pbc'] = False
@@ -989,7 +988,7 @@ class TestPBCFlag(TestCase):
         assert_almost_equal(self.ag.asphericity(pbc=False), self.ref_noPBC['Asph'], self.prec)
         assert_almost_equal(self.ag.momentOfInertia(pbc=False), self.ref_noPBC['MOI'], self.prec)
         assert_almost_equal(self.ag.bbox(pbc=False), self.ref_noPBC['BBox'], self.prec)
-        assert_almost_equal(self.ag.bsphere(pbc=False)[0], self.ref_noPBC['BSph'][0], self.prec)        
+        assert_almost_equal(self.ag.bsphere(pbc=False)[0], self.ref_noPBC['BSph'][0], self.prec)
         assert_almost_equal(self.ag.bsphere(pbc=False)[1], self.ref_noPBC['BSph'][1], self.prec)
         assert_almost_equal(self.ag.principalAxes(pbc=False), self.ref_noPBC['PAxes'], self.prec)
         MDAnalysis.core.flags['use_pbc'] = False
