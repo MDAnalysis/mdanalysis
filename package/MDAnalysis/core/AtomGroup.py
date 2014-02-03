@@ -1742,9 +1742,9 @@ class AtomGroup(object):
 
         .. math::
 
-          \mathbf{x}' = \mathsl{R}\,(\mathbf{x}-\mathbf{p}) + \mathbf{p}
+          \mathbf{x}' = \mathsf{R}\,(\mathbf{x}-\mathbf{p}) + \mathbf{p}
 
-        where :math:`\mathsl{R}` is the rotation by *angle* around the
+        where :math:`\mathsf{R}` is the rotation by *angle* around the
         *axis* going through *point* :math:`\mathbf{p}`.
 
         :Arguments:
