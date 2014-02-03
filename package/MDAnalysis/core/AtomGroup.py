@@ -1295,7 +1295,7 @@ class AtomGroup(object):
         R = numpy.sqrt(numpy.max(numpy.sum(numpy.square(x-centroid), axis=1)))
         return R, centroid
 
-    def bond(self, minimage=False):
+    def bond(self, pbc=False):
         """Returns the distance between atoms in a 2-atom group.
 
         Distance between atoms 0 and 1::
@@ -1309,15 +1309,15 @@ class AtomGroup(object):
            :exc:`ValueError`.
 
         :Keywords:
-          *minimage*
+          *pbc*
             ``True``: Account for minimum image convention when calculating [``False``]
 
         .. versionadded:: 0.7.3
-        .. versionchanged:: 0.8 Added *minimage* keyword
+        .. versionchanged:: 0.8 Added *pbc* keyword
         """
         if len(self) != 2:
                 raise ValueError("distance computation only makes sense for a group with exactly 2 atoms")
-        if not minimage:
+        if not pbc:
             return numpy.linalg.norm(self[0].pos - self[1].pos)
         else:
             return MDAnalysis.core.distances.self_distance_array(self.coordinates(), box=self.dimensions)[0]
