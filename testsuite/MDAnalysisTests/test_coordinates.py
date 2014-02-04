@@ -2184,3 +2184,75 @@ class TestTRZReader(TestCase, RefTRZ):
     def test_time(self):
         self.trz.rewind()
         assert_almost_equal(self.trz.time, self.ref_time, self.prec, "wrong time value in trz")
+
+
+class TestTimestep_Copy(TestCase):
+    """
+    Timestep.copy() method seems to be broken, (Issue 164).  The base.Timestep .copy() method returns a TS of
+    class base.Timestep rather than the appropriate subclass.
+
+    This class makes a TS object of the first frame, .copy()'s this as a new object and compares the content
+    of the two resulting objects.
+
+    This test class is then subclassed below to try and test all Timestep classes that exist within MDA.
+    """
+    def setUp(self):
+        self.universe = mda.Universe(PSF, DCD)
+        self.name = 'DCD (base)'
+
+    def tearDown(self):
+        del self.universe
+        del self.name
+
+    def test_TS_copy(self):
+        """
+        Checks equality between two Timesteps
+
+        Will check that TS2 has all the same attributes and values for these attributes as ref_TS.
+        """
+        ref_TS = self.universe.trajectory.ts
+        TS2 = ref_TS.copy()       
+
+        for attr in ref_TS.__dict__:
+            try:
+                assert_equal(ref_TS.__dict__[attr], TS2.__dict__[attr],
+                             err_msg="Timestep copy failed for format: '%s' on attribute: '%s'" %(self.name, attr)) 
+            except KeyError:
+                self.fail("Timestep copy failed for format: '%s' on attribute: '%s'" %(self.name, attr))
+    
+class TestTimestep_Copy_DMS(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(DMS)
+        self.name = 'DMS'
+
+class TestTimestep_Copy_GRO(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(GRO)
+        self.name = 'GRO'
+
+class TestTimestep_Copy_PDB(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(PDB_small)
+        self.name = 'PDB'
+    
+class TestTimestep_Copy_TRJ(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(PRM, TRJ)
+        self.name = 'TRJ'  
+
+class TestTimestep_Copy_TRR(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(GRO, TRR)
+        self.name = 'TRR'
+
+class TestTimestep_Copy_TRZ(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(TRZ_psf, TRZ)
+        self.name = 'TRZ'
+
+class TestTimestep_Copy_XTC(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(PDB, XTC)
+        self.name = 'XTC'
+
+
