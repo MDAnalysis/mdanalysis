@@ -183,6 +183,41 @@ class Timestep(object):
         # Is this the best way?
         return self.__class__(self)
 
+    def copy_slice(self, sel):
+        """Make a new Timestep containing a subset of the original Timestep.
+     
+        ``ts.copy_slice(slice(start, stop, skip))``
+        ``ts.copy_slice([list of indices])``
+
+        :Returns: A Timestep object of the same type containing all header information and all atom information
+                  relevent to the selection.
+
+        .. Note:: The selection must be a 0 based slice or array of the atom indices in this Timestep 
+
+        .. versionadded:: 0.8
+        """
+        # Detect the size of the Timestep by doing a dummy slice
+        try:
+            new_numatoms = len(self._x[sel])
+        except:
+            raise TypeError("Selection type must be compatible with slicing the coordinates")
+        new_TS = self.__class__(new_numatoms) # Make a mostly empty TS of same type of reduced size
+
+        # List of attributes which will require slicing if present
+        per_atom = ['_x', '_y', '_z', '_pos', '_velocities', '_forces',
+                    '_tpos','_tvelocities','_tforces']
+            
+        for attr in self.__dict__:
+            if not attr in per_atom: # Header type information
+                new_TS.__setattr__(attr, self.__dict__[attr])
+            else: # Per atom information, ie. anything that can be sliced
+                new_TS.__setattr__(attr, self.__dict__[attr][sel])
+
+        new_TS.numatoms = new_numatoms # This will have been overwritten, so fix here
+
+        return new_TS
+
+
     @property
     def dimensions(self):
         """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)

@@ -668,6 +668,28 @@ class TestAtomGroupVelocities(TestCase):
         assert_almost_equal(ag.get_velocities(), v,
                             err_msg="messages were not set to new value")
 
+class TestAtomGroupTimestep(TestCase):
+    """Tests the AtomGroup.ts attribute (partial timestep)"""
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(TRZ_psf, TRZ)
+        self.prec = 6
+
+    def tearDown(self):
+        del self.universe
+        del self.prec
+
+    def test_partial_timestep(self):
+        ag = self.universe.selectAtoms('name Ca')
+        idx = ag.indices()
+
+        assert_equal(len(ag.ts._pos), len(ag))
+
+        for ts in self.universe.trajectory[0:20:5]:
+            assert_array_almost_equal(ts._pos[idx], ag.ts._pos, self.prec, 
+                                      err_msg="Partial timestep coordinates wrong")
+            assert_array_almost_equal(ts._velocities[idx], ag.ts._velocities, self.prec, 
+                                      err_msg="Partial timestep coordinates wrong")
+
 def test_empty_AtomGroup():
     """Test that a empty AtomGroup can be constructed (Issue 12)"""
     ag = MDAnalysis.core.AtomGroup.AtomGroup([])

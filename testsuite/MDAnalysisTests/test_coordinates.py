@@ -2225,6 +2225,38 @@ class TRZWriter(TestCase, RefTRZ):
                 assert_array_almost_equal(orig_ts.__getattribute__(attr), written_ts.__getattribute__(attr), self.prec,  
                                           err_msg="TS equal failed for %s" %attr)
 
+class TestWrite_Partial_Timestep(TestCase):
+    """Test writing a partial timestep made by passing only an atomgroup to Writer. (Issue 163)
+
+    The contents of the AtomGroup.ts are checked in test_atomgroup, this test just checks that Writer
+    is receiving this information properly.
+    """
+    def setUp(self):
+        self.universe = mda.Universe(TRZ_psf, TRZ)
+        self.ag = self.universe.selectAtoms('name N')
+        self.prec = 3
+        fd, self.outfile = tempfile.mkstemp(suffix='.pdb')
+        os.close(fd)
+        self.Writer = MDAnalysis.Writer(self.outfile, numatoms = len(self.ag))
+
+    def tearDown(self):
+        del self.universe
+        del self.ag
+        del self.prec
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.Writer
+
+    def test_write_trajectory(self):
+        self.Writer.write(self.ag)
+        self.Writer.close()
+
+        u_ag = mda.Universe(self.outfile)
+
+        assert_array_almost_equal(self.ag.coordinates(), u_ag.atoms.coordinates(), self.prec,
+                                  err_msg="Writing AtomGroup timestep failed.") 
 
 class TestTimestep_Copy(TestCase):
     """
@@ -2259,7 +2291,41 @@ class TestTimestep_Copy(TestCase):
                              err_msg="Timestep copy failed for format: '%s' on attribute: '%s'" %(self.name, attr)) 
             except KeyError:
                 self.fail("Timestep copy failed for format: '%s' on attribute: '%s'" %(self.name, attr))
-    
+
+    def test_TS_slice(self):
+        ref_TS = self.universe.trajectory.ts
+
+        sel = slice(0, 100, 4)
+        TS2 = ref_TS.copy_slice(sel)
+
+        self._test_TS_slice(ref_TS, TS2, sel)
+
+    def test_TS_indices(self):
+        ref_TS = self.universe.trajectory.ts
+
+        sel = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+        TS2 = ref_TS.copy_slice(sel)
+
+        self._test_TS_slice(ref_TS, TS2, sel)
+        
+    def _test_TS_slice(self, ref_TS, TS2, sel):
+        per_atom = ['_x', '_y', '_z', '_pos', '_velocities', '_forces',
+                    '_tpos', '_tvelocities', '_tforces']
+        ignore = ['numatoms']
+
+        for attr in ref_TS.__dict__:
+            try:
+                if attr in per_atom:
+                    assert_equal(ref_TS.__dict__[attr][sel], TS2.__dict__[attr],
+                                 err_msg="Timestep slice failed for format: '%s' on attribute: '%s'" \
+                                 %(self.name, attr)) 
+                elif not attr in ignore:
+                    assert_equal(ref_TS.__dict__[attr], TS2.__dict__[attr],
+                                 err_msg="Timestep slice failed for format: '%s' on attribute: '%s'" \
+                                 %(self.name, attr)) 
+            except KeyError:
+                self.fail("Timestep copy failed for format: '%s' on attribute: '%s'" %(self.name, attr))
+
 class TestTimestep_Copy_DMS(TestTimestep_Copy):
     def setUp(self):
         self.universe = mda.Universe(DMS)

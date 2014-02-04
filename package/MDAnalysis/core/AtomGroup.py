@@ -1993,10 +1993,7 @@ class AtomGroup(object):
         trj_ts = self.universe.trajectory.ts  # original time step
         if self.__ts is None or self.__ts.frame != trj_ts.frame:
             # create a timestep of same type as the underlying trajectory
-            ts = trj_ts.__class__(self.coordinates())
-            ts._unitcell = trj_ts._unitcell.copy()
-            ts.frame = trj_ts.frame
-            self.__ts = ts
+            self.__ts = trj_ts.copy_slice(self.indices())
         return self.__ts
 
 class Residue(AtomGroup):
