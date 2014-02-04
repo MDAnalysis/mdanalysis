@@ -90,7 +90,8 @@ The rules for this file:
     C-compiler (clang) (Issue 142) although they will not get a parallel
     version of distance_array.
   * PDB with blank lines gave IndexError (Issue 158)
- 
+  * fixed Timestep copy method returning a base Timestep rather than 
+    appropriate format (Issue 164) 
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux
 

@@ -188,7 +188,7 @@ class Timestep(base.Timestep):
                                 self._velocities = numpy.array(arg._velocities)
                         except AttributeError:
                                 pass
-                        for attr in ('step', 'time'):
+                        for attr in ('step', 'time', 'status'):
                                 if hasattr(arg, attr):
                                         self.__setattr__(attr, arg.__getattribute__(attr))
                 elif isinstance(arg, numpy.ndarray):

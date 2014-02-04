@@ -181,7 +181,7 @@ class Timestep(object):
         return self.__deepcopy__()
     def __deepcopy__(self):
         # Is this the best way?
-        return Timestep(self)
+        return self.__class__(self)
 
     @property
     def dimensions(self):

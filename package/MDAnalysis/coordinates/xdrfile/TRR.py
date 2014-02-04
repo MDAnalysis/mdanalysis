@@ -153,9 +153,9 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
                 except AttributeError:
                     raise AttributeError("Attempted to create a new Timestep from inconsistent Timestep data (the passed Timestep object has the 'has_f' flag set, but the '_forces' attribute is missing.)")
             else:
-                self._tvelocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
+                self._tforces = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             ##
-            for attr in ('status', 'step', 'time', 'lmbda'):
+            for attr in ('status', 'step', 'time', 'lmbda', 'prec'):
                 if hasattr(arg, attr):
                     self.__setattr__(attr, arg.__getattribute__(attr))
         elif isinstance(arg, numpy.ndarray):
