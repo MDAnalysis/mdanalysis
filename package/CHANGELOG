@@ -59,6 +59,9 @@ The rules for this file:
   * many AtomGroup methods now support 'pbc' flag to move atoms to within
     primary unitcell before calculation.  This behaviour can also be 
     toggled using the core.flags['use_pbc'] flag (Issue 156)
+  * MDAnalysis.analysis.rms.rmsd(): new center keyword so that one can
+    immediately calculate the minimum rmsd of two rigid-body superimposed
+    structures
 
   Changes
 
