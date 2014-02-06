@@ -76,7 +76,7 @@ class GROReader(base.Reader):
                 self.grofilename = grofilename
                 self.filename = self.grofilename
                 if convert_units is None:
-                        convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+                        convert_units = MDAnalysis.core.flags['convert_lengths']
                 self.convert_units = convert_units  # convert length and time to base units
 
                 coords_list = []
@@ -189,7 +189,7 @@ class GROWriter(base.Writer):
                 self.filename = util.filename(filename,ext='gro')
 
                 if convert_units is None:
-                        convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+                        convert_units = MDAnalysis.core.flags['convert_lengths']
                 self.convert_units = convert_units  # convert length and time to base units
 
         def convert_dimensions_to_unitcell(self, ts):

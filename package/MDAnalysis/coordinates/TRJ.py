@@ -525,7 +525,7 @@ class NCDFReader(base.Reader):
                 self.filename = filename
                 convert_units = kwargs.pop('convert_units', None)
                 if convert_units is None:
-                        convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+                        convert_units = MDAnalysis.core.flags['convert_lengths']
                         self.convert_units = convert_units  # convert length and time to base units
 
                 self.trjfile = netcdf.Dataset(self.filename)
@@ -733,7 +733,7 @@ class NCDFWriter(base.Writer):
                     timestep
                   *convert_units*
                     ``True``: units are converted to the AMBER base format; ``None`` selects
-                    the value of :data:`MDAnalysis.core.flags` ['convert_gromacs_lengths'].
+                    the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
                     (see :ref:`flags-label`)
                   *zlib*
                     compress data [``False``]
@@ -745,7 +745,7 @@ class NCDFWriter(base.Writer):
                         raise ValueError("NCDFWriter: no atoms in output trajectory")
                 self.numatoms = numatoms
                 if convert_units is None:
-                        convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+                        convert_units = MDAnalysis.core.flags['convert_lengths']
                 self.convert_units = convert_units    # convert length and time to base units on the fly?
 
                 self.start = start    # do we use those?

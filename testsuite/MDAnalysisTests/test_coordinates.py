@@ -866,9 +866,9 @@ class TestGROReader(TestCase, RefAdK):
         del self.universe
         del self.ts
 
-    def test_flag_convert_gromacs_lengths(self):
-        assert_equal(mda.core.flags['convert_gromacs_lengths'], True,
-                     "MDAnalysis.core.flags['convert_gromacs_lengths'] should be True by default")
+    def test_flag_convert_lengths(self):
+        assert_equal(mda.core.flags['convert_lengths'], True,
+                     "MDAnalysis.core.flags['convert_lengths'] should be True by default")
 
     def test_load_gro(self):
         U = self.universe
@@ -952,13 +952,11 @@ class TestDMSReader(TestCase):
 
 class TestGROReaderNoConversion(TestCase, RefAdK):
     def setUp(self):
-        ##mda.core.flags['convert_gromacs_lengths'] = False
         self.universe = mda.Universe(GRO, convert_units=False)
         self.ts = self.universe.trajectory.ts
         self.prec = 3
 
     def tearDown(self):
-        ##mda.core.flags['convert_gromacs_lengths'] = True  # default
         del self.universe
         del self.ts
 
@@ -1650,9 +1648,6 @@ class _GromacsReader(TestCase):
     ref_offset_file = None
 
     def setUp(self):
-        # default flag--just make sure!... but can lead to race conditions
-        # use explicit convert_units argument to specify behaviour
-        ##mda.core.flags['convert_gromacs_lengths'] = True
         # loading from GRO is 4x faster than the PDB reader
         self.universe = mda.Universe(GRO, self.filename, convert_units=True)
         self.trajectory = self.universe.trajectory
@@ -1674,9 +1669,9 @@ class _GromacsReader(TestCase):
         del self.universe
 
     @dec.slow
-    def test_flag_convert_gromacs_lengths(self):
-        assert_equal(mda.core.flags['convert_gromacs_lengths'], True,
-                     "MDAnalysis.core.flags['convert_gromacs_lengths'] should be True by default")
+    def test_flag_convert_lengths(self):
+        assert_equal(mda.core.flags['convert_lengths'], True,
+                     "MDAnalysis.core.flags['convert_lengths'] should be True by default")
 
     @dec.slow
     def test_rewind_xdrtrj(self):
@@ -1763,7 +1758,7 @@ class _GromacsReader(TestCase):
         self.trajectory[4]  # index is 0-based but frames are 1-based
         assert_almost_equal(self.universe.trajectory.time, 500.0, 5,
                             err_msg="wrong time of frame")
-    
+
     @dec.slow
     def test_offsets(self):
         if self.trajectory._TrjReader__offsets is None:
@@ -1867,20 +1862,15 @@ class TestTRRReaderClass(TestCase):
 class _XDRNoConversion(TestCase):
     filename = None
     def setUp(self):
-        # not needed when using convert_units=False
-        ##mda.core.flags['convert_gromacs_lengths'] = False
         self.universe = mda.Universe(PDB, self.filename, convert_units=False)
         self.ts = self.universe.trajectory.ts
     def tearDown(self):
-        ##mda.core.flags['convert_gromacs_lengths'] = True  # default
         del self.universe
         del self.ts
 
     @dec.slow
     def test_coordinates(self):
-        # note: these are the native coordinates in nm; for the test to succeed:
-        ##assert_equal(mda.core.flags['convert_gromacs_lengths'], False,
-        ##             "oops, mda.core.flags['convert_gromacs_lengths'] should be False for this test")
+        # note: these are the native coordinates in nm
         ca_nm = np.array([[ 6.043369675,  7.385184479,  1.381425762]], dtype=np.float32)
         U = self.universe
         T = U.trajectory
@@ -2000,20 +1990,20 @@ class TestTRRWriter(_GromacsWriter):
                 assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                     err_msg="coordinates mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
             except mda.NoDataError:
-                assert_(not orig_ts.frame % 4, 
+                assert_(not orig_ts.frame % 4,
                     msg="failed to read coordinates from TRR with gaps between original and written (with gaps) trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
             else:
-                assert_(orig_ts.frame % 4, 
+                assert_(orig_ts.frame % 4,
                     msg="failed to flag gap in coordinates from TRR at frame %d." % (written_ts.frame))
 
             try:
                 assert_array_almost_equal(written_ts._velocities, orig_ts._velocities, 3,
                     err_msg="velocities mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
             except mda.NoDataError:
-                assert_(not orig_ts.frame % 2, 
+                assert_(not orig_ts.frame % 2,
                     msg="failed to read velocities from TRR with gaps between original and written (with gaps) trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
             else:
-                assert_(orig_ts.frame % 2, 
+                assert_(orig_ts.frame % 2,
                     msg="failed to flag gap in velocities from TRR at frame %d." % (written_ts.frame))
 
 
@@ -2211,7 +2201,7 @@ class TRZWriter(TestCase, RefTRZ):
         for ts in self.universe.trajectory:
             writer.write_next_timestep(ts)
         writer.close()
-        
+
         uw = mda.Universe(TRZ_psf, self.outfile)
 
         for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
@@ -2222,7 +2212,7 @@ class TRZWriter(TestCase, RefTRZ):
             assert_array_almost_equal(orig_ts._unitcell, written_ts._unitcell, self.prec,
                                       err_msg="Unitcell mismatch between orig and written at frame %d" %orig_ts.frame)
             for attr in orig_ts.__dict__.keys():
-                assert_array_almost_equal(orig_ts.__getattribute__(attr), written_ts.__getattribute__(attr), self.prec,  
+                assert_array_almost_equal(orig_ts.__getattribute__(attr), written_ts.__getattribute__(attr), self.prec,
                                           err_msg="TS equal failed for %s" %attr)
 
 class TestWrite_Partial_Timestep(TestCase):
@@ -2256,7 +2246,7 @@ class TestWrite_Partial_Timestep(TestCase):
         u_ag = mda.Universe(self.outfile)
 
         assert_array_almost_equal(self.ag.coordinates(), u_ag.atoms.coordinates(), self.prec,
-                                  err_msg="Writing AtomGroup timestep failed.") 
+                                  err_msg="Writing AtomGroup timestep failed.")
 
 class TestTimestep_Copy(TestCase):
     """
@@ -2283,12 +2273,12 @@ class TestTimestep_Copy(TestCase):
         Will check that TS2 has all the same attributes and values for these attributes as ref_TS.
         """
         ref_TS = self.universe.trajectory.ts
-        TS2 = ref_TS.copy()       
+        TS2 = ref_TS.copy()
 
         for attr in ref_TS.__dict__:
             try:
                 assert_equal(ref_TS.__dict__[attr], TS2.__dict__[attr],
-                             err_msg="Timestep copy failed for format: '%s' on attribute: '%s'" %(self.name, attr)) 
+                             err_msg="Timestep copy failed for format: '%s' on attribute: '%s'" %(self.name, attr))
             except KeyError:
                 self.fail("Timestep copy failed for format: '%s' on attribute: '%s'" %(self.name, attr))
 
@@ -2307,7 +2297,7 @@ class TestTimestep_Copy(TestCase):
         TS2 = ref_TS.copy_slice(sel)
 
         self._test_TS_slice(ref_TS, TS2, sel)
-        
+
     def _test_TS_slice(self, ref_TS, TS2, sel):
         per_atom = ['_x', '_y', '_z', '_pos', '_velocities', '_forces',
                     '_tpos', '_tvelocities', '_tforces']
@@ -2318,11 +2308,11 @@ class TestTimestep_Copy(TestCase):
                 if attr in per_atom:
                     assert_equal(ref_TS.__dict__[attr][sel], TS2.__dict__[attr],
                                  err_msg="Timestep slice failed for format: '%s' on attribute: '%s'" \
-                                 %(self.name, attr)) 
+                                 %(self.name, attr))
                 elif not attr in ignore:
                     assert_equal(ref_TS.__dict__[attr], TS2.__dict__[attr],
                                  err_msg="Timestep slice failed for format: '%s' on attribute: '%s'" \
-                                 %(self.name, attr)) 
+                                 %(self.name, attr))
             except KeyError:
                 self.fail("Timestep copy failed for format: '%s' on attribute: '%s'" %(self.name, attr))
 
@@ -2340,11 +2330,11 @@ class TestTimestep_Copy_PDB(TestTimestep_Copy):
     def setUp(self):
         self.universe = mda.Universe(PDB_small)
         self.name = 'PDB'
-    
+
 class TestTimestep_Copy_TRJ(TestTimestep_Copy):
     def setUp(self):
         self.universe = mda.Universe(PRM, TRJ)
-        self.name = 'TRJ'  
+        self.name = 'TRJ'
 
 class TestTimestep_Copy_TRR(TestTimestep_Copy):
     def setUp(self):

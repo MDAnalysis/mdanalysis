@@ -253,18 +253,21 @@ _flags = [
             >>> MDAnalysis.core.flags['use_KDTree_routines'] = False
             """
          ),
-    _Flag('convert_gromacs_lengths',
+    _Flag('convert_lengths',
          True,
          {True:True, False:False},
          """
-            Determine if the XTC and TRR trajectory reader and writer convert units.
+            Determine if trajectory reader and writer converts length units between native and MDAnalysis default.
 
             >>> flags['%(name)s'] = value
 
-            Gromacs trajectories are in nm, MDAnalysis in Angstroem. If
-            ``True`` then coordinates are automatically converted, with
-            ``False`` the coordinate values are presented as read from the
-            trajectories.
+            Some trajectories are in other length units than the MDAnalysis
+            default (see the flag *length_unit*); e.g. Gromacs XTC and TRR
+            trajectories are in nm. If ``True`` then coordinates are
+            automatically converted, with ``False`` the coordinate values are
+            presented as read from the trajectories.
+
+            .. Note:: The conversion of lengths also affects conversion of velocities.
          """
          ),
     _Flag('length_unit',
@@ -311,7 +314,7 @@ _flags = [
          ),
     _Flag('force_unit',
          'kJ/(mol*Angstrom)',
-         {'kJ/(mol*Angstrom)': 'kJ/(mol*Angstrom)', 'kJ/(mol*A)': 'kJ/(mol*Angstrom)', 
+         {'kJ/(mol*Angstrom)': 'kJ/(mol*Angstrom)', 'kJ/(mol*A)': 'kJ/(mol*Angstrom)',
           'kJ/(mol*nm)': 'kJ/(mol*nm)',
           },
          """
@@ -366,24 +369,28 @@ _flags = [
           False,
           {True: True, False: False},
           """
-          Choose whether to consider periodic boundary conditions when performing
-          many AtomGroup methods.  This is set to ``False`` by default, can be enabled
-          with: 
+          Choose whether to consider periodic boundary conditions when
+          performing many :class:`MDAnalysis.core.AtomGroup.AtomGroup` methods.
+          This is set to ``False`` by default but can be enabled with:
 
           >>> MDAnalysis.core.flags['use_pbc'] = True
 
           Values for flag:
 
-          * True - Move all atoms within the primary unit cell before calculation
-          * False - Use coordinates as supplied
+          * ``True`` - Move all atoms within the primary unit cell before calculation
+          * ``False`` - Use coordinates as supplied
 
-          .. Warning:: Changing this to *True* changes the default behaviour of commonly
-          used AtomGroup methods such as centerOfMass and centerOfGeometry!
+          .. Warning::
+
+             Changing this to ``True`` changes the default behaviour of
+             commonly used :class:`MDAnalysis.core.AtomGroup.AtomGroup` methods
+             such as :meth:`MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass`
+             and :meth:`MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry`!
           """),
 
     ]
 
-#: Global flag registry for :mod:`core`.
+#: Global flag registry for :mod:`MDAnalysis.core`.
 #: Can be accessed like a dictionary and appears to the casual user as such.
 flags = FlagsDynamicDocs(*_flags)
 del _flags

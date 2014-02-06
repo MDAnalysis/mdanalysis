@@ -52,7 +52,7 @@ class CRDReader(base.Reader):
         self.filename = self.crdfilename
         if convert_units is None:
             # Note: not used at the moment in CRDReader/Writer
-            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+            convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
         coords_list = []
         with open(crdfilename , 'r') as crdfile:

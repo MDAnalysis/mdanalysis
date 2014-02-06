@@ -260,7 +260,7 @@ class PDBReader(base.Reader):
         self.pdbfilename = pdbfilename
         self.filename = self.pdbfilename
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+            convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
         pdb_id = "0UNK"
@@ -478,7 +478,7 @@ class PrimitivePDBReader(base.Reader):
         """
         self.filename = filename
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+            convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
         # = NOTE to clear up confusion over 0-based vs 1-based frame numbering =
@@ -792,7 +792,7 @@ class PrimitivePDBWriter(base.Writer):
            characters) being wrapped.
          *convert_units*
            units are converted to the MDAnalysis base format; ``None`` selects
-           the value of :data:`MDAnalysis.core.flags` ['convert_gromacs_lengths']
+           the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
          *bonds*
            write bonds to the PDB file as CONECT_ records [``False``]
 
@@ -823,7 +823,7 @@ class PrimitivePDBWriter(base.Writer):
 
         self.filename = filename
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+            convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
         self.multiframe = self._multiframe if multiframe is None else multiframe
         self.bonds = bonds

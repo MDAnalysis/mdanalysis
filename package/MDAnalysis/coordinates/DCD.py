@@ -62,7 +62,7 @@ class DCDWriter(base.Writer):
            comments to annotate dcd file
          *convert_units*
            units are converted to the MDAnalysis base format; ``None`` selects
-           the value of :data:`MDAnalysis.core.flags` ['convert_gromacs_lengths'].
+           the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
            (see :ref:`flags-label`)
         """
         if numatoms == 0:
@@ -74,7 +74,7 @@ class DCDWriter(base.Writer):
                                  "For example: numatoms=universe.atoms.numberOfAtoms()")
         self.filename = filename
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+            convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units    # convert length and time to base units on the fly?
         self.numatoms = numatoms
 

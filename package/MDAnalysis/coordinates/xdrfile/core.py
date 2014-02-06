@@ -164,7 +164,7 @@ class TrjWriter(base.Writer):
              accuracy for lossy XTC format [1000]
           *convert_units*
              ``True``: units are converted to the MDAnalysis base format; ``None`` selects
-             the value of :data:`MDAnalysis.core.flags` ['convert_gromacs_lengths'].
+             the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
              (see :ref:`flags-label`)
 
         .. versionchanged:: 0.8.0
@@ -185,7 +185,7 @@ class TrjWriter(base.Writer):
                 self.filename = filename.encode("UTF-8")
 
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+            convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units    # convert length and time to base units on the fly?
         self.numatoms = numatoms
 
@@ -373,7 +373,7 @@ class TrjReader(base.Reader):
                 self.filename = filename.encode("UTF-8")
 
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+            convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units on the fly?
         self.xdrfile = None
 

@@ -685,9 +685,9 @@ class TestAtomGroupTimestep(TestCase):
         assert_equal(len(ag.ts._pos), len(ag))
 
         for ts in self.universe.trajectory[0:20:5]:
-            assert_array_almost_equal(ts._pos[idx], ag.ts._pos, self.prec, 
+            assert_array_almost_equal(ts._pos[idx], ag.ts._pos, self.prec,
                                       err_msg="Partial timestep coordinates wrong")
-            assert_array_almost_equal(ts._velocities[idx], ag.ts._velocities, self.prec, 
+            assert_array_almost_equal(ts._velocities[idx], ag.ts._velocities, self.prec,
                                       err_msg="Partial timestep coordinates wrong")
 
 def test_empty_AtomGroup():
@@ -782,9 +782,9 @@ class TestWriteGRO(_WriteAtoms):
     ext = "gro"
     precision = 2
 
-    def test_flag_convert_gromacs_length(self):
-        assert_equal(MDAnalysis.core.flags['convert_gromacs_lengths'], True,
-                     "The flag convert_gromacs_lengths SHOULD be True by default! "
+    def test_flag_convert_length(self):
+        assert_equal(MDAnalysis.core.flags['convert_lengths'], True,
+                     "The flag convert_lengths SHOULD be True by default! "
                      "(If it is not then this might indicate a race condition in the "
                      "testing suite.)")
 

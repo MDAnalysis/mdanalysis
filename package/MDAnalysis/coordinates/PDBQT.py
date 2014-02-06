@@ -163,7 +163,7 @@ class PDBQTReader(base.Reader):
         """
         self.filename = filename
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+            convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
         # Ugly inner method: moved outside of for-loop below

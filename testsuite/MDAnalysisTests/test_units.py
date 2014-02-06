@@ -29,7 +29,7 @@ class TestDefaultUnits(TestCase):
         assert_equal(flags['time_unit'], 'ps',
                      "The default length unit should be pico seconds (in core.flags)")
     def testConvertGromacsTrajectories(self):
-        assert_equal(flags['convert_gromacs_lengths'], True,
+        assert_equal(flags['convert_lengths'], True,
                      "The default behaviour should be to auto-convert Gromacs trajectories")
 
 class TestConversion(TestCase):

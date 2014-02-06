@@ -184,7 +184,7 @@ class TRZReader(base.Reader):
             raise ValueError('TRZReader requires the numatoms keyword')
 
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+            convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units
 
         self.filename = trzfilename
@@ -466,7 +466,7 @@ class TRZWriter(base.Writer):
         self.numatoms = numatoms
 
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_gromacs_lengths']
+            convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units
 
         self.trzfile = open(self.filename, 'wb')
