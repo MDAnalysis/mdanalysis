@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.18. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>5.18. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,13 +25,13 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="6. Selection exporters" href="../selections_modules.html" />
-    <link rel="prev" title="5.17. The Gromacs xtc/trr library libxdrfile" href="libxdrfile.html" /> 
+    <link rel="prev" title="5.17. The Gromacs xtc/trr library libxdrfile2" href="libxdrfile2.html" /> 
   </head>
   <body>
     <div class="related">
@@ -47,9 +47,9 @@
           <a href="../selections_modules.html" title="6. Selection exporters"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="libxdrfile.html" title="5.17. The Gromacs xtc/trr library libxdrfile"
+          <a href="libxdrfile2.html" title="5.17. The Gromacs xtc/trr library libxdrfile2"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -59,8 +59,8 @@
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
   <h4>Previous topic</h4>
-  <p class="topless"><a href="libxdrfile.html"
-                        title="previous chapter">5.17. The Gromacs xtc/trr library <tt class="docutils literal"><span class="pre">libxdrfile</span></tt></a></p>
+  <p class="topless"><a href="libxdrfile2.html"
+                        title="previous chapter">5.17. The Gromacs xtc/trr library <tt class="docutils literal"><span class="pre">libxdrfile2</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../selections_modules.html"
                         title="next chapter">6. Selection exporters</a></p>
@@ -178,6 +178,12 @@ vz</p>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRZ.TRZReader.delta">
 <tt class="descname">delta</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>MD integration timestep</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.TRZReader.dt">
+<tt class="descname">dt</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.dt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.dt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time step between frames in ps</p>
 <p>Assumes that this step is constant (ie. 2 trajectories with different steps haven&#8217;t been
 stitched together)
@@ -208,16 +214,69 @@ Returns 0 in case of IOError</p>
 <dd><p>Reposition reader onto first frame</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.TRZReader.skip_timestep">
+<tt class="descname">skip_timestep</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZReader.skip_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZReader.skip_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timesteps between trajectory frames</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.TRZ.TRZWriter">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRZ.</tt><tt class="descname">TRZWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>title='TRZ'</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes TRZ format.</p>
+<p>Create a TRZWriter</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">name of output file</p>
+</dd>
+<dt><em>numatoms</em></dt>
+<dd><p class="first last">number of atoms in trajectory</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>title</em></dt>
+<dd><p class="first last">title of the trajectory</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.TRZ.TRZWriter.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZWriter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close if it was open</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRZ.Timestep">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRZ.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRZ.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>TRZ custom Timestep</p>
-<p>Attributes
-.. attribute:: frame</p>
-<blockquote>
-<div>Index of the frame, (1 based)</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.TRZ.Timestep.frame">
+<tt class="descname">frame</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep.frame" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Index of the frame, (1 based)</tt></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRZ.Timestep.numatoms">
 <tt class="descname">numatoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.Timestep.numatoms" title="Permalink to this definition">¶</a></dt>
@@ -322,16 +381,18 @@ Use the attribute <a class="reference internal" href="#MDAnalysis.coordinates.TR
           <a href="../selections_modules.html" title="6. Selection exporters"
              >next</a> |</li>
         <li class="right" >
-          <a href="libxdrfile.html" title="5.17. The Gromacs xtc/trr library libxdrfile"
+          <a href="libxdrfile2.html" title="5.17. The Gromacs xtc/trr library libxdrfile2"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.contacts &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>MDAnalysis.analysis.contacts &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -615,12 +615,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">force</span> <span class="ow">or</span> <span class="n">force</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="ContactAnalysis1.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.ContactAnalysis1.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContactAnalysis1.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.ContactAnalysis1.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">start_frame</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">end_frame</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">step_value</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries.</span>
 
 <span class="sd">        Stores results in :attr:`ContactAnalysis1.timeseries` (if store=True)</span>
 <span class="sd">        and writes them to a data file. The average q is written to a second</span>
 <span class="sd">        data file.</span>
+<span class="sd">        *start_frame*</span>
+<span class="sd">            The value of the first frame number in the trajectory to be used (default: frame 1)</span>
+<span class="sd">        *end_frame*</span>
+<span class="sd">            The value of the last frame number in the trajectory to be used (default: None -- use all frames)</span>
+<span class="sd">        *step_value*</span>
+<span class="sd">            The number of frames to skip during trajectory iteration (default: use every frame)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_exists</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">):</span>
             <span class="kn">import</span> <span class="nn">warnings</span>
@@ -636,7 +642,11 @@
             <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">qavg</span> <span class="o">*=</span> <span class="mi">0</span>  <span class="c"># average contact existence</span>
             <span class="n">A</span><span class="p">,</span><span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selections</span>
-            <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+            <span class="c">#determine the end_frame value to use:</span>
+            <span class="n">total_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">end_frame</span><span class="p">:</span> <span class="c">#use the total number of frames in trajectory if no final value specified</span>
+                <span class="n">end_frame</span> <span class="o">=</span> <span class="n">total_frames</span>
+            <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start_frame</span><span class="p">:</span><span class="n">end_frame</span><span class="p">:</span><span class="n">step_value</span><span class="p">]:</span>
                 <span class="n">frame</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
                 <span class="c"># use pre-allocated distance array to save a little bit of time</span>
                 <span class="n">distance_array</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">B</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">result</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
@@ -648,7 +658,8 @@
                 <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%(frame)4d</span><span class="s">  </span><span class="si">%(q1)8.6f</span><span class="s"> </span><span class="si">%(n1)5d</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">vars</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">store</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">qavg</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span>
+        <span class="n">numframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">total_frames</span><span class="p">)[</span><span class="n">start_frame</span><span class="p">:</span><span class="n">end_frame</span><span class="p">:</span><span class="n">step_value</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qavg</span> <span class="o">/=</span> <span class="n">numframes</span>
         <span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outarray</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">qavg</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%8.6f</span><span class="s">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span>
 </div>
@@ -799,15 +810,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

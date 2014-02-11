@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.1. Core functions of MDAnalysis &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>7.1. Core functions of MDAnalysis &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup" href="AtomGroup.html" />
     <link rel="prev" title="7. Core modules" href="../core_modules.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="../core_modules.html" title="7. Core modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -193,6 +193,27 @@ periodicity; if periodicity is crucial, disable KDTree routines with</p>
 <p class="last">Do not change, only Angstrom fully supported.</p>
 </div>
 </div></blockquote>
+<p><strong>use_pbc</strong> = <em>False</em></p>
+<blockquote>
+<div><p>Choose whether to consider periodic boundary conditions when
+performing many <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a> methods.
+This is set to <tt class="docutils literal"><span class="pre">False</span></tt> by default but can be enabled with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>Values for flag:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">True</span></tt> - Move all atoms within the primary unit cell before calculation</li>
+<li><tt class="docutils literal"><span class="pre">False</span></tt> - Use coordinates as supplied</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Changing this to <tt class="docutils literal"><span class="pre">True</span></tt> changes the default behaviour of
+commonly used <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a> methods
+such as <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass" title="MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass()</span></tt></a>
+and <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry" title="MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry()</span></tt></a>!</p>
+</div>
+</div></blockquote>
 <p><strong>permissive_pdb_reader</strong> = <em>True</em></p>
 <blockquote>
 <div><p>Select the default reader for PDB Brookhaven databank files.</p>
@@ -214,6 +235,22 @@ list.</p>
 <p>One can manually switch between the two by providing the <em>permissive</em>
 keyword to <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>.</p>
 </div></blockquote>
+<p><strong>convert_lengths</strong> = <em>True</em></p>
+<blockquote>
+<div><p>Determine if trajectory reader and writer converts length units between native and MDAnalysis default.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p>Some trajectories are in other length units than the MDAnalysis
+default (see the flag <em>length_unit</em>); e.g. Gromacs XTC and TRR
+trajectories are in nm. If <tt class="docutils literal"><span class="pre">True</span></tt> then coordinates are
+automatically converted, with <tt class="docutils literal"><span class="pre">False</span></tt> the coordinate values are
+presented as read from the trajectories.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The conversion of lengths also affects conversion of velocities.</p>
+</div>
+</div></blockquote>
 <p><strong>force_unit</strong> = <em>&#8216;kJ/(mol*Angstrom)&#8217;</em></p>
 <blockquote>
 <div><p>Base unit for forces (in particular forces in trajectories)</p>
@@ -227,17 +264,6 @@ keyword to <tt class="xref py py-class docutils literal"><span class="pre">MDAna
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;time_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
-</div></blockquote>
-<p><strong>convert_gromacs_lengths</strong> = <em>True</em></p>
-<blockquote>
-<div><p>Determine if the XTC and TRR trajectory reader and writer convert units.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_gromacs_lengths&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</pre></div>
-</div>
-<p>Gromacs trajectories are in nm, MDAnalysis in Angstroem. If
-<tt class="docutils literal"><span class="pre">True</span></tt> then coordinates are automatically converted, with
-<tt class="docutils literal"><span class="pre">False</span></tt> the coordinate values are presented as read from the
-trajectories.</p>
 </div></blockquote>
 <p><strong>speed_unit</strong> = <em>&#8216;Angstrom/ps&#8217;</em></p>
 <blockquote>
@@ -370,14 +396,16 @@ all values are directly set.</p>
         <li class="right" >
           <a href="../core_modules.html" title="7. Core modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

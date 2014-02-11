@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -389,17 +389,22 @@
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Atom.pos"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.pos">[docs]</a>    <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        deprecated, use position,</span>
-<span class="sd">        get the Current cartesian coordinates of the atom.</span>
+        <span class="sd">&quot;&quot;&quot;coordinates of the atom</span>
+
+<span class="sd">        Get the current cartesian coordinates of the atom (read-only).</span>
+
+<span class="sd">        .. deprecated:: 0.8</span>
+<span class="sd">           use :attr:`position`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;coordinates of the atom</span>
+
 <span class="sd">        Get the current cartesian coordinates of the atom.</span>
-<span class="sd">        @return: a numpy 1x3 array</span>
+
+<span class="sd">        :Returns: a numpy 1x3 array</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">]</span> <span class="c"># internal numbering starts at 0</span>
 
@@ -797,7 +802,7 @@
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="AtomGroup.bondDict"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.bondDict">[docs]</a>    <span class="k">def</span> <span class="nf">bondDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A :class:`MDAnalysis.topology.core.TopologyDict` of bonds </span>
+        <span class="sd">&quot;&quot;&quot;A :class:`MDAnalysis.topology.core.TopologyDict` of bonds</span>
 <span class="sd">        within this AtomGroup.</span>
 
 <span class="sd">        .. versionadded:: 0.8</span>
@@ -809,11 +814,11 @@
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="AtomGroup.angleDict"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.angleDict">[docs]</a>    <span class="k">def</span> <span class="nf">angleDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A :class:`MDAnalysis.topology.core.TopologyDict` of angles </span>
+        <span class="sd">&quot;&quot;&quot;A :class:`MDAnalysis.topology.core.TopologyDict` of angles</span>
 <span class="sd">        within this AtomGroup.</span>
 
 <span class="sd">        .. versionadded:: 0.8</span>
-<span class="sd">        &quot;&quot;&quot;</span>     
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;angles&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="n">TopologyDict</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;angles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TopologyDict</span><span class="p">(</span><span class="s">&#39;angle&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">)</span>
@@ -821,35 +826,46 @@
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="AtomGroup.torsionDict"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.torsionDict">[docs]</a>    <span class="k">def</span> <span class="nf">torsionDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A :class:`MDAnalysis.topology.core.TopologyDict` of angles </span>
+        <span class="sd">&quot;&quot;&quot;A :class:`MDAnalysis.topology.core.TopologyDict` of angles</span>
 <span class="sd">        within this AtomGroup.</span>
 
 <span class="sd">        .. versionadded:: 0.8</span>
-<span class="sd">        &quot;&quot;&quot;</span>     
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="s">&#39;torsions&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="n">TopologyDict</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;torsions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TopologyDict</span><span class="p">(</span><span class="s">&#39;torsion&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;torsions&#39;</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.numberOfBondTypes"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.numberOfBondTypes">[docs]</a>    <span class="k">def</span> <span class="nf">numberOfBondTypes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of different bond types in this AtomGroup&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bondDict</span><span class="p">)</span></div>
+        <span class="sd">&quot;&quot;&quot;Number of different bond types in this AtomGroup</span>
+
+<span class="sd">        .. versionadded:: 0.8</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bondDict</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="AtomGroup.numberOfAngleTypes"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.numberOfAngleTypes">[docs]</a>    <span class="k">def</span> <span class="nf">numberOfAngleTypes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of different angle types in this AtomGroup&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angleDict</span><span class="p">)</span></div>
+        <span class="sd">&quot;&quot;&quot;Number of different angle types in this AtomGroup</span>
+
+<span class="sd">        .. versionadded:: 0.8</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angleDict</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="AtomGroup.numberOfTorsionTypes"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.numberOfTorsionTypes">[docs]</a>    <span class="k">def</span> <span class="nf">numberOfTorsionTypes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of different torsions types in this AtomGroup&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Number of different torsions types in this AtomGroup</span>
+
+<span class="sd">        .. versionadded:: 0.8</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">torsionDict</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.selectBonds"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectBonds">[docs]</a>    <span class="k">def</span> <span class="nf">selectBonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">criteria</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select all of a given bond, angle or torsion type from the </span>
+        <span class="sd">&quot;&quot;&quot;Select all of a given bond, angle or torsion type from the</span>
 <span class="sd">        AtomGroup.  This method makes use of the :class:`MDAnalysis.topology.core.TopologyDict`</span>
 <span class="sd">        instances for this AtomGroup.</span>
 
-<span class="sd">        Usage:: </span>
-<span class="sd">          ag.selectBonds(criteria) </span>
+<span class="sd">        Usage::</span>
+<span class="sd">          ag.selectBonds(criteria)</span>
 
-<span class="sd">        *criteria* must match a key from the appropriate TopologyDict, </span>
+<span class="sd">        *criteria* must match a key from the appropriate TopologyDict,</span>
 <span class="sd">        viewable through the :meth:`MDAnalysis.topology.core.TopologyDict.keys` method.</span>
 <span class="sd">        These keys are a tuple of the atom types in the bond.</span>
 
@@ -887,19 +903,11 @@
 <div class="viewcode-block" id="AtomGroup.radii"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.radii">[docs]</a>    <span class="k">def</span> <span class="nf">radii</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Array of atomic radii (as defined in the PQR file)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">radius</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
-
-    <span class="c"># TODO release 0.8: make this a method again (in MDAnalysis 0.8)</span></div>
+</div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="AtomGroup.bfactors"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.bfactors">[docs]</a>    <span class="k">def</span> <span class="nf">bfactors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Crystallographic B-factors (from PDB) in A**2.</span>
-
-<span class="sd">        .. deprecated:: 0.8</span>
-<span class="sd">           This managed attribute will become a method in 0.8 in order to</span>
-<span class="sd">           provide a unified interface to querying properties:</span>
-<span class="sd">           :attr:`AtomGroup.bfactors` will become :meth:`AtomGroup.bfactors`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;AtomGroup.bfactors will become AtomGroup.bfactors() in MDAnalysis 0.8&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">bfactor</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 </div>
     <span class="k">def</span> <span class="nf">_set_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupname</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1147,31 +1155,89 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&quot;bfactor&quot;</span><span class="p">,</span> <span class="n">bfactor</span><span class="p">,</span> <span class="n">conversion</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="AtomGroup.centerOfGeometry"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry">[docs]</a>    <span class="k">def</span> <span class="nf">centerOfGeometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Center of geometry (also known as centroid) of the selection.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span></div>
+<div class="viewcode-block" id="AtomGroup.centerOfGeometry"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry">[docs]</a>    <span class="k">def</span> <span class="nf">centerOfGeometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Center of geometry (also known as centroid) of the selection.</span>
+
+<span class="sd">        :Keywords:</span>
+<span class="sd">          *pbc*</span>
+<span class="sd">            ``True``: Move all atoms within the primary unit cell before calculation [``False``]</span>
+
+<span class="sd">        .. Note::</span>
+<span class="sd">            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*</span>
+<span class="sd">            flag to be used by default.</span>
+
+<span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;pbc&#39;</span><span class="p">,</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">packIntoBox</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span></div>
     <span class="n">centroid</span> <span class="o">=</span> <span class="n">centerOfGeometry</span>
 
-<div class="viewcode-block" id="AtomGroup.centerOfMass"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass">[docs]</a>    <span class="k">def</span> <span class="nf">centerOfMass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Center of mass of the selection.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">()[:,</span><span class="n">numpy</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">totalMass</span><span class="p">()</span>
+<div class="viewcode-block" id="AtomGroup.centerOfMass"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass">[docs]</a>    <span class="k">def</span> <span class="nf">centerOfMass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Center of mass of the selection.</span>
+
+<span class="sd">        :Keywords:</span>
+<span class="sd">          *pbc*</span>
+<span class="sd">            ``True``: Move all atoms within the primary unit cell before calculation [``False``]</span>
+
+<span class="sd">        .. Note::</span>
+<span class="sd">            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*</span>
+<span class="sd">            flag to be used by default.</span>
+
+<span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;pbc&#39;</span><span class="p">,</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">packIntoBox</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">()[:,</span><span class="n">numpy</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">totalMass</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">()[:,</span><span class="n">numpy</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">totalMass</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="AtomGroup.radiusOfGyration"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.radiusOfGyration">[docs]</a>    <span class="k">def</span> <span class="nf">radiusOfGyration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Radius of gyration.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AtomGroup.radiusOfGyration"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.radiusOfGyration">[docs]</a>    <span class="k">def</span> <span class="nf">radiusOfGyration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Radius of gyration.</span>
+
+<span class="sd">        :Keywords:</span>
+<span class="sd">          *pbc*</span>
+<span class="sd">            ``True``: Move all atoms within the primary unit cell before calculation [``False``]</span>
+
+<span class="sd">        .. Note::</span>
+<span class="sd">            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*</span>
+<span class="sd">            flag to be used by default.</span>
+
+<span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;pbc&#39;</span><span class="p">,</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">])</span>
         <span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">()</span>
-        <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">packIntoBox</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="n">rog_sq</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">masses</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">totalMass</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rog_sq</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="AtomGroup.shapeParameter"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.shapeParameter">[docs]</a>    <span class="k">def</span> <span class="nf">shapeParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomGroup.shapeParameter"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.shapeParameter">[docs]</a>    <span class="k">def</span> <span class="nf">shapeParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Shape parameter.</span>
 
 <span class="sd">        See [Dima2004]_ for background information.</span>
 
+<span class="sd">        :Keywords:</span>
+<span class="sd">          *pbc*</span>
+<span class="sd">            ``True``: Move all atoms within the primary unit cell before calculation [``False``]</span>
+
+<span class="sd">        .. Note::</span>
+<span class="sd">            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*</span>
+<span class="sd">            flag to be used by default.</span>
+
 <span class="sd">        .. versionadded:: 0.7.7</span>
+<span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;pbc&#39;</span><span class="p">,</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">])</span>
         <span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">()</span>
-        <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">packIntoBox</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="n">tensor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">recenteredpos</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="n">tensor</span> <span class="o">+=</span> <span class="n">masses</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">,:],</span>
@@ -1181,15 +1247,28 @@
         <span class="n">shape</span> <span class="o">=</span> <span class="mf">27.0</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">eig_vals</span><span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">))</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">shape</span>
 </div>
-<div class="viewcode-block" id="AtomGroup.asphericity"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.asphericity">[docs]</a>    <span class="k">def</span> <span class="nf">asphericity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomGroup.asphericity"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.asphericity">[docs]</a>    <span class="k">def</span> <span class="nf">asphericity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Asphericity.</span>
 
 <span class="sd">        See [Dima2004]_ for background information.</span>
 
+<span class="sd">        :Keywords:</span>
+<span class="sd">          *pbc*</span>
+<span class="sd">            ``True``: Move all atoms within primary unit cell before calculation [``False``]</span>
+
+<span class="sd">        .. Note::</span>
+<span class="sd">            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*</span>
+<span class="sd">            flag to be used by default.</span>
+
 <span class="sd">        .. versionadded:: 0.7.7</span>
+<span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;pbc&#39;</span><span class="p">,</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">])</span>
         <span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">()</span>
-        <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">packIntoBox</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="n">tensor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">recenteredpos</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="n">tensor</span> <span class="o">+=</span> <span class="n">masses</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">,:],</span>
@@ -1199,10 +1278,25 @@
         <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">eig_vals</span><span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span><span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">shape</span>
 </div>
-<div class="viewcode-block" id="AtomGroup.momentOfInertia"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.momentOfInertia">[docs]</a>    <span class="k">def</span> <span class="nf">momentOfInertia</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Tensor of inertia as 3x3 NumPy array.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AtomGroup.momentOfInertia"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.momentOfInertia">[docs]</a>    <span class="k">def</span> <span class="nf">momentOfInertia</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tensor of inertia as 3x3 NumPy array.</span>
+
+<span class="sd">        :Keywords:</span>
+<span class="sd">          *pbc*</span>
+<span class="sd">            ``True``: Move all atoms within the primary unit cell before calculation [``False``]</span>
+
+<span class="sd">        .. Note::</span>
+<span class="sd">            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*</span>
+<span class="sd">            flag to be used by default.</span>
+
+<span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;pbc&#39;</span><span class="p">,</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">])</span>
         <span class="c"># Convert to local coordinates</span>
-        <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">packIntoBox</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">()</span>
         <span class="n">values</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">recenteredpos</span><span class="p">)</span>
         <span class="c"># Create the inertia tensor</span>
@@ -1220,7 +1314,7 @@
         <span class="n">Iyz</span> <span class="o">=</span> <span class="n">Izy</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">,</span><span class="n">a</span><span class="p">:</span> <span class="n">t</span><span class="o">+</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">values</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">Ixx</span><span class="p">,</span> <span class="n">Ixy</span><span class="p">,</span> <span class="n">Ixz</span><span class="p">],[</span><span class="n">Iyx</span><span class="p">,</span> <span class="n">Iyy</span><span class="p">,</span> <span class="n">Iyz</span><span class="p">],[</span><span class="n">Izx</span><span class="p">,</span> <span class="n">Izy</span><span class="p">,</span> <span class="n">Izz</span><span class="p">]])</span>
 </div>
-<div class="viewcode-block" id="AtomGroup.bbox"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.bbox">[docs]</a>    <span class="k">def</span> <span class="nf">bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomGroup.bbox"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.bbox">[docs]</a>    <span class="k">def</span> <span class="nf">bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the bounding box of the selection.</span>
 
 <span class="sd">        The lengths A,B,C of the orthorhombic enclosing box are ::</span>
@@ -1228,28 +1322,55 @@
 <span class="sd">          L = AtomGroup.bbox()</span>
 <span class="sd">          A,B,C = L[1] - L[0]</span>
 
+<span class="sd">        :Keywords:</span>
+<span class="sd">          *pbc*</span>
+<span class="sd">            ``True``: Move all atoms within the primary unit cell before calculation [``False``]</span>
+
+<span class="sd">        .. Note::</span>
+<span class="sd">            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*</span>
+<span class="sd">            flag to be used by default.</span>
+
 <span class="sd">        :Returns: [[xmin, ymin, zmin], [xmax, ymax, zmax]]</span>
 
 <span class="sd">        .. versionadded:: 0.7.2</span>
+<span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;pbc&#39;</span><span class="p">,</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">packIntoBox</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
 </div>
-<div class="viewcode-block" id="AtomGroup.bsphere"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.bsphere">[docs]</a>    <span class="k">def</span> <span class="nf">bsphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomGroup.bsphere"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.bsphere">[docs]</a>    <span class="k">def</span> <span class="nf">bsphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the bounding sphere of the selection.</span>
 
 <span class="sd">        The sphere is calculated relative to the centre of geometry.</span>
 
+<span class="sd">        :Keywords:</span>
+<span class="sd">          *pbc*</span>
+<span class="sd">            ``True``: Move all atoms within primary unit cell before calculation [``False``]</span>
+
+<span class="sd">        .. Note::</span>
+<span class="sd">            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*</span>
+<span class="sd">            flag to be used by default.</span>
+
 <span class="sd">        :Returns: `(R, [xcen,ycen,zcen])`</span>
 
 <span class="sd">        .. versionadded:: 0.7.3</span>
+<span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
-        <span class="n">centroid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfGeometry</span><span class="p">()</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;pbc&#39;</span><span class="p">,</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">packIntoBox</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">centroid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfGeometry</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
+            <span class="n">centroid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerOfGeometry</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">centroid</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">R</span><span class="p">,</span> <span class="n">centroid</span>
 </div>
-<div class="viewcode-block" id="AtomGroup.bond"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.bond">[docs]</a>    <span class="k">def</span> <span class="nf">bond</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomGroup.bond"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.bond">[docs]</a>    <span class="k">def</span> <span class="nf">bond</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the distance between atoms in a 2-atom group.</span>
 
 <span class="sd">        Distance between atoms 0 and 1::</span>
@@ -1262,11 +1383,19 @@
 <span class="sd">           :class:`Atom`; anything else will raise a</span>
 <span class="sd">           :exc:`ValueError`.</span>
 
+<span class="sd">        :Keywords:</span>
+<span class="sd">          *pbc*</span>
+<span class="sd">            ``True``: Account for minimum image convention when calculating [``False``]</span>
+
 <span class="sd">        .. versionadded:: 0.7.3</span>
+<span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;distance computation only makes sense for a group with exactly 2 atoms&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">self_distance_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.angle"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.angle">[docs]</a>    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the angle in degrees between atoms 0, 1, 2.</span>
@@ -1338,7 +1467,7 @@
         <span class="n">cd</span> <span class="o">=</span> <span class="n">C</span> <span class="o">-</span> <span class="n">D</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">dihedral</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="AtomGroup.principalAxes"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.principalAxes">[docs]</a>    <span class="k">def</span> <span class="nf">principalAxes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomGroup.principalAxes"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.principalAxes">[docs]</a>    <span class="k">def</span> <span class="nf">principalAxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculate the principal axes from the moment of inertia.</span>
 
 <span class="sd">        e1,e2,e3 = AtomGroup.principalAxes()</span>
@@ -1346,11 +1475,25 @@
 <span class="sd">        The eigenvectors are sorted by eigenvalue, i.e. the first one</span>
 <span class="sd">        corresponds to the highest eigenvalue and is thus the first principal axes.</span>
 
+<span class="sd">        :Keywords:</span>
+<span class="sd">          *pbc*</span>
+<span class="sd">            ``True``: Move all atoms within primary unit cell before calculation</span>
+
+<span class="sd">        .. Note::</span>
+<span class="sd">            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*</span>
+<span class="sd">            flag to be used by default.</span>
+
 <span class="sd">        :Returns: numpy.array ``v`` with ``v[0]`` as first, ``v[1]`` as second,</span>
 <span class="sd">                  and ``v[2]`` as third eigenvector.</span>
+
+<span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">eig</span>
-        <span class="n">eigenval</span><span class="p">,</span> <span class="n">eigenvec</span> <span class="o">=</span> <span class="n">eig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">momentOfInertia</span><span class="p">())</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;pbc&#39;</span><span class="p">,</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="n">eigenval</span><span class="p">,</span> <span class="n">eigenvec</span> <span class="o">=</span> <span class="n">eig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">momentOfInertia</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eigenval</span><span class="p">,</span> <span class="n">eigenvec</span> <span class="o">=</span> <span class="n">eig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">momentOfInertia</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
         <span class="c"># Sort</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">eigenval</span><span class="p">)</span>
         <span class="c"># Return transposed in more logical form. See Issue 33.</span>
@@ -1391,6 +1534,7 @@
         <span class="k">if</span> <span class="n">ts</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">()],</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
 </div>
     <span class="n">coordinates</span> <span class="o">=</span> <span class="n">get_positions</span>
     <span class="sd">&quot;&quot;&quot;NumPy array of the coordinates.</span>
@@ -1430,6 +1574,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s">&#39;has_x&#39;</span><span class="p">):</span>  <span class="c"># TRR handling must be told frame now holds valid coord info.</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">has_x</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">(),:]</span> <span class="o">=</span> <span class="n">coords</span>
 </div>
     <span class="n">positions</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">get_positions</span><span class="p">,</span> <span class="n">set_positions</span><span class="p">,</span>
@@ -1480,29 +1626,26 @@
         <span class="k">if</span> <span class="n">ts</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s">&#39;has_v&#39;</span><span class="p">):</span>  <span class="c"># TRR handling must be told frame now holds valid velocity info.</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">has_v</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">(),</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;Timestep does not contain velocities&quot;</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="AtomGroup.velocities"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.velocities">[docs]</a>    <span class="k">def</span> <span class="nf">velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;NumPy array of the velocities of the atoms in the group.</span>
+    <span class="n">velocities</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">get_velocities</span><span class="p">,</span> <span class="n">set_velocities</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s">        NumPy array of the velocities of the atoms in the group.</span>
 
-<span class="sd">        If the trajectory does not contain velocity information then a</span>
-<span class="sd">        :exc:`~MDAnalysis.NoDataError` is raised.</span>
+<span class="s">        If the trajectory does not contain velocity information then a</span>
+<span class="s">        :exc:`~MDAnalysis.NoDataError` is raised.</span>
 
-<span class="sd">        .. versionadded:: 0.7.5</span>
-<span class="sd">        .. deprecated:: 0.7.6</span>
-<span class="sd">           In 0.8 this will become an attribute! You can already use :meth:`get_velocities`</span>
-<span class="sd">           and :meth:`set_velocities`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;velocities() will become an attribute &#39;velocities&#39; in 0.8&quot;</span><span class="p">,</span>
-                      <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_velocities</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="s">        .. versionadded:: 0.7.5</span>
+<span class="s">        .. deprecated:: 0.7.6</span>
+<span class="s">           In 0.8 this will become an attribute! You can already use :meth:`get_velocities`</span>
+<span class="s">           and :meth:`set_velocities`.</span>
+<span class="s">        .. versionchanged:: 0.8</span>
+<span class="s">           Became an attribute.</span>
+<span class="s">    &quot;&quot;&quot;</span><span class="p">)</span>
 
-    <span class="c"># TODO for 0.8</span>
-    <span class="c">#velocities = property(get_velocities, set_velocities, doc=&quot;velocities of the atoms\n\n.. versionchanged:: 0.8&quot;)</span>
-
-</div>
 <div class="viewcode-block" id="AtomGroup.get_forces"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.get_forces">[docs]</a>    <span class="k">def</span> <span class="nf">get_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a NumPy array of the atomic forces (if available).</span>
@@ -1569,6 +1712,8 @@
         <span class="k">if</span> <span class="n">ts</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s">&#39;has_f&#39;</span><span class="p">):</span>  <span class="c"># TRR handling must be told frame now holds valid force info.</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">(),</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">forces</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;Timestep does not contain forces&quot;</span><span class="p">)</span>
@@ -1590,14 +1735,17 @@
 
 
 <div class="viewcode-block" id="AtomGroup.transform"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Apply homogenous transformation matrix *M* to the coordinates.</span>
+        <span class="sd">r&quot;&quot;&quot;Apply homogenous transformation matrix *M* to the coordinates.</span>
 
 <span class="sd">        The matrix *M* must be a 4x4 matrix, with the rotation in</span>
-<span class="sd">        ``M[:3,:3]`` and the translation in ``M[:3,3]``.</span>
+<span class="sd">        `R = `M[:3,:3]`` and the translation in ``t = M[:3,3]``.</span>
 
-<span class="sd">        The rotation is applied before the translation::</span>
+<span class="sd">        The rotation :math:`\mathsl{R}` is applied before the</span>
+<span class="sd">        translation :math:`\mathbf{t}`:</span>
 
-<span class="sd">           x&#39; = R.x + t</span>
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \mathbf{x}&#39; = \mathsl{R}\mathbf{x} + \mathbf{t}</span>
 
 <span class="sd">        .. SeeAlso: :mod:`MDAnalysis.core.transformations`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1611,15 +1759,17 @@
         <span class="k">return</span> <span class="n">R</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.translate"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.translate">[docs]</a>    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Apply translation vector *t* to the selection&#39;s coordinates.</span>
+        <span class="sd">r&quot;&quot;&quot;Apply translation vector *t* to the selection&#39;s coordinates.</span>
 
 <span class="sd">          &gt;&gt;&gt; AtomGroup.translate(t)</span>
 <span class="sd">          &gt;&gt;&gt; AtomGroup.translate((A, B))</span>
 
 <span class="sd">        The method applies a translation to the AtomGroup from current</span>
-<span class="sd">        coordinates x to new coordinates x&#39;::</span>
+<span class="sd">        coordinates :math:`\mathbf{x}` to new coordinates :math:`\mathbf{x}&#39;`:</span>
 
-<span class="sd">            x&#39; = x + t</span>
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \mathbf{x}&#39; = \mathbf{x} + \mathbf{t}</span>
 
 <span class="sd">        The translation can also be given as a tuple of two MDAnalysis objects</span>
 <span class="sd">        such as two selections `(selA, selB)`, i.e. two :class:`AtomGroup`, or</span>
@@ -1639,13 +1789,16 @@
         <span class="k">return</span> <span class="n">vector</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.rotate"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.rotate">[docs]</a>    <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Apply a rotation matrix *R* to the selection&#39;s coordinates.</span>
+        <span class="sd">r&quot;&quot;&quot;Apply a rotation matrix *R* to the selection&#39;s coordinates.</span>
 
 <span class="sd">        AtomGroup.rotate(R)</span>
 
-<span class="sd">        *R* is a 3x3 orthogonal matrix that transforms x --&gt; x&#39;:</span>
+<span class="sd">        :math:`\mathsf{R}` is a 3x3 orthogonal matrix that transforms a vector</span>
+<span class="sd">        :math:`\mathbf{x} \rightarrow \mathbf{x}&#39;`:</span>
 
-<span class="sd">            x&#39; = R.x</span>
+<span class="sd">        .. math::</span>
+
+<span class="sd">            \mathbf{x}&#39; = \mathsf{R}\mathbf{x}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="c"># changes the coordinates (in place)</span>
@@ -1655,16 +1808,19 @@
         <span class="k">return</span> <span class="n">R</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.rotateby"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.rotateby">[docs]</a>    <span class="k">def</span> <span class="nf">rotateby</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Apply a rotation to the selection&#39;s coordinates.</span>
+        <span class="sd">r&quot;&quot;&quot;Apply a rotation to the selection&#39;s coordinates.</span>
 
 <span class="sd">        AtomGroup.rotateby(angle,axis[,point])</span>
 
-<span class="sd">        The transformation from current coordinates x to new coordinates x&#39; is</span>
+<span class="sd">        The transformation from current coordinates :math:`\mathbf{x}`</span>
+<span class="sd">        to new coordinates :math:`\mathbf{x}&#39;` is</span>
 
-<span class="sd">          x&#39; = R.(x-p) + p</span>
+<span class="sd">        .. math::</span>
 
-<span class="sd">        where R is the rotation by *angle* around the *axis* going through</span>
-<span class="sd">        *point* p.</span>
+<span class="sd">          \mathbf{x}&#39; = \mathsf{R}\,(\mathbf{x}-\mathbf{p}) + \mathbf{p}</span>
+
+<span class="sd">        where :math:`\mathsf{R}` is the rotation by *angle* around the</span>
+<span class="sd">        *axis* going through *point* :math:`\mathbf{p}`.</span>
 
 <span class="sd">        :Arguments:</span>
 <span class="sd">          *angle*</span>
@@ -1680,8 +1836,8 @@
 <span class="sd">             can be a 3-tuple, list, or array or a MDAnalysis object (in which</span>
 <span class="sd">             case its :meth:`centroid` is used).</span>
 
-<span class="sd">        :Returns: The 4x4 matrix which consists of the rotation matrix M[:3,:3]</span>
-<span class="sd">                  and the translation vectort M[:3,3].</span>
+<span class="sd">        :Returns: The 4x4 matrix which consists of the rotation matrix ``M[:3,:3]``</span>
+<span class="sd">                  and the translation vector ``M[:3,3]``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">transformations</span> <span class="kn">import</span> <span class="n">rotation_matrix</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
@@ -1730,17 +1886,25 @@
         <span class="c">#print &quot;axis = %r, angle = %f deg&quot; % (ax, angle)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotateby</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="AtomGroup.packintobox"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.packintobox">[docs]</a>    <span class="k">def</span> <span class="nf">packintobox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Shift all atoms in this group to be within the primary unit cell.</span>
+<div class="viewcode-block" id="AtomGroup.packIntoBox"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.packIntoBox">[docs]</a>    <span class="k">def</span> <span class="nf">packIntoBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">r&quot;&quot;&quot;Shift all atoms in this group to be within the primary unit cell.</span>
 
-<span class="sd">        AtomGroup.packintobox([box])</span>
+<span class="sd">        AtomGroup.packintobox([box, [inplace=True]])</span>
+
+<span class="sd">        :Keywords:</span>
+<span class="sd">          *box*</span>
+<span class="sd">            Unit cell to move atoms inside of.</span>
+<span class="sd">          *inplace*</span>
+<span class="sd">            ``True``: Change coordinates in place and return</span>
+<span class="sd">            ``False``: Only return the coordinates</span>
 
 <span class="sd">        All atoms will be moved so that they lie between 0 and</span>
 <span class="sd">        boxlength :math:`L_i` in all dimensions, i.e. the lower left</span>
 <span class="sd">        corner of the simulation box is taken to be at (0,0,0):</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           x_i&#39; = x_i - \left\lfloor \frac{x_i}{L_i} \right\rfloor</span>
+
+<span class="sd">           x_i&#39; = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor</span>
 
 <span class="sd">        The default is to take unit cell information from the</span>
 <span class="sd">        underlying :class:`~MDAnalysis.coordinates.base.Timestep`</span>
@@ -1748,23 +1912,30 @@
 <span class="sd">        alternative unit cell information (in the MDAnalysis standard</span>
 <span class="sd">        format ``[Lx, Ly, Lz, alpha, beta, gamma]``).</span>
 
-<span class="sd">        .. Warning:: Currently only works with orthogonal boxes. See `Issue 136`_</span>
+<span class="sd">        Works with either orthogonal or triclinic box types.</span>
 
-<span class="sd">        .. _Issue 136: https://code.google.com/p/mdanalysis/issues/detail?id=136</span>
+<span class="sd">        By default the coordinates are changed in place and returned</span>
+
+<span class="sd">        .. versionadded:: 0.8</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">box</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span> <span class="c">#Try and auto detect box dimensions</span>
-            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span> <span class="o">==</span> <span class="mf">90.</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span> <span class="c">#Check box is orthogonal</span>
-                <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;This atomgroup does not belong to a Universe with an orthogonal box&quot;</span><span class="p">)</span>
+            <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="c"># Can accept any box</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">box</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span> <span class="c">#Check that a box dimension isn&#39;t zero</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;One or more box dimensions is zero.  You can specify a boxsize with &#39;box=&#39;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span> <span class="c"># for a vector representation, diagonal cannot be zero</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;One or more box dimensions is zero.  You can specify a boxsize with &#39;box =&#39;&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">box</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span> <span class="c">#Check that a box dimension isn&#39;t zero</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;One or more box dimensions is zero.  You can specify a boxsize with &#39;box=&#39;&quot;</span><span class="p">)</span>
 
         <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">()]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">()]</span> <span class="o">-=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">coords</span><span class="o">/</span><span class="n">box</span><span class="p">)</span><span class="o">*</span><span class="n">box</span>
-        <span class="c">#np.floor rounds down all numbers, ie floor(-0.1) = -1, floor(0.9) = 0</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">applyPBC</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">()]</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">applyPBC</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">()]</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.selectAtoms"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms">[docs]</a>    <span class="k">def</span> <span class="nf">selectAtoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="o">*</span><span class="n">othersel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Selection of atoms using the MDAnalysis selection syntax.</span>
@@ -1800,12 +1971,17 @@
 <span class="sd">                format string for default filename; use substitution tokens</span>
 <span class="sd">                &#39;trjname&#39; and &#39;frame&#39; [&quot;%(trjname)s_%(frame)d&quot;]</span>
 <span class="sd">          *bonds*</span>
-<span class="sd">                how to handle bond information, especially relevant for PDBs</span>
-<span class="sd">                [&quot;conect&quot;] - write only the CONECT records defined in the original</span>
-<span class="sd">                file</span>
-<span class="sd">                &quot;all&quot; - write out all bonds, both the original defined and those</span>
-<span class="sd">                      guessed by MDAnalysis</span>
-<span class="sd">                None  - do not write out bonds</span>
+<span class="sd">                how to handle bond information, especially relevant for PDBs;</span>
+<span class="sd">                default is ``&quot;conect&quot;``.</span>
+
+<span class="sd">                * ``&quot;conect&quot;``: write only the CONECT records defined in the original</span>
+<span class="sd">                  file</span>
+
+<span class="sd">                * ``&quot;all&quot;``: write out all bonds, both the original defined and those</span>
+<span class="sd">                  guessed by MDAnalysis</span>
+
+<span class="sd">                * ``None``: do not write out bonds</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">util</span>
         <span class="kn">import</span> <span class="nn">os.path</span>
@@ -1892,10 +2068,7 @@
         <span class="n">trj_ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>  <span class="c"># original time step</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ts</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">!=</span> <span class="n">trj_ts</span><span class="o">.</span><span class="n">frame</span><span class="p">:</span>
             <span class="c"># create a timestep of same type as the underlying trajectory</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="n">trj_ts</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">())</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">trj_ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">trj_ts</span><span class="o">.</span><span class="n">frame</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__ts</span> <span class="o">=</span> <span class="n">ts</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__ts</span> <span class="o">=</span> <span class="n">trj_ts</span><span class="o">.</span><span class="n">copy_slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">())</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ts</span>
 </div></div>
 <div class="viewcode-block" id="Residue"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue">[docs]</a><span class="k">class</span> <span class="nc">Residue</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">):</span>
@@ -2535,7 +2708,7 @@
 <span class="sd">        .. versionchanged:: 0.7.4</span>
 <span class="sd">           New *topology_format* and *format* parameters to override the file</span>
 <span class="sd">           format detection.</span>
-<span class="sd">        &quot;&quot;&quot;</span>        
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="n">get_parser_for</span><span class="p">,</span> <span class="n">guess_format</span>
         <span class="kn">import</span> <span class="nn">MDAnalysis.core</span>
 
@@ -2543,7 +2716,7 @@
         <span class="c"># attribute is also aliased as Universe.&lt;EXT&gt; where &lt;EXT&gt; is the</span>
         <span class="c"># trajectory format type (i.e. the extension))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__trajectory</span> <span class="o">=</span> <span class="bp">None</span>
-        
+
         <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;coordinatefile&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>  <span class="c"># deprecated</span>
         <span class="n">topology_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;topology_format&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;permissive&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -2552,8 +2725,8 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c"># create an empty universe</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">([])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="bp">None</span> 
-            <span class="k">return</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">return</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">topologyfile</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -2561,7 +2734,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Universe requires at least a single topology or structure file.&quot;</span><span class="p">)</span>
         <span class="c"># old behaviour (explicit coordfile) overrides new behaviour</span>
         <span class="n">coordinatefile</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;coordinatefile&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;coordinatefile&#39;</span><span class="p">]</span>
-        
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">coordinatefile</span><span class="p">:</span>
             <span class="c"># special hacks to treat a coordinate file as a coordinate AND topology file</span>
             <span class="c"># coordinatefile can be None or () (from an empty slice args[1:])</span>
@@ -2651,7 +2824,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">segments</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">residues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">residues</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="bp">self</span>    <span class="c"># for Writer.write(universe), see Issue 49</span>
-        
+
     <span class="k">def</span> <span class="nf">_init_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set bond information.</span>
 
@@ -2684,12 +2857,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bond</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="o">=</span> <span class="n">bond</span>
-            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
             <span class="n">bond</span> <span class="o">=</span> <span class="n">Bond</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">struc</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&quot;_guessed_bonds&quot;</span><span class="p">)</span> <span class="ow">and</span> \
                     <span class="nb">set</span><span class="p">([</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">])</span> <span class="ow">in</span> <span class="n">struc</span><span class="p">[</span><span class="s">&quot;_guessed_bonds&quot;</span><span class="p">]</span> <span class="ow">and</span> \
                     <span class="nb">set</span><span class="p">([</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">struc</span><span class="p">[</span><span class="s">&quot;_bonds&quot;</span><span class="p">]:</span>
-                <span class="n">bond</span><span class="o">.</span><span class="n">set_is_guessed</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+                <span class="n">bond</span><span class="o">.</span><span class="n">is_guessed</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bond</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">)</span>
 
@@ -2938,45 +3111,45 @@
 
 </div>
 <span class="k">def</span> <span class="nf">Merge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a universe from 2 or more AtomGroups. </span>
-<span class="sd">    AtomGroups can come from different Universes, or come from selectAtom </span>
-<span class="sd">    command. </span>
+    <span class="sd">&quot;&quot;&quot;Return a universe from 2 or more AtomGroups.</span>
+<span class="sd">    AtomGroups can come from different Universes, or come from selectAtom</span>
+<span class="sd">    command.</span>
 
 <span class="sd">         u1 = Universe(&quot;protein.pdb&quot;)</span>
 <span class="sd">         u2 = Universe(&quot;ligand.pdb&quot;)</span>
 <span class="sd">         u3 = Universe(&quot;solvent.pdb&quot;)</span>
 <span class="sd">         u = Merge(u1.atoms, u2.atoms, u3.atoms)</span>
 <span class="sd">         u.atoms.write(&quot;system.pdb&quot;)</span>
-<span class="sd">    </span>
-<span class="sd">    Can also be used with a single AtomGroup if the user wants to, </span>
+
+<span class="sd">    Can also be used with a single AtomGroup if the user wants to,</span>
 <span class="sd">    for example, re-order the atoms in the Universe.</span>
-<span class="sd">     </span>
+
 <span class="sd">    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="c"># one or more AtomGroups can be merged</span>
-    
+
     <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span> <span class="k">assert</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span> <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">))</span> <span class="c"># cannot merge empty AtomGroup</span>
-    
+
     <span class="n">coords</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
     <span class="n">trajectory</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">()</span>
     <span class="n">ts</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
     <span class="nb">setattr</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span> <span class="s">&quot;ts&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
     <span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span> <span class="o">=</span> <span class="mi">1</span>
-    
+
     <span class="c"># create an empty Universe object</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">()</span>
     <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">trajectory</span>
-    
+
     <span class="c"># create a list of Atoms, then convert it to an AtomGroup</span>
     <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">gr</span> <span class="ow">in</span> <span class="n">args</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">gr</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">u</span>
     <span class="c"># adjust the atom numbering</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span> 
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
         <span class="n">a</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">i</span>
         <span class="n">a</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
     <span class="n">u</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">u</span>    
+    <span class="k">return</span> <span class="n">u</span>
 </pre></div>
 
           </div>
@@ -2993,15 +3166,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

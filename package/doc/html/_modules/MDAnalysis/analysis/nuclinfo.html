@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.nuclinfo &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>MDAnalysis.analysis.nuclinfo &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -170,6 +170,8 @@
 <span class="sd">.. autofunction:: tors_chi</span>
 
 <span class="sd">.. autofunction:: hydroxyl</span>
+
+<span class="sd">.. autofunction:: pseudo_dihe_baseflip</span>
 
 <span class="sd">                                                                                                                                            &quot;&quot;&quot;</span>
 
@@ -598,8 +600,9 @@
 </div>
 <div class="viewcode-block" id="hydroxyl"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.hydroxyl">[docs]</a><span class="k">def</span> <span class="nf">hydroxyl</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span><span class="n">seg</span><span class="p">,</span><span class="n">i</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;2-hydroxyl dihedral. Useful only for RNA calculations. </span>
+
 <span class="sd">     :Note: This dihedral calculation will only work if using atom names </span>
-<span class="sd">     as documented by charmm force field parameters. </span>
+<span class="sd">      as documented by charmm force field parameters. </span>
 
 <span class="sd">     :Arguments:</span>
 <span class="sd">       *universe* </span>
@@ -617,13 +620,12 @@
         <span class="n">hydr</span> <span class="o">=</span> <span class="n">hydr</span> <span class="o">+</span> <span class="mi">360</span>
     <span class="k">return</span> <span class="n">hydr</span>
 </div>
-<span class="k">def</span> <span class="nf">pseudo_dihe_baseflip</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span><span class="n">bp1</span><span class="p">,</span><span class="n">bp2</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">seg1</span><span class="o">=</span><span class="s">&quot;SYSTEM&quot;</span><span class="p">,</span><span class="n">seg2</span><span class="o">=</span><span class="s">&quot;SYSTEM&quot;</span><span class="p">,</span><span class="n">seg3</span><span class="o">=</span><span class="s">&quot;SYSTEM&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="pseudo_dihe_baseflip"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.pseudo_dihe_baseflip">[docs]</a><span class="k">def</span> <span class="nf">pseudo_dihe_baseflip</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span><span class="n">bp1</span><span class="p">,</span><span class="n">bp2</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">seg1</span><span class="o">=</span><span class="s">&quot;SYSTEM&quot;</span><span class="p">,</span><span class="n">seg2</span><span class="o">=</span><span class="s">&quot;SYSTEM&quot;</span><span class="p">,</span><span class="n">seg3</span><span class="o">=</span><span class="s">&quot;SYSTEM&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping</span>
 <span class="sd">     </span>
 <span class="sd">     The dihedral is computed based on position atoms for resid *i*</span>
 <span class="sd">    </span>
-<span class="sd">     :Note: This dihedral calculation will only work if using atom names </span>
-<span class="sd">     as documented by charmm force field parameters. </span>
+<span class="sd">     :Note: This dihedral calculation will only work if using atom names as documented by charmm force field parameters. </span>
 
 <span class="sd">     :Arguments:</span>
 <span class="sd">       *universe* </span>
@@ -657,7 +659,7 @@
     <span class="k">if</span> <span class="n">pseudo</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">pseudo</span> <span class="o">=</span> <span class="n">pseudo</span> <span class="o">+</span> <span class="mi">360</span>
     <span class="k">return</span> <span class="n">pseudo</span>
-</pre></div>
+</pre></div></div>
 
           </div>
         </div>
@@ -673,15 +675,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

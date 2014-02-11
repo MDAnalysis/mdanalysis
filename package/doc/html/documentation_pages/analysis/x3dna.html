@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.3.2. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.x3dna &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>3.3.2. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.x3dna &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.4.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" />
     <link rel="prev" title="3.3.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo" href="nuclinfo.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="nuclinfo.html" title="3.3.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -118,8 +118,8 @@
 </tr>
 </tbody>
 </table>
-<p>With the help of this module, <a href="#id4"><span class="problematic" id="id5">X3DNA_</span></a> can be run on frames in a trajectory. Data
-can be combined and analyzed. <a href="#id6"><span class="problematic" id="id7">X3DNA_</span></a> <a class="reference internal" href="#lu2003" id="id1">[Lu2003]</a> <a class="reference internal" href="#lu2008" id="id2">[Lu2008]</a> must be installed
+<p>With the help of this module, <a class="reference external" href="http://http://x3dna.org/">X3DNA</a> can be run on frames in a trajectory. Data
+can be combined and analyzed. <a class="reference external" href="http://http://x3dna.org/">X3DNA</a> <a class="reference internal" href="#lu2003" id="id1">[Lu2003]</a> <a class="reference internal" href="#lu2008" id="id2">[Lu2008]</a> must be installed
 separately.</p>
 <p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="lu2003" rules="none">
@@ -134,12 +134,18 @@ Nucleic Acids Res. 31(17), 5108-21.</td></tr>
 <table class="docutils citation" frame="void" id="lu2008" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[Lu2008]</a></td><td>Xiang-Jun Lu &amp; Wilma K. Olson (2008).
-3DNA: a versatile, integrated software system for the analysis, rebuilding
-and visualization of three-dimensional nucleic-acid structures.
-Nat Protoc. 3(7), 1213-27.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id2">[Lu2008]</a></td><td>Xiang-Jun Lu &amp; Wilma K. Olson (2008).</td></tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</dt>
+<dd>3DNA: a versatile, integrated software system for the analysis, rebuilding
+and visualization of three-dimensional nucleic-acid structures.
+Nat Protoc. 3(7), 1213-27.</dd>
+</dl>
+<blockquote>
+<div>Nat Protoc. 3(7), 1213-27.</div></blockquote>
+<p>&gt;&gt;&gt;&gt;&gt;&gt;&gt; 11c1fd94e190c5c5ddc13f49c9893a84f8d9b373</p>
 <div class="section" id="examples">
 <h2>3.3.2.1. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="single-structure">
@@ -177,9 +183,9 @@ next example.</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.x3dna.X3DNA">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.x3dna.</tt><tt class="descname">X3DNA</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run <a href="#id8"><span class="problematic" id="id9">X3DNA_</span></a> on a single frame or a DCD trajectory.</p>
+<dd><p>Run <a class="reference external" href="http://http://x3dna.org/">X3DNA</a> on a single frame or a DCD trajectory.</p>
 <p>Only a subset of all X3DNA control parameters is supported and can be set
-with keyword arguments. For further details on <a href="#id10"><span class="problematic" id="id11">X3DNA_</span></a> see the <a class="reference external" href="http://http://forum.x3dna.org/">X3DNA docs</a>.</p>
+with keyword arguments. For further details on <a class="reference external" href="http://http://x3dna.org/">X3DNA</a> see the <a class="reference external" href="http://forum.x3dna.org/">X3DNA docs</a>.</p>
 <p>Running X3DNA with the <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA" title="MDAnalysis.analysis.x3dna.X3DNA"><tt class="xref py py-class docutils literal"><span class="pre">X3DNA</span></tt></a> class is a 3-step process:</p>
 <blockquote>
 <div><ol class="arabic simple">
@@ -193,7 +199,7 @@ data such as <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DN
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.8.</span></p>
 </div>
-<p>Set up parameters to run <a href="#id12"><span class="problematic" id="id13">X3DNA_</span></a> on PDB <em>filename</em>.</p>
+<p>Set up parameters to run <a class="reference external" href="http://http://x3dna.org/">X3DNA</a> on PDB <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -481,14 +487,16 @@ analyse part of the trajectory.</p>
         <li class="right" >
           <a href="nuclinfo.html" title="3.3.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

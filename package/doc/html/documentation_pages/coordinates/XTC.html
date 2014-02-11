@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.14. Gromacs XTC file IO — MDAnalysis.coordinates.XTC &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>5.14. Gromacs XTC file IO — MDAnalysis.coordinates.XTC &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.15. XYZ trajectory reader — MDAnalysis.coordinates.XYZ" href="XYZ.html" />
     <link rel="prev" title="5.13. Gromacs TRR file IO — MDAnalysis.coordinates.TRR" href="TRR.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="TRR.html" title="5.13. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -98,24 +98,55 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <span class="target" id="module-MDAnalysis.coordinates.XTC"></span><div class="section" id="module-MDAnalysis.coordinates.xdrfile.XTC">
-<span id="gromacs-xtc-file-io-mdanalysis-coordinates-xtc"></span><h1>5.14. Gromacs XTC file IO &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.XTC" title="MDAnalysis.coordinates.XTC"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a><a class="headerlink" href="#module-MDAnalysis.coordinates.xdrfile.XTC" title="Permalink to this headline">¶</a></h1>
-<p>Reading of <a class="reference external" href="http://www.gromacs.org/Documentation/File_Formats/.xtc_File">Gromacs XTC trajectories</a>.</p>
+  <span class="target" id="module-MDAnalysis.coordinates.XTC"></span><div class="section" id="gromacs-xtc-file-io-mdanalysis-coordinates-xtc">
+<h1>5.14. Gromacs XTC file IO &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.XTC" title="MDAnalysis.coordinates.XTC"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a><a class="headerlink" href="#gromacs-xtc-file-io-mdanalysis-coordinates-xtc" title="Permalink to this headline">¶</a></h1>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8.0.</span></p>
+</div>
+<p>The XTC I/O interface now uses <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt>, which has seeking and
+indexing capabilities. Note that unlike <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt> before it,
+<tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt> is distributed under the GNU GENERAL PUBLIC LICENSE,
+version 2 (or higher).</p>
+<span class="target" id="module-MDAnalysis.coordinates.xdrfile.XTC"></span><p>Reading of <a class="reference external" href="http://www.gromacs.org/Documentation/File_Formats/.xtc_File">Gromacs XTC trajectories</a>.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="libxdrfile.html#module-MDAnalysis.coordinates.xdrfile.libxdrfile" title="MDAnalysis.coordinates.xdrfile.libxdrfile"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.libxdrfile</span></tt></a> for low-level
+<p class="last"><a class="reference internal" href="libxdrfile2.html#module-MDAnalysis.coordinates.xdrfile.libxdrfile2" title="MDAnalysis.coordinates.xdrfile.libxdrfile2"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.libxdrfile2</span></tt></a> for low-level
 bindings to the Gromacs trajectory file formats</p>
 </div>
 <div class="section" id="classes">
 <h2>5.14.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.xdrfile.XTC.Timestep">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.XTC.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/XTC.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.XTC.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/XTC.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Timestep for a Gromacs XTC trajectory.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.XTC.Timestep.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make an independent (&#8220;deep&#8221;) copy of the whole <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep" title="MDAnalysis.coordinates.xdrfile.XTC.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.xdrfile.XTC.Timestep.copy_slice">
+<tt class="descname">copy_slice</tt><big>(</big><em>sel</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep.copy_slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a new Timestep containing a subset of the original Timestep.</p>
+<p><tt class="docutils literal"><span class="pre">ts.copy_slice(slice(start,</span> <span class="pre">stop,</span> <span class="pre">skip))</span></tt>
+<tt class="docutils literal"><span class="pre">ts.copy_slice([list</span> <span class="pre">of</span> <span class="pre">indices])</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A Timestep object of the same type containing all header information and all atom information
+relevent to the selection.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The selection must be a 0 based slice or array of the atom indices in this Timestep</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -196,7 +227,7 @@ available). <em>numatoms</em> is always set from <tt class="xref py py-attr docu
 <dd><p class="first last">number of atoms</p>
 </dd>
 <dt><em>delta</em></dt>
-<dd><p class="first last">Time interval between frames in ps.</p>
+<dd><p class="first last">Time interval between frames.</p>
 </dd>
 <dt><em>precision</em></dt>
 <dd><p class="first last">accuracy for lossy XTC format as a power of 10 (ignored
@@ -346,7 +377,20 @@ any reason the trajectory cannot be read then 0 is returned.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.XTC.XTCReader.load_offsets">
 <tt class="descname">load_offsets</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.XTCReader.load_offsets" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads current trajectory offsets from filename (numpy format).</p>
+<dd><p>Loads current trajectory offsets from <em>filename</em> (in numpy format). No error checking is performed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">filename of a saved numpy array with the frame offsets for the loaded trajectory.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -401,7 +445,20 @@ ENOENT if the file cannot be found</td>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.XTC.XTCReader.save_offsets">
 <tt class="descname">save_offsets</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.XTCReader.save_offsets" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves current trajectory offsets into filename (numpy format).</p>
+<dd><p>Saves current trajectory offsets into <em>filename</em>, in numpy format. A &#8221;.npy&#8221; suffix will be appended to <em>filename</em> if not already present.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">filename in which to save the frame offset numpy array.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -421,7 +478,7 @@ ENOENT if the file cannot be found</td>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.xdrfile.XTC.XTCWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.XTC.</tt><tt class="descname">XTCWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=1.0</em>, <em>precision=1000.0</em>, <em>remarks=None</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/XTC.html#XTCWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.XTCWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.XTC.</tt><tt class="descname">XTCWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=None</em>, <em>precision=1000.0</em>, <em>remarks=None</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/XTC.html#XTCWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.XTCWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> XTC trajectory.</p>
 <p>Create a new TrjWriter</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -440,20 +497,23 @@ ENOENT if the file cannot be found</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>start</em></dt>
-<dd><p class="first last">starting timestep</p>
+<dd><p class="first last">starting timestep; only used when <em>delta</em> is set.</p>
 </dd>
 <dt><em>step</em></dt>
-<dd><p class="first last">skip between subsequent timesteps</p>
+<dd><p class="first last">skip between subsequent timesteps; only used when <em>delta</em> is set.</p>
 </dd>
 <dt><em>delta</em></dt>
-<dd><p class="first last">timestep</p>
+<dd><p class="first last">timestep to use. If set will override any time information contained in the
+passed <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep" title="MDAnalysis.coordinates.xdrfile.XTC.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects; otherwise that will be used. If in the 
+latter case <tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt> is unavailable the TrjWriter will default
+to setting the trajectory time at 1 MDAnalysis unit (typically 1ps) per step.</p>
 </dd>
 <dt><em>precision</em></dt>
 <dd><p class="first last">accuracy for lossy XTC format [1000]</p>
 </dd>
 <dt><em>convert_units</em></dt>
 <dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: units are converted to the MDAnalysis base format; <tt class="docutils literal"><span class="pre">None</span></tt> selects
-the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> [&#8216;convert_gromacs_lengths&#8217;].
+the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> [&#8216;convert_lengths&#8217;].
 (see <a class="reference internal" href="../core/init.html#flags-label"><em>Flags</em></a>)</p>
 </dd>
 </dl>
@@ -461,6 +521,11 @@ the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAn
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8.0: </span>The TRR writer is now able to write TRRs without coordnates/velocities/forces,
+depending on the properties available in the <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep" title="MDAnalysis.coordinates.xdrfile.XTC.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects passed to
+<tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt>.</p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.XTC.XTCWriter.close_trajectory">
 <tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.XTC.XTCWriter.close_trajectory" title="Permalink to this definition">¶</a></dt>
@@ -624,7 +689,7 @@ be written to trajectory file</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.XTC.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/XTC.html#Timestep"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.XTC.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/XTC.html#Timestep"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Timestep for a Gromacs XTC trajectory.</p>
 </dd></dl>
 
@@ -657,7 +722,7 @@ equal to number of atoms in the Universe.</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.XTC.</tt><tt class="descname">XTCWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=1.0</em>, <em>precision=1000.0</em>, <em>remarks=None</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/XTC.html#XTCWriter"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.XTC.</tt><tt class="descname">XTCWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=None</em>, <em>precision=1000.0</em>, <em>remarks=None</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/XTC.html#XTCWriter"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Write a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> XTC trajectory.</p>
 <p>Create a new TrjWriter</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -676,20 +741,23 @@ equal to number of atoms in the Universe.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>start</em></dt>
-<dd><p class="first last">starting timestep</p>
+<dd><p class="first last">starting timestep; only used when <em>delta</em> is set.</p>
 </dd>
 <dt><em>step</em></dt>
-<dd><p class="first last">skip between subsequent timesteps</p>
+<dd><p class="first last">skip between subsequent timesteps; only used when <em>delta</em> is set.</p>
 </dd>
 <dt><em>delta</em></dt>
-<dd><p class="first last">timestep</p>
+<dd><p class="first last">timestep to use. If set will override any time information contained in the
+passed <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep" title="MDAnalysis.coordinates.xdrfile.XTC.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects; otherwise that will be used. If in the 
+latter case <tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt> is unavailable the TrjWriter will default
+to setting the trajectory time at 1 MDAnalysis unit (typically 1ps) per step.</p>
 </dd>
 <dt><em>precision</em></dt>
 <dd><p class="first last">accuracy for lossy XTC format [1000]</p>
 </dd>
 <dt><em>convert_units</em></dt>
 <dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: units are converted to the MDAnalysis base format; <tt class="docutils literal"><span class="pre">None</span></tt> selects
-the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> [&#8216;convert_gromacs_lengths&#8217;].
+the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> [&#8216;convert_lengths&#8217;].
 (see <a class="reference internal" href="../core/init.html#flags-label"><em>Flags</em></a>)</p>
 </dd>
 </dl>
@@ -697,6 +765,11 @@ the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAn
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8.0: </span>The TRR writer is now able to write TRRs without coordnates/velocities/forces,
+depending on the properties available in the <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.XTC.Timestep" title="MDAnalysis.coordinates.xdrfile.XTC.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects passed to
+<tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt>.</p>
+</div>
 </dd></dl>
 
 </div>
@@ -723,14 +796,16 @@ the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAn
         <li class="right" >
           <a href="TRR.html" title="5.13. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
