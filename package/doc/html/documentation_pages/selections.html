@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. Selection Commands &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>2. Selection Commands &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../index.html" />
     <link rel="next" title="3. Analysis modules" href="analysis_modules.html" />
     <link rel="prev" title="1. Overview over MDAnalysis" href="overview.html" /> 
   </head>
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="overview.html" title="1. Overview over MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -203,20 +203,20 @@ that belong to a protein, but are not in a lysine or alanine residue</dd>
 e.g. <tt class="docutils literal"><span class="pre">around</span> <span class="pre">3.5</span> <span class="pre">protein</span></tt> selects all atoms not belonging to protein
 that are within 3.5 Angstroms from the protein</dd>
 <dt>sphlayer <em>innerRadius</em> <em>externalRadius</em> <em>selection</em></dt>
-<dd>selects all atoms within a sphere layer centered in the center of geometry (COG) of a given selection,
-e.g. <tt class="docutils literal"><span class="pre">inside</span> <span class="pre">2.4</span> <span class="pre">6.0</span> <span class="pre">(</span> <span class="pre">protein</span> <span class="pre">and</span> <span class="pre">(</span> <span class="pre">resid</span> <span class="pre">130</span> <span class="pre">or</span> <span class="pre">resid</span> <span class="pre">80</span> <span class="pre">)</span> <span class="pre">)</span></tt> selects the center of geometry of protein, resid 130, resid 80
+<dd>selects all atoms within a spherical layer centered in the center of geometry (COG) of a given selection,
+e.g. <tt class="docutils literal"><span class="pre">sphlayer</span> <span class="pre">2.4</span> <span class="pre">6.0</span> <span class="pre">(</span> <span class="pre">protein</span> <span class="pre">and</span> <span class="pre">(</span> <span class="pre">resid</span> <span class="pre">130</span> <span class="pre">or</span> <span class="pre">resid</span> <span class="pre">80</span> <span class="pre">)</span> <span class="pre">)</span></tt> selects the center of geometry of protein, resid 130, resid 80
 and creates a spherical layer of inner radius 2.4 and external radius 6.0 around the COG.</dd>
 <dt>sphzone <em>externalRadius</em> <em>selection</em></dt>
-<dd>selects all atoms within a sphere zone centered in the center of geometry (COG) of a given selection,
-e.g. <tt class="docutils literal"><span class="pre">inside</span> <span class="pre">6.0</span> <span class="pre">(</span> <span class="pre">protein</span> <span class="pre">and</span> <span class="pre">(</span> <span class="pre">resid</span> <span class="pre">130</span> <span class="pre">or</span> <span class="pre">resid</span> <span class="pre">80</span> <span class="pre">)</span> <span class="pre">)</span></tt> selects the center of geometry of protein, resid 130,
+<dd>selects all atoms within a spherical zone centered in the center of geometry (COG) of a given selection,
+e.g. <tt class="docutils literal"><span class="pre">sphzone</span> <span class="pre">6.0</span> <span class="pre">(</span> <span class="pre">protein</span> <span class="pre">and</span> <span class="pre">(</span> <span class="pre">resid</span> <span class="pre">130</span> <span class="pre">or</span> <span class="pre">resid</span> <span class="pre">80</span> <span class="pre">)</span> <span class="pre">)</span></tt> selects the center of geometry of protein, resid 130,
 resid 80 and creates a sphere of radius 6.0 around the COG.</dd>
 <dt>cylayer <em>innerRadius</em> <em>externalRadius</em> <em>zMax</em> <em>zMin</em> <em>selection</em></dt>
 <dd>selects all atoms within a cylindric layer centered in the center of geometry (COG) of a given selection,
-e.g. <tt class="docutils literal"><span class="pre">clayer</span> <span class="pre">5</span> <span class="pre">10</span> <span class="pre">10</span> <span class="pre">-10</span> <span class="pre">protein</span></tt> selects the center of geometry of protein,
+e.g. <tt class="docutils literal"><span class="pre">cylayer</span> <span class="pre">5</span> <span class="pre">10</span> <span class="pre">10</span> <span class="pre">-10</span> <span class="pre">protein</span></tt> selects the center of geometry of protein,
 and creates a cylindrical layer of inner radius 5, external radius 10, maximum z value 10 and minimum z value -10 around the COG.</dd>
 <dt>cyzone <em>externalRadius</em> <em>zMax</em> <em>zMin</em> <em>selection</em></dt>
 <dd>selects all atoms within a cylindric zone centered in the center of geometry (COG) of a given selection,
-e.g. <tt class="docutils literal"><span class="pre">clayer</span> <span class="pre">15</span> <span class="pre">4</span> <span class="pre">-8</span> <span class="pre">protein</span> <span class="pre">and</span> <span class="pre">resid</span> <span class="pre">42</span></tt> selects the center of geometry of protein and resid 42,
+e.g. <tt class="docutils literal"><span class="pre">cyzone</span> <span class="pre">15</span> <span class="pre">4</span> <span class="pre">-8</span> <span class="pre">protein</span> <span class="pre">and</span> <span class="pre">resid</span> <span class="pre">42</span></tt> selects the center of geometry of protein and resid 42,
 and creates a cylinder of external radius 15, maximum z value 4 and minimum z value -8 around the COG.</dd>
 <dt>point <em>x</em> <em>y</em> <em>z</em>  <em>distance</em></dt>
 <dd>selects all atoms within a cutoff of a point in space, make sure
@@ -441,13 +441,15 @@ might expect:</p>
         <li class="right" >
           <a href="overview.html" title="1. Overview over MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.5. Fast distance array computation — MDAnalysis.core.distances &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>7.5. Fast distance array computation — MDAnalysis.core.distances &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations" href="transformations.html" />
     <link rel="prev" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries" href="Timeseries.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="Timeseries.html" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -133,6 +133,7 @@ up calculations.</p>
 <dd><p>Calculate all distances between a pair of atoms.  <em>atom1</em> and <em>atom2</em> are both
 arrays of coordinates, where atom1[i] and atom2[i] represent a bond.  The 
 optional argument <em>box</em> applies minimum image convention if supplied.</p>
+<p><em>box</em> can be either orthogonal or triclinic</p>
 <p>If a 1D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with <tt class="docutils literal"><span class="pre">len(atom1)</span></tt> elements is
 provided in <em>result</em> then this preallocated array is filled. This can speed
 up calculations.</p>
@@ -157,6 +158,13 @@ Returns the angle in radians.</p>
 <p>If a 1D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with <tt class="docutils literal"><span class="pre">len(atom1)</span></tt> elements is
 provided in <em>result</em> then this preallocated array is filled. This can speed
 up calculations.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.distances.applyPBC">
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">applyPBC</tt><big>(</big><em>coordinates</em>, <em>box</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.applyPBC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shift a set of coordinates to lie within the primary unit cell</p>
+<p>Works with both orthogonal and triclinic boxes</p>
 </dd></dl>
 
 </div>
@@ -186,14 +194,16 @@ up calculations.</p>
         <li class="right" >
           <a href="Timeseries.html" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

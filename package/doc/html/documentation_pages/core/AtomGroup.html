@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
     <link rel="prev" title="7.1. Core functions of MDAnalysis" href="init.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -734,11 +734,32 @@ within this AtomGroup.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.asphericity">
-<tt class="descname">asphericity</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.asphericity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.asphericity" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">asphericity</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.asphericity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.asphericity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Asphericity.</p>
 <p>See <a class="reference internal" href="#dima2004" id="id1">[Dima2004]</a> for background information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>pbc</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: Move all atoms within primary unit cell before calculation [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> flag <em>use_pbc</em> when set to <tt class="docutils literal"><span class="pre">True</span></tt> allows the <em>pbc</em>
+flag to be used by default.</p>
+</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
 </div>
 </dd></dl>
 
@@ -755,12 +776,30 @@ really only need a list of individual <a class="reference internal" href="#MDAna
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.bbox">
-<tt class="descname">bbox</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.bbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bbox" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">bbox</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.bbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bbox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bounding box of the selection.</p>
 <p>The lengths A,B,C of the orthorhombic enclosing box are</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">L</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span>
 <span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">C</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>pbc</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: Move all atoms within the primary unit cell before calculation [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> flag <em>use_pbc</em> when set to <tt class="docutils literal"><span class="pre">True</span></tt> allows the <em>pbc</em>
+flag to be used by default.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -773,22 +812,20 @@ really only need a list of individual <a class="reference internal" href="#MDAna
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.2.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.bfactors">
 <tt class="descname">bfactors</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.bfactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bfactors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Crystallographic B-factors (from PDB) in A**2.</p>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.8: </span>This managed attribute will become a method in 0.8 in order to
-provide a unified interface to querying properties:
-<a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.bfactors" title="MDAnalysis.core.AtomGroup.AtomGroup.bfactors"><tt class="xref py py-attr docutils literal"><span class="pre">AtomGroup.bfactors</span></tt></a> will become <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.bfactors" title="MDAnalysis.core.AtomGroup.AtomGroup.bfactors"><tt class="xref py py-meth docutils literal"><span class="pre">AtomGroup.bfactors()</span></tt></a></p>
-</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.bond">
-<tt class="descname">bond</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.bond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bond" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">bond</tt><big>(</big><em>pbc=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.bond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bond" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the distance between atoms in a 2-atom group.</p>
 <p>Distance between atoms 0 and 1:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="mi">0</span><span class="o">---</span><span class="mi">1</span>
@@ -800,8 +837,24 @@ provide a unified interface to querying properties:
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>; anything else will raise a
 <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>.</p>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>pbc</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: Account for minimum image convention when calculating [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.3.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
 </div>
 </dd></dl>
 
@@ -817,9 +870,27 @@ within this AtomGroup.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.bsphere">
-<tt class="descname">bsphere</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.bsphere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bsphere" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">bsphere</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.bsphere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.bsphere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bounding sphere of the selection.</p>
 <p>The sphere is calculated relative to the centre of geometry.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>pbc</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: Move all atoms within primary unit cell before calculation [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> flag <em>use_pbc</em> when set to <tt class="docutils literal"><span class="pre">True</span></tt> allows the <em>pbc</em>
+flag to be used by default.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -831,24 +902,90 @@ within this AtomGroup.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.3.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry">
-<tt class="descname">centerOfGeometry</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.centerOfGeometry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">centerOfGeometry</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.centerOfGeometry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry (also known as centroid) of the selection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>pbc</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: Move all atoms within the primary unit cell before calculation [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> flag <em>use_pbc</em> when set to <tt class="docutils literal"><span class="pre">True</span></tt> allows the <em>pbc</em>
+flag to be used by default.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass">
-<tt class="descname">centerOfMass</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.centerOfMass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">centerOfMass</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.centerOfMass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of mass of the selection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>pbc</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: Move all atoms within the primary unit cell before calculation [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> flag <em>use_pbc</em> when set to <tt class="docutils literal"><span class="pre">True</span></tt> allows the <em>pbc</em>
+flag to be used by default.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.centroid">
-<tt class="descname">centroid</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.centroid" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">centroid</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.centroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry (also known as centroid) of the selection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>pbc</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: Move all atoms within the primary unit cell before calculation [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> flag <em>use_pbc</em> when set to <tt class="docutils literal"><span class="pre">True</span></tt> allows the <em>pbc</em>
+flag to be used by default.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1050,8 +1187,29 @@ selection of atoms and thus the user input!</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.momentOfInertia">
-<tt class="descname">momentOfInertia</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.momentOfInertia"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.momentOfInertia" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">momentOfInertia</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.momentOfInertia"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.momentOfInertia" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tensor of inertia as 3x3 NumPy array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>pbc</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: Move all atoms within the primary unit cell before calculation [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> flag <em>use_pbc</em> when set to <tt class="docutils literal"><span class="pre">True</span></tt> allows the <em>pbc</em>
+flag to be used by default.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1067,6 +1225,9 @@ selection of atoms and thus the user input!</p>
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.numberOfAngleTypes">
 <tt class="descname">numberOfAngleTypes</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.numberOfAngleTypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.numberOfAngleTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of different angle types in this AtomGroup</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1079,6 +1240,9 @@ selection of atoms and thus the user input!</p>
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.numberOfBondTypes">
 <tt class="descname">numberOfBondTypes</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.numberOfBondTypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.numberOfBondTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of different bond types in this AtomGroup</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1097,34 +1261,48 @@ selection of atoms and thus the user input!</p>
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.numberOfTorsionTypes">
 <tt class="descname">numberOfTorsionTypes</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.numberOfTorsionTypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.numberOfTorsionTypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of different torsions types in this AtomGroup</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.AtomGroup.AtomGroup.packintobox">
-<tt class="descname">packintobox</tt><big>(</big><em>box=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.packintobox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.packintobox" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.packIntoBox">
+<tt class="descname">packIntoBox</tt><big>(</big><em>box=None</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.packIntoBox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.packIntoBox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shift all atoms in this group to be within the primary unit cell.</p>
-<blockquote>
-<div><p>AtomGroup.packintobox([box])</p>
+<p>AtomGroup.packintobox([box, [inplace=True]])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>box</em></dt>
+<dd><p class="first last">Unit cell to move atoms inside of.</p>
+</dd>
+<dt><em>inplace</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: Change coordinates in place and return
+<tt class="docutils literal"><span class="pre">False</span></tt>: Only return the coordinates</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <p>All atoms will be moved so that they lie between 0 and
 boxlength <span class="math">\(L_i\)</span> in all dimensions, i.e. the lower left
 corner of the simulation box is taken to be at (0,0,0):</p>
 <div class="math">
-\[x_i' = x_i - \left\lfloor \]</div>
-</div></blockquote>
-<p>rac{x_i}{L_i} 
-ight
-floor</p>
-<blockquote>
-<div><p>The default is to take unit cell information from the
+\[x_i' = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor\]</div>
+<p>The default is to take unit cell information from the
 underlying <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>
 instance. The optional argument <em>box</em> can be used to provide
 alternative unit cell information (in the MDAnalysis standard
 format <tt class="docutils literal"><span class="pre">[Lx,</span> <span class="pre">Ly,</span> <span class="pre">Lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></tt>).</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Currently only works with orthogonal boxes. See <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=136">Issue 136</a></p>
+<p>Works with either orthogonal or triclinic box types.</p>
+<p>By default the coordinates are changed in place and returned</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
 </div>
-</div></blockquote>
 </dd></dl>
 
 <dl class="attribute">
@@ -1144,11 +1322,29 @@ will move all particles to the origin).</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.principalAxes">
-<tt class="descname">principalAxes</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.principalAxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.principalAxes" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">principalAxes</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.principalAxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.principalAxes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the principal axes from the moment of inertia.</p>
 <p>e1,e2,e3 = AtomGroup.principalAxes()</p>
 <p>The eigenvectors are sorted by eigenvalue, i.e. the first one
 corresponds to the highest eigenvalue and is thus the first principal axes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>pbc</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: Move all atoms within primary unit cell before calculation</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> flag <em>use_pbc</em> when set to <tt class="docutils literal"><span class="pre">True</span></tt> allows the <em>pbc</em>
+flag to be used by default.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1158,6 +1354,9 @@ and <tt class="docutils literal"><span class="pre">v[2]</span></tt> as third eig
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1168,8 +1367,29 @@ and <tt class="docutils literal"><span class="pre">v[2]</span></tt> as third eig
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.radiusOfGyration">
-<tt class="descname">radiusOfGyration</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.radiusOfGyration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.radiusOfGyration" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">radiusOfGyration</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.radiusOfGyration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.radiusOfGyration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Radius of gyration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>pbc</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: Move all atoms within the primary unit cell before calculation [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> flag <em>use_pbc</em> when set to <tt class="docutils literal"><span class="pre">True</span></tt> allows the <em>pbc</em>
+flag to be used by default.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1215,9 +1435,10 @@ this group.</p>
 <tt class="descname">rotate</tt><big>(</big><em>R</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.rotate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply a rotation matrix <em>R</em> to the selection&#8217;s coordinates.</p>
 <p>AtomGroup.rotate(R)</p>
-<p><em>R</em> is a 3x3 orthogonal matrix that transforms x &#8211;&gt; x&#8217;:</p>
-<blockquote>
-<div>x&#8217; = R.x</div></blockquote>
+<p><span class="math">\(\mathsf{R}\)</span> is a 3x3 orthogonal matrix that transforms a vector
+<span class="math">\(\mathbf{x} \rightarrow \mathbf{x}'\)</span>:</p>
+<div class="math">
+\[\mathbf{x}' = \mathsf{R}\mathbf{x}\]</div>
 </dd></dl>
 
 <dl class="method">
@@ -1225,11 +1446,12 @@ this group.</p>
 <tt class="descname">rotateby</tt><big>(</big><em>angle</em>, <em>axis</em>, <em>point=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.rotateby"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.rotateby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply a rotation to the selection&#8217;s coordinates.</p>
 <p>AtomGroup.rotateby(angle,axis[,point])</p>
-<p>The transformation from current coordinates x to new coordinates x&#8217; is</p>
-<blockquote>
-<div>x&#8217; = R.(x-p) + p</div></blockquote>
-<p>where R is the rotation by <em>angle</em> around the <em>axis</em> going through
-<em>point</em> p.</p>
+<p>The transformation from current coordinates <span class="math">\(\mathbf{x}\)</span>
+to new coordinates <span class="math">\(\mathbf{x}'\)</span> is</p>
+<div class="math">
+\[\mathbf{x}' = \mathsf{R}\,(\mathbf{x}-\mathbf{p}) + \mathbf{p}\]</div>
+<p>where <span class="math">\(\mathsf{R}\)</span> is the rotation by <em>angle</em> around the
+<em>axis</em> going through <em>point</em> <span class="math">\(\mathbf{p}\)</span>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1253,8 +1475,8 @@ case its <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGrou
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The 4x4 matrix which consists of the rotation matrix M[:3,:3]
-and the translation vectort M[:3,3].</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The 4x4 matrix which consists of the rotation matrix <tt class="docutils literal"><span class="pre">M[:3,:3]</span></tt>
+and the translation vector <tt class="docutils literal"><span class="pre">M[:3,3]</span></tt>.</p>
 </td>
 </tr>
 </tbody>
@@ -1610,11 +1832,32 @@ attribute access.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.shapeParameter">
-<tt class="descname">shapeParameter</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.shapeParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.shapeParameter" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">shapeParameter</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.shapeParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.shapeParameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shape parameter.</p>
 <p>See <a class="reference internal" href="#dima2004" id="id2">[Dima2004]</a> for background information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>pbc</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: Move all atoms within the primary unit cell before calculation [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> flag <em>use_pbc</em> when set to <tt class="docutils literal"><span class="pre">True</span></tt> allows the <em>pbc</em>
+flag to be used by default.</p>
+</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
 </div>
 </dd></dl>
 
@@ -1645,10 +1888,11 @@ within this AtomGroup.</p>
 <tt class="descname">transform</tt><big>(</big><em>M</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply homogenous transformation matrix <em>M</em> to the coordinates.</p>
 <p>The matrix <em>M</em> must be a 4x4 matrix, with the rotation in
-<tt class="docutils literal"><span class="pre">M[:3,:3]</span></tt> and the translation in <tt class="docutils literal"><span class="pre">M[:3,3]</span></tt>.</p>
-<p>The rotation is applied before the translation:</p>
-<div class="highlight-python"><pre>x' = R.x + t</pre>
-</div>
+<cite>R = `M[:3,:3]`</cite> and the translation in <tt class="docutils literal"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">M[:3,3]</span></tt>.</p>
+<p>The rotation <span class="math">\(\mathsl{R}\)</span> is applied before the
+translation <span class="math">\(\mathbf{t}\)</span>:</p>
+<div class="math">
+\[\mathbf{x}' = \mathsl{R}\mathbf{x} + \mathbf{t}\]</div>
 </dd></dl>
 
 <dl class="method">
@@ -1660,9 +1904,9 @@ within this AtomGroup.</p>
 </pre></div>
 </div>
 <p>The method applies a translation to the AtomGroup from current
-coordinates x to new coordinates x&#8217;:</p>
-<div class="highlight-python"><pre>x' = x + t</pre>
-</div>
+coordinates <span class="math">\(\mathbf{x}\)</span> to new coordinates <span class="math">\(\mathbf{x}'\)</span>:</p>
+<div class="math">
+\[\mathbf{x}' = \mathbf{x} + \mathbf{t}\]</div>
 <p>The translation can also be given as a tuple of two MDAnalysis objects
 such as two selections <cite>(selA, selB)</cite>, i.e. two <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>, or
 two <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>. The translation vector is computed as the
@@ -1693,9 +1937,9 @@ changes).</p>
 <dd><p>The universe to which the atoms belong (read-only).</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.velocities">
-<tt class="descname">velocities</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.velocities" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">velocities</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>NumPy array of the velocities of the atoms in the group.</p>
 <p>If the trajectory does not contain velocity information then a
 <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt> is raised.</p>
@@ -1705,6 +1949,9 @@ changes).</p>
 <div class="deprecated">
 <p><span class="versionmodified">Deprecated since version 0.7.6: </span>In 0.8 this will become an attribute! You can already use <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.get_velocities" title="MDAnalysis.core.AtomGroup.AtomGroup.get_velocities"><tt class="xref py py-meth docutils literal"><span class="pre">get_velocities()</span></tt></a>
 and <a class="reference internal" href="#MDAnalysis.core.AtomGroup.AtomGroup.set_velocities" title="MDAnalysis.core.AtomGroup.AtomGroup.set_velocities"><tt class="xref py py-meth docutils literal"><span class="pre">set_velocities()</span></tt></a>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Became an attribute.</p>
 </div>
 </dd></dl>
 
@@ -1730,14 +1977,15 @@ the filename extension [PDB]</p>
 &#8216;trjname&#8217; and &#8216;frame&#8217; [&#8220;%(trjname)s_%(frame)d&#8221;]</p>
 </dd>
 <dt><em>bonds</em></dt>
-<dd><p class="first">how to handle bond information, especially relevant for PDBs
-[&#8220;conect&#8221;] - write only the CONECT records defined in the original
-file
-&#8220;all&#8221; - write out all bonds, both the original defined and those</p>
-<blockquote>
-<div><p>guessed by MDAnalysis</p>
-</div></blockquote>
-<p class="last">None  - do not write out bonds</p>
+<dd><p class="first">how to handle bond information, especially relevant for PDBs;
+default is <tt class="docutils literal"><span class="pre">&quot;conect&quot;</span></tt>.</p>
+<ul class="last simple">
+<li><tt class="docutils literal"><span class="pre">&quot;conect&quot;</span></tt>: write only the CONECT records defined in the original
+file</li>
+<li><tt class="docutils literal"><span class="pre">&quot;all&quot;</span></tt>: write out all bonds, both the original defined and those
+guessed by MDAnalysis</li>
+<li><tt class="docutils literal"><span class="pre">None</span></tt>: do not write out bonds</li>
+</ul>
 </dd>
 </dl>
 </td>
@@ -1882,15 +2130,26 @@ PQR file with the
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Atom.pos">
 <tt class="descname">pos</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Atom.pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>deprecated, use position,
-get the Current cartesian coordinates of the atom.</p>
+<dd><p>coordinates of the atom</p>
+<p>Get the current cartesian coordinates of the atom (read-only).</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.8: </span>use <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom.position" title="MDAnalysis.core.AtomGroup.Atom.position"><tt class="xref py py-attr docutils literal"><span class="pre">position</span></tt></a></p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Atom.position">
 <tt class="descname">position</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Atom.position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.position" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the current cartesian coordinates of the atom.
-&#64;return: a numpy 1x3 array</p>
+<dd><p>coordinates of the atom</p>
+<p>Get the current cartesian coordinates of the atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a numpy 1x3 array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -2358,14 +2617,16 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

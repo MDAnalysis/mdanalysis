@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.base &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>MDAnalysis.coordinates.base &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -201,7 +201,7 @@
 
 <span class="sd">         iterate of the coordinates, atom by atom</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">arg</span>
@@ -256,8 +256,43 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__deepcopy__</span><span class="p">()</span></div>
     <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># Is this the best way?</span>
-        <span class="k">return</span> <span class="n">Timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Timestep.copy_slice"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.copy_slice">[docs]</a>    <span class="k">def</span> <span class="nf">copy_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make a new Timestep containing a subset of the original Timestep.</span>
+<span class="sd">     </span>
+<span class="sd">        ``ts.copy_slice(slice(start, stop, skip))``</span>
+<span class="sd">        ``ts.copy_slice([list of indices])``</span>
+
+<span class="sd">        :Returns: A Timestep object of the same type containing all header information and all atom information</span>
+<span class="sd">                  relevent to the selection.</span>
+
+<span class="sd">        .. Note:: The selection must be a 0 based slice or array of the atom indices in this Timestep </span>
+
+<span class="sd">        .. versionadded:: 0.8</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Detect the size of the Timestep by doing a dummy slice</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_numatoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">[</span><span class="n">sel</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Selection type must be compatible with slicing the coordinates&quot;</span><span class="p">)</span>
+        <span class="n">new_TS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="n">new_numatoms</span><span class="p">)</span> <span class="c"># Make a mostly empty TS of same type of reduced size</span>
+
+        <span class="c"># List of attributes which will require slicing if present</span>
+        <span class="n">per_atom</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;_x&#39;</span><span class="p">,</span> <span class="s">&#39;_y&#39;</span><span class="p">,</span> <span class="s">&#39;_z&#39;</span><span class="p">,</span> <span class="s">&#39;_pos&#39;</span><span class="p">,</span> <span class="s">&#39;_velocities&#39;</span><span class="p">,</span> <span class="s">&#39;_forces&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;_tpos&#39;</span><span class="p">,</span><span class="s">&#39;_tvelocities&#39;</span><span class="p">,</span><span class="s">&#39;_tforces&#39;</span><span class="p">]</span>
+            
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">per_atom</span><span class="p">:</span> <span class="c"># Header type information</span>
+                <span class="n">new_TS</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c"># Per atom information, ie. anything that can be sliced</span>
+                <span class="n">new_TS</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">attr</span><span class="p">][</span><span class="n">sel</span><span class="p">])</span>
+
+        <span class="n">new_TS</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">new_numatoms</span> <span class="c"># This will have been overwritten, so fix here</span>
+
+        <span class="k">return</span> <span class="n">new_TS</span>
+
+</div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Timestep.dimensions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)</span>
@@ -994,15 +1029,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

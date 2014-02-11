@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.TRJ &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>MDAnalysis.coordinates.TRJ &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -232,7 +232,7 @@
 <span class="sd">           velocities is allocated);</span>
 <span class="sd">        3. a :class:`numpy.ndarray` of shape ``(numatoms, 3)`` (for positions only) or</span>
 <span class="sd">           ``(numatoms, 6)`` (for positions and velocities): ``positions = arg[:,:3]``,</span>
-<span class="sd">           ``velocities = arg[:3:6]``.</span>
+<span class="sd">           ``velocities = arg[:,3:6]``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># based on TRR Timestep (MDAnalysis.coordinates.xdrfile.TRR.Timestep)</span>
@@ -263,7 +263,7 @@
                                 <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_velocities</span><span class="p">)</span>
                         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                                 <span class="k">pass</span>
-                        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;step&#39;</span><span class="p">,</span> <span class="s">&#39;time&#39;</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;step&#39;</span><span class="p">,</span> <span class="s">&#39;time&#39;</span><span class="p">,</span> <span class="s">&#39;status&#39;</span><span class="p">):</span>
                                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
                                         <span class="bp">self</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">__getattribute__</span><span class="p">(</span><span class="n">attr</span><span class="p">))</span>
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
@@ -600,7 +600,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
                 <span class="n">convert_units</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;convert_units&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                        <span class="n">convert_units</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_gromacs_lengths&#39;</span><span class="p">]</span>
+                        <span class="n">convert_units</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>  <span class="c"># convert length and time to base units</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="o">=</span> <span class="n">netcdf</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -808,7 +808,7 @@
 <span class="sd">                    timestep</span>
 <span class="sd">                  *convert_units*</span>
 <span class="sd">                    ``True``: units are converted to the AMBER base format; ``None`` selects</span>
-<span class="sd">                    the value of :data:`MDAnalysis.core.flags` [&#39;convert_gromacs_lengths&#39;].</span>
+<span class="sd">                    the value of :data:`MDAnalysis.core.flags` [&#39;convert_lengths&#39;].</span>
 <span class="sd">                    (see :ref:`flags-label`)</span>
 <span class="sd">                  *zlib*</span>
 <span class="sd">                    compress data [``False``]</span>
@@ -820,7 +820,7 @@
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;NCDFWriter: no atoms in output trajectory&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">numatoms</span>
                 <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                        <span class="n">convert_units</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_gromacs_lengths&#39;</span><span class="p">]</span>
+                        <span class="n">convert_units</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>    <span class="c"># convert length and time to base units on the fly?</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>    <span class="c"># do we use those?</span>
@@ -1013,15 +1013,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

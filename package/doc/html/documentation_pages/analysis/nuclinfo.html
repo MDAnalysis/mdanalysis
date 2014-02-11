@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.3.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>3.3.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.3.2. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.x3dna" href="x3dna.html" />
     <link rel="prev" title="3.2.2. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="leaflet.html" title="3.2.2. Leaflet identification — MDAnalysis.analysis.leaflet"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -563,22 +563,17 @@ using the CP method</p>
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.hydroxyl">
 <tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">hydroxyl</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#hydroxyl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.hydroxyl" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>2-hydroxyl dihedral. Useful only for RNA calculations. </dt>
-<dd><table class="first docutils field-list" frame="void" rules="none">
+<dd><p>2-hydroxyl dihedral. Useful only for RNA calculations.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body">This dihedral calculation will only work if using atom names</td>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><p class="first">This dihedral calculation will only work if using atom names 
+as documented by charmm force field parameters.</p>
+</td>
 </tr>
-</tbody>
-</table>
-<p>as documented by charmm force field parameters.</p>
-<table class="last docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em> </dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
 </dd>
@@ -593,10 +588,55 @@ using the CP method</p>
 </tr>
 </tbody>
 </table>
-</dd>
-</dl>
+</div></blockquote>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.nuclinfo.pseudo_dihe_baseflip">
+<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">pseudo_dihe_baseflip</tt><big>(</big><em>universe</em>, <em>bp1</em>, <em>bp2</em>, <em>i</em>, <em>seg1='SYSTEM'</em>, <em>seg2='SYSTEM'</em>, <em>seg3='SYSTEM'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#pseudo_dihe_baseflip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.pseudo_dihe_baseflip" title="Permalink to this definition">¶</a></dt>
+<dd><p>pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping</p>
+<blockquote>
+<div><p>The dihedral is computed based on position atoms for resid <em>i</em></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><p class="first">This dihedral calculation will only work if using atom names as documented by charmm force field parameters.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>universe</em> </dt>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+</dd>
+<dt><em>segid1</em></dt>
+<dd><p class="first last">segid of resid base pairing with bp2</p>
+</dd>
+<dt><em>bp1</em></dt>
+<dd><p class="first last">resid that base pairs with bp2</p>
+</dd>
+<dt><em>segid2</em></dt>
+<dd><p class="first last">segid same as that of segid of flipping resid</p>
+</dd>
+<dt><em>bp2</em></dt>
+<dd><p class="first last">resid below the base that flips</p>
+</dd>
+<dt><em>segid3</em></dt>
+<dd><p class="first last">segid of resid that flips</p>
+</dd>
+<dt><em>i</em></dt>
+<dd><p class="first last">resid of the base that flips</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.0.</span></p>
 </div>
 </dd></dl>
 
@@ -624,14 +664,16 @@ using the CP method</p>
         <li class="right" >
           <a href="leaflet.html" title="3.2.2. Leaflet identification — MDAnalysis.analysis.leaflet"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

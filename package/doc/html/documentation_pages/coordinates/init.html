@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.2. Base classes — MDAnalysis.coordinates.base" href="base.html" />
     <link rel="prev" title="5. Coordinates modules" href="../coordinates_modules.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="../coordinates_modules.html" title="5. Coordinates modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -309,7 +309,7 @@ Module <a class="reference internal" href="DMS.html#module-MDAnalysis.coordinate
 </tr>
 <tr class="row-even"><td>IBIsCO/YASP</td>
 <td>trz</td>
-<td>r</td>
+<td>r/w</td>
 <td>Binary IBIsCO or YASP trajectories Module
 <a class="reference internal" href="TRZ.html#module-MDAnalysis.coordinates.TRZ" title="MDAnalysis.coordinates.TRZ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></td>
 </tr>
@@ -776,7 +776,7 @@ Signature:</p>
 
 <dl class="data">
 <dt id="MDAnalysis.coordinates.__init__._trajectory_writers">
-<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_trajectory_writers</tt><em class="property"> = {'LAMMPS': &lt;class 'MDAnalysis.coordinates.LAMMPS.DCDWriter'&gt;, 'DCD': &lt;class 'MDAnalysis.coordinates.DCD.DCDWriter'&gt;, 'XTC': &lt;class 'MDAnalysis.coordinates.xdrfile.XTC.XTCWriter'&gt;, 'TRR': &lt;class 'MDAnalysis.coordinates.xdrfile.TRR.TRRWriter'&gt;, 'PDB': &lt;class 'MDAnalysis.coordinates.PDB.MultiPDBWriter'&gt;, 'NCDF': &lt;class 'MDAnalysis.coordinates.TRJ.NCDFWriter'&gt;}</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._trajectory_writers" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_trajectory_writers</tt><em class="property"> = {'LAMMPS': &lt;class 'MDAnalysis.coordinates.LAMMPS.DCDWriter'&gt;, 'DCD': &lt;class 'MDAnalysis.coordinates.DCD.DCDWriter'&gt;, 'TRZ': &lt;class 'MDAnalysis.coordinates.TRZ.TRZWriter'&gt;, 'XTC': &lt;class 'MDAnalysis.coordinates.xdrfile.XTC.XTCWriter'&gt;, 'TRR': &lt;class 'MDAnalysis.coordinates.xdrfile.TRR.TRRWriter'&gt;, 'PDB': &lt;class 'MDAnalysis.coordinates.PDB.MultiPDBWriter'&gt;, 'NCDF': &lt;class 'MDAnalysis.coordinates.TRJ.NCDFWriter'&gt;}</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._trajectory_writers" title="Permalink to this definition">¶</a></dt>
 <dd><p>trajectory writers: export frames, typically only saving coordinates
 Signature:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">W</span> <span class="o">=</span> <span class="n">TrajectoryWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">numatoms</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -812,14 +812,16 @@ Signature:</p>
         <li class="right" >
           <a href="../coordinates_modules.html" title="5. Coordinates modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

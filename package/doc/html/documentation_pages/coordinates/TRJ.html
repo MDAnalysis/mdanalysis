@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.12. AMBER trajectories — MDAnalysis.coordinates.TRJ &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>5.12. AMBER trajectories — MDAnalysis.coordinates.TRJ &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.13. Gromacs TRR file IO — MDAnalysis.coordinates.TRR" href="TRR.html" />
     <link rel="prev" title="5.11. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="PQR.html" title="5.11. PQR file format — MDAnalysis.coordinates.PQR"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -130,7 +130,7 @@ does not contain velocities but <em>velocities</em> = <tt class="docutils litera
 velocities is allocated);</li>
 <li>a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <tt class="docutils literal"><span class="pre">(numatoms,</span> <span class="pre">3)</span></tt> (for positions only) or
 <tt class="docutils literal"><span class="pre">(numatoms,</span> <span class="pre">6)</span></tt> (for positions and velocities): <tt class="docutils literal"><span class="pre">positions</span> <span class="pre">=</span> <span class="pre">arg[:,:3]</span></tt>,
-<tt class="docutils literal"><span class="pre">velocities</span> <span class="pre">=</span> <span class="pre">arg[:3:6]</span></tt>.</li>
+<tt class="docutils literal"><span class="pre">velocities</span> <span class="pre">=</span> <span class="pre">arg[:,3:6]</span></tt>.</li>
 </ol>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._pos">
@@ -368,7 +368,7 @@ velocities).</p>
 </dd>
 <dt><em>convert_units</em></dt>
 <dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: units are converted to the AMBER base format; <tt class="docutils literal"><span class="pre">None</span></tt> selects
-the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> [&#8216;convert_gromacs_lengths&#8217;].
+the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> [&#8216;convert_lengths&#8217;].
 (see <a class="reference internal" href="../core/init.html#flags-label"><em>Flags</em></a>)</p>
 </dd>
 <dt><em>zlib</em></dt>
@@ -422,14 +422,16 @@ be written to trajectory file</p>
         <li class="right" >
           <a href="PQR.html" title="5.11. PQR file format — MDAnalysis.coordinates.PQR"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

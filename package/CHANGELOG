@@ -10,11 +10,13 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/13  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
+??/??/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
 	  rmcgibbo, richardjgowers, lennardvanderfeltz, bernardin.alejandro
 
-  * 0.8.0
+  * 0.8.1
+
+  (Note: 0.8.0 contains a subset of these changes; 0.8.0 is deprecated)
 
   Enhancements
 

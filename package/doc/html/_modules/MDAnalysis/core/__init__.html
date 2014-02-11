@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.core.__init__ &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>MDAnalysis.core.__init__ &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -328,18 +328,21 @@
 <span class="sd">            &gt;&gt;&gt; MDAnalysis.core.flags[&#39;use_KDTree_routines&#39;] = False</span>
 <span class="sd">            &quot;&quot;&quot;</span>
          <span class="p">),</span>
-    <span class="n">_Flag</span><span class="p">(</span><span class="s">&#39;convert_gromacs_lengths&#39;</span><span class="p">,</span>
+    <span class="n">_Flag</span><span class="p">(</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">,</span>
          <span class="bp">True</span><span class="p">,</span>
          <span class="p">{</span><span class="bp">True</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">:</span><span class="bp">False</span><span class="p">},</span>
          <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Determine if the XTC and TRR trajectory reader and writer convert units.</span>
+<span class="sd">            Determine if trajectory reader and writer converts length units between native and MDAnalysis default.</span>
 
 <span class="sd">            &gt;&gt;&gt; flags[&#39;%(name)s&#39;] = value</span>
 
-<span class="sd">            Gromacs trajectories are in nm, MDAnalysis in Angstroem. If</span>
-<span class="sd">            ``True`` then coordinates are automatically converted, with</span>
-<span class="sd">            ``False`` the coordinate values are presented as read from the</span>
-<span class="sd">            trajectories.</span>
+<span class="sd">            Some trajectories are in other length units than the MDAnalysis</span>
+<span class="sd">            default (see the flag *length_unit*); e.g. Gromacs XTC and TRR</span>
+<span class="sd">            trajectories are in nm. If ``True`` then coordinates are</span>
+<span class="sd">            automatically converted, with ``False`` the coordinate values are</span>
+<span class="sd">            presented as read from the trajectories.</span>
+
+<span class="sd">            .. Note:: The conversion of lengths also affects conversion of velocities.</span>
 <span class="sd">         &quot;&quot;&quot;</span>
          <span class="p">),</span>
     <span class="n">_Flag</span><span class="p">(</span><span class="s">&#39;length_unit&#39;</span><span class="p">,</span>
@@ -386,7 +389,7 @@
          <span class="p">),</span>
     <span class="n">_Flag</span><span class="p">(</span><span class="s">&#39;force_unit&#39;</span><span class="p">,</span>
          <span class="s">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">,</span>
-         <span class="p">{</span><span class="s">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">:</span> <span class="s">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">,</span> <span class="s">&#39;kJ/(mol*A)&#39;</span><span class="p">:</span> <span class="s">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">,</span> 
+         <span class="p">{</span><span class="s">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">:</span> <span class="s">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">,</span> <span class="s">&#39;kJ/(mol*A)&#39;</span><span class="p">:</span> <span class="s">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">,</span>
           <span class="s">&#39;kJ/(mol*nm)&#39;</span><span class="p">:</span> <span class="s">&#39;kJ/(mol*nm)&#39;</span><span class="p">,</span>
           <span class="p">},</span>
          <span class="sd">&quot;&quot;&quot;</span>
@@ -437,9 +440,32 @@
 <span class="sd">            keyword to :class:`MDAnalysis.Universe`.</span>
 <span class="sd">         &quot;&quot;&quot;</span>
          <span class="p">),</span>
+    <span class="n">_Flag</span><span class="p">(</span><span class="s">&#39;use_pbc&#39;</span><span class="p">,</span>
+          <span class="bp">False</span><span class="p">,</span>
+          <span class="p">{</span><span class="bp">True</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">:</span> <span class="bp">False</span><span class="p">},</span>
+          <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">          Choose whether to consider periodic boundary conditions when</span>
+<span class="sd">          performing many :class:`MDAnalysis.core.AtomGroup.AtomGroup` methods.</span>
+<span class="sd">          This is set to ``False`` by default but can be enabled with:</span>
+
+<span class="sd">          &gt;&gt;&gt; MDAnalysis.core.flags[&#39;use_pbc&#39;] = True</span>
+
+<span class="sd">          Values for flag:</span>
+
+<span class="sd">          * ``True`` - Move all atoms within the primary unit cell before calculation</span>
+<span class="sd">          * ``False`` - Use coordinates as supplied</span>
+
+<span class="sd">          .. Warning::</span>
+
+<span class="sd">             Changing this to ``True`` changes the default behaviour of</span>
+<span class="sd">             commonly used :class:`MDAnalysis.core.AtomGroup.AtomGroup` methods</span>
+<span class="sd">             such as :meth:`MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass`</span>
+<span class="sd">             and :meth:`MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry`!</span>
+<span class="sd">          &quot;&quot;&quot;</span><span class="p">),</span>
+
     <span class="p">]</span>
 
-<span class="c">#: Global flag registry for :mod:`core`.</span>
+<span class="c">#: Global flag registry for :mod:`MDAnalysis.core`.</span>
 <span class="c">#: Can be accessed like a dictionary and appears to the casual user as such.</span>
 <span class="n">flags</span> <span class="o">=</span> <span class="n">FlagsDynamicDocs</span><span class="p">(</span><span class="o">*</span><span class="n">_flags</span><span class="p">)</span>
 <span class="k">del</span> <span class="n">_flags</span>
@@ -465,15 +491,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.

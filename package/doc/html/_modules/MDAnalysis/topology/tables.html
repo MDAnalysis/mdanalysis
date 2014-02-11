@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.topology.tables &mdash; MDAnalysis 0.8.0rc4 documentation</title>
+    <title>MDAnalysis.topology.tables &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.0rc4',
+        VERSION:     '0.8.1rc1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.0rc4 documentation"
+          title="Search within MDAnalysis 0.8.1rc1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.0rc4 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -73,7 +73,7 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.topology.tables</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-</span>
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
@@ -350,13 +350,19 @@
 <span class="c">#: :data:`atomelements`.</span>
 <span class="n">masses</span> <span class="o">=</span> <span class="n">kv2dict</span><span class="p">(</span><span class="n">TABLE_MASSES</span><span class="p">,</span> <span class="n">convertor</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
+<span class="c">#: Van der Waals radii (taken from GROMACS_, ``/usr/share/gromacs/top/vdwradii.dat``)</span>
+<span class="c">#: and converted to ångström.</span>
+<span class="c">#: .. _GROMACS: http://www.gromacs.org</span>
+<span class="c">#:</span>
+<span class="c">#: .. SeeAlso:: :func:`MDAnalysis.topology.core.guess_bonds`</span>
 <span class="n">vdwradii</span> <span class="o">=</span> <span class="p">{</span>  <span class="s">&quot;C&quot;</span><span class="p">:</span>     <span class="mf">1.5</span><span class="p">,</span>
               <span class="s">&quot;F&quot;</span><span class="p">:</span>     <span class="mf">1.2</span><span class="p">,</span>
               <span class="s">&quot;H&quot;</span><span class="p">:</span>     <span class="mf">0.4</span><span class="p">,</span>
               <span class="s">&quot;N&quot;</span><span class="p">:</span>     <span class="mf">1.10</span><span class="p">,</span>
               <span class="s">&quot;O&quot;</span><span class="p">:</span>     <span class="mf">1.05</span><span class="p">,</span>
               <span class="s">&quot;S&quot;</span><span class="p">:</span>     <span class="mf">1.6</span><span class="p">,</span>
-              <span class="s">&quot;P&quot;</span><span class="p">:</span>     <span class="mf">1.6</span><span class="p">,}</span>
+              <span class="s">&quot;P&quot;</span><span class="p">:</span>     <span class="mf">1.6</span><span class="p">,</span>
+              <span class="p">}</span>
 </pre></div>
 
           </div>
@@ -373,15 +379,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.0rc4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
-    Christian Beckstein (logo), Sébastien Buchoux, David Caplan, Jan Domański, Xavier Deupi,
-    Philip Fowler, Joseph Goose, Lukas Grossar, Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Jan Domański, Xavier Deupi,
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
