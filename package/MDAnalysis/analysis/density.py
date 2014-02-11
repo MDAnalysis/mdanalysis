@@ -545,16 +545,16 @@ def notwithin_coordinates_factory(universe,sel1, sel2, cutoff, not_within=True, 
       coord = notwithin_coordinates(cutoff2) # can use different cut off
 
     :Keywords:
-      not_within
+      *not_within*
          True: selection behaves as 'not within' (As described above)
          False: selection is a <sel1> WITHIN <cutoff> OF <sel2>'
-      use_kdtree
+      *use_kdtree*
          True: use fast kd-tree based selections (requires new MDAnalysis >= 0.6)
          False: use distance matrix approach
 
     .. Note::
 
-       * Periodic boundary conditions are NOT taken into account: the naive
+       * Periodic boundary conditions are *not* taken into account: the naive
          minimum image convention employed in the distance check is currently
          not being applied to remap the coordinates themselves, and hence it
          would lead to counts in the wrong region.
@@ -608,12 +608,23 @@ def notwithin_coordinates_factory(universe,sel1, sel2, cutoff, not_within=True, 
 
 
 def Bfactor2RMSF(B):
-    """Atomic root mean square fluctuation (in Angstrom) from the crystallographic B-factor
+    r"""Atomic root mean square fluctuation (in Angstrom) from the crystallographic B-factor
 
-    B = [(8*PI**2)/3] * (RMSF)**2
+    RMSF and B-factor are related by [Willis1975]_
 
-    Willis & Pryor, Thermal vibrations in crystallography, Cambridge
-    Univ. Press, 1975
+    .. math::
+
+        B = \frac{8\pi^2}{3} \rm{RMSF}^2
+
+    and this function returns
+
+    .. math::
+
+        \rm{RMSF} = \sqrt{\frac{3 B}{8\pi^2}}
+
+    .. rubric:: References
+
+    .. [Willis1975]  BTM Willis and AW Pryor. *Thermal vibrations in crystallography*. Cambridge Univ. Press, 1975
     """
     return numpy.sqrt(3.*B/8.)/numpy.pi
 
@@ -625,11 +636,9 @@ def density_from_PDB(pdb, **kwargs):
     centered at each selected atoms. If B-factors are present in the
     file then they are used to calculate the width of the gaussian.
 
-    Using the `sigma` keyword, one can override this choice and
+    Using the *sigma* keyword, one can override this choice and
     prescribe a gaussian width for all atoms (in Angstrom), which is
-    calculated as
-
-      B = [(8*PI**2)/3] * (RMSF)**2
+    calculated as described for :func:`Bfactor2RMSF`.
 
     .. Note::
 
