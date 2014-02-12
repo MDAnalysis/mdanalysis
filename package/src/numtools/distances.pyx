@@ -45,46 +45,17 @@ Overview
    provided in *result* then this preallocated array is filled. This can speed
    up calculations.
 
-.. function:: calc_bonds(atom1, atom2, [box, [,result]])
-
-   Calculate all distances between a pair of atoms.  *atom1* and *atom2* are both
-   arrays of coordinates, where atom1[i] and atom2[i] represent a bond.  The 
-   optional argument *box* applies minimum image convention if supplied.
-
-   *box* can be either orthogonal or triclinic
-
-   If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is
-   provided in *result* then this preallocated array is filled. This can speed
-   up calculations.
-
-.. function:: calc_angles(atom1, atom2, atom3 [, result])
-
-   Calculates the angle formed between three atoms, over a list of coordinates.
-   All *atom* inputs are lists of coordinates of equal length, with *atom2* 
-   representing the apex of the angle.  Returns the angle in radians.
-
-   If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is
-   provided in *result* then this preallocated array is filled. This can speed
-   up calculations.
-
-.. function:: calc_torsions(atom1, atom2, atom3, atom4 [, result])
-
-   Calculate the torsional angle formed by four atoms, over a list of coordinates.
-   Returns the angle in radians.
-
-   If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is
-   provided in *result* then this preallocated array is filled. This can speed
-   up calculations.
-
-.. function:: applyPBC(coordinates, box)
-
-   Shift a set of coordinates to lie within the primary unit cell
-
-   Works with both orthogonal and triclinic boxes
-
 
 Functions
 ---------
+
+.. autofunction:: boxCheck(box)
+.. autofunction:: calc_bonds(atom1, atom2, [box, [,result]])
+.. autofunction:: calc_angles(atom1, atom2, atom3 [, result])
+.. autofunction:: calc_torsions(atom1, atom2, atom3, atom4 [, result])
+.. autofunction:: applyPBC(coordinates, box)
+.. autofunction:: transform_RtoS(coordinates, box)
+.. autofunction:: transform_StoR(coordinates, box)
 """
 
 cimport c_numpy
@@ -118,11 +89,15 @@ def boxCheck(box):
     """Take a box input and deduce what type of system it represents based
     on the shape of the array and whether all angles are 90.
     
+    :Arguments:
+      *box*
+          box information of unknown format
+
     :Returns:
-      'ortho' orthogonal box
-      'tri_vecs' triclinic box vectors
-      'tri_box' triclinic box lengths and angles
-      'unknown' boxCheck default, indicates no match found
+      * ``ortho`` orthogonal box
+      * ``tri_vecs`` triclinic box vectors
+      * ``tri_box`` triclinic box lengths and angles
+      * ``unknown`` boxCheck default, indicates no match found
     """
     boxtype = 'unknown'
     if box.shape == (3,):
@@ -155,12 +130,14 @@ def distance_array(c_numpy.ndarray reference, c_numpy.ndarray configuration, c_n
                 *box*
                         cell dimensions (minimum image convention is applied) or None [None]
                 *result*
-                        optional preallocated result array which must have the shape (len(ref),len(conf)) and dtype=numpy.float64. Avoids creating the              
+                        optional preallocated result array which must have the shape (len(ref),
+                        len(conf)) and dtype=numpy.float64. Avoids creating the              
                         array which saves time when the function is called repeatedly. [None]
 
     :Returns:
                 *d*
-                        (len(ref),len(conf)) numpy array with the distances d[i,j] between ref coordinates i and conf coordinates j
+                        (len(ref),len(conf)) numpy array with the distances d[i,j] 
+                        between ref coordinates i and conf coordinates j
 
     .. Note:: This method is slower than it could be because internally we need to
           make copies of the ref and conf arrays.
@@ -302,7 +279,7 @@ def transform_RtoS(c_numpy.ndarray inputcoords, c_numpy.ndarray box):
 
     S space represents fractional space within the unit cell for this system
 
-    Reciprocal operation to :meth:`transform_StoR
+    Reciprocal operation to :meth:`transform_StoR`
 
     :Arguments:
       *inputcoords*
@@ -313,7 +290,6 @@ def transform_RtoS(c_numpy.ndarray inputcoords, c_numpy.ndarray box):
     :Returns:
        *outcoords*
                       An n x 3 array of fracional coordiantes
-
     """
 
     cdef c_numpy.ndarray coords, inv
@@ -402,14 +378,42 @@ def transform_StoR(c_numpy.ndarray inputcoords, c_numpy.ndarray box):
     return coords
 
 def calc_bonds(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray box=None, c_numpy.ndarray result=None):
-    """Calculate distance between pairs in two lists of atoms
-    
-    d = bond_distance(list1, list2, [box [,result]])
+    """
+    Calculate all distances between a pair of atoms.  *atom1* and *atom2* are both
+    arrays of coordinates, where atom1[i] and atom2[i] represent a bond.  
 
-    *box* can be either orthogonal or triclinic, if supplied minimum image convention will be applied
+    In comparison to distance_array and self_distance_array which calculate distances
+    between all combinations of coordinates, calc_bonds can be used to calculate distance
+    between pairs of objects, similar to::
+    
+       numpy.linalg.norm(a - b) for a, b in zip(coords1, coords2)
+
+    The optional argument *box* applies minimum image convention if supplied.
+    *box* can be either orthogonal or triclinic
+    
+    If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is
+    provided in *result* then this preallocated array is filled. This can speed
+    up calculations.
+
+    bondlengths = calc_bonds(coords1, coords2 [, box [,result=bondlengths]])
+
+    :Arguments:
+       *coords1*
+          An array of coordinates for one half of the bond
+       *coords2*
+          An array of coordinates for the other half of bond
+       *box*
+          Unit cell information if periodic boundary conditions are required [None]
+       *result*
+          optional preallocated result array which must be same length as coord 
+          arrays and dtype=numpy.float64. Avoids creating the              
+          array which saves time when the function is called repeatedly. [None]
+
+    :Returns:
+       *bondlengths*
+          Numpy array with the length between each pair in coords1 and coords2
 
     .. versionadded:: 0.8
-
     """
     cdef c_numpy.ndarray atom1, atom2
     cdef c_numpy.ndarray distances
@@ -466,11 +470,30 @@ def calc_bonds(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray box
 
 def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray list3, c_numpy.ndarray result=None):
     """
-    angles = calc_angles(list1, list2, list3 [,result])
+    Calculates the angle formed between three atoms, over a list of coordinates.
+    All *atom* inputs are lists of coordinates of equal length, with *atom2* 
+    representing the apex of the angle.
 
-    Calculate the angle formed by bonds between atoms 1 & 2 and atoms 2 & 3 for a list of coordinates.
+    If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is
+    provided in *result* then this preallocated array is filled. This can speed
+    up calculations.
 
-    Returns an array of angles (in radians)
+    angles = calc_angles(coords1, coords2, coords3 [,result=angles])
+
+    :Arguments:
+        *coords1*
+            coordinate array of one side of angles
+        *coords2*
+            coordinate array of apex of angles
+        *coords3*
+            coordinate array of other side of angles
+        *result*
+            optional preallocated results array which must have same length as coordinate 
+            array and dtype=numpy.float64. 
+
+    :Returns:
+        *angles*
+            A numpy.array of angles in radians
     
     .. versionadded:: 0.8
     """
@@ -513,12 +536,40 @@ def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray li
 
 def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray list3, c_numpy.ndarray list4, c_numpy.ndarray result=None):
     """
-    torsions = calc_angles(list1, list2, list3, list4 [,result])
+    Calculate the torsional angle formed by four atoms, over a list of coordinates.
+    
+    Torsional angle around axis connecting atoms 1 and 2 (i.e. the angle
+    between the planes spanned by atoms (0,1,2) and (1,2,3))::
 
-    Calculate the dihedral angle formed by atoms 1,2,3 and 4
+                  3
+                  |
+            1-----2
+           /
+          0
 
-    Returns an array of angles (in radians)
+    If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is
+    provided in *result* then this preallocated array is filled. This can speed
+    up calculations.
 
+    angles = calc_torsions(coords1, coords2, coords3, coords4 [,result=angles])
+
+    :Arguments:
+        *coords1*
+            coordinate array of 1st atom in torsions
+        *coords2*
+            coordinate array of 2nd atom in torsions
+        *coords3*
+            coordinate array of 3rd atom in torsions
+        *coords4*
+            coordinate array of 4th atom in torsions
+        *result*
+            optional preallocated results array which must have same length as coordinate 
+            array and dtype=numpy.float64. 
+
+    :Returns:
+        *angles*
+            A numpy.array of angles in radians
+    
     .. versionadded:: 0.8
     """
     cdef c_numpy.ndarray atom1, atom2, atom3, atom4

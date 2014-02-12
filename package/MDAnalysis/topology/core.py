@@ -42,7 +42,8 @@ from ..core import AtomGroup
 
 
 def build_segments(atoms):
-    """Create all :class:`~MDAnalysis.core.AtomGroup.Segment` instancess from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
+    """Create all :class:`~MDAnalysis.core.AtomGroup.Segment` instancess from a list 
+    of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
 
     The function also builds the :class:`~MDAnalysis.core.AtomGroup.Residue`
     instances by tracking residue numbers.
@@ -87,7 +88,8 @@ def build_segments(atoms):
 
 
 def build_residues(atoms):
-    """Create a list :class:`~MDAnalysis.core.AtomGroup.Residue` instances from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
+    """Create a list :class:`~MDAnalysis.core.AtomGroup.Residue` instances from a list 
+    of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
 
     Updating residues also changes the underlying
     :class:`~MDAnalysis.core.AtomGroup.Atom` instances, which record
@@ -124,6 +126,10 @@ class Bond(object):
     numbers are connected and they have the same bond order. The
     ordering of the two atom numbers is ignored as is the fact that a
     bond was guessed.
+
+    The presence of a particular atom can also be queried::
+       >>> Atom in Bond
+       True / False
     """
 
     def __init__(self, a1, a2, order=None):
@@ -135,6 +141,10 @@ class Bond(object):
         self.__is_guessed = False
 
     def partner(self, atom):
+        """Bond.partner(Atom)
+
+        :Returns: the other :class:`~MDAnalysis.core.AtomGroup.Atom` in this bond
+        """
         if atom is self.atom1:
             return self.atom2
         else:
@@ -169,6 +179,7 @@ class Bond(object):
         return s_id + s_length + ">"
 
     def __contains__(self, other):
+        """Can check if a particular atom is present in this bond"""
         return other == self.atom1 or other == self.atom2
 
     def __eq__(self, other):
@@ -220,6 +231,8 @@ class Angle(object):
 
 class Torsion(object):
     """Torsion (dihedral angle) between four :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
+
+    The torsion is defined as the angle between the planes formed by (1, 2, 3) and (2, 3, 4).
 
     .. versionadded:: 0.8
     """
@@ -468,36 +481,58 @@ def guess_atom_charge(atomname):
 
 
 class TopologyDict(object):
-    """
-    A class which serves as a wrapper around a dictionary, which
-    contains lists of different types of bonds.
+    """A customised dictionary designed for sorting the bonds, angles and torsions
+    present in a group of atoms.
 
     Usage::
 
       topologydict = TopologyDict(topologytype, atoms)
 
-    *topologytype* is one of 'bond' 'angle' or 'torsion', a single
-    TopologyDict can only handle one type of topology.
+    :Arguments:
+        *topologytype* 
+            one of 'bond' 'angle' or 'torsion'; a single
+            TopologyDict can only handle one type of topology.
 
-    *atoms* is a list of :class:`MDAnalysis.core.AtomGroup.Atom` objects.
+        *atoms* 
+            a list of :class:`MDAnalysis.core.AtomGroup.Atom` objects.
 
-    TopologyDicts are built lazily from a :class:`MDAnalysis.core.AtomGroup.AtomGroup`
-    using the bondDict angleDict or torsionDict methods.
+    :Returns:
+        *topologydict*
+            A dictionary of the selected topology type
+    
+    TopologyDicts are also built lazily from a :class:`MDAnalysis.core.AtomGroup.AtomGroup`
+    using the :meth:`MDAnalysis.core.AtomGroup.bondDict` :meth:`MDAnalysis.core.AtomGroup.angleDict`
+    or :meth:`MDAnalysis.core.AtomGroup.torsionDict` methods.
 
-    The TopologyDict collects all the given topology type from the
-    atoms and categorises them according to the types of the atoms.
-    Getting and setting types of bonds is done smartly, so a C-C-H
-    angle is considered identical to a H-C-C angle.
-
-    Duplicate entries are automatically removed upon creation and
-    combination of different Dicts.  For example, a bond between atoms
-    1 and 2 will only ever appear once in a dict despite both atoms 1
-    and 2 having the bond in their .bond attribute.
-
+    The TopologyDict collects all the selected topology type from the
+    atoms and categorises them according to the types of the atoms within.
     A :class:`TopologyGroup` containing all of a given bond type can
     be made by querying with the appropriate key.  The keys to the
     topologyDict are a tuple of the atom types that the bond represents
     and can be viewed using the keys() method.
+
+    For example, from a system containing pure ethanol ::
+
+      >>> td = u.atoms.bondDict
+      >>> td.keys()
+      [('C', 'C'),
+       ('C', 'H'),
+       ('O', 'H'),
+       ('C', 'O')]
+      >>> td['C', 'O']
+      < TopologyGroup containing 912 bonds >
+
+    .. Note:: 
+
+       The key for a bond is taken from the type attribute of the atoms.
+
+       Getting and setting types of bonds is done smartly, so a C-C-H
+       angle is considered identical to a H-C-C angle.
+
+    Duplicate entries are automatically removed upon creation and
+    combination of different Dicts.  This means a bond between atoms
+    1 and 2 will only ever appear once in a dict despite both atoms 1
+    and 2 having the bond in their .bond attribute.
 
     Two TopologyDicts can be combined using addition, this will not
     create any duplicate bonds in the process.
@@ -603,8 +638,8 @@ class TopologyDict(object):
 class TopologyGroup(object):
     """ A container for a group of bonds (either bonds, angles or torsions)::
 
-      tg = :class:`MDAnalysis.core.AtomGroup.AtomGroup`.selectBonds(key)
-      tg = :class:`TopologyDict`[key]
+      tg = atomGroup.selectBonds(key)
+      tg = TopologyDict[key]
 
     *key* describes the desired bond as a tuple of the involved atom
     types (as defined by the .type atom attribute). A list of available
@@ -721,6 +756,10 @@ class TopologyGroup(object):
 
     def bonds(self, pbc=False, result=None):
         """Calculates the distance between all bonds in this TopologyGroup
+
+        :Keywords:
+           *pbc*
+              apply periodic boundary conditions when calculating distance [False]
 
         Uses cython implementation
         """

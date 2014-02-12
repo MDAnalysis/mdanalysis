@@ -27,6 +27,50 @@ Reads coordinates, velocities and more (see attributes of the
 .. _IBIsCO: http://www.theo.chemie.tu-darmstadt.de/ibisco/IBISCO.html
 .. _YASP: http://www.theo.chemie.tu-darmstadt.de/group/services/yaspdoc/yaspdoc.html
 
+.. autoclass:: MDAnalysis.coordinates.TRZ.Timestep
+   :members:
+
+   .. attribute:: frame
+
+      Index of current frame number (1 based)
+
+   .. attribute:: time
+
+      Current system time in ps
+
+   .. attribute:: numatoms
+
+      Number of atoms in the frame (will be constant throughout trajectory)
+
+   .. attribute:: pressure
+
+      System pressure in pascals
+
+   .. attribute:: pressure_tensor
+
+      Array containing pressure tensors in order: xx, xy, yy, xz, yz, zz
+
+   .. attribute:: total_energy
+
+      Hamiltonian for the system in kJ/mol
+
+   .. attribute:: potential_energy
+
+      Potential energy of the system in kJ/mol
+
+   .. attribute:: kinetic_energy
+
+      Kinetic energy of the system in kJ/mol
+
+   .. attribute:: temperature
+
+      Temperature of the system in Kelvin
+
+.. autoclass:: TRZReader
+   :members:
+
+.. autoclass:: TRZWriter
+   :members:
 """
 
 import os, errno
@@ -37,49 +81,19 @@ import numpy
 from MDAnalysis.coordinates.core import triclinic_box
 
 class Timestep(base.Timestep):
-    """ TRZ custom Timestep
-
-    :Attributes:
-    .. attribute:: frame
-       Index of the frame, (1 based)
-    .. attribute:: numatoms
-       Number of atoms in the frame (will be constant through trajectory)
-    .. attribute:: time
-       Current time of the system in ps (will not always start at 0)
-    .. attribute:: pressure
-       Pressure of the system box in kPa
-    .. attribute:: pressure_tensor
-       Array containing pressure tensors in order: xx, xy, yy, xz, yz, zz
-    .. attribute:: total_energy
-       Hamiltonian for the system in kJ/mol
-    .. attribute:: potential_energy
-       Potential energy of the system in kJ/mol
-    .. attribute:: kinetic_energy
-       Kinetic energy of the system in kJ/mol
-    .. attribute:: temperature
-       Temperature of the system in Kelvin
-
-    Private Attributes
-    .. attribute:: _unitcell
-       Unitcell for system. ``[Lx, 0.0, 0.0, 0.0, Ly, 0.0, 0.0, 0.0, Lz]``.
-       Use the attribute :attr:`dimensions` to access this information.
-    .. attribute:: _pos
-       Position of particles in box (native nm)
-    .. attribute:: _velocities
-       Velocities of particles in box (native nm/ps)
-    """
+    """ TRZ custom Timestep"""
     def __init__(self, arg, **kwargs):
         if numpy.dtype(type(arg)) == numpy.dtype(int):
-            self.frame = 0
-            self.step = 0
+            self.frame = 0 
+            self.step = 0 
             self.numatoms = arg
-            self.time = 0.0 #System time in ps
-            self.pressure = 0.0 #pressure in kPa
-            self.pressure_tensor = numpy.zeros((6), dtype=numpy.float64) #ptxx, ptxy, ptyy, ptxz, ptyz, ptzz
-            self.total_energy = 0.0 # Energies all kJ mol-1
+            self.time = 0.0
+            self.pressure = 0.0
+            self.pressure_tensor = numpy.zeros((6), dtype=numpy.float64) 
+            self.total_energy = 0.0
             self.potential_energy = 0.0
             self.kinetic_energy = 0.0
-            self.temperature = 0.0 #Temperature in Kelvin
+            self.temperature = 0.0
             self._pos        = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order ='F')
             self._velocities = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order ='F')
             self._unitcell   = numpy.zeros((9),                dtype=numpy.float64, order ='F')
@@ -143,26 +157,10 @@ class TRZReader(base.Reader):
         returns the number of frames
       ``for ts in trz``
         iterates through the trajectory
-
-    :Format:
-      TRZ format detailed below, each line is a single fortran write statement, so is surrounded by 4 bytes of metadata
-      In brackets after each entry is the size of the content of each line:
-
-      ``Header``::
-          title(80c)
-          nrec (int4)
-       ``Frame``::
-          nframe, ntrj*nframe, natoms, treal (3*int4, real8)
-          boxx, 0.0, 0.0, 0.0, boxy, 0.0, 0.0, 0.0, boxz (real8 * 9)
-          pressure, pt11, pt12, pt22, pt13, pt23, pt33 (real8 *7)
-          6, etot, ptot, ek, t, 0.0, 0.0 (int4, real8 * 6)
-          rx (real4 * natoms)
-          ry
-          rz
-          vx
-          vy
-          vz
-
+      ``for ts in trz[start:stop:skip]``
+        iterate through a trajectory using slicing
+      ``trz[i]``
+        random access of a trajectory frame
 """
 
     format = "TRZ"
@@ -179,7 +177,7 @@ class TRZReader(base.Reader):
             number of atoms in trajectory, must taken from topology file!
           *convert_units*
             converts units to MDAnalysis defaults
-            """
+        """
         if numatoms is None:
             raise ValueError('TRZReader requires the numatoms keyword')
 
@@ -237,7 +235,6 @@ class TRZReader(base.Reader):
 
     def _read_trz_header(self):
         """Reads the header of the trz trajectory"""
-        #Read the header of the file
         headerdtype = numpy.dtype([('p1','i4'),
                                    ('title','80c'),
                                    ('p2','4i4')])
@@ -245,7 +242,6 @@ class TRZReader(base.Reader):
         self.title = ''.join(data['title'][0])
 
     def _read_next_timestep(self, ts=None): # self.next() is from base Reader class and calls this
-        #Read a timestep from binary file
         if ts is None:
             ts = self.ts
 
@@ -326,7 +322,7 @@ class TRZReader(base.Reader):
 
     @property
     def dt(self):
-        """Time step between frames in ps
+        """The amount of time between frames in ps
 
         Assumes that this step is constant (ie. 2 trajectories with different steps haven't been
         stitched together)
@@ -436,8 +432,10 @@ class TRZReader(base.Reader):
             self.close()
 
 class TRZWriter(base.Writer):
-    """
-    Writes TRZ format.
+    """Writes a TRZ format trajectory.
+
+    :Methods:
+       ``W = TRZWriter(trzfilename, numatoms, title='TRZ')``
     """
 
     format='TRZ'
@@ -456,7 +454,10 @@ class TRZWriter(base.Writer):
         :Keywords:
          *title*
           title of the trajectory
-        
+         *convert_units*
+          units are converted to the MDAnalysis base format; ``None`` selects
+          the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
+          (see :ref:`flags-label`)       
         """
         self.filename = filename
         if numatoms is None:
