@@ -161,14 +161,15 @@ class TrjWriter(base.Writer):
              latter case :attr:`~Timestep.time` is unavailable the TrjWriter will default
              to setting the trajectory time at 1 MDAnalysis unit (typically 1ps) per step.
           *precision*
-             accuracy for lossy XTC format [1000]
+              accuracy for lossy XTC format as a power of 10 (ignored
+              for TRR) [1000.0]
           *convert_units*
              ``True``: units are converted to the MDAnalysis base format; ``None`` selects
              the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
              (see :ref:`flags-label`)
 
         .. versionchanged:: 0.8.0
-           The TRR writer is now able to write TRRs without coordnates/velocities/forces,
+           The TRR writer is now able to write TRRs without coordinates/velocities/forces,
            depending on the properties available in the :class:`Timestep` objects passed to
            :meth:`~TRRWriter.write`.
         '''
@@ -514,6 +515,8 @@ class TrjReader(base.Reader):
         :Arguments:
           *filename*
               filename in which to save the frame offset numpy array.
+
+        .. versionadded: 0.8.0
         """
         if self.__offsets is None:
             self._read_trj_numframes(self.filename)
@@ -525,6 +528,8 @@ class TrjReader(base.Reader):
         :Arguments:
           *filename*
               filename of a saved numpy array with the frame offsets for the loaded trajectory.
+
+        .. versionadded: 0.8.0
         """
         self.__offsets = numpy.load(filename)
         self.__numframes = len(self.__offsets)

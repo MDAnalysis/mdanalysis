@@ -46,7 +46,7 @@ import libxdrfile2
 from MDAnalysis import NoDataError
 
 class Timestep(core.Timestep):
-    """Timestep for a Gromacs TRR trajectory.
+    """Timestep for a Gromacs_ TRR trajectory.
         The Timestep can be initialized with *arg* being
 
         1. an integer (the number of atoms)
@@ -57,10 +57,9 @@ class Timestep(core.Timestep):
            ``velocities = arg[:,3:6]``, and ``forces = arg[:,6:]``.
 
         The constructor also takes the named arguments *has_x*, *has_v*, and *has_f*, which
-        are used to set :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, :attr:`~Timestep.has_f`.
+        are used to set the :class:`Timestep` flags :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, and :attr:`~Timestep.has_f`, described below.
         Depending on the *arg* use-case above, the defaults set for these flags will vary:
-        1. when *arg* is an integer :attr:`~Timestep.has_x` defaults to ``True`` and
-           :attr:`~Timestep.has_v` and :attr:`~Timestep.has_f` to ``False``.
+        1. when *arg* is an integer :attr:`~Timestep.has_x` defaults to ``True`` and :attr:`~Timestep.has_v` and :attr:`~Timestep.has_f` to ``False``.
         2. when *arg* is another :class:`Timestep` instance the flags will default to being
            copied from the passed :class:`Timestep`. If that instance has no 'has_' flags
            the behavior is to assign them to ``True`` depending on the existence of
