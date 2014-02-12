@@ -323,20 +323,13 @@ class TrjWriter(base.Writer):
 class TrjReader(base.Reader):
     """Generic base class for reading Gromacs trajectories inside MDAnalysis.
 
-    Derive classes and set :attr:`TrjReader.format`,
-    :attr:`TrjReader._read_trj` and :attr:`TrjReader._read_trj_atoms`.
+    Derive classes and set :attr:`TrjReader.format`, :attr:`TrjReader._read_trj` and :attr:`TrjReader._read_trj_atoms`.
 
     Example::
        reader = TrjReader("file.trj")
        for ts in reader:
           print ts
 
-    .. versionchanged:: 0.8.0
-       :class:`Timestep` objects returned from TRR files now have.
-       :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, and :attr:`~Timestep.has_f`
-       flags reflecting whether coordinetes/velocities/forces were read.
-       Attempting to access such data when the corresponding flag is set to ``False``
-       will raise a :exc:`NoDataError`.
     """
     #: units of time (ps) and length (nm) in Gromacs
     units = {'time': 'ps', 'length': 'nm'}
@@ -354,9 +347,8 @@ class TrjReader(base.Reader):
             *filename*
                 the name of the trr file.
             *sub*
-
                 an numpy integer array of what subset of trajectory atoms to load into
-                the timestep. Intended to work similarly to the 'sub' argument to gromac's trjconv.
+                the timestep. Intended to work similarly to the 'sub' argument to Gromacs_' trjconv.
 
                 This is usefull when one has a Universe loaded with only an unsolvated protein, and
                 wants to read a solvated trajectory.

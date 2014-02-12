@@ -15,12 +15,12 @@
 :Licence: GNU GENERAL PUBLIC LICENSE Version 2 (or higher)
 
 
-The Gromacs xtc/trr library :mod:`libxdrfile2`
+The Gromacs XTC/TRR library :mod:`libxdrfile2`
 ==============================================
 
-:mod:`libxdrfile2` provides an interface to some high-level functions in the
-libxdrfile2 library, a derivative of the Gromacs_ `libxdrfile library`_. Only
-functions required for reading and processing whole trajectories are exposed at
+:mod:`libxdrfile2`, a derivative of the Gromacs_ `libxdrfile library`_, provides an
+interface to some high-level functions for XTC/TRR trajectory handling.
+Only functions required for reading and processing whole trajectories are exposed at
 the moment; low-level routines to read individual numbers are not provided. In
 addition, :mod:`libxdrfile2` exposes functions to allow fast frame indexing and XDR
 file seeking.
@@ -30,7 +30,7 @@ The functions querying the numbers of atoms in a trajectory frame
 only require the file name.
 
 All other functions operate on a *XDRFILE* object, which is a special file
-handle for xdr files.  Any xdr-based trajectory file (xtc or trr format) always
+handle for xdr files.  Any xdr-based trajectory file (XTC or TRR format) always
 has to be opened with :func:`xdrfile_open`. When done, close the trajectory
 with :func:`xdrfile_close`.
 
@@ -44,17 +44,16 @@ care of array allocation and transference to a garbage-collectable memory object
 .. _libxdrfile library: http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
 
 .. versionchanged:: 0.8.0
-:mod:`libxdrfile2` is now used instead of :mod:`libxdrfile`. :mod:`libxdrfile2` is
-based on :mod:`libxdrfile` but interfaces with libxdrfile2, which has xdr seeking
-and indexing capabilities. Unlike :mod:`libxdrfile` and libxdrfile before them,
-:mod:`libxdrfile2` and libxdrfile2 are distributed under the GNU GENERAL PUBLIC
-LICENSE, version 2 (or higher).
+   :mod:`libxdrfile2` is now used instead of :mod:`libxdrfile`. :mod:`libxdrfile2` is
+   based on :mod:`libxdrfile` but has xdr seeking and indexing capabilities.
+   Unlike :mod:`libxdrfile` before it, :mod:`libxdrfile2` is distributed under the GNU
+   GENERAL PUBLIC LICENSE, version 2 (or higher).
 
 
-Example: Reading from a xtc
+Example: Reading from a XTC
 ---------------------------
 
-In the example we read coordinate frames from an existing xtc trajectory::
+In the example we read coordinate frames from an existing XTC trajectory::
 
   import numpy as np
   from libxdrfile2 import xdrfile_open, xdrfile_close, read_xtc_natoms, read_xtc, DIM, exdrOK
@@ -128,7 +127,7 @@ Opening and closing of XDR files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Two low-level functions are used to obtain a *XDRFILE* object (a file handle)
-to access xdr files such as xtc or trr trajectories.
+to access xdr files such as XTC or TRR trajectories.
 
 .. function:: xdrfile_open(path, mode) -> XDRFILE
 
@@ -183,11 +182,12 @@ The advantage of XTC over TRR is its significantly reduced size.
                 *fn*
                    file name of an xtc file
 
-              :Returns: The function returns a tuple containing
-                *numframes*
-                   an int with the total frame count in the trajectory
-                *offsets*
-                   a numpy array of int64 recording the starting byte offset of each frame
+              :Returns:
+                a tuple containing:
+                  *numframes*
+                     an int with the total frame count in the trajectory
+                  *offsets*
+                     a numpy array of int64 recording the starting byte offset of each frame
 
               :Raises: :exc:`IOError` if the supplied filed is not a XTC 
                        or if it is not readable.
@@ -206,16 +206,17 @@ The advantage of XTC over TRR is its significantly reduced size.
                    pre-allocated numpy ``array((natoms, DIM),dtype=numpy.float32)``
                    which is updated with the coordinates from the frame
 
-              :Returns: The function returns a tuple containing
-                *status*
-                   integer status (0 = exdrOK), see `Status symbols`_ for other
-                   values)
-                *step*
-                   simulation step
-                *time*
-                   simulation time in ps
-                *precision*
-                   precision of the lossy xtc format (typically 1000.0)
+              :Returns:
+                a tuple containing:
+                  *status*
+                     integer status (0 = exdrOK), see `Status symbols`_ for other
+                     values)
+                  *step*
+                     simulation step
+                  *time*
+                     simulation time in ps
+                  *precision*
+                     precision of the lossy xtc format (typically 1000.0)
 
 .. function:: write_xtc(XDRFILE, step, time, box, x, prec) -> status
 
@@ -269,11 +270,12 @@ calculations. Velocities and forces are optional in the sense that they can be a
                 *fn*
                    file name of an xtc file
 
-              :Returns: The function returns a tuple containing
-                *numframes*
-                   an int with the total frame count in the trajectory
-                *offsets*
-                   a numpy array of int64 recording the starting byte offset of each frame
+              :Returns:
+                a tuple containing:
+                  *numframes*
+                     an int with the total frame count in the trajectory
+                  *offsets*
+                     a numpy array of int64 recording the starting byte offset of each frame
 
               :Raises: :exc:`IOError` if the supplied filed is not a TRR or if it is not readable.
 
@@ -297,22 +299,23 @@ calculations. Velocities and forces are optional in the sense that they can be a
                    pre-allocated numpy ``array((natoms, DIM),dtype=nump.float32)``
                    which is updated with the **forces** from the frame
 
-              :Returns: The function returns a tuple containing
-                *status*
-                   integer status (0 = exdrOK), see the ``libxdrfile2.exdr*`` constants 
-                   under `Status symbols`_ for other values)
-                *step*
-                   simulation step
-                *time*
-                   simulation time in ps
-                *lambda*
-                   current lambda value (only interesting for free energy perturbation)
-                *has_x*
-                   boolean indicating whether coordinates were read from the TRR
-                *has_v*
-                   boolean indicating whether velocities were read from the TRR
-                *has_f*
-                   boolean indicating whether forces were read from the TRR
+              :Returns:
+                a tuple containing:
+                  *status*
+                     integer status (0 = exdrOK), see the ``libxdrfile2.exdr*`` constants 
+                     under `Status symbols`_ for other values)
+                  *step*
+                     simulation step
+                  *time*
+                     simulation time in ps
+                  *lambda*
+                     current lambda value (only interesting for free energy perturbation)
+                  *has_x*
+                     boolean indicating whether coordinates were read from the TRR
+                  *has_v*
+                     boolean indicating whether velocities were read from the TRR
+                  *has_f*
+                     boolean indicating whether forces were read from the TRR
 
 .. function:: write_trr(XDRFILE, step, time, lambda, box, x, v, f) -> status
 

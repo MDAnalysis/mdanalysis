@@ -20,10 +20,10 @@ Gromacs XTC file IO --- :mod:`MDAnalysis.coordinates.XTC`
 =========================================================
 
 .. versionchanged:: 0.8.0
-The XTC I/O interface now uses :mod:`libxdrfile2`, which has seeking and
-indexing capabilities. Note that unlike :mod:`libxdrfile` before it,
-:mod:`libxdrfile2` is distributed under the GNU GENERAL PUBLIC LICENSE,
-version 2 (or higher).
+   The XTC I/O interface now uses :mod:`libxdrfile2`, which has seeking and
+   indexing capabilities. Note that unlike :mod:`libxdrfile` before it,
+   :mod:`libxdrfile2` is distributed under the GNU GENERAL PUBLIC LICENSE,
+   version 2 (or higher).
 
 .. automodule:: MDAnalysis.coordinates.xdrfile.XTC
    :members:
