@@ -102,7 +102,7 @@ Status symbols
 ~~~~~~~~~~~~~~
 
 A number of symbols are exported; they all start with the letters
-``exdr``. Important ones are listed here:
+``exdr``. Important ones are:
 
 .. data:: exdrOK
 
@@ -121,6 +121,43 @@ A number of symbols are exported; they all start with the letters
 
           :func:`xdrfile_open` cannot find the requested file
 
+Other symbols that are used internally are:
+
+.. data:: exdrHEADER
+
+          header
+
+.. data:: exdrSTRING
+
+          string
+
+.. data:: exdrDOUBLE
+
+          double precision floating point number
+
+.. data:: exdrINT
+
+          integer
+
+.. data:: exdrFLOAT
+
+          floating point number
+
+.. data:: exdrUINT
+
+          unsigned integer
+
+.. data:: exdr3DX
+
+          compressed 3D coordinates
+
+.. data:: exdrMAGIC
+
+          magic number
+
+.. data:: exdrNOMEM
+
+          not enough memory to allocate space for a XDR data structure.      
 
 Opening and closing of XDR files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
