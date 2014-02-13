@@ -76,8 +76,10 @@ class Timestep(core.Timestep):
          ``True`` depending on the existence of :attr:`~Timestep._velocities`
          and :attr:`~Timestep._forces` (:attr:`~Timestep._pos` is assumed to
          always be there, so in this case :attr:`~Timestep.has_x` defaults to
-         ``True``).  3. when *arg* is a numpy array, the default flags will
-         reflect what information is passed in the array.
+         ``True``).
+
+      3. when *arg* is a numpy array, the default flags will reflect what
+         information is passed in the array.
 
     TRR :class:`Timestep` objects are now fully aware of the existence or not of
     coordinate/velocity/force information in frames, reflected in the
