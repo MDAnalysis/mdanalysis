@@ -39,10 +39,13 @@ The generic classes are subclassed to generate the specific classes
 for the XTC and TRR format.
 
 .. versionchanged:: 0.8.0
-The XTC/TRR I/O interface now uses :mod:`libxdrfile2`, which has seeking and
-indexing capabilities. Note that unlike :mod:`libxdrfile` before it,
-:mod:`libxdrfile2` is distributed under the GNU GENERAL PUBLIC LICENSE,
-version 2 (or higher).
+
+   The XTC/TRR I/O interface now uses
+   :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2`, which has seeking and
+   indexing capabilities. Note that unlike
+   :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile` before it,
+   :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2` is distributed under the
+   GNU GENERAL PUBLIC LICENSE, version 2 (or higher).
 
 .. autoclass:: Timestep
    :members:
@@ -157,7 +160,7 @@ class TrjWriter(base.Writer):
              skip between subsequent timesteps; only used when *delta* is set.
           *delta*
              timestep to use. If set will override any time information contained in the
-             passed :class:`Timestep` objects; otherwise that will be used. If in the 
+             passed :class:`Timestep` objects; otherwise that will be used. If in the
              latter case :attr:`~Timestep.time` is unavailable the TrjWriter will default
              to setting the trajectory time at 1 MDAnalysis unit (typically 1ps) per step.
           *precision*
@@ -283,9 +286,9 @@ class TrjWriter(base.Writer):
                 if self.convert_units:
                     pos = self.convert_pos_to_native(ts._pos, inplace=False)
                 else:
-                    pos = ts._pos 
+                    pos = ts._pos
             else:
-                pos = self._emptyarr 
+                pos = self._emptyarr
             #VELOCITIES
             if has_v:
                 if self.convert_units:
@@ -579,7 +582,7 @@ class TrjReader(base.Reader):
         :Returns: appropriate :class:`TrjWriter`
         """
         numatoms = kwargs.pop('numatoms', self.numatoms)
-        kwargs['step'] = self.skip_timestep 
+        kwargs['step'] = self.skip_timestep
         kwargs.setdefault('delta', self.delta)
         try:
             kwargs['start'] = self[0].time/kwargs['delta']

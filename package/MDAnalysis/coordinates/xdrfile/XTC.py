@@ -15,7 +15,12 @@
 #     doi:10.1002/jcc.21787
 #
 
-"""Reading of `Gromacs XTC trajectories`_.
+"""
+Gromacs XTC trajectory I/O
+==========================
+
+Reading of `Gromacs XTC trajectories`_. Users should access the classes through
+:mod:`MDAnalysis.coordinates.XTC`.
 
 .. _Gromacs XTC trajectories: http://www.gromacs.org/Documentation/File_Formats/.xtc_File
 .. _Gromacs: http://www.gromacs.org
@@ -44,11 +49,17 @@ class Timestep(core.Timestep):
     """Timestep for a Gromacs XTC trajectory."""
 
 class XTCWriter(core.TrjWriter):
-    """Write a Gromacs_ XTC trajectory."""
+    """Write a Gromacs_ XTC trajectory.
+
+    .. _Gromacs: http://www.gromacs.org
+    """
     format = "XTC"
 
 class XTCReader(core.TrjReader):
-    """Read Gromacs_ XTC trajectory."""
+    """Read Gromacs_ XTC trajectory.
+
+    .. _Gromacs: http://www.gromacs.org
+    """
     format = "XTC"
     _Timestep = Timestep
     _Writer = XTCWriter

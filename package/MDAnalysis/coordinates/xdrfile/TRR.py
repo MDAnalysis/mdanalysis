@@ -16,7 +16,11 @@
 #
 
 """
-Reading of `Gromacs TRR trajectories`_.
+Gromacs TRR I/O
+===============
+
+Reading of `Gromacs TRR trajectories`_. Users should access classes
+from :mod:`MDAnalysis.coordinates.TRR`.
 
 .. _Gromacs TRR trajectories: http://www.gromacs.org/Documentation/File_Formats/.trr_File
 .. _Gromacs: http://www.gromacs.org
@@ -57,45 +61,53 @@ class Timestep(core.Timestep):
          ``(numatoms, 9)`` (for positions, velocities, and forces): ``positions = arg[:,:3]``,
          ``velocities = arg[:,3:6]``, and ``forces = arg[:,6:]``.
 
-    The constructor also takes the named arguments *has_x*, *has_v*, and *has_f*, which
-    are used to set the :class:`Timestep` flags :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, and :attr:`~Timestep.has_f`, described below.
-    Depending on the *arg* use-case above, the defaults set for these flags will vary:
+    The constructor also takes the named arguments *has_x*, *has_v*, and
+    *has_f*, which are used to set the :class:`Timestep` flags
+    :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, and
+    :attr:`~Timestep.has_f`, described below.  Depending on the *arg* use-case
+    above, the defaults set for these flags will vary:
 
-      1. when *arg* is an integer :attr:`~Timestep.has_x` defaults to ``True`` and :attr:`~Timestep.has_v` and :attr:`~Timestep.has_f` to ``False``.
-      2. when *arg* is another :class:`Timestep` instance the flags will default to being
-         copied from the passed :class:`Timestep`. If that instance has no 'has_*' flags
-         the behavior is to assign them to ``True`` depending on the existence of
-         :attr:`~Timestep._velocities` and :attr:`~Timestep._forces` (:attr:`~Timestep._pos`
-         is assumed to always be there, so in this case :attr:`~Timestep.has_x` defaults to
-         ``True``).
-      3. when *arg* is a numpy array, the default flags will reflect what information is passed
-         in the array.
+      1. when *arg* is an integer :attr:`~Timestep.has_x` defaults to ``True``
+         and :attr:`~Timestep.has_v` and :attr:`~Timestep.has_f` to ``False``.
+
+      2. when *arg* is another :class:`Timestep` instance the flags will
+         default to being copied from the passed :class:`Timestep`. If that
+         instance has no 'has_*' flags the behavior is to assign them to
+         ``True`` depending on the existence of :attr:`~Timestep._velocities`
+         and :attr:`~Timestep._forces` (:attr:`~Timestep._pos` is assumed to
+         always be there, so in this case :attr:`~Timestep.has_x` defaults to
+         ``True``).  3. when *arg* is a numpy array, the default flags will
+         reflect what information is passed in the array.
+
+    TRR :class:`Timestep` objects are now fully aware of the existence or not of
+    coordinate/velocity/force information in frames, reflected in the
+    :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, and :attr:`~Timestep.has_f` flags.
+    Accessing either kind of information while the corresponding flag is set to ``False``
+    wil raise a :exc:`NoDataError`. Internally, however, the arrays are always populated,
+    even when the flags are ``False``; upon creation of a :class:`Timestep` they are
+    zero-filled, but this might not always be the case later on for properties flagged as
+    ``False`` if the same :class:`Timestep` instance is used to read from a TRR frame.
+
+    When doing low-level writing to :attr:`~Timestep._pos`, :attr:`~Timestep._velocities`,
+    or :attr:`~Timestep._forces:attr:, the corresponding flags must be set beforehand. The
+    TRR :class:`Timestep` constructor allows for the named boolean arguments *has_x*,
+    *has_v*, and *has_f* to be passed for automatic setting of the corresponding flag.
+    An exception to this is assignment to the full property array thus::
+
+        ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms
+        ts._velocities = vel_array   # Where vel_array is an existing array of shape (N, DIM)
+                                     #  This will also automatically set 'has_v' to True.
+
+    Attempting to populate the array instead will, however, raise a NoDataError exception::
+
+        ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms
+        ts._velocities[:] = vel_array   #  This will fail if 'has_v' hasn't been set to True.
 
     .. versionchanged:: 0.8.0
-       TRR :class:`Timestep` objects are now fully aware of the existence or not of
-       coordinate/velocity/force information in frames, reflected in the
-       :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, and :attr:`~Timestep.has_f` flags.
-       Accessing either kind of information while the corresponding flag is set to ``False``
-       wil raise a :exc:`NoDataError`. Internally, however, the arrays are always populated,
-       even when the flags are ``False``; upon creation of a :class:`Timestep` they are
-       zero-filled, but this might not always be the case later on for properties flagged as
-       ``False`` if the same :class:`Timestep` instance is used to read from a TRR frame.
+       TRR :class:`Timestep` objects are now fully aware of the existence or
+       not of coordinate/velocity/force information in frames.
 
-       When doing low-level writing to :attr:`~Timestep._pos`, :attr:`~Timestep._velocities`,
-       or :attr:`~Timestep._forces:attr:, the corresponding flags must be set beforehand. The
-       TRR :class:`Timestep` constructor allows for the named boolean arguments *has_x*,
-       *has_v*, and *has_f* to be passed for automatic setting of the corresponding flag.
-       An exception to this is assignment to the full property array thus::
-
-           ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms
-           ts._velocities = vel_array   # Where vel_array is an existing array of shape (N, DIM)
-                                        #  This will also automatically set 'has_v' to True.
-
-       Attempting to populate the array instead will, however, raise a NoDataError exception::
-
-           ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms
-           ts._velocities[:] = vel_array   #  This will fail if 'has_v' hasn't been set to True.
-
+    .. _Gromacs: http://www.gromacs.org
     """
     # The exception error
     _nodataerr = "You are accessing the %s of a Timestep but there are none in this frame. \
@@ -138,7 +150,7 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
             self.has_f = kwargs.pop('has_f', arg.__dict__.get("has_f", hasattr(arg, "_forces")))
             # We now either copy the properties or initialize a zeros array, depending on whether the passed ts
             #  has the appropriate 'has_' flags set or has the attribute. If the attribute is there but the 'has_'
-            #  flag is False we initialize to zeros (it's just as slow and it makes no sense to copy data from 
+            #  flag is False we initialize to zeros (it's just as slow and it makes no sense to copy data from
             #  undefined behavior).
             #
             # Copies are done using the casted numpy.array function, which serves to early identify invalid input data.
@@ -271,7 +283,7 @@ has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((s
             raise ValueError("You are attempting to set the velocities array of a Timestep with an array \
 that doesn't have the same number of atoms or the same number of dimensions. The Timestep \
 has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((self.numatoms,libxdrfile2.DIM),v.shape))
-    
+
     #FORCES
     @property
     def _forces(self):
@@ -290,7 +302,10 @@ that doesn't have the same number of atoms or the same number of dimensions. The
 has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((self.numatoms,libxdrfile2.DIM),f.shape))
 
 class TRRWriter(core.TrjWriter):
-    """Write a Gromacs_ TRR trajectory."""
+    """Write a Gromacs_ TRR trajectory.
+
+    .. _Gromacs: http://www.gromacs.org
+    """
     format = "TRR"
     units = {'time': 'ps', 'length':'nm', 'velocity':'nm/ps', 'force':'kJ/(mol*nm)'}
 
@@ -304,6 +319,7 @@ class TRRReader(core.TrjReader):
        Attempting to access such data when the corresponding flag is set to ``False``
        will raise a :exc:`NoDataError`.
 
+    .. _Gromacs: http://www.gromacs.org
     """
     format = "TRR"
     _Timestep = Timestep

@@ -30,14 +30,30 @@ The TRR format can store *velocities* and *forces* in addition to
 coordinates. It is also used by other Gromacs tools to store and
 process other data such as modes from a principal component analysis.
 
+The TRR I/O interface uses :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2`
+to implement random access to frames. This works by initially building an
+internal index of all frames and then using this index for direct
+seeks. Building the index is triggered by
+:func:`~MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_numframes`, which
+typically happens when one accesses the :attr:`TRRReader.numframes` attribute
+for the first time. Building the index may take many minutes for large
+trajectories but afterwards access is faster than with native Gromacs tools.
+
+
 .. _TRR trajectory format:
    http://www.gromacs.org/Documentation/File_Formats/.trr_File
 
 .. versionchanged:: 0.8.0
-   The TRR I/O interface now uses :mod:`libxdrfile2`, which has seeking and
-   indexing capabilities. Note that unlike :mod:`libxdrfile` before it,
-   :mod:`libxdrfile2` is distributed under the GNU GENERAL PUBLIC LICENSE,
-   version 2 (or higher).
+   The TRR I/O interface now uses
+   :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2`, which has seeking and
+   indexing capabilities. Note that unlike
+   :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile` before it,
+   :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2` is distributed under the
+   GNU GENERAL PUBLIC LICENSE, version 2 (or higher).
+   :class:`~MDAnalysis.coordinates.TRR.Timestep` now correctly deals
+   with presence/absence of coordinate/velocity/force information on a
+   per-frame basis.
+
 
 Tips and Tricks
 ---------------
@@ -96,8 +112,17 @@ and the mode coordinates are filling the
 Module reference
 ----------------
 
-.. automodule:: MDAnalysis.coordinates.xdrfile.TRR
+.. autoclass:: Timestep
    :members:
+   :inherited-members:
+
+.. autoclass:: TRRReader
+   :members:
+   :inherited-members:
+
+.. autoclass:: TRRWriter
+   :members:
+   :inherited-members:
 """
 
 from xdrfile.TRR import TRRReader, TRRWriter, Timestep
