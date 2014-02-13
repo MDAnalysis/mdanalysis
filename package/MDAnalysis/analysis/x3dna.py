@@ -38,17 +38,11 @@ separately.
             Nucleic Acids Res. 31(17), 5108-21.
 
 .. [Lu2008] Xiang-Jun Lu & Wilma K. Olson (2008).
-<<<<<<< HEAD
-           3DNA: a versatile, integrated software system for the analysis, rebuilding
-           and visualization of three-dimensional nucleic-acid structures.
-           Nat Protoc. 3(7), 1213-27.
-=======
             3DNA: a versatile, integrated software system for the analysis, rebuilding
             and visualization of three-dimensional nucleic-acid structures.
             Nat Protoc. 3(7), 1213-27.
->>>>>>> 11c1fd94e190c5c5ddc13f49c9893a84f8d9b373
 
-.. _X3DNA: http://http://x3dna.org/
+.. _X3DNA: http://x3dna.org/
 
 
 Examples
