@@ -51,7 +51,7 @@ access is faster than with native Gromacs tools.
    :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile` before it,
    :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2` is distributed
    under the GNU GENERAL PUBLIC LICENSE, version 2 (or higher).
-   :class:`~MDAnalysis.coordinates.TRR.Timestep` now correctly
+   :class:`~MDAnalysis.coordinates.XTC.Timestep` now correctly
    deals with presence/absence of coordinate/velocity/force
    information on a per-frame basis.
 
