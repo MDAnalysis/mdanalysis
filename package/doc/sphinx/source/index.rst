@@ -109,6 +109,7 @@ Contents
    ./documentation_pages/selections_modules
    ./documentation_pages/core_modules
    ./documentation_pages/KDTree_modules
+   ./documentation_pages/visualization_modules
 
 	
 

@@ -1,8 +1,15 @@
-'''Multicore 2D streamplot Python library for MDAnalysis :mod:`MDAnalysis.visualization.streamlines`
-==============================================================
+'''
+Multicore 2D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visualization.streamlines`
+=====================================================================================================
+
 :Authors: Tyler Reddy and Matthieu Chavent
 :Year: 2014
-:Copyright: GNU Public License v3'''
+:Copyright: GNU Public License v3
+:Citation: [Chavent_and_Reddy_2014]_
+
+.. autofunction:: generate_streamlines
+
+'''
 
 try:
     import matplotlib, matplotlib.nxutils
@@ -110,7 +117,66 @@ def per_core_work(coordinate_file_path,trajectory_file_path,list_square_vertex_a
     return zip(reconstruction_index_list,xy_deltas_to_write.tolist())
 
 def generate_streamlines(coordinate_file_path,trajectory_file_path,grid_spacing,MDA_selection,start_frame,end_frame,xmin,xmax,ymin,ymax,maximum_delta_magnitude,num_cores='maximum'):
-    '''The main control function of the code. The various steps in the workflow should be performed in order here.'''
+    '''Produce the x and y components of a 2D streamplot data set.
+    
+    :Parameters:
+        **coordinate_file_path** : str
+            Absolute path to the coordinate file
+        **trajectory_file_path** : str
+            Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool such as GROMACS g_filter (see [Chavent_and_Reddy_2014]_)
+        **grid_spacing** : float
+            The spacing between grid lines (angstroms)
+        **MDA_selection** : str
+            MDAnalysis selection string
+        **start_frame** : int
+            First frame number to parse
+        **end_frame** : int
+            Last frame number to parse
+        **xmin** : float
+            Minimum coordinate boundary for x-axis (angstroms)
+        **xmax** : float
+            Maximum coordinate boundary for x-axis (angstroms)
+        **ymin** : float
+            Minimum coordinate boundary for y-axis (angstroms)
+        **ymax** : float
+            Maximum coordinate boundary for y-axis (angstroms)
+        **maximum_delta_magnitude** : float
+            Absolute value of the largest displacement tolerated for the centroid of a group of particles (angstroms). Values above this displacement will not count in the streamplot (treated as excessively large displacements crossing the periodic boundary)
+        **num_cores** : int, optional
+            The number of cores to use. (Default 'maximum' uses all available cores)
+
+    :Returns:
+        **dx_array** : array of floats
+            An array object containing the displacements in the x direction
+        **dy_array** : array of floats
+            An array object containing the displacements in the y direction
+        **average_displacement** : float
+            :math:`\\frac {\\sum \\sqrt[]{dx^2 + dy^2}} {N}`
+        **standard_deviation_of_displacement** : float
+            standard deviation of :math:`\\sqrt[]{dx^2 + dy^2}`
+            
+    :Examples:
+
+    ::
+
+        import matplotlib, matplotlib.pyplot, numpy
+        import MDAnalysis, MDAnalysis.visualization.streamlines
+        u1, v1, average_displacement,standard_deviation_of_displacement = MDAnalysis.visualization.streamlines.generate_streamlines('testing.gro','testing_filtered.xtc',grid_spacing = 20, MDA_selection = 'name PO4',start_frame=2,end_frame=3,xmin=-8.73000049591,xmax= 1225.96008301,ymin= -12.5799999237, ymax=1224.34008789,maximum_delta_magnitude = 1.0,num_cores=16)
+        x = numpy.linspace(0,1200,61)
+        y = numpy.linspace(0,1200,61)
+        speed = numpy.sqrt(u1*u1 + v1*v1)
+        fig = matplotlib.pyplot.figure()
+        ax = fig.add_subplot(111,aspect='equal')
+        ax.set_xlabel('x ($\AA$)')
+        ax.set_ylabel('y ($\AA$)')
+        ax.streamplot(x,y,u1,v1,density=(10,10),color=speed,linewidth=3*speed/speed.max())
+        fig.savefig('testing_streamline.png',dpi=300)
+    
+    .. image:: testing_streamline.png
+
+    .. [Chavent_and_Reddy_2014] Chavent, M.\*, Reddy, T.\*, Dahl, C.E., Goose, J., Jobard, B., and Sansom, M.S.P. (2014) Methodologies for the analysis of instantaneous lipid diffusion in MD simulations of large membrane systems. *Faraday Discussions* **169**: **Accepted**
+
+    '''
     #work out the number of cores to use:
     if num_cores == 'maximum':
         num_cores = multiprocessing.cpu_count() #use all available cores
@@ -155,3 +221,4 @@ def generate_streamlines(coordinate_file_path,trajectory_file_path,grid_spacing,
 
 #if __name__ == '__main__': #execute the main control function only if this file is called as a top-level script
     #will probably mostly use this for testing on a trajectory:
+
