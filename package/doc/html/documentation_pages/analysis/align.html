@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -117,8 +119,8 @@
 </table>
 <p>The module contains functions to fit a target structure to a reference
 structure. They use the fast QCP algorithm to calculate the root mean
-square distance (RMSD) between two coordinate sets <a class="reference internal" href="../core/qcprot.html#theobald2005" id="id1">[Theobald2005]</a> and
-the rotation matrix <em>R</em> that minimizes the RMSD <a class="reference internal" href="../core/qcprot.html#liu2010" id="id2">[Liu2010]</a>. (Please
+square distance (RMSD) between two coordinate sets <a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a> and
+the rotation matrix <em>R</em> that minimizes the RMSD <a class="reference internal" href="../core/qcprot.html#liu2010">[Liu2010]</a>. (Please
 cite these references when using this module.).</p>
 <p>Typically, one selects a group of atoms (such as the C-alphas),
 calculates the RMSD and transformation matrix, and applys the
@@ -128,7 +130,7 @@ functions can be used to do this for individual frames and
 trajectories respectively.</p>
 <p>The <a class="reference internal" href="#rms-fitting-tutorial"><em>RMS-fitting tutorial</em></a> shows how to do the individual steps
 manually and explains the intermediate steps.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
 <dt><a class="reference internal" href="rms.html#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a></dt>
@@ -236,7 +238,7 @@ the center.</p>
 <p>The <em>weights</em> can be an array of length N, containing e.g. masses
 for a weighted RMSD calculation.</p>
 <p>The function uses Douglas Theobald&#8217;s fast QCP algorithm
-<a class="reference internal" href="../core/qcprot.html#theobald2005" id="id4">[Theobald2005]</a> to calculate the RMSD.</p>
+<a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a> to calculate the RMSD.</p>
 <dl class="docutils">
 <dt>Example::</dt>
 <dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
@@ -285,7 +287,7 @@ is safest not to mix ordered AtomGroups with selection strings.</strong></p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>mobile</em></dt>
 <dd><p class="first last">structure to be aligned, a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>
 or a whole <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a></p>
@@ -335,20 +337,19 @@ protein, ligands and the surrounding water)</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">RMSD before and after spatial alignment.</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">RMSD before and after spatial alignment.</p>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">For RMSD-fitting trajectories it is more efficient to
 use <a class="reference internal" href="#MDAnalysis.analysis.align.rms_fit_trj" title="MDAnalysis.analysis.align.rms_fit_trj"><tt class="xref py py-func docutils literal"><span class="pre">rms_fit_trj()</span></tt></a>.</p>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8: </span>Added check that the two groups describe the same atoms including
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8: </span>Added check that the two groups describe the same atoms including
 the new <em>tol_mass</em> keyword.</p>
-</div>
 </dd></dl>
 
 <dl class="function">
@@ -364,7 +365,7 @@ universe if one wants to fit to the current frame.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>traj</em></dt>
 <dd><p class="first last">trajectory, <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> object</p>
 </dd>
@@ -429,15 +430,14 @@ and setting different parameters as described for the corresponding writer).</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>filename</em> (either provided or auto-generated)</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>filename</em> (either provided or auto-generated)</p>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>kwargs</em> to be passed to the trajectory <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Writer" title="MDAnalysis.coordinates.base.Writer"><tt class="xref py py-class docutils literal"><span class="pre">Writer</span></tt></a> and
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8: </span>Added <em>kwargs</em> to be passed to the trajectory <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Writer" title="MDAnalysis.coordinates.base.Writer"><tt class="xref py py-class docutils literal"><span class="pre">Writer</span></tt></a> and
 <em>filename</em> is returned.</p>
-</div>
 </dd></dl>
 
 </div>
@@ -475,7 +475,7 @@ sequence of resids as they appear in the psf in <em>ref_resids</em> or
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>fastafilename</em></dt>
 <dd><p class="first last">FASTA file with first sequence as reference and
 second the one to be aligned (ORDER IS IMPORTANT!)</p>
@@ -515,7 +515,7 @@ needed for <em>is_aligned</em> = <tt class="docutils literal"><span class="pre">
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>select_dict</em></dt>
 <dd><p class="first last">dictionary with &#8216;reference&#8217; and &#8216;mobile&#8217; selection string
 that can be used immediately in <a class="reference internal" href="#MDAnalysis.analysis.align.rms_fit_trj" title="MDAnalysis.analysis.align.rms_fit_trj"><tt class="xref py py-func docutils literal"><span class="pre">rms_fit_trj()</span></tt></a> as
@@ -542,14 +542,14 @@ than <em>tol_mass</em> the test is considered failed.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>ag1</em>, <em>ag2</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> instances that are compared</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>tol_mass</em></dt>
 <dd><p class="first last">Reject if the atomic masses for matched atoms differ by more than
 <em>tol_mass</em> [0.1]</p>
@@ -557,14 +557,13 @@ than <em>tol_mass</em> the test is considered failed.</li>
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">SelectionError</span></tt> if any of the tests fails.</p>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">SelectionError</span></tt> if any of the tests fails.</p>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 </div>
@@ -603,7 +602,7 @@ than <em>tol_mass</em> the test is considered failed.</li>
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

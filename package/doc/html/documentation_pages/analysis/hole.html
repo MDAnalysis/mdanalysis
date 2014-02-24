@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -121,7 +123,7 @@
 </tbody>
 </table>
 <p>With the help of this module, <a class="reference external" href="http://hole.biop.ox.ac.uk/hole">HOLE</a> can be run on frames in a trajectory. Data
-can be combined and analyzed. <a class="reference external" href="http://hole.biop.ox.ac.uk/hole">HOLE</a> <a class="reference internal" href="#smart1993" id="id1">[Smart1993]</a> <a class="reference internal" href="#smart1996" id="id2">[Smart1996]</a> must be installed
+can be combined and analyzed. <a class="reference external" href="http://hole.biop.ox.ac.uk/hole">HOLE</a> <a class="reference internal" href="#smart1993">[Smart1993]</a> <a class="reference internal" href="#smart1996">[Smart1996]</a> must be installed
 separately.</p>
 <p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="smart1993" rules="none">
@@ -252,15 +254,14 @@ when permissions are not correctly set on the current directory.</p>
 </div></blockquote>
 <p>The class also provides some simple plotting functions of the collected
 data such as <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE.plot" title="MDAnalysis.analysis.hole.HOLE.plot"><tt class="xref py py-meth docutils literal"><span class="pre">HOLE.plot()</span></tt></a> or <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE.plot3D" title="MDAnalysis.analysis.hole.HOLE.plot3D"><tt class="xref py py-meth docutils literal"><span class="pre">HOLE.plot3D()</span></tt></a>.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 <p>Set up parameters to run <a class="reference external" href="http://hole.biop.ox.ac.uk/hole">HOLE</a> on PDB <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><p class="first"><em>filename</em></p>
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><p class="first"><em>filename</em></p>
 <blockquote>
 <div><p>The <em>filename</em> is used as input for HOLE in the &#8220;COORD&#8221; card of
 the input file.  It specifies the name of a PDB co-ordinate file
@@ -283,7 +284,7 @@ read independently so that they need not have an identical
 number of atoms or atom order etc. (though they should be
 sufficiently similar for a HOLE run from identical starting
 conditions to be useful).</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">An alternative way to load in multiple files is a direct read
 from a CHARMM binary dynamics DCD coordinate file - using the
@@ -292,7 +293,7 @@ from a CHARMM binary dynamics DCD coordinate file - using the
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>dcd</em></dt>
 <dd><p class="first">DCD trajectory (must be supplied together with a matching
 PDB file <em>filename</em>) and then HOLE runs its analysis on each frame.</p>
@@ -509,7 +510,7 @@ saved to a gzipped data file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>run</em></dt>
 <dd><p class="first last">identifier, free form [1]</p>
 </dd>
@@ -564,7 +565,7 @@ the <em>ignore_residues</em> keyword.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>step</em></dt>
 <dd><p class="first last">only plot every <em>step</em> profile [1]</p>
 </dd>
@@ -614,7 +615,7 @@ legend is displayed</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>step</em></dt>
 <dd><p class="first last">only plot every <em>step</em> profile [1]</p>
 </dd>
@@ -675,7 +676,7 @@ each frame and runs HOLE on the frame.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last">The input trajectory as part of a
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>. trajectory is
@@ -743,7 +744,7 @@ as a guess. <em>selection</em> is &#8220;protein&#8221; by default.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>step</em></dt>
 <dd><p class="first last">only plot every <em>step</em> profile [1]</p>
 </dd>
@@ -793,7 +794,7 @@ legend is displayed</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>step</em></dt>
 <dd><p class="first last">only plot every <em>step</em> profile [1]</p>
 </dd>
@@ -880,10 +881,8 @@ The data file can be written with the convenience function <a class="reference i
 <em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.hole.</tt><tt class="descname">ApplicationError</tt><a class="headerlink" href="#MDAnalysis.analysis.hole.ApplicationError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when an external application failed.</p>
 <p>The error code is specific for the application.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 </div>
@@ -922,7 +921,7 @@ The data file can be written with the convenience function <a class="reference i
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

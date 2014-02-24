@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -117,17 +119,16 @@
 </tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 <p>The module contains code to analyze root mean square quantities such
 as the RMSD or RMSF (not implemented yet).</p>
-<p>This module uses the fast QCP algorithm <a class="reference internal" href="../core/qcprot.html#theobald2005" id="id1">[Theobald2005]</a> to calculate
+<p>This module uses the fast QCP algorithm <a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a> to calculate
 the root mean square distance (RMSD) between two coordinate sets (as
 implemented in
 <a class="reference internal" href="../core/qcprot.html#MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix()</span></tt></a>).</p>
-<p>When using this module in published work please cite <a class="reference internal" href="../core/qcprot.html#theobald2005" id="id2">[Theobald2005]</a>.</p>
-<div class="admonition seealso">
+<p>When using this module in published work please cite <a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a>.</p>
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
 <dt><a class="reference internal" href="align.html#module-MDAnalysis.analysis.align" title="MDAnalysis.analysis.align"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></dt>
@@ -207,7 +208,7 @@ the center.</p>
 <p>The <em>weights</em> can be an array of length N, containing e.g. masses
 for a weighted RMSD calculation.</p>
 <p>The function uses Douglas Theobald&#8217;s fast QCP algorithm
-<a class="reference internal" href="../core/qcprot.html#theobald2005" id="id3">[Theobald2005]</a> to calculate the RMSD.</p>
+<a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a> to calculate the RMSD.</p>
 <dl class="docutils">
 <dt>Example::</dt>
 <dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
@@ -235,10 +236,9 @@ in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.r
 <div class="highlight-python"><pre>frame    time (ps)    RMSD (A)</pre>
 </div>
 <p>This class uses Douglas Theobald&#8217;s fast QCP algorithm
-<a class="reference internal" href="../core/qcprot.html#theobald2005" id="id4">[Theobald2005]</a> to calculate the RMSD.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a> to calculate the RMSD.</p>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 <p>Setting up the RMSD analysis.</p>
 <p>The RMSD will be computed between <em>select</em> and <em>reference</em> for
 all frames in the trajectory in <em>universe</em>.</p>
@@ -246,7 +246,7 @@ all frames in the trajectory in <em>universe</em>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>traj</em></dt>
 <dd><p class="first last">universe (<tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> object) that contains a
 trajectory</p>
@@ -297,12 +297,10 @@ The output contains one additional column for each selection. [<tt class="docuti
 </tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8: </span><em>groupselections</em> added</p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8: </span><em>groupselections</em> added</p>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rms.RMSD.rmsd">
 <tt class="descname">rmsd</tt><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="Permalink to this definition">¶</a></dt>
@@ -320,7 +318,7 @@ result is stored as the array <a class="reference internal" href="#MDAnalysis.an
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>start</em>, <em>stop</em>, <em>step</em></dt>
 <dd><p class="first last">start and stop frame index with step size: analyse
 <tt class="docutils literal"><span class="pre">trajectory[start:stop:step]</span></tt> [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
@@ -389,7 +387,7 @@ constructor is used.</p>
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

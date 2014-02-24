@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -6,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.17. The Gromacs xtc/trr library libxdrfile2 &mdash; MDAnalysis 0.8.1rc1 documentation</title>
+    <title>5.17. The Gromacs XTC/TRR library libxdrfile2 &mdash; MDAnalysis 0.8.1rc1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -60,8 +62,8 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.17. The Gromacs xtc/trr library <tt class="docutils literal"><span class="pre">libxdrfile2</span></tt></a><ul>
-<li><a class="reference internal" href="#example-reading-from-a-xtc">5.17.1. Example: Reading from a xtc</a></li>
+<li><a class="reference internal" href="#">5.17. The Gromacs XTC/TRR library <tt class="docutils literal"><span class="pre">libxdrfile2</span></tt></a><ul>
+<li><a class="reference internal" href="#example-reading-from-a-xtc">5.17.1. Example: Reading from a XTC</a></li>
 <li><a class="reference internal" href="#functions-and-constants">5.17.2. Functions and constants</a><ul>
 <li><a class="reference internal" href="#status-symbols">5.17.2.1. Status symbols</a></li>
 <li><a class="reference internal" href="#opening-and-closing-of-xdr-files">5.17.2.2. Opening and closing of XDR files</a></li>
@@ -106,10 +108,10 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.xdrfile.libxdrfile2"></span><div class="section" id="the-gromacs-xtc-trr-library-libxdrfile2">
-<h1>5.17. The Gromacs xtc/trr library <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt><a class="headerlink" href="#the-gromacs-xtc-trr-library-libxdrfile2" title="Permalink to this headline">¶</a></h1>
-<p><tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt> provides an interface to some high-level functions in the
-libxdrfile2 library, a derivative of the <a class="reference external" href="http://www.gromacs.org">Gromacs</a> <a class="reference external" href="http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library">libxdrfile library</a>. Only
-functions required for reading and processing whole trajectories are exposed at
+<h1>5.17. The Gromacs XTC/TRR library <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt><a class="headerlink" href="#the-gromacs-xtc-trr-library-libxdrfile2" title="Permalink to this headline">¶</a></h1>
+<p><tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt>, a derivative of the <a class="reference external" href="http://www.gromacs.org">Gromacs</a> <a class="reference external" href="http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library">libxdrfile library</a>, provides an
+interface to some high-level functions for XTC/TRR trajectory handling.
+Only functions required for reading and processing whole trajectories are exposed at
 the moment; low-level routines to read individual numbers are not provided. In
 addition, <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt> exposes functions to allow fast frame indexing and XDR
 file seeking.</p>
@@ -117,24 +119,21 @@ file seeking.</p>
 (<a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.read_xtc_natoms" title="MDAnalysis.coordinates.xdrfile.libxdrfile2.read_xtc_natoms"><tt class="xref py py-func docutils literal"><span class="pre">read_xtc_natoms()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_natoms" title="MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_natoms"><tt class="xref py py-func docutils literal"><span class="pre">read_trr_natoms()</span></tt></a>) open a file themselves and
 only require the file name.</p>
 <p>All other functions operate on a <em>XDRFILE</em> object, which is a special file
-handle for xdr files.  Any xdr-based trajectory file (xtc or trr format) always
+handle for xdr files.  Any xdr-based trajectory file (XTC or TRR format) always
 has to be opened with <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.xdrfile_open" title="MDAnalysis.coordinates.xdrfile.libxdrfile2.xdrfile_open"><tt class="xref py py-func docutils literal"><span class="pre">xdrfile_open()</span></tt></a>. When done, close the trajectory
 with <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.xdrfile_close" title="MDAnalysis.coordinates.xdrfile.libxdrfile2.xdrfile_close"><tt class="xref py py-func docutils literal"><span class="pre">xdrfile_close()</span></tt></a>.</p>
 <p>The functions fill or read existing arrays of coordinates; they never allocate
 these arrays themselves. Hence they need to be setup outside libxdrfile2 as
 numpy arrays. The exception to these are the indexing ones functions that take
 care of array allocation and transference to a garbage-collectable memory object.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8.0.</span></p>
-</div>
-<p><tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt> is now used instead of <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt>. <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt> is
-based on <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt> but interfaces with libxdrfile2, which has xdr seeking
-and indexing capabilities. Unlike <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt> and libxdrfile before them,
-<tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt> and libxdrfile2 are distributed under the GNU GENERAL PUBLIC
-LICENSE, version 2 (or higher).</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8.0: </span><tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt> is now used instead of <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt>. <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt> is
+based on <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt> but has xdr seeking and indexing capabilities.
+Unlike <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt> before it, <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt> is distributed under the GNU
+GENERAL PUBLIC LICENSE, version 2 (or higher).</p>
 <div class="section" id="example-reading-from-a-xtc">
-<h2>5.17.1. Example: Reading from a xtc<a class="headerlink" href="#example-reading-from-a-xtc" title="Permalink to this headline">¶</a></h2>
-<p>In the example we read coordinate frames from an existing xtc trajectory:</p>
+<h2>5.17.1. Example: Reading from a XTC<a class="headerlink" href="#example-reading-from-a-xtc" title="Permalink to this headline">¶</a></h2>
+<p>In the example we read coordinate frames from an existing XTC trajectory:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">libxdrfile2</span> <span class="kn">import</span> <span class="n">xdrfile_open</span><span class="p">,</span> <span class="n">xdrfile_close</span><span class="p">,</span> <span class="n">read_xtc_natoms</span><span class="p">,</span> <span class="n">read_xtc</span><span class="p">,</span> <span class="n">DIM</span><span class="p">,</span> <span class="n">exdrOK</span>
 <span class="n">xtc</span> <span class="o">=</span> <span class="s">&#39;md.xtc&#39;</span>
@@ -181,7 +180,7 @@ was compiled; this is most certainly 3.</p>
 <div class="section" id="status-symbols">
 <h3>5.17.2.1. Status symbols<a class="headerlink" href="#status-symbols" title="Permalink to this headline">¶</a></h3>
 <p>A number of symbols are exported; they all start with the letters
-<tt class="docutils literal"><span class="pre">exdr</span></tt>. Important ones are listed here:</p>
+<tt class="docutils literal"><span class="pre">exdr</span></tt>. Important ones are:</p>
 <dl class="data">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrOK">
 <tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">exdrOK</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrOK" title="Permalink to this definition">¶</a></dt>
@@ -207,11 +206,66 @@ was compiled; this is most certainly 3.</p>
 <dd><p><a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.xdrfile_open" title="MDAnalysis.coordinates.xdrfile.libxdrfile2.xdrfile_open"><tt class="xref py py-func docutils literal"><span class="pre">xdrfile_open()</span></tt></a> cannot find the requested file</p>
 </dd></dl>
 
+<p>Other symbols that are used internally are:</p>
+<dl class="data">
+<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrHEADER">
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">exdrHEADER</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrHEADER" title="Permalink to this definition">¶</a></dt>
+<dd><p>header</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrSTRING">
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">exdrSTRING</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrSTRING" title="Permalink to this definition">¶</a></dt>
+<dd><p>string</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrDOUBLE">
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">exdrDOUBLE</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrDOUBLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>double precision floating point number</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrINT">
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">exdrINT</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrINT" title="Permalink to this definition">¶</a></dt>
+<dd><p>integer</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrFLOAT">
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">exdrFLOAT</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrFLOAT" title="Permalink to this definition">¶</a></dt>
+<dd><p>floating point number</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrUINT">
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">exdrUINT</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrUINT" title="Permalink to this definition">¶</a></dt>
+<dd><p>unsigned integer</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.exdr3DX">
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">exdr3DX</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.exdr3DX" title="Permalink to this definition">¶</a></dt>
+<dd><p>compressed 3D coordinates</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrMAGIC">
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">exdrMAGIC</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrMAGIC" title="Permalink to this definition">¶</a></dt>
+<dd><p>magic number</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrNOMEM">
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">exdrNOMEM</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.exdrNOMEM" title="Permalink to this definition">¶</a></dt>
+<dd><p>not enough memory to allocate space for a XDR data structure.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="opening-and-closing-of-xdr-files">
 <h3>5.17.2.2. Opening and closing of XDR files<a class="headerlink" href="#opening-and-closing-of-xdr-files" title="Permalink to this headline">¶</a></h3>
 <p>Two low-level functions are used to obtain a <em>XDRFILE</em> object (a file handle)
-to access xdr files such as xtc or trr trajectories.</p>
+to access xdr files such as XTC or TRR trajectories.</p>
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.xdrfile_open">
 <tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">xdrfile_open</tt><big>(</big><em>path</em>, <em>mode</em><big>)</big> &rarr; XDRFILE<a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile2.html#xdrfile_open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.xdrfile_open" title="Permalink to this definition">¶</a></dt>
@@ -221,7 +275,7 @@ functions.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>path</em></dt>
 <dd><p class="first last">file name</p>
 </dd>
@@ -231,7 +285,7 @@ functions.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>XDRFILE</em> handle</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>XDRFILE</em> handle</p>
 </td>
 </tr>
 </tbody>
@@ -266,14 +320,14 @@ multiplied by <em>precision</em> and truncated to the integer part. A typical va
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>fn</em></dt>
 <dd><p class="first last">file name of an xtc file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a XTC 
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a XTC 
 or if it is not readable.</p>
 </td>
 </tr>
@@ -292,26 +346,28 @@ returned, which can later be used to seek direcly to arbitrary frames in the tra
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>fn</em></dt>
 <dd><p class="first last">file name of an xtc file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The function returns a tuple containing
-<em>numframes</em></p>
-<blockquote>
-<div><p>an int with the total frame count in the trajectory</p>
-</div></blockquote>
-<dl class="docutils">
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first docutils">
+<dt>a tuple containing:</dt>
+<dd><dl class="first last docutils">
+<dt><em>numframes</em></dt>
+<dd><p class="first last">an int with the total frame count in the trajectory</p>
+</dd>
 <dt><em>offsets</em></dt>
 <dd><p class="first last">a numpy array of int64 recording the starting byte offset of each frame</p>
 </dd>
 </dl>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a XTC 
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a XTC 
 or if it is not readable.</p>
 </td>
 </tr>
@@ -327,7 +383,7 @@ or if it is not readable.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>XDRFILE</em></dt>
 <dd><p class="first last">open <em>XDRFILE</em> object</p>
 </dd>
@@ -342,13 +398,13 @@ which is updated with the coordinates from the frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The function returns a tuple containing
-<em>status</em></p>
-<blockquote>
-<div><p>integer status (0 = exdrOK), see <a class="reference internal" href="#status-symbols">Status symbols</a> for other
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt>a tuple containing:</dt>
+<dd><dl class="first last docutils">
+<dt><em>status</em></dt>
+<dd><p class="first last">integer status (0 = exdrOK), see <a class="reference internal" href="#status-symbols">Status symbols</a> for other
 values)</p>
-</div></blockquote>
-<dl class="last docutils">
+</dd>
 <dt><em>step</em></dt>
 <dd><p class="first last">simulation step</p>
 </dd>
@@ -357,6 +413,8 @@ values)</p>
 </dd>
 <dt><em>precision</em></dt>
 <dd><p class="first last">precision of the lossy xtc format (typically 1000.0)</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </td>
@@ -373,7 +431,7 @@ values)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>XDRFILE</em></dt>
 <dd><p class="first last">open <em>XDRFILE</em> object (writable)</p>
 </dd>
@@ -397,7 +455,7 @@ which contains the coordinates from the frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>status</em>, integer status (0 = OK), see the <tt class="docutils literal"><span class="pre">libxdrfile2.exdr*</span></tt> 
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>status</em>, integer status (0 = OK), see the <tt class="docutils literal"><span class="pre">libxdrfile2.exdr*</span></tt> 
 constants under <a class="reference internal" href="#status-symbols">Status symbols</a> for other values)</p>
 </td>
 </tr>
@@ -419,14 +477,14 @@ calculations. Velocities and forces are optional in the sense that they can be a
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>fn</em></dt>
 <dd><p class="first last">file name of a trr file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a TRR
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a TRR
 or if it is not readable.</p>
 </td>
 </tr>
@@ -445,26 +503,28 @@ returned, which can later be used to seek direcly to arbitrary frames in the tra
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>fn</em></dt>
 <dd><p class="first last">file name of an xtc file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The function returns a tuple containing
-<em>numframes</em></p>
-<blockquote>
-<div><p>an int with the total frame count in the trajectory</p>
-</div></blockquote>
-<dl class="docutils">
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first docutils">
+<dt>a tuple containing:</dt>
+<dd><dl class="first last docutils">
+<dt><em>numframes</em></dt>
+<dd><p class="first last">an int with the total frame count in the trajectory</p>
+</dd>
 <dt><em>offsets</em></dt>
 <dd><p class="first last">a numpy array of int64 recording the starting byte offset of each frame</p>
 </dd>
 </dl>
+</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a TRR or if it is not readable.</p>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the supplied filed is not a TRR or if it is not readable.</p>
 </td>
 </tr>
 </tbody>
@@ -479,7 +539,7 @@ returned, which can later be used to seek direcly to arbitrary frames in the tra
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>XDRFILE</em></dt>
 <dd><p class="first last">open <em>XDRFILE</em> object</p>
 </dd>
@@ -502,13 +562,13 @@ which is updated with the <strong>forces</strong> from the frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The function returns a tuple containing
-<em>status</em></p>
-<blockquote>
-<div><p>integer status (0 = exdrOK), see the <tt class="docutils literal"><span class="pre">libxdrfile2.exdr*</span></tt> constants 
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt>a tuple containing:</dt>
+<dd><dl class="first last docutils">
+<dt><em>status</em></dt>
+<dd><p class="first last">integer status (0 = exdrOK), see the <tt class="docutils literal"><span class="pre">libxdrfile2.exdr*</span></tt> constants 
 under <a class="reference internal" href="#status-symbols">Status symbols</a> for other values)</p>
-</div></blockquote>
-<dl class="last docutils">
+</dd>
 <dt><em>step</em></dt>
 <dd><p class="first last">simulation step</p>
 </dd>
@@ -528,6 +588,8 @@ under <a class="reference internal" href="#status-symbols">Status symbols</a> fo
 <dd><p class="first last">boolean indicating whether forces were read from the TRR</p>
 </dd>
 </dl>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
@@ -542,7 +604,7 @@ under <a class="reference internal" href="#status-symbols">Status symbols</a> fo
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>XDRFILE</em></dt>
 <dd><p class="first last">open <em>XDRFILE</em> object (writable)</p>
 </dd>
@@ -576,16 +638,15 @@ which contains the <strong>forces</strong> from the frame</p>
 </tr>
 </tbody>
 </table>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8.0: </span>either one of <em>x</em>, <em>v</em>, or <em>f</em> can now be set as a natom,0-DIM
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8.0: </span>either one of <em>x</em>, <em>v</em>, or <em>f</em> can now be set as a natom,0-DIM
 numpy <tt class="docutils literal"><span class="pre">array((natom,</span> <span class="pre">0),dtype=nump.float32)</span></tt>. This will cause the
 corresponding property to be skipped when writing to file.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>status</em>, integer status (0 = OK), see the <tt class="docutils literal"><span class="pre">libxdrfile2.exdr*</span></tt> 
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><em>status</em>, integer status (0 = OK), see the <tt class="docutils literal"><span class="pre">libxdrfile2.exdr*</span></tt> 
 constants under <a class="reference internal" href="#status-symbols">Status symbols</a> for other values)</td>
 </tr>
 </tbody>
@@ -629,7 +690,7 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

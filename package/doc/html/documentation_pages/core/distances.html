@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -127,16 +129,86 @@ provided in <em>result</em> then this preallocated array is filled. This can spe
 up calculations.</p>
 </dd></dl>
 
+</div>
+<div class="section" id="functions">
+<h2>7.5.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.core.distances.boxCheck">
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">boxCheck</tt><big>(</big><em>box</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.boxCheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take a box input and deduce what type of system it represents based
+on the shape of the array and whether all angles are 90.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>box</em></dt>
+<dd><p class="first last">box information of unknown format</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first last simple">
+<li><tt class="docutils literal"><span class="pre">ortho</span></tt> orthogonal box</li>
+<li><tt class="docutils literal"><span class="pre">tri_vecs</span></tt> triclinic box vectors</li>
+<li><tt class="docutils literal"><span class="pre">tri_box</span></tt> triclinic box lengths and angles</li>
+<li><tt class="docutils literal"><span class="pre">unknown</span></tt> boxCheck default, indicates no match found</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="function">
 <dt id="MDAnalysis.core.distances.calc_bonds">
 <tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">calc_bonds</tt><big>(</big><em>atom1</em>, <em>atom2</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.calc_bonds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate all distances between a pair of atoms.  <em>atom1</em> and <em>atom2</em> are both
-arrays of coordinates, where atom1[i] and atom2[i] represent a bond.  The 
-optional argument <em>box</em> applies minimum image convention if supplied.</p>
-<p><em>box</em> can be either orthogonal or triclinic</p>
+arrays of coordinates, where atom1[i] and atom2[i] represent a bond.</p>
+<p>In comparison to distance_array and self_distance_array which calculate distances
+between all combinations of coordinates, calc_bonds can be used to calculate distance
+between pairs of objects, similar to:</p>
+<div class="highlight-python"><pre>numpy.linalg.norm(a - b) for a, b in zip(coords1, coords2)</pre>
+</div>
+<p>The optional argument <em>box</em> applies minimum image convention if supplied.
+<em>box</em> can be either orthogonal or triclinic</p>
 <p>If a 1D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with <tt class="docutils literal"><span class="pre">len(atom1)</span></tt> elements is
 provided in <em>result</em> then this preallocated array is filled. This can speed
 up calculations.</p>
+<p>bondlengths = calc_bonds(coords1, coords2 [, box [,result=bondlengths]])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>coords1</em></dt>
+<dd><p class="first last">An array of coordinates for one half of the bond</p>
+</dd>
+<dt><em>coords2</em></dt>
+<dd><p class="first last">An array of coordinates for the other half of bond</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">Unit cell information if periodic boundary conditions are required [None]</p>
+</dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">optional preallocated result array which must be same length as coord 
+arrays and dtype=numpy.float64. Avoids creating the              
+array which saves time when the function is called repeatedly. [None]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>bondlengths</em></dt>
+<dd><p class="first last">Numpy array with the length between each pair in coords1 and coords2</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="function">
@@ -144,32 +216,192 @@ up calculations.</p>
 <tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">calc_angles</tt><big>(</big><em>atom1</em>, <em>atom2</em>, <em>atom3</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.calc_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the angle formed between three atoms, over a list of coordinates.
 All <em>atom</em> inputs are lists of coordinates of equal length, with <em>atom2</em> 
-representing the apex of the angle.  Returns the angle in radians.</p>
+representing the apex of the angle.</p>
 <p>If a 1D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with <tt class="docutils literal"><span class="pre">len(atom1)</span></tt> elements is
 provided in <em>result</em> then this preallocated array is filled. This can speed
 up calculations.</p>
+<p>angles = calc_angles(coords1, coords2, coords3 [,result=angles])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>coords1</em></dt>
+<dd><p class="first last">coordinate array of one side of angles</p>
+</dd>
+<dt><em>coords2</em></dt>
+<dd><p class="first last">coordinate array of apex of angles</p>
+</dd>
+<dt><em>coords3</em></dt>
+<dd><p class="first last">coordinate array of other side of angles</p>
+</dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">optional preallocated results array which must have same length as coordinate 
+array and dtype=numpy.float64.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>angles</em></dt>
+<dd><p class="first last">A numpy.array of angles in radians</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.distances.calc_torsions">
 <tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">calc_torsions</tt><big>(</big><em>atom1</em>, <em>atom2</em>, <em>atom3</em>, <em>atom4</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.calc_torsions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the torsional angle formed by four atoms, over a list of coordinates.
-Returns the angle in radians.</p>
+<dd><p>Calculate the torsional angle formed by four atoms, over a list of coordinates.</p>
+<p>Torsional angle around axis connecting atoms 1 and 2 (i.e. the angle
+between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
+<div class="highlight-python"><pre>        3
+        |
+  1-----2
+ /
+0</pre>
+</div>
 <p>If a 1D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with <tt class="docutils literal"><span class="pre">len(atom1)</span></tt> elements is
 provided in <em>result</em> then this preallocated array is filled. This can speed
 up calculations.</p>
+<p>angles = calc_torsions(coords1, coords2, coords3, coords4 [,result=angles])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>coords1</em></dt>
+<dd><p class="first last">coordinate array of 1st atom in torsions</p>
+</dd>
+<dt><em>coords2</em></dt>
+<dd><p class="first last">coordinate array of 2nd atom in torsions</p>
+</dd>
+<dt><em>coords3</em></dt>
+<dd><p class="first last">coordinate array of 3rd atom in torsions</p>
+</dd>
+<dt><em>coords4</em></dt>
+<dd><p class="first last">coordinate array of 4th atom in torsions</p>
+</dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">optional preallocated results array which must have same length as coordinate 
+array and dtype=numpy.float64.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>angles</em></dt>
+<dd><p class="first last">A numpy.array of angles in radians</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.distances.applyPBC">
 <tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">applyPBC</tt><big>(</big><em>coordinates</em>, <em>box</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.applyPBC" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shift a set of coordinates to lie within the primary unit cell</p>
-<p>Works with both orthogonal and triclinic boxes</p>
+<dd><p>Moves a set of coordinates to all be within the primary unit cell</p>
+<p>newcoords = applyPBC(coords, box)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>coords</em></dt>
+<dd><p class="first last">coordinate array (of type numpy.float32)</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">box dimensions, can be either orthogonal or triclinic information</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>newcoords</em></dt>
+<dd><p class="first last">coordinates that are now all within the primary unit cell, as defined by box</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
-</div>
-<div class="section" id="functions">
-<h2>7.5.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.core.distances.transform_RtoS">
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">transform_RtoS</tt><big>(</big><em>coordinates</em>, <em>box</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.transform_RtoS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform an array of coordinates from real space to S space (aka lambda space)</p>
+<p>S space represents fractional space within the unit cell for this system</p>
+<p>Reciprocal operation to <a class="reference internal" href="#MDAnalysis.core.distances.transform_StoR" title="MDAnalysis.core.distances.transform_StoR"><tt class="xref py py-meth docutils literal"><span class="pre">transform_StoR()</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>inputcoords</em></dt>
+<dd><p class="first last">An n x 3 array of coordinate data, of type np.float32</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">The unitcell dimesions for this system</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>outcoords</em></dt>
+<dd><p class="first last">An n x 3 array of fracional coordiantes</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.distances.transform_StoR">
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">transform_StoR</tt><big>(</big><em>coordinates</em>, <em>box</em><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.transform_StoR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform an array of coordinates from S space into real space.</p>
+<p>S space represents fractional space within the unit cell for this system</p>
+<p>Reciprocal operation to <a class="reference internal" href="#MDAnalysis.core.distances.transform_RtoS" title="MDAnalysis.core.distances.transform_RtoS"><tt class="xref py py-meth docutils literal"><span class="pre">transform_RtoS()</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>inputcoords</em></dt>
+<dd><p class="first last">An n x 3 array of coordinate data, of type np.float32</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">The unitcell dimesions for this system</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>outcoords</em></dt>
+<dd><p class="first last">An n x 3 array of fracional coordiantes</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 
@@ -206,7 +438,7 @@ up calculations.</p>
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

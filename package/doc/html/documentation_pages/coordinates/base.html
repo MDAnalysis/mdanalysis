@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -103,7 +105,7 @@ module. The derived classes must follow the Trajectory API in
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Methods:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">ts</span> <span class="pre">=</span> <span class="pre">Timestep(numatoms)</span></tt></p>
+<tr class="field-odd field"><th class="field-name">Methods :</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">ts</span> <span class="pre">=</span> <span class="pre">Timestep(numatoms)</span></tt></p>
 <blockquote>
 <div><p>create a timestep object with space for numatoms (done
 automatically)</p>
@@ -166,9 +168,8 @@ trajectory format supports velocities. Your code should check
 for its existence or handle an <tt class="xref py py-exc docutils literal"><span class="pre">AttributeError</span></tt>
 gracefully.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -193,7 +194,7 @@ gracefully.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A Timestep object of the same type containing all header information and all atom information
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">A Timestep object of the same type containing all header information and all atom information
 relevent to the selection.</td>
 </tr>
 </tbody>
@@ -202,9 +203,8 @@ relevent to the selection.</td>
 <p class="first admonition-title">Note</p>
 <p class="last">The selection must be a 0 based slice or array of the atom indices in this Timestep</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -231,10 +231,8 @@ which is used everywhere in MDAnalysis.</p>
 <dt id="MDAnalysis.coordinates.base.IObase">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">IObase</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class bundling common functionality for trajectory I/O.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8: </span>Added context manager protocol.</p>
-</div>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8: </span>Added context manager protocol.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.close">
 <tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.close" title="Permalink to this definition">¶</a></dt>
@@ -252,9 +250,8 @@ which is used everywhere in MDAnalysis.</p>
 <tt class="descname">convert_forces_from_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_forces_from_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of forces array <em>force</em> from native units to base units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -262,9 +259,8 @@ which is used everywhere in MDAnalysis.</p>
 <tt class="descname">convert_forces_to_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_forces_to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of force array <em>force</em> from base units to native units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -272,12 +268,11 @@ which is used everywhere in MDAnalysis.</p>
 <tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_pos_from_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -285,12 +280,11 @@ returned.</p>
 <tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_pos_to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array x from base units to native units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -301,12 +295,11 @@ returned.</p>
 returned (although note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -317,12 +310,11 @@ returned.</p>
 returned. (Also note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -330,9 +322,8 @@ returned.</p>
 <tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_velocities_from_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of velocities array <em>v</em> from native units to base units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -340,9 +331,8 @@ returned.</p>
 <tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_velocities_to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -366,14 +356,13 @@ returned.</p>
 <dd><p>Base class for trajectory readers.</p>
 <p>See the <a class="reference internal" href="init.html#trajectory-api"><em>Trajectory API</em></a> definition in
 <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for the required attributes and methods.</p>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Reader.OtherWriter">
 <tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Reader.OtherWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader.OtherWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a writer appropriate for <em>filename</em>.</p>
 <p>Sets the default keywords <em>start</em>, <em>step</em> and <em>delta</em> (if
 available). <em>numatoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.numatoms</span></tt>.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.base.Reader.Writer" title="MDAnalysis.coordinates.base.Reader.Writer"><tt class="xref py py-meth docutils literal"><span class="pre">Reader.Writer()</span></tt></a> and <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></tt></p>
 </div>
@@ -445,7 +434,7 @@ keyword <em>delta</em>)</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filenames</em></dt>
 <dd><p class="first">file name or list of file names; the reader will open
 all file names and provide frames in the order of
@@ -474,9 +463,8 @@ trajectory reader unchanged</p>
 </tr>
 </tbody>
 </table>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8: </span>The <em>delta</em> keyword was added.</p>
-</div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8: </span>The <em>delta</em> keyword was added.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.ChainReader.active_reader">
 <tt class="descname">active_reader</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#ChainReader.active_reader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.ChainReader.active_reader" title="Permalink to this definition">¶</a></dt>
@@ -516,7 +504,6 @@ trajectory reader unchanged</p>
 <dd><p>Base class for trajectory writers.</p>
 <p>See Trajectory API definition in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for
 the required attributes and methods.</p>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell">
 <tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Writer.convert_dimensions_to_unitcell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
@@ -534,7 +521,7 @@ the required attributes and methods.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>criteria</em></dt>
 <dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
 </dd>
@@ -544,7 +531,7 @@ the required attributes and methods.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">boolean</p>
 </td>
 </tr>
 </tbody>
@@ -601,7 +588,7 @@ provided when setting up the trajectory.</p>
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

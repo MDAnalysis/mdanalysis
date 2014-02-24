@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -117,7 +119,8 @@
 
 
 <div class="viewcode-block" id="build_segments"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.build_segments">[docs]</a><span class="k">def</span> <span class="nf">build_segments</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create all :class:`~MDAnalysis.core.AtomGroup.Segment` instancess from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.</span>
+    <span class="sd">&quot;&quot;&quot;Create all :class:`~MDAnalysis.core.AtomGroup.Segment` instancess from a list </span>
+<span class="sd">    of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.</span>
 
 <span class="sd">    The function also builds the :class:`~MDAnalysis.core.AtomGroup.Residue`</span>
 <span class="sd">    instances by tracking residue numbers.</span>
@@ -162,7 +165,8 @@
 
 </div>
 <div class="viewcode-block" id="build_residues"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.build_residues">[docs]</a><span class="k">def</span> <span class="nf">build_residues</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create a list :class:`~MDAnalysis.core.AtomGroup.Residue` instances from a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.</span>
+    <span class="sd">&quot;&quot;&quot;Create a list :class:`~MDAnalysis.core.AtomGroup.Residue` instances from a list </span>
+<span class="sd">    of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.</span>
 
 <span class="sd">    Updating residues also changes the underlying</span>
 <span class="sd">    :class:`~MDAnalysis.core.AtomGroup.Atom` instances, which record</span>
@@ -199,6 +203,10 @@
 <span class="sd">    numbers are connected and they have the same bond order. The</span>
 <span class="sd">    ordering of the two atom numbers is ignored as is the fact that a</span>
 <span class="sd">    bond was guessed.</span>
+
+<span class="sd">    The presence of a particular atom can also be queried::</span>
+<span class="sd">       &gt;&gt;&gt; Atom in Bond</span>
+<span class="sd">       True / False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -209,12 +217,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__is_guessed</span> <span class="o">=</span> <span class="bp">False</span>
 
-    <span class="k">def</span> <span class="nf">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+<div class="viewcode-block" id="Bond.partner"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.Bond.partner">[docs]</a>    <span class="k">def</span> <span class="nf">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Bond.partner(Atom)</span>
+
+<span class="sd">        :Returns: the other :class:`~MDAnalysis.core.AtomGroup.Atom` in this bond</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">atom</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom1</span>
-
+</div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_guessed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;``True`` if the bond was guessed.</span>
@@ -244,6 +256,7 @@
         <span class="k">return</span> <span class="n">s_id</span> <span class="o">+</span> <span class="n">s_length</span> <span class="o">+</span> <span class="s">&quot;&gt;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Can check if a particular atom is present in this bond&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">other</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom1</span> <span class="ow">or</span> <span class="n">other</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span>
 
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -295,6 +308,8 @@
 </div>
 <div class="viewcode-block" id="Torsion"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.Torsion">[docs]</a><span class="k">class</span> <span class="nc">Torsion</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Torsion (dihedral angle) between four :class:`~MDAnalysis.core.AtomGroup.Atom` instances.</span>
+
+<span class="sd">    The torsion is defined as the angle between the planes formed by (1, 2, 3) and (2, 3, 4).</span>
 
 <span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -543,36 +558,58 @@
 
 </div>
 <div class="viewcode-block" id="TopologyDict"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyDict">[docs]</a><span class="k">class</span> <span class="nc">TopologyDict</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class which serves as a wrapper around a dictionary, which</span>
-<span class="sd">    contains lists of different types of bonds.</span>
+    <span class="sd">&quot;&quot;&quot;A customised dictionary designed for sorting the bonds, angles and torsions</span>
+<span class="sd">    present in a group of atoms.</span>
 
 <span class="sd">    Usage::</span>
 
 <span class="sd">      topologydict = TopologyDict(topologytype, atoms)</span>
 
-<span class="sd">    *topologytype* is one of &#39;bond&#39; &#39;angle&#39; or &#39;torsion&#39;, a single</span>
-<span class="sd">    TopologyDict can only handle one type of topology.</span>
+<span class="sd">    :Arguments:</span>
+<span class="sd">        *topologytype* </span>
+<span class="sd">            one of &#39;bond&#39; &#39;angle&#39; or &#39;torsion&#39;; a single</span>
+<span class="sd">            TopologyDict can only handle one type of topology.</span>
 
-<span class="sd">    *atoms* is a list of :class:`MDAnalysis.core.AtomGroup.Atom` objects.</span>
+<span class="sd">        *atoms* </span>
+<span class="sd">            a list of :class:`MDAnalysis.core.AtomGroup.Atom` objects.</span>
 
-<span class="sd">    TopologyDicts are built lazily from a :class:`MDAnalysis.core.AtomGroup.AtomGroup`</span>
-<span class="sd">    using the bondDict angleDict or torsionDict methods.</span>
+<span class="sd">    :Returns:</span>
+<span class="sd">        *topologydict*</span>
+<span class="sd">            A dictionary of the selected topology type</span>
+<span class="sd">    </span>
+<span class="sd">    TopologyDicts are also built lazily from a :class:`MDAnalysis.core.AtomGroup.AtomGroup`</span>
+<span class="sd">    using the :meth:`MDAnalysis.core.AtomGroup.bondDict` :meth:`MDAnalysis.core.AtomGroup.angleDict`</span>
+<span class="sd">    or :meth:`MDAnalysis.core.AtomGroup.torsionDict` methods.</span>
 
-<span class="sd">    The TopologyDict collects all the given topology type from the</span>
-<span class="sd">    atoms and categorises them according to the types of the atoms.</span>
-<span class="sd">    Getting and setting types of bonds is done smartly, so a C-C-H</span>
-<span class="sd">    angle is considered identical to a H-C-C angle.</span>
-
-<span class="sd">    Duplicate entries are automatically removed upon creation and</span>
-<span class="sd">    combination of different Dicts.  For example, a bond between atoms</span>
-<span class="sd">    1 and 2 will only ever appear once in a dict despite both atoms 1</span>
-<span class="sd">    and 2 having the bond in their .bond attribute.</span>
-
+<span class="sd">    The TopologyDict collects all the selected topology type from the</span>
+<span class="sd">    atoms and categorises them according to the types of the atoms within.</span>
 <span class="sd">    A :class:`TopologyGroup` containing all of a given bond type can</span>
 <span class="sd">    be made by querying with the appropriate key.  The keys to the</span>
 <span class="sd">    topologyDict are a tuple of the atom types that the bond represents</span>
 <span class="sd">    and can be viewed using the keys() method.</span>
+
+<span class="sd">    For example, from a system containing pure ethanol ::</span>
+
+<span class="sd">      &gt;&gt;&gt; td = u.atoms.bondDict</span>
+<span class="sd">      &gt;&gt;&gt; td.keys()</span>
+<span class="sd">      [(&#39;C&#39;, &#39;C&#39;),</span>
+<span class="sd">       (&#39;C&#39;, &#39;H&#39;),</span>
+<span class="sd">       (&#39;O&#39;, &#39;H&#39;),</span>
+<span class="sd">       (&#39;C&#39;, &#39;O&#39;)]</span>
+<span class="sd">      &gt;&gt;&gt; td[&#39;C&#39;, &#39;O&#39;]</span>
+<span class="sd">      &lt; TopologyGroup containing 912 bonds &gt;</span>
+
+<span class="sd">    .. Note:: </span>
+
+<span class="sd">       The key for a bond is taken from the type attribute of the atoms.</span>
+
+<span class="sd">       Getting and setting types of bonds is done smartly, so a C-C-H</span>
+<span class="sd">       angle is considered identical to a H-C-C angle.</span>
+
+<span class="sd">    Duplicate entries are automatically removed upon creation and</span>
+<span class="sd">    combination of different Dicts.  This means a bond between atoms</span>
+<span class="sd">    1 and 2 will only ever appear once in a dict despite both atoms 1</span>
+<span class="sd">    and 2 having the bond in their .bond attribute.</span>
 
 <span class="sd">    Two TopologyDicts can be combined using addition, this will not</span>
 <span class="sd">    create any duplicate bonds in the process.</span>
@@ -678,8 +715,8 @@
 <div class="viewcode-block" id="TopologyGroup"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyGroup">[docs]</a><span class="k">class</span> <span class="nc">TopologyGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A container for a group of bonds (either bonds, angles or torsions)::</span>
 
-<span class="sd">      tg = :class:`MDAnalysis.core.AtomGroup.AtomGroup`.selectBonds(key)</span>
-<span class="sd">      tg = :class:`TopologyDict`[key]</span>
+<span class="sd">      tg = atomGroup.selectBonds(key)</span>
+<span class="sd">      tg = TopologyDict[key]</span>
 
 <span class="sd">    *key* describes the desired bond as a tuple of the involved atom</span>
 <span class="sd">    types (as defined by the .type atom attribute). A list of available</span>
@@ -797,6 +834,10 @@
 <div class="viewcode-block" id="TopologyGroup.bonds"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyGroup.bonds">[docs]</a>    <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculates the distance between all bonds in this TopologyGroup</span>
 
+<span class="sd">        :Keywords:</span>
+<span class="sd">           *pbc*</span>
+<span class="sd">              apply periodic boundary conditions when calculating distance [False]</span>
+
 <span class="sd">        Uses cython implementation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">toptype</span> <span class="o">==</span> <span class="s">&#39;bond&#39;</span><span class="p">:</span>
@@ -894,7 +935,7 @@
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

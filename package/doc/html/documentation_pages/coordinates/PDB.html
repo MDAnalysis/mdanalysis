@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -381,7 +383,7 @@ do the following:</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a></p>
 </div>
@@ -399,14 +401,14 @@ of integers (typically starting at 1 or 0).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output PDB file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a></p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -444,26 +446,24 @@ set to a PDB file (operating as a &#8220;single frame writer&#8221;, selected wi
 constructor keyword <em>multiframe</em> = <tt class="docutils literal"><span class="pre">False</span></tt>, the default) or by writing a
 PDB &#8220;movie&#8221; (multi frame mode, <em>multiframe</em> = <tt class="docutils literal"><span class="pre">True</span></tt>), consisting of
 multiple models (using the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#MODEL">MODEL</a> and <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL">ENDMDL</a> records).</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">This class is identical to <a class="reference internal" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="MDAnalysis.coordinates.PDB.MultiPDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">MultiPDBWriter</span></tt></a> with the one
 exception that it defaults to writing single-frame PDB files as if
 <em>multiframe</em> = <tt class="docutils literal"><span class="pre">False</span></tt> was selected.</p>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Initial support for multi-frame PDB files.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.6: </span>The <em>multiframe</em> keyword was added to select the writing mode. The writing
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Initial support for multi-frame PDB files.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>The <em>multiframe</em> keyword was added to select the writing mode. The writing
 of bond information (<a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect10.html#CONECT">CONECT</a> records) is now disabled by default but can be
 enabled with the <em>bonds</em> keyword.</p>
-</div>
 <p>Create a new PDBWriter</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
@@ -528,10 +528,9 @@ selected for, only if all the atoms for a bond are still present.</p>
 <p class="last">Therefore, this method raises a <tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt> if CONECT
 records for anything smaller than the <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> are written.</p>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.6: </span>Only write CONECT records if <tt class="xref py py-attr docutils literal"><span class="pre">PrimitivePDBWriter.bonds</span></tt> <tt class="docutils literal"><span class="pre">==</span> <span class="pre">True</span></tt>.
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>Only write CONECT records if <tt class="xref py py-attr docutils literal"><span class="pre">PrimitivePDBWriter.bonds</span></tt> <tt class="docutils literal"><span class="pre">==</span> <span class="pre">True</span></tt>.
 Raises <tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt> if it would produce wrong output.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -564,12 +563,11 @@ the moment we do <em>not</em> write the <a class="reference external" href="http
 <p>The <em>multiframe</em> = <tt class="docutils literal"><span class="pre">False</span></tt> keyword signals that the
 <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a> is in single frame mode and no <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#MODEL">MODEL</a>
 records are written.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.6: </span>The <em>multiframe</em> keyword was added, which completely determines if
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>The <em>multiframe</em> keyword was added, which completely determines if
 MODEL records are written. (Previously, this was decided based on the
 underlying trajectory and only if <tt class="docutils literal"><span class="pre">len(traj)</span> <span class="pre">&gt;</span> <span class="pre">1</span></tt> would MODEL records
 have been written.)</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -585,10 +583,9 @@ character of <em>chainID</em> becomes the PDB <em>chainID</em> (unless it has th
 special value &#8220;SYSTEM&#8221; (assigned by MDAnalysis if neither <em>segID</em> nor
 <em>chainID</em> were available), in which case the PDB will have an empty
 <em>chainID</em>).</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.6: </span>If the <em>chainID</em> has the special value &#8220;SYSTEM&#8221; (case insensitive)
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>If the <em>chainID</em> has the special value &#8220;SYSTEM&#8221; (case insensitive)
 then the chain is set to the empty string &#8220;&#8221;.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -672,7 +669,7 @@ details).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>obj</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a></p>
@@ -714,7 +711,7 @@ constructor). Thus, if <em>u</em> is a Universe then</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>ts</em></dt>
 <dd><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.Timestep" title="MDAnalysis.coordinates.PDB.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> object containing coordinates to be written to trajectory file;
 if <tt class="docutils literal"><span class="pre">None</span></tt> then <tt class="xref py py-attr docutils literal"><span class="pre">PrimitivePDBWriter.ts`</span></tt> is tried.</p>
@@ -747,21 +744,20 @@ is written.</p>
 <p>By default, <a class="reference internal" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="MDAnalysis.coordinates.PDB.MultiPDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">MultiPDBWriter</span></tt></a> writes a PDB &#8220;movie&#8221; (multi frame mode,
 <em>multiframe</em> = <tt class="docutils literal"><span class="pre">True</span></tt>), consisting of multiple models (using the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#MODEL">MODEL</a>
 and <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL">ENDMDL</a> records).</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">This class is identical to <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a> with the one
 exception that it defaults to writing multi-frame PDB files instead of
 single frames.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.6.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.6.</span></p>
 <p>Create a new PDBWriter</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
@@ -810,7 +806,7 @@ records. If <tt class="docutils literal"><span class="pre">None</span></tt>, the
 <div class="section" id="biopython-strict-pdb-reader-and-writer">
 <span id="strict"></span><h2>5.9.3. Biopython (strict) PDB Reader and Writer<a class="headerlink" href="#biopython-strict-pdb-reader-and-writer" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="xref py py-mod docutils literal"><span class="pre">PDB</span></tt> module can make use of Biopython&#8217;s <tt class="xref py py-mod docutils literal"><span class="pre">Bio.PDB</span></tt>
-<a class="reference internal" href="#hamelryck2003" id="id17">[Hamelryck2003]</a> but replaces the standard PDB file parser with one that uses
+<a class="reference internal" href="#hamelryck2003">[Hamelryck2003]</a> but replaces the standard PDB file parser with one that uses
 the <a class="reference internal" href="pdbextensions.html#MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder" title="MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder</span></tt></a> to
 cope with very large pdb files as commonly encountered in MD simulations. The
 Biopython-based <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><tt class="xref py py-class docutils literal"><span class="pre">PDBReader</span></tt></a> has the advantage that it implements the
@@ -843,14 +839,14 @@ object superficially resembles the DCDReader object.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output PDB file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PDBWriter</span></tt></a></p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PDBWriter</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -895,7 +891,7 @@ which happens automatically when the
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt>pdbfilename     filename; if multi=True, embed a %%d formatstring</dt>
 <dd><p class="first last">so that write_next_timestep() can insert the frame number</p>
 </dd>
@@ -966,7 +962,7 @@ implemented in Python. Bioinformatics, 19, 2308-2310. <a class="reference extern
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

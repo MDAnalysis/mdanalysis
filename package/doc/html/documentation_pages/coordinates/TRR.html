@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -65,10 +67,7 @@
 <li><a class="reference internal" href="#filling-a-trr-with-pca-modes">5.13.1.1. Filling a TRR with PCA modes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-MDAnalysis.coordinates.xdrfile.TRR">5.13.2. Module reference</a><ul>
-<li><a class="reference internal" href="#classes">5.13.2.1. Classes</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#module-reference">5.13.2. Module reference</a></li>
 </ul>
 </li>
 </ul>
@@ -116,13 +115,24 @@ use the TRR format.</p>
 <p>The TRR format can store <em>velocities</em> and <em>forces</em> in addition to
 coordinates. It is also used by other Gromacs tools to store and
 process other data such as modes from a principal component analysis.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8.0.</span></p>
-</div>
-<p>The TRR I/O interface now uses <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt>, which has seeking and
-indexing capabilities. Note that unlike <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt> before it,
-<tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt> is distributed under the GNU GENERAL PUBLIC LICENSE,
-version 2 (or higher).</p>
+<p>The TRR I/O interface uses <a class="reference internal" href="libxdrfile2.html#module-MDAnalysis.coordinates.xdrfile.libxdrfile2" title="MDAnalysis.coordinates.xdrfile.libxdrfile2"><tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt></a>
+to implement random access to frames. This works by initially building an
+internal index of all frames and then using this index for direct
+seeks. Building the index is triggered by
+<a class="reference internal" href="libxdrfile2.html#MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_numframes" title="MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_numframes"><tt class="xref py py-func docutils literal"><span class="pre">read_trr_numframes()</span></tt></a>, which
+typically happens when one accesses the <a class="reference internal" href="#MDAnalysis.coordinates.TRR.TRRReader.numframes" title="MDAnalysis.coordinates.TRR.TRRReader.numframes"><tt class="xref py py-attr docutils literal"><span class="pre">TRRReader.numframes</span></tt></a> attribute
+for the first time. Building the index may take many minutes for large
+trajectories but afterwards access is faster than with native Gromacs tools.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8.0: </span>The TRR I/O interface now uses
+<a class="reference internal" href="libxdrfile2.html#module-MDAnalysis.coordinates.xdrfile.libxdrfile2" title="MDAnalysis.coordinates.xdrfile.libxdrfile2"><tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt></a>, which has seeking and
+indexing capabilities. Note that unlike
+<tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt> before it,
+<a class="reference internal" href="libxdrfile2.html#module-MDAnalysis.coordinates.xdrfile.libxdrfile2" title="MDAnalysis.coordinates.xdrfile.libxdrfile2"><tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt></a> is distributed under the
+GNU GENERAL PUBLIC LICENSE, version 2 (or higher).
+<a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> now correctly deals
+with presence/absence of coordinate/velocity/force information on a
+per-frame basis.</p>
 <div class="section" id="tips-and-tricks">
 <h2>5.13.1. Tips and Tricks<a class="headerlink" href="#tips-and-tricks" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="filling-a-trr-with-pca-modes">
@@ -130,16 +140,16 @@ version 2 (or higher).</p>
 <p>The following <a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=79">recipe by Ramon Crehuet</a> shows how to convert modes
 stored in a NumPy-like array (e.g. from a PCA analysis with <a class="reference external" href="http://dirac.cnrs-orleans.fr/Manuals/MMTK/index.html">MMTK</a>) to
 a TRR usable by Gromacs. The idea is to manually fill a
-<a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> with the desired
+<tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt> with the desired
 values and then write it to a file with the appropriate
-<a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter" title="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter"><tt class="xref py py-class docutils literal"><span class="pre">TRRWriter</span></tt></a>. In order to
+<tt class="xref py py-class docutils literal"><span class="pre">TRRWriter</span></tt>. In order to
 respect the Gromacs format for modes in a TRR file, one must write the
 average coordinates in the first frame of the TRR and the modes into
 subsequent ones. The mode number is stored in the
 <tt class="xref py py-attr docutils literal"><span class="pre">step</span></tt> attribute
 and the mode coordinates are filling the
 <tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt> attribute of
-<a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>:</p>
+<tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt>:</p>
 <div class="highlight-python"><pre># 'modes' is a mode object with M PCs, similar to a MxNx3 array
 # 'xav' the average coordinates, a Nx3 array for N atoms
 
@@ -172,57 +182,51 @@ for frame,mode in enumerate(modes[4:16]):
 </div>
 </div>
 </div>
-<div class="section" id="module-MDAnalysis.coordinates.xdrfile.TRR">
-<span id="module-reference"></span><h2>5.13.2. Module reference<a class="headerlink" href="#module-MDAnalysis.coordinates.xdrfile.TRR" title="Permalink to this headline">¶</a></h2>
-<p>Reading of <a class="reference external" href="http://www.gromacs.org/Documentation/File_Formats/.trr_File">Gromacs TRR trajectories</a>.</p>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="libxdrfile2.html#module-MDAnalysis.coordinates.xdrfile.libxdrfile2" title="MDAnalysis.coordinates.xdrfile.libxdrfile2"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.libxdrfile2</span></tt></a> for low-level
-bindings to the Gromacs trajectory file formats</p>
-</div>
-<div class="section" id="classes">
-<h3>5.13.2.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-reference">
+<h2>5.13.2. Module reference<a class="headerlink" href="#module-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.Timestep">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/TRR.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Timestep for a Gromacs TRR trajectory.</dt>
-<dd><p class="first">The Timestep can be initialized with <em>arg</em> being</p>
-<ol class="arabic simple">
+<dt id="MDAnalysis.coordinates.TRR.Timestep">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRR.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.Timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timestep for a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
+<p>The Timestep can be initialized with <em>arg</em> being</p>
+<blockquote>
+<div><ol class="arabic simple">
 <li>an integer (the number of atoms)</li>
-<li>another <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance, in which case a copy is made. Attention:
-loss of attributes that do not exist within the TRR <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> may occur.</li>
+<li>another <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance, in which case a copy is made; attention:
+loss of attributes that do not exist within the TRR <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> may occur;</li>
 <li>a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <tt class="docutils literal"><span class="pre">(numatoms,</span> <span class="pre">3)</span></tt> (for positions only) or
 <tt class="docutils literal"><span class="pre">(numatoms,</span> <span class="pre">9)</span></tt> (for positions, velocities, and forces): <tt class="docutils literal"><span class="pre">positions</span> <span class="pre">=</span> <span class="pre">arg[:,:3]</span></tt>,
 <tt class="docutils literal"><span class="pre">velocities</span> <span class="pre">=</span> <span class="pre">arg[:,3:6]</span></tt>, and <tt class="docutils literal"><span class="pre">forces</span> <span class="pre">=</span> <span class="pre">arg[:,6:]</span></tt>.</li>
 </ol>
-<p>The constructor also takes the named arguments <em>has_x</em>, <em>has_v</em>, and <em>has_f</em>, which
-are used to set <tt class="xref py py-attr docutils literal"><span class="pre">has_x</span></tt>, <tt class="xref py py-attr docutils literal"><span class="pre">has_v</span></tt>, <tt class="xref py py-attr docutils literal"><span class="pre">has_f</span></tt>.
-Depending on the <em>arg</em> use-case above, the defaults set for these flags will vary:
-1. when <em>arg</em> is an integer <tt class="xref py py-attr docutils literal"><span class="pre">has_x</span></tt> defaults to <tt class="docutils literal"><span class="pre">True</span></tt> and</p>
+</div></blockquote>
+<p>The constructor also takes the named arguments <em>has_x</em>, <em>has_v</em>, and
+<em>has_f</em>, which are used to set the <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> flags
+<tt class="xref py py-attr docutils literal"><span class="pre">has_x</span></tt>, <tt class="xref py py-attr docutils literal"><span class="pre">has_v</span></tt>, and
+<tt class="xref py py-attr docutils literal"><span class="pre">has_f</span></tt>, described below.  Depending on the <em>arg</em> use-case
+above, the defaults set for these flags will vary:</p>
 <blockquote>
-<div><tt class="xref py py-attr docutils literal"><span class="pre">has_v</span></tt> and <tt class="xref py py-attr docutils literal"><span class="pre">has_f</span></tt> to <tt class="docutils literal"><span class="pre">False</span></tt>.</div></blockquote>
-<ol class="last arabic simple" start="2">
-<li>when <em>arg</em> is another <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance the flags will default to being
-copied from the passed <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>. If that instance has no &#8216;<a href="#id1"><span class="problematic" id="id2">has_</span></a>&#8216; flags
-the behavior is to assign them to <tt class="docutils literal"><span class="pre">True</span></tt> depending on the existence of
-<tt class="xref py py-attr docutils literal"><span class="pre">_velocities</span></tt> and <tt class="xref py py-attr docutils literal"><span class="pre">_forces</span></tt> (<tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt>
-is assumed to always be there, so in this case <tt class="xref py py-attr docutils literal"><span class="pre">has_x</span></tt> defaults to
+<div><ol class="arabic simple">
+<li>when <em>arg</em> is an integer <tt class="xref py py-attr docutils literal"><span class="pre">has_x</span></tt> defaults to <tt class="docutils literal"><span class="pre">True</span></tt>
+and <tt class="xref py py-attr docutils literal"><span class="pre">has_v</span></tt> and <tt class="xref py py-attr docutils literal"><span class="pre">has_f</span></tt> to <tt class="docutils literal"><span class="pre">False</span></tt>.</li>
+<li>when <em>arg</em> is another <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance the flags will
+default to being copied from the passed <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>. If that
+instance has no &#8216;has_*&#8217; flags the behavior is to assign them to
+<tt class="docutils literal"><span class="pre">True</span></tt> depending on the existence of <tt class="xref py py-attr docutils literal"><span class="pre">_velocities</span></tt>
+and <tt class="xref py py-attr docutils literal"><span class="pre">_forces</span></tt> (<tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt> is assumed to
+always be there, so in this case <tt class="xref py py-attr docutils literal"><span class="pre">has_x</span></tt> defaults to
 <tt class="docutils literal"><span class="pre">True</span></tt>).</li>
-<li>when <em>arg</em> is a numpy array, the default flags will reflect what information is passed
-in the array.</li>
+<li>when <em>arg</em> is a numpy array, the default flags will reflect what
+information is passed in the array.</li>
 </ol>
-</dd>
-</dl>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8.0: </span>TRR <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects are now fully aware of the existence or not of
+</div></blockquote>
+<p>TRR <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects are now fully aware of the existence or not of
 coordinate/velocity/force information in frames, reflected in the
 <tt class="xref py py-attr docutils literal"><span class="pre">has_x</span></tt>, <tt class="xref py py-attr docutils literal"><span class="pre">has_v</span></tt>, and <tt class="xref py py-attr docutils literal"><span class="pre">has_f</span></tt> flags.
 Accessing either kind of information while the corresponding flag is set to <tt class="docutils literal"><span class="pre">False</span></tt>
 wil raise a <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt>. Internally, however, the arrays are always populated,
-even when the flags are <tt class="docutils literal"><span class="pre">False</span></tt>; upon creation of a <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> they are
+even when the flags are <tt class="docutils literal"><span class="pre">False</span></tt>; upon creation of a <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> they are
 zero-filled, but this might not always be the case later on for properties flagged as
-<tt class="docutils literal"><span class="pre">False</span></tt> if the same <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance is used to read from a TRR frame.</p>
+<tt class="docutils literal"><span class="pre">False</span></tt> if the same <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance is used to read from a TRR frame.</p>
 <p>When doing low-level writing to <tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt>, <tt class="xref py py-attr docutils literal"><span class="pre">_velocities</span></tt>,
 or <tt class="xref py py-attr docutils literal"> <span class="pre">The</span>
 <span class="pre">TRR</span> <span class="pre">:class:`Timestep</span></tt> constructor allows for the named boolean arguments <em>has_x</em>,
@@ -238,16 +242,18 @@ An exception to this is assignment to the full property array thus:</p>
 <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">vel_array</span>   <span class="c">#  This will fail if &#39;has_v&#39; hasn&#39;t been set to True.</span>
 </pre></div>
 </div>
-</div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8.0: </span>TRR <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects are now fully aware of the existence or
+not of coordinate/velocity/force information in frames.</p>
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.Timestep.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make an independent (&#8220;deep&#8221;) copy of the whole <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>.</p>
+<dt id="MDAnalysis.coordinates.TRR.Timestep.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.Timestep.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an independent (&#8220;deep&#8221;) copy of the whole <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.Timestep.copy_slice">
-<tt class="descname">copy_slice</tt><big>(</big><em>sel</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep.copy_slice" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.Timestep.copy_slice">
+<tt class="descname">copy_slice</tt><big>(</big><em>sel</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.Timestep.copy_slice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a new Timestep containing a subset of the original Timestep.</p>
 <p><tt class="docutils literal"><span class="pre">ts.copy_slice(slice(start,</span> <span class="pre">stop,</span> <span class="pre">skip))</span></tt>
 <tt class="docutils literal"><span class="pre">ts.copy_slice([list</span> <span class="pre">of</span> <span class="pre">indices])</span></tt></p>
@@ -255,7 +261,7 @@ An exception to this is assignment to the full property array thus:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A Timestep object of the same type containing all header information and all atom information
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">A Timestep object of the same type containing all header information and all atom information
 relevent to the selection.</td>
 </tr>
 </tbody>
@@ -264,14 +270,13 @@ relevent to the selection.</td>
 <p class="first admonition-title">Note</p>
 <p class="last">The selection must be a 0 based slice or array of the atom indices in this Timestep</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.Timestep.dimensions">
-<tt class="descname">dimensions</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.Timestep.dimensions">
+<tt class="descname">dimensions</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
 <dd><p>unitcell dimensions (A, B, C, alpha, beta, gamma)</p>
 <ul class="simple">
 <li>A, B, C are the lengths of the primitive cell vectors e1, e2, e3</li>
@@ -282,67 +287,73 @@ relevent to the selection.</td>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.Timestep.volume">
-<tt class="descname">volume</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep.volume" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.Timestep.volume">
+<tt class="descname">volume</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.Timestep.volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>volume of the unitcell</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">TRRReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>sub=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/TRR.html#TRRReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRR.</tt><tt class="descname">TRRReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>sub=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8.0: </span><a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects returned from TRR files now have
+<tt class="xref py py-attr docutils literal"><span class="pre">has_x</span></tt>, <tt class="xref py py-attr docutils literal"><span class="pre">has_v</span></tt>, and <tt class="xref py py-attr docutils literal"><span class="pre">has_f</span></tt>
+flags reflecting whether coordinates/velocities/forces were read.
+Attempting to access such data when the corresponding flag is set to <tt class="docutils literal"><span class="pre">False</span></tt>
+will raise a <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">the name of the trr file.</p>
+</dd>
+<dt><em>sub</em></dt>
+<dd><p class="first">an numpy integer array of what subset of trajectory atoms to load into
+the timestep. Intended to work similarly to the &#8216;sub&#8217; argument to <a class="reference external" href="http://www.gromacs.org">Gromacs</a>&#8216; trjconv.</p>
+<p>This is usefull when one has a Universe loaded with only an unsolvated protein, and
+wants to read a solvated trajectory.</p>
+<p class="last">The length of this array must be &lt;= to the actual number of atoms in the trajectory, and
+equal to number of atoms in the Universe.</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt><em>filename</em></dt>
-<dd>the name of the trr file.</dd>
-</dl>
-<p><em>sub</em></p>
-<blockquote>
-<div><p>an numpy integer array of what subset of trajectory atoms to load into
-the timestep. Intended to work similarly to the &#8216;sub&#8217; argument to gromac&#8217;s trjconv.</p>
-<p>This is usefull when one has a Universe loaded with only an unsolvated protein, and
-wants to read a solvated trajectory.</p>
-<p>The length of this array must be &lt;= to the actual number of atoms in the trajectory, and
-equal to number of atoms in the Universe.</p>
-</div></blockquote>
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.OtherWriter">
-<tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.OtherWriter">
+<tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a writer appropriate for <em>filename</em>.</p>
 <p>Sets the default keywords <em>start</em>, <em>step</em> and <em>delta</em> (if
 available). <em>numatoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.numatoms</span></tt>.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">Reader.Writer()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></tt></p>
 </div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.Writer">
-<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.Writer">
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a Gromacs TrjWriter for <em>filename</em> with the same parameters as this trajectory.</p>
 <p>All values can be changed through keyword arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output trajectory</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>numatoms</em></dt>
 <dd><p class="first last">number of atoms</p>
 </dd>
@@ -356,7 +367,7 @@ for TRR) [1000.0]</p>
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">appropriate <tt class="xref py py-class docutils literal"><span class="pre">TrjWriter</span></tt></p>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">appropriate <tt class="xref py py-class docutils literal"><span class="pre">TrjWriter</span></tt></p>
 </td>
 </tr>
 </tbody>
@@ -364,145 +375,137 @@ for TRR) [1000.0]</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.close" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close xdr trajectory file if it was open.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.close_trajectory">
-<tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.close_trajectory" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.close_trajectory">
+<tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.close_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specific implementation of trajectory closing.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_forces_from_native">
-<tt class="descname">convert_forces_from_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.convert_forces_from_native">
+<tt class="descname">convert_forces_from_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of forces array <em>force</em> from native units to base units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_forces_to_native">
-<tt class="descname">convert_forces_to_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.convert_forces_to_native">
+<tt class="descname">convert_forces_to_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of force array <em>force</em> from base units to native units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_from_native">
-<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.convert_pos_from_native">
+<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_to_native">
-<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.convert_pos_to_native">
+<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array x from base units to native units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_from_native">
-<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.convert_time_from_native">
+<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <p>By default, the input <em>t</em> is modified in place and also
 returned (although note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_to_native">
-<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.convert_time_to_native">
+<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <p>By default, the input <em>t</em> is modified in place and also
 returned. (Also note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_velocities_from_native">
-<tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.convert_velocities_from_native">
+<tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of velocities array <em>v</em> from native units to base units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_velocities_to_native">
-<tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.convert_velocities_to_native">
+<tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.delta">
-<tt class="descname">delta</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.delta" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.delta">
+<tt class="descname">delta</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.delta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time step length in ps.</p>
 <p>The result is computed from the trajectory and cached. If for
 any reason the trajectory cannot be read then 0 is returned.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.dt">
-<tt class="descname">dt</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.dt" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.dt">
+<tt class="descname">dt</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.dt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time between two trajectory frames in picoseconds.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.frame">
-<tt class="descname">frame</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.frame" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.frame">
+<tt class="descname">frame</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Frame number of the current time step.</p>
 <p>This is a simple short cut to <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.frame</span></tt>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.load_offsets">
-<tt class="descname">load_offsets</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.load_offsets" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.load_offsets">
+<tt class="descname">load_offsets</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.load_offsets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads current trajectory offsets from <em>filename</em> (in numpy format). No error checking is performed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of a saved numpy array with the frame offsets for the loaded trajectory.</p>
 </dd>
@@ -514,14 +517,14 @@ any reason the trajectory cannot be read then 0 is returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.next">
-<tt class="descname">next</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.next" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.next">
+<tt class="descname">next</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.next" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forward one step to next frame.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.numatoms">
-<tt class="descname">numatoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.numatoms" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.numatoms">
+<tt class="descname">numatoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.numatoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of publically available atoms that this reader will store in the timestep.</p>
 <p>If &#8216;sub&#8217; was not given in the ctor, then this value will just be the actual
 number of atoms in the underlying trajectory file. If however &#8216;sub&#8217; was given, then
@@ -530,8 +533,8 @@ this value is the number specified by the &#8216;sub&#8217; sub-selection.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.numframes">
-<tt class="descname">numframes</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.numframes" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.numframes">
+<tt class="descname">numframes</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.numframes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the number of frames from the trajectory.</p>
 <p>The result is cached. If for any reason the trajectory cannot
 be read then 0 is returned.</p>
@@ -540,16 +543,16 @@ iterating through the whole trajectory.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.open_trajectory">
-<tt class="descname">open_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.open_trajectory" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.open_trajectory">
+<tt class="descname">open_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.open_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open xdr trajectory file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">pointer to XDRFILE (and sets self.xdrfile)</td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">pointer to XDRFILE (and sets self.xdrfile)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> with code EALREADY if file was already opened or
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> with code EALREADY if file was already opened or
 ENOENT if the file cannot be found</td>
 </tr>
 </tbody>
@@ -557,20 +560,20 @@ ENOENT if the file cannot be found</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.rewind">
-<tt class="descname">rewind</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.rewind" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.rewind">
+<tt class="descname">rewind</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.rewind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Position at beginning of trajectory</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.save_offsets">
-<tt class="descname">save_offsets</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.save_offsets" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.save_offsets">
+<tt class="descname">save_offsets</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.save_offsets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves current trajectory offsets into <em>filename</em>, in numpy format. A &#8221;.npy&#8221; suffix will be appended to <em>filename</em> if not already present.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename in which to save the frame offset numpy array.</p>
 </dd>
@@ -582,30 +585,30 @@ ENOENT if the file cannot be found</td>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.time">
-<tt class="descname">time</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.time" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.time">
+<tt class="descname">time</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time of the current frame in MDAnalysis time units (typically ps).</p>
 <p>time = <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.frame</span></tt> * <tt class="xref py py-attr docutils literal"><span class="pre">Reader.dt</span></tt></p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRReader.totaltime">
-<tt class="descname">totaltime</tt><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRReader.totaltime" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.totaltime">
+<tt class="descname">totaltime</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.totaltime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Total length of the trajectory numframes * dt.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">TRRWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=None</em>, <em>precision=1000.0</em>, <em>remarks=None</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/TRR.html#TRRWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRR.</tt><tt class="descname">TRRWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=None</em>, <em>precision=1000.0</em>, <em>remarks=None</em>, <em>convert_units=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
 <p>Create a new TrjWriter</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
@@ -615,7 +618,7 @@ ENOENT if the file cannot be found</td>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>start</em></dt>
 <dd><p class="first last">starting timestep; only used when <em>delta</em> is set.</p>
 </dd>
@@ -624,12 +627,13 @@ ENOENT if the file cannot be found</td>
 </dd>
 <dt><em>delta</em></dt>
 <dd><p class="first last">timestep to use. If set will override any time information contained in the
-passed <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects; otherwise that will be used. If in the 
+passed <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects; otherwise that will be used. If in the
 latter case <tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt> is unavailable the TrjWriter will default
 to setting the trajectory time at 1 MDAnalysis unit (typically 1ps) per step.</p>
 </dd>
 <dt><em>precision</em></dt>
-<dd><p class="first last">accuracy for lossy XTC format [1000]</p>
+<dd><p class="first last">accuracy for lossy XTC format as a power of 10 (ignored
+for TRR) [1000.0]</p>
 </dd>
 <dt><em>convert_units</em></dt>
 <dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: units are converted to the MDAnalysis base format; <tt class="docutils literal"><span class="pre">None</span></tt> selects
@@ -641,124 +645,115 @@ the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAn
 </tr>
 </tbody>
 </table>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8.0: </span>The TRR writer is now able to write TRRs without coordnates/velocities/forces,
-depending on the properties available in the <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects passed to
-<a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write" title="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a>.</p>
-</div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.8.0: </span>The TRR writer is now able to write TRRs without coordinates/velocities/forces,
+depending on the properties available in the <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects passed to
+<a class="reference internal" href="#MDAnalysis.coordinates.TRR.TRRWriter.write" title="MDAnalysis.coordinates.TRR.TRRWriter.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a>.</p>
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.close_trajectory">
-<tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.close_trajectory" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.close_trajectory">
+<tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.close_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specific implementation of trajectory closing.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_dimensions_to_unitcell">
-<tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.convert_dimensions_to_unitcell">
+<tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read dimensions from timestep <em>ts</em> and return Gromacs box vectors</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_forces_from_native">
-<tt class="descname">convert_forces_from_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.convert_forces_from_native">
+<tt class="descname">convert_forces_from_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of forces array <em>force</em> from native units to base units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_forces_to_native">
-<tt class="descname">convert_forces_to_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.convert_forces_to_native">
+<tt class="descname">convert_forces_to_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of force array <em>force</em> from base units to native units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_from_native">
-<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.convert_pos_from_native">
+<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_to_native">
-<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.convert_pos_to_native">
+<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array x from base units to native units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_from_native">
-<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.convert_time_from_native">
+<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <p>By default, the input <em>t</em> is modified in place and also
 returned (although note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_to_native">
-<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.convert_time_to_native">
+<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <p>By default, the input <em>t</em> is modified in place and also
 returned. (Also note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_velocities_from_native">
-<tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.convert_velocities_from_native">
+<tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of velocities array <em>v</em> from native units to base units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_velocities_to_native">
-<tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.convert_velocities_to_native">
+<tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.has_valid_coordinates">
-<tt class="descname">has_valid_coordinates</tt><big>(</big><em>criteria</em>, <em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.has_valid_coordinates" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.has_valid_coordinates">
+<tt class="descname">has_valid_coordinates</tt><big>(</big><em>criteria</em>, <em>x</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.has_valid_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if all values are within limit values of their formats.</p>
 <p>Due to rounding, the test is asymmetric (and <em>min</em> is supposed to be negative):</p>
 <blockquote>
@@ -767,7 +762,7 @@ returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>criteria</em></dt>
 <dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
 </dd>
@@ -777,7 +772,7 @@ returned.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">boolean</p>
 </td>
 </tr>
 </tbody>
@@ -785,11 +780,11 @@ returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write">
-<tt class="descname">write</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.write">
+<tt class="descname">write</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write current timestep, using the supplied <em>obj</em>.</p>
 <p>The argument should be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or
-a <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> or a <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance.</p>
+a <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> or a <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The size of the <em>obj</em> must be the same as the number of atom
@@ -798,154 +793,15 @@ provided when setting up the trajectory.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write_next_timestep">
-<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRWriter.write_next_timestep">
+<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>write a new timestep to the trj file</p>
-<p><em>ts</em> is a <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance containing coordinates to
+<p><em>ts</em> is a <a class="reference internal" href="#MDAnalysis.coordinates.TRR.Timestep" title="MDAnalysis.coordinates.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance containing coordinates to
 be written to trajectory file</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt>
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">TRRReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>sub=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/TRR.html#TRRReader"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Read a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt><em>filename</em></dt>
-<dd>the name of the trr file.</dd>
-</dl>
-<p><em>sub</em></p>
-<blockquote>
-<div><p>an numpy integer array of what subset of trajectory atoms to load into
-the timestep. Intended to work similarly to the &#8216;sub&#8217; argument to gromac&#8217;s trjconv.</p>
-<p>This is usefull when one has a Universe loaded with only an unsolvated protein, and
-wants to read a solvated trajectory.</p>
-<p>The length of this array must be &lt;= to the actual number of atoms in the trajectory, and
-equal to number of atoms in the Universe.</p>
-</div></blockquote>
-</dd></dl>
-
-<dl class="class">
-<dt>
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">TRRWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=None</em>, <em>precision=1000.0</em>, <em>remarks=None</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/TRR.html#TRRWriter"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Write a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
-<p>Create a new TrjWriter</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">name of output file</p>
-</dd>
-<dt><em>numatoms</em></dt>
-<dd><p class="first last">number of atoms in trajectory file</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>start</em></dt>
-<dd><p class="first last">starting timestep; only used when <em>delta</em> is set.</p>
-</dd>
-<dt><em>step</em></dt>
-<dd><p class="first last">skip between subsequent timesteps; only used when <em>delta</em> is set.</p>
-</dd>
-<dt><em>delta</em></dt>
-<dd><p class="first last">timestep to use. If set will override any time information contained in the
-passed <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects; otherwise that will be used. If in the 
-latter case <tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt> is unavailable the TrjWriter will default
-to setting the trajectory time at 1 MDAnalysis unit (typically 1ps) per step.</p>
-</dd>
-<dt><em>precision</em></dt>
-<dd><p class="first last">accuracy for lossy XTC format [1000]</p>
-</dd>
-<dt><em>convert_units</em></dt>
-<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: units are converted to the MDAnalysis base format; <tt class="docutils literal"><span class="pre">None</span></tt> selects
-the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></tt> [&#8216;convert_lengths&#8217;].
-(see <a class="reference internal" href="../core/init.html#flags-label"><em>Flags</em></a>)</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8.0: </span>The TRR writer is now able to write TRRs without coordnates/velocities/forces,
-depending on the properties available in the <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects passed to
-<a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write" title="MDAnalysis.coordinates.xdrfile.TRR.TRRWriter.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a>.</p>
-</div>
-</dd></dl>
-
-<dl class="class">
-<dt>
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.TRR.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/xdrfile/TRR.html#Timestep"><span class="viewcode-link">[source]</span></a></dt>
-<dd><dl class="docutils">
-<dt>Timestep for a Gromacs TRR trajectory.</dt>
-<dd><p class="first">The Timestep can be initialized with <em>arg</em> being</p>
-<ol class="arabic simple">
-<li>an integer (the number of atoms)</li>
-<li>another <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance, in which case a copy is made. Attention:
-loss of attributes that do not exist within the TRR <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> may occur.</li>
-<li>a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <tt class="docutils literal"><span class="pre">(numatoms,</span> <span class="pre">3)</span></tt> (for positions only) or
-<tt class="docutils literal"><span class="pre">(numatoms,</span> <span class="pre">9)</span></tt> (for positions, velocities, and forces): <tt class="docutils literal"><span class="pre">positions</span> <span class="pre">=</span> <span class="pre">arg[:,:3]</span></tt>,
-<tt class="docutils literal"><span class="pre">velocities</span> <span class="pre">=</span> <span class="pre">arg[:,3:6]</span></tt>, and <tt class="docutils literal"><span class="pre">forces</span> <span class="pre">=</span> <span class="pre">arg[:,6:]</span></tt>.</li>
-</ol>
-<p>The constructor also takes the named arguments <em>has_x</em>, <em>has_v</em>, and <em>has_f</em>, which
-are used to set <tt class="xref py py-attr docutils literal"><span class="pre">has_x</span></tt>, <tt class="xref py py-attr docutils literal"><span class="pre">has_v</span></tt>, <tt class="xref py py-attr docutils literal"><span class="pre">has_f</span></tt>.
-Depending on the <em>arg</em> use-case above, the defaults set for these flags will vary:
-1. when <em>arg</em> is an integer <tt class="xref py py-attr docutils literal"><span class="pre">has_x</span></tt> defaults to <tt class="docutils literal"><span class="pre">True</span></tt> and</p>
-<blockquote>
-<div><tt class="xref py py-attr docutils literal"><span class="pre">has_v</span></tt> and <tt class="xref py py-attr docutils literal"><span class="pre">has_f</span></tt> to <tt class="docutils literal"><span class="pre">False</span></tt>.</div></blockquote>
-<ol class="last arabic simple" start="2">
-<li>when <em>arg</em> is another <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance the flags will default to being
-copied from the passed <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>. If that instance has no &#8216;<a href="#id3"><span class="problematic" id="id4">has_</span></a>&#8216; flags
-the behavior is to assign them to <tt class="docutils literal"><span class="pre">True</span></tt> depending on the existence of
-<tt class="xref py py-attr docutils literal"><span class="pre">_velocities</span></tt> and <tt class="xref py py-attr docutils literal"><span class="pre">_forces</span></tt> (<tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt>
-is assumed to always be there, so in this case <tt class="xref py py-attr docutils literal"><span class="pre">has_x</span></tt> defaults to
-<tt class="docutils literal"><span class="pre">True</span></tt>).</li>
-<li>when <em>arg</em> is a numpy array, the default flags will reflect what information is passed
-in the array.</li>
-</ol>
-</dd>
-</dl>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8.0: </span>TRR <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects are now fully aware of the existence or not of
-coordinate/velocity/force information in frames, reflected in the
-<tt class="xref py py-attr docutils literal"><span class="pre">has_x</span></tt>, <tt class="xref py py-attr docutils literal"><span class="pre">has_v</span></tt>, and <tt class="xref py py-attr docutils literal"><span class="pre">has_f</span></tt> flags.
-Accessing either kind of information while the corresponding flag is set to <tt class="docutils literal"><span class="pre">False</span></tt>
-wil raise a <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt>. Internally, however, the arrays are always populated,
-even when the flags are <tt class="docutils literal"><span class="pre">False</span></tt>; upon creation of a <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> they are
-zero-filled, but this might not always be the case later on for properties flagged as
-<tt class="docutils literal"><span class="pre">False</span></tt> if the same <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance is used to read from a TRR frame.</p>
-<p>When doing low-level writing to <tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt>, <tt class="xref py py-attr docutils literal"><span class="pre">_velocities</span></tt>,
-or <tt class="xref py py-attr docutils literal"> <span class="pre">The</span>
-<span class="pre">TRR</span> <span class="pre">:class:`Timestep</span></tt> constructor allows for the named boolean arguments <em>has_x</em>,
-<em>has_v</em>, and <em>has_f</em> to be passed for automatic setting of the corresponding flag.
-An exception to this is assignment to the full property array thus:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">ts</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">TRR</span><span class="o">.</span><span class="n">Timestep</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>     <span class="c"># N being the number of atoms</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span> <span class="o">=</span> <span class="n">vel_array</span>   <span class="c"># Where vel_array is an existing array of shape (N, DIM)</span>
-                             <span class="c">#  This will also automatically set &#39;has_v&#39; to True.</span>
-</pre></div>
-</div>
-<p>Attempting to populate the array instead will, however, raise a NoDataError exception:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">ts</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">TRR</span><span class="o">.</span><span class="n">Timestep</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>     <span class="c"># N being the number of atoms</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">vel_array</span>   <span class="c">#  This will fail if &#39;has_v&#39; hasn&#39;t been set to True.</span>
-</pre></div>
-</div>
-</div>
-</dd></dl>
-
-</div>
 </div>
 </div>
 
@@ -982,7 +838,7 @@ An exception to this is assignment to the full property array thus:</p>
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
