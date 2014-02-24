@@ -26,3 +26,4 @@ Visualization of Lipid Flow
    :maxdepth: 1
 
    visualization/streamlines
+   visualization/streamlines_3D

@@ -19,6 +19,7 @@
 :mod:`MDAnalysis.visualization` --- Visualization library in MDAnalysis
 ================================================================
 """
-__all__ = ['streamlines']
+__all__ = ['streamlines','streamlines_3D']
 
 import streamlines
+import streamlines_3D
