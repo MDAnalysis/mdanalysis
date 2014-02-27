@@ -5,7 +5,7 @@ Multicore 3D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visua
 :Authors: Tyler Reddy and Matthieu Chavent
 :Year: 2014
 :Copyright: GNU Public License v3
-:Citation: [Chavent_and_Reddy_2014]_
+:Citation: [Chavent2014]_
 
 .. autofunction:: generate_streamlines_3d
 
@@ -190,7 +190,7 @@ def generate_streamlines_3d(coordinate_file_path,trajectory_file_path,grid_spaci
         **coordinate_file_path** : str
             Absolute path to the coordinate file
         **trajectory_file_path** : str
-            Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool such as GROMACS g_filter (see [Chavent_and_Reddy_2014]_)
+            Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool such as GROMACS g_filter (see [Chavent2014]_)
         **grid_spacing** : float
             The spacing between grid lines (angstroms)
         **MDA_selection** : str
@@ -248,7 +248,7 @@ def generate_streamlines_3d(coordinate_file_path,trajectory_file_path,grid_spaci
         num_cores = multiprocessing.cpu_count() #use all available cores
     else: 
         num_cores = num_cores #use the value specified by the user
-        assert isinstance(num_cores,(int,long)), "The number of specified cores must (of course) be an integer."
+        #assert isinstance(num_cores,(int,long)), "The number of specified cores must (of course) be an integer."
     numpy.seterr(all='warn',over='raise')
     parent_cube_dictionary = {} #collect all data from child processes here
     def log_result_to_parent(process_dict):

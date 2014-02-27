@@ -13,6 +13,7 @@ The rules for this file:
 ??/??/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
 	  rmcgibbo, richardjgowers, lennardvanderfeltz, bernardin.alejandro
+          matthieu.chavent
 
   * 0.8.1
 
@@ -20,7 +21,7 @@ The rules for this file:
 
   Enhancements
 
-  * new MDAnalysis.visualization namespace added along with 
+  * (experimental) MDAnalysis.visualization namespace added along with 
     2D/3D streamplot modules & documentation for them
   * TRR file handling is now fully aware of missing coordinate/velocity/force
     information when reading and writing frames.

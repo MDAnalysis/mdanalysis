@@ -60,7 +60,7 @@ authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein"""
+    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein"""
 project = u'MDAnalysis'
 copyright = u'2005-2013, ' + authors
 
