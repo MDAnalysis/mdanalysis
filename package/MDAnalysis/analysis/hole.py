@@ -175,8 +175,6 @@ Utilities
 
 import numpy
 
-import matplotlib
-import pylab
 import glob
 import os
 import errno

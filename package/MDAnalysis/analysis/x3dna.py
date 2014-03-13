@@ -118,8 +118,6 @@ from __future__ import with_statement
 
 import numpy
 
-import matplotlib
-import pylab
 import glob
 import os
 import errno
