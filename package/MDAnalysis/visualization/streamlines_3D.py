@@ -230,22 +230,30 @@ def generate_streamlines_3d(coordinate_file_path,trajectory_file_path,grid_spaci
         import MDAnalysis.visualization.streamlines_3D
         import mayavi, mayavi.mlab
 
-        x1, y1, z1 = MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d('testing.gro','testing_filtered.xtc',buffer_value = 30, grid_spacing = 20, MDA_selection = 'name PO4',start_frame=2,end_frame=3,num_cores='maximum')
-        print x1.shape,y1.shape,z1.shape
-        x,y,z= numpy.mgrid[-8.73:1225.96:62j,-12.58:1224.34:62j,12.89:108.5:6j] #bilayer test grid (use same shapes as x1,y1,z1)
-        #use a grid of seed lines to produce the streamlines:
+        #assign coordinate system limits and grid spacing:
+        x_lower,x_upper = -8.73, 1225.96
+        y_lower,y_upper = -12.58, 1224.34
+        z_lower,z_upper = -300, 300
+        grid_spacing_value = 20
+
+        x1, y1, z1 = MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d('testing.gro','testing_filtered.xtc',xmin=x_lower,xmax=x_upper,ymin=y_lower,ymax=y_upper,zmin=z_lower,zmax=z_upper,grid_spacing = grid_spacing_value, MDA_selection = 'name PO4',start_frame=2,end_frame=3,num_cores='maximum')
+        x,y,z = numpy.mgrid[x_lower:x_upper:x1.shape[0]*1j,y_lower:y_upper:y1.shape[1]*1j,z_lower:z_upper:z1.shape[2]*1j] 
+
+        #plot with mayavi:
         fig = mayavi.mlab.figure(bgcolor=(1.0,1.0,1.0),size=(800,800),fgcolor=(0, 0, 0))
-        for x_value in numpy.arange(-20,1200,20):
-            for y_value in numpy.arange(-20,1200,20):
-                st = mayavi.mlab.flow(x,y,z,x1,y1,z1,line_width=1,seedtype='line',integration_direction='both')
-                st.seed.widget.point1 = [x_value,y_value,12]
-                st.seed.widget.point2 = [x_value,y_value,110]
-                st.seed.widget.enabled = False
-                st.seed.widget.resolution = 25
+        for z_value in numpy.arange(z_lower,z_upper,grid_spacing_value):
+            st = mayavi.mlab.flow(x,y,z,x1,y1,z1,line_width=1,seedtype='plane',integration_direction='both')
+            st.streamline_type = 'tube'
+            st.tube_filter.radius = 2
+            st.seed.widget.origin = numpy.array([ x_lower,  y_upper,   z_value])
+            st.seed.widget.point1 = numpy.array([ x_upper, y_upper,  z_value])
+            st.seed.widget.point2 = numpy.array([ x_lower, y_lower,  z_value])
+            st.seed.widget.resolution = int(x1.shape[0])
+            st.seed.widget.enabled = False
         mayavi.mlab.axes(extent = [0,1200,0,1200,-300,300])
         fig.scene.z_plus_view()
         mayavi.mlab.savefig('test_streamplot_3D.png')
-        #more compelling (but more time consuming) examples can be produced for vesicles and other spherical systems
+        #more compelling examples can be produced for vesicles and other spherical systems
 
     .. image:: test_streamplot_3D.png
 
