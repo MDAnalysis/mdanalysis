@@ -14,6 +14,7 @@ Multicore 3D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visua
 import MDAnalysis
 import multiprocessing
 import numpy
+import numpy.testing
 import scipy
 import scipy.spatial.distance
 
@@ -109,7 +110,6 @@ def split_grid(grid,num_cores):
 
 def per_core_work(start_frame_coord_array, end_frame_coord_array,dictionary_cube_data_this_core,MDA_selection,start_frame,end_frame):
     '''The code to perform on a given core given the dictionary of cube data.'''
-    print multiprocessing.current_process().name, 'Starting'
     list_previous_frame_centroids = []
     list_previous_frame_indices = []
     #define some utility functions for trajectory iteration:
@@ -118,9 +118,8 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array,dictionary_cube
         #the simulation particle point can't be more than half the cube side length away from the cube centroid in any given dimension:
         array_cube_vertices = numpy.array(list_cube_vertices)
         cube_half_side_length = scipy.spatial.distance.pdist(array_cube_vertices,'euclidean').min() / 2.0
-        #incorporate a debug check -- all cube vertices should be exactly the same distance away from the centroid
         array_cube_vertex_distances_from_centroid = scipy.spatial.distance.cdist(array_cube_vertices,cube_centroid[numpy.newaxis,:])
-        assert array_cube_vertex_distances_from_centroid.min() == array_cube_vertex_distances_from_centroid.max(), "not all cube vertex to centroid distances are the same, so not a true cube"
+        numpy.testing.assert_almost_equal(array_cube_vertex_distances_from_centroid.min(),array_cube_vertex_distances_from_centroid.max(),decimal=4,err_msg= "not all cube vertex to centroid distances are the same, so not a true cube")
         absolute_delta_coords = numpy.absolute(numpy.subtract(array_point_coordinates,cube_centroid))
         absolute_delta_x_coords = absolute_delta_coords[...,0]
         indices_delta_x_acceptable = numpy.where(absolute_delta_x_coords <= cube_half_side_length)
@@ -164,7 +163,6 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array,dictionary_cube
     #now that the parent process is dealing with the universe object & grabbing required coordinates, each child process only needs to take the coordinate arrays & perform the operations with its assigned cubes (no more file opening and trajectory iteration on each core--which I'm hoping will substantially reduce the physical memory footprint of my 3D streamplot code)
     update_dictionary_point_in_cube_start_frame(start_frame_coord_array,dictionary_cube_data_this_core)
     update_dictionary_end_frame(end_frame_coord_array,dictionary_cube_data_this_core)
-    print multiprocessing.current_process().name, 'Finishing'
     return dictionary_cube_data_this_core
 
 def produce_coordinate_arrays_single_process(coordinate_file_path,trajectory_file_path,MDA_selection,start_frame,end_frame):
@@ -179,11 +177,10 @@ def produce_coordinate_arrays_single_process(coordinate_file_path,trajectory_fil
         elif ts.frame == end_frame:
             end_frame_relevant_particle_coordinate_array_xyz = relevant_particles.coordinates()
         else:
-            print multiprocessing.current_process().name, 'skipping frame',ts.frame
             continue
     return (start_frame_relevant_particle_coordinate_array_xyz,end_frame_relevant_particle_coordinate_array_xyz)
     
-def generate_streamlines_3d(coordinate_file_path,trajectory_file_path,grid_spacing,MDA_selection,start_frame,end_frame,buffer_value=30.0,maximum_delta_magnitude=2.0,num_cores='maximum'):
+def generate_streamlines_3d(coordinate_file_path,trajectory_file_path,grid_spacing,MDA_selection,start_frame,end_frame,xmin,xmax,ymin,ymax,zmin,zmax,maximum_delta_magnitude=2.0,num_cores='maximum'):
     '''Produce the x, y and z components of a 3D streamplot data set.
     
     :Parameters:
@@ -199,8 +196,18 @@ def generate_streamlines_3d(coordinate_file_path,trajectory_file_path,grid_spaci
             First frame number to parse
         **end_frame** : int
             Last frame number to parse
-        **buffer_value** : float
-            Extra space placed around the Cartesian limits of the 3D system when assigning the boundaries (angstroms; default: 30.0). Use to avoid neglecting particles near the edges of the system.
+        **xmin** : float
+            Minimum coordinate boundary for x-axis (angstroms)
+        **xmax** : float
+            Maximum coordinate boundary for x-axis (angstroms)
+        **ymin** : float
+            Minimum coordinate boundary for y-axis (angstroms)
+        **ymax** : float
+            Maximum coordinate boundary for y-axis (angstroms)
+        **zmin** : float
+            Minimum coordinate boundary for z-axis (angstroms)
+        **zmax** : float
+            Maximum coordinate boundary for z-axis (angstroms)
         **maximum_delta_magnitude** : float
             Absolute value of the largest displacement (in dx,dy, or dz) tolerated for the centroid of a group of particles (angstroms; default: 2.0). Values above this displacement will not count in the streamplot (treated as excessively large displacements crossing the periodic boundary)
         **num_cores** : int, optional
@@ -255,7 +262,8 @@ def generate_streamlines_3d(coordinate_file_path,trajectory_file_path,grid_spaci
         parent_cube_dictionary.update(process_dict)
 
     #step 1: produce tuple of cartesian coordinate limits for the first frame
-    tuple_of_limits = determine_container_limits(coordinate_file_path = coordinate_file_path,trajectory_file_path = trajectory_file_path,buffer_value=buffer_value)
+    #tuple_of_limits = determine_container_limits(coordinate_file_path = coordinate_file_path,trajectory_file_path = trajectory_file_path,buffer_value=buffer_value)
+    tuple_of_limits = (xmin,xmax,ymin,ymax,zmin,zmax)
     #step 2: produce a suitable grid (will assume that grid size / container size does not vary during simulation--or at least not beyond the buffer limit, such that this grid can be used for all subsequent frames)
     grid = produce_grid(tuple_of_limits = tuple_of_limits, grid_spacing = grid_spacing)
     #step 3: split the grid into a dictionary of cube information that can be sent to each core for processing:
