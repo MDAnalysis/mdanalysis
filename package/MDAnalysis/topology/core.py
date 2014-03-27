@@ -760,6 +760,8 @@ class TopologyGroup(object):
         :Keywords:
            *pbc*
               apply periodic boundary conditions when calculating distance [False]
+           *result*
+              allows a predefined results array to be used, note that this will be overwritten
 
         Uses cython implementation
         """
@@ -767,12 +769,12 @@ class TopologyGroup(object):
             raise TypeError("TopologyGroup is not of 'bond' type")
         if not result:
             result = numpy.zeros((self.len,), numpy.float64)
-        if not pbc:
+        if pbc:
             return distances.calc_bonds(self.atom1.coordinates(), self.atom2.coordinates(),
-                                        result=result)
+                                        box=self.atom1.dimensions, result=result)
         else:
             return distances.calc_bonds(self.atom1.coordinates(), self.atom2.coordinates(),
-                                        box=self.atom1.dimensions[0:3], result=result)
+                                        result=result)
 
     def _anglesSlow(self):
         """Slow version of angle (numpy implementation)"""
@@ -787,9 +789,17 @@ class TopologyGroup(object):
         angles = numpy.array([slowang(a, b) for a, b in izip(vec1, vec2)])
         return angles
 
-    def angles(self, result=None):
+    def angles(self, result=None, pbc=False):
         """Calculates the angle in radians formed between a bond
         between atoms 1 and 2 and a bond between atoms 2 & 3
+
+        :Keywords:
+           *pbc*
+              apply periodic boundary conditions when calculating angles [False]
+              this is important when connecting vectors between atoms might require 
+              minimum image convention
+           *result*
+              allows a predefined results array to be used, note that this will be overwritten
 
         Uses cython implementation
         """
@@ -797,8 +807,12 @@ class TopologyGroup(object):
             raise TypeError("topology group is not of type 'angle'")
         if not result:
             result = numpy.zeros((self.len,), numpy.float64)
-        return distances.calc_angles(self.atom1.coordinates(), self.atom2.coordinates(),
-                                     self.atom3.coordinates(), result=result)
+        if pbc:
+            return distances.calc_angles(self.atom1.coordinates(), self.atom2.coordinates(),
+                                         self.atom3.coordinates(), box=self.atom1.dimensions, result=result)
+        else:
+            return distances.calc_angles(self.atom1.coordinates(), self.atom2.coordinates(),
+                                         self.atom3.coordinates(), result=result)
 
     def _torsionsSlow(self):
         """Slow version of torsion (numpy implementation)"""
@@ -813,12 +827,20 @@ class TopologyGroup(object):
 
         return numpy.array([dihedral(a, b, c) for a, b, c in izip(vec1, vec2, vec3)])
 
-    def torsions(self, result=None):
+    def torsions(self, result=None, pbc=False):
         """Calculate the torsional angle in radians for this topology
         group.
 
         Defined as the angle between a plane formed by atoms 1, 2 and
         3 and a plane formed by atoms 2, 3 and 4.
+
+        :Keywords:
+           *pbc*
+              apply periodic boundary conditions when calculating angles [False]
+              this is important when connecting vectors between atoms might require 
+              minimum image convention
+           *result*
+              allows a predefined results array to be used, note that this will be overwritten
 
         Uses cython implementation.
         """
@@ -826,6 +848,11 @@ class TopologyGroup(object):
             raise TypeError("topology group is not of type 'torsion'")
         if not result:
             result = numpy.zeros((self.len,), numpy.float64)
-        return distances.calc_torsions(self.atom1.coordinates(), self.atom2.coordinates(),
-                                       self.atom3.coordinates(), self.atom4.coordinates(),
-                                       result=result)
+        if pbc:
+            return distances.calc_torsions(self.atom1.coordinates(), self.atom2.coordinates(),
+                                           self.atom3.coordinates(), self.atom4.coordinates(),
+                                           box=self.atom1.dimensions, result=result)
+        else:
+            return distances.calc_torsions(self.atom1.coordinates(), self.atom2.coordinates(),
+                                           self.atom3.coordinates(), self.atom4.coordinates(),
+                                           result=result)

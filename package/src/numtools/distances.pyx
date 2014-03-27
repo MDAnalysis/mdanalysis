@@ -50,9 +50,9 @@ Functions
 ---------
 
 .. autofunction:: boxCheck(box)
-.. autofunction:: calc_bonds(atom1, atom2, [box, [,result]])
-.. autofunction:: calc_angles(atom1, atom2, atom3 [, result])
-.. autofunction:: calc_torsions(atom1, atom2, atom3, atom4 [, result])
+.. autofunction:: calc_bonds(atom1, atom2 [, box, [,result]])
+.. autofunction:: calc_angles(atom1, atom2, atom3 [,box [, result]])
+.. autofunction:: calc_torsions(atom1, atom2, atom3, atom4 [,box [, result]])
 .. autofunction:: applyPBC(coordinates, box)
 .. autofunction:: transform_RtoS(coordinates, box)
 .. autofunction:: transform_StoR(coordinates, box)
@@ -78,7 +78,11 @@ cdef extern from "calc_distances.h":
     void calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2, int numatom, coordinate* box, double* distances)
     void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
     void calc_angle(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, double* angles)
+    void calc_angle_ortho(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, float* box, double* angles)
+    void calc_angle_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, coordinate* box, double* angles)
     void calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, double* angles)
+    void calc_torsion_ortho(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, float* box, double* angles)
+    void calc_torsion_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, coordinate* box, double* angles)
     void ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse)
     void triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
 
@@ -468,7 +472,8 @@ def calc_bonds(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray box
     return distances
 
 
-def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray list3, c_numpy.ndarray result=None):
+def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray list3, 
+                c_numpy.ndarray box=None, c_numpy.ndarray result=None):
     """
     Calculates the angle formed between three atoms, over a list of coordinates.
     All *atom* inputs are lists of coordinates of equal length, with *atom2* 
@@ -478,7 +483,11 @@ def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray li
     provided in *result* then this preallocated array is filled. This can speed
     up calculations.
 
-    angles = calc_angles(coords1, coords2, coords3 [,result=angles])
+    The optional argument ``box`` ensures that periodic boundaries are taken into account when
+    constructing the connecting vectors between atoms, ie that the vector between atoms 1 & 2
+    goes between coordinates in the same image.
+
+    angles = calc_angles(coords1, coords2, coords3, [[box=None],result=angles])
 
     :Arguments:
         *coords1*
@@ -487,6 +496,8 @@ def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray li
             coordinate array of apex of angles
         *coords3*
             coordinate array of other side of angles
+        *box*
+            optional, unit cell dimensions
         *result*
             optional preallocated results array which must have same length as coordinate 
             array and dtype=numpy.float64. 
@@ -496,6 +507,7 @@ def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray li
             A numpy.array of angles in radians
     
     .. versionadded:: 0.8
+    .. versionchanged:: 0.8.2 Added optional box argument
     """
     cdef c_numpy.ndarray atom1, atom2, atom3
     cdef c_numpy.ndarray angles
@@ -520,6 +532,17 @@ def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray li
         or atom3.dtype != numpy.dtype(numpy.float32) ):
         raise TypeError("all coordinates must be of type numpy.float32")
 
+    with_PBC = (box is not None)
+    if with_PBC:
+        boxtype = boxCheck(box)
+        if (boxtype == 'unknown'):
+            raise ValueError("box input not recognised, must be an array of box dimensions")
+        if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+            box = triclinic_vectors(box)
+        if (boxtype == 'tri_vecs_bad'):
+            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
+        if (box.dtype!=numpy.dtype(numpy.float32)):
+            raise TypeError("periodic boundaries must be of type float32")
 
     if not result is None:
         if (result.nd != 1 or result.dimensions[0] != numatom):
@@ -530,11 +553,20 @@ def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray li
     else:
         angles = numpy.zeros((numatom,), numpy.float64)
 
-    calc_angle(<coordinate*>atom1.data,<coordinate*>atom2.data,<coordinate*>atom3.data,numatom,<double*>angles.data)
+    if with_PBC:
+        if boxtype == 'ortho':
+            calc_angle_ortho(<coordinate*>atom1.data,<coordinate*>atom2.data,<coordinate*>atom3.data,numatom,
+                              <float*>box.data, <double*>angles.data)
+        else:
+            calc_angle_triclinic(<coordinate*>atom1.data,<coordinate*>atom2.data,<coordinate*>atom3.data,numatom,
+                                  <coordinate*>box.data, <double*>angles.data)
+    else:
+        calc_angle(<coordinate*>atom1.data,<coordinate*>atom2.data,<coordinate*>atom3.data,numatom,<double*>angles.data)
 
     return angles
 
-def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray list3, c_numpy.ndarray list4, c_numpy.ndarray result=None):
+def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray list3, c_numpy.ndarray list4, 
+                  c_numpy.ndarray box=None, c_numpy.ndarray result=None):
     """
     Calculate the torsional angle formed by four atoms, over a list of coordinates.
     
@@ -551,7 +583,11 @@ def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray 
     provided in *result* then this preallocated array is filled. This can speed
     up calculations.
 
-    angles = calc_torsions(coords1, coords2, coords3, coords4 [,result=angles])
+    The optional argument ``box`` ensures that periodic boundaries are taken into account when
+    constructing the connecting vectors between atoms, ie that the vector between atoms 1 & 2
+    goes between coordinates in the same image.
+
+    angles = calc_torsions(coords1, coords2, coords3, coords4 [,box=box, result=angles])
 
     :Arguments:
         *coords1*
@@ -562,6 +598,8 @@ def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray 
             coordinate array of 3rd atom in torsions
         *coords4*
             coordinate array of 4th atom in torsions
+        *box*
+            optional unit cell information
         *result*
             optional preallocated results array which must have same length as coordinate 
             array and dtype=numpy.float64. 
@@ -598,6 +636,18 @@ def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray 
         or atom3.dtype != numpy.dtype(numpy.float32) or atom4.dtype != numpy.dtype(numpy.float32) ):
         raise TypeError("all coordinates must be of type numpy.float32")
 
+    with_PBC = (box is not None)
+    if with_PBC:
+        boxtype = boxCheck(box)
+        if (boxtype == 'unknown'):
+            raise ValueError("box input not recognised, must be an array of box dimensions")
+        if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+            box = triclinic_vectors(box)
+        if (boxtype == 'tri_vecs_bad'):
+            box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
+        if (box.dtype!=numpy.dtype(numpy.float32)):
+            raise TypeError("periodic boundaries must be of type float32")
+
     if not result is None:
         if (result.nd != 1 or result.dimensions[0] != numatom):
             raise ValueError("result array has incorrect size - should be (%d)"%(numatom))
@@ -607,8 +657,16 @@ def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray 
     else:
         angles = numpy.zeros((numatom,), numpy.float64)
 
-    calc_torsion(<coordinate*>atom1.data,<coordinate*>atom2.data,<coordinate*>atom3.data,<coordinate*>atom4.data,
-                  numatom,<double*>angles.data)
+    if with_PBC:
+        if boxtype == 'ortho':
+            calc_torsion_ortho(<coordinate*>atom1.data,<coordinate*>atom2.data,<coordinate*>atom3.data,<coordinate*>atom4.data,
+                                numatom, <float*>box.data, <double*>angles.data)
+        else:
+            calc_torsion_triclinic(<coordinate*>atom1.data,<coordinate*>atom2.data,<coordinate*>atom3.data,<coordinate*>atom4.data,
+                                    numatom, <coordinate*> box.data, <double*>angles.data)
+    else:
+        calc_torsion(<coordinate*>atom1.data,<coordinate*>atom2.data,<coordinate*>atom3.data,<coordinate*>atom4.data,
+                      numatom,<double*>angles.data)
 
     return angles
 

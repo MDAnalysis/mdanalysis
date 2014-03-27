@@ -536,3 +536,59 @@ class test_apply_PBC(TestCase):
 
         assert_almost_equal(cyth1, reference, self.prec, err_msg="Triclinic applyPBC failed comparison with np")
         assert_almost_equal(cyth2, reference, self.prec, err_msg="Trlclinic applyPBC failed comparison with np")
+
+class TestPeriodicAngles(TestCase):
+    """Test case for properly considering minimum image convention when calculating angles and torsions
+    (Issue 172)
+    """
+    def setUp(self):
+        self.prec = 5
+        self.a = np.array([[0.0, 1.0, 0.0]], dtype=np.float32)
+        self.b = np.array([[0.0, 0.0, 0.0]], dtype=np.float32)
+        self.c = np.array([[1.0, 0.0, 0.0]], dtype=np.float32)
+        self.d = np.array([[1.0, 0.0, 1.0]], dtype=np.float32)
+        self.box = np.array([10.0, 10.0, 10.0], dtype=np.float32)
+
+    def tearDown(self):
+        del self.prec
+        del self.a
+        del self.b
+        del self.c
+        del self.d
+        del self.box
+
+    def test_angles(self):
+        from MDAnalysis.core.distances import calc_angles
+        # Shift atom coordinates a few box lengths in random directions and see if we still get same results
+        a2 = (self.a + self.box * (-1, 0, 0)).astype(np.float32) # seem to get converted to float64 otherwise
+        b2 = (self.b + self.box * (1, 0, 1)).astype(np.float32)
+        c2 = (self.c + self.box * (-2, 5, -7)).astype(np.float32)
+
+        ref = calc_angles(self.a, self.b, self.c)
+
+        test1 = calc_angles(a2, self.b, self.c, box=self.box)
+        test2 = calc_angles(self.a, b2, self.c, box=self.box)
+        test3 = calc_angles(self.a, self.b, c2, box=self.box)
+        test4 = calc_angles(a2, b2, c2, box=self.box)
+
+        for val in [test1, test2, test3, test4]:
+            assert_almost_equal(ref, val, self.prec, err_msg="Min image in angle calculation failed")
+
+    def test_torsions(self):
+        from MDAnalysis.core.distances import calc_torsions
+
+        a2 = (self.a + self.box * (-1, 0, 0)).astype(np.float32)
+        b2 = (self.b + self.box * (1, 0, 1)).astype(np.float32)
+        c2 = (self.c + self.box * (-2, 5, -7)).astype(np.float32)
+        d2 = (self.d + self.box * (0, -5, 0)).astype(np.float32)
+
+        ref = calc_torsions(self.a, self.b, self.c, self.d)
+
+        test1 = calc_torsions(a2, self.b, self.c, self.d, box=self.box)
+        test2 = calc_torsions(self.a, b2, self.c, self.d, box=self.box)
+        test3 = calc_torsions(self.a, self.b, c2, self.d, box=self.box)
+        test4 = calc_torsions(self.a, self.b, self.c, d2, box=self.box)
+        test5 = calc_torsions(a2, b2, c2, d2, box=self.box)
+
+        for val in [test1, test2, test3, test4, test5]:
+            assert_almost_equal(ref, val, self.prec, err_msg="Min image in torsion calculation failed")
