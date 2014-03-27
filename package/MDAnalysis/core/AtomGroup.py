@@ -1862,21 +1862,21 @@ class AtomGroup(object):
 
         return self.universe.trajectory.ts._pos[self.indices()]
 
-    def selectAtoms(self, sel, *othersel):
+    def selectAtoms(self, sel, *othersel, **selgroups):
         """Selection of atoms using the MDAnalysis selection syntax.
 
-        AtomGroup.selectAtoms(selection[,selection[,...]])
+        AtomGroup.selectAtoms(selection[,selection[,...]], [groupname=atomgroup[,groupname=atomgroup[,...]]])
 
         .. SeeAlso:: :meth:`Universe.selectAtoms`
         """
         import Selection     # can ONLY import in method, otherwise cyclical import!
-        atomgrp = Selection.Parser.parse(sel).apply(self)
+        atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
         if len(othersel) == 0: return atomgrp
         else:
             # Generate a selection for each selection string
             #atomselections = [atomgrp]
             for sel in othersel:
-                atomgrp = atomgrp + Selection.Parser.parse(sel).apply(self)
+                atomgrp = atomgrp + Selection.Parser.parse(sel, selgroups).apply(self)
                 #atomselections.append(Selection.Parser.parse(sel).apply(self))
             #return tuple(atomselections)
             return atomgrp
@@ -2848,18 +2848,25 @@ class Universe(object):
             raise ValueError("The topology and %s trajectory files don't have the same number of atoms!" % self.trajectory.format)
         return filename, self.trajectory.format
 
-    def selectAtoms(self, sel, *othersel):
+    def selectAtoms(self, sel, *othersel, **selgroups):
         """Select atoms using a CHARMM selection string.
 
         Returns an :class:`AtomGroup` with atoms sorted according to their
         index in the psf (this is to ensure that there aren't any duplicates,
         which can happen with complicated selections).
 
+        Existing :class:`AtomGroup` objects can be passed as named arguments,
+        which will then be available to the selection parser.
+
         Subselections can be grouped with parentheses.
 
         Example::
-           >>> universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
+           >>> sel = universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
+           >>> sel
            <AtomGroup with 3420 atoms>
+
+           >>> universe.selectAtoms("around 10 group notHO", notHO=sel)
+           <AtomGroup with 1250 atoms>
 
         .. Note::
 
@@ -2948,17 +2955,36 @@ class Universe(object):
                 :class:`MDAnalysis.Universe` are consecutively numbered, and the index
                 runs from 1 up to the total number of atoms.
 
+        **Preexisting selections**
+
+            group *group-name*
+                selects the atoms in the :class:`AtomGroup` passed to the function as an
+                argument named *group-name*. Only the atoms common to *group-name* and the
+                instance :meth:`~selectAtoms` was called from will be considered.
+                *group-name* will be included in the parsing just by comparison of atom indices.
+                This means that it is up to the user to make sure they were defined in an
+                appropriate :class:`Universe`.
+
+            fullgroup *group-name*
+                just like the ``group`` keyword with the difference that all the atoms of
+                *group-name* are included. The resulting selection may therefore have atoms
+                that were initially absent from the instance :meth:`~selectAtoms` was
+                called from.
+                
+
         .. versionchanged:: 0.7.4
            Added *resnum* selection.
+        .. versionchanged:: 0.8.1
+           Added *group* and *fullgroup* selections.
         """
         import Selection     # can ONLY import in method, otherwise cyclical import!
-        atomgrp = Selection.Parser.parse(sel).apply(self)
+        atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
         if len(othersel) == 0: return atomgrp
         else:
             # Generate a selection for each selection string
             #atomselections = [atomgrp]
             for sel in othersel:
-                atomgrp = atomgrp + Selection.Parser.parse(sel).apply(self)
+                atomgrp = atomgrp + Selection.Parser.parse(sel, selgroups).apply(self)
                 #atomselections.append(Selection.Parser.parse(sel).apply(self))
             #return tuple(atomselections)
             return atomgrp
@@ -3030,7 +3056,7 @@ def asUniverse(*args, **kwargs):
     """
     if len(args) == 0:
         raise TypeError("asUniverse() takes at least one argument (%d given)" % len(args))
-    elif len(args) == 1 and type(args[0]) is Universe:
+    elif len(args) == 1 and issubclass(args[0].__class__, Universe):
         return args[0]
     return Universe(*args, **kwargs)
 

@@ -58,6 +58,19 @@ class TestSelectionsCHARMM(TestCase):
         assert_equal(sel.numberOfAtoms(), 89)
         assert_equal(sel.resnames(),  ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
 
+    def test_selgroup(self):
+        sel = self.universe.selectAtoms('not resid 100')
+        sel2 = self.universe.selectAtoms('not group notr100', notr100=sel)
+        assert_equal(sel2.numberOfAtoms(), 7)
+        assert_equal(sel2.resnames(),  ['GLY'])
+
+    def test_fullselgroup(self):
+        sel1 = self.universe.selectAtoms('resid 101')
+        sel2 = self.universe.selectAtoms('resid 100')
+        sel3 = sel1.selectAtoms('fullgroup r100', r100=sel2)
+        assert_equal(sel2.numberOfAtoms(), 7)
+        assert_equal(sel2.resnames(),  ['GLY'])
+
     # resnum selections are boring here because we haven't really a mechanism yet
     # to assign the canonical PDB resnums
     def test_resnum_single(self):

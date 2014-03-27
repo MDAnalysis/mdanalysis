@@ -410,6 +410,25 @@ class AtomSelection(Selection):
     def __repr__(self):
         return "<'AtomSelection' "+repr(self.segid)+" "+repr(self.resid)+" "+repr(self.name)+" >"
 
+class SelgroupSelection(Selection):
+    def __init__(self, selgroup):
+        Selection.__init__(self)
+        self._grp = selgroup
+    def _apply(self, group):
+        common = numpy.intersect1d(group.atoms.indices(),self._grp.atoms.indices())
+        res_atoms = [i for i in self._grp if i.number in common]
+        return set(res_atoms)
+    def __repr__(self):
+        return "<"+repr(self.__class__.__name__)+">"
+
+class FullSelgroupSelection(Selection):
+    def __init__(self, selgroup):
+        Selection.__init__(self)
+        self._grp = selgroup
+    def _apply(self, group):
+        return set(self._grp._atoms)
+    def __repr__(self):
+        return "<"+repr(self.__class__.__name__)+">"
 
 class StringSelection(Selection):
     def __init__(self, field):
@@ -537,7 +556,7 @@ class NucleicSelection(Selection):
 
     * from the CHARMM force field ::
         awk '/RESI/ {printf "'"'"%s"'"',",$2 }' top_all27_prot_na.rtf
-      * recognized: 'ADE', 'URA', 'CYT', 'GUA', 'THY'
+    * recognized: 'ADE', 'URA', 'CYT', 'GUA', 'THY'
     * recognized (CHARMM in Gromacs): 'DA', 'DU', 'DC', 'DG', 'DT'
 
     .. versionchanged:: 0.8
@@ -716,6 +735,8 @@ class SelectionParser:
     LE = '<='
     EQ = '=='
     NE = '!='
+    SELGROUP = 'group'
+    FULLSELGROUP = 'fullgroup'
 
     classdict = dict([(ALL, AllSelection), (NOT, NotSelection), (AND, AndSelection), (OR, OrSelection),
                       (SEGID, SegmentNameSelection), (RESID, ResidueIDSelection), (RESNUM, ResnumSelection),
@@ -728,7 +749,7 @@ class SelectionParser:
                       (BB, BackboneSelection), (NBB, NucleicBackboneSelection),
                       (BASE, BaseSelection), (SUGAR, NucleicSugarSelection),
                       #(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists
-                      (ATOM, AtomSelection)])
+                      (ATOM, AtomSelection), (SELGROUP, SelgroupSelection), (FULLSELGROUP, FullSelgroupSelection)])
     associativity = dict([(AND, "left"), (OR, "left")])
     precedence = dict([(AROUND, 1),(SPHLAYER, 1),(SPHZONE, 1),(CYLAYER, 1),(CYZONE, 1), (POINT, 1), (BYRES, 1), (BONDED, 1), (AND, 3), (OR, 3), (NOT,5)])
 
@@ -757,8 +778,9 @@ class SelectionParser:
         else:
             self.__error(token)
 
-    def parse(self, selectstr):
+    def parse(self, selectstr, selgroups):
         self.selectstr = selectstr
+        self.selgroups = selgroups
         self.tokens = selectstr.replace('(',' ( ').replace(')',' ) ').split()+[self.EOF]
         parsetree = self.__parse_expression(0)
         self.__expect(self.EOF)
@@ -823,6 +845,9 @@ class SelectionParser:
             if data in (self.LPAREN, self.RPAREN, self.AND, self.OR, self.NOT, self.SEGID, self.RESID, self.RESNAME, self.NAME, self.TYPE):
                 self.__error("Identifier")
             return self.classdict[op](data)
+        elif op in (self.SELGROUP, self.FULLSELGROUP):
+            grpname = self.__consume_token()
+            return self.classdict[op](self.selgroups[grpname])
         elif op == self.PROTEIN:
             return self.classdict[op]()
         elif op == self.NUCLEIC:
