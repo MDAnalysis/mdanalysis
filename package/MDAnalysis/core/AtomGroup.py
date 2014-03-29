@@ -3056,7 +3056,7 @@ def asUniverse(*args, **kwargs):
     """
     if len(args) == 0:
         raise TypeError("asUniverse() takes at least one argument (%d given)" % len(args))
-    elif len(args) == 1 and issubclass(args[0].__class__, Universe):
+    elif len(args) == 1 and isinstance(args[0], Universe):
         return args[0]
     return Universe(*args, **kwargs)
 
