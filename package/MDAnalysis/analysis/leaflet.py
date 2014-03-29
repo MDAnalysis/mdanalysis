@@ -85,9 +85,10 @@ class LeafletFinder(object):
              *universe*
                  :class:`MDAnalysis.Universe` or a PDB file name.
              *selectionstring*
-                 :meth:`MDAnalysis.Universe.selectAtoms` selection
+                 :class:`MDAnalysis.core.AtomGroup.AtomGroup` or a 
+                 :meth:`MDAnalysis.Universe.selectAtoms` selection string
                  for atoms that define the lipid head groups, e.g.
-                 "name PO4" or "name P*"
+                 universe.atoms.PO4 or "name PO4" or "name P*"
         :Keywords:
              *cutoff*
                  head group-defining atoms within a distance of *cutoff*
@@ -99,7 +100,10 @@ class LeafletFinder(object):
         universe = MDAnalysis.asUniverse(universe)
         self.universe = universe
         self.selectionstring = selectionstring
-        self.selection = universe.selectAtoms(selectionstring)
+        if type(self.selectionstring) == MDAnalysis.core.AtomGroup.AtomGroup:
+            self.selection = self.selectionstring
+        else:
+            self.selection = universe.selectAtoms(self.selectionstring)
         self.pbc = pbc
         self._init_graph(cutoff)
 

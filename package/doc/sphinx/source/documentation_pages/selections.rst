@@ -102,8 +102,8 @@ Geometric
         and creates a spherical layer of inner radius 2.4 and external radius 6.0 around the COG.
     sphzone *externalRadius* *selection*
         selects all atoms within a spherical zone centered in the center of geometry (COG) of a given selection,
-        e.g. ``sphzone 6.0 ( protein and ( resid 130 or resid 80 ) )`` selects the center of geometry of protein, resid 130, 
-	resid 80 and creates a sphere of radius 6.0 around the COG.                
+        e.g. ``sphzone 6.0 ( protein and ( resid 130 or resid 80 ) )`` selects the center of geometry of protein, resid 130,
+        resid 80 and creates a sphere of radius 6.0 around the COG.                
     cylayer *innerRadius* *externalRadius* *zMax* *zMin* *selection*
         selects all atoms within a cylindric layer centered in the center of geometry (COG) of a given selection, 
         e.g. ``cylayer 5 10 10 -10 protein`` selects the center of geometry of protein, 
@@ -155,6 +155,23 @@ Index
         :class:`MDAnalysis.Universe` are consecutively numbered, and the index
         runs from 1 up to the total number of atoms.
 
+Preexisting selections
+----------------------
+
+    group *group-name*
+        selects the atoms in the :class:`AtomGroup` passed to the function as an
+        argument named *group-name*. Only the atoms common to *group-name* and the
+        instance :meth:`~selectAtoms` was called from will be considered.
+        *group-name* will be included in the parsing just by comparison of atom indices.
+        This means that it is up to the user to make sure they were defined in an
+        appropriate :class:`Universe`.
+
+    fullgroup *group-name*
+        just like the ``group`` keyword with the difference that all the atoms of
+        *group-name* are included. The resulting selection may therefore have atoms
+        that were initially absent from the instance :meth:`~selectAtoms` was
+        called from.
+        
 
 Instant selectors
 =================
@@ -227,7 +244,7 @@ Atom name selector
     < Atom 1516: name 'CA' of type '23' of resname 'GLY', resid 100 and segid '4AKE'>
     >>> u.s4AKE.r100.CB
     SelectionError: No atom in residue GLY with name CB
-  	
+  
 
 .. _ordered-selections-label:
 
