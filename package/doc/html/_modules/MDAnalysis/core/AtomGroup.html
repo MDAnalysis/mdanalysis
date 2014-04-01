@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.8.1rc1 documentation</title>
+    <title>MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.8.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.1rc1',
+        VERSION:     '0.8.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1rc1 documentation"
+          title="Search within MDAnalysis 0.8.1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -43,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -1939,21 +1937,21 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">()]</span>
 </div>
-<div class="viewcode-block" id="AtomGroup.selectAtoms"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms">[docs]</a>    <span class="k">def</span> <span class="nf">selectAtoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="o">*</span><span class="n">othersel</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomGroup.selectAtoms"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms">[docs]</a>    <span class="k">def</span> <span class="nf">selectAtoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="o">*</span><span class="n">othersel</span><span class="p">,</span> <span class="o">**</span><span class="n">selgroups</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Selection of atoms using the MDAnalysis selection syntax.</span>
 
-<span class="sd">        AtomGroup.selectAtoms(selection[,selection[,...]])</span>
+<span class="sd">        AtomGroup.selectAtoms(selection[,selection[,...]], [groupname=atomgroup[,groupname=atomgroup[,...]]])</span>
 
 <span class="sd">        .. SeeAlso:: :meth:`Universe.selectAtoms`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">Selection</span>     <span class="c"># can ONLY import in method, otherwise cyclical import!</span>
-        <span class="n">atomgrp</span> <span class="o">=</span> <span class="n">Selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">atomgrp</span> <span class="o">=</span> <span class="n">Selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sel</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">othersel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">atomgrp</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c"># Generate a selection for each selection string</span>
             <span class="c">#atomselections = [atomgrp]</span>
             <span class="k">for</span> <span class="n">sel</span> <span class="ow">in</span> <span class="n">othersel</span><span class="p">:</span>
-                <span class="n">atomgrp</span> <span class="o">=</span> <span class="n">atomgrp</span> <span class="o">+</span> <span class="n">Selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                <span class="n">atomgrp</span> <span class="o">=</span> <span class="n">atomgrp</span> <span class="o">+</span> <span class="n">Selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sel</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                 <span class="c">#atomselections.append(Selection.Parser.parse(sel).apply(self))</span>
             <span class="c">#return tuple(atomselections)</span>
             <span class="k">return</span> <span class="n">atomgrp</span>
@@ -2925,18 +2923,25 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The topology and </span><span class="si">%s</span><span class="s"> trajectory files don&#39;t have the same number of atoms!&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">format</span>
 </div>
-<div class="viewcode-block" id="Universe.selectAtoms"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.selectAtoms">[docs]</a>    <span class="k">def</span> <span class="nf">selectAtoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="o">*</span><span class="n">othersel</span><span class="p">):</span>
+<div class="viewcode-block" id="Universe.selectAtoms"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.selectAtoms">[docs]</a>    <span class="k">def</span> <span class="nf">selectAtoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="o">*</span><span class="n">othersel</span><span class="p">,</span> <span class="o">**</span><span class="n">selgroups</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Select atoms using a CHARMM selection string.</span>
 
 <span class="sd">        Returns an :class:`AtomGroup` with atoms sorted according to their</span>
 <span class="sd">        index in the psf (this is to ensure that there aren&#39;t any duplicates,</span>
 <span class="sd">        which can happen with complicated selections).</span>
 
+<span class="sd">        Existing :class:`AtomGroup` objects can be passed as named arguments,</span>
+<span class="sd">        which will then be available to the selection parser.</span>
+
 <span class="sd">        Subselections can be grouped with parentheses.</span>
 
 <span class="sd">        Example::</span>
-<span class="sd">           &gt;&gt;&gt; universe.selectAtoms(&quot;segid DMPC and not ( name H* or name O* )&quot;)</span>
+<span class="sd">           &gt;&gt;&gt; sel = universe.selectAtoms(&quot;segid DMPC and not ( name H* or name O* )&quot;)</span>
+<span class="sd">           &gt;&gt;&gt; sel</span>
 <span class="sd">           &lt;AtomGroup with 3420 atoms&gt;</span>
+
+<span class="sd">           &gt;&gt;&gt; universe.selectAtoms(&quot;around 10 group notHO&quot;, notHO=sel)</span>
+<span class="sd">           &lt;AtomGroup with 1250 atoms&gt;</span>
 
 <span class="sd">        .. Note::</span>
 
@@ -3025,17 +3030,36 @@
 <span class="sd">                :class:`MDAnalysis.Universe` are consecutively numbered, and the index</span>
 <span class="sd">                runs from 1 up to the total number of atoms.</span>
 
+<span class="sd">        **Preexisting selections**</span>
+
+<span class="sd">            group *group-name*</span>
+<span class="sd">                selects the atoms in the :class:`AtomGroup` passed to the function as an</span>
+<span class="sd">                argument named *group-name*. Only the atoms common to *group-name* and the</span>
+<span class="sd">                instance :meth:`~selectAtoms` was called from will be considered.</span>
+<span class="sd">                *group-name* will be included in the parsing just by comparison of atom indices.</span>
+<span class="sd">                This means that it is up to the user to make sure they were defined in an</span>
+<span class="sd">                appropriate :class:`Universe`.</span>
+
+<span class="sd">            fullgroup *group-name*</span>
+<span class="sd">                just like the ``group`` keyword with the difference that all the atoms of</span>
+<span class="sd">                *group-name* are included. The resulting selection may therefore have atoms</span>
+<span class="sd">                that were initially absent from the instance :meth:`~selectAtoms` was</span>
+<span class="sd">                called from.</span>
+<span class="sd">                </span>
+
 <span class="sd">        .. versionchanged:: 0.7.4</span>
 <span class="sd">           Added *resnum* selection.</span>
+<span class="sd">        .. versionchanged:: 0.8.1</span>
+<span class="sd">           Added *group* and *fullgroup* selections.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">Selection</span>     <span class="c"># can ONLY import in method, otherwise cyclical import!</span>
-        <span class="n">atomgrp</span> <span class="o">=</span> <span class="n">Selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">atomgrp</span> <span class="o">=</span> <span class="n">Selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sel</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">othersel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">atomgrp</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c"># Generate a selection for each selection string</span>
             <span class="c">#atomselections = [atomgrp]</span>
             <span class="k">for</span> <span class="n">sel</span> <span class="ow">in</span> <span class="n">othersel</span><span class="p">:</span>
-                <span class="n">atomgrp</span> <span class="o">=</span> <span class="n">atomgrp</span> <span class="o">+</span> <span class="n">Selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                <span class="n">atomgrp</span> <span class="o">=</span> <span class="n">atomgrp</span> <span class="o">+</span> <span class="n">Selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sel</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                 <span class="c">#atomselections.append(Selection.Parser.parse(sel).apply(self))</span>
             <span class="c">#return tuple(atomselections)</span>
             <span class="k">return</span> <span class="n">atomgrp</span>
@@ -3107,7 +3131,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;asUniverse() takes at least one argument (</span><span class="si">%d</span><span class="s"> given)&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">is</span> <span class="n">Universe</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Universe</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">Universe</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -3168,7 +3192,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -3180,8 +3204,8 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

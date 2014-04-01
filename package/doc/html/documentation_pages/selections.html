@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. Selection Commands &mdash; MDAnalysis 0.8.1rc1 documentation</title>
+    <title>2. Selection Commands &mdash; MDAnalysis 0.8.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.8.1rc1',
+        VERSION:     '0.8.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1rc1 documentation"
+          title="Search within MDAnalysis 0.8.1 documentation"
           href="../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../index.html" />
     <link rel="next" title="3. Analysis modules" href="analysis_modules.html" />
     <link rel="prev" title="1. Overview over MDAnalysis" href="overview.html" /> 
   </head>
@@ -50,7 +48,7 @@
         <li class="right" >
           <a href="overview.html" title="1. Overview over MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -67,6 +65,7 @@
 <li><a class="reference internal" href="#geometric">2.1.3. Geometric</a></li>
 <li><a class="reference internal" href="#connectivity">2.1.4. Connectivity</a></li>
 <li><a class="reference internal" href="#index">2.1.5. Index</a></li>
+<li><a class="reference internal" href="#preexisting-selections">2.1.6. Preexisting selections</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#instant-selectors">2.2. Instant selectors</a><ul>
@@ -270,6 +269,25 @@ runs from 1 up to the total number of atoms.</dd>
 </dl>
 </div></blockquote>
 </div>
+<div class="section" id="preexisting-selections">
+<h3>2.1.6. Preexisting selections<a class="headerlink" href="#preexisting-selections" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="docutils">
+<dt>group <em>group-name</em></dt>
+<dd>selects the atoms in the <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt> passed to the function as an
+argument named <em>group-name</em>. Only the atoms common to <em>group-name</em> and the
+instance <tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt> was called from will be considered.
+<em>group-name</em> will be included in the parsing just by comparison of atom indices.
+This means that it is up to the user to make sure they were defined in an
+appropriate <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt>.</dd>
+<dt>fullgroup <em>group-name</em></dt>
+<dd>just like the <tt class="docutils literal"><span class="pre">group</span></tt> keyword with the difference that all the atoms of
+<em>group-name</em> are included. The resulting selection may therefore have atoms
+that were initially absent from the instance <tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt> was
+called from.</dd>
+</dl>
+</div></blockquote>
+</div>
 </div>
 <div class="section" id="instant-selectors">
 <h2>2.2. Instant selectors<a class="headerlink" href="#instant-selectors" title="Permalink to this headline">¶</a></h2>
@@ -443,7 +461,7 @@ might expect:</p>
         <li class="right" >
           <a href="overview.html" title="1. Overview over MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
@@ -453,8 +471,8 @@ might expect:</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

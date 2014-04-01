@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.5. Fast distance array computation — MDAnalysis.core.distances &mdash; MDAnalysis 0.8.1rc1 documentation</title>
+    <title>7.5. Fast distance array computation — MDAnalysis.core.distances &mdash; MDAnalysis 0.8.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.1rc1',
+        VERSION:     '0.8.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1rc1 documentation"
+          title="Search within MDAnalysis 0.8.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations" href="transformations.html" />
     <link rel="prev" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries" href="Timeseries.html" /> 
@@ -51,7 +49,7 @@
         <li class="right" >
           <a href="Timeseries.html" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -141,14 +139,14 @@ on the shape of the array and whether all angles are 90.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>box</em></dt>
 <dd><p class="first last">box information of unknown format</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="first last simple">
 <li><tt class="docutils literal"><span class="pre">ortho</span></tt> orthogonal box</li>
 <li><tt class="docutils literal"><span class="pre">tri_vecs</span></tt> triclinic box vectors</li>
 <li><tt class="docutils literal"><span class="pre">tri_box</span></tt> triclinic box lengths and angles</li>
@@ -180,7 +178,7 @@ up calculations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>coords1</em></dt>
 <dd><p class="first last">An array of coordinates for one half of the bond</p>
 </dd>
@@ -198,7 +196,7 @@ array which saves time when the function is called repeatedly. [None]</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>bondlengths</em></dt>
 <dd><p class="first last">Numpy array with the length between each pair in coords1 and coords2</p>
 </dd>
@@ -207,8 +205,9 @@ array which saves time when the function is called repeatedly. [None]</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.8.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -225,7 +224,7 @@ up calculations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>coords1</em></dt>
 <dd><p class="first last">coordinate array of one side of angles</p>
 </dd>
@@ -242,7 +241,7 @@ array and dtype=numpy.float64.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>angles</em></dt>
 <dd><p class="first last">A numpy.array of angles in radians</p>
 </dd>
@@ -251,8 +250,9 @@ array and dtype=numpy.float64.</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.8.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -275,7 +275,7 @@ up calculations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>coords1</em></dt>
 <dd><p class="first last">coordinate array of 1st atom in torsions</p>
 </dd>
@@ -295,7 +295,7 @@ array and dtype=numpy.float64.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>angles</em></dt>
 <dd><p class="first last">A numpy.array of angles in radians</p>
 </dd>
@@ -304,8 +304,9 @@ array and dtype=numpy.float64.</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.8.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -317,7 +318,7 @@ array and dtype=numpy.float64.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>coords</em></dt>
 <dd><p class="first last">coordinate array (of type numpy.float32)</p>
 </dd>
@@ -327,7 +328,7 @@ array and dtype=numpy.float64.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>newcoords</em></dt>
 <dd><p class="first last">coordinates that are now all within the primary unit cell, as defined by box</p>
 </dd>
@@ -336,8 +337,9 @@ array and dtype=numpy.float64.</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.8.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -350,7 +352,7 @@ array and dtype=numpy.float64.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>inputcoords</em></dt>
 <dd><p class="first last">An n x 3 array of coordinate data, of type np.float32</p>
 </dd>
@@ -360,7 +362,7 @@ array and dtype=numpy.float64.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>outcoords</em></dt>
 <dd><p class="first last">An n x 3 array of fracional coordiantes</p>
 </dd>
@@ -381,7 +383,7 @@ array and dtype=numpy.float64.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>inputcoords</em></dt>
 <dd><p class="first last">An n x 3 array of coordinate data, of type np.float32</p>
 </dd>
@@ -391,7 +393,7 @@ array and dtype=numpy.float64.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>outcoords</em></dt>
 <dd><p class="first last">An n x 3 array of fracional coordiantes</p>
 </dd>
@@ -426,7 +428,7 @@ array and dtype=numpy.float64.</p>
         <li class="right" >
           <a href="Timeseries.html" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -437,8 +439,8 @@ array and dtype=numpy.float64.</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

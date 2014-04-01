@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.core.Selection &mdash; MDAnalysis 0.8.1rc1 documentation</title>
+    <title>MDAnalysis.core.Selection &mdash; MDAnalysis 0.8.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.1rc1',
+        VERSION:     '0.8.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1rc1 documentation"
+          title="Search within MDAnalysis 0.8.1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -43,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -487,6 +485,25 @@
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;&lt;&#39;AtomSelection&#39; &quot;</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segid</span><span class="p">)</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resid</span><span class="p">)</span><span class="o">+</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">+</span><span class="s">&quot; &gt;&quot;</span>
 
+<span class="k">class</span> <span class="nc">SelgroupSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selgroup</span><span class="p">):</span>
+        <span class="n">Selection</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grp</span> <span class="o">=</span> <span class="n">selgroup</span>
+    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">common</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">indices</span><span class="p">(),</span><span class="bp">self</span><span class="o">.</span><span class="n">_grp</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">indices</span><span class="p">())</span>
+        <span class="n">res_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grp</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">number</span> <span class="ow">in</span> <span class="n">common</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">res_atoms</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;&quot;</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span><span class="o">+</span><span class="s">&quot;&gt;&quot;</span>
+
+<span class="k">class</span> <span class="nc">FullSelgroupSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selgroup</span><span class="p">):</span>
+        <span class="n">Selection</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grp</span> <span class="o">=</span> <span class="n">selgroup</span>
+    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_grp</span><span class="o">.</span><span class="n">_atoms</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;&quot;</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span><span class="o">+</span><span class="s">&quot;&gt;&quot;</span>
 
 <span class="k">class</span> <span class="nc">StringSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
@@ -614,7 +631,7 @@
 
 <span class="sd">    * from the CHARMM force field ::</span>
 <span class="sd">        awk &#39;/RESI/ {printf &quot;&#39;&quot;&#39;&quot;%s&quot;&#39;&quot;&#39;,&quot;,$2 }&#39; top_all27_prot_na.rtf</span>
-<span class="sd">      * recognized: &#39;ADE&#39;, &#39;URA&#39;, &#39;CYT&#39;, &#39;GUA&#39;, &#39;THY&#39;</span>
+<span class="sd">    * recognized: &#39;ADE&#39;, &#39;URA&#39;, &#39;CYT&#39;, &#39;GUA&#39;, &#39;THY&#39;</span>
 <span class="sd">    * recognized (CHARMM in Gromacs): &#39;DA&#39;, &#39;DU&#39;, &#39;DC&#39;, &#39;DG&#39;, &#39;DT&#39;</span>
 
 <span class="sd">    .. versionchanged:: 0.8</span>
@@ -793,6 +810,8 @@
     <span class="n">LE</span> <span class="o">=</span> <span class="s">&#39;&lt;=&#39;</span>
     <span class="n">EQ</span> <span class="o">=</span> <span class="s">&#39;==&#39;</span>
     <span class="n">NE</span> <span class="o">=</span> <span class="s">&#39;!=&#39;</span>
+    <span class="n">SELGROUP</span> <span class="o">=</span> <span class="s">&#39;group&#39;</span>
+    <span class="n">FULLSELGROUP</span> <span class="o">=</span> <span class="s">&#39;fullgroup&#39;</span>
 
     <span class="n">classdict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">ALL</span><span class="p">,</span> <span class="n">AllSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">NOT</span><span class="p">,</span> <span class="n">NotSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">AND</span><span class="p">,</span> <span class="n">AndSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">OR</span><span class="p">,</span> <span class="n">OrSelection</span><span class="p">),</span>
                       <span class="p">(</span><span class="n">SEGID</span><span class="p">,</span> <span class="n">SegmentNameSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">RESID</span><span class="p">,</span> <span class="n">ResidueIDSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">RESNUM</span><span class="p">,</span> <span class="n">ResnumSelection</span><span class="p">),</span>
@@ -805,7 +824,7 @@
                       <span class="p">(</span><span class="n">BB</span><span class="p">,</span> <span class="n">BackboneSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">NBB</span><span class="p">,</span> <span class="n">NucleicBackboneSelection</span><span class="p">),</span>
                       <span class="p">(</span><span class="n">BASE</span><span class="p">,</span> <span class="n">BaseSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">SUGAR</span><span class="p">,</span> <span class="n">NucleicSugarSelection</span><span class="p">),</span>
                       <span class="c">#(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists</span>
-                      <span class="p">(</span><span class="n">ATOM</span><span class="p">,</span> <span class="n">AtomSelection</span><span class="p">)])</span>
+                      <span class="p">(</span><span class="n">ATOM</span><span class="p">,</span> <span class="n">AtomSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">SELGROUP</span><span class="p">,</span> <span class="n">SelgroupSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">FULLSELGROUP</span><span class="p">,</span> <span class="n">FullSelgroupSelection</span><span class="p">)])</span>
     <span class="n">associativity</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">AND</span><span class="p">,</span> <span class="s">&quot;left&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">OR</span><span class="p">,</span> <span class="s">&quot;left&quot;</span><span class="p">)])</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">AROUND</span><span class="p">,</span> <span class="mi">1</span><span class="p">),(</span><span class="n">SPHLAYER</span><span class="p">,</span> <span class="mi">1</span><span class="p">),(</span><span class="n">SPHZONE</span><span class="p">,</span> <span class="mi">1</span><span class="p">),(</span><span class="n">CYLAYER</span><span class="p">,</span> <span class="mi">1</span><span class="p">),(</span><span class="n">CYZONE</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">POINT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">BYRES</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">BONDED</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">AND</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="n">OR</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="n">NOT</span><span class="p">,</span><span class="mi">5</span><span class="p">)])</span>
 
@@ -834,8 +853,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__error</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selectstr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selectstr</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selectstr</span> <span class="o">=</span> <span class="n">selectstr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selgroups</span> <span class="o">=</span> <span class="n">selgroups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span> <span class="o">=</span> <span class="n">selectstr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;(&#39;</span><span class="p">,</span><span class="s">&#39; ( &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;)&#39;</span><span class="p">,</span><span class="s">&#39; ) &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span><span class="o">+</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">EOF</span><span class="p">]</span>
         <span class="n">parsetree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_expression</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__expect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EOF</span><span class="p">)</span>
@@ -900,6 +920,9 @@
             <span class="k">if</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LPAREN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RPAREN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">AND</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OR</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NOT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">SEGID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RESID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RESNAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TYPE</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__error</span><span class="p">(</span><span class="s">&quot;Identifier&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">classdict</span><span class="p">[</span><span class="n">op</span><span class="p">](</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">op</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SELGROUP</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">FULLSELGROUP</span><span class="p">):</span>
+            <span class="n">grpname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__consume_token</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">classdict</span><span class="p">[</span><span class="n">op</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">selgroups</span><span class="p">[</span><span class="n">grpname</span><span class="p">])</span>
         <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">PROTEIN</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">classdict</span><span class="p">[</span><span class="n">op</span><span class="p">]()</span>
         <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">NUCLEIC</span><span class="p">:</span>
@@ -965,7 +988,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -977,8 +1000,8 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

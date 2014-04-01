@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.visualization.streamlines &mdash; MDAnalysis 0.8.1rc1 documentation</title>
+    <title>MDAnalysis.visualization.streamlines &mdash; MDAnalysis 0.8.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.1rc1',
+        VERSION:     '0.8.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1rc1 documentation"
+          title="Search within MDAnalysis 0.8.1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -43,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -82,14 +80,16 @@
 <span class="sd">:Authors: Tyler Reddy and Matthieu Chavent</span>
 <span class="sd">:Year: 2014</span>
 <span class="sd">:Copyright: GNU Public License v3</span>
+<span class="sd">:Citation: [Chavent2014]_</span>
 
 <span class="sd">.. autofunction:: generate_streamlines</span>
+
 <span class="sd">&#39;&#39;&#39;</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">matplotlib</span><span class="o">,</span> <span class="nn">matplotlib.nxutils</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s">&#39;2d streamplot module requires: matplotlib.nxutils for its points_inside_poly method&#39;</span><span class="p">)</span> <span class="c">#deprecated, aim to remove dependency in future</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s">&#39;2d streamplot module requires: matplotlib.nxutils for its points_inside_poly method. The installation instructions for the matplotlib module can be found here: http://matplotlib.org/faq/installing_faq.html?highlight=install&#39;</span><span class="p">)</span> <span class="c">#deprecated, aim to remove dependency in future</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
@@ -192,13 +192,72 @@
     <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="n">reconstruction_index_list</span><span class="p">,</span><span class="n">xy_deltas_to_write</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
 
 <div class="viewcode-block" id="generate_streamlines"><a class="viewcode-back" href="../../../documentation_pages/visualization/streamlines.html#MDAnalysis.visualization.streamlines.generate_streamlines">[docs]</a><span class="k">def</span> <span class="nf">generate_streamlines</span><span class="p">(</span><span class="n">coordinate_file_path</span><span class="p">,</span><span class="n">trajectory_file_path</span><span class="p">,</span><span class="n">grid_spacing</span><span class="p">,</span><span class="n">MDA_selection</span><span class="p">,</span><span class="n">start_frame</span><span class="p">,</span><span class="n">end_frame</span><span class="p">,</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span><span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span><span class="p">,</span><span class="n">maximum_delta_magnitude</span><span class="p">,</span><span class="n">num_cores</span><span class="o">=</span><span class="s">&#39;maximum&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;The main control function of the code. The various steps in the workflow should be performed in order here.&#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39;Produce the x and y components of a 2D streamplot data set.</span>
+<span class="sd">    </span>
+<span class="sd">    :Parameters:</span>
+<span class="sd">        **coordinate_file_path** : str</span>
+<span class="sd">            Absolute path to the coordinate file</span>
+<span class="sd">        **trajectory_file_path** : str</span>
+<span class="sd">            Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool such as GROMACS g_filter (see [Chavent2014]_)</span>
+<span class="sd">        **grid_spacing** : float</span>
+<span class="sd">            The spacing between grid lines (angstroms)</span>
+<span class="sd">        **MDA_selection** : str</span>
+<span class="sd">            MDAnalysis selection string</span>
+<span class="sd">        **start_frame** : int</span>
+<span class="sd">            First frame number to parse</span>
+<span class="sd">        **end_frame** : int</span>
+<span class="sd">            Last frame number to parse</span>
+<span class="sd">        **xmin** : float</span>
+<span class="sd">            Minimum coordinate boundary for x-axis (angstroms)</span>
+<span class="sd">        **xmax** : float</span>
+<span class="sd">            Maximum coordinate boundary for x-axis (angstroms)</span>
+<span class="sd">        **ymin** : float</span>
+<span class="sd">            Minimum coordinate boundary for y-axis (angstroms)</span>
+<span class="sd">        **ymax** : float</span>
+<span class="sd">            Maximum coordinate boundary for y-axis (angstroms)</span>
+<span class="sd">        **maximum_delta_magnitude** : float</span>
+<span class="sd">            Absolute value of the largest displacement tolerated for the centroid of a group of particles (angstroms). Values above this displacement will not count in the streamplot (treated as excessively large displacements crossing the periodic boundary)</span>
+<span class="sd">        **num_cores** : int, optional</span>
+<span class="sd">            The number of cores to use. (Default &#39;maximum&#39; uses all available cores)</span>
+
+<span class="sd">    :Returns:</span>
+<span class="sd">        **dx_array** : array of floats</span>
+<span class="sd">            An array object containing the displacements in the x direction</span>
+<span class="sd">        **dy_array** : array of floats</span>
+<span class="sd">            An array object containing the displacements in the y direction</span>
+<span class="sd">        **average_displacement** : float</span>
+<span class="sd">            :math:`\\frac {\\sum \\sqrt[]{dx^2 + dy^2}} {N}`</span>
+<span class="sd">        **standard_deviation_of_displacement** : float</span>
+<span class="sd">            standard deviation of :math:`\\sqrt[]{dx^2 + dy^2}`</span>
+<span class="sd">            </span>
+<span class="sd">    :Examples:</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        import matplotlib, matplotlib.pyplot, numpy</span>
+<span class="sd">        import MDAnalysis, MDAnalysis.visualization.streamlines</span>
+<span class="sd">        u1, v1, average_displacement,standard_deviation_of_displacement = MDAnalysis.visualization.streamlines.generate_streamlines(&#39;testing.gro&#39;,&#39;testing_filtered.xtc&#39;,grid_spacing = 20, MDA_selection = &#39;name PO4&#39;,start_frame=2,end_frame=3,xmin=-8.73000049591,xmax= 1225.96008301,ymin= -12.5799999237, ymax=1224.34008789,maximum_delta_magnitude = 1.0,num_cores=16)</span>
+<span class="sd">        x = numpy.linspace(0,1200,61)</span>
+<span class="sd">        y = numpy.linspace(0,1200,61)</span>
+<span class="sd">        speed = numpy.sqrt(u1*u1 + v1*v1)</span>
+<span class="sd">        fig = matplotlib.pyplot.figure()</span>
+<span class="sd">        ax = fig.add_subplot(111,aspect=&#39;equal&#39;)</span>
+<span class="sd">        ax.set_xlabel(&#39;x ($\AA$)&#39;)</span>
+<span class="sd">        ax.set_ylabel(&#39;y ($\AA$)&#39;)</span>
+<span class="sd">        ax.streamplot(x,y,u1,v1,density=(10,10),color=speed,linewidth=3*speed/speed.max())</span>
+<span class="sd">        fig.savefig(&#39;testing_streamline.png&#39;,dpi=300)</span>
+<span class="sd">    </span>
+<span class="sd">    .. image:: testing_streamline.png</span>
+
+<span class="sd">    .. [Chavent2014] Chavent, M.\*, Reddy, T.\*, Dahl, C.E., Goose, J., Jobard, B., and Sansom, M.S.P. (2014) Methodologies for the analysis of instantaneous lipid diffusion in MD simulations of large membrane systems. *Faraday Discussions* **169**: **Accepted**</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c">#work out the number of cores to use:</span>
     <span class="k">if</span> <span class="n">num_cores</span> <span class="o">==</span> <span class="s">&#39;maximum&#39;</span><span class="p">:</span>
         <span class="n">num_cores</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="c">#use all available cores</span>
     <span class="k">else</span><span class="p">:</span> 
         <span class="n">num_cores</span> <span class="o">=</span> <span class="n">num_cores</span> <span class="c">#use the value specified by the user</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_cores</span><span class="p">,(</span><span class="nb">int</span><span class="p">,</span><span class="nb">long</span><span class="p">)),</span> <span class="s">&quot;The number of specified cores must (of course) be an integer.&quot;</span>
+        <span class="c">#assert isinstance(num_cores,(int,long)), &quot;The number of specified cores must (of course) be an integer.&quot;</span>
     <span class="n">numpy</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s">&#39;warn&#39;</span><span class="p">,</span><span class="n">over</span><span class="o">=</span><span class="s">&#39;raise&#39;</span><span class="p">)</span>
     <span class="n">parent_list_deltas</span> <span class="o">=</span> <span class="p">[]</span> <span class="c">#collect all data from child processes here</span>
     <span class="k">def</span> <span class="nf">log_result_to_parent</span><span class="p">(</span><span class="n">delta_array</span><span class="p">):</span>
@@ -236,8 +295,8 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">dx_array</span><span class="p">,</span><span class="n">dy_array</span><span class="p">,</span><span class="n">average_displacement</span><span class="p">,</span><span class="n">standard_deviation_of_displacement</span><span class="p">)</span>
 
 <span class="c">#if __name__ == &#39;__main__&#39;: #execute the main control function only if this file is called as a top-level script</span>
-    <span class="c">#will probably mostly use this for testing on a trajectory:</span></div>
-</pre></div>
+    <span class="c">#will probably mostly use this for testing on a trajectory:</span>
+</pre></div></div>
 
           </div>
         </div>
@@ -253,7 +312,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -265,8 +324,8 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>
