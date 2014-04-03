@@ -20,9 +20,9 @@ Availability
 
 **Source code** is available from http://mdanalysis.googlecode.com under the
 `GNU Public Licence, version 2`_, together with the `online
-documentation`_. **Packages** can be downloaded from
+documentation`_. **Packages** can be downloaded from 
 
-  http://code.google.com/p/mdanalysis/downloads/list
+  http://pypi.python.org/pypi/MDAnalysis/
 
 or installed/upgraded via PyPI (using either `easy_install`_ or `pip`_)::
 
