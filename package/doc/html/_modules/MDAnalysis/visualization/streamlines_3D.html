@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.visualization.streamlines_3D &mdash; MDAnalysis 0.8.1rc1 documentation</title>
+    <title>MDAnalysis.visualization.streamlines_3D &mdash; MDAnalysis 0.8.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.1rc1',
+        VERSION:     '0.8.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1rc1 documentation"
+          title="Search within MDAnalysis 0.8.1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -43,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -82,7 +80,7 @@
 <span class="sd">:Authors: Tyler Reddy and Matthieu Chavent</span>
 <span class="sd">:Year: 2014</span>
 <span class="sd">:Copyright: GNU Public License v3</span>
-<span class="sd">:Citation: [Chavent_and_Reddy_2014]_</span>
+<span class="sd">:Citation: [Chavent2014]_</span>
 
 <span class="sd">.. autofunction:: generate_streamlines_3d</span>
 
@@ -91,6 +89,7 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy.testing</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">import</span> <span class="nn">scipy.spatial.distance</span>
 
@@ -186,7 +185,6 @@
 
 <span class="k">def</span> <span class="nf">per_core_work</span><span class="p">(</span><span class="n">start_frame_coord_array</span><span class="p">,</span> <span class="n">end_frame_coord_array</span><span class="p">,</span><span class="n">dictionary_cube_data_this_core</span><span class="p">,</span><span class="n">MDA_selection</span><span class="p">,</span><span class="n">start_frame</span><span class="p">,</span><span class="n">end_frame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;The code to perform on a given core given the dictionary of cube data.&#39;&#39;&#39;</span>
-    <span class="k">print</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">current_process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;Starting&#39;</span>
     <span class="n">list_previous_frame_centroids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">list_previous_frame_indices</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c">#define some utility functions for trajectory iteration:</span>
@@ -195,9 +193,8 @@
         <span class="c">#the simulation particle point can&#39;t be more than half the cube side length away from the cube centroid in any given dimension:</span>
         <span class="n">array_cube_vertices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">list_cube_vertices</span><span class="p">)</span>
         <span class="n">cube_half_side_length</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">pdist</span><span class="p">(</span><span class="n">array_cube_vertices</span><span class="p">,</span><span class="s">&#39;euclidean&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">/</span> <span class="mf">2.0</span>
-        <span class="c">#incorporate a debug check -- all cube vertices should be exactly the same distance away from the centroid</span>
         <span class="n">array_cube_vertex_distances_from_centroid</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">array_cube_vertices</span><span class="p">,</span><span class="n">cube_centroid</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:])</span>
-        <span class="k">assert</span> <span class="n">array_cube_vertex_distances_from_centroid</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">==</span> <span class="n">array_cube_vertex_distances_from_centroid</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="s">&quot;not all cube vertex to centroid distances are the same, so not a true cube&quot;</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">array_cube_vertex_distances_from_centroid</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span><span class="n">array_cube_vertex_distances_from_centroid</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="n">decimal</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">err_msg</span><span class="o">=</span> <span class="s">&quot;not all cube vertex to centroid distances are the same, so not a true cube&quot;</span><span class="p">)</span>
         <span class="n">absolute_delta_coords</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">array_point_coordinates</span><span class="p">,</span><span class="n">cube_centroid</span><span class="p">))</span>
         <span class="n">absolute_delta_x_coords</span> <span class="o">=</span> <span class="n">absolute_delta_coords</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">indices_delta_x_acceptable</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">absolute_delta_x_coords</span> <span class="o">&lt;=</span> <span class="n">cube_half_side_length</span><span class="p">)</span>
@@ -241,7 +238,6 @@
     <span class="c">#now that the parent process is dealing with the universe object &amp; grabbing required coordinates, each child process only needs to take the coordinate arrays &amp; perform the operations with its assigned cubes (no more file opening and trajectory iteration on each core--which I&#39;m hoping will substantially reduce the physical memory footprint of my 3D streamplot code)</span>
     <span class="n">update_dictionary_point_in_cube_start_frame</span><span class="p">(</span><span class="n">start_frame_coord_array</span><span class="p">,</span><span class="n">dictionary_cube_data_this_core</span><span class="p">)</span>
     <span class="n">update_dictionary_end_frame</span><span class="p">(</span><span class="n">end_frame_coord_array</span><span class="p">,</span><span class="n">dictionary_cube_data_this_core</span><span class="p">)</span>
-    <span class="k">print</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">current_process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;Finishing&#39;</span>
     <span class="k">return</span> <span class="n">dictionary_cube_data_this_core</span>
 
 <span class="k">def</span> <span class="nf">produce_coordinate_arrays_single_process</span><span class="p">(</span><span class="n">coordinate_file_path</span><span class="p">,</span><span class="n">trajectory_file_path</span><span class="p">,</span><span class="n">MDA_selection</span><span class="p">,</span><span class="n">start_frame</span><span class="p">,</span><span class="n">end_frame</span><span class="p">):</span>
@@ -256,18 +252,17 @@
         <span class="k">elif</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="n">end_frame</span><span class="p">:</span>
             <span class="n">end_frame_relevant_particle_coordinate_array_xyz</span> <span class="o">=</span> <span class="n">relevant_particles</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">print</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">current_process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;skipping frame&#39;</span><span class="p">,</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
             <span class="k">continue</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">start_frame_relevant_particle_coordinate_array_xyz</span><span class="p">,</span><span class="n">end_frame_relevant_particle_coordinate_array_xyz</span><span class="p">)</span>
     
-<div class="viewcode-block" id="generate_streamlines_3d"><a class="viewcode-back" href="../../../documentation_pages/visualization/streamlines_3D.html#MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d">[docs]</a><span class="k">def</span> <span class="nf">generate_streamlines_3d</span><span class="p">(</span><span class="n">coordinate_file_path</span><span class="p">,</span><span class="n">trajectory_file_path</span><span class="p">,</span><span class="n">grid_spacing</span><span class="p">,</span><span class="n">MDA_selection</span><span class="p">,</span><span class="n">start_frame</span><span class="p">,</span><span class="n">end_frame</span><span class="p">,</span><span class="n">buffer_value</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span><span class="n">maximum_delta_magnitude</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span><span class="n">num_cores</span><span class="o">=</span><span class="s">&#39;maximum&#39;</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Produce the x and y components of a 3D streamplot data set.</span>
+<div class="viewcode-block" id="generate_streamlines_3d"><a class="viewcode-back" href="../../../documentation_pages/visualization/streamlines_3D.html#MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d">[docs]</a><span class="k">def</span> <span class="nf">generate_streamlines_3d</span><span class="p">(</span><span class="n">coordinate_file_path</span><span class="p">,</span><span class="n">trajectory_file_path</span><span class="p">,</span><span class="n">grid_spacing</span><span class="p">,</span><span class="n">MDA_selection</span><span class="p">,</span><span class="n">start_frame</span><span class="p">,</span><span class="n">end_frame</span><span class="p">,</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span><span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span><span class="p">,</span><span class="n">zmin</span><span class="p">,</span><span class="n">zmax</span><span class="p">,</span><span class="n">maximum_delta_magnitude</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span><span class="n">num_cores</span><span class="o">=</span><span class="s">&#39;maximum&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Produce the x, y and z components of a 3D streamplot data set.</span>
 <span class="sd">    </span>
 <span class="sd">    :Parameters:</span>
 <span class="sd">        **coordinate_file_path** : str</span>
 <span class="sd">            Absolute path to the coordinate file</span>
 <span class="sd">        **trajectory_file_path** : str</span>
-<span class="sd">            Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool such as GROMACS g_filter (see [Chavent_and_Reddy_2014]_)</span>
+<span class="sd">            Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool such as GROMACS g_filter (see [Chavent2014]_)</span>
 <span class="sd">        **grid_spacing** : float</span>
 <span class="sd">            The spacing between grid lines (angstroms)</span>
 <span class="sd">        **MDA_selection** : str</span>
@@ -276,10 +271,20 @@
 <span class="sd">            First frame number to parse</span>
 <span class="sd">        **end_frame** : int</span>
 <span class="sd">            Last frame number to parse</span>
-<span class="sd">        **buffer_value** : float</span>
-<span class="sd">            Extra space placed around the Cartesian limits of the 3D system when assigning the boundaries (angstroms; default: 30). Use to avoid neglecting particles near the edges of the system.</span>
+<span class="sd">        **xmin** : float</span>
+<span class="sd">            Minimum coordinate boundary for x-axis (angstroms)</span>
+<span class="sd">        **xmax** : float</span>
+<span class="sd">            Maximum coordinate boundary for x-axis (angstroms)</span>
+<span class="sd">        **ymin** : float</span>
+<span class="sd">            Minimum coordinate boundary for y-axis (angstroms)</span>
+<span class="sd">        **ymax** : float</span>
+<span class="sd">            Maximum coordinate boundary for y-axis (angstroms)</span>
+<span class="sd">        **zmin** : float</span>
+<span class="sd">            Minimum coordinate boundary for z-axis (angstroms)</span>
+<span class="sd">        **zmax** : float</span>
+<span class="sd">            Maximum coordinate boundary for z-axis (angstroms)</span>
 <span class="sd">        **maximum_delta_magnitude** : float</span>
-<span class="sd">            Absolute value of the largest displacement (in dx,dy, or dz) tolerated for the centroid of a group of particles (angstroms). Values above this displacement will not count in the streamplot (treated as excessively large displacements crossing the periodic boundary)</span>
+<span class="sd">            Absolute value of the largest displacement (in dx,dy, or dz) tolerated for the centroid of a group of particles (angstroms; default: 2.0). Values above this displacement will not count in the streamplot (treated as excessively large displacements crossing the periodic boundary)</span>
 <span class="sd">        **num_cores** : int, optional</span>
 <span class="sd">            The number of cores to use. (Default &#39;maximum&#39; uses all available cores)</span>
 <span class="sd">        </span>
@@ -295,20 +300,53 @@
 
 <span class="sd">    ::</span>
 
+<span class="sd">        import numpy</span>
+<span class="sd">        import MDAnalysis</span>
+<span class="sd">        import MDAnalysis.visualization.streamlines_3D</span>
+<span class="sd">        import mayavi, mayavi.mlab</span>
+
+<span class="sd">        #assign coordinate system limits and grid spacing:</span>
+<span class="sd">        x_lower,x_upper = -8.73, 1225.96</span>
+<span class="sd">        y_lower,y_upper = -12.58, 1224.34</span>
+<span class="sd">        z_lower,z_upper = -300, 300</span>
+<span class="sd">        grid_spacing_value = 20</span>
+
+<span class="sd">        x1, y1, z1 = MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d(&#39;testing.gro&#39;,&#39;testing_filtered.xtc&#39;,xmin=x_lower,xmax=x_upper,ymin=y_lower,ymax=y_upper,zmin=z_lower,zmax=z_upper,grid_spacing = grid_spacing_value, MDA_selection = &#39;name PO4&#39;,start_frame=2,end_frame=3,num_cores=&#39;maximum&#39;)</span>
+<span class="sd">        x,y,z = numpy.mgrid[x_lower:x_upper:x1.shape[0]*1j,y_lower:y_upper:y1.shape[1]*1j,z_lower:z_upper:z1.shape[2]*1j] </span>
+
+<span class="sd">        #plot with mayavi:</span>
+<span class="sd">        fig = mayavi.mlab.figure(bgcolor=(1.0,1.0,1.0),size=(800,800),fgcolor=(0, 0, 0))</span>
+<span class="sd">        for z_value in numpy.arange(z_lower,z_upper,grid_spacing_value):</span>
+<span class="sd">            st = mayavi.mlab.flow(x,y,z,x1,y1,z1,line_width=1,seedtype=&#39;plane&#39;,integration_direction=&#39;both&#39;)</span>
+<span class="sd">            st.streamline_type = &#39;tube&#39;</span>
+<span class="sd">            st.tube_filter.radius = 2</span>
+<span class="sd">            st.seed.widget.origin = numpy.array([ x_lower,  y_upper,   z_value])</span>
+<span class="sd">            st.seed.widget.point1 = numpy.array([ x_upper, y_upper,  z_value])</span>
+<span class="sd">            st.seed.widget.point2 = numpy.array([ x_lower, y_lower,  z_value])</span>
+<span class="sd">            st.seed.widget.resolution = int(x1.shape[0])</span>
+<span class="sd">            st.seed.widget.enabled = False</span>
+<span class="sd">        mayavi.mlab.axes(extent = [0,1200,0,1200,-300,300])</span>
+<span class="sd">        fig.scene.z_plus_view()</span>
+<span class="sd">        mayavi.mlab.savefig(&#39;test_streamplot_3D.png&#39;)</span>
+<span class="sd">        #more compelling examples can be produced for vesicles and other spherical systems</span>
+
+<span class="sd">    .. image:: test_streamplot_3D.png</span>
+
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c">#work out the number of cores to use:</span>
     <span class="k">if</span> <span class="n">num_cores</span> <span class="o">==</span> <span class="s">&#39;maximum&#39;</span><span class="p">:</span>
         <span class="n">num_cores</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="c">#use all available cores</span>
     <span class="k">else</span><span class="p">:</span> 
         <span class="n">num_cores</span> <span class="o">=</span> <span class="n">num_cores</span> <span class="c">#use the value specified by the user</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_cores</span><span class="p">,(</span><span class="nb">int</span><span class="p">,</span><span class="nb">long</span><span class="p">)),</span> <span class="s">&quot;The number of specified cores must (of course) be an integer.&quot;</span>
+        <span class="c">#assert isinstance(num_cores,(int,long)), &quot;The number of specified cores must (of course) be an integer.&quot;</span>
     <span class="n">numpy</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s">&#39;warn&#39;</span><span class="p">,</span><span class="n">over</span><span class="o">=</span><span class="s">&#39;raise&#39;</span><span class="p">)</span>
     <span class="n">parent_cube_dictionary</span> <span class="o">=</span> <span class="p">{}</span> <span class="c">#collect all data from child processes here</span>
     <span class="k">def</span> <span class="nf">log_result_to_parent</span><span class="p">(</span><span class="n">process_dict</span><span class="p">):</span>
         <span class="n">parent_cube_dictionary</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">process_dict</span><span class="p">)</span>
 
     <span class="c">#step 1: produce tuple of cartesian coordinate limits for the first frame</span>
-    <span class="n">tuple_of_limits</span> <span class="o">=</span> <span class="n">determine_container_limits</span><span class="p">(</span><span class="n">coordinate_file_path</span> <span class="o">=</span> <span class="n">coordinate_file_path</span><span class="p">,</span><span class="n">trajectory_file_path</span> <span class="o">=</span> <span class="n">trajectory_file_path</span><span class="p">,</span><span class="n">buffer_value</span><span class="o">=</span><span class="n">buffer_value</span><span class="p">)</span>
+    <span class="c">#tuple_of_limits = determine_container_limits(coordinate_file_path = coordinate_file_path,trajectory_file_path = trajectory_file_path,buffer_value=buffer_value)</span>
+    <span class="n">tuple_of_limits</span> <span class="o">=</span> <span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span><span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span><span class="p">,</span><span class="n">zmin</span><span class="p">,</span><span class="n">zmax</span><span class="p">)</span>
     <span class="c">#step 2: produce a suitable grid (will assume that grid size / container size does not vary during simulation--or at least not beyond the buffer limit, such that this grid can be used for all subsequent frames)</span>
     <span class="n">grid</span> <span class="o">=</span> <span class="n">produce_grid</span><span class="p">(</span><span class="n">tuple_of_limits</span> <span class="o">=</span> <span class="n">tuple_of_limits</span><span class="p">,</span> <span class="n">grid_spacing</span> <span class="o">=</span> <span class="n">grid_spacing</span><span class="p">)</span>
     <span class="c">#step 3: split the grid into a dictionary of cube information that can be sent to each core for processing:</span>
@@ -372,7 +410,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -384,8 +422,8 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

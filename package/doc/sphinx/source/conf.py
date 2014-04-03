@@ -54,15 +54,17 @@ master_doc = 'index'
 
 # General information about the project.
 # (take the list from AUTHORS)
+# Ordering: (1) Naveen (2) Elizabeth, then all contributors in alphabetical order
+#           (last) Oliver
 authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein"""
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein"""
 project = u'MDAnalysis'
-copyright = u'2005-2013, ' + authors
+copyright = u'2005-2014, ' + authors
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

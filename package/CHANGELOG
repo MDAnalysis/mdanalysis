@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
+04/30/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
 	  rmcgibbo, richardjgowers, lennardvanderfeltz, bernardin.alejandro
           matthieu.chavent
@@ -21,6 +21,7 @@ The rules for this file:
 
   Enhancements
 
+  * Named selections can now be passed to selectAtoms (Issue 174)
   * (experimental) MDAnalysis.visualization namespace added along with 
     2D/3D streamplot modules & documentation for them
   * TRR file handling is now fully aware of missing coordinate/velocity/force
@@ -71,7 +72,7 @@ The rules for this file:
   Changes
 
   * libxdrfile2 is now used instead of libxdrfile. libxdrfile2 is distributed
-    under GPLv2.
+    under GPLv2
   * dropped support for Python 2.5; minimum requirement is Python 2.6
     (Issue 130)
   * almost all methods of AtomGroup return NumPy arrays
@@ -88,6 +89,8 @@ The rules for this file:
 
   Fixes
 
+  * asUniverse now also accepts any instance that inherits from
+    MDAnalysis.Universe (Issue 176)
   * fixed XDR writer incorrect use of delta parameter (Issue 154)
   * fixed incorrect computation of distances in serial and parallel 
     distance_array() with PBC (Issue 151)

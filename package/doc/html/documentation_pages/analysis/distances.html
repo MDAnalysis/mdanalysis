@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.1.3. Distance analysis — MDAnalysis.analysis.distances &mdash; MDAnalysis 0.8.1rc1 documentation</title>
+    <title>3.1.3. Distance analysis — MDAnalysis.analysis.distances &mdash; MDAnalysis 0.8.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.1rc1',
+        VERSION:     '0.8.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1rc1 documentation"
+          title="Search within MDAnalysis 0.8.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.1.4. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds" href="hbonds.html" />
     <link rel="prev" title="3.1.2. Native contacts analysis — MDAnalysis.analysis.contacts" href="contacts.html" /> 
@@ -51,7 +49,7 @@
         <li class="right" >
           <a href="contacts.html" title="3.1.2. Native contacts analysis — MDAnalysis.analysis.contacts"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -98,7 +96,7 @@
 atoms or groups of atoms.</p>
 <p><a class="reference internal" href="#MDAnalysis.analysis.distances.dist" title="MDAnalysis.analysis.distances.dist"><tt class="xref py py-func docutils literal"><span class="pre">dist()</span></tt></a> and <tt class="xref py py-func docutils literal"><span class="pre">between()</span></tt> can take atom groups that do not even
 have to be from the same <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>.</p>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="../core/distances.html#module-MDAnalysis.core.distances" title="MDAnalysis.core.distances"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.distances</span></tt></a> and <a class="reference internal" href="../core/parallel.html#module-MDAnalysis.core.parallel.distances" title="MDAnalysis.core.parallel.distances"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.parallel.distances</span></tt></a></p>
 </div>
@@ -111,7 +109,7 @@ have to be from the same <a class="reference internal" href="../core/AtomGroup.h
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>ref</em></dt>
 <dd><p class="first last">reference coordinate array</p>
 </dd>
@@ -129,7 +127,7 @@ array which saves time when the function is called repeatedly. [None]</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>d</em></dt>
 <dd><p class="first last">(len(ref),len(conf)) numpy array with the distances d[i,j] 
 between ref coordinates i and conf coordinates j</p>
@@ -155,7 +153,7 @@ make copies of the ref and conf arrays.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>ref</em></dt>
 <dd><p class="first last">reference coordinate array with N=len(ref) coordinates</p>
 </dd>
@@ -173,7 +171,7 @@ the array which saves time when the function is called repeatedly. [None]</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>d</em></dt>
 <dd><dl class="first last docutils">
 <dt>N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref</dt>
@@ -227,7 +225,7 @@ comparison with PDB numbering.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>A</em>, <em>B</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> with the
 same number of atoms</p>
@@ -235,7 +233,7 @@ same number of atoms</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
 <dt><em>offset</em> <span class="classifier-delimiter">:</span> <span class="classifier">integer</span></dt>
 <dd><p class="first last">The <em>offset</em> is added to <em>resids_A</em> and <em>resids_B</em> (see
 below) in order to produce PDB numbers. The default is 0.</p>
@@ -249,7 +247,7 @@ offset is added to each resid.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">NumPy <cite>array([resids_A, resids_B, distances])</cite></p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">NumPy <cite>array([resids_A, resids_B, distances])</cite></p>
 </td>
 </tr>
 </tbody>
@@ -279,7 +277,7 @@ offset is added to each resid.</p>
         <li class="right" >
           <a href="contacts.html" title="3.1.2. Native contacts analysis — MDAnalysis.analysis.contacts"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -290,8 +288,8 @@ offset is added to each resid.</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>
