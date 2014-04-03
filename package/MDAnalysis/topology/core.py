@@ -794,14 +794,17 @@ class TopologyGroup(object):
         between atoms 1 and 2 and a bond between atoms 2 & 3
 
         :Keywords:
+           *result*
+              allows a predefined results array to be used, note that this will be overwritten
            *pbc*
               apply periodic boundary conditions when calculating angles [False]
               this is important when connecting vectors between atoms might require 
               minimum image convention
-           *result*
-              allows a predefined results array to be used, note that this will be overwritten
 
         Uses cython implementation
+
+        .. versionchanged :: 0.8.2
+           Added pbc option (default False)
         """
         if not self.toptype == 'angle':
             raise TypeError("topology group is not of type 'angle'")
@@ -835,14 +838,17 @@ class TopologyGroup(object):
         3 and a plane formed by atoms 2, 3 and 4.
 
         :Keywords:
+           *result*
+              allows a predefined results array to be used, note that this will be overwritten
            *pbc*
               apply periodic boundary conditions when calculating angles [False]
               this is important when connecting vectors between atoms might require 
               minimum image convention
-           *result*
-              allows a predefined results array to be used, note that this will be overwritten
 
         Uses cython implementation.
+        
+        .. versionchanged:: 0.8.2
+           Added pbc option (default False)           
         """
         if not self.toptype == 'torsion':
             raise TypeError("topology group is not of type 'torsion'")

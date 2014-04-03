@@ -10,6 +10,19 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
+??/??/14  richardjgowers
+
+  * 0.8.2
+
+  Enhancements
+
+  * core.distances.calc_angles and calc_torsions now accept an optional box argument
+    to consider periodic boundary conditions in their calculation
+    (Issue 172)
+  * TopologyGroup angles and torsions methods both have a pbc flag, (default False)
+    to toggle consideration of periodic boundaries
+
+
 04/30/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,
 	  rmcgibbo, richardjgowers, lennardvanderfeltz, bernardin.alejandro

@@ -497,7 +497,9 @@ def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray li
         *coords3*
             coordinate array of other side of angles
         *box*
-            optional, unit cell dimensions
+            optional unit cell information.  This ensures that the connecting vectors between
+            atoms respect minimum image convention.  This is import when the angle might
+            be between atoms in different images.  
         *result*
             optional preallocated results array which must have same length as coordinate 
             array and dtype=numpy.float64. 
@@ -507,7 +509,8 @@ def calc_angles(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray li
             A numpy.array of angles in radians
     
     .. versionadded:: 0.8
-    .. versionchanged:: 0.8.2 Added optional box argument
+    .. versionchanged:: 0.8.2
+       Added optional box argument to account for periodic boundaries in calculation
     """
     cdef c_numpy.ndarray atom1, atom2, atom3
     cdef c_numpy.ndarray angles
@@ -599,7 +602,9 @@ def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray 
         *coords4*
             coordinate array of 4th atom in torsions
         *box*
-            optional unit cell information
+            optional unit cell information.  This ensures that the connecting vectors between
+            atoms respect minimum image convention.  This is import when the angle might
+            be between atoms in different images.  
         *result*
             optional preallocated results array which must have same length as coordinate 
             array and dtype=numpy.float64. 
@@ -609,6 +614,8 @@ def calc_torsions(c_numpy.ndarray list1, c_numpy.ndarray list2, c_numpy.ndarray 
             A numpy.array of angles in radians
     
     .. versionadded:: 0.8
+    .. versionchanged:: 0.8.2
+       Added optional box argument to account for periodic boundaries in calculation
     """
     cdef c_numpy.ndarray atom1, atom2, atom3, atom4
     cdef c_numpy.ndarray angles
