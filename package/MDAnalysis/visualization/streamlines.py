@@ -12,9 +12,10 @@ Multicore 2D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visua
 '''
 
 try:
-    import matplotlib, matplotlib.nxutils
+    import matplotlib 
+    import matplotlib.path
 except ImportError:
-    raise ImportError('2d streamplot module requires: matplotlib.nxutils for its points_inside_poly method. The installation instructions for the matplotlib module can be found here: http://matplotlib.org/faq/installing_faq.html?highlight=install') #deprecated, aim to remove dependency in future
+    raise ImportError('2d streamplot module requires: matplotlib.path for its path.Path.contains_points method. The installation instructions for the matplotlib module can be found here: http://matplotlib.org/faq/installing_faq.html?highlight=install') 
 
 import MDAnalysis
 import multiprocessing
@@ -56,7 +57,6 @@ def split_grid(grid,num_cores):
 
 def per_core_work(coordinate_file_path,trajectory_file_path,list_square_vertex_arrays_this_core,MDA_selection,start_frame,end_frame,reconstruction_index_list,maximum_delta_magnitude):
     '''The code to perform on a given core given the list of square vertices assigned to it.'''
-    print multiprocessing.current_process().name, 'Starting'
     #obtain the relevant coordinates for particles of interest
     universe_object = MDAnalysis.Universe(coordinate_file_path,trajectory_file_path)
     list_previous_frame_centroids = []
@@ -65,7 +65,8 @@ def per_core_work(coordinate_file_path,trajectory_file_path,list_square_vertex_a
     def produce_list_indices_point_in_polygon_this_frame(vertex_coord_list):
         list_indices_point_in_polygon = []
         for square_vertices in vertex_coord_list:
-            index_list_in_polygon = numpy.where(matplotlib.nxutils.points_inside_poly(relevant_particle_coordinate_array_xy, square_vertices))
+            path_object = matplotlib.path.Path(square_vertices)
+            index_list_in_polygon = numpy.where(path_object.contains_points(relevant_particle_coordinate_array_xy))
             list_indices_point_in_polygon.append(index_list_in_polygon)
         return list_indices_point_in_polygon
 
@@ -81,7 +82,6 @@ def per_core_work(coordinate_file_path,trajectory_file_path,list_square_vertex_a
         return list_centroids_this_frame #a list of numpy xy centroid arrays for this frame
     for ts in universe_object.trajectory:
         if ts.frame < start_frame: #don't start until first specified frame
-            print multiprocessing.current_process().name, 'skipping frame',ts.frame
             continue
         relevant_particle_coordinate_array_xy = universe_object.selectAtoms(MDA_selection).coordinates()[...,:-1] #only 2D / xy coords for now
         #I will need a list of indices for relevant particles falling within each square in THIS frame:
@@ -112,8 +112,6 @@ def per_core_work(coordinate_file_path,trajectory_file_path,list_square_vertex_a
             list_previous_frame_centroids = list_centroids_in_squares_this_frame[:]
             list_previous_frame_indices = list_indices_in_squares_this_frame[:]
         if ts.frame > end_frame: break #stop here 
-        print multiprocessing.current_process().name,'frame:',ts.frame
-    print multiprocessing.current_process().name, 'Finishing'
     return zip(reconstruction_index_list,xy_deltas_to_write.tolist())
 
 def generate_streamlines(coordinate_file_path,trajectory_file_path,grid_spacing,MDA_selection,start_frame,end_frame,xmin,xmax,ymin,ymax,maximum_delta_magnitude,num_cores='maximum'):
