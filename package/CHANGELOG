@@ -10,12 +10,13 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/14  richardjgowers
+??/??/14  richardjgowers, tyler.je.reddy
 
   * 0.8.2
 
   Enhancements
 
+  * 2D streamplot code no longer uses deprecated matplotlib.nxutils module
   * core.distances.calc_angles and calc_torsions now accept an optional box argument
     to consider periodic boundary conditions in their calculation
     (Issue 172)
