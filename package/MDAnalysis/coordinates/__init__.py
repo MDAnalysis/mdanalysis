@@ -114,7 +114,7 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | velocities are processed. Module                     |
    |               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | XYZ           |  xyz      |  r    | Generic white-space separate XYZ format; can be      |
+   | XYZ           |  xyz      |  r/w  | Generic white-space separate XYZ format; can be      |
    |               |           |       | compressed (gzip or bzip2). Module                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
    +---------------+-----------+-------+------------------------------------------------------+
@@ -649,7 +649,8 @@ _frame_writers = {
                   'PDBQT': PDBQT.PDBQTWriter,
                   'CRD': CRD.CRDWriter,
                   'GRO': GRO.GROWriter,
-                  'PDB' : PDB.PrimitivePDBWriter,
+                  'PDB': PDB.PrimitivePDBWriter,
+                  'XYZ': XYZ.XYZWriter,
                  }
 
 #: trajectory writers: export frames, typically only saving coordinates
@@ -667,5 +668,6 @@ _trajectory_writers = {'DCD': DCD.DCDWriter,
                        'PDB': PDB.MultiPDBWriter,
                        'NCDF': TRJ.NCDFWriter,
                        'TRZ':TRZ.TRZWriter,
+                       'XYZ': XYZ.XYZWriter,
                        }
 

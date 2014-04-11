@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/14  richardjgowers, tyler.je.reddy
+??/??/14  richardjgowers, tyler.je.reddy, orbeckst
 
   * 0.8.2
 
@@ -22,6 +22,7 @@ The rules for this file:
     (Issue 172)
   * TopologyGroup angles and torsions methods both have a pbc flag, (default False)
     to toggle consideration of periodic boundaries
+  * XYZWriter (write simple XYZ trajectories)
 
 
 04/01/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,

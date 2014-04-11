@@ -180,6 +180,52 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
             return self.universe.trajectory[::2]
         assert_raises(TypeError, trj_iter)
 
+class TestXYZWriter(TestCase, Ref2r9r):
+    def setUp(self):
+        self.universe = mda.Universe(XYZ_psf, XYZ_bz2)
+        self.prec = 3 # 4 decimals in xyz file
+        ext = ".xyz"
+        fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
+        self.Writer = MDAnalysis.coordinates.XYZ.XYZWriter
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.universe
+
+    def test_write_trajectory_timestep(self):
+        W = self.Writer(self.outfile)
+        self._copy_traj(W)
+
+    def test_write_trajectory_atomgroup(self):
+        W = self.Writer(self.outfile)
+        for ts in self.universe.trajectory:
+            W.write(self.universe.atoms)
+        W.close()
+        self._check_copy()
+
+    def test_ReaderWriter(self):
+        t = self.universe.trajectory
+        W = t.Writer(self.outfile)
+        self._copy_traj(W)
+
+    def _copy_traj(self, writer):
+        for ts in self.universe.trajectory:
+            writer.write_next_timestep(ts)
+        writer.close()
+        self._check_copy()
+
+    def _check_copy(self):
+        uw = mda.Universe(XYZ_psf, self.outfile)
+        assert_equal(self.universe.trajectory.numframes, uw.trajectory.numframes)
+        # check that the trajectories are identical for each time step
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
+                                      err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
+
 
 class RefACHE(object):
     """Mixin class to provide comparison numbers.

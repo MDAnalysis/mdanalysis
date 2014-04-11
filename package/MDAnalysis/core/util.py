@@ -128,9 +128,6 @@ def anyopen(datasource, mode='r'):
      *mode*
         'r' or 'w'
     """
-    # TODO: - make this act as ContextManager (and not return filename)
-    #       - need to add binary 'b' to mode for compressed files?
-
     handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': file}
 
     if mode.startswith('r'):

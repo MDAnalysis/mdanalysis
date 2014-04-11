@@ -18,31 +18,189 @@
 """XYZ trajectory reader --- :mod:`MDAnalysis.coordinates.XYZ`
 ==============================================================
 
-Resources: the XYZ format was taken from
-http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html and
-is therefore compatible with VMD (you need a PDB or PSF file to define
-the topology, just as here)
+The :ref:`XYZ format <xyz-format>` is a loosely defined, simple
+coordinate trajectory format. The implemented format definition was
+taken from the `VMD xyzplugin`_ and is therefore compatible with VMD.
 
-* comments are not allowed in the XYZ file
-* the atom name (first column) is ignored
-* the coordinates are assumed to be space-delimited rather than fixed width (this may cause issues - see below)
+Note the following:
+* comments are not allowed in the XYZ file (we neither read nor write
+  them to remain compatible with VMD)
+* the atom name (first column) is ignored during reading
+* the coordinates are assumed to be space-delimited rather than fixed
+  width (this may cause issues - see below)
 * all fields to the right of the z-coordinate are ignored
-* it is assumed that the coordinates are in Angstroms
-* the unitcell information is all zeros since this is not recorded in the XYZ format
-* the length of a timestep can be set by passing the `delta` argument, it's assumed to be in ps (default: 1 ps)
+* the unitcell information is all zeros since this is not recorded in
+  the XYZ format
+
+**Units**
+* Coordinates are in Angstroms.
+* The length of a timestep can be set by passing the *delta* argument,
+  it's assumed to be in ps (default: 1 ps).
 
 There appears to be no rigid format definition so it is likely users
 will need to tweak this Class.
+
+.. _xyz-format:
+
+XYZ File format
+---------------
+
+Definiton used by the :class:`XYZReader` and :class:`XYZWriter` (and
+the `VMD xyzplugin`_ from whence the definition was taken)::
+
+    [ comment line            ] !! NOT IMPLEMENTED !! DO NOT INCLUDE
+    [ N                       ] # of atoms, required by this xyz reader plugin  line 1
+    [ molecule name           ] name of molecule (can be blank)                 line 2
+    atom1 x y z [optional data] atom name followed by xyz coords                line 3
+    atom2 x y z [ ...         ] and (optionally) other data.
+    ...
+    atomN x y z [ ...         ]                                                 line N+2
+
+* comment lines not implemented
+* optional data ignored
+* molecule name
+
+
+
+.. Links
+.. _`VMD xyzplugin`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
+
 """
 
 import os, errno
 import numpy
 import bz2
 import gzip
+import itertools
 
 import base
 from base import Timestep
+import MDAnalysis
+import MDAnalysis.core
+import MDAnalysis.core.util as util
 
+class XYZWriter(base.Writer):
+    """Writes an XYZ file
+
+    The XYZ file format is not formally defined. This writer follows
+    the implement
+    http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html .
+    """
+
+    format = 'XYZ'
+    # these are assumed!
+    units = {'time': 'ps', 'length': 'Angstrom'}
+
+    def __init__(self, *args, **kwargs):
+        """Initialize the XYZ trajectory writer
+
+        :Arguments:
+            *filename*
+                file name of trajectory file. If it ends with "gz" then the file
+                will be gzip-compressed; if it ends with "bz2" it will be bzip2
+                compressed.
+         :Keywords:
+             *atoms*
+                Provide atom names: This can be a list of names or an :class:`AtomGroup`.
+                If none is provided, atoms will be called 'X' in the output. These atom
+                names will be used when a trajectory is written from raw :class:`Timestep`
+                objects which do not contain atom information.
+
+                If you write a :class:`AtomGroup` with :meth:`XYZWriter.write` then atom
+                information is taken at each step and *atoms* is ignored.
+             *remark*
+                single line of text ("molecule name")
+        """
+        # numatoms is ignored ...
+        self.filename = args[0]
+        # convert length and time to base units on the fly?
+        convert_units = kwargs.pop('convert_units', None)
+        self.convert_units = convert_units if convert_units is not None else  MDAnalysis.core.flags['convert_lengths']
+        self.atomnames = self._get_atomnames(kwargs.pop('atoms', "X"))
+        self.remark = kwargs.pop('remark', "Written by {0} (release {1})".format(self.__class__.__name__, MDAnalysis.__version__))
+
+        self.xyz, fn = util.anyopen(self.filename, 'w')  # can also be gz, bz2
+
+    def _get_atomnames(self, atoms):
+        """Return a list of atom names"""
+        # AtomGroup
+        try: return atoms.names()
+        except AttributeError: pass
+        # universe?
+        try: return atoms.atoms.names()
+        except AttributeError: pass
+        # list or string (can be a single atom name... deal with this in write_next_timestep() once we know numatoms)
+        return numpy.asarray(util.asiterable(atoms))
+
+    def close(self):
+        """Close the trajectory file and finalize the writing"""
+        if self.xyz is not None:
+            self.xyz.write("\n")
+            self.xyz.close()
+        self.xyz = None
+
+    def write(self, obj):
+        """Write object *obj* at current trajectory frame to file.
+
+        *obj* can be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`)
+        or a whole :class:`~MDAnalysis.core.AtomGroup.Universe`.
+
+        Atom names in the output are taken from the *obj* or default
+        to the value of the *atoms* keyword supplied to the
+        :class:`XYZWriter` constructor.
+
+        :Arguments:
+          *obj*
+            :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or
+            :class:`~MDAnalysis.core.AtomGroup.Universe`
+        """
+        # prepare the Timestep and extract atom names if possible
+        # (The way it is written it should be possible to write
+        # trajectories with frames that differ in atom numbers
+        # but this is not tested.)
+        try:
+            atoms = obj.atoms
+        except AttributeError:
+            atoms = None
+        if atoms:  # have a AtomGroup
+            if hasattr(obj, 'universe'):
+                # For AtomGroup and children (Residue, ResidueGroup, Segment)
+                ts_full = obj.universe.trajectory.ts
+                if ts_full.numatoms == atoms.numberOfAtoms():
+                    ts = ts_full
+                else:
+                    # Only populate a time step with the selected atoms.
+                    ts = ts_full.copy_slice(atoms.indices())
+            elif hasattr(obj, 'trajectory'):
+                # For Universe only --- get everything
+                ts = obj.trajectory.ts
+            # update atom names
+            self.atomnames = atoms.names()
+        else:
+            ts = obj
+
+        self.write_next_timestep(ts)
+
+    def write_next_timestep(self, ts=None):
+        """Write coordinate information in *ts* to the trajectory"""
+        if ts is None:
+            if not hasattr(self, "ts"):
+                raise NoDataError("XYZWriter: no coordinate data to write to trajectory file")
+            else:
+                ts = self.ts
+
+        if len(self.atomnames) != ts.numatoms:
+            self.atomnames = numpy.array([self.atomnames[0]] * ts.numatoms)
+
+        if self.convert_units:
+            coordinates = self.convert_pos_to_native(ts._pos, inplace=False)
+        else:
+            coordinates = ts._pos
+
+        self.xyz.write("{0:d}\n".format(ts.numatoms))
+        self.xyz.write("frame {0}\n".format(ts.frame))
+        for atom,(x,y,z) in itertools.izip(self.atomnames, coordinates):
+            self.xyz.write("%8s  %10.5f %10.5f %10.5f\n" % (atom, x, y, z))
 
 class XYZReader(base.Reader):
     """Reads from an XYZ file
@@ -76,8 +234,8 @@ class XYZReader(base.Reader):
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
-    def __init__(self, xyzfilename, **kwargs):
-        self.filename = xyzfilename
+    def __init__(self, filename, **kwargs):
+        self.filename = filename
 
         # the filename has been parsed to be either be foo.xyz or foo.xyz.bz2 by coordinates::core.py
         # so the last file extension will tell us if it is bzipped or not
@@ -122,14 +280,10 @@ class XYZReader(base.Reader):
             return self.__numatoms
 
     def _read_xyz_natoms(self,filename):
-
         # this assumes that this is only called once at startup and that the filestream is already open
-
         # read the first line
         n = self.xyzfile.readline()
-
         self.close()
-
         # need to check type of n
         return int(n)
 
@@ -146,22 +300,17 @@ class XYZReader(base.Reader):
 
     def _read_xyz_numframes(self, filename):
         self._reopen()
-
         # the number of lines in the XYZ file will be 2 greater than the number of atoms
         linesPerFrame = self.numatoms+2
-
         counter = 0
         # step through the file (assuming xyzfile has an iterator)
         for i in self.xyzfile:
             counter = counter + 1
-
         self.close()
 
         # need to check this is an integer!
         numframes = int(counter/linesPerFrame)
-
         return numframes
-
 
     def __iter__(self):
         self.ts.frame = 0  # start at 0 so that the first frame becomes 1
@@ -186,17 +335,12 @@ class XYZReader(base.Reader):
 
         # we assume that there are only two header lines per frame
         counter = -2
-
         for line in self.xyzfile:
-
             counter += 1
-
             if counter > 0:
-
                 # assume the XYZ file is space delimited rather than being fixed format
                 # (this could lead to problems where there is no gap e.g 9.768-23.4567)
                 words = line.split()
-
                 x.append(float(words[1]))
                 y.append(float(words[2]))
                 z.append(float(words[3]))
@@ -244,6 +388,22 @@ class XYZReader(base.Reader):
         ts.time = 0
         return self.xyzfile
 
+    def Writer(self, filename, **kwargs):
+        """Returns a XYZWriter for *filename* with the same parameters as this XYZ.
+
+        All values can be changed through keyword arguments.
+
+        :Arguments:
+          *filename*
+              filename of the output DCD trajectory
+        :Keywords:
+          *atoms*
+              names of the atoms (if not taken from atom groups)
+
+        :Returns: :class:`XYZWriter` (see there for more details)
+        """
+        return XYZWriter(filename, **kwargs)
+
     def close(self):
         """Close xyz trajectory file if it was open."""
         if self.xyzfile is None:
@@ -251,7 +411,4 @@ class XYZReader(base.Reader):
         self.xyzfile.close()
         self.xyzfile = None
 
-    def __del__(self):
-        if not self.xyzfile is None:
-            self.close()
 
