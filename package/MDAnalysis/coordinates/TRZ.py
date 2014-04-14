@@ -235,10 +235,10 @@ class TRZReader(base.Reader):
 
     def _read_trz_header(self):
         """Reads the header of the trz trajectory"""
-        headerdtype = numpy.dtype([('p1','i4'),
-                                   ('title','80c'),
-                                   ('p2','4i4')])
-        data = numpy.fromfile(self.trzfile, dtype=headerdtype, count=1)
+        self._headerdtype = numpy.dtype([('p1','i4'),
+                                         ('title','80c'),
+                                         ('p2','4i4')])
+        data = numpy.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
         self.title = ''.join(data['title'][0])
 
     def _read_next_timestep(self, ts=None): # self.next() is from base Reader class and calls this
@@ -310,15 +310,19 @@ class TRZReader(base.Reader):
             return self.__numframes
 
     def _read_trz_numframes(self, trzfile):
-        framecounter = 0
-        self._reopen()
-        while True:
-            try:
-                self._read_next_timestep()
-                framecounter += 1
-            except IOError:
-                self.rewind()
-                return framecounter
+        """Uses size of file and dtype information to determine how many frames exist
+
+        .. versionchanged:: 0.8.2 
+           Now is based on filesize rather than reading entire file
+        """
+        fsize = os.fstat(trzfile.fileno()).st_size # size of file in bytes
+
+        if not (fsize - self._headerdtype.itemsize) % self._dtype.itemsize == 0:
+            raise IOError("Trajectory has incomplete frames") # check that division is sane
+
+        nframes = int((fsize - self._headerdtype.itemsize) / self._dtype.itemsize) # returns long int otherwise
+
+        return nframes
 
     @property
     def dt(self):
@@ -378,14 +382,42 @@ class TRZReader(base.Reader):
     def _read_frame(self, frame):
         """Move to *frame* and fill timestep with data."""
         move = frame  - (self.ts.frame - 1) # difference from current frame to desired frame
-        if move < 0: # if a backward frame is wanted
-            self.rewind() #reopen and start from beginning
-            for i in range(frame):
-                self.next()
-        else:
-            for i in range(move): # else skip ahead the required number
-                self.next()
+        if move is not 0:
+            self._seek(move - 1)
+            self.next()
         return self.ts
+
+    def _seek(self, nframes):
+        from sys import maxint
+        """Move *nframes* in the trajectory
+
+        Note that this doens't read the trajectory (ts remains unchanged)
+
+        .. versionadded:: 0.8.2
+        """
+        if (numpy.dtype(type(nframes)) != numpy.dtype(int)):
+            raise ValueError("TRZfile seek requires an integer number of frames got %r" %type(nframes))
+
+        maxi_l = long(maxint)
+
+        framesize = long(self._dtype.itemsize)
+        seeksize = framesize * nframes
+
+        if seeksize > maxi_l:
+            # Workaround for seek not liking long ints
+            framesize = long(framesize)
+            seeksize = framesize * nframes
+
+            nreps = int(seeksize / maxi_l) # number of max seeks we'll have to do
+            rem = int(seeksize % maxi_l) # amount leftover to do once max seeks done
+
+            for _ in range(nreps):
+                self.trzfile.seek(maxint, 1)
+            self.trzfile.seek(rem, 1)
+        else:
+            seeksize = int(seeksize)
+
+            self.trzfile.seek(seeksize,1)            
 
     def rewind(self):
         """Reposition reader onto first frame"""

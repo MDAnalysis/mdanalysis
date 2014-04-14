@@ -2200,6 +2200,24 @@ class TestTRZReader(TestCase, RefTRZ):
     def test_numframes(self):
         assert_equal(self.universe.trajectory.numframes, self.ref_numframes, "wrong number of frames in trz")
 
+    def test_seeking(self):
+        self.trz.rewind()
+
+        self.universe.trajectory[3]
+
+        orig = self.universe.atoms[0:3].positions
+
+        self.universe.trajectory[4]
+        self.universe.trajectory[3]
+
+        assert_almost_equal(self.universe.atoms[0:3].positions, orig, self.prec)
+
+        self.universe.trajectory[0]
+        self.universe.trajectory[3]
+
+        assert_almost_equal(self.universe.atoms[0:3].positions, orig, self.prec)
+       
+
     def test_volume(self):
         assert_almost_equal(self.ts.volume, self.ref_volume, 1, "wrong volume for trz") # Lower precision here because errors seem to accumulate and throw this off (is rounded value**3)
 

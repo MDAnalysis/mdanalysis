@@ -23,6 +23,7 @@ The rules for this file:
   * TopologyGroup angles and torsions methods both have a pbc flag, (default False)
     to toggle consideration of periodic boundaries
   * XYZWriter (write simple XYZ trajectories)
+  * TRZReader upgrades, seeking and numframes faster
 
 
 04/01/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
