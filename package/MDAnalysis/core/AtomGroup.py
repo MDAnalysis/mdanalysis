@@ -628,6 +628,12 @@ class AtomGroup(object):
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(self.numberOfAtoms())+' atoms>'
 
+    def __getstate__(self):
+        raise NotImplementedError
+
+    def __setstate__(self, state):
+        raise NotImplementedError
+
     def numberOfAtoms(self):
         """Total number of atoms in the group"""
         return len(self._atoms)
@@ -2970,7 +2976,7 @@ class Universe(object):
                 *group-name* are included. The resulting selection may therefore have atoms
                 that were initially absent from the instance :meth:`~selectAtoms` was
                 called from.
-                
+
 
         .. versionchanged:: 0.7.4
            Added *resnum* selection.
@@ -2993,6 +2999,12 @@ class Universe(object):
         return '<'+self.__class__.__name__+' with '+repr(len(self.atoms))+' atoms' \
                 +(" and %d bonds" % len(self.bonds) \
                   if hasattr(self, "bonds") and self.bonds and len(self.bonds) else '') + '>'
+
+    def __getstate__(self):
+        raise NotImplementedError
+
+    def __setstate__(self, state):
+        raise NotImplementedError
 
     # Properties
     @property

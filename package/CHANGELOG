@@ -24,6 +24,13 @@ The rules for this file:
     to toggle consideration of periodic boundaries
   * XYZWriter (write simple XYZ trajectories)
 
+  Changes
+
+  * __getstate__() and __setstate__() raise an NotImplementedError for
+    Universe and AtomGroup; before they were silently accepted on
+    pickling and a cryptic "TypeError: AtomGroup is not callable" was
+    raised (see also Issue 173 for detailed explanation)
+
 
 04/01/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,

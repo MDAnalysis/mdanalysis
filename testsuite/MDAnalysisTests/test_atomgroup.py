@@ -438,6 +438,12 @@ class TestAtomGroup(TestCase):
         assert_equal(u.atoms.segids(), ["CORE", "NMP", "CORE", "LID", "CORE"],
                      err_msg="failed to change segids = {0}".format(u.atoms.segids()))
 
+    def test_pickle_raises_NotImplementedError(self):
+        import cPickle
+        ag = self.universe.selectAtoms("bynum 12:42 and name H*")
+        assert_raises(NotImplementedError, cPickle.dumps, ag, protocol=cPickle.HIGHEST_PROTOCOL)
+
+
 class TestResidue(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
@@ -833,17 +839,11 @@ class TestMerge(TestCase):
             pass
         for u in self.universes: del u
 
-
-
-
     def test_merge(self):
         u1,u2,u3 = self.universes
-
         ids_before = [a.number for u in [u1, u2, u3] for a in u.atoms]
-
         # Do the merge
         u0 = MDAnalysis.Merge(u1.atoms, u2.atoms, u3.atoms)
-
         # Check that the output Universe has the same number of atoms as the
         # starting AtomGroups
         assert_equal(len(u0.atoms),(len(u1.atoms)+len(u2.atoms)+len(u3.atoms)))
@@ -864,7 +864,6 @@ class TestMerge(TestCase):
         # Test that we have a same number of atoms in a different way
         ids_new = [a.number for a in u0.atoms]
         assert_equal(len(ids_new), len(ids_before))
-
 
         u0.atoms.write(self.outfile)
         u = MDAnalysis.Universe(self.outfile)
@@ -913,6 +912,11 @@ class TestUniverse(TestCase):
         u = MDAnalysis.Universe(PSF, DCD, DCD)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.numframes, 2*ref.trajectory.numframes)
+
+    def test_pickle_raises_NotImplementedError(self):
+        import cPickle
+        u = MDAnalysis.Universe(PSF, DCD)
+        assert_raises(NotImplementedError, cPickle.dumps, u, protocol=cPickle.HIGHEST_PROTOCOL)
 
 class TestPBCFlag(TestCase):
     def setUp(self):
