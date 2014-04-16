@@ -463,6 +463,11 @@ class SegmentNameSelection(StringSelection):
         StringSelection.__init__(self, "segid")
         self.segid = segid
 
+class AltlocSelection(StringSelection):
+    def __init__(self, altLoc):
+        StringSelection.__init__(self, "altLoc")
+        self.altLoc = altLoc
+
 class ByResSelection(Selection):
     def __init__(self, sel):
         Selection.__init__(self)
@@ -716,6 +721,7 @@ class SelectionParser:
     LPAREN = '('
     RPAREN = ')'
     SEGID = 'segid'
+    ALTLOC = 'altloc'
     RESID = 'resid'
     RESNUM = 'resnum'
     RESNAME = 'resname'
@@ -740,7 +746,7 @@ class SelectionParser:
 
     classdict = dict([(ALL, AllSelection), (NOT, NotSelection), (AND, AndSelection), (OR, OrSelection),
                       (SEGID, SegmentNameSelection), (RESID, ResidueIDSelection), (RESNUM, ResnumSelection),
-                      (RESNAME, ResidueNameSelection), (NAME, AtomNameSelection),
+                      (RESNAME, ResidueNameSelection), (NAME, AtomNameSelection), (ALTLOC, AltlocSelection),
                       (TYPE, AtomTypeSelection), (BYRES, ByResSelection),
                       (BYNUM, ByNumSelection), (PROP, PropertySelection),
                       (AROUND, AroundSelection),(SPHLAYER, SphericalLayerSelection),(SPHZONE, SphericalZoneSelection),  
@@ -840,7 +846,7 @@ class SelectionParser:
             exp = self.__parse_expression(0)
             self.__expect(self.RPAREN)
             return exp
-        elif op in (self.SEGID, self.RESNAME, self.NAME, self.TYPE):
+        elif op in (self.SEGID, self.RESNAME, self.NAME, self.TYPE, self.ALTLOC):
             data = self.__consume_token()
             if data in (self.LPAREN, self.RPAREN, self.AND, self.OR, self.NOT, self.SEGID, self.RESID, self.RESNAME, self.NAME, self.TYPE):
                 self.__error("Identifier")

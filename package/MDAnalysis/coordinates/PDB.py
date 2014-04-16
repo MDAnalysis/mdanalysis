@@ -540,6 +540,7 @@ class PrimitivePDBReader(base.Reader):
                     # directly use COLUMNS from PDB spec
                     serial = _c(7, 11, int)
                     name = _c(13, 16, str).strip()
+                    altLoc = _c(17, 17, str).strip()
                     resName = _c(18, 21, str).strip()
                     chainID = _c(22, 22, str)  # empty chainID is a single space ' '!
                     if self.format == "XPDB":
@@ -554,8 +555,9 @@ class PrimitivePDBReader(base.Reader):
                     segID = _c(67, 76, str).strip()
                     element = _c(77, 78, str).strip()
                     coords.append((x, y, z))
-                    atom = Struct(**dict(zip(("serial", "name", "resName", "chainID", "resSeq", "occupancy", "tempFactor", "segID", "element"),\
-                                                 (serial, name, resName, chainID, resSeq, occupancy, tempFactor, segID, element))))
+
+                    atom = Struct(**dict(zip(("serial", "name", "altLoc", "resName", "chainID", "resSeq", "occupancy", "tempFactor", "segID", "element"),\
+                                             (serial, name, altLoc, resName, chainID, resSeq, occupancy, tempFactor, segID, element))))
                     atoms.append(atom)
 
         self.header = header
@@ -754,7 +756,7 @@ class PrimitivePDBWriter(base.Writer):
     # Strict PDB format:
     #fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
     # PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc ignored
-    fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(segID)-4s%(element)2s%(charge)2d\n",
+    fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)-1s%(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(segID)-4s%(element)2s%(charge)2d\n",
            'REMARK': "REMARK     %s\n",
            'COMPND': "COMPND    %s\n",
            'HEADER': "HEADER    %s\n",
@@ -1157,7 +1159,7 @@ class PrimitivePDBWriter(base.Writer):
                 atom.bfactor = 0.
             self.ATOM(serial=i + 1, name=atom.name.strip(), resName=atom.resname.strip(),
                       resSeq=atom.resid, chainID=atom.segid.strip(), segID=atom.segid.strip(),
-                      tempFactor=atom.bfactor,
+                      tempFactor=atom.bfactor, altLoc=atom.altLoc,
                       x=coor[i, 0], y=coor[i, 1], z=coor[i, 2])
             # get bfactor, too, and add to output?
             # 'element' is auto-guessed from atom.name in ATOM()

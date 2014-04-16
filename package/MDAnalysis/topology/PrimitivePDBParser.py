@@ -92,7 +92,7 @@ class PrimitivePDBParser(object):
         for iatom,atom in enumerate(pdb._atoms):
 
             # ATOM
-            if len(atom.__dict__) == 9:
+            if len(atom.__dict__) == 10:
                 atomname = atom.name
                 atomtype = atom.element or guess_atom_type(atomname)
                 resname = atom.resName
@@ -103,9 +103,10 @@ class PrimitivePDBParser(object):
                 charge = guess_atom_charge(atomname)
                 bfactor = atom.tempFactor
                 occupancy = atom.occupancy
-
+                altLoc = atom.altLoc
+                
                 atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),\
-                                  bfactor=bfactor,serial=atom.serial))
+                                  bfactor=bfactor,serial=atom.serial, altLoc=altLoc))
             # TER atoms
             elif len(atom.__dict__) == 5:
                 pass

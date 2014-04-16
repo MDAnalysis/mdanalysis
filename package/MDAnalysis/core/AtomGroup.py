@@ -268,13 +268,14 @@ class Atom(object):
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
                  "mass", "charge", "residue", "segment", "bonds", "angles", "torsions",
                  "__universe",
-                 "radius", "bfactor", "resnum", "serial")
+                 "radius", "bfactor", "resnum", "serial", "altLoc")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
                  residue=None, segment=None, radius=None, bfactor=None,
-                 resnum=None, serial=None):
+                 resnum=None, serial=None, altLoc=None):
         self.number = number
         self.name = name
+        self.altLoc = altLoc
         self.type = str(type)   # always a string (needed for selections)
         self.resname = resname
         self.resid = resid
@@ -293,7 +294,7 @@ class Atom(object):
 
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
-               repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid)+'>'
+               repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid) + ("" if not self.altLoc else " and altloc {}".format(repr(self.altLoc))) +'>'
 
     def __cmp__(self, other):
         return cmp(self.number, other.number)
@@ -1872,7 +1873,7 @@ class AtomGroup(object):
         """Selection of atoms using the MDAnalysis selection syntax.
 
         AtomGroup.selectAtoms(selection[,selection[,...]], [groupname=atomgroup[,groupname=atomgroup[,...]]])
-
+        
         .. SeeAlso:: :meth:`Universe.selectAtoms`
         """
         import Selection     # can ONLY import in method, otherwise cyclical import!
@@ -1886,7 +1887,7 @@ class AtomGroup(object):
                 #atomselections.append(Selection.Parser.parse(sel).apply(self))
             #return tuple(atomselections)
             return atomgrp
-
+    
     def write(self,filename=None,format="PDB",filenamefmt="%(trjname)s_%(frame)d", **kwargs):
         """Write AtomGroup to a file.
 
@@ -2917,6 +2918,11 @@ class Universe(object):
                 a selector for a single atom consisting of segid resid atomname,
                 e.g. ``DMPC 1 C2`` selects the C2 carbon of the first residue of the DMPC
                 segment
+            altloc *alternative-location*
+                a selection for atoms where alternative locations are available, 
+                which is often the case with high-resolution crystal structures
+                e.g. `resid 4 and resname ALA and altloc B` selects only the atoms
+                of ALA-4 that have an altloc B record.
 
         **Boolean**
 
@@ -2994,7 +3000,7 @@ class Universe(object):
                 #atomselections.append(Selection.Parser.parse(sel).apply(self))
             #return tuple(atomselections)
             return atomgrp
-
+    
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(len(self.atoms))+' atoms' \
                 +(" and %d bonds" % len(self.bonds) \

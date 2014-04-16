@@ -403,9 +403,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
        Added *kwargs* to be passed to the trajectory :class:`~MDAnalysis.coordinates.base.Writer` and
        *filename* is returned.
     """
-
     frames = traj.trajectory
-
     if quiet:
         # should be part of a try ... finally to guarantee restoring the log level
         logging.disable(logging.WARN)
@@ -424,7 +422,6 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     del _Writer
 
     select = _process_selection(select)
-
     ref_atoms = reference.selectAtoms(*select['reference'])
     traj_atoms = traj.selectAtoms(*select['mobile'])
     natoms = traj_atoms.numberOfAtoms()
@@ -708,10 +705,8 @@ def check_same_atoms(ag1, ag2, tol_mass=0.1):
 
     if len(ag1) != len(ag2):
         data1, data2 = ag1.resids() , ag2.resids()
-        for a in ag1: print a
-        for a in ag2: print a
         errmsg = "Reference and trajectory atom selections do not contain "\
-            "the same number of atoms: N_ref ={0}, N_traj={1}\nResids_ref ={2}\nResids_traj={3}".format(len(ag1), len(ag2), repr(sorted(ag1.resids())), repr(sorted(ag2.resids())))
+            "the same number of atoms: N_ref={0}, N_traj={1}\nResids_ref ={2}\nResids_traj={3}".format(len(ag1), len(ag2), repr(sorted(ag1.resids())), repr(sorted(ag2.resids())))
         logger.error(errmsg)
         raise SelectionError(errmsg)
     mass_mismatches = (numpy.absolute(ag1.masses() - ag2.masses()) > tol_mass)

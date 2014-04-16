@@ -16,6 +16,7 @@ The rules for this file:
 
   Enhancements
 
+  * Support for reading altloc records in PDB files
   * Cap proteins with ACE and NMA terminal caps
   * MOL2 read and write support
   * 2D streamplot code no longer uses deprecated matplotlib.nxutils module

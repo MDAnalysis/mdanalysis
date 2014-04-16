@@ -170,8 +170,8 @@ class Bond(object):
 
     def __repr__(self):
         a1, a2 = self.atom1, self.atom2
-        s_id = "< Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid}) and " \
-               "Atom {2:d} ({3.name} of {3.resname} {3.resid})".format(a1.number + 1, a1, a2.number + 1, a2)
+        s_id = "< Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid} {1.altLoc}) and " \
+               "Atom {2:d} ({3.name} of {3.resname} {3.resid} {3.altLoc})".format(a1.number + 1, a1, a2.number + 1, a2)
         try:
             s_length = ", length {0:.2f} A".format(self.length())
         except AttributeError:
@@ -386,7 +386,7 @@ def guess_atom_element(atomname):
         return atomname[0]
 
 
-def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
+def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None, lower_bound=0.1):
     """Guess if bonds exist between two atoms based on their distance.
 
     Bond between two atoms is created, if the two atoms are within
@@ -403,6 +403,11 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
     :data:`MDAnalysis.topology.tables.vdwradii` or a user-specified
     table can be provided as a dictionary in the keyword argument
     *vdwradii*. Atoms are found by their :attr:`Atom.type`.
+    
+    *lower_bound* defines a heuristic cutoff below which a bond is too short to 
+    exist. This is useful for parsing PDB with altloc records where atoms with 
+    altloc A and B maybe very close together and there should be no chemical 
+    bond between them. 
 
     .. warning::
 
@@ -439,8 +444,13 @@ def guess_bonds(atoms, coords, fudge_factor=0.72, vdwradii=None):
     for x, (d, (i, j)) in enumerate(itertools.izip(dist, pairs)):
         a1, a2 = atoms[i], atoms[j]
         r1, r2 = vdwradii[a1.type], vdwradii[a2.type]
+        
+        # ideal bond distance smaller or equal distance
         if (r1 + r2) * fudge_factor <= dist[x]:
             continue
+          
+        # filter out unusually short bonds - like the ones detected between identical atoms with different altloc records
+        if dist[x] <= lower_bound: continue
         #print "BOND", ((r1 + r2) * 10 * fudge_factor), dist[i,j]
         bonds.add(frozenset([a1.number, a2.number]))  # orbeckst: Atom.number are 0-based, do not add 1.
 

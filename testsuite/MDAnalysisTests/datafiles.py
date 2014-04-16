@@ -64,6 +64,7 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "merge_protein", "merge_ligand", "merge_water",
            "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
            "capping_input", "capping_output", "capping_ace", "capping_nma",
+           "altloc",
            ]
 
 from pkg_resources import resource_filename
@@ -156,6 +157,7 @@ TRZ_psf = resource_filename(__name__, 'data/trz_psf.psf')
 
 TRIC = resource_filename(__name__, 'data/dppc_vesicle_hg.gro')
 
+altloc = resource_filename(__name__, "data/4E43.pdb")
 
 merge_protein = resource_filename(__name__, "data/merge/2zmm/protein.pdb")
 merge_ligand = resource_filename(__name__, "data/merge/2zmm/ligand.pdb")
@@ -169,4 +171,3 @@ capping_input = resource_filename(__name__, "data/capping/aaqaa.gro")
 capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.pdb")
 capping_ace = resource_filename(__name__, "data/capping/ace.pdb")
 capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
-
