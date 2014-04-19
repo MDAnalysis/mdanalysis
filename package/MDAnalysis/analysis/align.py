@@ -707,9 +707,11 @@ def check_same_atoms(ag1, ag2, tol_mass=0.1):
     """
 
     if len(ag1) != len(ag2):
-        # Test 1 failed
+        data1, data2 = ag1.resids() , ag2.resids()
+        for a in ag1: print a
+        for a in ag2: print a
         errmsg = "Reference and trajectory atom selections do not contain "\
-            "the same number of atoms: N_ref={0}, N_traj={1}".format(len(ag1), len(ag2))
+            "the same number of atoms: N_ref ={0}, N_traj={1}\nResids_ref ={2}\nResids_traj={3}".format(len(ag1), len(ag2), repr(sorted(ag1.resids())), repr(sorted(ag2.resids())))
         logger.error(errmsg)
         raise SelectionError(errmsg)
     mass_mismatches = (numpy.absolute(ag1.masses() - ag2.masses()) > tol_mass)
