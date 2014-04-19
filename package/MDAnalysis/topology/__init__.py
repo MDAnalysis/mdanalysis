@@ -79,6 +79,8 @@ The following table lists the currently supported topology formats.
                                 experimental support for some of the more recent
                                 versions of the file format);
                                 :mod:`MDAnalysis.topology.TPRParser`
+   MOL2             mol2        Tripos MOL2 molecular structure format;
+                                :mod:`MDAnalysis.topology.MOL2Parser`
    ================ ==========  =====================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
@@ -214,7 +216,7 @@ __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser', 'CRDParse
 import core
 import PSFParser, TOPParser, \
     PDBParser, PrimitivePDBParser, ExtendedPDBParser, PQRParser, GROParser, CRDParser, \
-    PDBQTParser, DMSParser, TPRParser
+    PDBQTParser, DMSParser, TPRParser, MOL2Parser
 
 # dictionary of known file formats and the corresponding file parser
 # (all parser should essentially do the same thing; the PSFParser is
@@ -231,6 +233,7 @@ _topology_parsers = {'PSF': PSFParser.parse,
                      'PDBQT': PDBQTParser.parse,
                      'TPR': TPRParser.parse,
                      'DMS': DMSParser.parse,
+                     'MOL2': MOL2Parser.parse,
                      }
 _topology_parsers_permissive = _topology_parsers.copy()
 _topology_parsers_permissive['PDB'] = PrimitivePDBParser.parse

@@ -16,6 +16,7 @@ The rules for this file:
 
   Enhancements
 
+  * MOL2 read and write support
   * 2D streamplot code no longer uses deprecated matplotlib.nxutils module
   * core.distances.calc_angles and calc_torsions now accept an optional box argument
     to consider periodic boundary conditions in their calculation

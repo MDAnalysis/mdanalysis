@@ -159,6 +159,9 @@ also recognized when they are compressed with :program:`gzip` or
    | IBIsCO/YASP   | trz       |  r/w  | Binary IBIsCO or YASP trajectories Module            |
    |               |           |       | :mod:`MDAnalysis.coordinates.TRZ`                    |
    +---------------+-----------+-------+------------------------------------------------------+
+   | MOL2          | mol2      |  r/w  | Text-based Tripos molecular structure format         |
+   |               |           |       | :mod:`MDAnalysis.coordinates.MOL2`                   |
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -594,7 +597,7 @@ PDB). In theses cases, the kind of writer is selected with the
 
 __all__ = ['reader', 'writer']
 
-import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS, DMS, TRZ
+import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS, DMS, TRZ, MOL2
 import base
 from core import reader, writer
 
@@ -609,6 +612,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'PDBQT': PDBQT.PDBQTReader,
                        'CRD': CRD.CRDReader,
                        'GRO': GRO.GROReader,
+                       'MOL2': MOL2.MOL2Reader,
                        'TRJ': TRJ.TRJReader,     # AMBER text
                        'MDCRD': TRJ.TRJReader,   # AMBER text
                        'NCDF': TRJ.NCDFReader,   # AMBER netcdf
@@ -632,6 +636,7 @@ _topology_coordinates_readers = {
                        'CRD': CRD.CRDReader,
                        'PQR': PQR.PQRReader,
                        'DMS': DMS.DMSReader,
+                       'MOL2': MOL2.MOL2Reader,
 }
 
 #: hack: readers that ignore most errors (permissive=True); at the moment
@@ -651,6 +656,7 @@ _frame_writers = {
                   'GRO': GRO.GROWriter,
                   'PDB': PDB.PrimitivePDBWriter,
                   'XYZ': XYZ.XYZWriter,
+                  'MOL2': MOL2.MOL2Writer,
                  }
 
 #: trajectory writers: export frames, typically only saving coordinates
@@ -669,5 +675,6 @@ _trajectory_writers = {'DCD': DCD.DCDWriter,
                        'NCDF': TRJ.NCDFWriter,
                        'TRZ':TRZ.TRZWriter,
                        'XYZ': XYZ.XYZWriter,
+                       'MOL2': MOL2.MOL2Writer,
                        }
 

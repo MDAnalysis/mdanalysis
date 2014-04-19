@@ -61,7 +61,8 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "CONECT",                             # HIV Reverse Transcriptase with inhibitor
            "TRZ", "TRZ_psf",
            "TRIC",
-           "merge_protein", "merge_ligand", "merge_water"
+           "merge_protein", "merge_ligand", "merge_water",
+           "mol2_molecules", "mol2_molecule", "mol2_broken_molecule"
            ]
 
 from pkg_resources import resource_filename
@@ -158,3 +159,7 @@ TRIC = resource_filename(__name__, 'data/dppc_vesicle_hg.gro')
 merge_protein = resource_filename(__name__, "data/merge/2zmm/protein.pdb")
 merge_ligand = resource_filename(__name__, "data/merge/2zmm/ligand.pdb")
 merge_water = resource_filename(__name__, "data/merge/2zmm/water.pdb")
+
+mol2_molecules = resource_filename(__name__, "data/mol2/Molecules.mol2")
+mol2_molecule = resource_filename(__name__, "data/mol2/Molecule.mol2")
+mol2_broken_molecule = resource_filename(__name__, "data/mol2/BrokenMolecule.mol2")

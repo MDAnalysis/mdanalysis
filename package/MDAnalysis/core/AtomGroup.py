@@ -1918,10 +1918,10 @@ class AtomGroup(object):
         import os.path
         import MDAnalysis.coordinates
 
-        kwargs.setdefault("multiframe", False)  # for PDB, True makes little sense here
-
         trj = self.universe.trajectory    # unified trajectory API
         frame = trj.ts.frame
+        
+        if trj.numframes == 1: kwargs.setdefault("multiframe", False)
 
         if filename is None:
             trjname,ext = os.path.splitext(os.path.basename(trj.filename))
