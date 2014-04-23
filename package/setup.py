@@ -250,6 +250,7 @@ if __name__ == '__main__':
                                 'MDAnalysis.coordinates.pdb',
                                 'MDAnalysis.KDTree',
                                 'MDAnalysis.analysis',
+                                'MDAnalysis.analysis.hbonds',
                                 'MDAnalysis.builder',
                                 'MDAnalysis.tests',
                                 'MDAnalysis.visualization'],

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Hydrogen Bonding Analysis
 """
-Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds`
-===================================================================
+Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds.hbond_analysis`
+===========================================================================
 
 :Author: David Caplan, Lukas Grossar, Oliver Beckstein
 :Year: 2010-2012
