@@ -41,7 +41,7 @@ of the hierarchical level.
 
 Each :class:`Atom` can only belong to a single :class:`Residue`, and a
 :class:`Residue` belongs to one specific :class:`Segment`. This
-hierarchy can be described as
+hierarchy can be described as ::
 
     Segment > Residue > Atom
 
@@ -138,14 +138,17 @@ One can also read the resids directly from  an original PDB file::
   protein.set_resnum(orig.selectAtoms("protein").resids())
 
 
-Combining objects and system building
--------------------------------------
+Combining objects: system building
+----------------------------------
 
 It is often convenient to combined multiple groups of atoms into a single
 object. If they are contained in a single :class:`Universe` then the methods
 described above (especially manipulating the segments) might be
 useful. However, if the atoms reside in different universes, the :func:`Merge`
 function can be used.
+
+Merging
+~~~~~~~
 
 In the following example for :func:`Merge`, protein, ligand, and solvent were
 externally prepared in three different PDB files. They are loaded into separate
@@ -162,6 +165,42 @@ combine all of them together::
 
 The complete system is then written out to a new PDB file.
 
+Replicating
+~~~~~~~~~~~
+
+It is also possible to replicate a molecule to build a system with
+multiple copies of the same molecule. In the example, we replicate an
+AdK molecule and then translate and rotate the second copy::
+
+    import MDAnalysis; from MDAnalysis.tests.datafiles import *
+    u = MDAnalysis.Universe(PSF, DCD)
+    p = u.selectAtoms("protein")
+    m = MDAnalysis.Merge(p,p)
+
+    # now renumber resids and segids for each copy
+
+    # first copy of the protein (need to use atom indices because currently that's the only reliable property in the merged universe)
+    p1 = m.selectAtoms("bynum 1:3341")
+    # second copy
+    p2 = m.selectAtoms("bynum 3342:6682")
+
+    p1.set_segid("A")
+    p2.set_segid("B")
+    p2.residues.set_resid(p2.residues.resids() + p1.residues.resids()[-1])  # increment resids for p2 with the last resid from p1
+
+    # you must regenerate the selections after modifying them (see notes in the docs!)
+    # because the changed resids are not reflected in the selection (due to how residues are referenced internally)
+    p1 = m.selectAtoms("segid A")       # or as before:  m.selectAtoms("bynum 1:3341")
+    p2 = m.selectAtoms("segid B")
+
+    # rotate and translate
+    p2.rotateby(180, [0,0,1])
+    p2.translate([50,0,0])
+
+Note that we have to manually set the residue numbers (resids) and
+segment identifies because :func:`Merge` simply concatenates the
+existing atoms and only ensures that all data structures are contained
+in the new merged universe.
 
 
 Classes and functions
