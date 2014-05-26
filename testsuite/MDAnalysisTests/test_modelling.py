@@ -19,7 +19,7 @@ import MDAnalysis
 from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
                                       TRZ, TRZ_psf, \
                                       capping_input, capping_output, capping_ace, capping_nma, \
-                                            merge_protein,    merge_ligand,   merge_water                           
+                                            merge_protein,    merge_ligand,   merge_water
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup
 from MDAnalysis import NoDataError
@@ -50,7 +50,7 @@ except ImportError:
         """
         if not val :
             raise AssertionError(msg)
-          
+
 from MDAnalysis import Universe, Merge
 from MDAnalysis.analysis.align import alignto
 
@@ -58,24 +58,24 @@ def capping(ref, ace, nma, output):
 
     resids = ref.selectAtoms("all").resids()
     resid_min, resid_max = min(resids), max(resids)
-    
+
     # There is probably some cache i need to update both the atom and residues
     for a in ace.atoms: a.resid += resid_min - max(ace.atoms.resids())
     for r in ace.residues: r.id += resid_min - max(ace.atoms.resids())
     for a in nma.atoms: a.resid = resid_max
     for r in nma.residues: r.id = resid_max
-    
+
     # TODO pick the first residue in the protein (how should we cap the chains?)
     # TODO consider a case when the protein resid is 1 and all peptide has to be shifted by +1, put that in docs as a post-processing step
     alignto(ace, ref, select={"mobile": "resid {} and backbone".format(resid_min), "reference": "resid {} and backbone".format(resid_min)})
     alignto(nma, ref, select={"mobile": "resid {} and backbone and not (resname NMA or resname NME)".format(resid_max), "reference": "resid {} and (backbone or name OT2)".format(resid_max)})
-    
-    #  TODO remove the Hydrogen closest to ACE's oxygen 
+
+    #  TODO remove the Hydrogen closest to ACE's oxygen
     u = Merge(ace.selectAtoms("resname ACE"), ref.selectAtoms("not (resid {} and name HT*) and not (resid {} and (name HT* or name OT1))".format(resid_min, resid_max)), nma.selectAtoms("resname NME or resname NMA"))
     numpy.put(u.trajectory.ts._unitcell, [0,2,5,1,3,4], ref.trajectory.ts.dimensions)
-    u.atoms.write(output)        
+    u.atoms.write(output)
     return u
-          
+
 class TestCapping(TestCase):
     ext = "pdb"
     def setUp(self):
@@ -94,19 +94,19 @@ class TestCapping(TestCase):
         ref = MDAnalysis.Universe(capping_output)
         ace = MDAnalysis.Universe(capping_ace)
         nma = MDAnalysis.Universe(capping_nma)
-        
+
         u = capping(peptide, ace, nma, self.outfile)
         assert_equal( len(u.selectAtoms("not name H*")),  len(ref.selectAtoms("not name H*")))
-        
+
         u = MDAnalysis.Universe(self.outfile)
-        
+
         ace = u.selectAtoms("resname ACE")
-        nma = u.selectAtoms("resname NMA") 
-        
+        nma = u.selectAtoms("resname NMA")
+
         # Check if the resids were assigned correctly
         assert_equal(ace.resids()[0], 1)
         assert_equal(nma.resids()[0], 15)
-        
+
         assert_array_equal(peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions)
 
     def test_capping_inmemory(self):
@@ -114,17 +114,17 @@ class TestCapping(TestCase):
         ref = MDAnalysis.Universe(capping_output)
         ace = MDAnalysis.Universe(capping_ace)
         nma = MDAnalysis.Universe(capping_nma)
-        
+
         u = capping(peptide, ace, nma, self.outfile)
-        assert_equal( len(u.selectAtoms("not name H*")),  len(ref.selectAtoms("not name H*")))    
-        
+        assert_equal( len(u.selectAtoms("not name H*")),  len(ref.selectAtoms("not name H*")))
+
         ace = u.selectAtoms("resname ACE")
-        nma = u.selectAtoms("resname NMA") 
-        
+        nma = u.selectAtoms("resname NMA")
+
         # Check if the resids were assigned correctly
         assert_equal(ace.resids()[0], 1)
         assert_equal(nma.resids()[0], 15)
-        
+
         assert_array_equal(peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions)
 
 
@@ -177,3 +177,15 @@ class TestMerge(TestCase):
         u = MDAnalysis.Universe(self.outfile)
         ids_new2 = [a.number for a in u.atoms]
         assert_equal(ids_new, ids_new2)
+
+    def test_residue_references(self):
+        u1,u2,u3 = self.universes
+        m = Merge(u1.atoms, u2.atoms)
+        assert_equal(m.atoms.residues[0].universe, m,
+                     "wrong universe reference for residues after Merge()")
+
+    def test_segment_references(self):
+        u1,u2,u3 = self.universes
+        m = Merge(u1.atoms, u2.atoms)
+        assert_equal(m.atoms.segments[0].universe, m,
+                     "wrong universe reference for segments after Merge()")

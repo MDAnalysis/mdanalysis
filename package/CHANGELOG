@@ -35,6 +35,10 @@ The rules for this file:
     pickling and a cryptic "TypeError: AtomGroup is not callable" was
     raised (see also Issue 173 for detailed explanation)
 
+  Fixes
+
+  * fixed creation of residues and segments in Merge() 
+
 
 04/01/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
           manuel.nuno.melo, danny.parton, sebastien.buchoux, denniej0,

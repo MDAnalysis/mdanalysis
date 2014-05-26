@@ -249,7 +249,7 @@ Classes and functions
       Alternate location indicator (as used in `ATOM_` records in PDB
       files)
 
-      .. versionadded:: 0.8.1
+      .. versionadded:: 0.8.2
 
    .. attribute:: bonds
 
@@ -3192,6 +3192,8 @@ def Merge(*args):
        Raises exceptions instead of assertion errors.
 
     """
+    import MDAnalysis.topology.core
+
     if len(args) == 0:
         raise ValueError("Need at least one AtomGroup for merging")
 
@@ -3220,4 +3222,8 @@ def Merge(*args):
         a.number = i
         a.serial = i+1
     u.atoms = AtomGroup(atoms)
+    # adjust the residue and segment numbering (removes any remaining references to the old universe)
+    MDAnalysis.topology.core.build_residues(u.atoms)
+    MDAnalysis.topology.core.build_segments(u.atoms)
+
     return u
