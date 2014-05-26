@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.align &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>MDAnalysis.analysis.align &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -478,9 +478,7 @@
 <span class="sd">       Added *kwargs* to be passed to the trajectory :class:`~MDAnalysis.coordinates.base.Writer` and</span>
 <span class="sd">       *filename* is returned.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">frames</span> <span class="o">=</span> <span class="n">traj</span><span class="o">.</span><span class="n">trajectory</span>
-
     <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
         <span class="c"># should be part of a try ... finally to guarantee restoring the log level</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">)</span>
@@ -499,7 +497,6 @@
     <span class="k">del</span> <span class="n">_Writer</span>
 
     <span class="n">select</span> <span class="o">=</span> <span class="n">_process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
-
     <span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s">&#39;reference&#39;</span><span class="p">])</span>
     <span class="n">traj_atoms</span> <span class="o">=</span> <span class="n">traj</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s">&#39;mobile&#39;</span><span class="p">])</span>
     <span class="n">natoms</span> <span class="o">=</span> <span class="n">traj_atoms</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span>
@@ -782,9 +779,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag2</span><span class="p">):</span>
-        <span class="c"># Test 1 failed</span>
+        <span class="n">data1</span><span class="p">,</span> <span class="n">data2</span> <span class="o">=</span> <span class="n">ag1</span><span class="o">.</span><span class="n">resids</span><span class="p">()</span> <span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">resids</span><span class="p">()</span>
         <span class="n">errmsg</span> <span class="o">=</span> <span class="s">&quot;Reference and trajectory atom selections do not contain &quot;</span>\
-            <span class="s">&quot;the same number of atoms: N_ref={0}, N_traj={1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag2</span><span class="p">))</span>
+            <span class="s">&quot;the same number of atoms: N_ref={0}, N_traj={1}</span><span class="se">\n</span><span class="s">Resids_ref ={2}</span><span class="se">\n</span><span class="s">Resids_traj={3}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag2</span><span class="p">),</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">resids</span><span class="p">())),</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ag2</span><span class="o">.</span><span class="n">resids</span><span class="p">())))</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
     <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">masses</span><span class="p">()</span> <span class="o">-</span> <span class="n">ag2</span><span class="o">.</span><span class="n">masses</span><span class="p">())</span> <span class="o">&gt;</span> <span class="n">tol_mass</span><span class="p">)</span>
@@ -817,20 +814,20 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

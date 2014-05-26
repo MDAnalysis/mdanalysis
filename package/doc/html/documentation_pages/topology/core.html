@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.2. Common functions for topology building — MDAnalysis.topology.core &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>4.2. Common functions for topology building — MDAnalysis.topology.core &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.3. MDAnalysis topology tables" href="tables.html" />
     <link rel="prev" title="4.1. Topology readers — MDAnalysis.topology" href="init.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="init.html" title="4.1. Topology readers — MDAnalysis.topology"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -268,10 +268,31 @@ type (ie can combine two angle containing TopologyGroups).</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyGroup.angles">
-<tt class="descname">angles</tt><big>(</big><em>result=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.angles" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">angles</tt><big>(</big><em>result=None</em>, <em>pbc=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the angle in radians formed between a bond
 between atoms 1 and 2 and a bond between atoms 2 &amp; 3</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>result</em></dt>
+<dd><p class="first last">allows a predefined results array to be used, note that this will be overwritten</p>
+</dd>
+<dt><em>pbc</em></dt>
+<dd><p class="first last">apply periodic boundary conditions when calculating angles [False]
+this is important when connecting vectors between atoms might require 
+minimum image convention</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <p>Uses cython implementation</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8.2: </span>Added pbc option (default False)</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -286,6 +307,9 @@ between atoms 1 and 2 and a bond between atoms 2 &amp; 3</p>
 <dt><em>pbc</em></dt>
 <dd><p class="first last">apply periodic boundary conditions when calculating distance [False]</p>
 </dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">allows a predefined results array to be used, note that this will be overwritten</p>
+</dd>
 </dl>
 </td>
 </tr>
@@ -296,12 +320,33 @@ between atoms 1 and 2 and a bond between atoms 2 &amp; 3</p>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyGroup.torsions">
-<tt class="descname">torsions</tt><big>(</big><em>result=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.torsions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.torsions" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">torsions</tt><big>(</big><em>result=None</em>, <em>pbc=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.torsions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.torsions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the torsional angle in radians for this topology
 group.</p>
 <p>Defined as the angle between a plane formed by atoms 1, 2 and
 3 and a plane formed by atoms 2, 3 and 4.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>result</em></dt>
+<dd><p class="first last">allows a predefined results array to be used, note that this will be overwritten</p>
+</dd>
+<dt><em>pbc</em></dt>
+<dd><p class="first last">apply periodic boundary conditions when calculating angles [False]
+this is important when connecting vectors between atoms might require 
+minimum image convention</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <p>Uses cython implementation.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8.2: </span>Added pbc option (default False)           </p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -321,9 +366,9 @@ group.</p>
 <tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">build_bondlists</tt><big>(</big><em>atoms</em>, <em>bonds=None</em>, <em>angles=None</em>, <em>torsions=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#build_bondlists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.build_bondlists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct the topology lists of each <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a>.</p>
 <p>The lists are stored in the attributes
-<tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.bonds</span></tt>
-<tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.angles</span></tt>
-<tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.torsions</span></tt>
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.bonds" title="MDAnalysis.core.AtomGroup.Atom.bonds"><tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.bonds</span></tt></a>
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.angles" title="MDAnalysis.core.AtomGroup.Atom.angles"><tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.angles</span></tt></a>
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.torsions" title="MDAnalysis.core.AtomGroup.Atom.torsions"><tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.torsions</span></tt></a>
 and consist of a list of
 <a class="reference internal" href="#MDAnalysis.topology.core.Bond" title="MDAnalysis.topology.core.Bond"><tt class="xref py py-class docutils literal"><span class="pre">Bond</span></tt></a> <a class="reference internal" href="#MDAnalysis.topology.core.Angle" title="MDAnalysis.topology.core.Angle"><tt class="xref py py-class docutils literal"><span class="pre">Angle</span></tt></a> and <a class="reference internal" href="#MDAnalysis.topology.core.Torsion" title="MDAnalysis.topology.core.Torsion"><tt class="xref py py-class docutils literal"><span class="pre">Torsion</span></tt></a> instances respectively</p>
 <div class="versionchanged">
@@ -442,7 +487,7 @@ guessed by <a class="reference internal" href="#MDAnalysis.topology.core.guess_a
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_bonds">
-<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_bonds</tt><big>(</big><em>atoms</em>, <em>coords</em>, <em>fudge_factor=0.72</em>, <em>vdwradii=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_bonds" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_bonds</tt><big>(</big><em>atoms</em>, <em>coords</em>, <em>fudge_factor=0.72</em>, <em>vdwradii=None</em>, <em>lower_bound=0.1</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_bonds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess if bonds exist between two atoms based on their distance.</p>
 <p>Bond between two atoms is created, if the two atoms are within</p>
 <div class="math">
@@ -454,6 +499,10 @@ the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/vmd-
 <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.topology.tables.vdwradii</span></tt> or a user-specified
 table can be provided as a dictionary in the keyword argument
 <em>vdwradii</em>. Atoms are found by their <tt class="xref py py-attr docutils literal"><span class="pre">Atom.type</span></tt>.</p>
+<p><em>lower_bound</em> defines a heuristic cutoff below which a bond is too short to 
+exist. This is useful for parsing PDB with altloc records where atoms with 
+altloc A and B maybe very close together and there should be no chemical 
+bond between them.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">No check is done after the bonds are guessed to see if Lewis
@@ -498,19 +547,19 @@ individual packages (e.g. as static methods).</p>
         <li class="right" >
           <a href="init.html" title="4.1. Topology readers — MDAnalysis.topology"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

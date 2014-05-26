@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -615,6 +615,7 @@
                     <span class="c"># directly use COLUMNS from PDB spec</span>
                     <span class="n">serial</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
                     <span class="n">name</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">altLoc</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="n">resName</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="n">chainID</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>  <span class="c"># empty chainID is a single space &#39; &#39;!</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&quot;XPDB&quot;</span><span class="p">:</span>
@@ -629,8 +630,9 @@
                     <span class="n">segID</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">67</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="n">element</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">77</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
-                    <span class="n">atom</span> <span class="o">=</span> <span class="n">Struct</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">((</span><span class="s">&quot;serial&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;resName&quot;</span><span class="p">,</span> <span class="s">&quot;chainID&quot;</span><span class="p">,</span> <span class="s">&quot;resSeq&quot;</span><span class="p">,</span> <span class="s">&quot;occupancy&quot;</span><span class="p">,</span> <span class="s">&quot;tempFactor&quot;</span><span class="p">,</span> <span class="s">&quot;segID&quot;</span><span class="p">,</span> <span class="s">&quot;element&quot;</span><span class="p">),</span>\
-                                                 <span class="p">(</span><span class="n">serial</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="n">resSeq</span><span class="p">,</span> <span class="n">occupancy</span><span class="p">,</span> <span class="n">tempFactor</span><span class="p">,</span> <span class="n">segID</span><span class="p">,</span> <span class="n">element</span><span class="p">))))</span>
+
+                    <span class="n">atom</span> <span class="o">=</span> <span class="n">Struct</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">((</span><span class="s">&quot;serial&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;altLoc&quot;</span><span class="p">,</span> <span class="s">&quot;resName&quot;</span><span class="p">,</span> <span class="s">&quot;chainID&quot;</span><span class="p">,</span> <span class="s">&quot;resSeq&quot;</span><span class="p">,</span> <span class="s">&quot;occupancy&quot;</span><span class="p">,</span> <span class="s">&quot;tempFactor&quot;</span><span class="p">,</span> <span class="s">&quot;segID&quot;</span><span class="p">,</span> <span class="s">&quot;element&quot;</span><span class="p">),</span>\
+                                             <span class="p">(</span><span class="n">serial</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">altLoc</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="n">resSeq</span><span class="p">,</span> <span class="n">occupancy</span><span class="p">,</span> <span class="n">tempFactor</span><span class="p">,</span> <span class="n">segID</span><span class="p">,</span> <span class="n">element</span><span class="p">))))</span>
                     <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">header</span>
@@ -829,7 +831,7 @@
     <span class="c"># Strict PDB format:</span>
     <span class="c">#fmt = {&#39;ATOM&#39;:   &quot;ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n&quot;,</span>
     <span class="c"># PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc ignored</span>
-    <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;ATOM&#39;</span><span class="p">:</span>   <span class="s">&quot;ATOM  </span><span class="si">%(serial)5d</span><span class="s"> </span><span class="si">%(name)-4s</span><span class="s"> </span><span class="si">%(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s</span><span class="s">   </span><span class="si">%(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f</span><span class="s">      </span><span class="si">%(segID)-4s%(element)2s%(charge)2d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+    <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;ATOM&#39;</span><span class="p">:</span>   <span class="s">&quot;ATOM  </span><span class="si">%(serial)5d</span><span class="s"> </span><span class="si">%(name)-4s%(altLoc)-1s%(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s</span><span class="s">   </span><span class="si">%(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f</span><span class="s">      </span><span class="si">%(segID)-4s%(element)2s%(charge)2d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
            <span class="s">&#39;REMARK&#39;</span><span class="p">:</span> <span class="s">&quot;REMARK     </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
            <span class="s">&#39;COMPND&#39;</span><span class="p">:</span> <span class="s">&quot;COMPND    </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
            <span class="s">&#39;HEADER&#39;</span><span class="p">:</span> <span class="s">&quot;HEADER    </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
@@ -1232,7 +1234,7 @@
                 <span class="n">atom</span><span class="o">.</span><span class="n">bfactor</span> <span class="o">=</span> <span class="mf">0.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ATOM</span><span class="p">(</span><span class="n">serial</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">resName</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">resname</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
                       <span class="n">resSeq</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">chainID</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">segid</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">segID</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">segid</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
-                      <span class="n">tempFactor</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bfactor</span><span class="p">,</span>
+                      <span class="n">tempFactor</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bfactor</span><span class="p">,</span> <span class="n">altLoc</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">altLoc</span><span class="p">,</span>
                       <span class="n">x</span><span class="o">=</span><span class="n">coor</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">coor</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="o">=</span><span class="n">coor</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
             <span class="c"># get bfactor, too, and add to output?</span>
             <span class="c"># &#39;element&#39; is auto-guessed from atom.name in ATOM()</span>
@@ -1457,20 +1459,20 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.1.4. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>3.1.4. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.1.5. Calculating root mean square quantities — MDAnalysis.analysis.rms" href="rms.html" />
     <link rel="prev" title="3.1.3. Distance analysis — MDAnalysis.analysis.distances" href="distances.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="distances.html" title="3.1.3. Distance analysis — MDAnalysis.analysis.distances"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -147,7 +147,7 @@ that is bonded to the heavy atom donor,</li>
 <p>Hydrogen bond data are returned per frame, which is stored in
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a> (In the following description, <tt class="docutils literal"><span class="pre">#</span></tt>
 indicates comments that are not part of the output.):</p>
-<div class="highlight-python"><pre>results = [
+<div class="highlight-python"><div class="highlight"><pre>results = [
     [ # frame 1
        [ # hbond 1
           &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
@@ -161,7 +161,8 @@ indicates comments that are not part of the output.):</p>
       [ ... ], [ ... ], ...
     ],
     ...
-]</pre>
+]
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -573,7 +574,7 @@ of a hydrogen bond existence, or see <a class="reference internal" href="#MDAnal
 <dd><p>Results of the hydrogen bond analysis, stored for each frame. In
 the following description, # indicates comments that are not
 part of the output:</p>
-<div class="highlight-python"><pre>results = [
+<div class="highlight-python"><div class="highlight"><pre>results = [
     [ # frame 1
        [ # hbond 1
           &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
@@ -587,7 +588,8 @@ part of the output:</p>
       [ ... ], [ ... ], ...
     ],
     ...
-]</pre>
+]
+</pre></div>
 </div>
 <p>The time of each step is not stored with each hydrogen bond frame but in
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timesteps" title="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.timesteps"><tt class="xref py py-attr docutils literal"><span class="pre">timesteps</span></tt></a>.</p>
@@ -798,7 +800,7 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.r_cov">
-<tt class="descname">r_cov</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x4e436e0&gt;, {'P': 1.58, 'S': 1.55, 'O': 1.31, 'N': 1.31})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">r_cov</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x104966c08&gt;, {'P': 1.58, 'S': 1.55, 'O': 1.31, 'N': 1.31})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <a class="reference external" href="http://docs.python.org/library/collections.html#collections.defaultdict" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">collections.defaultdict</span></tt></a> of covalent radii of common donors
 (used in :meth`_get_bonded_hydrogens_list` to check if a hydrogen is
 sufficiently close to its donor heavy atom). Values are stored for
@@ -885,19 +887,19 @@ of timesteps at which the hydrogen bond was detected.</p>
         <li class="right" >
           <a href="distances.html" title="3.1.3. Distance analysis — MDAnalysis.analysis.distances"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

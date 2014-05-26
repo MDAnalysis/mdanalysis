@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.8. Constants and unit conversion — MDAnalysis.core.units &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>7.8. Constants and unit conversion — MDAnalysis.core.units &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.9. Helper functions — MDAnalysis.core.util" href="util.html" />
     <link rel="prev" title="7.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot" href="qcprot.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="qcprot.html" title="7.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -110,13 +110,15 @@ sec). For <em>force</em> we adopted kJ/(mol*Angstrom).</p>
 (whose numeric value relative to the base unit b is stored in the
 program) is a quantity with unit <cite>b&#8217;/b</cite>. In the dictionaries below only
 the numeric value <cite>f(b-&gt;b&#8217;)</cite> is stored:</p>
-<div class="highlight-python"><pre>X/b' = f(b-&gt;b') * X/b</pre>
+<div class="highlight-python"><div class="highlight"><pre>X/b&#39; = f(b-&gt;b&#39;) * X/b
+</pre></div>
 </div>
 <p><a class="reference internal" href="#MDAnalysis.core.units.get_conversion_factor" title="MDAnalysis.core.units.get_conversion_factor"><tt class="xref py py-func docutils literal"><span class="pre">get_conversion_factor()</span></tt></a> returns the appropriate factor f(b-&gt;b&#8217;).</p>
 <p>Conversion is done via the base units:</p>
-<div class="highlight-python"><pre>x is in u1: from u1 to b:  x'  = x  / factor[u1]
-            from b  to u2: x'' = x' * factor[u2]
-so f[u1,u2] = factor[u2]/factor[u1]</pre>
+<div class="highlight-python"><div class="highlight"><pre>x is in u1: from u1 to b:  x&#39;  = x  / factor[u1]
+            from b  to u2: x&#39;&#39; = x&#39; * factor[u2]
+so f[u1,u2] = factor[u2]/factor[u1]
+</pre></div>
 </div>
 <div class="section" id="conversions">
 <h2>7.8.1. Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h2>
@@ -125,15 +127,18 @@ so f[u1,u2] = factor[u2]/factor[u1]</pre>
 </pre></div>
 </div>
 <p>nm:</p>
-<div class="highlight-python"><pre>f = 1 A^-3/1 nm^-3 = 1/(10A)^-3 = 1/1000</pre>
+<div class="highlight-python"><div class="highlight"><pre>f = 1 A^-3/1 nm^-3 = 1/(10A)^-3 = 1/1000
+</pre></div>
 </div>
 <p>Molar:</p>
-<div class="highlight-python"><pre>factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)</pre>
+<div class="highlight-python"><div class="highlight"><pre>factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)
+</pre></div>
 </div>
 <p>relative to a density rho0 in g/cm^3:</p>
-<div class="highlight-python"><pre>M(H2O) = 18 g/mol   Molar mass of water
+<div class="highlight-python"><div class="highlight"><pre>M(H2O) = 18 g/mol   Molar mass of water
 
-factor = 1/(1e-24 * N_Avogadro / M(H2O))</pre>
+factor = 1/(1e-24 * N_Avogadro / M(H2O))
+</pre></div>
 </div>
 <p>from <cite>rho/rho0 = n/(N_A * M**-1) / rho0</cite>  where <cite>[n] = 1/Volume</cite>, <cite>[rho] = mass/Volume</cite></p>
 <div class="admonition seealso">
@@ -299,19 +304,19 @@ unit type.</p>
         <li class="right" >
           <a href="qcprot.html" title="7.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

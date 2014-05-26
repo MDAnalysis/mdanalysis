@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.TRZ &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>MDAnalysis.coordinates.TRZ &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -310,10 +310,10 @@
 
     <span class="k">def</span> <span class="nf">_read_trz_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reads the header of the trz trajectory&quot;&quot;&quot;</span>
-        <span class="n">headerdtype</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s">&#39;p1&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">,</span><span class="s">&#39;80c&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;p2&#39;</span><span class="p">,</span><span class="s">&#39;4i4&#39;</span><span class="p">)])</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">headerdtype</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_headerdtype</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s">&#39;p1&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">),</span>
+                                         <span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">,</span><span class="s">&#39;80c&#39;</span><span class="p">),</span>
+                                         <span class="p">(</span><span class="s">&#39;p2&#39;</span><span class="p">,</span><span class="s">&#39;4i4&#39;</span><span class="p">)])</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_headerdtype</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span> <span class="c"># self.next() is from base Reader class and calls this</span>
@@ -385,15 +385,19 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span>
 </div>
     <span class="k">def</span> <span class="nf">_read_trz_numframes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trzfile</span><span class="p">):</span>
-        <span class="n">framecounter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
-                <span class="n">framecounter</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
-                <span class="k">return</span> <span class="n">framecounter</span>
+        <span class="sd">&quot;&quot;&quot;Uses size of file and dtype information to determine how many frames exist</span>
+
+<span class="sd">        .. versionchanged:: 0.8.2 </span>
+<span class="sd">           Now is based on filesize rather than reading entire file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fsize</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fstat</span><span class="p">(</span><span class="n">trzfile</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span><span class="o">.</span><span class="n">st_size</span> <span class="c"># size of file in bytes</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">fsize</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headerdtype</span><span class="o">.</span><span class="n">itemsize</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="o">.</span><span class="n">itemsize</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Trajectory has incomplete frames&quot;</span><span class="p">)</span> <span class="c"># check that division is sane</span>
+
+        <span class="n">nframes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">fsize</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headerdtype</span><span class="o">.</span><span class="n">itemsize</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="o">.</span><span class="n">itemsize</span><span class="p">)</span> <span class="c"># returns long int otherwise</span>
+
+        <span class="k">return</span> <span class="n">nframes</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="TRZReader.dt"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.dt">[docs]</a>    <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -453,14 +457,42 @@
     <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Move to *frame* and fill timestep with data.&quot;&quot;&quot;</span>
         <span class="n">move</span> <span class="o">=</span> <span class="n">frame</span>  <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="c"># difference from current frame to desired frame</span>
-        <span class="k">if</span> <span class="n">move</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="c"># if a backward frame is wanted</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span> <span class="c">#reopen and start from beginning</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">move</span><span class="p">):</span> <span class="c"># else skip ahead the required number</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">move</span> <span class="ow">is</span> <span class="ow">not</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_seek</span><span class="p">(</span><span class="n">move</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
+
+    <span class="k">def</span> <span class="nf">_seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nframes</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">maxint</span>
+        <span class="sd">&quot;&quot;&quot;Move *nframes* in the trajectory</span>
+
+<span class="sd">        Note that this doens&#39;t read the trajectory (ts remains unchanged)</span>
+
+<span class="sd">        .. versionadded:: 0.8.2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">nframes</span><span class="p">))</span> <span class="o">!=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;TRZfile seek requires an integer number of frames got </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span><span class="nb">type</span><span class="p">(</span><span class="n">nframes</span><span class="p">))</span>
+
+        <span class="n">maxi_l</span> <span class="o">=</span> <span class="nb">long</span><span class="p">(</span><span class="n">maxint</span><span class="p">)</span>
+
+        <span class="n">framesize</span> <span class="o">=</span> <span class="nb">long</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="o">.</span><span class="n">itemsize</span><span class="p">)</span>
+        <span class="n">seeksize</span> <span class="o">=</span> <span class="n">framesize</span> <span class="o">*</span> <span class="n">nframes</span>
+
+        <span class="k">if</span> <span class="n">seeksize</span> <span class="o">&gt;</span> <span class="n">maxi_l</span><span class="p">:</span>
+            <span class="c"># Workaround for seek not liking long ints</span>
+            <span class="n">framesize</span> <span class="o">=</span> <span class="nb">long</span><span class="p">(</span><span class="n">framesize</span><span class="p">)</span>
+            <span class="n">seeksize</span> <span class="o">=</span> <span class="n">framesize</span> <span class="o">*</span> <span class="n">nframes</span>
+
+            <span class="n">nreps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">seeksize</span> <span class="o">/</span> <span class="n">maxi_l</span><span class="p">)</span> <span class="c"># number of max seeks we&#39;ll have to do</span>
+            <span class="n">rem</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">seeksize</span> <span class="o">%</span> <span class="n">maxi_l</span><span class="p">)</span> <span class="c"># amount leftover to do once max seeks done</span>
+
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nreps</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">maxint</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">rem</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">seeksize</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">seeksize</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">seeksize</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>            
 
 <div class="viewcode-block" id="TRZReader.rewind"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reposition reader onto first frame&quot;&quot;&quot;</span>
@@ -659,20 +691,20 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

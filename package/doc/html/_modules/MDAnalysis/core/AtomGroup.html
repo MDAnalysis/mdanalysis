@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -207,10 +207,35 @@
 <span class="sd">One can then use ``protein.select(&quot;resnum 42&quot;)`` to select the residue that has</span>
 <span class="sd">the canonical residue id 42 (instead of ``resid 33``).</span>
 
-<span class="sd">One can also read the resids directly from  an original PDB file:</span>
+<span class="sd">One can also read the resids directly from  an original PDB file::</span>
 
 <span class="sd">  orig = MDAnalysis.Universe(&quot;2jln.pdb&quot;)</span>
 <span class="sd">  protein.set_resnum(orig.selectAtoms(&quot;protein&quot;).resids())</span>
+
+
+<span class="sd">Combining objects and system building</span>
+<span class="sd">-------------------------------------</span>
+
+<span class="sd">It is often convenient to combined multiple groups of atoms into a single</span>
+<span class="sd">object. If they are contained in a single :class:`Universe` then the methods</span>
+<span class="sd">described above (especially manipulating the segments) might be</span>
+<span class="sd">useful. However, if the atoms reside in different universes, the :func:`Merge`</span>
+<span class="sd">function can be used.</span>
+
+<span class="sd">In the following example for :func:`Merge`, protein, ligand, and solvent were</span>
+<span class="sd">externally prepared in three different PDB files. They are loaded into separate</span>
+<span class="sd">:class:`Universe` objects (where they could be further manipulated,</span>
+<span class="sd">e.g. renumbered, relabeled, rotated, ...) The :func:`Merge` command is used to</span>
+<span class="sd">combine all of them together::</span>
+
+<span class="sd">    import MDAnalysis</span>
+<span class="sd">    u1 = MDAnalysis.Universe(&quot;protein.pdb&quot;)</span>
+<span class="sd">    u2 = MDAnalysis.Universe(&quot;ligand.pdb&quot;)</span>
+<span class="sd">    u3 = MDAnalysis.Universe(&quot;solvent.pdb&quot;)</span>
+<span class="sd">    u = MDAnalysis.Merge(u1.selectAtoms(&quot;protein&quot;), u2.atoms, u3.atoms)</span>
+<span class="sd">    u.atoms.write(&quot;system.pdb&quot;)</span>
+
+<span class="sd">The complete system is then written out to a new PDB file.</span>
 
 
 
@@ -219,6 +244,7 @@
 
 <span class="sd">.. autoclass:: Universe</span>
 <span class="sd">   :members:</span>
+<span class="sd">.. autofunction:: Merge</span>
 <span class="sd">.. autoclass:: AtomGroup</span>
 <span class="sd">   :members:</span>
 
@@ -293,6 +319,35 @@
 <span class="sd">      PQR file with the</span>
 <span class="sd">      :class:`~MDAnalysis.coordinates.PQR.PQRReader`.)</span>
 
+<span class="sd">   .. attribute::        altLoc</span>
+
+<span class="sd">      Alternate location indicator (as used in `ATOM_` records in PDB</span>
+<span class="sd">      files)</span>
+
+<span class="sd">      .. versionadded:: 0.8.1</span>
+
+<span class="sd">   .. attribute:: bonds</span>
+
+<span class="sd">      List of :class:`~MDAnalysis.topogology.core.Bond` instances that</span>
+<span class="sd">      contains all the bonds that this atom participates in.</span>
+
+<span class="sd">      .. versionadded:: 0.8.1</span>
+
+<span class="sd">   .. attribute:: angles</span>
+
+<span class="sd">      List of :class:`~MDAnalysis.topogology.core.Angle` instances</span>
+<span class="sd">      that contains all the angles that this atom participates in.</span>
+
+<span class="sd">      .. versionadded:: 0.8.1</span>
+
+<span class="sd">   .. attribute:: torsions</span>
+
+<span class="sd">      List of :class:`~MDAnalysis.topogology.core.Torsion` instances</span>
+<span class="sd">      that contains all the dihedral torsions that this atom</span>
+<span class="sd">      participates in.</span>
+
+<span class="sd">      .. versionadded:: 0.8.1</span>
+
 <span class="sd">.. autoclass:: Residue</span>
 <span class="sd">   :members:</span>
 <span class="sd">.. autoclass:: ResidueGroup</span>
@@ -304,11 +359,15 @@
 
 <span class="sd">.. autofunction:: asUniverse</span>
 <span class="sd">.. autoexception:: SelectionError</span>
+<span class="sd">   :no-members:</span>
 <span class="sd">.. autoexception:: SelectionWarning</span>
+<span class="sd">   :no-members:</span>
 <span class="sd">.. autoexception:: NoDataError</span>
+<span class="sd">   :no-members:</span>
 
 <span class="sd">.. _atomic mass units: http://physics.nist.gov/cgi-bin/cuu/Value?u</span>
 <span class="sd">.. _electron charges: http://physics.nist.gov/cgi-bin/cuu/Value?e</span>
+<span class="sd">.. _ATOM: http://www.wwpdb.org/documentation/format23/sect9.html#ATOM</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -343,13 +402,14 @@
     <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;number&quot;</span><span class="p">,</span> <span class="s">&quot;id&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">,</span> <span class="s">&quot;resname&quot;</span><span class="p">,</span> <span class="s">&quot;resid&quot;</span><span class="p">,</span> <span class="s">&quot;segid&quot;</span><span class="p">,</span>
                  <span class="s">&quot;mass&quot;</span><span class="p">,</span> <span class="s">&quot;charge&quot;</span><span class="p">,</span> <span class="s">&quot;residue&quot;</span><span class="p">,</span> <span class="s">&quot;segment&quot;</span><span class="p">,</span> <span class="s">&quot;bonds&quot;</span><span class="p">,</span> <span class="s">&quot;angles&quot;</span><span class="p">,</span> <span class="s">&quot;torsions&quot;</span><span class="p">,</span>
                  <span class="s">&quot;__universe&quot;</span><span class="p">,</span>
-                 <span class="s">&quot;radius&quot;</span><span class="p">,</span> <span class="s">&quot;bfactor&quot;</span><span class="p">,</span> <span class="s">&quot;resnum&quot;</span><span class="p">,</span> <span class="s">&quot;serial&quot;</span><span class="p">)</span>
+                 <span class="s">&quot;radius&quot;</span><span class="p">,</span> <span class="s">&quot;bfactor&quot;</span><span class="p">,</span> <span class="s">&quot;resnum&quot;</span><span class="p">,</span> <span class="s">&quot;serial&quot;</span><span class="p">,</span> <span class="s">&quot;altLoc&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span> <span class="n">segid</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span>
                  <span class="n">residue</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bfactor</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">resnum</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">serial</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">resnum</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">serial</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">altLoc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">altLoc</span> <span class="o">=</span> <span class="n">altLoc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>   <span class="c"># always a string (needed for selections)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resname</span> <span class="o">=</span> <span class="n">resname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resid</span> <span class="o">=</span> <span class="n">resid</span>
@@ -368,7 +428,7 @@
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;&lt; Atom &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;: name &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span><span class="s">&quot; of type &quot;</span> <span class="o">+</span> \
-               <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; of resname &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resname</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, resid &quot;</span> <span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resid</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; and segid &quot;</span> <span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segid</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;&gt;&#39;</span>
+               <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; of resname &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resname</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, resid &quot;</span> <span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resid</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; and segid &quot;</span> <span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segid</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="s">&quot;&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">altLoc</span> <span class="k">else</span> <span class="s">&quot; and altloc {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">altLoc</span><span class="p">)))</span> <span class="o">+</span><span class="s">&#39;&gt;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__cmp__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">cmp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
@@ -703,6 +763,12 @@
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;&lt;&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="o">+</span><span class="s">&#39; with &#39;</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">())</span><span class="o">+</span><span class="s">&#39; atoms&gt;&#39;</span>
 
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
 <div class="viewcode-block" id="AtomGroup.numberOfAtoms"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.numberOfAtoms">[docs]</a>    <span class="k">def</span> <span class="nf">numberOfAtoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Total number of atoms in the group&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">)</span>
@@ -858,18 +924,21 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">torsionDict</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.selectBonds"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectBonds">[docs]</a>    <span class="k">def</span> <span class="nf">selectBonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">criteria</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select all of a given bond, angle or torsion type from the</span>
-<span class="sd">        AtomGroup.  This method makes use of the :class:`MDAnalysis.topology.core.TopologyDict`</span>
+        <span class="sd">&quot;&quot;&quot;Select all of a given bond, angle or torsion type from the AtomGroup.</span>
+
+<span class="sd">        This method makes use of the :class:`MDAnalysis.topology.core.TopologyDict`</span>
 <span class="sd">        instances for this AtomGroup.</span>
 
 <span class="sd">        Usage::</span>
+
 <span class="sd">          ag.selectBonds(criteria)</span>
 
-<span class="sd">        *criteria* must match a key from the appropriate TopologyDict,</span>
-<span class="sd">        viewable through the :meth:`MDAnalysis.topology.core.TopologyDict.keys` method.</span>
-<span class="sd">        These keys are a tuple of the atom types in the bond.</span>
+<span class="sd">        *criteria* must match a key from the appropriate</span>
+<span class="sd">        :class:`~MDAnalysis.topology.core.TopologyDict`, viewable through the</span>
+<span class="sd">        :meth:`MDAnalysis.topology.core.TopologyDict.keys` method.  These keys</span>
+<span class="sd">        are a tuple of the atom types in the bond.</span>
 
-<span class="sd">        :Returns: a :class:`MDAnalysis.topology.core.TopologyGroup`</span>
+<span class="sd">        :Returns: a :class:`~MDAnalysis.topology.core.TopologyGroup`</span>
 
 <span class="sd">        .. versionadded:: 0.8</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1699,7 +1768,7 @@
 
 <span class="sd">        .. Note::</span>
 
-<span class="sd">           If the group contains N atoms and *force* is a single point (i.e. an</span>
+<span class="sd">           If the group contains N atoms and *force* is a single vector (i.e. an</span>
 <span class="sd">           array of length 3) then all N atom positions are set to *force* (due</span>
 <span class="sd">           to NumPy&#39;s broadcasting rules), as described for</span>
 <span class="sd">           :attr:`~AtomGroup.forces`.</span>
@@ -1740,12 +1809,12 @@
 <span class="sd">        The matrix *M* must be a 4x4 matrix, with the rotation in</span>
 <span class="sd">        `R = `M[:3,:3]`` and the translation in ``t = M[:3,3]``.</span>
 
-<span class="sd">        The rotation :math:`\mathsl{R}` is applied before the</span>
+<span class="sd">        The rotation :math:`\mathsf{R}` is applied before the</span>
 <span class="sd">        translation :math:`\mathbf{t}`:</span>
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">           \mathbf{x}&#39; = \mathsl{R}\mathbf{x} + \mathbf{t}</span>
+<span class="sd">           \mathbf{x}&#39; = \mathsf{R}\mathbf{x} + \mathbf{t}</span>
 
 <span class="sd">        .. SeeAlso: :mod:`MDAnalysis.core.transformations`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1987,10 +2056,10 @@
         <span class="kn">import</span> <span class="nn">os.path</span>
         <span class="kn">import</span> <span class="nn">MDAnalysis.coordinates</span>
 
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&quot;multiframe&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>  <span class="c"># for PDB, True makes little sense here</span>
-
         <span class="n">trj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span>    <span class="c"># unified trajectory API</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="n">trj</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+
+        <span class="k">if</span> <span class="n">trj</span><span class="o">.</span><span class="n">numframes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&quot;multiframe&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">trjname</span><span class="p">,</span><span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">trj</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
@@ -2302,8 +2371,8 @@
 <span class="sd">        .. Warning::</span>
 
 <span class="sd">           The values of *this* :class:`ResidueGroup` are not being</span>
-<span class="sd">           changed. You **must create a new :class:`ResidueGroup` from the</span>
-<span class="sd">           :class:`Universe`** --- only :class:`Atom` instances are changed,</span>
+<span class="sd">           changed. You **must create a new** :class:`ResidueGroup` **from the**</span>
+<span class="sd">           :class:`Universe` --- only :class:`Atom` instances are changed,</span>
 <span class="sd">           everything else is derived from these atoms.</span>
 
 <span class="sd">        .. versionadded:: 0.8</span>
@@ -2536,6 +2605,17 @@
 <span class="sd">        one needs to run :meth:`Universe._build_segments` manually later in</span>
 <span class="sd">        order to update the list of :class:`Segment` instances and regenerate</span>
 <span class="sd">        the segid instant selectors.</span>
+
+<span class="sd">        .. Warning::</span>
+
+<span class="sd">           The values of *this* :class:`SegmentGroup` are not being changed</span>
+<span class="sd">           (i.e. if you assign multiple segids this instance will not be broken</span>
+<span class="sd">           in multiple segments, rather you will have one :class:`SegmentGroup`</span>
+<span class="sd">           that groups multiple segments together). You **must create a new**</span>
+<span class="sd">           :class:`SegmentGroup` **from the** :class:`Universe` --- only</span>
+<span class="sd">           :class:`Atom` instances are changed, everything else is derived from</span>
+<span class="sd">           these atoms.</span>
+
 
 <span class="sd">        .. versionadded:: 0.7.4</span>
 <span class="sd">        .. versionchanged:: 0.8</span>
@@ -2986,6 +3066,11 @@
 <span class="sd">                a selector for a single atom consisting of segid resid atomname,</span>
 <span class="sd">                e.g. ``DMPC 1 C2`` selects the C2 carbon of the first residue of the DMPC</span>
 <span class="sd">                segment</span>
+<span class="sd">            altloc *alternative-location*</span>
+<span class="sd">                a selection for atoms where alternative locations are available,</span>
+<span class="sd">                which is often the case with high-resolution crystal structures</span>
+<span class="sd">                e.g. `resid 4 and resname ALA and altloc B` selects only the atoms</span>
+<span class="sd">                of ALA-4 that have an altloc B record.</span>
 
 <span class="sd">        **Boolean**</span>
 
@@ -3045,7 +3130,7 @@
 <span class="sd">                *group-name* are included. The resulting selection may therefore have atoms</span>
 <span class="sd">                that were initially absent from the instance :meth:`~selectAtoms` was</span>
 <span class="sd">                called from.</span>
-<span class="sd">                </span>
+
 
 <span class="sd">        .. versionchanged:: 0.7.4</span>
 <span class="sd">           Added *resnum* selection.</span>
@@ -3068,6 +3153,12 @@
         <span class="k">return</span> <span class="s">&#39;&lt;&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="o">+</span><span class="s">&#39; with &#39;</span><span class="o">+</span><span class="nb">repr</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span><span class="o">+</span><span class="s">&#39; atoms&#39;</span> \
                 <span class="o">+</span><span class="p">(</span><span class="s">&quot; and </span><span class="si">%d</span><span class="s"> bonds&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">)</span> \
                   <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;bonds&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">)</span> <span class="k">else</span> <span class="s">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;&gt;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="c"># Properties</span>
     <span class="nd">@property</span>
@@ -3136,26 +3227,55 @@
     <span class="k">return</span> <span class="n">Universe</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 </div>
-<span class="k">def</span> <span class="nf">Merge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a universe from 2 or more AtomGroups.</span>
-<span class="sd">    AtomGroups can come from different Universes, or come from selectAtom</span>
-<span class="sd">    command.</span>
+<div class="viewcode-block" id="Merge"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Merge">[docs]</a><span class="k">def</span> <span class="nf">Merge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a :class:`Universe` from two or more :class:`AtomGroup` instances.</span>
 
-<span class="sd">         u1 = Universe(&quot;protein.pdb&quot;)</span>
-<span class="sd">         u2 = Universe(&quot;ligand.pdb&quot;)</span>
-<span class="sd">         u3 = Universe(&quot;solvent.pdb&quot;)</span>
-<span class="sd">         u = Merge(u1.atoms, u2.atoms, u3.atoms)</span>
-<span class="sd">         u.atoms.write(&quot;system.pdb&quot;)</span>
+<span class="sd">    :class:`AtomGroup` instances can come from different Universes, or come</span>
+<span class="sd">    directly from a :meth:`~Universe.selectAtoms` call.</span>
 
-<span class="sd">    Can also be used with a single AtomGroup if the user wants to,</span>
+<span class="sd">    It can also be used with a single :class:`AtomGroup` if the user wants to,</span>
 <span class="sd">    for example, re-order the atoms in the Universe.</span>
 
-<span class="sd">    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="c"># one or more AtomGroups can be merged</span>
+<span class="sd">    :Arguments: One or more :class:`AtomGroup` instances.</span>
 
-    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span> <span class="k">assert</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span> <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">))</span> <span class="c"># cannot merge empty AtomGroup</span>
+<span class="sd">    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`</span>
+
+<span class="sd">    :Raises: :exc:`ValueError` for too few arguments or if an AtomGroup is</span>
+<span class="sd">             empty and :exc:`TypeError` if arguments are not</span>
+<span class="sd">             :class:`AtomGroup` instances.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    In this example, protein, ligand, and solvent were externally prepared in</span>
+<span class="sd">    three different PDB files. They are loaded into separate :class:`Universe`</span>
+<span class="sd">    objects (where they could be further manipulated, e.g. renumbered,</span>
+<span class="sd">    relabeled, rotated, ...) The :func:`Merge` command is used to combine all</span>
+<span class="sd">    of them together::</span>
+
+<span class="sd">       u1 = Universe(&quot;protein.pdb&quot;)</span>
+<span class="sd">       u2 = Universe(&quot;ligand.pdb&quot;)</span>
+<span class="sd">       u3 = Universe(&quot;solvent.pdb&quot;)</span>
+<span class="sd">       u = Merge(u1.selectAtoms(&quot;protein&quot;), u2.atoms, u3.atoms)</span>
+<span class="sd">       u.atoms.write(&quot;system.pdb&quot;)</span>
+
+<span class="sd">    The complete system is then written out to a new PDB file.</span>
+
+<span class="sd">    .. Note:: Merging does not create a full trajectory but only a single</span>
+<span class="sd">              structure even if the input consists of one or more trajectories.</span>
+
+<span class="sd">    .. versionchanged 0.8.2::</span>
+<span class="sd">       Raises exceptions instead of assertion errors.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Need at least one AtomGroup for merging&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="s">&quot; is not an AtomGroup&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;cannot merge empty AtomGroup&quot;</span><span class="p">)</span>
 
     <span class="n">coords</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
     <span class="n">trajectory</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">()</span>
@@ -3175,7 +3295,7 @@
         <span class="n">a</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">i</span>
         <span class="n">a</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
     <span class="n">u</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">u</span>
+    <span class="k">return</span> <span class="n">u</span></div>
 </pre></div>
 
           </div>
@@ -3192,20 +3312,20 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

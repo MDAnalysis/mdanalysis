@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.2.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>3.2.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.2.2. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" />
     <link rel="prev" title="3.1.5. Calculating root mean square quantities — MDAnalysis.analysis.rms" href="rms.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="rms.html" title="3.1.5. Calculating root mean square quantities — MDAnalysis.analysis.rms"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -205,7 +205,8 @@ iterate over the sorted profiles (see <a class="reference internal" href="#MDAna
 <div class="section" id="data-structures">
 <h2>3.2.1.2. Data structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
 <p>A profile is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.8)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>:</p>
-<div class="highlight-python"><pre>frame   rxncoord   radius</pre>
+<div class="highlight-python"><div class="highlight"><pre>frame   rxncoord   radius
+</pre></div>
 </div>
 <dl class="docutils">
 <dt>frame</dt>
@@ -498,7 +499,8 @@ with the <em>tmpdir</em> keyword (e.g. one can use &#8220;/tmp&#8221;).</p>
 <tt class="descname">collect</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLE.collect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.collect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the output from a HOLE run into numpy recarrays.</p>
 <p>Can deal with outputs containing multiple frames. Output format:</p>
-<div class="highlight-python"><pre>frame  rxncoord   radius</pre>
+<div class="highlight-python"><div class="highlight"><pre>frame  rxncoord   radius
+</pre></div>
 </div>
 <p>The method saves the result as <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE.profiles" title="MDAnalysis.analysis.hole.HOLE.profiles"><tt class="xref py py-attr docutils literal"><span class="pre">HOLE.profiles</span></tt></a>, a dictionary
 indexed by the frame number. Each entry is a
@@ -532,7 +534,8 @@ value but <tt class="docutils literal"><span class="pre">None</span></tt> [<tt c
 and <strong class="program">sos_triangle</strong> as described under <a class="reference external" href="http://d2o.bioch.ox.ac.uk:38080/doc/hole_d04.html">Visualization of HOLE
 results</a>.</p>
 <p>Load the output file <em>filename</em> into VMD by issuing in the tcl console</p>
-<div class="highlight-python"><pre>source hole.vmd</pre>
+<div class="highlight-python"><div class="highlight"><pre>source hole.vmd
+</pre></div>
 </div>
 <p>The level of detail is determined by <tt class="xref py py-attr docutils literal"><span class="pre">HOLE.dotden</span></tt> (which can be
 overriden by keyword <em>dotden</em>).</p>
@@ -883,7 +886,6 @@ The data file can be written with the convenience function <a class="reference i
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.7.</span></p>
 </div>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
 </dd></dl>
 
 </div>
@@ -910,19 +912,19 @@ The data file can be written with the convenience function <a class="reference i
         <li class="right" >
           <a href="rms.html" title="3.1.5. Calculating root mean square quantities — MDAnalysis.analysis.rms"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

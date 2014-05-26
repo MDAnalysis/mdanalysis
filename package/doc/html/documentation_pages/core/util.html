@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.10. Setting up logging — MDAnalysis.core.log" href="log.html" />
     <link rel="prev" title="7.8. Constants and unit conversion — MDAnalysis.core.units" href="units.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -377,12 +377,13 @@ otherwise the original object is passed back.</p>
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">dihedral</tt><big>(</big><em>ab</em>, <em>bc</em>, <em>cd</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.dihedral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the dihedral angle in radians between vectors connecting A,B,C,D.</p>
 <p>The dihedral measures the rotation around bc:</p>
-<div class="highlight-python"><pre>  ab
+<div class="highlight-python"><div class="highlight"><pre>  ab
 A----&gt;B
        \ bc
-       _\'
+       _\&#39;
          C----&gt;D
-           cd</pre>
+           cd
+</pre></div>
 </div>
 <p>The dihedral angle is restricted to the range -π &lt;= x &lt;= π.</p>
 <div class="versionadded">
@@ -424,19 +425,19 @@ vectors</p>
         <li class="right" >
           <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.15. XYZ trajectory reader — MDAnalysis.coordinates.XYZ &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>5.15. XYZ trajectory reader — MDAnalysis.coordinates.XYZ &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.16. pdb.extensions – Extensions to Bio.PDB" href="pdbextensions.html" />
     <link rel="prev" title="5.14. Gromacs XTC file IO — MDAnalysis.coordinates.XTC" href="XTC.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="XTC.html" title="5.14. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -58,6 +58,14 @@
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.15. XYZ trajectory reader &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a><ul>
+<li><a class="reference internal" href="#xyz-file-format">5.15.1. XYZ File format</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="XTC.html"
                         title="previous chapter">5.14. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></p>
@@ -92,24 +100,49 @@
             
   <span class="target" id="module-MDAnalysis.coordinates.XYZ"></span><div class="section" id="xyz-trajectory-reader-mdanalysis-coordinates-xyz">
 <h1>5.15. XYZ trajectory reader &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.XYZ" title="MDAnalysis.coordinates.XYZ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a><a class="headerlink" href="#xyz-trajectory-reader-mdanalysis-coordinates-xyz" title="Permalink to this headline">¶</a></h1>
-<p>Resources: the XYZ format was taken from
-<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html</a> and
-is therefore compatible with VMD (you need a PDB or PSF file to define
-the topology, just as here)</p>
+<p>The <a class="reference internal" href="#xyz-format"><em>XYZ format</em></a> is a loosely defined, simple
+coordinate trajectory format. The implemented format definition was
+taken from the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">VMD xyzplugin</a> and is therefore compatible with VMD.</p>
+<p>Note the following:
+* comments are not allowed in the XYZ file (we neither read nor write</p>
+<blockquote>
+<div>them to remain compatible with VMD)</div></blockquote>
 <ul class="simple">
-<li>comments are not allowed in the XYZ file</li>
-<li>the atom name (first column) is ignored</li>
-<li>the coordinates are assumed to be space-delimited rather than fixed width (this may cause issues - see below)</li>
+<li>the atom name (first column) is ignored during reading</li>
+<li>the coordinates are assumed to be space-delimited rather than fixed
+width (this may cause issues - see below)</li>
 <li>all fields to the right of the z-coordinate are ignored</li>
-<li>it is assumed that the coordinates are in Angstroms</li>
-<li>the unitcell information is all zeros since this is not recorded in the XYZ format</li>
-<li>the length of a timestep can be set by passing the <cite>delta</cite> argument, it&#8217;s assumed to be in ps (default: 1 ps)</li>
+<li>the unitcell information is all zeros since this is not recorded in
+the XYZ format</li>
 </ul>
+<p><strong>Units</strong>
+* Coordinates are in Angstroms.
+* The length of a timestep can be set by passing the <em>delta</em> argument,</p>
+<blockquote>
+<div>it&#8217;s assumed to be in ps (default: 1 ps).</div></blockquote>
 <p>There appears to be no rigid format definition so it is likely users
 will need to tweak this Class.</p>
+<div class="section" id="xyz-file-format">
+<span id="xyz-format"></span><h2>5.15.1. XYZ File format<a class="headerlink" href="#xyz-file-format" title="Permalink to this headline">¶</a></h2>
+<p>Definiton used by the <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="MDAnalysis.coordinates.XYZ.XYZReader"><tt class="xref py py-class docutils literal"><span class="pre">XYZReader</span></tt></a> and <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><tt class="xref py py-class docutils literal"><span class="pre">XYZWriter</span></tt></a> (and
+the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">VMD xyzplugin</a> from whence the definition was taken):</p>
+<div class="highlight-python"><div class="highlight"><pre>[ comment line            ] !! NOT IMPLEMENTED !! DO NOT INCLUDE
+[ N                       ] # of atoms, required by this xyz reader plugin  line 1
+[ molecule name           ] name of molecule (can be blank)                 line 2
+atom1 x y z [optional data] atom name followed by xyz coords                line 3
+atom2 x y z [ ...         ] and (optionally) other data.
+...
+atomN x y z [ ...         ]                                                 line N+2
+</pre></div>
+</div>
+<ul class="simple">
+<li>comment lines not implemented</li>
+<li>optional data ignored</li>
+<li>molecule name</li>
+</ul>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.XYZ.XYZReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.XYZ.</tt><tt class="descname">XYZReader</tt><big>(</big><em>xyzfilename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.XYZ.</tt><tt class="descname">XYZReader</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads from an XYZ file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -140,6 +173,36 @@ will need to tweak this Class.</p>
 exact agreement (measured to 3DP). bzipped and gzipped versions of
 the XYZ file were also tested</p>
 <dl class="method">
+<dt id="MDAnalysis.coordinates.XYZ.XYZReader.Writer">
+<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a XYZWriter for <em>filename</em> with the same parameters as this XYZ.</p>
+<p>All values can be changed through keyword arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">filename of the output DCD trajectory</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
+<dt><em>atoms</em></dt>
+<dd><p class="first last">names of the atoms (if not taken from atom groups)</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><tt class="xref py py-class docutils literal"><span class="pre">XYZWriter</span></tt></a> (see there for more details)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.coordinates.XYZ.XYZReader.close">
 <tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close xyz trajectory file if it was open.</p>
@@ -159,6 +222,92 @@ the XYZ file were also tested</p>
 
 </dd></dl>
 
+<dl class="class">
+<dt id="MDAnalysis.coordinates.XYZ.XYZWriter">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.XYZ.</tt><tt class="descname">XYZWriter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes an XYZ file</p>
+<p>The XYZ file format is not formally defined. This writer follows
+the implement
+<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html</a> .</p>
+<p>Initialize the XYZ trajectory writer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><blockquote class="first">
+<div><dl class="docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">file name of trajectory file. If it ends with &#8220;gz&#8221; then the file
+will be gzip-compressed; if it ends with &#8220;bz2&#8221; it will be bzip2
+compressed.</p>
+</dd>
+</dl>
+</div></blockquote>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>atoms</em></dt>
+<dd><p class="first">Provide atom names: This can be a list of names or an <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt>.
+If none is provided, atoms will be called &#8216;X&#8217; in the output. These atom
+names will be used when a trajectory is written from raw <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt>
+objects which do not contain atom information.</p>
+<p class="last">If you write a <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt> with <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write" title="MDAnalysis.coordinates.XYZ.XYZWriter.write"><tt class="xref py py-meth docutils literal"><span class="pre">XYZWriter.write()</span></tt></a> then atom
+information is taken at each step and <em>atoms</em> is ignored.</p>
+</dd>
+<dt><em>remark</em></dt>
+<dd><p class="first last">single line of text (&#8220;molecule name&#8221;)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XYZ.XYZWriter.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the trajectory file and finalize the writing</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XYZ.XYZWriter.write">
+<tt class="descname">write</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write object <em>obj</em> at current trajectory frame to file.</p>
+<p><em>obj</em> can be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>)
+or a whole <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>.</p>
+<p>Atom names in the output are taken from the <em>obj</em> or default
+to the value of the <em>atoms</em> keyword supplied to the
+<a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><tt class="xref py py-class docutils literal"><span class="pre">XYZWriter</span></tt></a> constructor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>obj</em></dt>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a></p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XYZ.XYZWriter.write_next_timestep">
+<tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.write_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write coordinate information in <em>ts</em> to the trajectory</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -182,19 +331,19 @@ the XYZ file were also tested</p>
         <li class="right" >
           <a href="XTC.html" title="5.14. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

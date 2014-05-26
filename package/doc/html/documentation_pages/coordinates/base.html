@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.2. Base classes — MDAnalysis.coordinates.base &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>5.2. Base classes — MDAnalysis.coordinates.base &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.3. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" />
     <link rel="prev" title="5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates" href="init.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="init.html" title="5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -234,7 +234,6 @@ which is used everywhere in MDAnalysis.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added context manager protocol.</p>
 </div>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.close">
 <tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.close" title="Permalink to this definition">¶</a></dt>
@@ -366,7 +365,6 @@ returned.</p>
 <dd><p>Base class for trajectory readers.</p>
 <p>See the <a class="reference internal" href="init.html#trajectory-api"><em>Trajectory API</em></a> definition in
 <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for the required attributes and methods.</p>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Reader.OtherWriter">
 <tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Reader.OtherWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader.OtherWriter" title="Permalink to this definition">¶</a></dt>
@@ -516,7 +514,6 @@ trajectory reader unchanged</p>
 <dd><p>Base class for trajectory writers.</p>
 <p>See Trajectory API definition in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for
 the required attributes and methods.</p>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell">
 <tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Writer.convert_dimensions_to_unitcell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
@@ -589,19 +586,19 @@ provided when setting up the trajectory.</p>
         <li class="right" >
           <a href="init.html" title="5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

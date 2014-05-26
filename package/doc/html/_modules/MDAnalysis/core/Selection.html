@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.core.Selection &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>MDAnalysis.core.Selection &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -538,6 +538,11 @@
         <span class="n">StringSelection</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;segid&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">segid</span> <span class="o">=</span> <span class="n">segid</span>
 
+<span class="k">class</span> <span class="nc">AltlocSelection</span><span class="p">(</span><span class="n">StringSelection</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">altLoc</span><span class="p">):</span>
+        <span class="n">StringSelection</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;altLoc&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">altLoc</span> <span class="o">=</span> <span class="n">altLoc</span>
+
 <span class="k">class</span> <span class="nc">ByResSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">):</span>
         <span class="n">Selection</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -791,6 +796,7 @@
     <span class="n">LPAREN</span> <span class="o">=</span> <span class="s">&#39;(&#39;</span>
     <span class="n">RPAREN</span> <span class="o">=</span> <span class="s">&#39;)&#39;</span>
     <span class="n">SEGID</span> <span class="o">=</span> <span class="s">&#39;segid&#39;</span>
+    <span class="n">ALTLOC</span> <span class="o">=</span> <span class="s">&#39;altloc&#39;</span>
     <span class="n">RESID</span> <span class="o">=</span> <span class="s">&#39;resid&#39;</span>
     <span class="n">RESNUM</span> <span class="o">=</span> <span class="s">&#39;resnum&#39;</span>
     <span class="n">RESNAME</span> <span class="o">=</span> <span class="s">&#39;resname&#39;</span>
@@ -815,7 +821,7 @@
 
     <span class="n">classdict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">ALL</span><span class="p">,</span> <span class="n">AllSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">NOT</span><span class="p">,</span> <span class="n">NotSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">AND</span><span class="p">,</span> <span class="n">AndSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">OR</span><span class="p">,</span> <span class="n">OrSelection</span><span class="p">),</span>
                       <span class="p">(</span><span class="n">SEGID</span><span class="p">,</span> <span class="n">SegmentNameSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">RESID</span><span class="p">,</span> <span class="n">ResidueIDSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">RESNUM</span><span class="p">,</span> <span class="n">ResnumSelection</span><span class="p">),</span>
-                      <span class="p">(</span><span class="n">RESNAME</span><span class="p">,</span> <span class="n">ResidueNameSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="n">AtomNameSelection</span><span class="p">),</span>
+                      <span class="p">(</span><span class="n">RESNAME</span><span class="p">,</span> <span class="n">ResidueNameSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="n">AtomNameSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">ALTLOC</span><span class="p">,</span> <span class="n">AltlocSelection</span><span class="p">),</span>
                       <span class="p">(</span><span class="n">TYPE</span><span class="p">,</span> <span class="n">AtomTypeSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">BYRES</span><span class="p">,</span> <span class="n">ByResSelection</span><span class="p">),</span>
                       <span class="p">(</span><span class="n">BYNUM</span><span class="p">,</span> <span class="n">ByNumSelection</span><span class="p">),</span> <span class="p">(</span><span class="n">PROP</span><span class="p">,</span> <span class="n">PropertySelection</span><span class="p">),</span>
                       <span class="p">(</span><span class="n">AROUND</span><span class="p">,</span> <span class="n">AroundSelection</span><span class="p">),(</span><span class="n">SPHLAYER</span><span class="p">,</span> <span class="n">SphericalLayerSelection</span><span class="p">),(</span><span class="n">SPHZONE</span><span class="p">,</span> <span class="n">SphericalZoneSelection</span><span class="p">),</span>  
@@ -915,7 +921,7 @@
             <span class="n">exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_expression</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__expect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RPAREN</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">exp</span>
-        <span class="k">elif</span> <span class="n">op</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SEGID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RESNAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TYPE</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">op</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SEGID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RESNAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TYPE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ALTLOC</span><span class="p">):</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__consume_token</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">data</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LPAREN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RPAREN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">AND</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OR</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NOT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">SEGID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RESID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RESNAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TYPE</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__error</span><span class="p">(</span><span class="s">&quot;Identifier&quot;</span><span class="p">)</span>
@@ -988,20 +994,20 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

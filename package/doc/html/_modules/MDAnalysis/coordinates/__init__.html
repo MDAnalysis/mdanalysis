@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.__init__ &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>MDAnalysis.coordinates.__init__ &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -189,7 +189,7 @@
 <span class="sd">   |               |           |       | velocities are processed. Module                     |</span>
 <span class="sd">   |               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |</span>
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
-<span class="sd">   | XYZ           |  xyz      |  r    | Generic white-space separate XYZ format; can be      |</span>
+<span class="sd">   | XYZ           |  xyz      |  r/w  | Generic white-space separate XYZ format; can be      |</span>
 <span class="sd">   |               |           |       | compressed (gzip or bzip2). Module                   |</span>
 <span class="sd">   |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |</span>
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
@@ -233,6 +233,9 @@
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
 <span class="sd">   | IBIsCO/YASP   | trz       |  r/w  | Binary IBIsCO or YASP trajectories Module            |</span>
 <span class="sd">   |               |           |       | :mod:`MDAnalysis.coordinates.TRZ`                    |</span>
+<span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
+<span class="sd">   | MOL2          | mol2      |  r/w  | Text-based Tripos molecular structure format         |</span>
+<span class="sd">   |               |           |       | :mod:`MDAnalysis.coordinates.MOL2`                   |</span>
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
 
 <span class="sd">.. [#a] This format can also be used to provide basic *topology*</span>
@@ -669,7 +672,7 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;reader&#39;</span><span class="p">,</span> <span class="s">&#39;writer&#39;</span><span class="p">]</span>
 
-<span class="kn">import</span> <span class="nn">PDB</span><span class="o">,</span> <span class="nn">PQR</span><span class="o">,</span> <span class="nn">DCD</span><span class="o">,</span> <span class="nn">CRD</span><span class="o">,</span> <span class="nn">XTC</span><span class="o">,</span> <span class="nn">TRR</span><span class="o">,</span> <span class="nn">GRO</span><span class="o">,</span> <span class="nn">XYZ</span><span class="o">,</span> <span class="nn">TRJ</span><span class="o">,</span> <span class="nn">PDBQT</span><span class="o">,</span> <span class="nn">LAMMPS</span><span class="o">,</span> <span class="nn">DMS</span><span class="o">,</span> <span class="nn">TRZ</span>
+<span class="kn">import</span> <span class="nn">PDB</span><span class="o">,</span> <span class="nn">PQR</span><span class="o">,</span> <span class="nn">DCD</span><span class="o">,</span> <span class="nn">CRD</span><span class="o">,</span> <span class="nn">XTC</span><span class="o">,</span> <span class="nn">TRR</span><span class="o">,</span> <span class="nn">GRO</span><span class="o">,</span> <span class="nn">XYZ</span><span class="o">,</span> <span class="nn">TRJ</span><span class="o">,</span> <span class="nn">PDBQT</span><span class="o">,</span> <span class="nn">LAMMPS</span><span class="o">,</span> <span class="nn">DMS</span><span class="o">,</span> <span class="nn">TRZ</span><span class="o">,</span> <span class="nn">MOL2</span>
 <span class="kn">import</span> <span class="nn">base</span>
 <span class="kn">from</span> <span class="nn">core</span> <span class="kn">import</span> <span class="n">reader</span><span class="p">,</span> <span class="n">writer</span>
 
@@ -684,6 +687,7 @@
                        <span class="s">&#39;PDBQT&#39;</span><span class="p">:</span> <span class="n">PDBQT</span><span class="o">.</span><span class="n">PDBQTReader</span><span class="p">,</span>
                        <span class="s">&#39;CRD&#39;</span><span class="p">:</span> <span class="n">CRD</span><span class="o">.</span><span class="n">CRDReader</span><span class="p">,</span>
                        <span class="s">&#39;GRO&#39;</span><span class="p">:</span> <span class="n">GRO</span><span class="o">.</span><span class="n">GROReader</span><span class="p">,</span>
+                       <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Reader</span><span class="p">,</span>
                        <span class="s">&#39;TRJ&#39;</span><span class="p">:</span> <span class="n">TRJ</span><span class="o">.</span><span class="n">TRJReader</span><span class="p">,</span>     <span class="c"># AMBER text</span>
                        <span class="s">&#39;MDCRD&#39;</span><span class="p">:</span> <span class="n">TRJ</span><span class="o">.</span><span class="n">TRJReader</span><span class="p">,</span>   <span class="c"># AMBER text</span>
                        <span class="s">&#39;NCDF&#39;</span><span class="p">:</span> <span class="n">TRJ</span><span class="o">.</span><span class="n">NCDFReader</span><span class="p">,</span>   <span class="c"># AMBER netcdf</span>
@@ -707,6 +711,7 @@
                        <span class="s">&#39;CRD&#39;</span><span class="p">:</span> <span class="n">CRD</span><span class="o">.</span><span class="n">CRDReader</span><span class="p">,</span>
                        <span class="s">&#39;PQR&#39;</span><span class="p">:</span> <span class="n">PQR</span><span class="o">.</span><span class="n">PQRReader</span><span class="p">,</span>
                        <span class="s">&#39;DMS&#39;</span><span class="p">:</span> <span class="n">DMS</span><span class="o">.</span><span class="n">DMSReader</span><span class="p">,</span>
+                       <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Reader</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="c">#: hack: readers that ignore most errors (permissive=True); at the moment</span>
@@ -724,7 +729,9 @@
                   <span class="s">&#39;PDBQT&#39;</span><span class="p">:</span> <span class="n">PDBQT</span><span class="o">.</span><span class="n">PDBQTWriter</span><span class="p">,</span>
                   <span class="s">&#39;CRD&#39;</span><span class="p">:</span> <span class="n">CRD</span><span class="o">.</span><span class="n">CRDWriter</span><span class="p">,</span>
                   <span class="s">&#39;GRO&#39;</span><span class="p">:</span> <span class="n">GRO</span><span class="o">.</span><span class="n">GROWriter</span><span class="p">,</span>
-                  <span class="s">&#39;PDB&#39;</span> <span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PrimitivePDBWriter</span><span class="p">,</span>
+                  <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PrimitivePDBWriter</span><span class="p">,</span>
+                  <span class="s">&#39;XYZ&#39;</span><span class="p">:</span> <span class="n">XYZ</span><span class="o">.</span><span class="n">XYZWriter</span><span class="p">,</span>
+                  <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Writer</span><span class="p">,</span>
                  <span class="p">}</span>
 
 <span class="c">#: trajectory writers: export frames, typically only saving coordinates</span>
@@ -742,6 +749,8 @@
                        <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">MultiPDBWriter</span><span class="p">,</span>
                        <span class="s">&#39;NCDF&#39;</span><span class="p">:</span> <span class="n">TRJ</span><span class="o">.</span><span class="n">NCDFWriter</span><span class="p">,</span>
                        <span class="s">&#39;TRZ&#39;</span><span class="p">:</span><span class="n">TRZ</span><span class="o">.</span><span class="n">TRZWriter</span><span class="p">,</span>
+                       <span class="s">&#39;XYZ&#39;</span><span class="p">:</span> <span class="n">XYZ</span><span class="o">.</span><span class="n">XYZWriter</span><span class="p">,</span>
+                       <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Writer</span><span class="p">,</span>
                        <span class="p">}</span>
 </pre></div>
 
@@ -759,20 +768,20 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

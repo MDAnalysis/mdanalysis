@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.topology.core &mdash; MDAnalysis 0.8.1 documentation</title>
+    <title>MDAnalysis.topology.core &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.1',
+        VERSION:     '0.8.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1 documentation"
+          title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -245,8 +245,8 @@
 </div>
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span>
-        <span class="n">s_id</span> <span class="o">=</span> <span class="s">&quot;&lt; Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid}) and &quot;</span> \
-               <span class="s">&quot;Atom {2:d} ({3.name} of {3.resname} {3.resid})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a1</span><span class="o">.</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="o">.</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span>
+        <span class="n">s_id</span> <span class="o">=</span> <span class="s">&quot;&lt; Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid} {1.altLoc}) and &quot;</span> \
+               <span class="s">&quot;Atom {2:d} ({3.name} of {3.resname} {3.resid} {3.altLoc})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a1</span><span class="o">.</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="o">.</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">s_length</span> <span class="o">=</span> <span class="s">&quot;, length {0:.2f} A&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -461,7 +461,7 @@
         <span class="k">return</span> <span class="n">atomname</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 </div>
-<div class="viewcode-block" id="guess_bonds"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_bonds">[docs]</a><span class="k">def</span> <span class="nf">guess_bonds</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">fudge_factor</span><span class="o">=</span><span class="mf">0.72</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="guess_bonds"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_bonds">[docs]</a><span class="k">def</span> <span class="nf">guess_bonds</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">fudge_factor</span><span class="o">=</span><span class="mf">0.72</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lower_bound</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Guess if bonds exist between two atoms based on their distance.</span>
 
 <span class="sd">    Bond between two atoms is created, if the two atoms are within</span>
@@ -478,6 +478,11 @@
 <span class="sd">    :data:`MDAnalysis.topology.tables.vdwradii` or a user-specified</span>
 <span class="sd">    table can be provided as a dictionary in the keyword argument</span>
 <span class="sd">    *vdwradii*. Atoms are found by their :attr:`Atom.type`.</span>
+<span class="sd">    </span>
+<span class="sd">    *lower_bound* defines a heuristic cutoff below which a bond is too short to </span>
+<span class="sd">    exist. This is useful for parsing PDB with altloc records where atoms with </span>
+<span class="sd">    altloc A and B maybe very close together and there should be no chemical </span>
+<span class="sd">    bond between them. </span>
 
 <span class="sd">    .. warning::</span>
 
@@ -514,8 +519,13 @@
     <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">pairs</span><span class="p">)):</span>
         <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
         <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">vdwradii</span><span class="p">[</span><span class="n">a1</span><span class="o">.</span><span class="n">type</span><span class="p">],</span> <span class="n">vdwradii</span><span class="p">[</span><span class="n">a2</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+        
+        <span class="c"># ideal bond distance smaller or equal distance</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">r1</span> <span class="o">+</span> <span class="n">r2</span><span class="p">)</span> <span class="o">*</span> <span class="n">fudge_factor</span> <span class="o">&lt;=</span> <span class="n">dist</span><span class="p">[</span><span class="n">x</span><span class="p">]:</span>
             <span class="k">continue</span>
+          
+        <span class="c"># filter out unusually short bonds - like the ones detected between identical atoms with different altloc records</span>
+        <span class="k">if</span> <span class="n">dist</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lower_bound</span><span class="p">:</span> <span class="k">continue</span>
         <span class="c">#print &quot;BOND&quot;, ((r1 + r2) * 10 * fudge_factor), dist[i,j]</span>
         <span class="n">bonds</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">([</span><span class="n">a1</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">a2</span><span class="o">.</span><span class="n">number</span><span class="p">]))</span>  <span class="c"># orbeckst: Atom.number are 0-based, do not add 1.</span>
 
@@ -835,6 +845,8 @@
 <span class="sd">        :Keywords:</span>
 <span class="sd">           *pbc*</span>
 <span class="sd">              apply periodic boundary conditions when calculating distance [False]</span>
+<span class="sd">           *result*</span>
+<span class="sd">              allows a predefined results array to be used, note that this will be overwritten</span>
 
 <span class="sd">        Uses cython implementation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -842,12 +854,12 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;TopologyGroup is not of &#39;bond&#39; type&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">len</span><span class="p">,),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">pbc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span>
-                                        <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+                                        <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span>
-                                        <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+                                        <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_anglesSlow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Slow version of angle (numpy implementation)&quot;&quot;&quot;</span>
@@ -862,18 +874,33 @@
         <span class="n">angles</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">slowang</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">)])</span>
         <span class="k">return</span> <span class="n">angles</span>
 
-<div class="viewcode-block" id="TopologyGroup.angles"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyGroup.angles">[docs]</a>    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TopologyGroup.angles"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyGroup.angles">[docs]</a>    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculates the angle in radians formed between a bond</span>
 <span class="sd">        between atoms 1 and 2 and a bond between atoms 2 &amp; 3</span>
 
+<span class="sd">        :Keywords:</span>
+<span class="sd">           *result*</span>
+<span class="sd">              allows a predefined results array to be used, note that this will be overwritten</span>
+<span class="sd">           *pbc*</span>
+<span class="sd">              apply periodic boundary conditions when calculating angles [False]</span>
+<span class="sd">              this is important when connecting vectors between atoms might require </span>
+<span class="sd">              minimum image convention</span>
+
 <span class="sd">        Uses cython implementation</span>
+
+<span class="sd">        .. versionchanged :: 0.8.2</span>
+<span class="sd">           Added pbc option (default False)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">toptype</span> <span class="o">==</span> <span class="s">&#39;angle&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;topology group is not of type &#39;angle&#39;&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">len</span><span class="p">,),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_angles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span>
-                                     <span class="bp">self</span><span class="o">.</span><span class="n">atom3</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_angles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">atom3</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_angles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">atom3</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_torsionsSlow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Slow version of torsion (numpy implementation)&quot;&quot;&quot;</span>
@@ -888,22 +915,38 @@
 
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dihedral</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">,</span> <span class="n">vec3</span><span class="p">)])</span>
 
-<div class="viewcode-block" id="TopologyGroup.torsions"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyGroup.torsions">[docs]</a>    <span class="k">def</span> <span class="nf">torsions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TopologyGroup.torsions"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyGroup.torsions">[docs]</a>    <span class="k">def</span> <span class="nf">torsions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculate the torsional angle in radians for this topology</span>
 <span class="sd">        group.</span>
 
 <span class="sd">        Defined as the angle between a plane formed by atoms 1, 2 and</span>
 <span class="sd">        3 and a plane formed by atoms 2, 3 and 4.</span>
 
+<span class="sd">        :Keywords:</span>
+<span class="sd">           *result*</span>
+<span class="sd">              allows a predefined results array to be used, note that this will be overwritten</span>
+<span class="sd">           *pbc*</span>
+<span class="sd">              apply periodic boundary conditions when calculating angles [False]</span>
+<span class="sd">              this is important when connecting vectors between atoms might require </span>
+<span class="sd">              minimum image convention</span>
+
 <span class="sd">        Uses cython implementation.</span>
+<span class="sd">        </span>
+<span class="sd">        .. versionchanged:: 0.8.2</span>
+<span class="sd">           Added pbc option (default False)           </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">toptype</span> <span class="o">==</span> <span class="s">&#39;torsion&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;topology group is not of type &#39;torsion&#39;&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">len</span><span class="p">,),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_torsions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span>
-                                       <span class="bp">self</span><span class="o">.</span><span class="n">atom3</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom4</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span>
-                                       <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span></div></div>
+        <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_torsions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">atom3</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom4</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span>
+                                           <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_torsions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">atom3</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom4</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span>
+                                           <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>
@@ -920,20 +963,20 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, Matthieu Chavent and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>
