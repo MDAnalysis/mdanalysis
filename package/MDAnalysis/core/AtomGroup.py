@@ -132,10 +132,35 @@ store the canonical residue IDs ("resnum") one could the use ::
 One can then use ``protein.select("resnum 42")`` to select the residue that has
 the canonical residue id 42 (instead of ``resid 33``).
 
-One can also read the resids directly from  an original PDB file:
+One can also read the resids directly from  an original PDB file::
 
   orig = MDAnalysis.Universe("2jln.pdb")
   protein.set_resnum(orig.selectAtoms("protein").resids())
+
+
+Combining objects and system building
+-------------------------------------
+
+It is often convenient to combined multiple groups of atoms into a single
+object. If they are contained in a single :class:`Universe` then the methods
+described above (especially manipulating the segments) might be
+useful. However, if the atoms reside in different universes, the :func:`Merge`
+function can be used.
+
+In the following example for :func:`Merge`, protein, ligand, and solvent were
+externally prepared in three different PDB files. They are loaded into separate
+:class:`Universe` objects (where they could be further manipulated,
+e.g. renumbered, relabeled, rotated, ...) The :func:`Merge` command is used to
+combine all of them together::
+
+    import MDAnalysis
+    u1 = MDAnalysis.Universe("protein.pdb")
+    u2 = MDAnalysis.Universe("ligand.pdb")
+    u3 = MDAnalysis.Universe("solvent.pdb")
+    u = MDAnalysis.Merge(u1.selectAtoms("protein"), u2.atoms, u3.atoms)
+    u.atoms.write("system.pdb")
+
+The complete system is then written out to a new PDB file.
 
 
 
@@ -144,6 +169,7 @@ Classes and functions
 
 .. autoclass:: Universe
    :members:
+.. autofunction:: Merge
 .. autoclass:: AtomGroup
    :members:
 
@@ -218,6 +244,35 @@ Classes and functions
       PQR file with the
       :class:`~MDAnalysis.coordinates.PQR.PQRReader`.)
 
+   .. attribute::        altLoc
+
+      Alternate location indicator (as used in `ATOM_` records in PDB
+      files)
+
+      .. versionadded:: 0.8.1
+
+   .. attribute:: bonds
+
+      List of :class:`~MDAnalysis.topogology.core.Bond` instances that
+      contains all the bonds that this atom participates in.
+
+      .. versionadded:: 0.8.1
+
+   .. attribute:: angles
+
+      List of :class:`~MDAnalysis.topogology.core.Angle` instances
+      that contains all the angles that this atom participates in.
+
+      .. versionadded:: 0.8.1
+
+   .. attribute:: torsions
+
+      List of :class:`~MDAnalysis.topogology.core.Torsion` instances
+      that contains all the dihedral torsions that this atom
+      participates in.
+
+      .. versionadded:: 0.8.1
+
 .. autoclass:: Residue
    :members:
 .. autoclass:: ResidueGroup
@@ -229,11 +284,15 @@ Classes and functions
 
 .. autofunction:: asUniverse
 .. autoexception:: SelectionError
+   :no-members:
 .. autoexception:: SelectionWarning
+   :no-members:
 .. autoexception:: NoDataError
+   :no-members:
 
 .. _atomic mass units: http://physics.nist.gov/cgi-bin/cuu/Value?u
 .. _electron charges: http://physics.nist.gov/cgi-bin/cuu/Value?e
+.. _ATOM: http://www.wwpdb.org/documentation/format23/sect9.html#ATOM
 
 """
 
@@ -790,18 +849,21 @@ class AtomGroup(object):
         return len(self.torsionDict)
 
     def selectBonds(self, criteria):
-        """Select all of a given bond, angle or torsion type from the
-        AtomGroup.  This method makes use of the :class:`MDAnalysis.topology.core.TopologyDict`
+        """Select all of a given bond, angle or torsion type from the AtomGroup.
+
+        This method makes use of the :class:`MDAnalysis.topology.core.TopologyDict`
         instances for this AtomGroup.
 
         Usage::
+
           ag.selectBonds(criteria)
 
-        *criteria* must match a key from the appropriate TopologyDict,
-        viewable through the :meth:`MDAnalysis.topology.core.TopologyDict.keys` method.
-        These keys are a tuple of the atom types in the bond.
+        *criteria* must match a key from the appropriate
+        :class:`~MDAnalysis.topology.core.TopologyDict`, viewable through the
+        :meth:`MDAnalysis.topology.core.TopologyDict.keys` method.  These keys
+        are a tuple of the atom types in the bond.
 
-        :Returns: a :class:`MDAnalysis.topology.core.TopologyGroup`
+        :Returns: a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
         .. versionadded:: 0.8
         """
@@ -1631,7 +1693,7 @@ class AtomGroup(object):
 
         .. Note::
 
-           If the group contains N atoms and *force* is a single point (i.e. an
+           If the group contains N atoms and *force* is a single vector (i.e. an
            array of length 3) then all N atom positions are set to *force* (due
            to NumPy's broadcasting rules), as described for
            :attr:`~AtomGroup.forces`.
@@ -1672,12 +1734,12 @@ class AtomGroup(object):
         The matrix *M* must be a 4x4 matrix, with the rotation in
         `R = `M[:3,:3]`` and the translation in ``t = M[:3,3]``.
 
-        The rotation :math:`\mathsl{R}` is applied before the
+        The rotation :math:`\mathsf{R}` is applied before the
         translation :math:`\mathbf{t}`:
 
         .. math::
 
-           \mathbf{x}' = \mathsl{R}\mathbf{x} + \mathbf{t}
+           \mathbf{x}' = \mathsf{R}\mathbf{x} + \mathbf{t}
 
         .. SeeAlso: :mod:`MDAnalysis.core.transformations`
         """
@@ -1873,7 +1935,7 @@ class AtomGroup(object):
         """Selection of atoms using the MDAnalysis selection syntax.
 
         AtomGroup.selectAtoms(selection[,selection[,...]], [groupname=atomgroup[,groupname=atomgroup[,...]]])
-        
+
         .. SeeAlso:: :meth:`Universe.selectAtoms`
         """
         import Selection     # can ONLY import in method, otherwise cyclical import!
@@ -1887,7 +1949,7 @@ class AtomGroup(object):
                 #atomselections.append(Selection.Parser.parse(sel).apply(self))
             #return tuple(atomselections)
             return atomgrp
-    
+
     def write(self,filename=None,format="PDB",filenamefmt="%(trjname)s_%(frame)d", **kwargs):
         """Write AtomGroup to a file.
 
@@ -1921,7 +1983,7 @@ class AtomGroup(object):
 
         trj = self.universe.trajectory    # unified trajectory API
         frame = trj.ts.frame
-        
+
         if trj.numframes == 1: kwargs.setdefault("multiframe", False)
 
         if filename is None:
@@ -2234,8 +2296,8 @@ class ResidueGroup(AtomGroup):
         .. Warning::
 
            The values of *this* :class:`ResidueGroup` are not being
-           changed. You **must create a new :class:`ResidueGroup` from the
-           :class:`Universe`** --- only :class:`Atom` instances are changed,
+           changed. You **must create a new** :class:`ResidueGroup` **from the**
+           :class:`Universe` --- only :class:`Atom` instances are changed,
            everything else is derived from these atoms.
 
         .. versionadded:: 0.8
@@ -2468,6 +2530,17 @@ class SegmentGroup(ResidueGroup):
         one needs to run :meth:`Universe._build_segments` manually later in
         order to update the list of :class:`Segment` instances and regenerate
         the segid instant selectors.
+
+        .. Warning::
+
+           The values of *this* :class:`SegmentGroup` are not being changed
+           (i.e. if you assign multiple segids this instance will not be broken
+           in multiple segments, rather you will have one :class:`SegmentGroup`
+           that groups multiple segments together). You **must create a new**
+           :class:`SegmentGroup` **from the** :class:`Universe` --- only
+           :class:`Atom` instances are changed, everything else is derived from
+           these atoms.
+
 
         .. versionadded:: 0.7.4
         .. versionchanged:: 0.8
@@ -2919,7 +2992,7 @@ class Universe(object):
                 e.g. ``DMPC 1 C2`` selects the C2 carbon of the first residue of the DMPC
                 segment
             altloc *alternative-location*
-                a selection for atoms where alternative locations are available, 
+                a selection for atoms where alternative locations are available,
                 which is often the case with high-resolution crystal structures
                 e.g. `resid 4 and resname ALA and altloc B` selects only the atoms
                 of ALA-4 that have an altloc B record.
@@ -3000,7 +3073,7 @@ class Universe(object):
                 #atomselections.append(Selection.Parser.parse(sel).apply(self))
             #return tuple(atomselections)
             return atomgrp
-    
+
     def __repr__(self):
         return '<'+self.__class__.__name__+' with '+repr(len(self.atoms))+' atoms' \
                 +(" and %d bonds" % len(self.bonds) \
@@ -3080,25 +3153,54 @@ def asUniverse(*args, **kwargs):
 
 
 def Merge(*args):
-    """Return a universe from 2 or more AtomGroups.
-    AtomGroups can come from different Universes, or come from selectAtom
-    command.
+    """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.
 
-         u1 = Universe("protein.pdb")
-         u2 = Universe("ligand.pdb")
-         u3 = Universe("solvent.pdb")
-         u = Merge(u1.atoms, u2.atoms, u3.atoms)
-         u.atoms.write("system.pdb")
+    :class:`AtomGroup` instances can come from different Universes, or come
+    directly from a :meth:`~Universe.selectAtoms` call.
 
-    Can also be used with a single AtomGroup if the user wants to,
+    It can also be used with a single :class:`AtomGroup` if the user wants to,
     for example, re-order the atoms in the Universe.
 
-    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
-    """
-    assert(len(args) >= 1) # one or more AtomGroups can be merged
+    :Arguments: One or more :class:`AtomGroup` instances.
 
-    for a in args: assert(isinstance(a, AtomGroup))
-    for a in args: assert(len(a)) # cannot merge empty AtomGroup
+    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
+
+    :Raises: :exc:`ValueError` for too few arguments or if an AtomGroup is
+             empty and :exc:`TypeError` if arguments are not
+             :class:`AtomGroup` instances.
+
+    .. rubric:: Example
+
+    In this example, protein, ligand, and solvent were externally prepared in
+    three different PDB files. They are loaded into separate :class:`Universe`
+    objects (where they could be further manipulated, e.g. renumbered,
+    relabeled, rotated, ...) The :func:`Merge` command is used to combine all
+    of them together::
+
+       u1 = Universe("protein.pdb")
+       u2 = Universe("ligand.pdb")
+       u3 = Universe("solvent.pdb")
+       u = Merge(u1.selectAtoms("protein"), u2.atoms, u3.atoms)
+       u.atoms.write("system.pdb")
+
+    The complete system is then written out to a new PDB file.
+
+    .. Note:: Merging does not create a full trajectory but only a single
+              structure even if the input consists of one or more trajectories.
+
+    .. versionchanged 0.8.2::
+       Raises exceptions instead of assertion errors.
+
+    """
+    if len(args) == 0:
+        raise ValueError("Need at least one AtomGroup for merging")
+
+    for a in args:
+        if not isinstance(a, AtomGroup):
+            raise TypeError(repr(a)+" is not an AtomGroup")
+    for a in args:
+        if len(a) == 0:
+            raise ValueError("cannot merge empty AtomGroup")
 
     coords = numpy.vstack([a.coordinates() for a in args])
     trajectory = MDAnalysis.coordinates.base.Reader()
