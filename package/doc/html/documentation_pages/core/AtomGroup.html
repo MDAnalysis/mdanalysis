@@ -63,7 +63,11 @@
 <li><a class="reference internal" href="#">7.2. Fundamental building blocks &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></tt></a><ul>
 <li><a class="reference internal" href="#class-hierarchy">7.2.1. Class Hierarchy</a></li>
 <li><a class="reference internal" href="#manipulating-atoms-residues-and-segments">7.2.2. Manipulating atoms, residues, and segments</a></li>
-<li><a class="reference internal" href="#combining-objects-and-system-building">7.2.3. Combining objects and system building</a></li>
+<li><a class="reference internal" href="#combining-objects-system-building">7.2.3. Combining objects: system building</a><ul>
+<li><a class="reference internal" href="#merging">7.2.3.1. Merging</a></li>
+<li><a class="reference internal" href="#replicating">7.2.3.2. Replicating</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#classes-and-functions">7.2.4. Classes and functions</a></li>
 </ul>
 </li>
@@ -121,8 +125,9 @@ of the hierarchical level.</p>
 <p>Each <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> can only belong to a single <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a>, and a
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> belongs to one specific <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Segment" title="MDAnalysis.core.AtomGroup.Segment"><tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt></a>. This
 hierarchy can be described as</p>
-<blockquote>
-<div>Segment &gt; Residue &gt; Atom</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Segment</span> <span class="o">&gt;</span> <span class="n">Residue</span> <span class="o">&gt;</span> <span class="n">Atom</span>
+</pre></div>
+</div>
 <p>Depending on the use case, it can be more convenient to access data
 on, for instance, the basis of residues than atoms, or to write out
 individual chains (segments) of a protein. MDAnalysis simply provides
@@ -206,13 +211,15 @@ the canonical residue id 42 (instead of <tt class="docutils literal"><span class
 </pre></div>
 </div>
 </div>
-<div class="section" id="combining-objects-and-system-building">
-<h2>7.2.3. Combining objects and system building<a class="headerlink" href="#combining-objects-and-system-building" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="combining-objects-system-building">
+<h2>7.2.3. Combining objects: system building<a class="headerlink" href="#combining-objects-system-building" title="Permalink to this headline">¶</a></h2>
 <p>It is often convenient to combined multiple groups of atoms into a single
 object. If they are contained in a single <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> then the methods
 described above (especially manipulating the segments) might be
 useful. However, if the atoms reside in different universes, the <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Merge" title="MDAnalysis.core.AtomGroup.Merge"><tt class="xref py py-func docutils literal"><span class="pre">Merge()</span></tt></a>
 function can be used.</p>
+<div class="section" id="merging">
+<h3>7.2.3.1. Merging<a class="headerlink" href="#merging" title="Permalink to this headline">¶</a></h3>
 <p>In the following example for <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Merge" title="MDAnalysis.core.AtomGroup.Merge"><tt class="xref py py-func docutils literal"><span class="pre">Merge()</span></tt></a>, protein, ligand, and solvent were
 externally prepared in three different PDB files. They are loaded into separate
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> objects (where they could be further manipulated,
@@ -227,6 +234,43 @@ combine all of them together:</p>
 </pre></div>
 </div>
 <p>The complete system is then written out to a new PDB file.</p>
+</div>
+<div class="section" id="replicating">
+<h3>7.2.3.2. Replicating<a class="headerlink" href="#replicating" title="Permalink to this headline">¶</a></h3>
+<p>It is also possible to replicate a molecule to build a system with
+multiple copies of the same molecule. In the example, we replicate an
+AdK molecule and then translate and rotate the second copy:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis</span><span class="p">;</span> <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;protein&quot;</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Merge</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
+
+<span class="c"># now renumber resids and segids for each copy</span>
+
+<span class="c"># first copy of the protein (need to use atom indices because currently that&#39;s the only reliable property in the merged universe)</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;bynum 1:3341&quot;</span><span class="p">)</span>
+<span class="c"># second copy</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;bynum 3342:6682&quot;</span><span class="p">)</span>
+
+<span class="n">p1</span><span class="o">.</span><span class="n">set_segid</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">p2</span><span class="o">.</span><span class="n">set_segid</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">)</span>
+<span class="n">p2</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">set_resid</span><span class="p">(</span><span class="n">p2</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resids</span><span class="p">()</span> <span class="o">+</span> <span class="n">p1</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resids</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c"># increment resids for p2 with the last resid from p1</span>
+
+<span class="c"># you must regenerate the selections after modifying them (see notes in the docs!)</span>
+<span class="c"># because the changed resids are not reflected in the selection (due to how residues are referenced internally)</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid A&quot;</span><span class="p">)</span>       <span class="c"># or as before:  m.selectAtoms(&quot;bynum 1:3341&quot;)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid B&quot;</span><span class="p">)</span>
+
+<span class="c"># rotate and translate</span>
+<span class="n">p2</span><span class="o">.</span><span class="n">rotateby</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">p2</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">50</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Note that we have to manually set the residue numbers (resids) and
+segment identifies because <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Merge" title="MDAnalysis.core.AtomGroup.Merge"><tt class="xref py py-func docutils literal"><span class="pre">Merge()</span></tt></a> simply concatenates the
+existing atoms and only ensures that all data structures are contained
+in the new merged universe.</p>
+</div>
 </div>
 <div class="section" id="classes-and-functions">
 <h2>7.2.4. Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
@@ -2229,7 +2273,7 @@ PQR file with the
 <dd><p>Alternate location indicator (as used in <cite>ATOM_</cite> records in PDB
 files)</p>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.1.</span></p>
+<p><span class="versionmodified">New in version 0.8.2.</span></p>
 </div>
 </dd></dl>
 

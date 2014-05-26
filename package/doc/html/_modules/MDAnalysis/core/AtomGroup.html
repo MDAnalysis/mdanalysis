@@ -116,7 +116,7 @@
 
 <span class="sd">Each :class:`Atom` can only belong to a single :class:`Residue`, and a</span>
 <span class="sd">:class:`Residue` belongs to one specific :class:`Segment`. This</span>
-<span class="sd">hierarchy can be described as</span>
+<span class="sd">hierarchy can be described as ::</span>
 
 <span class="sd">    Segment &gt; Residue &gt; Atom</span>
 
@@ -213,14 +213,17 @@
 <span class="sd">  protein.set_resnum(orig.selectAtoms(&quot;protein&quot;).resids())</span>
 
 
-<span class="sd">Combining objects and system building</span>
-<span class="sd">-------------------------------------</span>
+<span class="sd">Combining objects: system building</span>
+<span class="sd">----------------------------------</span>
 
 <span class="sd">It is often convenient to combined multiple groups of atoms into a single</span>
 <span class="sd">object. If they are contained in a single :class:`Universe` then the methods</span>
 <span class="sd">described above (especially manipulating the segments) might be</span>
 <span class="sd">useful. However, if the atoms reside in different universes, the :func:`Merge`</span>
 <span class="sd">function can be used.</span>
+
+<span class="sd">Merging</span>
+<span class="sd">~~~~~~~</span>
 
 <span class="sd">In the following example for :func:`Merge`, protein, ligand, and solvent were</span>
 <span class="sd">externally prepared in three different PDB files. They are loaded into separate</span>
@@ -237,6 +240,42 @@
 
 <span class="sd">The complete system is then written out to a new PDB file.</span>
 
+<span class="sd">Replicating</span>
+<span class="sd">~~~~~~~~~~~</span>
+
+<span class="sd">It is also possible to replicate a molecule to build a system with</span>
+<span class="sd">multiple copies of the same molecule. In the example, we replicate an</span>
+<span class="sd">AdK molecule and then translate and rotate the second copy::</span>
+
+<span class="sd">    import MDAnalysis; from MDAnalysis.tests.datafiles import *</span>
+<span class="sd">    u = MDAnalysis.Universe(PSF, DCD)</span>
+<span class="sd">    p = u.selectAtoms(&quot;protein&quot;)</span>
+<span class="sd">    m = MDAnalysis.Merge(p,p)</span>
+
+<span class="sd">    # now renumber resids and segids for each copy</span>
+
+<span class="sd">    # first copy of the protein (need to use atom indices because currently that&#39;s the only reliable property in the merged universe)</span>
+<span class="sd">    p1 = m.selectAtoms(&quot;bynum 1:3341&quot;)</span>
+<span class="sd">    # second copy</span>
+<span class="sd">    p2 = m.selectAtoms(&quot;bynum 3342:6682&quot;)</span>
+
+<span class="sd">    p1.set_segid(&quot;A&quot;)</span>
+<span class="sd">    p2.set_segid(&quot;B&quot;)</span>
+<span class="sd">    p2.residues.set_resid(p2.residues.resids() + p1.residues.resids()[-1])  # increment resids for p2 with the last resid from p1</span>
+
+<span class="sd">    # you must regenerate the selections after modifying them (see notes in the docs!)</span>
+<span class="sd">    # because the changed resids are not reflected in the selection (due to how residues are referenced internally)</span>
+<span class="sd">    p1 = m.selectAtoms(&quot;segid A&quot;)       # or as before:  m.selectAtoms(&quot;bynum 1:3341&quot;)</span>
+<span class="sd">    p2 = m.selectAtoms(&quot;segid B&quot;)</span>
+
+<span class="sd">    # rotate and translate</span>
+<span class="sd">    p2.rotateby(180, [0,0,1])</span>
+<span class="sd">    p2.translate([50,0,0])</span>
+
+<span class="sd">Note that we have to manually set the residue numbers (resids) and</span>
+<span class="sd">segment identifies because :func:`Merge` simply concatenates the</span>
+<span class="sd">existing atoms and only ensures that all data structures are contained</span>
+<span class="sd">in the new merged universe.</span>
 
 
 <span class="sd">Classes and functions</span>
@@ -324,7 +363,7 @@
 <span class="sd">      Alternate location indicator (as used in `ATOM_` records in PDB</span>
 <span class="sd">      files)</span>
 
-<span class="sd">      .. versionadded:: 0.8.1</span>
+<span class="sd">      .. versionadded:: 0.8.2</span>
 
 <span class="sd">   .. attribute:: bonds</span>
 
@@ -3267,6 +3306,8 @@
 <span class="sd">       Raises exceptions instead of assertion errors.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">MDAnalysis.topology.core</span>
+
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Need at least one AtomGroup for merging&quot;</span><span class="p">)</span>
 
@@ -3295,6 +3336,10 @@
         <span class="n">a</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">i</span>
         <span class="n">a</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
     <span class="n">u</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+    <span class="c"># adjust the residue and segment numbering (removes any remaining references to the old universe)</span>
+    <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">build_residues</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+    <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">build_segments</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">u</span></div>
 </pre></div>
 
