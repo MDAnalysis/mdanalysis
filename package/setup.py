@@ -88,10 +88,14 @@ except ImportError:
 if use_cython:
     # cython has to be >=0.16 to support cython.parallel
     import Cython
+    from distutils.version import LooseVersion
     required_version = "0.16"
-    if not int(Cython.__version__.replace(".","")) >= int(required_version.replace(".", "")):
-        raise ImportError("Cython version %s (found %s) is required because it offers a handy parallelisation module" % (required_version, Cython.__version__))
+
+    if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
+        raise ImportError("Cython version {0} (found {1}) is required because it offers a handy parallelisation module".format(
+                required_version, Cython.__version__))
     del Cython
+    del LooseVersion
 
 
 def hasfunction(cc, funcname, include=None, extra_postargs=None):
@@ -172,7 +176,7 @@ if __name__ == '__main__':
     else:
         extra_compile_args = ''
         define_macros = []
-    
+
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing and access).
     largefile_macros = [('_LARGEFILE_SOURCE',None),
                         ('_LARGEFILE64_SOURCE',None),
