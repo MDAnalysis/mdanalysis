@@ -50,14 +50,14 @@ def parse(filename):
     :Returns: MDAnalysis internal *structure* dict.
     """
     formatversion = 10
-    with open(filename) as topfile:
+    with util.openany(filename) as topfile:
         for line in topfile:
             if line.startswith("%FLAG ATOMIC_NUMBER"):
                 formatversion = 12
                 break
     # Open and check top validity
     ######  Reading header info POINTERS  #################
-    with open(filename,'r') as topfile:
+    with util.openany(filename) as topfile:
         next_line = skip_line = topfile.next
         header = next_line()
         if header[:3] != "%VE":
@@ -68,7 +68,7 @@ def parse(filename):
         while header[:14] != '%FLAG POINTERS':
             header = next_line()
         header = next_line()
-        topremarks = [next_line().strip() for i in range(4)]
+        topremarks = [next_line().strip() for i in xrange(4)]
         sys_info = []
         for i in topremarks:
             j = i.split()
@@ -208,14 +208,12 @@ def __parsesectionint_(lines, atoms_per, attr, structure, numlines):
     y = lines().strip("%FORMAT(")
     y.strip(")")
     x = util.FORTRANReader(y)
-    liz = 1
     for i in xrange(numlines):
         l = lines()
         # Subtract 1 from each number to ensure zero-indexing for the atoms
         try:
-            for j in range(0, len(x.entries)):
+            for j in xrange(len(x.entries)):
                 section.append(int(l[x.entries[j].start:x.entries[j].stop].strip()))
-                liz += 1
         except:
                 continue
     structure[attr] = section

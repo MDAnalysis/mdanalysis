@@ -31,19 +31,28 @@ Files and directories
    (uses :func:`anyopen`).
 
 .. autofunction:: anyopen
-
 .. autofunction:: greedy_splitext
-
 .. autofunction:: which
-
 .. autofunction:: realpath
+
+Streams
+-------
+
+In some cases it is possible to provide streams instead of file names, for
+instance buffer-based :class:`cStringIO.StringIO` instances. In order to
+integrate these streams with code that analyzes the filename itself for
+information, wrap the stream into :class:`NamedStream`.
+
+.. autoclass:: NamedStream
+   :members:
+.. autofunction:: isstream
 
 Containers and lists
 --------------------
 
 .. autofunction:: iterable
 .. autofunction:: asiterable
-
+.. autofunction:: hasmethod
 
 File parsing
 ------------
@@ -76,64 +85,157 @@ Mathematics and Geometry
 .. autofunction:: dihedral
 .. autofunction:: stp
 
+.. Rubric:: Footnotes
+
+.. [#NamedStreamClose] This is implemented to facilitate the use of the class
+   :class:`NamedStream` as a drop-in replacement for file names, which are
+   often re-opened (e.g. when the same file is used as a topology and
+   coordinate file or when repeatedly iterating through a trajectory in some
+   implementations.)
 """
 
 __docformat__ = "restructuredtext en"
 
-import os.path
+import os, os.path, errno
 from contextlib import contextmanager
 import bz2, gzip
 import re
+import io
+import warnings
 
 import numpy
 
-def filename(name,ext=None,keep=False):
+# Python 3.0, 3.1 do not have the builtin callable()
+try:
+    callable(list)
+except NameError:
+    # http://bugs.python.org/issue10518
+    import collections
+    def callable(obj):
+        return isinstance(obj, collections.Callable)
+
+def filename(name, ext=None, keep=False):
     """Return a new name that has suffix attached; replaces other extensions.
 
     :Arguments:
       *name*
-           filename; extension is replaced unless keep=True
+           filename; extension is replaced unless keep=True;
+           *name* can also be a :class:`NamedStream` (and its
+           :attr:`NamedStream.name` will be changed accordingly)
       *ext*
            extension
       *keep*
-           ``False``: replace existing extension; ``True``: keep if exists
+           - ``False``: replace existing extension with *ext*;
+           - ``True``: keep old extension if one existed
+
+    .. versionchanged:: 0.8.2
+       Also permits :class:`NamedStream` to pass through.
     """
-    name = str(name)
-    if ext is None:
-        return name
-    if not ext.startswith(os.path.extsep):
-        ext = os.path.extsep + ext
-    #if name.find(ext) > 0:    # normally >= 0 but if we start with '.' then we keep it
-    #    return name
-    root, origext = os.path.splitext(name)
-    if len(origext) == 0 or not keep:
-        return root + ext
-    return name
+    if ext is not None:
+        if not ext.startswith(os.path.extsep):
+            ext = os.path.extsep + ext
+        root, origext = os.path.splitext(name)
+        if not keep or len(origext) == 0:
+            newname = root + ext
+            if isstream(name):
+                name.name = newname
+            else:
+                name = newname
+    return name if isstream(name) else str(name)
 
 @contextmanager
-def openany(datasource, mode='r'):
-    """Open the datasource and close it when the context exits."""
-    stream, filename = anyopen(datasource, mode=mode)
-    try:
-        yield stream
-    finally:
-        stream.close()
+def openany(datasource, mode='r', reset=True):
+    """Context manager for :func:`anyopen`.
 
-def anyopen(datasource, mode='r'):
-    """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
+    Open the *datasource* and close it when the context of the :keyword:`with`
+    statement exits.
+
+    *datasource* can be a filename or a stream (see :func:`isstream`). A stream
+    is reset to its start if possible (via :meth:`~io.IOBase.seek` or
+    :meth:`~cString.StringIO.reset`).
+
+    The advantage of this function is that very different input sources
+    ("streams") can be used for a "file", ranging from files on disk (including
+    compressed files) to open file objects to sockets and strings---as long as
+    they have a file-like interface.
 
     :Arguments:
      *datasource*
         a file or a stream
      *mode*
         'r' or 'w'
+     *reset*
+        try to read (*mode* 'r') the stream from the start [``True``]
+
+    .. rubric:: Examples
+
+    Open a gzipped file and process it line by line::
+
+       with openany("input.pdb.gz") as pdb:
+          for line in pdb:
+              if line.startswith('ATOM'): print(line)
+
+    Open a URL and read it::
+
+       import urllib2
+       with openany(urllib2.urlopen("http://mdanalysis.googlecode.com/")) as html:
+          print(html.read())
+
+    .. SeeAlso:: :func:`anyopen`
     """
+    stream = anyopen(datasource, mode=mode, reset=reset)
+    try:
+        yield stream
+    finally:
+        stream.close()
+
+def anyopen(datasource, mode='r', reset=True):
+    """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
+
+    *datasource* can be a filename or a stream (see :func:`isstream`). By
+    default, a stream is reset to its start if possible (via
+    :meth:`~io.IOBase.seek` or :meth:`~cString.StringIO.reset`).
+
+    If possible, the attribute ``stream.name`` is set to the filename or
+    "<stream>" if no filename could be associated with the *datasource*.
+
+    :Arguments:
+     *datasource*
+        a file (from :class:`file` or :func:`open`) or a stream (e.g. from
+        :func:`urllib2.urlopen` or :class:`cStringIO.StringIO`)
+     *mode*
+        'r' or 'w' or 'a', more complicated modes ('r+', 'w+' are not supported because
+        only the first letter is looked at) [``'r'``]
+     *reset*
+        try to read (*mode* 'r') the stream from the start [``True``]
+
+    :Returns: tuple ``stream`` which is a file-like object
+
+    .. SeeAlso:: :func:`openany` to be used with the :keyword:`with` statement.
+
+    .. versionchanged:: 0.8.2
+       Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous
+       behavior to return a tuple ``(stream, filename)``.
+    """
+    from MDAnalysis import StreamWarning
     handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': file}
 
     if mode.startswith('r'):
-        if hasattr(datasource,'next') or hasattr(datasource,'readline'):
+        if isstream(datasource):
             stream = datasource
-            filename = '(%s)' % stream.name  # maybe that does not always work?
+            try:
+                filename = str(stream.name)  # maybe that does not always work?
+            except AttributeError:
+                filename = "<stream>"
+            if reset:
+                try:
+                    stream.reset()
+                except (AttributeError, IOError):
+                    try:
+                        stream.seek(0L)
+                    except (AttributeError, IOError):
+                        warnings.warn("Stream {}: not guaranteed to be at the beginning.".format(filename),
+                                      category=StreamWarning)
         else:
             stream = None
             filename = datasource
@@ -143,11 +245,14 @@ def anyopen(datasource, mode='r'):
                 if not stream is None:
                     break
             if stream is None:
-                raise IOError("Cannot open %(filename)r in mode=%(mode)r." % vars())
-    elif mode.startswith('w'):
-        if hasattr(datasource, 'write'):
+                raise IOError(errno.EIO, "Cannot open file or stream in mode=%(mode)r." % vars(), repr(filename))
+    elif mode.startswith('w') or mode.startswith('a'):   # append 'a' not tested...
+        if isstream(datasource):
             stream = datasource
-            filename = '(%s)' % stream.name  # maybe that does not always work?
+            try:
+                filename = str(stream.name)  # maybe that does not always work?
+            except AttributeError:
+                filename = "<stream>"
         else:
             stream = None
             filename = datasource
@@ -159,25 +264,34 @@ def anyopen(datasource, mode='r'):
             openfunc = handlers[ext]
             stream = openfunc(datasource, mode=mode)
             if stream is None:
-                raise IOError("Cannot open %(filename)r in mode=%(mode)r with type %(ext)r." % vars())
+                raise IOError(errno.EIO, "Cannot open file or stream in mode=%(mode)r." % vars(), repr(filename))
     else:
         raise NotImplementedError("Sorry, mode=%(mode)r is not implemented for %(datasource)r" % vars())
-
-    return stream, filename
+    try:
+        stream.name = filename
+    except (AttributeError, TypeError):
+        pass  # can't set name (e.g. cStringIO.StringIO)
+    return stream
 
 def _get_stream(filename, openfunction=file, mode='r'):
+    """Return open stream if *filename* can be opened with *openfunction* or else ``None``."""
     try:
         stream = openfunction(filename, mode=mode)
     except IOError:
         return None
-
-    try:
-        stream.readline()
-        stream.close()
-        stream = openfunction(filename,'r')
-    except IOError:
-        stream.close()
-        stream = None
+    if mode.startswith('r'):
+        # additional check for reading (eg can we uncompress) --- is this needed?
+        try:
+            stream.readline()
+        except IOError:
+            stream.close()
+            stream = None
+        except:
+            stream.close()
+            raise
+        else:
+            stream.close()
+            stream = openfunction(filename, mode=mode)
     return stream
 
 def greedy_splitext(p):
@@ -190,6 +304,46 @@ def greedy_splitext(p):
         if not ext:
             break
     return root, extension
+
+
+def hasmethod(obj, m):
+    """Return ``True`` if object *obj* contains the method *m*."""
+    return hasattr(obj, m) and callable(getattr(obj, m))
+
+def isstream(obj):
+    """Detect if *obj* is a stream.
+
+    We consider anything a stream that has the methods
+
+    - ``close()``
+
+    and either set of the following
+
+    - ``read()``, ``readline()``, ``readlines()``
+    - ``write()``, ``writeline()``, ``writelines()``
+
+    .. SeeAlso:: :mod:`io`
+
+    :Arguments:
+      *obj*
+          stream or string
+
+    :Returns: ``True`` is *obj* is a stream, ``False`` otherwise
+
+    .. versionadded:: 0.8.2
+    """
+    signature_methods = ("close",)
+    alternative_methods = (("read", "readline", "readlines"),
+                           ("write", "writeline", "writelines"))
+
+    # Must have ALL the signature methods
+    for m in signature_methods:
+        if not hasmethod(obj, m):
+            return False
+    # Must have at least one complete set of alternative_methods
+    alternative_results = [numpy.all([hasmethod(obj, m) for m in alternatives])
+                           for alternatives in alternative_methods]
+    return numpy.any(alternative_results)
 
 def which(program):
     """Determine full path of executable *program* on :envvar:`PATH`.
@@ -209,6 +363,294 @@ def which(program):
             if is_exe(exe_file):
                 return exe_file
     return None
+
+class NamedStream(io.IOBase, basestring):
+    """Stream that also provides a (fake) name.
+
+    By wrapping a stream *stream* in this class, it can be passed to
+    code that uses inspection of the filename to make decisions. For
+    instance. :func:`os.path.split` will work correctly on a
+    :class:`NamedStream`.
+
+    The class can be used as a context manager.
+
+    :class:`NamedStream` is derived from :class:`io.IOBase` (to indicate that
+    it is a stream) *and* :class:`basestring` (that one can use
+    :func:`iterable` in the same way as for strings).
+
+    .. rubric:: Example
+
+    Wrap a :class:`cStringIO.StringIO` instance to write to::
+
+      import cStringIO
+      import os.path
+      stream = cStringIO.StringIO()
+      f = NamedStream(stream, "output.pdb")
+      print(os.path.splitext(f))
+
+    Wrap a :class:`file` instance to read from::
+
+      stream = open("input.pdb")
+      f = NamedStream(stream, stream.name)
+
+    Use as a context manager (closes stream automatically when the
+    :keyword:`with` block is left)::
+
+      with NamedStream(open("input.pdb"), "input.pdb") as f:
+         # use f
+         print f.closed  # --> False
+         # ...
+      print f.closed     # --> True
+
+    .. Note::
+
+       This class uses its own :meth:`__getitem__` method so if *stream*
+       implements :meth:`stream.__getitem__` then that will be masked and this
+       class should not be used.
+
+    .. Warning::
+
+       By default, :meth:`NamedStream.close` will **not close the stream** but
+       instead :meth:`~NamedStream.reset`` it to the start. [#NamedStreamClose]_
+
+    """
+    def __init__(self, stream, filename, reset=True, close=False):
+        """Initialize the :class:`NamedStream` from a *stream* and give it a *name*.
+
+        The constructor attempts to rewind the stream to the beginning unless
+        the keyword *reset* is set to ``False``. If rewinding fails, a
+        :class:`MDAnalysis.StreamWarning` is issued.
+
+        .. Note::
+
+           By default, this stream will *not* be closed by :keyword:`with` and
+           :meth:`close` (see there) unless the *close* keyword is set to
+           ``True``.
+
+        :Arguments:
+
+           *stream*
+               open stream (e.g. :class:`file` or :class:`cStringIO.StringIO`
+           *filename*
+               the filename that should be associated with the stream
+
+        :Keywords:
+
+           *reset*
+               start the stream from the beginning (either :meth:`reset` or :meth:`seek`)
+               when the class instance is constructed [``True``]
+           *close*
+               close the stream when a :keyword:`with` block exits or when
+               :meth:`close` is called; note that the default is **not to close
+               the stream** [``False``]
+
+        .. versionadded:: 0.8.2
+        """
+        self.stream = stream
+        self.name = filename
+        self.close_stream = close
+        if reset:
+            self.reset()
+
+    def reset(self):
+        """Move to the beginning of the stream"""
+        # try to rewind
+        from MDAnalysis import StreamWarning
+        try:
+            self.stream.reset()       # e.g. StreamIO
+        except (AttributeError, IOError):
+            try:
+                self.stream.seek(0L)  # typical file objects
+            except (AttributeError, IOError):
+                warnings.warn("NamedStream {}: not guaranteed to be at the beginning.".format(self.name),
+                              category=StreamWarning)
+
+    # access the stream
+    def __getattr__(self, x):
+        try:
+            return getattr(self.stream, x)
+        except AttributeError:
+            return getattr(self.name, x)
+
+    def __iter__(self):
+        return iter(self.stream)
+
+    def __enter__(self):
+        # do not call the stream __enter__ because the stream is already open
+        return self
+
+    def __exit__(self, *args):
+        # NOTE: By default (close=False) we only reset the stream and NOT close it; this makes
+        #       it easier to use it as a drop-in replacement for a filename that might
+        #       be opened repeatedly (at least in MDAnalysis)
+        #try:
+        #    return self.stream.__exit__(*args)
+        #except AttributeError:
+        #    super(NamedStream, self).__exit__(*args)
+        self.close()
+
+    # override more IOBase methods, as these are provided by IOBase and are not
+    # caught with __getattr__ (ugly...)
+    def close(self, force=False):
+        """Reset or close the stream.
+
+        If :attr:`NamedStream.close_stream` is set to ``False`` (the default)
+        then this method will *not close the stream* and only :meth:`reset` it.
+
+        If the *force* = ``True`` keyword is provided, the stream will be
+        closed.
+
+        .. Note:: This ``close()`` method is non-standard. ``del NamedStream``
+                  always closes the underlying stream.
+
+        """
+        if self.close_stream or force:
+            try:
+                return self.stream.close()
+            except AttributeError:
+                return super(NamedStream, self).close()
+        else:
+            self.flush()
+            self.reset()
+
+    def __del__(self):
+        """Always closes the stream."""
+        self.close(force=True)
+
+    @property
+    def closed(self):
+        """``True`` if stream is closed."""
+        try:
+            return self.stream.closed
+        except AttributeError:
+            return super(NamedStream, self).closed
+
+    def seek(self, offset, whence=os.SEEK_SET):
+        """Change the stream position to the given byte *offset* .
+
+        *offset* is interpreted relative to the position indicated by
+        *whence*. Values for *whence* are:
+
+        - :data:`io.SEEK_SET` or 0 – start of the stream (the default); *offset*
+          should be zero or positive
+        - :data:`io.SEEK_CUR` or 1 – current stream position; *offset* may be
+          negative
+        - :data:`io.SEEK_END` or 2 – end of the stream; *offset* is usually
+          negative
+
+        :Returns: the new absolute position.
+        """
+        try:
+            return self.stream.seek(offset, whence)  # file.seek: no kw
+        except AttributeError:
+            return super(NamedStream, self).seek(offset, whence)
+
+    def tell(self):
+        """Return the current stream position."""
+        try:
+            return self.stream.tell()
+        except AttributeError:
+            return super(NamedStream, self).tell()
+
+    def truncate(self, *size):
+        """Truncate the stream's size to *size*.
+
+        The size defaults to the current position (if no *size* argument is
+        supplied). The current file position is not changed.
+        """
+        try:
+            return self.stream.truncate(*size)
+        except AttributeError:
+            return super(NamedStream, self).truncate(*size)
+
+    def seekable(self):
+        """Return ``True`` if the stream supports random access.
+
+        If ``False``, :meth:`seek`, :meth:`tell` and :meth:`truncate` will raise :exc:`IOError`.
+        """
+        try:
+            return self.stream.seekable()
+        except AttributeError:
+            return super(NamedStream, self).seekable()
+
+    def readable(self):
+        """Return ``True`` if the stream can be read from.
+
+        If ``False``, :meth:`read` will raise :exc:`IOError`.
+        """
+        try:
+            return self.stream.readable()
+        except AttributeError:
+            return super(NamedStream, self).readable()
+
+    def writable(self):
+        """Return ``True`` if the stream can be written to.
+
+        If ``False``, :meth:`write` will raise :exc:`IOError`.
+        """
+        try:
+            return self.stream.writable()
+        except AttributeError:
+            return super(NamedStream, self).writable()
+
+    def flush(self):
+        """Flush the write buffers of the stream if applicable.
+
+        This does nothing for read-only and non-blocking streams. For file
+        objects one also needs to call :func:`os.fsync` to write contents to
+        disk.
+        """
+        try:
+            return self.stream.flush()
+        except AttributeError:
+            return super(NamedStream, self).flush()
+
+    def fileno(self):
+        """Return the underlying file descriptor (an integer) of the stream if it exists.
+
+        An :exc:`IOError` is raised if the IO object does not use a file descriptor.
+        """
+        try:
+            return self.stream.fileno()
+        except AttributeError:
+            # IOBase.fileno does not raise IOError as advertised so we do this here
+            raise IOError("This NamedStream does not use a file descriptor.")
+
+    # fake the important parts of the string API
+    # (other methods such as rfind() are automatically dealt with via __getattr__)
+    def __getitem__(self, x):
+        return self.name[x]
+
+    def __eq__(self, x):
+        return self.name == x
+
+    def __neq__(self, x):
+        return self.name != x
+
+    def __gt__(self, x):
+        return self.name > x
+
+    def __ge__(self, x):
+        return self.name >= x
+
+    def __lt__(self, x):
+        return self.name < x
+
+    def __le__(self, x):
+        return self.name <= x
+
+    def __len__(self):
+        return len(self.name)
+
+    def __format__(self, format_spec):
+        return self.name.format(format_spec)
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return "<NamedStream({0}, {1})>".format(self.stream, self.name)
+
 
 def realpath(*args):
     """Join all args and return the real path, rooted at /.

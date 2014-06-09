@@ -24,6 +24,7 @@ Read a list of atoms from a GROMOS/Gromacs GRO coordinate file to build a basic 
 Atom types and masses are guessed.
 """
 
+import MDAnalysis.core.util as util
 from MDAnalysis.core.AtomGroup import Atom
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
 import numpy
@@ -45,7 +46,7 @@ def parse(filename):
         ### Read through .gro file
         atom_iter = 0
         atoms = []
-        with open(filename , "r") as grofile:
+        with util.openany(filename , "r") as grofile:
                 for linenum,line in enumerate(grofile):
                         query_atm_line = False
                         try:

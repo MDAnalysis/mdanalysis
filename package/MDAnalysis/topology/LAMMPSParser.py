@@ -38,6 +38,7 @@ Deprecated classes
 
 """
 
+import MDAnalysis.core.util as util
 import numpy
 import logging
 
@@ -401,7 +402,7 @@ class LAMMPSDataConverter(object):
             self.title = "LAMMPS data file"
         else:
             # Open and check validity
-            with open(filename, 'r') as file:
+            with util.openany(filename, 'r') as file:
                 file_iter = file.xreadlines()
                 self.title = file_iter.next()
                 # Parse headers
@@ -422,7 +423,7 @@ class LAMMPSDataConverter(object):
 
             # Parse sections
             # XXX This is a crappy way to do it
-            with open(filename, 'r') as file:
+            with util.openany(filename, 'r') as file:
                 file_iter = file.xreadlines()
                 # Create coordinate array
                 positions = numpy.zeros((headers['atoms'], 3), numpy.float64)
@@ -476,7 +477,7 @@ class LAMMPSDataConverter(object):
         #psf_atom_format = "%8d %4.4s %-4.4s %-4.4s %-4.4s %-4.4s %16.8e %1s %-7.4f %7.7s %s\n"
         # Oli formatted -- works with MDAnalysis verison 81
         psf_atom_format = "%8d %4s %-4s %4s %-4s% 4s %-14.6f%-14.6f%8s\n"
-        with open(filename, 'w') as file:
+        with util.openany(filename, 'w') as file:
             file.write("PSF\n\n")
             file.write(string.rjust('0', 8) + ' !NTITLE\n\n')
             file.write(string.rjust(str(len(self.sections["Atoms"])), 8) + ' !NATOM\n')
@@ -509,7 +510,7 @@ class LAMMPSDataConverter(object):
         import string
         atom_format = "%6s%.5s %4s %4s %.4s    %8.3f%8.3f%8.3f%6.2f%6.2f          %2s  \n"
         p = self.positions
-        with open(filename, 'w') as file:
+        with util.openany(filename, 'w') as file:
             for i, atom in enumerate(self.sections["Atoms"]):
                 line = ["ATOM  ", str(i+1), 'XXXX', 'TEMP', str(atom.type+1), p[i,0], p[i,1], p[i,2], 0.0, 0.0, str(atom.type)]
                 file.write(atom_format%tuple(line))

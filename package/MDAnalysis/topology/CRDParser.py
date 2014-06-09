@@ -26,12 +26,12 @@ Atom types and masses are guessed.
 
 
 from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.core.util import FORTRANReader
+import MDAnalysis.core.util as util
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
 
 
-extformat = FORTRANReader('2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
-stdformat = FORTRANReader('2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5')
+extformat = util.FORTRANReader('2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
+stdformat = util.FORTRANReader('2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5')
 
 def parse(filename):
     """Parse CRD file *filename* and return the dict `structure`.
@@ -45,7 +45,7 @@ def parse(filename):
     """
     atoms = []
     atom_serial = 0
-    with open(filename) as crd:
+    with util.openany(filename) as crd:
         for linenum,line in enumerate(crd):
             # reading header
             if line.split()[0] == '*':

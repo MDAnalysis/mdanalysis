@@ -110,7 +110,6 @@ class XYZWriter(base.Writer):
     format = 'XYZ'
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
-    _Timestep = Timestep
 
     def __init__(self, *args, **kwargs):
         """Initialize the XYZ trajectory writer
@@ -140,7 +139,7 @@ class XYZWriter(base.Writer):
         self.atomnames = self._get_atomnames(kwargs.pop('atoms', "X"))
         self.remark = kwargs.pop('remark', "Written by {0} (release {1})".format(self.__class__.__name__, MDAnalysis.__version__))
 
-        self.xyz, fn = util.anyopen(self.filename, 'w')  # can also be gz, bz2
+        self.xyz = util.anyopen(self.filename, 'w')  # can also be gz, bz2
 
     def _get_atomnames(self, atoms):
         """Return a list of atom names"""
@@ -238,7 +237,8 @@ class XYZReader(base.Reader):
 
     .. Note: this can read both compressed (foo.xyz) and compressed
           (foo.xyz.bz2 or foo.xyz.gz) files; uncompression is handled
-          on the fly
+          on the fly and also reads streams via
+          :class:`~MDAnalysis.core.util.NamedStream`.
 
     File format: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
 
@@ -251,9 +251,9 @@ class XYZReader(base.Reader):
 
     # this will be overidden when an instance is created and the file extension checked
     format = "XYZ"
-
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
+    _Timestep = Timestep
 
     def __init__(self, filename, **kwargs):
         self.filename = filename
@@ -261,15 +261,8 @@ class XYZReader(base.Reader):
         # the filename has been parsed to be either be foo.xyz or foo.xyz.bz2 by coordinates::core.py
         # so the last file extension will tell us if it is bzipped or not
         root, ext = os.path.splitext(self.filename)
-        if ext[1:] == "bz2":
-            self.compression = "bz2"
-            self.xyzfile = bz2.BZ2File(self.filename, 'rb')
-        elif ext[1:] == "gz":
-            self.compression = "gz"
-            self.xyzfile = gzip.open(self.filename, 'rb')
-        elif ext[1:] == "xyz":
-            self.compression = None
-            self.xyzfile = open(self.filename, 'r')
+        self.xyzfile = util.anyopen(self.filename, "r")
+        self.compression = ext[1:] if ext[1:] != "xyz" else None
 
         # note that, like for xtc and trr files, __numatoms and __numframes are used quasi-private variables
         # to prevent the properties being recalculated
@@ -283,9 +276,12 @@ class XYZReader(base.Reader):
         self.delta = kwargs.pop("delta", 1.0)   # can set delta manually, default is 1ps (taken from TRJReader)
         self.skip_timestep = 1
 
-        self.ts = Timestep(self.numatoms)
+        self.ts = self._Timestep(self.numatoms)  # numatoms has sideeffects: read trajectory... (FRAGILE)
 
-        # Read in the first timestep
+        # Read in the first timestep (FRAGILE);
+        # FIXME: Positions on frame 0 (whatever that means) instead of 1 (as all other readers do).
+        #        Haven't quite figured out where to start with all the self._reopen() etc.
+        #        (Also cannot just use seek() or reset() because that would break with urllib2.urlopen() streams)
         self._read_next_timestep()
 
     @property
@@ -302,7 +298,7 @@ class XYZReader(base.Reader):
 
     def _read_xyz_natoms(self,filename):
         # this assumes that this is only called once at startup and that the filestream is already open
-        # read the first line
+        # (FRAGILE)
         n = self.xyzfile.readline()
         self.close()
         # need to check type of n
@@ -388,18 +384,10 @@ class XYZReader(base.Reader):
         self.open_trajectory()
 
     def open_trajectory(self):
-        if not self.xyzfile is None:
+        if self.xyzfile is not None:
             raise IOError(errno.EALREADY, 'XYZ file already opened', self.filename)
-        if not os.path.exists(self.filename):
-            # must check; otherwise might segmentation fault
-            raise IOError(errno.ENOENT, 'XYZ file not found', self.filename)
 
-        if self.compression == "bz2":
-            self.xyzfile = bz2.BZ2File(self.filename, 'rb')
-        elif self.compression == "gz":
-            self.xyzfile = gzip.open(self.filename, 'rb')
-        elif self.compression == None:
-            self.xyzfile = open(self.filename, 'r')
+        self.xyzfile = util.anyopen(self.filename, "r")
 
         # reset ts
         ts = self.ts

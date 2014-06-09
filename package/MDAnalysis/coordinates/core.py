@@ -100,8 +100,11 @@ def reader(filename, **kwargs):
 def get_writer_for(filename=None, format='DCD', multiframe=None):
     """Return an appropriate trajectory or frame writer class for *filename*.
 
-    The format is determined by the *format* argument or the extension
-    of *filename*. The default is to return a dcd writer (*format* = 'dcd').
+    The format is determined by the *format* argument or the extension of
+    *filename*. The default is to return a dcd writer (*format* = 'dcd'). If
+    the *filename* is not provided or if it is something like a
+    :class:`cStringIO.StringIO` instance then the *format* argument must be
+    used.
 
     :Arguments:
       *filename*
@@ -119,7 +122,7 @@ def get_writer_for(filename=None, format='DCD', multiframe=None):
        Added *multiframe* keyword; the default ``None`` reflects the previous
        behaviour.
     """
-    if filename:
+    if isinstance(filename, basestring) and filename:
         root, ext = get_ext(filename)
         format = check_compressed_format(root, ext)
     if multiframe is None:
@@ -192,37 +195,47 @@ def get_ext(filename):
         ext = ext[1:]
     return root, ext.lower()
 
-def guess_format(filename, format=None):
-    """Returns the type of coordinate file *filename*.
+def format_from_filename_extension(filename):
+    """Guess file format from the file extension"""
+    try:
+        root, ext = get_ext(filename)
+    except:
+        raise TypeError("Cannot determine file format for %r" % filename)
+    format = ext.upper()
+    format = check_compressed_format(root, ext)
+    return format
 
-    The current heuristic simply looks at the filename extension but
-    more complicated probes could be implemented here or in the
-    individual packages (e.g. as static methods).
+def guess_format(filename, format=None):
+    """Returns the type of file *filename*.
+
+    The current heuristic simply looks at the filename extension but more
+    complicated probes could be implemented here or in the individual packages
+    (e.g. as static methods). *filename* can also be a stream, in which case
+    *filename.name* is looked at for a hint to the format if *format* is not
+    provided.
 
     If *format* is supplied then it overrides the auto detection.
     """
     if format is None:
-        # simple extension checking... something more complicated is left
-        # for the ambitious
-        # Note: at the moment the upper-case extension *is* the format specifier
-        if MDAnalysis.core.util.iterable(filename):
-            # list of filenames, handled by ChainReader
-            format = 'CHAIN'
-        else:
+        if MDAnalysis.core.util.isstream(filename):
+            # perhaps StringIO or open stream
             try:
-                root, ext = get_ext(filename)
-            except:
-                raise TypeError("Cannot determine coordinate format for %r" % filename)
-            format = ext.upper()
-            format = check_compressed_format(root, ext)
-    else:
-        # internally, formats are all uppercase
-        # enable chain reader with explicit format
-        if MDAnalysis.core.util.iterable(filename):
-            # list of filenames, handled by ChainReader
-            format = 'CHAIN'
+                format = format_from_filename_extension(filename.name)
+            except AttributeError:
+                pass
+            if format is None:
+                raise ValueError("guess_format requires an explicit format specifier for stream {}".format(filename))
         else:
-            format = str(format).upper()
+            # iterator, list, filename: simple extension checking... something more
+            # complicated is left for the ambitious.
+            # Note: at the moment the upper-case extension *is* the format specifier
+            # and list of filenames is handled by ChainReader
+            format = format_from_filename_extension(filename) if not MDAnalysis.core.util.iterable(filename) else 'CHAIN'
+    else:
+        # format was set; but a list of filenames is always handled by ChainReader
+        format = format if not MDAnalysis.core.util.iterable(filename) else 'CHAIN'
+
+    format = str(format).upper()
 
     # sanity check
     if format != 'CHAIN' and not format in MDAnalysis.coordinates._trajectory_readers:

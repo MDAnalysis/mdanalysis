@@ -30,6 +30,7 @@ space-separated "PSF" file variants.
 """
 
 import warnings
+import MDAnalysis.core.util as util
 from MDAnalysis import FileFormatWarning
 
 import logging
@@ -41,7 +42,7 @@ def parse(filename):
     :Returns: MDAnalysis internal *structure* dict as defined here.
     """
     # Open and check psf validity
-    with open(filename,'r') as psffile:
+    with util.openany(filename,'r') as psffile:
         next_line = skip_line = psffile.next
         header = next_line()
         if header[:3] != "PSF":

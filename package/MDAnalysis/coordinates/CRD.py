@@ -75,7 +75,7 @@ class CRDReader(base.Reader):
             convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
         coords_list = []
-        with open(crdfilename , 'r') as crdfile:
+        with util.openany(crdfilename , 'r') as crdfile:
             extended = False
             natoms = 0
             for linenum,line in enumerate(crdfile):
@@ -182,7 +182,7 @@ class CRDWriter(base.Writer):
 
         atoms = selection.atoms     # make sure to use atoms (Issue 46)
         coor = atoms.coordinates()  # can write from selection == Universe (Issue 49)
-        with open(self.filename,'w') as self.crd:
+        with util.openany(self.filename,'w') as self.crd:
             self._TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
             self._TITLE("")
             self._NUMATOMS(len(atoms))

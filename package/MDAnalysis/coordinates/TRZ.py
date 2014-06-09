@@ -77,6 +77,7 @@ import os, errno
 import base
 from base import Timestep
 import MDAnalysis.core
+import MDAnalysis.core.util as util
 import numpy
 from MDAnalysis.coordinates.core import triclinic_box
 
@@ -84,12 +85,12 @@ class Timestep(base.Timestep):
     """ TRZ custom Timestep"""
     def __init__(self, arg, **kwargs):
         if numpy.dtype(type(arg)) == numpy.dtype(int):
-            self.frame = 0 
-            self.step = 0 
+            self.frame = 0
+            self.step = 0
             self.numatoms = arg
             self.time = 0.0
             self.pressure = 0.0
-            self.pressure_tensor = numpy.zeros((6), dtype=numpy.float64) 
+            self.pressure_tensor = numpy.zeros((6), dtype=numpy.float64)
             self.total_energy = 0.0
             self.potential_energy = 0.0
             self.kinetic_energy = 0.0
@@ -201,7 +202,7 @@ class TRZReader(base.Reader):
         self.convert_units = convert_units
 
         self.filename = trzfilename
-        self.trzfile = open(self.filename, 'rb')
+        self.trzfile = util.anyopen(self.filename, 'rb')
 
         self.__numatoms = numatoms
         self.__numframes = None
@@ -277,7 +278,7 @@ class TRZReader(base.Reader):
             ts._z[:] = data['rz']
             ts._velocities[:,0] = data['vx']
             ts._velocities[:,1] = data['vy']
-            ts._velocities[:,2] = data['vz']         
+            ts._velocities[:,2] = data['vz']
 
             if self.convert_units: #Convert things read into MDAnalysis' native formats (nm -> angstroms in this case)
                 self.convert_pos_from_native(self.ts._pos)
@@ -327,7 +328,7 @@ class TRZReader(base.Reader):
     def _read_trz_numframes(self, trzfile):
         """Uses size of file and dtype information to determine how many frames exist
 
-        .. versionchanged:: 0.8.2 
+        .. versionchanged:: 0.8.2
            Now is based on filesize rather than reading entire file
         """
         fsize = os.fstat(trzfile.fileno()).st_size # size of file in bytes
@@ -432,7 +433,7 @@ class TRZReader(base.Reader):
         else:
             seeksize = int(seeksize)
 
-            self.trzfile.seek(seeksize,1)            
+            self.trzfile.seek(seeksize,1)
 
     def rewind(self):
         """Reposition reader onto first frame"""
@@ -451,7 +452,7 @@ class TRZReader(base.Reader):
         if not os.path.exists(self.filename):
             raise IOError(errno.ENOENT, 'TRZ file not found', self.filename)
 
-        self.trzfile = file(self.filename, 'rb')
+        self.trzfile = util.anyopen(self.filename, 'rb')
 
         #Reset ts
         ts = self.ts
@@ -487,7 +488,7 @@ class TRZWriter(base.Writer):
 
     format='TRZ'
 
-    units = {'time':'ps', 'length':'nm', 'velocity':'nm/ps'}   
+    units = {'time':'ps', 'length':'nm', 'velocity':'nm/ps'}
 
     def __init__(self, filename, numatoms, title='TRZ', convert_units=None):
         """Create a TRZWriter
@@ -504,7 +505,7 @@ class TRZWriter(base.Writer):
          *convert_units*
           units are converted to the MDAnalysis base format; ``None`` selects
           the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
-          (see :ref:`flags-label`)       
+          (see :ref:`flags-label`)
         """
         self.filename = filename
         if numatoms is None:
@@ -517,10 +518,10 @@ class TRZWriter(base.Writer):
             convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units
 
-        self.trzfile = open(self.filename, 'wb')
+        self.trzfile = util.anyopen(self.filename, 'wb')
 
         self._writeheader(title)
-        
+
         floatsize = str(numatoms) + 'f4'
         self.frameDtype = numpy.dtype([('p1a','i4'),
                                        ('nframe','i4'),
@@ -564,15 +565,15 @@ class TRZWriter(base.Writer):
 
     def _writeheader(self, title):
         hdt = numpy.dtype([('pad1','i4'),('title','80c'),('pad2','i4'),
-                           ('pad3','i4'),('nrec','i4'),('pad4','i4')]) 
+                           ('pad3','i4'),('nrec','i4'),('pad4','i4')])
         out = numpy.zeros((), dtype = hdt)
         out['pad1'], out['pad2'] = 80, 80
         out['title'] = title
         out['pad3'], out['pad4'] = 4, 4
         out['nrec'] = 10
         out.tofile(self.trzfile)
-        
-    def write_next_timestep(self, ts):    
+
+    def write_next_timestep(self, ts):
         # Check size of ts is same as initial
         if not ts.numatoms == self.numatoms:
             raise ValueError("Number of atoms in ts different to initialisation")

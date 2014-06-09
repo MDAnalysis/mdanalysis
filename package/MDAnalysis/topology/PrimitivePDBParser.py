@@ -47,7 +47,7 @@ numbers up to 99,999.
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge, guess_bonds
 import numpy as np
 import MDAnalysis.coordinates.PDB
-
+import MDAnalysis.core.util as util
 
 class PDBParseError(Exception):
     """Signifies an error during parsing a PDB file."""
@@ -104,7 +104,7 @@ class PrimitivePDBParser(object):
                 bfactor = atom.tempFactor
                 occupancy = atom.occupancy
                 altLoc = atom.altLoc
-                
+
                 atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),\
                                   bfactor=bfactor,serial=atom.serial, altLoc=altLoc))
             # TER atoms
@@ -124,9 +124,8 @@ class PrimitivePDBParser(object):
         mapping =  dict((a.serial, a.number) for a in  self.structure["_atoms"])
 
         bonds = set()
-        with open(filename , "r") as filename:
-            lines = ((num, line[6:].split()) for num,line in enumerate(filename) 
-                     if line[:6] == "CONECT")
+        with util.openany(filename, "r") as filename:
+            lines = ((num, line[6:].split()) for num,line in enumerate(filename) if line[:6] == "CONECT")
             for num, bond in lines:
                 atom, atoms = int(bond[0]) , map(int,bond[1:])
                 for a in atoms:

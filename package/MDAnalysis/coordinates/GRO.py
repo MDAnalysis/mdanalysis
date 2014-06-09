@@ -97,7 +97,7 @@ class GROReader(base.Reader):
                 coords_list = []
                 velocities_list = []
 
-                with open(grofilename , 'r') as grofile:
+                with util.openany(grofilename , 'r') as grofile:
                         # Read first two lines to get number of atoms
                         grofile.readline()
                         total_atnums = int(grofile.readline())
@@ -250,7 +250,7 @@ class GROWriter(base.Writer):
                                          "No file was written." %
                                          (self.gro_coor_limits["min"], self.gro_coor_limits["max"]))
 
-                with open(self.filename , 'w') as output_gro:
+                with util.openany(self.filename , 'w') as output_gro:
                         # Header
                         output_gro.write('Written by MDAnalysis\n')
                         output_gro.write(self.fmt['numatoms'] % len(atoms))

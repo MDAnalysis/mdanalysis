@@ -110,6 +110,7 @@ __copyright__   = "GNU Public Licence, v2"
 import sys
 import xdrlib
 
+import MDAnalysis.core.util
 from tpr import utils as U
 
 import logging
@@ -144,7 +145,7 @@ def parse(tprfile):
 
     :Returns: ``structure`` dict
     """
-    tprf = open(tprfile).read()
+    tprf = MDAnalysis.core.util.anyopen(tprfile).read()
     data = xdrlib.Unpacker(tprf)
     try:
         th = U.read_tpxheader(data)                    # tpxheader

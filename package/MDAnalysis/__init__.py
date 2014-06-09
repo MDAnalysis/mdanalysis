@@ -218,6 +218,15 @@ class ConversionWarning(Warning):
 class FileFormatWarning(Warning):
     """Warning indicating possible problems with a file format."""
 
+class StreamWarning(Warning):
+    """Warning indicating a possible problem with a stream.
+
+    :exc:`StreamWarning` is used when streams are substituted for simple access
+    by filename (see in particular
+    :class:`~MDAnalysis.core.util.NamedStream`). This does not work everywhere
+    in MDAnalysis (yet).
+    """
+
 # Bring some often used objects into the current namespace
 from core import Timeseries
 from core.AtomGroup import Universe, asUniverse, Merge

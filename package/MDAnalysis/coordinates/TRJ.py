@@ -442,7 +442,7 @@ class TRJReader(base.Reader):
 
         def open_trajectory(self):
                 """Open the trajectory for reading and load first frame."""
-                self.trjfile, filename = util.anyopen(self.filename, 'r')
+                self.trjfile = util.anyopen(self.filename, 'r')
                 self.header = self.trjfile.readline()  # ignore first line
                 if len(self.header.rstrip()) > 80:
                         # Chimera uses this check

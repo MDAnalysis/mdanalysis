@@ -507,7 +507,7 @@ class PrimitivePDBReader(base.Reader):
 
         unitcell = numpy.zeros(6, dtype=numpy.float32)
 
-        class Struct:
+        class Struct(object):
             def __init__(self, **entries):
                 self.__dict__.update(entries)
 
@@ -843,7 +843,7 @@ class PrimitivePDBWriter(base.Writer):
         self.step = step
         self.remarks = remarks
 
-        self.pdbfile = file(self.filename, 'w')  # open file on init
+        self.pdbfile = util.anyopen(self.filename, 'w')  # open file on init
         self.has_END = False
 
     def close(self):
@@ -941,8 +941,8 @@ class PrimitivePDBWriter(base.Writer):
         if not self.bonds:
             return
 
-        if (not self.obj or 
-            not hasattr(self.obj, 'universe') or 
+        if (not self.obj or
+            not hasattr(self.obj, 'universe') or
             not hasattr(self.obj.universe, 'bonds')):
             return
 

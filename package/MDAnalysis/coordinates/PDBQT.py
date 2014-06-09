@@ -298,8 +298,8 @@ class PDBQTWriter(base.Writer):
     pdb_coor_limits = {"min":-999.9995, "max":9999.9995}
 
     def __init__(self,filename,**kwargs):
-        self.filename = util.filename(filename,ext='pdbqt')
-        self.pdb = open(self.filename,'w')
+        self.filename = util.filename(filename, ext='pdbqt')
+        self.pdb = util.anyopen(self.filename, 'w')
 
     def close(self):
         self.pdb.close()
