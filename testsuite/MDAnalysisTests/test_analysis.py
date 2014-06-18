@@ -143,13 +143,15 @@ class TestAlign(TestCase):
 class TestHydrogenBondAnalysis(TestCase):
     def setUp(self):
         self.universe = u = MDAnalysis.Universe(PDB_helix)
-        self.detect_hydrogens = "distance"
+        self.kwargs = {'detect_hydrogens': "distance",
+                       'distance': 3.0,
+                       'angle': 150.0,
+                       }
         # ideal helix with 1 proline:
         self.num_bb_hbonds = u.atoms.numberOfResidues() - u.SYSTEM.PRO.numberOfResidues() - 4
 
     def _run(self):
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'protein', 'protein',
-                                                            distance=3.0, angle=150.0, detect_hydrogens=self.detect_hydrogens)
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'protein', 'protein', **self.kwargs)
         h.run()
         return h
 
@@ -182,8 +184,19 @@ class TestHydrogenBondAnalysis(TestCase):
 class TestHydrogenBondAnalysisHeuristic(TestHydrogenBondAnalysis):
     def setUp(self):
         super(TestHydrogenBondAnalysisHeuristic, self).setUp()
-        self.detect_hydrogens = "heuristic"
+        self.kwargs['detect_hydrogens'] = "heuristic"
 
+class TestHydrogenBondAnalysisHeavy(TestHydrogenBondAnalysis):
+    def setUp(self):
+        super(TestHydrogenBondAnalysisHeavy, self).setUp()
+        self.kwargs['distance_type'] = "heavy"
+        self.kwargs["distance"] = 3.5
+
+class TestHydrogenBondAnalysisHeavyFail(TestHydrogenBondAnalysisHeavy):
+    def setUp(self):
+        super(TestHydrogenBondAnalysisHeavyFail, self).setUp()
+        self.kwargs["distance"] = 3.0
+        self.num_bb_hbonds = 0  # no H-bonds with a D-A distance < 3.0 A (they start at 3.05 A)
 
 
 class TestAlignmentProcessing(TestCase):

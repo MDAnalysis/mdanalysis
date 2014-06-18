@@ -370,7 +370,7 @@ class HydrogenBondAnalysis(object):
                         N=1.31, O=1.31, P=1.58, S=1.55)
 
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
-                 update_selection1=True, update_selection2=True, filter_first=True,
+                 update_selection1=True, update_selection2=True, filter_first=True, distance_type='hydrogen',
                  distance=3.0, angle=120.0,
                  forcefield='CHARMM27', donors=None, acceptors=None,
                  start=None, stop=None, step=None,
@@ -411,7 +411,7 @@ class HydrogenBondAnalysis(object):
           *distance*
             Distance cutoff for hydrogen bonds; only interactions with a H-A distance
             <= *distance* (and the appropriate D-H-A angle, see *angle*) are
-            recorded. [3.0
+            recorded. (Note: *distance_type* can change this to the D-A distance.) [3.0]
           *angle*
             Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
             180º.  A hydrogen bond is only recorded if the D-H-A angle is
@@ -451,6 +451,11 @@ class HydrogenBondAnalysis(object):
             always give the correct answer but "heuristic" is faster,
             especially when the donor list is updated each
             for each frame. ["distance"]
+          *distance_type*
+            Measure hydrogen bond lengths between donor and acceptor heavy
+            attoms ("heavy") or between donor hydrogen and acceptor heavy
+            atom ("hydrogen"). If using "heavy" then one should set the *distance*
+            cutoff to a higher value such as 3.5 Å. ["hydrogen"]
 
         The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
 
@@ -473,6 +478,11 @@ class HydrogenBondAnalysis(object):
            ``True`` (see `Issue 138`_). Set to ``False`` if your selections only
            need to be determined once (will increase performance).
 
+        .. versionchanged:: 0.8.2
+           New keyword *distance_type* to select between calculation between
+           heavy atoms or hydrogen-acceptor. It defaults to the previous
+           behavior (i.e. "hydrogen").
+
         .. _`Issue 138`: http://code.google.com/p/mdanalysis/issues/detail?id=138
         """
         self._get_bonded_hydrogens_algorithms = {
@@ -492,6 +502,7 @@ class HydrogenBondAnalysis(object):
         self.update_selection2 = update_selection2
         self.filter_first = filter_first
         self.distance = distance
+        self.distance_type = distance_type  # note: everything except 'heavy' will give the default behavior
         self.angle = angle
         self.traj_slice = slice(start if isinstance(start, int) else None, # internal frames are 0 based
                                 stop if isinstance(stop, int) else None,
@@ -502,6 +513,7 @@ class HydrogenBondAnalysis(object):
             donors = []
         if acceptors is None:
             acceptors = []
+        self.forcefield = forcefield
         self.donors = tuple(set(self.DEFAULT_DONORS[forcefield]).union(donors))
         self.acceptors = tuple(set(self.DEFAULT_ACCEPTORS[forcefield]).union(acceptors))
 
@@ -519,6 +531,17 @@ class HydrogenBondAnalysis(object):
         self._update_selection_1()
         self._update_selection_2()
         self.verbose = verbose  # per-frame debugging output?
+
+        self._log_parameters()
+
+    def _log_parameters(self):
+        """Log important parameters to the logfile."""
+        logger.info("HBond analysis: selection1 = %r (update: %r)", self.selection1, self.update_selection1)
+        logger.info("HBond analysis: selection2 = %r (update: %r)", self.selection2, self.update_selection2)
+        logger.info("HBond analysis: criterion: donor %s atom and acceptor atom distance <= %.3f A", self.distance_type, self.distance)
+        logger.info("HBond analysis: criterion: angle D-H-A >= %.3f degrees", self.angle)
+        logger.info("HBond analysis: force field %s to guess donor and acceptor names", self.forcefield)
+        logger.info("HBond analysis: bonded hydrogen detection algorithm: %r", self.detect_hydrogens)
 
     def _get_bonded_hydrogens(self, atom, **kwargs):
         """Find hydrogens bonded to *atom*.
@@ -740,7 +763,8 @@ class HydrogenBondAnalysis(object):
                         res = ns_acceptors.search_list(AtomGroup([h]), self.distance)
                         for a in res:
                             angle = self.calc_angle(d,h,a)
-                            dist = self.calc_eucl_distance(h,a)
+                            donor_atom = h if self.distance_type != 'heavy' else d
+                            dist = self.calc_eucl_distance(donor_atom, a)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug("S1-D: %s <-> S2-A: %s %f A, %f DEG" % (h.number+1, a.number+1, dist, angle))
                                 #self.logger_debug("S1-D: %r <-> S2-A: %r %f A, %f DEG" % (h, a, dist, angle))
@@ -759,7 +783,8 @@ class HydrogenBondAnalysis(object):
                                          (a.number+1, h.number+1) in already_found):
                                 continue
                             angle = self.calc_angle(d,h,a)
-                            dist = self.calc_eucl_distance(h,a)
+                            donor_atom = h if self.distance_type != 'heavy' else d
+                            dist = self.calc_eucl_distance(donor_atom, a)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug("S1-A: %s <-> S2-D: %s %f A, %f DEG" % (a.number+1, h.number+1, dist, angle))
                                 #self.logger_debug("S1-A: %r <-> S2-D: %r %f A, %f DEG" % (a, h, dist, angle))

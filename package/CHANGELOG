@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/14  richardjgowers, tyler.je.reddy, orbeckst
+??/??/14  richardjgowers, tyler.je.reddy, orbeckst,  e.jjordan12
 
   * 0.8.2
 
@@ -27,6 +27,8 @@ The rules for this file:
     to toggle consideration of periodic boundaries
   * XYZWriter (write simple XYZ trajectories)
   * TRZReader upgrades, seeking and numframes faster
+  * HydrogenBond analysis: new keyword distance_type to alternatively
+    look at the distance between heavy atoms (Issue 185)
 
   Changes
 
