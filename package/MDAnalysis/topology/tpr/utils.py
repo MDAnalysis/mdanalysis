@@ -235,6 +235,11 @@ def do_iparams(data, functypes, fver):
                    S.F_BONDS, S.F_G96BONDS,
                    S.F_HARMONIC, S.F_IDIHS]:
             do_harm(data)
+        elif i in [S.F_LINEAR_ANGLES]:
+            data.unpack_float() # linangle.klinA
+            data.unpack_float() # linangle.aA
+            data.unpack()       # linangle.klinB
+            data.unpack()       # linangle.aB);
         elif i in [S.F_FENEBONDS]:
             data.unpack_float()                             # fene.bm
             data.unpack_float()                             # fene.kb
@@ -265,10 +270,14 @@ def do_iparams(data, functypes, fver):
             data.unpack_float()                             # u_b.ktheta
             data.unpack_float()                             # u_b.r13
             data.unpack_float()                             # u_b.kUB
+            if fver >= 79:
+                data.unpack_float() # u_b.thetaB
+                data.unpack_float() # u_b.kthetaB
+                data.unpack_float() # u_b.r13B
+                data.unpack_float() # u_b.kUBB
         elif i in [S.F_QUARTIC_ANGLES]:
             data.unpack_float()                             # qangle.theta
             ndo_real(data, 5);                              # qangle.c
-
         elif i in [S.F_BHAM]:
             data.unpack_float()                             # bham.a
             data.unpack_float()                             # bham.b
@@ -277,6 +286,10 @@ def do_iparams(data, functypes, fver):
             data.unpack_float()                             # morse.b0
             data.unpack_float()                             # morse.cb
             data.unpack_float()                             # morse.beta
+            if fver >= 79:
+                data.unpack_float() # morse.b0B
+                data.unpack_float() # morse.cbB
+                data.unpack_float() # morse.betaB
         elif i in [S.F_CUBICBONDS]:
             data.unpack_float()                             # cubic.b0
             data.unpack_float()                             # cubic.kb
@@ -285,6 +298,10 @@ def do_iparams(data, functypes, fver):
             pass
         elif i in [S.F_POLARIZATION]:
             data.unpack_float()                             # polarize.alpha
+        elif i in [S.F_ANHARM_POL]:
+            data.unpack_float() # anharm_polarize.alpha
+            data.unpack_float() # anharm_polarize.drcut
+            data.unpack_float() # anharm_polarize.khyp
         elif i in [S.F_WATER_POL]:
             if fver < 31:
                 fver_err(fver)
@@ -349,11 +366,16 @@ def do_iparams(data, functypes, fver):
             data.unpack_float()                             # orires.kfac
 
         elif i in [S.F_DIHRES]:
-            data.unpack_int()                               # dihres.power
-            data.unpack_int()                               # dihres.label
-            data.unpack_float()                             # dihres.phi
-            data.unpack_float()                             # dihres.dphi
-            data.unpack_float()                             # dihres.kfac
+            if fver < 72:
+                data.unpack_int() # idum
+                data.unpack_int() # idum
+            data.unpack_float()                             # dihres.phiA
+            data.unpack_float()                             # dihres.dphiA
+            data.unpack_float()                             # dihres.kfacA
+            if fver >= 72:
+                data.unpack_float() # dihres.phiB
+                data.unpack_float() # dihres.dphiB
+                data.unpack_float() # dihres.kfacB
 
         elif i in [S.F_POSRES]:
             do_rvec(data)                                   # posres.pos0A
