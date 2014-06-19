@@ -100,7 +100,7 @@ def read_tpxheader(data):
         data.unpack_int()                             # idum
         data.unpack_float()                           # rdum
 
-    fep_state = data.unpack_int() if fver > 79 else 0
+    fep_state = data.unpack_int() if fver >= 79 else 0
 
     # actually, it's lambda, not sure what is it. us lamb because lambda is a
     # keywod in python
