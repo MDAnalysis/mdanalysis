@@ -70,12 +70,15 @@ def kv2dict(s, convertor=str):
 #: with :func:`MDAnalysis.topology.core.guess_atom_element`.
 TABLE_ATOMELEMENTS = """
 # translation of atomnames to types/element
-# based on CHARMM and AMBER usage with a little bit of GROMOS
+# based on CHARMM and AMBER usage with a little bit of GROMOS (and PROPKA)
 # NOTE: CL might be ambiguous and is interpreted as chloride!
 
 # --------- ------------------
 # atomname   element
 # --------- ------------------
+
+# Bromide
+BR           BR
 
 # Calcium
 CAL          CA
@@ -91,8 +94,12 @@ CLAL         CL
 CL           CL
 CL-          CL
 
+# Iodide
+IOD          I
+
 # Iron
 FE           FE
+FE2          FE
 
 # Lithium
 LIT          LI
@@ -111,6 +118,7 @@ MG2+         MG
 ##NE           NE
 
 # Potassium
+K            K
 POT          K
 K+           K
 QK           K
