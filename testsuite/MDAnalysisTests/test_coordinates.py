@@ -32,6 +32,7 @@ from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, P
 from . import knownfailure
 
 import os
+import errno
 import tempfile
 import itertools
 
@@ -1839,6 +1840,17 @@ class _GromacsReader(TestCase):
         # prec = 6: TRR test fails; here I am generous and take self.prec = 3...
         assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec)
 
+    @dec.slow
+    def test_EOFraisesIOErrorEIO(self):
+        def go_beyond_EOF():
+            self.universe.trajectory[-1]
+            self.universe.trajectory.next()
+        assert_raises(IOError, go_beyond_EOF)
+        try:
+            go_beyond_EOF()
+        except IOError, err:
+            assert_equal(err.errno, errno.EIO, "IOError produces wrong error code")
+
 
 class TestXTCReader(_GromacsReader):
     filename = XTC
@@ -2216,7 +2228,7 @@ class TestTRZReader(TestCase, RefTRZ):
         self.universe.trajectory[3]
 
         assert_almost_equal(self.universe.atoms[0:3].positions, orig, self.prec)
-       
+
 
     def test_volume(self):
         assert_almost_equal(self.ts.volume, self.ref_volume, 1, "wrong volume for trz") # Lower precision here because errors seem to accumulate and throw this off (is rounded value**3)

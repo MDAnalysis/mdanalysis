@@ -197,7 +197,7 @@ class DCDReader(base.Reader):
         # Hack : test here... (but should be fixed in dcd.c)
         stats = os.stat(self.dcdfilename)
         if stats.st_size == 0:
-            raise IOError(errno.ENODATA,"DCD file is zero size",dcdfilename)
+            raise IOError(errno.EIO,"DCD file is zero size",dcdfilename)
 
         self.dcdfile = open(dcdfilename, 'rb')
         self.numatoms = 0

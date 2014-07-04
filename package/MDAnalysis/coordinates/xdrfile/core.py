@@ -601,7 +601,7 @@ class TrjReader(base.Reader):
             try:
                 ts = self._read_next_timestep()
             except IOError, err:
-                if err.errno == errno.ENODATA:
+                if err.errno == errno.EIO:
                     break
                 else:
                     self.close()
@@ -644,10 +644,10 @@ class TrjReader(base.Reader):
         if (ts.status == libxdrfile2.exdrENDOFFILE) or \
                 (ts.status == libxdrfile2.exdrINT and self.format == 'TRR'):
             # seems that trr files can get a exdrINT when reaching EOF (??)
-            raise IOError(errno.ENODATA, "End of file reached for %s file" % self.format,
+            raise IOError(errno.EIO, "End of file reached for %s file" % self.format,
                           self.filename)
         elif not ts.status == libxdrfile2.exdrOK:
-            raise IOError(errno.EFAULT, "Problem with %s file, status %s" %
+            raise IOError(errno.EBADF, "Problem with %s file, status %s" %
                           (self.format, statno.errorcode[ts.status]), self.filename)
         if self.convert_units:
             # TRRs have the annoying possibility of frames without coordinates/velocities/forces...

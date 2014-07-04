@@ -36,6 +36,10 @@ The rules for this file:
     Universe and AtomGroup; before they were silently accepted on
     pickling and a cryptic "TypeError: AtomGroup is not callable" was
     raised (see also Issue 173 for detailed explanation)
+  * XTC/TRR reader raise IOError with errorcode EIO (instead of
+    ENODATA) when the last frame is reached and EBADF (instead of
+    EFAULT) for any other issues (partially addresses Issue 150,
+    Windows compatibility)
 
   Fixes
 
