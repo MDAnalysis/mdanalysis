@@ -19,7 +19,8 @@ import MDAnalysis
 import MDAnalysis.analysis.distances
 import MDAnalysis.analysis.align
 import MDAnalysis.analysis.hbonds
-from MDAnalysis import SelectionError
+import MDAnalysis.analysis.helanal
+from MDAnalysis import SelectionError, FinishTimeException
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -27,7 +28,7 @@ from nose.plugins.attrib import attr
 import os, errno
 import tempfile
 
-from .datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE
+from MDAnalysis.tests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC
 from . import executable_not_found_runtime
 
 class TestContactMatrix(TestCase):
@@ -316,3 +317,27 @@ class TestHoleModule(TestCase):
         del self.universe
         import shutil
         shutil.rmtree(self.dir_name, ignore_errors=True)
+
+class Test_Helanal(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(GRO,XTC)
+        self.selection = 'name CA'
+        self.tempdir = tempfile.mkdtemp()
+        os.chdir(self.tempdir)
+
+    def tearDown(self):
+        del self.universe
+        del self.selection
+        
+    def test_xtc_striding(self):
+        '''Check for sustained resolution of Issue 188.'''
+        u = self.universe
+        sel = self.selection
+        with assert_raises(FinishTimeException):
+            try:
+                MDAnalysis.analysis.helanal.helanal_trajectory(u,selection=sel,finish=5)
+            except IndexError:
+                self.fail("IndexError consistent with Issue 188.")
+            
+
+                

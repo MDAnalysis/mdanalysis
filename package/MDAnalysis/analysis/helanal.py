@@ -130,6 +130,7 @@ except ImportError:
                 return x*numpy.pi/180.0
 
 import MDAnalysis
+from MDAnalysis import FinishTimeException
 
 def center(coordinates):
         """Return the geometric center (centroid) of the coordinates.
@@ -260,6 +261,11 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
                 selection += " and resid %(start)d:%(end)d" % vars()
         ca = universe.selectAtoms(selection)
         trajectory  = universe.trajectory
+
+        if finish != None:
+            if trajectory.time > finish: #you'd be starting with a finish time (in ps) that has already passed or not available
+                raise FinishTimeException('The input finish time ({finish} ps) precedes the current trajectory time of {traj_time} ps.'.format(finish=finish,traj_time=trajectory.time))
+            
 
         if start != None and end != None:
                         print "Analysing from residue", start, "to", end
