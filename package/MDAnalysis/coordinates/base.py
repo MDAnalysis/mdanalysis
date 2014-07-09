@@ -185,14 +185,14 @@ class Timestep(object):
 
     def copy_slice(self, sel):
         """Make a new Timestep containing a subset of the original Timestep.
-     
+
         ``ts.copy_slice(slice(start, stop, skip))``
         ``ts.copy_slice([list of indices])``
 
         :Returns: A Timestep object of the same type containing all header information and all atom information
                   relevent to the selection.
 
-        .. Note:: The selection must be a 0 based slice or array of the atom indices in this Timestep 
+        .. Note:: The selection must be a 0 based slice or array of the atom indices in this Timestep
 
         .. versionadded:: 0.8
         """
@@ -206,7 +206,7 @@ class Timestep(object):
         # List of attributes which will require slicing if present
         per_atom = ['_x', '_y', '_z', '_pos', '_velocities', '_forces',
                     '_tpos','_tvelocities','_tforces']
-            
+
         for attr in self.__dict__:
             if not attr in per_atom: # Header type information
                 new_TS.__setattr__(attr, self.__dict__[attr])
@@ -216,7 +216,6 @@ class Timestep(object):
         new_TS.numatoms = new_numatoms # This will have been overwritten, so fix here
 
         return new_TS
-
 
     @property
     def dimensions(self):
@@ -230,11 +229,11 @@ class Timestep(object):
         trajectory formats) to the representation described here,
         which is used everywhere in MDAnalysis.
         """
-
-        # Layout of unitcell is [A, alpha, B, beta, gamma, C] --- (originally CHARMM DCD)
-        # override for other formats; this strange ordering is kept for historical reasons
-        # (the user should not need concern themselves with this)
-        return numpy.take(self._unitcell, [0,2,5,1,3,4])
+        # The actual Timestep._unitcell depends on the underlying
+        # trajectory format. It can be e.g. six floats representing
+        # the box edges and angles or the 6 unique components of the
+        # box matrix or the full box matrix.
+        raise NotImplementedError("The Timestep class needs to define how to process _unitcell.")
 
     @property
     def volume(self):

@@ -29,10 +29,43 @@ import os, errno
 import numpy
 
 import base
-from base import Timestep
 
 import MDAnalysis.core
 from MDAnalysis import NoDataError
+
+class Timestep(base.Timestep):
+    #: indices into :attr:`Timestep._unitcell`` to pull out
+    #: ``[A, B, C, alpha, beta, gamma]``.
+    _ts_order = [0,2,5,4,3,1]
+
+    @property
+    def dimensions(self):
+        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+
+        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
+        angles are in degrees.
+
+        :attr:`dimensions` is read-only because it transforms the
+        actual format of the unitcell (which differs between different
+        trajectory formats) to the representation described here,
+        which is used everywhere in MDAnalysis.
+
+        .. versionchanged:: 0.8.2
+           unitcell is interpreted as ``[A, gamma, B, beta, alpha, C]`` instead of
+           ``[A, alpha, B, beta, gamma, C]`` (see `Issue 187`_ for a discussion)
+
+        .. _Issue 187: https://code.google.com/p/mdanalysis/issues/detail?id=187
+        """
+
+        # Layout of unitcell is [A, alpha, B, beta, gamma, C] --- (originally CHARMM DCD)
+        # override for other formats; this strange ordering is kept for historical reasons
+        # (the user should not need concern themselves with this)
+        ## orig MDAnalysis 0.8.1 and dcd.c (~2004)
+        ##return numpy.take(self._unitcell, [0,2,5,1,3,4])
+
+        # recent NAMD (>2.5?), see Issue 187
+        return numpy.take(self._unitcell, self._ts_order)
+
 
 class DCDWriter(base.Writer):
     """Writes to a DCD file
@@ -145,7 +178,7 @@ class DCDWriter(base.Writer):
             pos = self.convert_pos_to_native(ts._pos, inplace=False)  # possibly make a copy to avoid changing the trajectory
         self._write_next_frame(pos[:,0], pos[:,1], pos[:,2], unitcell)
         self.frames_written += 1
-    def convert_dimensions_to_unitcell(self, ts, _ts_order=[0,3,1,4,5,2]):
+    def convert_dimensions_to_unitcell(self, ts, _ts_order=Timestep._ts_order):
         """Read dimensions from timestep *ts* and return appropriate unitcell
            as [A,alpha,B,beta,gamma,C]"""
         unitcell = super(DCDWriter, self).convert_dimensions_to_unitcell(ts)
