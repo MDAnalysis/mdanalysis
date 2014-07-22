@@ -214,10 +214,10 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
            *end*
               end residue
            *begin*
-              start analysing for time >= *begin*; ``None`` starts from the
+              start analysing for time (ps) >= *begin*; ``None`` starts from the
               beginning [``None``]
            *finish*
-              stop analysis for time =< *finish*; ``None`` goes to the
+              stop analysis for time (ps) =< *finish*; ``None`` goes to the
               end of the trajectory [``None``]
            *matrix_filename*
               Output file- bending matrix ["bending_matrix.dat"]
@@ -243,6 +243,11 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
            *ref_axis*
               Calculate tilt angle relative to the axis; if ``None`` then [0,0,1]
               is chosen [``None``]
+
+        :Raises:
+           FinishTimeException 
+            If the specified finish time precedes the specified start time or current time stamp of trajectory object.
+
         """
         if ref_axis is None:
                 ref_axis = numpy.array([0.,0.,1.])

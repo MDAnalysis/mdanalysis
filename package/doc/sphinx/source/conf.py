@@ -34,9 +34,9 @@ class Mock(object):
         else:
             return Mock()
 
-MOCK_MODULES = ['MDAnalysis']
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = Mock()
+#MOCK_MODULES = ['MDAnalysis']
+#for mod_name in MOCK_MODULES:
+    #sys.modules[mod_name] = Mock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
