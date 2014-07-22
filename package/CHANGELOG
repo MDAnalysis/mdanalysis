@@ -16,6 +16,7 @@ The rules for this file:
 
   Enhancements
 
+  * minor improvements to helanal docstring
   * Support for reading altloc records in PDB files
   * Cap proteins with ACE and NMA terminal caps
   * MOL2 read and write support
