@@ -1359,6 +1359,19 @@ class TestDCDWriter(TestCase):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between original and written trajectory at frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame))
 
+    def test_dt(self):
+        DT = 5.0
+        t = self.universe.trajectory
+        with self.Writer(self.outfile, t.numatoms, dt=DT) as W: # set time step to 5 ps
+            for ts in self.universe.trajectory:
+                W.write_next_timestep(ts)
+
+        uw = mda.Universe(PSF, self.outfile)
+        assert_almost_equal(uw.trajectory.totaltime, uw.trajectory.numframes * DT, 5)
+        times = np.array([uw.trajectory.time for ts in uw.trajectory])
+        frames = np.array([ts.frame for ts in uw.trajectory])
+        assert_array_almost_equal(times, frames*DT, 5)
+
     def test_OtherWriter(self):
         t = self.universe.trajectory
         W = t.OtherWriter(self.outfile)

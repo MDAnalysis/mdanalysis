@@ -31,6 +31,7 @@ import numpy
 import base
 
 import MDAnalysis.core
+import MDAnalysis.core.units
 from MDAnalysis import NoDataError
 
 class Timestep(base.Timestep):
@@ -77,13 +78,19 @@ class Timestep(base.Timestep):
 class DCDWriter(base.Writer):
     """Writes to a DCD file
 
-    :Methods:
-       ``d = DCDWriter(dcdfilename, numatoms, start, step, delta, remarks)``
+    Typical usage::
+
+       with DCDWriter("new.dcd", u.atoms.numberOfAtoms()) as w:
+           for ts in u.trajectory
+               w.write_next_timestep(ts)
+
+    Keywords are available to set some of the low-level attributes of the DCD.      
     """
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
-    def __init__(self, filename, numatoms, start=0, step=1, delta=1.0,
+    def __init__(self, filename, numatoms, start=0, step=1, 
+                 delta=MDAnalysis.core.units.convert(1., 'ps', 'AKMA'), dt=None,
                  remarks="Created by DCDWriter", convert_units=None):
         """Create a new DCDWriter
 
@@ -95,36 +102,60 @@ class DCDWriter(base.Writer):
          *start*
            starting timestep
          *step*
-           skip between subsequent timesteps
+           skip between subsequent timesteps (indicate that *step* MD
+           integrator steps (!) make up one trajectory frame); default is 1.
          *delta*
-           timestep
+           timestep (MD integrator time step (!), in AKMA units); default is
+           20.45482949774598 (corresponding to 1 ps).
          *remarks*
            comments to annotate dcd file
+         *dt*
+           **Override** *step* and *delta* so that the DCD records that *dt* ps
+           lie between two frames. (It sets *step* = 1 and *delta* = ``AKMA(dt)``.)
+           The default is ``None``, in which case *step* and *delta* are used.
          *convert_units*
            units are converted to the MDAnalysis base format; ``None`` selects
            the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
            (see :ref:`flags-label`)
+
+       .. Note::
+
+          The keyword arguments set the low-level attributes of the DCD
+          according to the CHARMM format. The time between two frames would be
+          *delta* * *step* ! For convenience, one can alternatively supply the
+          *dt* keyword (see above) to just tell the writer that it should
+          record "There are dt ps between each frame".
+
         """
         if numatoms == 0:
             raise ValueError("DCDWriter: no atoms in output trajectory")
         elif numatoms is None:
             # probably called from MDAnalysis.Writer() so need to give user a gentle heads up...
-            raise ValueError("DCDWriter: REQUIRES the number of atoms in the 'numatoms' keyword\n"+\
+            raise ValueError("DCDWriter: REQUIRES the number of atoms in the 'numatoms' argument\n"+\
                                  " "*len("ValueError: ") +\
                                  "For example: numatoms=universe.atoms.numberOfAtoms()")
         self.filename = filename
-        if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
-        self.convert_units = convert_units    # convert length and time to base units on the fly?
+        # convert length and time to base units on the fly?
+        self.convert_units = MDAnalysis.core.flags['convert_lengths'] if convert_units is None \
+                             else convert_units
         self.numatoms = numatoms
 
         self.frames_written = 0
         self.start = start
-        self.step = step
-        self.delta = delta
+        if dt is not None:
+            if dt > 0:
+                # ignore step and delta
+                self.step = 1
+                self.delta = MDAnalysis.core.units.convert(dt, 'ps', 'AKMA')
+            else:
+                raise ValueError("DCDWriter: dt must be > 0, not {}".format(dt))
+        else:
+            self.step = step
+            self.delta = delta
         self.dcdfile = open(self.filename, 'wb')
         self.remarks = remarks
-        self._write_dcd_header(numatoms, start, step, delta, remarks)
+        self._write_dcd_header(self.numatoms, self.start, self.step, self.delta, self.remarks)
+
     def _dcd_header(self):
         """Returns contents of the DCD header C structure::
              typedef struct {
@@ -160,6 +191,7 @@ class DCDWriter(base.Writer):
                 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr',
                 'reverse', 'charmm', 'first', 'with_unitcell']
         return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii",self._dcd_C_str)))
+
     def write_next_timestep(self, ts=None):
         ''' write a new timestep to the dcd file
 
@@ -175,7 +207,6 @@ class DCDWriter(base.Writer):
                 raise NoDataError("DCDWriter: no coordinate data to write to trajectory file")
             else:
                 ts = self.ts
-        # Check to make sure Timestep has the correct number of atoms
         elif not ts.numatoms == self.numatoms:
             raise ValueError("DCDWriter: Timestep does not have the correct number of atoms")
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
@@ -185,6 +216,7 @@ class DCDWriter(base.Writer):
             pos = self.convert_pos_to_native(ts._pos, inplace=False)  # possibly make a copy to avoid changing the trajectory
         self._write_next_frame(pos[:,0], pos[:,1], pos[:,2], unitcell)
         self.frames_written += 1
+
     def convert_dimensions_to_unitcell(self, ts, _ts_order=Timestep._ts_order):
         """Read dimensions from timestep *ts* and return appropriate unitcell.
 
@@ -194,11 +226,13 @@ class DCDWriter(base.Writer):
         # unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level
         # DCD routines
         return numpy.take(unitcell, _ts_order)
+
     def close(self):
         """Close trajectory and flush buffers."""
         self._finish_dcd_write()
         self.dcdfile.close()
         self.dcdfile = None
+
     def __del__(self):
         if hasattr(self, 'dcdfile') and not self.dcdfile is None:
             self.close()
@@ -231,17 +265,16 @@ class DCDReader(base.Reader):
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
     def __init__(self, dcdfilename, **kwargs):
-        self.dcdfilename = dcdfilename
-        self.filename = self.dcdfilename
+        self.filename = self.dcdfilename = dcdfilename  # dcdfilename is legacy
         self.dcdfile = None  # set right away because __del__ checks
 
         # Issue #32: segfault if dcd is 0-size
         # Hack : test here... (but should be fixed in dcd.c)
-        stats = os.stat(self.dcdfilename)
+        stats = os.stat(self.filename)
         if stats.st_size == 0:
-            raise IOError(errno.EIO,"DCD file is zero size",dcdfilename)
+            raise IOError(errno.EIO, "DCD file is zero size", self.filename)
 
-        self.dcdfile = open(dcdfilename, 'rb')
+        self.dcdfile = open(self.filename, 'rb')
         self.numatoms = 0
         self.numframes = 0
         self.fixed = 0
@@ -252,6 +285,7 @@ class DCDReader(base.Reader):
         self.ts = Timestep(self.numatoms)
         # Read in the first timestep
         self._read_next_timestep()
+
     def _dcd_header(self):
         """Returns contents of the DCD header C structure::
              typedef struct {
@@ -283,22 +317,29 @@ class DCDReader(base.Reader):
         # seems to do the job on Mac OS X 10.6.4 ... but I have no idea why,
         # given that the C code seems to define them as normal integers
         import struct
-        desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart', 'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse', 'charmm', 'first', 'with_unitcell']
-        return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii",self._dcd_C_str)))
+        desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart',
+                'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse',
+                'charmm', 'first', 'with_unitcell']
+        return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii", self._dcd_C_str)))
+
     def __iter__(self):
         # Reset the trajectory file, read from the start
         # usage is "from ts in dcd:" where dcd does not have indexes
         self._reset_dcd_read()
         def iterDCD():
             for i in xrange(0, self.numframes, self.skip):  # FIXME: skip is not working!!!
-                try: yield self._read_next_timestep()
-                except IOError: raise StopIteration
+                try:
+                    yield self._read_next_timestep()
+                except IOError: 
+                    raise StopIteration
         return iterDCD()
+
     def _read_next_timestep(self, ts=None):
         if ts is None:
             ts = self.ts
         ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
         return ts
+
     def __getitem__(self, frame):
         if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
             raise TypeError
@@ -322,6 +363,7 @@ class DCDReader(base.Reader):
                 for i in xrange(start, stop, step):
                     yield self[i]
             return iterDCD()
+ 
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
         """Return a subset of coordinate data for an AtomGroup
 
@@ -347,6 +389,7 @@ class DCDReader(base.Reader):
         # from trajectory file instead of an entire timestep
         # XXX needs to be implemented
         return self._read_timeseries(atom_numbers, start, stop, skip, format)
+
     def correl(self, timeseries, start=0, stop=-1, skip=1):
         """Populate a TimeseriesCollection object with timeseries computed from the trajectory
 
@@ -364,10 +407,12 @@ class DCDReader(base.Reader):
         atomcounts = timeseries._getAtomCounts()
         auxdata = timeseries._getAuxData()
         return self._read_timecorrel(atomlist, atomcounts, format, auxdata, sizedata, lowerb, upperb, start, stop, skip)
+
     def close(self):
         self._finish_dcd_read()
         self.dcdfile.close()
         self.dcdfile = None
+
     def Writer(self, filename, **kwargs):
         """Returns a DCDWriter for *filename* with the same parameters as this DCD.
 
@@ -385,6 +430,10 @@ class DCDReader(base.Reader):
               indicate that *step* MD steps (!) make up one trajectory frame
           *delta*
               MD integrator time step (!), in AKMA units
+          *dt*
+             **Override** *step* and *delta* so that the DCD records that *dt* ps
+             lie between two frames. (It sets *step* = 1 and *delta* = ``AKMA(dt)``.)
+             The default is ``None``, in which case *step* and *delta* are used.
           *remarks*
               string that is stored in the DCD header [XXX -- max length?]
 
@@ -395,13 +444,17 @@ class DCDReader(base.Reader):
            The keyword arguments set the low-level attributes of the DCD
            according to the CHARMM format. The time between two frames would be
            *delta* * *step* !
+ 
+        .. SeeAlso:: :class:`DCDWriter` has detailed argument description
         """
         numatoms = kwargs.pop('numatoms', self.numatoms)
         kwargs.setdefault('start', self.start_timestep)
         kwargs.setdefault('step', self.skip_timestep)
         kwargs.setdefault('delta', self.delta)
         kwargs.setdefault('remarks', self.remarks)
+        # dt keyword is simply passed through if provided
         return DCDWriter(filename, numatoms, **kwargs)
+
     def __del__(self):
         if not self.dcdfile is None:
             self.close()
