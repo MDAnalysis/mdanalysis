@@ -251,11 +251,14 @@ class MOL2Writer(base.Writer):
     def encode_block(self, obj):
         traj = obj.universe.trajectory
         
+        # Make sure Universe has loaded bonds
+        obj.universe.bonds
+
         bonds = set()
         for a in obj.atoms: 
             bonds.update(a.bonds)
         
-        bonds = sorted([(bond.atom1.id, bond.atom2.id, bond.order) for bond in bonds])
+        bonds = sorted([(bond[0].id, bond[1].id, bond.order) for bond in bonds])
       
       
         mapping = dict([(a.id, i) for i, a in enumerate(obj.atoms)])

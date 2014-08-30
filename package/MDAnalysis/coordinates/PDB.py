@@ -936,7 +936,9 @@ class PrimitivePDBWriter(base.Writer):
         if not self.bonds:
             return
 
-        if not self.obj or not hasattr(self.obj, 'universe') or not hasattr(self.obj.universe, 'bonds'):
+        if (not self.obj or 
+            not hasattr(self.obj, 'universe') or 
+            not hasattr(self.obj.universe, 'bonds')):
             return
 
         if self.obj.atoms.numberOfAtoms() != self.obj.universe.atoms.numberOfAtoms():
@@ -946,6 +948,8 @@ class PrimitivePDBWriter(base.Writer):
 
         bonds = set()
 
+
+
         [[bonds.add(b) for b in a.bonds] for a in self.obj.atoms]
 
         atoms = set([a.number for a in self.obj.atoms])
@@ -954,9 +958,9 @@ class PrimitivePDBWriter(base.Writer):
 
         # Write out only the bonds that were defined in CONECT records
         if self.bonds == "conect":
-            bonds = [(bond.atom1.number, bond.atom2.number) for bond in bonds if not bond.is_guessed]
+            bonds = [(bond[0].number, bond[1].number) for bond in bonds if not bond.is_guessed]
         elif self.bonds == "all":
-            bonds = [(bond.atom1.number, bond.atom2.number) for bond in bonds]
+            bonds = [(bond[0].number, bond[1].number) for bond in bonds]
         else :
             raise ValueError("bonds has to be either None, 'conect' or 'all'")
         con = {}

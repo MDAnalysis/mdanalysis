@@ -669,7 +669,9 @@ class TestPrimitivePDBWriter(TestCase):
 class TestMultiPDBReader(TestCase):
     def setUp(self):
         self.multiverse = mda.Universe(PDB_multiframe, permissive=True, bonds=True)
+        self.multiverse.build_topology()
         self.conect = mda.Universe(CONECT, bonds=True)
+        self.conect.build_topology()
 
     def tearDown(self):
         del self.multiverse
@@ -677,14 +679,18 @@ class TestMultiPDBReader(TestCase):
 
     @attr('slow')
     def test_numframes(self):
-        assert_equal(self.multiverse.trajectory.numframes, 24, "Wrong number of frames read from PDB muliple model file")
+        assert_equal(self.multiverse.trajectory.numframes, 24, 
+                     "Wrong number of frames read from PDB muliple model file")
 
     @attr('slow')
     def test_numatoms_frame(self):
         u = self.multiverse
         desired = 392
         for frame in u.trajectory:
-            assert_equal(len(u.atoms), desired, err_msg="The number of atoms in the Universe (%d) does not match the number of atoms in the test case (%d) at frame %d" % (len(u.atoms), desired, u.trajectory.frame))
+            assert_equal(len(u.atoms), desired, 
+                         err_msg=("The number of atoms in the Universe (%d) does not"
+                                  " match the number of atoms in the test case (%d) at frame %d" 
+                                  % (len(u.atoms), desired, u.trajectory.frame)))
 
     @attr('slow')
     def test_rewind(self):
@@ -792,7 +798,7 @@ class TestMultiPDBReader(TestCase):
             con = {}
 
             for bond in bonds:
-                 a1, a2 = bond.atom1.number, bond.atom2.number
+                 a1, a2 = bond[0].number, bond[1].number
                  if not con.has_key(a1): con[a1] = []
                  if not con.has_key(a2): con[a2] = []
                  con[a2].append(a1)

@@ -17,7 +17,7 @@
 
 import MDAnalysis
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
-from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small
+from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -182,6 +182,7 @@ class TestPSF_bonds(TestCase):
     def setUp(self):
         topology = PSF
         self.universe = MDAnalysis.Universe(topology)
+        self.universe.build_topology()
 
     def tearDown(self):
         del self.universe
@@ -242,50 +243,504 @@ class TestPSF_bonds(TestCase):
         assert_equal(any([a42 in b for b in a1.torsions]), False)
         assert_equal(any([a2 in b and a3 in b and a6 in b for b in a1.torsions]), False)
 
-class TestPSF_TopologyGroup(TestCase):
+
+class TestTopologyObjects(TestCase):
+    """Test the base TopologyObject funtionality
+    
+    init
+    repr
+    eq
+    ne
+    iter
+    len
+    """
+    def setUp(self):
+        from MDAnalysis.topology.core import TopologyObject
+
+        self.u = MDAnalysis.Universe(PSF, DCD)
+        self.u.build_topology()
+        self.a1 = list(self.u.atoms[1:3])
+        self.a2 = list(self.u.atoms[3:5])
+
+        self.TO1 = TopologyObject(self.a1)
+        self.TO2 = TopologyObject(self.a2)
+        # this atom only has one bond, so the order bonds are done (random because of sets)
+        # won't come back to bite us
+        self.b = self.u.atoms[12].bonds[0]
+
+    def tearDown(self):
+        del self.u
+        del self.a1
+        del self.a2
+        del self.TO1
+        del self.TO2
+        del self.b
+
+    def test_repr(self):
+        assert_equal(repr(self.TO1), 
+                     '< TopologyObject between: Atom 2 (HT1 of MET-1), Atom 3 (HT2 of MET-1) >')
+
+    def test_eq_ne(self):
+        from MDAnalysis.topology.core import TopologyObject
+
+        TO1_b = TopologyObject(self.a1)
+
+        assert_equal(self.TO1 == TO1_b, True)
+        assert_equal(self.TO1 == self.TO2, False)
+
+        assert_equal(self.TO1 != TO1_b, False)
+        assert_equal(self.TO1 != self.TO2, True)
+
+    def test_iter(self):
+        assert_equal(self.a1, list(self.TO1))
+
+    def test_len(self):
+        assert_equal(len(self.a1), 2)
+
+    # Bond class checks
+    def test_partner(self):
+        a1, a2 = self.b
+        a3 = self.u.atoms[0]
+
+        assert_equal(self.b.partner(a1), a2)
+        assert_equal(self.b.partner(a2), a1)
+        assert_raises(ValueError, self.b.partner, a3)
+
+    def test_isguessed(self):
+        from MDAnalysis.topology.core import Bond
+
+        b = Bond([self.u.atoms[0], self.u.atoms[12]])
+        b.is_guessed = True
+
+        assert_equal(b.is_guessed, True)
+
+    def test_bondlength(self):
+        assert_almost_equal(self.b.length(), 1.7661301556941993, 4)
+
+    def test_bondrepr(self):
+        assert_equal(repr(self.b),
+                     '< Bond between: Atom 10 (CG of MET 1 None) and Atom 13 (SD of MET1 None), length 1.77 A>')
+        
+    # Angle class checks
+    def test_angle(self):
+        angle = self.u.atoms[210].angles[0]
+
+        assert_almost_equal(angle.angle(), 107.20893, 4)
+
+    # Torsion class check
+    def test_torsion(self):
+        torsion = self.u.atoms[14].torsions[0]
+
+        assert_almost_equal(torsion.torsion(), 18.317778, 4)
+
+    # Improper_Torsion class check
+    def test_improper(self):
+        imp = self.u.atoms[4].impropers[0]
+
+        assert_almost_equal(imp.improper(), -3.8370631, 4)
+
+
+class Test_TopologyGroup(TestCase):
     """Tests TopologyDict and TopologyGroup classes with psf input"""
     def setUp(self):
         topology = PSF
         self.universe = MDAnalysis.Universe(topology)
+        # force the loading of topology
+        self.universe.build_topology()
         self.res1 = self.universe.residues[0]
         self.res2 = self.universe.residues[1]
+        # topologydicts for testing
+        self.b_td = self.universe.bonds.topDict
+        self.a_td = self.universe.angles.topDict
+        self.t_td = self.universe.torsions.topDict
 
     def tearDown(self):
         del self.universe
+        del self.res1
+        del self.res2
+        del self.b_td
+        del self.a_td
+        del self.t_td
 
-    def test_bonds(self):
-        assert_equal(len(self.universe.atoms.bondDict), 57)
-        assert_equal(self.res1.numberOfBondTypes(), 12)
+    # Checking TopologyDict functionality
+    # * check that enough types are made
+    # * check the identity of one of the keys
+    # * check uniqueness of keys (ie reversed doesnt exist)
+    # * then check same key reversed is accepted
+    # * then select based on key
+    # * then select based on reversed key and check output is the same
+    # all for Bonds Angles and Torsions
+    def test_td_len(self):
+        assert_equal(len(self.b_td), 57)
 
-    def test_angles(self):
-        assert_equal(len(self.universe.atoms.angleDict), 130)
+    def test_td_iter(self):
+        assert_equal(list(self.b_td), list(self.b_td.dict.keys()))
 
-    def test_torsions(self):
-        assert_equal(len(self.universe.atoms.torsionDict), 220)
+    def test_td_keyerror(self):
+        assert_raises(KeyError, self.b_td.__getitem__, ('something', 'stupid'))
+
+    def test_bonds_types(self):
+        """Tests TopologyDict for bonds"""
+        assert_equal(len(self.universe.atoms.bonds.types()), 57)
+        assert_equal(len(self.res1.bonds.types()), 12)
+
+    def test_bonds_contains(self):
+        assert_equal(('57', '2') in self.b_td, True)
+
+    def test_bond_uniqueness(self):
+        bondtypes = self.universe.bonds.types()
+        # check that a key doesn't appear in reversed format in keylist
+        # have to exclude case of b[::-1] == b as this is false positive
+        assert_equal(any([b[::-1] in bondtypes for b in bondtypes if
+                          b[::-1] != b]), 
+                     False)
+
+    def test_bond_reversal(self):
+        bondtypes = self.universe.bonds.types()
+        b = bondtypes[1]
+        assert_equal(all([b in self.b_td, b[::-1] in self.b_td]), True)
+
+        tg1 = self.b_td[b]
+        tg2 = self.b_td[b[::-1]]
+        assert_equal(tg1 == tg2, True)
+
+    def test_angles_types(self):
+        """TopologyDict for angles"""
+        assert_equal(len(self.universe.atoms.angles.types()), 130)
+
+    def test_angles_contains(self):
+        assert_equal(('23', '73', '1') in self.a_td, True)
+
+    def test_angles_uniqueness(self):
+        bondtypes = self.a_td.keys()
+        assert_equal(any([b[::-1] in bondtypes for b in bondtypes if
+                          b[::-1] != b]), 
+                     False)
+
+    def test_angles_reversal(self):
+        bondtypes = self.a_td.keys()
+        b = bondtypes[1]
+        assert_equal(all([b in self.a_td, b[::-1] in self.a_td]), True)
+
+        tg1 = self.a_td[b]
+        tg2 = self.a_td[b[::-1]]
+        assert_equal(tg1 == tg2, True)
+
+    def test_torsions_types(self):
+        """TopologyDict for torsions"""
+        assert_equal(len(self.universe.atoms.torsions.types()), 220)
+
+    def test_torsions_contains(self):
+        assert_equal(('30', '29', '20', '70') in self.t_td, True)
+
+    def test_torsions_uniqueness(self):
+        bondtypes = self.t_td.keys()
+        assert_equal(any([b[::-1] in bondtypes for b in bondtypes if
+                          b[::-1] != b]), 
+                     False)
+
+    def test_torsions_reversal(self):
+        bondtypes = self.t_td.keys()
+        b = bondtypes[1]
+        assert_equal(all([b in self.t_td, b[::-1] in self.t_td]), True)
+
+        tg1 = self.t_td[b]
+        tg2 = self.t_td[b[::-1]]
+        assert_equal(tg1 == tg2, True)
+
+    def test_bad_creation(self):
+        """Test making a TopologyDict/Group out of nonsense"""
+        from MDAnalysis.topology.core import TopologyDict, TopologyGroup
+        inputlist = ['a', 'b', 'c']
+        assert_raises(TypeError, TopologyDict, inputlist)
+        assert_raises(TypeError, TopologyGroup, inputlist)
+        assert_raises(ValueError, TopologyGroup, [])
+
+    def test_TG_equality(self):
+        """Make two identical TGs, 
+        * check they're equal
+        * change one very slightly and see if they notice
+        """
+        tg = self.universe.bonds.selectBonds(('23', '3'))
+        tg2 = self.universe.bonds.selectBonds(('23', '3'))
+
+        assert_equal(tg == tg2, True)
+
+        tg3 = self.universe.bonds.selectBonds(('81', '10'))
+        assert_equal(tg == tg3, False)
+        assert_equal(tg != tg3, True)
 
     def test_create_TopologyGroup(self):
-        res1_tg = self.res1.bondDict['23', '3'] # make a tg
-        assert_equal(len(res1_tg), 4)
-
+        res1_tg = self.res1.bonds.selectBonds(('23', '3'))  # make a tg
+        assert_equal(len(res1_tg), 4)  # check size of tg
         testbond = self.universe.atoms[7].bonds[0]
-        assert_equal(testbond in res1_tg, True) # check a known bond is present
+        assert_equal(testbond in res1_tg, True)  # check a known bond is present
+
+        res1_tg2 = self.res1.bonds.selectBonds(('23', '3'))
+        assert_equal(res1_tg == res1_tg2, True)
+
+    # Loose TG intersection
+    def test_TG_loose_intersection(self):
+        """Pull bonds from a TG which are at least partially in an AG"""
+        def check_loose_intersection(topg, atomg):
+            return all([any([a in ag for a in b.atoms]) 
+                        for b in topg.bondlist])
+
+        def manual(topg, atomg):
+            man = []
+            for b in topg.bondlist:
+                if any([a in atomg for a in b.atoms]):
+                    man.append(b)
+            return MDAnalysis.topology.core.TopologyGroup(man)
+
+        u = self.universe
+        ag = self.universe.atoms[10:60]
+
+        # Check that every bond has at least one atom in the atomgroup
+        for TG in [u.bonds, u.angles, u.torsions, u.impropers]:
+            newTG = TG.atomgroup_intersection(ag)
+
+            assert_equal(check_loose_intersection(newTG, ag), True, 
+                         err_msg="Loose intersection failed with: " + TG.toptype)
+            assert_equal(manual(TG, ag), newTG,
+                         err_msg="Loose intersection failed with: " + TG.toptype)
+
+    # Strict TG intersection
+    def test_TG_strict_intersection(self):
+        """Pull bonds from TG which are fully in an AG"""
+        def check_strict_intersection(topg, atomg):
+            new_topg = topg.atomgroup_intersection(atomg, strict=True)
+
+            return all([all([a in atomg for a in b.atoms])
+                        for b in new_topg.bondlist])
+
+        def manual(topg, atomg):
+            if len(atomg) == 1:  # hack for Atom input
+                atomg = [atomg]
+            man = []
+            for b in topg.bondlist:
+                if all([a in atomg for a in b.atoms]):
+                    man.append(b)
+
+            if len(man) > 0:
+                return MDAnalysis.topology.core.TopologyGroup(man)
+            else:
+                return None
+
+        u = self.universe
+        testinput = self.universe.atoms[10:60]
+
+        # bonds
+        assert_equal(check_strict_intersection(u.bonds, testinput), True)
+        assert_equal(manual(u.bonds, testinput), 
+                     u.bonds.atomgroup_intersection(testinput, strict=True))
+        # angles
+        assert_equal(check_strict_intersection(u.angles, testinput), True)
+        assert_equal(manual(u.angles, testinput),
+                     u.angles.atomgroup_intersection(testinput, strict=True))
+        # torsions
+        assert_equal(check_strict_intersection(u.torsions, testinput), True)
+        assert_equal(manual(u.torsions, testinput),
+                     u.torsions.atomgroup_intersection(testinput, strict=True))
+
+    def test_verticalTG(self):
+        from MDAnalysis.topology.core import TopologyGroup
+        from MDAnalysis.core.AtomGroup import AtomGroup
+
+        b1 = self.universe.atoms[0].torsions[0]
+        b2 = self.universe.atoms[20].torsions[0]
+
+        TG = TopologyGroup([b1, b2])
+
+        forwards = [AtomGroup([b1[i], b2[i]]) for i in range(4)]
+        backwards = [AtomGroup([b2[i], b1[i]]) for i in range(4)]
+
+        verts = [TG.atom1, TG.atom2, TG.atom3, TG.atom4]
+
+        # the lists might be in one of two formats, but always in a strict order
+        # ie any(1234 or 4321) but not (1324)
+        assert_equal(any([all([list(x) == list(y) for x, y in zip(forwards, verts)]), 
+                          all([list(x) == list(y) for x, y in zip(backwards, verts)])]), 
+                     True)                    
 
     def test_add_TopologyGroups(self):
-        res1_tg = self.res1.bondDict['23', '3']
-        res2_tg = self.res2.selectBonds(('23', '3'))
-        assert_equal(len(res2_tg), 6)
+        res1_tg = self.res1.bonds.selectBonds(('23', '3'))
+        res2_tg = self.res2.bonds.selectBonds(('23', '3'))
 
         combined_tg = res1_tg + res2_tg # add tgs together
         assert_equal(len(combined_tg), 10)
 
-        big_tg = self.universe.atoms.bondDict['23', '3']
-        assert_equal(len(big_tg), 494)
+        big_tg = self.universe.atoms.bonds.selectBonds(('23', '3'))
 
         big_tg += combined_tg # try and add some already included bonds
         assert_equal(len(big_tg), 494) # check len doesn't change
 
-# AMBER
+    def test_add_singleitem(self):
+        tg = self.universe.bonds[:10]
+        to = self.universe.bonds[55]
 
+        assert_equal(len(tg + to), 11)
+
+    def test_add_wrongtype_TopologyGroup(self):
+        def adder(a,b):
+            return a+b
+
+        tg = self.universe.bonds[:10]  # TG of bonds
+
+        ang = self.universe.angles[10]  # single angle
+        angg = self.universe.angles[:10]  # TG of angles
+
+        for other in [ang, angg]:
+            assert_raises(TypeError, adder, tg, other)
+
+    def test_bad_add_TopologyGroup(self):
+        def adder(a,b):
+            return a+b
+
+        tg = self.universe.bonds[:10]  # TopologyGroup
+
+        ag = self.universe.atoms[:10]  # AtomGroup
+
+        assert_raises(TypeError, adder, tg, ag)
+
+    def test_TG_getitem_single(self):
+        tg = self.universe.bonds[:10]
+
+        bondlist = list(tg)
+        bond = tg[0]
+        
+        assert_equal(bond, bondlist[0])
+
+    def test_TG_getitem_slice(self):
+        tg = self.universe.bonds[:10]
+
+        tg2 = tg[1:4]
+
+        assert_equal(list(tg2), tg.bondlist[1:4])
+
+    def test_TG_getitem_fancy(self):
+        from MDAnalysis.topology.core import TopologyGroup
+
+        tg = self.universe.bonds[:10]
+
+        tg2 = tg[[1, 4, 5]]
+
+        manual = TopologyGroup([tg[i] for i in [1, 4, 5]])
+
+        assert_equal(list(tg2), list(manual))
+
+    def test_TG_dumpconts(self):
+        """
+        this function tries to spit back out the tuple of tuples that made it
+
+        because bonds are sorted before initialisation, sometimes this list 
+        has bonds that are backwards compared to the input, hence all the hacking
+        in this test.
+        """
+        inpt = self.universe._psf['_bonds']  # what we started with
+        inpt = [tuple(sorted(a)) for a in inpt]  # make sure each entry is sorted
+
+        dump = self.universe.bonds.dump_contents()
+
+        assert_equal(set(dump), set(inpt))
+
+
+class TestTopologyGroup_Cython(TestCase):
+    """
+    Check that the shortcut to all cython functions:
+     - work (return proper values)
+     - catch errors
+    """
+    def setUp(self):
+        self.u = MDAnalysis.Universe(PSF, DCD)
+        self.u.build_topology()
+        # topologygroups for testing
+        # bond, angle, torsion, improper 
+        ag = self.u.atoms[:5]
+        self.bgroup = ag.bonds
+        self.agroup = ag.angles
+        self.tgroup = ag.torsions
+        self.igroup = ag.impropers
+
+    def tearDown(self):
+        del self.u
+        del self.bgroup
+        del self.agroup
+        del self.tgroup
+        del self.igroup
+
+    # bonds
+    def test_wrong_type_bonds(self):
+        for tg in [self.agroup, self.tgroup, self.igroup]:
+            assert_raises(TypeError, tg.bonds)
+
+    def test_right_type_bonds(self):
+        from MDAnalysis.core.distances import calc_bonds
+
+        assert_equal(self.bgroup.bonds(),
+                     calc_bonds(self.bgroup.atom1.positions, 
+                                self.bgroup.atom2.positions))
+        assert_equal(self.bgroup.bonds(pbc=True),
+                     calc_bonds(self.bgroup.atom1.positions, 
+                                self.bgroup.atom2.positions,
+                                box=self.u.dimensions))
+    # angles
+    def test_wrong_type_angles(self):
+        for tg in [self.bgroup, self.tgroup, self.igroup]:
+            assert_raises(TypeError, tg.angles)
+
+    def test_right_type_angles(self):
+        from MDAnalysis.core.distances import calc_angles
+
+        assert_equal(self.agroup.angles(),
+                     calc_angles(self.agroup.atom1.positions,
+                                 self.agroup.atom2.positions,
+                                 self.agroup.atom3.positions))
+        assert_equal(self.agroup.angles(pbc=True),
+                     calc_angles(self.agroup.atom1.positions,
+                                 self.agroup.atom2.positions,
+                                 self.agroup.atom3.positions,
+                                 box=self.u.dimensions))
+
+    # torsions & impropers 
+    def test_wrong_type_torsions(self):
+        for tg in [self.bgroup, self.agroup]:
+            assert_raises(TypeError, tg.torsions)
+
+    def test_right_type_torsions(self):
+        from MDAnalysis.core.distances import calc_torsions
+
+        assert_equal(self.tgroup.torsions(),
+                     calc_torsions(self.tgroup.atom1.positions,
+                                   self.tgroup.atom2.positions,
+                                   self.tgroup.atom3.positions,
+                                   self.tgroup.atom4.positions))
+
+        assert_equal(self.tgroup.torsions(pbc=True),
+                     calc_torsions(self.tgroup.atom1.positions,
+                                   self.tgroup.atom2.positions,
+                                   self.tgroup.atom3.positions,
+                                   self.tgroup.atom4.positions,
+                                   box=self.u.dimensions))
+
+    def test_right_type_impropers(self):
+        from MDAnalysis.core.distances import calc_torsions
+
+        assert_equal(self.igroup.torsions(),
+                     calc_torsions(self.igroup.atom1.positions,
+                                   self.igroup.atom2.positions,
+                                   self.igroup.atom3.positions,
+                                   self.igroup.atom4.positions))
+
+        assert_equal(self.igroup.torsions(pbc=True),
+                     calc_torsions(self.igroup.atom1.positions,
+                                   self.igroup.atom2.positions,
+                                   self.igroup.atom3.positions,
+                                   self.igroup.atom4.positions,
+                                   box=self.u.dimensions))
+        
+
+# AMBER
 class RefCappedAla(object):
     """Mixin class to provide comparison numbers.
 
@@ -328,6 +783,7 @@ class TestPDB(_TestTopology, RefPDB):
 class TestDMSReader(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(DMS)
+        self.universe.build_topology()
         self.ts = self.universe.trajectory.ts
 
     def tearDown(self):
@@ -366,5 +822,108 @@ class TestDMSReader(TestCase):
         assert_equal(self.universe.atoms[-1].number, 3341 - 1,
                      "last atom has wrong Atom.number")
 
+
+    
+
 # GROMACS TPR
 # see test_tprparser
+
+class TestTopologyGuessers(TestCase):
+    """Test the various ways of automating topology creation in the Universe
+
+    guess_bonds
+    guess_angles
+    guess_torsions
+    guess_improper_torsions
+    """
+    def setUp(self):
+        self.u = MDAnalysis.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    # guess_bonds
+    def test_guess_bonds_wronginput(self):  # give too few coords and watch it explode
+        from MDAnalysis.topology.core import guess_bonds
+
+        assert_raises(ValueError, guess_bonds, self.u.atoms, self.u.atoms.positions[:-2])
+
+    def test_guess_bonds_badtype(self):
+        from MDAnalysis.topology.core import guess_bonds
+
+        # rename my carbons and watch it get confused about missing types
+        self.u.selectAtoms('type C').set_type('QQ')
+        assert_raises(ValueError, guess_bonds, self.u.atoms, self.u.atoms.positions)
+
+    def test_guess_bonds_withag(self):
+        from MDAnalysis.topology.core import guess_bonds
+
+        # here's one I prepared earlier
+        bondlist = ((0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 2), (1, 3),
+                    (1, 4), (2, 3), (2, 4), (2, 8), (3, 4), (4, 5), (4, 6),
+                    (6, 7), (6, 8), (6, 9), (7, 8))
+        user_vdw = {'56':1.5, '2':1.5, '22':1.5, '6':1.5, '23':1.5, '3':1.5}
+
+        assert_equal(guess_bonds(self.u.atoms[:10],
+                                 self.u.atoms.positions[:10],
+                                 vdwradii=user_vdw),
+                     bondlist)
+
+    def test_guess_bonds_withlist(self):
+        from MDAnalysis.topology.core import guess_bonds
+
+        bondlist = ((0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 2), (1, 3),
+                    (1, 4), (2, 3), (2, 4), (2, 8), (3, 4), (4, 5), (4, 6),
+                    (6, 7), (6, 8), (6, 9), (7, 8))
+        user_vdw = {'56':1.5, '2':1.5, '22':1.5, '6':1.5, '23':1.5, '3':1.5}
+
+        assert_equal(guess_bonds(list(self.u.atoms[:10]),
+                                 self.u.atoms.positions[:10],
+                                 vdwradii=user_vdw),
+                     bondlist)
+
+    def test_guess_angles(self):
+        from MDAnalysis.topology.core import guess_angles
+
+        ag = self.u.atoms[:10]
+
+        # Guess angles based on bond information
+        guessed_angs = guess_angles(ag.bonds)
+
+        # This gets a TG to write results back out in tuple of tuples formats
+        dump_result = ag.angles.dump_contents()
+
+        assert_equal(set(guessed_angs), set(dump_result))
+
+    def test_guess_torsions(self):
+        from MDAnalysis.topology.core import guess_torsions
+
+        ag = self.u.atoms[:10]
+        ag.bonds
+        ag.angles
+
+        guessed_tors = guess_torsions(ag.angles)
+
+        dump_result = ag.torsions.dump_contents()
+
+        assert_equal(set(guessed_tors), set(dump_result))
+
+    def test_guess_improper_torsions(self):
+        from MDAnalysis.topology.core import guess_improper_torsions
+
+        ag = self.u.atoms[:5]
+        ag.bonds
+        ag.angles
+
+        # Group of angles to work off
+        angs = self.u.angles.atomgroup_intersection(ag, strict=True)
+
+        # Pre calculated reference result
+        result = ((0, 4, 3, 2), (0, 3, 1, 4), (0, 4, 1, 3),
+                  (0, 2, 1, 4), (0, 4, 2, 1), (0, 4, 1, 2),
+                  (0, 3, 2, 4), (0, 3, 2, 1), (0, 4, 3, 1),
+                  (0, 3, 1, 2), (0, 4, 2, 3), (0, 2, 1, 3))
+
+        imps = guess_improper_torsions(angs)
+
+        assert_equal(set(result), set(imps))

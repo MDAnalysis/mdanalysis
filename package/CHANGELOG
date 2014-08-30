@@ -21,15 +21,29 @@ The rules for this file:
   * Cap proteins with ACE and NMA terminal caps
   * MOL2 read and write support
   * 2D streamplot code no longer uses deprecated matplotlib.nxutils module
-  * core.distances.calc_angles and calc_torsions now accept an optional box argument
-    to consider periodic boundary conditions in their calculation
+  * core.distances.calc_angles and calc_torsions now accept an optional box
+    argument to consider periodic boundary conditions in their calculation
     (Issue 172)
-  * TopologyGroup angles and torsions methods both have a pbc flag, (default False)
-    to toggle consideration of periodic boundaries
+  * TopologyGroup angles and torsions methods both have a pbc flag, (default
+    False) to toggle consideration of periodic boundaries
   * XYZWriter (write simple XYZ trajectories)
   * TRZReader upgrades, seeking and numframes faster
   * HydrogenBond analysis: new keyword distance_type to alternatively
     look at the distance between heavy atoms (Issue 185)
+  * TopologyGroup/TopologyDict system overhauled.
+    (Issue 194)
+  * TopologyObject class created, Bonds/Angles/etc nicer to work with.
+  * Topology information is now loaded lazily into Universe, can be forced to
+    load all with u.load_topology(). All topology information is now stored in
+    .bonds .angles .torsions and .impropers attributes.
+  * Added support for improper torsions.
+  * AtomGroup now has .bonds .angles .torsions and .impropers attributes which
+    retrieverelevant TopologyGroups
+  * Increased performance of topology.core.guess_bonds greatly
+  * Added topology.core.guess_angles guess_torsions and guess_improper_torsions
+    which given accurate bond information can calculate the rest of the
+    topology info.
+
 
   Changes
 
@@ -41,6 +55,8 @@ The rules for this file:
     ENODATA) when the last frame is reached and EBADF (instead of
     EFAULT) for any other issues (partially addresses Issue 150,
     Windows compatibility)
+  * Universe.bonds now returns a TopologyGroup not a list.  TopologyGroup can be
+    iterated over; list(universe.bonds) should provide a fix to legacy code.
 
   Fixes
 

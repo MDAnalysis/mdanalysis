@@ -29,7 +29,7 @@ code.
 """
 
 from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge, Bond
+from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
 import numpy, os
 
 class MOL2Parser():
@@ -95,13 +95,18 @@ class MOL2Parser():
         atoms_dict = dict(atoms)
     
         bonds = []
+        bondorder = {}
         for b in bond_lines: 
             # bond_type can be: 1, 2, am, ar
             bid, a0, a1, bond_type = b.split()
             a0, a1 = int(a0) - 1 , int(a1) - 1    
-            bond = Bond(atoms_dict[a0], atoms_dict[a1], bond_type)
+#            bond = Bond([atoms_dict[a0], atoms_dict[a1]], bond_type)
+            bond = tuple(sorted([a0, a1]))
+            bondorder[bond] = bond_type
             bonds.append(bond)
-        structure = {"_atoms": zip(*atoms)[1], "_bonds": bonds}
+        structure = {"_atoms": zip(*atoms)[1], 
+                     "_bonds": bonds,
+                     "_bondorder": bondorder}
         return structure
     
 def parse(filename):

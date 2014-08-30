@@ -125,15 +125,16 @@ class PrimitivePDBParser(object):
 
         bonds = set()
         with open(filename , "r") as filename:
-            lines = ((num, line[6:].split()) for num,line in enumerate(filename) if line[:6] == "CONECT")
+            lines = ((num, line[6:].split()) for num,line in enumerate(filename) 
+                     if line[:6] == "CONECT")
             for num, bond in lines:
                 atom, atoms = int(bond[0]) , map(int,bond[1:])
                 for a in atoms:
-                    bond = frozenset([mapping[atom], mapping[a] ])
+                    bond = tuple([mapping[atom], mapping[a] ])
                     bonds.add(bond)
 
         # FIXME by JD: we could use a BondsGroup class perhaps
-        self.structure["_bonds"] = bonds
+        self.structure["_bonds"] = tuple(bonds)
         self.structure["_guessed_bonds"] = guessed_bonds
 
 # function to keep compatible with the current API; should be cleaned up...

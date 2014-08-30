@@ -35,8 +35,8 @@ The following table lists the currently supported topology formats.
    ================ ==========  =====================================================
    Name             extension   remarks
    ================ ==========  =====================================================
-   CHARMM/XPLOR     psf         reads either format, but only atoms and bonds
-                                information is used at the moment;
+   CHARMM/XPLOR     psf         reads either format, atoms, bonds, angles, 
+                                torsions/dihedrals information is all used;
                                 :mod:`MDAnalysis.topology.PSFParser`
 
    CHARMM [#a]_     crd         "CARD" coordinate output from CHARMM; deals with
@@ -163,10 +163,18 @@ index in this list.
 _bonds
 ~~~~~~
 
-**Bonds** are represented as a :class:`list` of :class:`tuple`. Each tuple
+**Bonds** are represented as a :class:`tuple` of :class:`tuple`. Each tuple
 contains two atom numbers, which indicate the atoms between which the
 bond is formed. Only one of the two permutations is stored, typically
-the one with the lower atom number first.
+the one with the lower atom number first. 
+
+
+_bondorder
+~~~~~~~~~~
+
+Some **bonds** have additional information called **order**. When available
+this is stored in a dictionary of format {bondtuple:order}.  This extra
+information is then passed to Bond initialisation in u._init_bonds()
 
 
 _angles
@@ -180,7 +188,6 @@ tuple contains three atom numbers.
    At the moment, the order is not defined and depends on how the
    topology file defines angles.
 
-   Currently, MDAnalysis does not use the angles.
 
 _dihe
 ~~~~~
@@ -193,7 +200,6 @@ tuple contains four atom numbers.
    At the moment, the order is not defined and depends on how the
    topology file defines proper dihedrals..
 
-   Currently, MDAnalysis does not use the dihedrals.
 
 
 _impr
@@ -206,8 +212,6 @@ tuple contains four atom numbers.
 
    At the moment, the order is not defined and depends on how the
    topology file defines improper dihedrals..
-
-   Currently, MDAnalysis does not use the improper dihedrals.
 
 """
 
