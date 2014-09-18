@@ -403,17 +403,16 @@ class TRJReader(base.Reader):
 
         def _read_trj_numframes(self, filename):
                 self._reopen()
-                # the number of lines in the XYZ file will be 2 greater than the number of atoms
-                linesPerFrame = self.numatoms * 3. / 10.
 
                 counter = 0
-                # step through the file (assuming xyzfile has an iterator)
-                for i in self.trjfile:
-                        counter = counter + 1
-                self.close()
-                # need to check this is an integer!
-                numframes = int(counter/linesPerFrame)
-                return numframes
+                try:
+                        while True:
+                                self.next()
+                                counter += 1
+                except EOFError:
+                        self.rewind()
+
+                return counter
 
         @property
         def numatoms(self):
@@ -467,12 +466,11 @@ class TRJReader(base.Reader):
 
         def __iter__(self):
                 self._reopen()
-                self.ts.frame = 0  # start at 0 so that the first frame becomes 1
                 while True:
                         try:
                                 yield self._read_next_timestep()
                         except EOFError:
-                                self.close()
+                                self.rewind()
                                 raise StopIteration
 
 
@@ -647,7 +645,7 @@ class NCDFReader(base.Reader):
                                 for i in xrange(start, stop, step):
                                         yield self._read_frame(i, self.ts)
                         return iterNETCDF()
-                raise ValueError("Type {0} of argument {1} not supported".format(type(i), i))
+                raise ValueError("Type {0} of argument {1} not supported".format(type(frame), frame))
 
         def __iter__(self):
                 """Iterate over the whole trajectory"""
