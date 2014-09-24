@@ -140,7 +140,7 @@ Functions
 .. autofunction:: rmsd
 .. autofunction:: alignto
 .. autofunction:: rms_fit_trj
-
+.. autofunction:: rotation_matrix
 
 Helper functions
 ----------------
