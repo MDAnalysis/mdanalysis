@@ -68,6 +68,9 @@ Classes
 
 import DCD
 from MDAnalysis.core import units
+from MDAnalysis.topology.LAMMPSParser import read_DATA_timestep
+import MDAnalysis.core
+import base
 
 class Timestep(DCD.Timestep):
     """LAMMPS trajectory time step"""
@@ -114,3 +117,52 @@ class DCDReader(DCD.DCDReader):
             except KeyError:
                 raise ValueError("LAMMPS DCDReader: unknown unit %r" % unit)
         super(DCDReader, self).__init__(dcdfilename, **kwargs)
+
+
+class DATAReader(base.Reader):
+    """
+    Reads a single frame of coordinate information from a LAMMPS DATA file.
+
+    .. versionadded:: 0.8.2
+    """    
+    format = 'DATA'
+    units = {'time': None, 'length': 'Angstrom'}
+
+    def __init__(self, pdbfilename, numatoms=None, convert_units=None, **kwargs):
+        self.filename = pdbfilename
+
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_lengths']
+        self.convert_units = convert_units  # convert length and time to base units
+
+        if numatoms is None:  # this should be done by parsing DATA first
+            raise ValueError("DATAReader requires numatoms keyword")
+        self.numatoms = numatoms
+
+        self.ts = base.Timestep(self.numatoms)
+        read_DATA_timestep(self.ts, self.filename)
+
+        self.numframes = 1
+        self.fixed = 0  # parse B field for fixed atoms?
+        self.skip = 1
+        self.periodic = False
+        self.delta = 0
+        self.skip_timestep = 1
+
+        self.ts.frame = 1
+        if self.convert_units:
+            self.convert_pos_from_native(self.ts._pos)  # in-place !
+
+    def __iter__(self):
+        yield self.ts   # just a single frame available
+        raise StopIteration
+
+    def _read_frame(self, frame):
+        if frame != 0:
+            raise IndexError("DATAReader only contains a single frame at frame index 0")
+        return self.ts
+
+    def _read_next_timestep(self):
+        # PDB file only contains a single frame
+        raise IOError
+

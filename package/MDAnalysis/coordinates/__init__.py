@@ -103,9 +103,10 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | correctly (requires testing). Module                 |
    |               |           |       | :mod:`MDAnalysis.coordinates.DCD`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | LAMMPS        | dcd       |  r/w  | CHARMM-style binary trajectory; endianness is        |
-   |               |           |       | autodetected. Units are appropriate for LAMMPS.      |
+   | LAMMPS        | dcd,      |  r/w  | CHARMM-style binary trajectory; endianness is        |
+   |               | data      |  r    | autodetected. Units are appropriate for LAMMPS.      |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.LAMMPS`          |
+   |               |           |       | Single frames can be read from .data files.          |
    +---------------+-----------+-------+------------------------------------------------------+
    | Gromacs       | xtc       |  r/w  | Compressed (lossy) xtc trajectory format. Module     |
    |               |           |       | :mod:`MDAnalysis.coordinates.XTC`                    |
@@ -621,6 +622,7 @@ _trajectory_readers = {'DCD': DCD.DCDReader,
                        'CHAIN': base.ChainReader,
                        'DMS': DMS.DMSReader,
                        'TRZ': TRZ.TRZReader,
+                       'DATA': LAMMPS.DATAReader,
                        }
 
 #: formats of readers that can also handle gzip or bzip2 compressed files
@@ -637,6 +639,7 @@ _topology_coordinates_readers = {
                        'PQR': PQR.PQRReader,
                        'DMS': DMS.DMSReader,
                        'MOL2': MOL2.MOL2Reader,
+                       'DATA':LAMMPS.DATAReader,
 }
 
 #: hack: readers that ignore most errors (permissive=True); at the moment

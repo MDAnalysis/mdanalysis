@@ -81,6 +81,8 @@ The following table lists the currently supported topology formats.
                                 :mod:`MDAnalysis.topology.TPRParser`
    MOL2             mol2        Tripos MOL2 molecular structure format;
                                 :mod:`MDAnalysis.topology.MOL2Parser`
+   LAMMPS           data        LAMMPS Data file parser
+                                :mod:`MDAnalysis.topology.LAMMPSParser`
    ================ ==========  =====================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
@@ -215,12 +217,14 @@ tuple contains four atom numbers.
 
 """
 
-__all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser', 'CRDParser','TOPParser', 'PDBQTParser', 'TPRParser']
+__all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
+           'CRDParser','TOPParser', 'PDBQTParser', 'TPRParser',
+           'LAMMPSParser']
 
 import core
-import PSFParser, TOPParser, \
-    PDBParser, PrimitivePDBParser, ExtendedPDBParser, PQRParser, GROParser, CRDParser, \
-    PDBQTParser, DMSParser, TPRParser, MOL2Parser
+import PSFParser, TOPParser, PDBParser, PrimitivePDBParser, \
+    ExtendedPDBParser, PQRParser, GROParser, CRDParser, PDBQTParser, \
+    DMSParser, TPRParser, MOL2Parser, LAMMPSParser
 
 # dictionary of known file formats and the corresponding file parser
 # (all parser should essentially do the same thing; the PSFParser is
@@ -238,6 +242,7 @@ _topology_parsers = {'PSF': PSFParser.parse,
                      'TPR': TPRParser.parse,
                      'DMS': DMSParser.parse,
                      'MOL2': MOL2Parser.parse,
+                     'DATA': LAMMPSParser.parse,
                      }
 _topology_parsers_permissive = _topology_parsers.copy()
 _topology_parsers_permissive['PDB'] = PrimitivePDBParser.parse

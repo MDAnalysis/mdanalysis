@@ -43,6 +43,9 @@ The rules for this file:
   * Added topology.core.guess_angles guess_torsions and guess_improper_torsions
     which given accurate bond information can calculate the rest of the
     topology info.
+  * Added LAMMPS data parser for topology files with the .data suffix. Can also
+    read single frame coordinate & velocity information from these files.
+    (Issue 139)
 
 
   Changes
