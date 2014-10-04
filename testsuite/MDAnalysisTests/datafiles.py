@@ -65,6 +65,7 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
            "capping_input", "capping_output", "capping_ace", "capping_nma",
            "altloc",
+           "LAMMPSdata", "trz4data",
            ]
 
 from pkg_resources import resource_filename
@@ -171,3 +172,6 @@ capping_input = resource_filename(__name__, "data/capping/aaqaa.gro")
 capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.pdb")
 capping_ace = resource_filename(__name__, "data/capping/ace.pdb")
 capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
+
+trz4data = resource_filename(__name__, "data/datatest.trz")
+LAMMPSdata  = resource_filename(__name__, "data/datatest.data")

@@ -17,7 +17,8 @@
 
 import MDAnalysis
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
-from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD
+from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD, \
+    LAMMPSdata, trz4data
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -927,3 +928,50 @@ class TestTopologyGuessers(TestCase):
         imps = guess_improper_torsions(angs)
 
         assert_equal(set(result), set(imps))
+
+
+class TestLammpsData(TestCase):
+    """Tests the reading of lammps .data topology files.
+
+    The reading of coords and velocities is done separately in test_coordinates
+    """
+    def setUp(self):
+        self.u = MDAnalysis.Universe(LAMMPSdata, trz4data)
+
+    def tearDown(self):
+        del self.u
+
+    def test_numatoms(self):
+        assert_equal(len(self.u.atoms), 18360)
+
+    def test_atomtypes(self):
+        typs = self.u.atoms.types()
+        # Correct number of types found
+        assert_equal(len(set(typs)), 6)
+        # Correct number of a given types
+        assert_equal(len(typs[typs=='1']), 9696)
+
+    def test_charge(self):
+        # No charges were supplied, should default to 0.0
+        assert_equal(self.u.atoms[0].charge, 0.0)
+
+    def test_resid(self):
+        assert_equal(len(self.u.residues), 24)
+        assert_equal(len(self.u.residues[0]), 765)
+
+    # Testing _psf prevent building TGs
+    # test length and random item from within
+    def test_bonds(self):
+        assert_equal(len(self.u._psf['_bonds']), 18336)
+        assert_equal((5684, 5685) in self.u._psf['_bonds'], True)
+
+    def test_angles(self):
+        assert_equal(len(self.u._psf['_angles']), 29904)
+        assert_equal((7575, 7578, 7579) in self.u._psf['_angles'], True)
+
+    def test_torsions(self):
+        assert_equal(len(self.u._psf['_dihe']), 5712)
+        assert_equal((3210, 3212, 3215, 3218) in self.u._psf['_dihe'], True)
+
+    def test_masses(self):
+        assert_equal(self.u.atoms[0].mass, 0.012)
