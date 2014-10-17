@@ -1,0 +1,34 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+# customize the message of the day
+$customscript = <<SCRIPT
+motd=/etc/motd
+echo '  *** MDAnalysis Tutorial Virtual Machine  ***' > \$motd
+echo '  ***  http://mdanalysis.googlecode.com    ***' >> \$motd
+echo '  *** Your real home directory is: /myhome ***' >> \$motd
+echo >> \$motd
+SCRIPT
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box = "ubuntu/trusty64"
+
+  # configure image
+  config.vm.provision "shell", inline: $customscript
+  # Ubuntu packages for building and running MDAnalysis
+  config.vm.provision "shell", path: "bootstrap.sh"
+
+  # Forward so that we can run ipython notebooks in the VM and look at them
+  # in the host native browser
+  #config.vm.network :forwarded_port, host: 4567, guest: 80
+
+  # specify local folders for sharing with guest so that trajectories
+  # can be accessed from the guest
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder ENV['HOME'], "/myhome"
+end

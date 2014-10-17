@@ -17,4 +17,5 @@ examples/output.txt
 .pydevproject
 .settings
 .idea
-lele*
+# ignore Vagrant virtual machines
+.vagrant
