@@ -29,7 +29,7 @@ format (DMS_) coordinate files (as used by the Desmond_ MD package).
 
 
 from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.topology.core import guess_atom_type, Bond
+from MDAnalysis.topology.core import guess_atom_type
 import sqlite3, os
 
 class DMSParseError(Exception):
@@ -76,14 +76,21 @@ def parse(filename):
             cur.execute('SELECT * FROM bond')
             bonds = cur.fetchall()
 
-            bonds = [ Bond(atoms_dictionary[b["p0"]],
-                           atoms_dictionary[b["p1"]],
-                           b["order"] )  for b in bonds]
+            bondlist = []
+            bondorder = {}
+            for b in bonds:
+                    desc = tuple(sorted([b['p0'], b['p1']]))
+                    bondlist.append(desc)
+                    bondorder[desc] = b['order']
+
+#            bonds = [ Bond([atoms_dictionary[b["p0"]], atoms_dictionary[b["p1"]]],
+#                           b["order"] )  for b in bonds]
 
         # All the records below besides donors and acceptors can be contained in a DMS file.
         # In addition to the coordinates and bonds, DMS may contain the entire force-field information (terms+parameters),
         return {"_atoms": [ atom[1] for atom in atoms],
-                "_bonds": bonds,
+                "_bonds": tuple(bondlist),
+                "_bondorder": bondorder,
                 "_angles": [],
                 "_dihe": [],
                 "_impr": [],

@@ -54,13 +54,261 @@ Functions and classes
 """
 
 import numpy
+import logging
 
-def parse(filename):
+from MDAnalysis.core.AtomGroup import Atom
+
+logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
+
+def _parse_pos(psffile, pos):
+    """Strip coordinate info into np array"""
+    psffile.next()
+    for i in xrange(pos.shape[0]):
+        line = psffile.next()
+        idx, resid, atype, q, x, y, z = _parse_atom_line(line)
+        # assumes atom ids are well behaved?
+        # LAMMPS sometimes dumps atoms in random order
+        pos[idx] = x, y, z  
+
+def _parse_vel(psffile, vel):
+    """Strip velocity info into np array"""
+    psffile.next()
+    for i in xrange(vel.shape[0]):
+        line = psffile.next().split()
+        idx = int(line[0]) - 1
+        vx, vy, vz = map(float, line[1:4])
+        vel[idx] = vx, vy, vz
+
+def read_DATA_timestep(ts, datafile):
+    """Read a DATA file and try and extract:
+      - positions
+      - velocities
+      - box information
+    
+    .. versionadded:: 0.8.2
+    """
+    read_atoms = False
+    read_velocities = False
+    
+    with open(datafile, 'r') as psffile:
+        nitems, ntypes, box = _parse_header(psffile)
+
+        # lammps box: xlo, xhi, ylo, yhi, zlo, zhi
+        lx = box[1] - box[0]
+        ly = box[3] - box[2]
+        lz = box[5] - box[4]
+        # mda unitcell: A alpha B beta gamma C
+        ts._unitcell[[0, 2, 5]] = lx, ly, lz
+        ts._unitcell[[1, 3, 4]] = 90.0
+
+        while True:
+            try:
+                section = psffile.next().strip()
+            except StopIteration:
+                break
+
+            if section == 'Atoms':
+                _parse_pos(psffile, ts._pos)
+                read_atoms = True
+            elif section == 'Velocities':
+                ts._velocities = numpy.zeros((ts.numatoms, 3),
+                                             dtype=numpy.float32, order='F')
+                _parse_vel(psffile, ts._velocities)
+                read_velocities = True
+            elif len(section) > 0:
+                _skip_section(psffile)
+            else:
+                continue
+
+            if read_atoms & read_velocities:
+                break
+
+    if not read_atoms:
+        raise IOError("Position information not found")
+
+    return ts
+
+def _parse_section(psffile, nlines, nentries):
+    """Read lines and strip information"""
+    def zeroint(val):
+        """For mapping values to 0 based"""
+        return int(val) - 1
+
+    psffile.next()
+    section = []
+    for i in xrange(nlines):
+        line = psffile.next().split()
+        logging.debug("Line is: {}".format(line))
+        section.append(tuple(map(zeroint, line[2:2+nentries])))
+
+    return tuple(section)
+        
+
+def _parse_atom_line(line):
+    """Parse a atom line into MDA stuff"""
+    line = line.split()
+    n = len(line)
+    logger.debug('Line length: {}'.format(n))
+    logger.debug('Line is {}'.format(line))
+    q = 0.0  # charge is zero by default
+    
+    idx, resid, atype = map(int, line[:3])
+    idx -= 1  # 0 based atom ids in mda, 1 based in lammps
+    if n in [7, 10]:  #atom_style full
+        q, x, y, z = map(float, line[3:7])
+    elif n in [6, 9]: #atom_style molecular
+        x, y, z = map(float, line[3:6])
+        
+    return idx, resid, atype, q, x, y, z
+
+def _parse_atoms(psffile, natoms, mass, atom_style):
+    """Special parsing for atoms
+
+    Lammps atoms can have lots of different formats, and even custom formats.
+
+    http://lammps.sandia.gov/doc/atom_style.html
+
+    Treated here are 
+      - atoms with 7 fields (with charge) "full"
+      - atoms with 6 fields (no charge) "molecular"
+    """
+    logger.info("Doing Atoms section")
+    atoms = []
+    psffile.next()
+    for i in xrange(natoms):
+        line = psffile.next().strip()
+        logger.debug("Line: {} contains: {}".format(i, line))
+        idx, resid, atype, q, x, y, z = _parse_atom_line(line)
+        m = mass.get(atype, 0.0)
+        # Atom() format:
+        # Number, name, type, resname, resid, segid, mass, charge
+        atoms.append(Atom(idx, atype, atype,
+                          str(resid), resid, str(resid), 
+                          m, q))
+
+    return atoms
+
+def _parse_masses(psffile, ntypes):
+    """Lammps defines mass on a per atom basis.
+
+    This reads mass for each type and stores in dict
+    """
+    logger.info("Doing Masses section")
+
+    masses = {}
+
+    psffile.next()
+    for i in xrange(ntypes):
+        line = psffile.next().split()
+        masses[int(line[0])] = float(line[1])
+
+    return masses
+
+def _skip_section(psffile):
+    """Read lines but don't parse"""
+    psffile.next()
+    line = psffile.next().split()
+    while len(line) != 0:
+        line = psffile.next().split()
+
+    return
+
+def _parse_header(psffile):
+    """Parse the header of DATA file
+    
+    This should be fixed in all files
+    """
+    psffile.next()
+    psffile.next()
+    nitems = {}
+    nitems['_atoms'] = int(psffile.next().split()[0])
+    nitems['_bonds'] = int(psffile.next().split()[0])
+    nitems['_angles'] = int(psffile.next().split()[0])
+    nitems['_dihe'] = int(psffile.next().split()[0])
+    nitems['_impr'] = int(psffile.next().split()[0])
+    psffile.next()    
+
+    # If these values weren't 0 then there'll be a ### types line
+    # these are used later to parse sections
+    ntypes = {}
+    for val in ['_atoms', '_bonds', '_angles', '_dihe', '_impr']:
+        if nitems[val] != 0:
+            line = psffile.next().split()
+            ntypes[val] = int(line[0])
+    psffile.next()
+
+    # Read box information next
+    box = numpy.zeros(6, dtype=numpy.float64)
+    box[0:2] = psffile.next().split()[:2]
+    box[2:4] = psffile.next().split()[:2]
+    box[4:6] = psffile.next().split()[:2]
+    psffile.next()
+
+    return nitems, ntypes, box
+
+def parse(filename, **kwargs):
     """Parse a LAMMPS_ data file.
 
-    **Not implemented**
+    :Returns: MDAnalysis internal *structure* dict as defined here.
+
+    .. versionadded:: 0.8.2
     """
-    raise NotImplementedError("Cannot directly read a LAMMPS data file yet. Use LAMPPSData(datafile).writePSF(psffile) as a workaround.")
+    # Can pass atom_style to help parsing
+    atom_style = kwargs.get('atom_style', None)
+
+    # Used this to do data format:
+    # http://lammps.sandia.gov/doc/2001/data_format.html
+    with open(filename, 'r') as psffile:
+        # Check format of file somehow
+        structure = {}
+
+        nitems, ntypes, box = _parse_header(psffile)
+
+        strkey = {'Bonds':'_bonds',
+                  'Angles':'_angles',
+                  'Dihedrals':'_dihe',
+                  'Impropers':'_impr'}
+        nentries = {'_bonds':2,
+                    '_angles':3,
+                    '_dihe':4,
+                    '_impr':4}
+        # Masses can appear after Atoms section.
+        # If this happens, this blank dict will be used and all atoms
+        # will have zero mass, can fix this later
+        masses = {}
+        read_masses = False
+
+        # Now go through section by section 
+        while True:
+            try:
+                section = psffile.next().strip()
+            except StopIteration:
+                break
+
+            logger.info("Parsing section '{}'".format(section))
+            if section == 'Atoms':
+                fix_masses = False if read_masses else True
+                
+                structure['_atoms'] = _parse_atoms(psffile, nitems['_atoms'], 
+                                                   masses, atom_style)
+            elif section == 'Masses':
+                read_masses = True
+                masses = _parse_masses(psffile, ntypes['_atoms'])
+            elif section in strkey:  # for sections we use in MDAnalysis
+                logger.debug("Doing strkey section for {}".format(section))
+                f = strkey[section]
+                structure[f] = _parse_section(psffile, nitems[f], nentries[f])
+            elif len(section) > 0:  # for sections we don't use in MDAnalysis
+                logger.debug("Skipping section, found: {}".format(section))
+                _skip_section(psffile)
+            else:  # for blank lines
+                continue
+
+        if fix_masses:
+            for a in structure['_atoms']:
+                a.mass = masses[a.type]
+
+    return structure
 
 class LAMMPSAtom(object):
     __slots__ = ("index", "name", "type", "chainid", "charge", "mass", "_positions")

@@ -130,6 +130,7 @@ except ImportError:
                 return x*numpy.pi/180.0
 
 import MDAnalysis
+from MDAnalysis import FinishTimeException
 
 def center(coordinates):
         """Return the geometric center (centroid) of the coordinates.
@@ -213,10 +214,10 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
            *end*
               end residue
            *begin*
-              start analysing for time >= *begin*; ``None`` starts from the
+              start analysing for time (ps) >= *begin*; ``None`` starts from the
               beginning [``None``]
            *finish*
-              stop analysis for time =< *finish*; ``None`` goes to the
+              stop analysis for time (ps) =< *finish*; ``None`` goes to the
               end of the trajectory [``None``]
            *matrix_filename*
               Output file- bending matrix ["bending_matrix.dat"]
@@ -242,6 +243,11 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
            *ref_axis*
               Calculate tilt angle relative to the axis; if ``None`` then [0,0,1]
               is chosen [``None``]
+
+        :Raises:
+           FinishTimeException 
+            If the specified finish time precedes the specified start time or current time stamp of trajectory object.
+
         """
         if ref_axis is None:
                 ref_axis = numpy.array([0.,0.,1.])
@@ -260,6 +266,11 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
                 selection += " and resid %(start)d:%(end)d" % vars()
         ca = universe.selectAtoms(selection)
         trajectory  = universe.trajectory
+
+        if finish != None:
+            if trajectory.time > finish: #you'd be starting with a finish time (in ps) that has already passed or not available
+                raise FinishTimeException('The input finish time ({finish} ps) precedes the current trajectory time of {traj_time} ps.'.format(finish=finish,traj_time=trajectory.time))
+            
 
         if start != None and end != None:
                         print "Analysing from residue", start, "to", end

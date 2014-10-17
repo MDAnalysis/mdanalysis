@@ -25,6 +25,8 @@ class TestAltloc(TestCase):
     
     def test_bonds(self): 
         u = Universe(altloc, bonds=True)
+        # need to force topology to load before querying individual atom bonds
+        u.build_topology()
         bonds0 = u.selectAtoms("segid B and (altloc A)")[0].bonds
         bonds1 = u.selectAtoms("segid B and (altloc B)")[0].bonds
         assert_equal(len(bonds0), len(bonds1))

@@ -28,7 +28,7 @@ import sys
 from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, \
     PDB, CRD, XTC, XTC_offsets, TRR, TRR_offsets, GRO, DMS, CONECT, \
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
-    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf
+    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata
 from . import knownfailure
 
 import os
@@ -669,7 +669,9 @@ class TestPrimitivePDBWriter(TestCase):
 class TestMultiPDBReader(TestCase):
     def setUp(self):
         self.multiverse = mda.Universe(PDB_multiframe, permissive=True, bonds=True)
+        self.multiverse.build_topology()
         self.conect = mda.Universe(CONECT, bonds=True)
+        self.conect.build_topology()
 
     def tearDown(self):
         del self.multiverse
@@ -677,14 +679,18 @@ class TestMultiPDBReader(TestCase):
 
     @attr('slow')
     def test_numframes(self):
-        assert_equal(self.multiverse.trajectory.numframes, 24, "Wrong number of frames read from PDB muliple model file")
+        assert_equal(self.multiverse.trajectory.numframes, 24, 
+                     "Wrong number of frames read from PDB muliple model file")
 
     @attr('slow')
     def test_numatoms_frame(self):
         u = self.multiverse
         desired = 392
         for frame in u.trajectory:
-            assert_equal(len(u.atoms), desired, err_msg="The number of atoms in the Universe (%d) does not match the number of atoms in the test case (%d) at frame %d" % (len(u.atoms), desired, u.trajectory.frame))
+            assert_equal(len(u.atoms), desired, 
+                         err_msg=("The number of atoms in the Universe (%d) does not"
+                                  " match the number of atoms in the test case (%d) at frame %d" 
+                                  % (len(u.atoms), desired, u.trajectory.frame)))
 
     @attr('slow')
     def test_rewind(self):
@@ -792,7 +798,7 @@ class TestMultiPDBReader(TestCase):
             con = {}
 
             for bond in bonds:
-                 a1, a2 = bond.atom1.number, bond.atom2.number
+                 a1, a2 = bond[0].number, bond[1].number
                  if not con.has_key(a1): con[a1] = []
                  if not con.has_key(a2): con[a2] = []
                  con[a2].append(a1)
@@ -2428,3 +2434,35 @@ class TestTimestep_Copy_XTC(TestTimestep_Copy):
         self.name = 'XTC'
 
 
+class TestLammpsData_Coords(TestCase):
+    """Tests using a .data file for loading single frame.
+
+    All topology loading from .data is done in test_topology
+    """
+    def setUp(self):
+        self.u = MDAnalysis.Universe(LAMMPSdata)
+
+    def tearDown(self):
+        del self.u
+
+    def test_coords(self):
+        ref = np.array([ 11.89985657,  48.4455719 ,  19.09719849], dtype=np.float32)
+
+        assert_equal(self.u.atoms[0].pos, ref)
+
+    def test_velos(self):
+        ref = np.array([-5.667593  ,  7.91380978, -3.00779533], dtype=np.float32)
+
+        assert_equal(self.u.atoms[0].velocity, ref)
+
+    def test_dims(self):
+        ref = np.array([ 55.42282867,  55.42282867,  55.42282867,  90., 90.,  90.], 
+                       dtype=np.float32)
+
+        assert_equal(self.u.dimensions, ref)
+
+    def test_singleframe(self):
+        assert_raises(IOError, self.u.trajectory.next)
+
+    def test_seek(self):
+        assert_raises(IndexError, self.u.trajectory.__getitem__, 1)
