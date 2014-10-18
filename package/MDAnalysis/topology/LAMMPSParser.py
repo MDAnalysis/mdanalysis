@@ -19,38 +19,25 @@
 LAMMPSParser
 ============
 
-The :func:`parse` function reads a LAMMPS_ data file to build system
-topology. (**Currently not implemented** --- see below for
-alternative).
+The :func:`parse` function reads a LAMMPS_ data file to build a system
+topology.
 
-The :class:`LAMMPSData` class can extract topology information and
-coordinates from a LAMMPS_ data file. For instance, in order to
-produce a PSF file of the topology and a PDB file of the coordinates
-from a data file "lammps.data" you can use::
-
-  from MDAnalysis.topology.LAMMPSParser import LAMPPSData
-  d = LAMMPSData("lammps.data")
-  d.writePSF("lammps.psf")
-  d.writePDB("lammps.pdb")
-
-You can then read a trajectory (e.g. a LAMMPS DCD, see
-:class:`MDAnalysis.coordinates.LAMMPS.DCDReader`) with ::
-
-  u = MDAnalysis.Unverse("lammps.psf", "lammps.dcd", format="LAMMPS")
-
+.. _LAMMPS: http://lammps.sandia.gov/
 
 Functions and classes
 ----------------------
 
 .. autofunc:: parse
 
-.. autoclass:: LAMMPSData
-   :members:
-
 .. autoexception:: LAMPPSParserError
 
 
-.. _LAMMPS: http://lammps.sandia.gov/
+Deprecated classes
+------------------
+
+.. autoclass:: LAMMPSData
+   :members:
+
 """
 
 import numpy
@@ -68,7 +55,7 @@ def _parse_pos(psffile, pos):
         idx, resid, atype, q, x, y, z = _parse_atom_line(line)
         # assumes atom ids are well behaved?
         # LAMMPS sometimes dumps atoms in random order
-        pos[idx] = x, y, z  
+        pos[idx] = x, y, z
 
 def _parse_vel(psffile, vel):
     """Strip velocity info into np array"""
@@ -84,12 +71,12 @@ def read_DATA_timestep(ts, datafile):
       - positions
       - velocities
       - box information
-    
+
     .. versionadded:: 0.8.2
     """
     read_atoms = False
     read_velocities = False
-    
+
     with open(datafile, 'r') as psffile:
         nitems, ntypes, box = _parse_header(psffile)
 
@@ -138,27 +125,27 @@ def _parse_section(psffile, nlines, nentries):
     section = []
     for i in xrange(nlines):
         line = psffile.next().split()
-        logging.debug("Line is: {}".format(line))
+        # logging.debug("Line is: {}".format(line))
         section.append(tuple(map(zeroint, line[2:2+nentries])))
 
     return tuple(section)
-        
+
 
 def _parse_atom_line(line):
     """Parse a atom line into MDA stuff"""
     line = line.split()
     n = len(line)
-    logger.debug('Line length: {}'.format(n))
-    logger.debug('Line is {}'.format(line))
+    # logger.debug('Line length: {}'.format(n))
+    # logger.debug('Line is {}'.format(line))
     q = 0.0  # charge is zero by default
-    
+
     idx, resid, atype = map(int, line[:3])
     idx -= 1  # 0 based atom ids in mda, 1 based in lammps
     if n in [7, 10]:  #atom_style full
         q, x, y, z = map(float, line[3:7])
     elif n in [6, 9]: #atom_style molecular
         x, y, z = map(float, line[3:6])
-        
+
     return idx, resid, atype, q, x, y, z
 
 def _parse_atoms(psffile, natoms, mass, atom_style):
@@ -168,7 +155,7 @@ def _parse_atoms(psffile, natoms, mass, atom_style):
 
     http://lammps.sandia.gov/doc/atom_style.html
 
-    Treated here are 
+    Treated here are
       - atoms with 7 fields (with charge) "full"
       - atoms with 6 fields (no charge) "molecular"
     """
@@ -177,13 +164,13 @@ def _parse_atoms(psffile, natoms, mass, atom_style):
     psffile.next()
     for i in xrange(natoms):
         line = psffile.next().strip()
-        logger.debug("Line: {} contains: {}".format(i, line))
+        # logger.debug("Line: {} contains: {}".format(i, line))
         idx, resid, atype, q, x, y, z = _parse_atom_line(line)
         m = mass.get(atype, 0.0)
         # Atom() format:
         # Number, name, type, resname, resid, segid, mass, charge
         atoms.append(Atom(idx, atype, atype,
-                          str(resid), resid, str(resid), 
+                          str(resid), resid, str(resid),
                           m, q))
 
     return atoms
@@ -215,7 +202,7 @@ def _skip_section(psffile):
 
 def _parse_header(psffile):
     """Parse the header of DATA file
-    
+
     This should be fixed in all files
     """
     psffile.next()
@@ -226,7 +213,7 @@ def _parse_header(psffile):
     nitems['_angles'] = int(psffile.next().split()[0])
     nitems['_dihe'] = int(psffile.next().split()[0])
     nitems['_impr'] = int(psffile.next().split()[0])
-    psffile.next()    
+    psffile.next()
 
     # If these values weren't 0 then there'll be a ### types line
     # these are used later to parse sections
@@ -278,7 +265,7 @@ def parse(filename, **kwargs):
         masses = {}
         read_masses = False
 
-        # Now go through section by section 
+        # Now go through section by section
         while True:
             try:
                 section = psffile.next().strip()
@@ -288,8 +275,8 @@ def parse(filename, **kwargs):
             logger.info("Parsing section '{}'".format(section))
             if section == 'Atoms':
                 fix_masses = False if read_masses else True
-                
-                structure['_atoms'] = _parse_atoms(psffile, nitems['_atoms'], 
+
+                structure['_atoms'] = _parse_atoms(psffile, nitems['_atoms'],
                                                    masses, atom_style)
             elif section == 'Masses':
                 read_masses = True
@@ -363,6 +350,23 @@ class LAMMPSData(object):
     """Class to parse a LAMMPS_ data file.
 
     The data file contains both topology and coordinate information.
+
+    The :class:`LAMMPSData` class can extract topology information and
+    coordinates from a LAMMPS_ data file. For instance, in order to
+    produce a PSF file of the topology and a PDB file of the coordinates
+    from a data file "lammps.data" you can use::
+
+      from MDAnalysis.topology.LAMMPSParser import LAMPPSData
+      d = LAMMPSData("lammps.data")
+      d.writePSF("lammps.psf")
+      d.writePDB("lammps.pdb")
+
+    You can then read a trajectory (e.g. a LAMMPS DCD, see
+    :class:`MDAnalysis.coordinates.LAMMPS.DCDReader`) with ::
+
+      u = MDAnalysis.Unverse("lammps.psf", "lammps.dcd", format="LAMMPS")
+
+    .. deprecated:: 0.8.2
     """
     def __init__(self, filename=None):
         self.names = {}
