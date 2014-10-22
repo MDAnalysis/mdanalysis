@@ -28,11 +28,14 @@ Note that the files are actually located in a separate package,
 
  from MDAnalysisTestData.datafiles import *
 """
+
 __all__ = [
     "PSF", "DCD", "CRD",  # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
     "PSF_notop", "PSF_BAD",  # Same as PSF but no bonds etc, malformed version of previous
     "DCD_empty",
+    "PSF_TRICLINIC", "DCD_TRICLINIC",  # CHARMM c36 new unitcell, NPT 125 TIP3P (box vectors, see Issue 187 for details)
     "PSF_NAMD", "PDB_NAMD",  # NAMD
+    "PSF_NAMD_TRICLINIC", "DCD_NAMD_TRICLINIC", # NAMD, triclinic unitcell (Issue 187)
     "PSF_nosegid",  # psf without a segid, Issue 121
     "PDB_small",  # PDB
     "PDB_closed",
@@ -78,9 +81,13 @@ PSF_BAD = resource_filename(__name__, 'data/adk_notop_BAD.psf')
 DCD = resource_filename(__name__, 'data/adk_dims.dcd')
 DCD_empty = resource_filename(__name__, 'data/empty.dcd')
 CRD = resource_filename(__name__, 'data/adk_open.crd')
+PSF_TRICLINIC = resource_filename(__name__, 'data/tip125_tric_C36.psf')
+DCD_TRICLINIC = resource_filename(__name__, 'data/tip125_tric_C36.dcd')
 
 PSF_NAMD = resource_filename(__name__, 'data/namd_cgenff.psf')
 PDB_NAMD = resource_filename(__name__, 'data/namd_cgenff.pdb')
+PSF_NAMD_TRICLINIC = resource_filename(__name__, 'data/SiN_tric_namd.psf')
+DCD_NAMD_TRICLINIC = resource_filename(__name__, 'data/SiN_tric_namd.dcd')
 
 PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
 

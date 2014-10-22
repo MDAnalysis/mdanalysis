@@ -18,12 +18,41 @@
 """DCD trajectory I/O  --- :mod:`MDAnalysis.coordinates.DCD`
 ============================================================
 
-Classes to read and write CHARMM/LAMMPS DCD binary
+Classes to read and write CHARMM-style DCD binary
 trajectories. Trajectories can be read regardless of system-endianness
 as this is auto-detected.
 
 The classes in this module are the reference implementations for the
 Trajectory API.
+
+.. Note:: The DCD file format is not well defined. In particular, NAMD
+          and CHARMM use it differently. Currently, MDAnalysis tries
+          to guess the correct format for the unitcell representation
+          but it can be wrong. **Check the unitcell dimensions**,
+          especially for triclinic unitcells (see `Issue 187`_ and
+          :attr:`Timestep.dimensions`). A second potential issue are
+          the units of time which are AKMA for the :class:`DCDReader`
+          (following CHARMM) but ps for NAMD. As a workaround one can
+          employ the configurable
+          :class:`MDAnalysis.coordinates.LAMMPS.DCDReader` for
+          NAMD trajectories.
+
+.. SeeAlso:: The :mod:`MDAnalysis.coordinates.LAMMPS` module provides
+             a more flexible DCD reader/writer.
+
+.. _Issue 187:
+   https://code.google.com/p/mdanalysis/issues/detail?id=187
+
+Classes
+=======
+
+.. autoclass:: Timestep
+   :inherited-members:
+.. autoclass:: DCDReader
+   :inherited-members:
+.. autoclass:: DCDWriter
+   :inherited-members:
+
 """
 import os
 import errno
@@ -37,9 +66,15 @@ from MDAnalysis import NoDataError
 
 
 class Timestep(base.Timestep):
-    #: indices into :attr:`Timestep._unitcell`` to pull out
+    #: Indices into :attr:`Timestep._unitcell` (``[A, gamma, B, beta, alpha,
+    #: C]``, provided by the :class:`DCDReader` C code) to pull out
     #: ``[A, B, C, alpha, beta, gamma]``.
     _ts_order = [0, 2, 5, 4, 3, 1]
+
+    #: indices into :attr:`Timestep._unitcell`` to pull out
+    #: ``[A, B, C, alpha, beta, gamma]``.
+    ### old (MDAnalysis 0.8.1)
+    ###_ts_order = [0, 2, 5, 4, 3, 1]
 
     @property
     def dimensions(self):
@@ -48,33 +83,65 @@ class Timestep(base.Timestep):
         lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
         angles are in degrees.
 
-        :attr:`dimensions` is read-only because it transforms the
-        actual format of the unitcell (which differs between different
-        trajectory formats) to the representation described here,
-        which is used everywhere in MDAnalysis.
+        :attr:`dimensions` is read-only because it transforms the actual format
+        of the unitcell (which differs between different trajectory formats) to
+        the representation described here, which is used everywhere in
+        MDAnalysis.
 
-        .. versionchanged:: 0.8.2
-           unitcell is interpreted as ``[A, gamma, B, beta, alpha, C]`` instead of
-           ``[A, alpha, B, beta, gamma, C]`` (see `Issue 187`_ for a discussion)
+        The ordering of the angles in the unitcell is the same as in recent
+        versions of VMD's DCDplugin_ (2013), namely the `X-PLOR DCD format`_:
+        The original unitcell is read as ``[A, gamma, B, beta, alpha, C]`` from
+        the DCD file (actually, the direction cosines are stored instead of the
+        angles but the underlying C code already does this conversion); if any
+        of these values are < 0 or if any of the angles are > 180 degrees then
+        it is assumed it is a new-style CHARMM unitcell (at least since c36b2)
+        in which box vectors were recorded.
 
+        .. warning:: The DCD format is not well defined. Check your unit cell
+           dimensions carefully, especially when using triclinic
+           boxes. Different software packages implement different conventions
+           and MDAnalysis is currently implementing the newer NAMD/VMD convention
+           and tries to guess the new CHARMM one. Old CHARMM trajectories might
+           give wrong unitcell values. For more details see `Issue 187`_.
+
+        .. versionchanged:: 0.9.0
+
+           Unitcell is now interpreted in the newer NAMD DCD format as ``[A,
+           gamma, B, beta, alpha, C]`` instead of the old MDAnalysis/CHARMM
+           ordering ``[A, alpha, B, beta, gamma, C]``. We attempt to detect the
+           new CHARMM DCD unitcell format (see `Issue 187`_ for a discussion).
+
+        .. _`X-PLOR DCD format`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/dcdplugin.html
         .. _Issue 187: https://code.google.com/p/mdanalysis/issues/detail?id=187
+        .. _DCDplugin: http://www.ks.uiuc.edu/Research/vmd/plugins/doxygen/dcdplugin_8c-source.html#l00947
         """
 
         # Layout of unitcell is [A, alpha, B, beta, gamma, C] --- (originally CHARMM DCD)
         # override for other formats; this strange ordering is kept for historical reasons
         # (the user should not need concern themselves with this)
-        ## orig MDAnalysis 0.8.1 and dcd.c (~2004)
+        ## orig MDAnalysis 0.8.1/dcd.c (~2004)
         ##return numpy.take(self._unitcell, [0,2,5,1,3,4])
 
-        # recent NAMD (>2.5?), see Issue 187
-        return numpy.take(self._unitcell, self._ts_order)
+        # MDAnalysis 0.8.2 with recent dcd.c (based on 2013 molfile
+        # DCD plugin, which implements the ordering of recent NAMD
+        # (>2.5?)). See Issue 187.
+        uc = numpy.take(self._unitcell, self._ts_order)
+        # heuristic sanity check: uc = A,B,C,alpha,beta,gamma
+        # XXX: should we worry about these comparisons with floats?
+        if numpy.any(uc < 0.) or numpy.any(uc[3:] > 180.):
+            # might be new CHARMM: box matrix vectors
+            H = self._unitcell
+            e1, e2, e3 = H[[0,1,3]],  H[[1,2,4]], H[[3,4,5]]
+            uc = MDAnalysis.coordinates.core.triclinic_box(e1, e2, e3)
+        return uc
 
     @dimensions.setter
     def dimensions(self, box):
         """Set unitcell with (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
+        # note that we can re-use self._ts_order with put!
         numpy.put(self._unitcell, self._ts_order, box)
 
 
@@ -87,7 +154,28 @@ class DCDWriter(base.Writer):
            for ts in u.trajectory
                w.write_next_timestep(ts)
 
-    Keywords are available to set some of the low-level attributes of the DCD.      
+    Keywords are available to set some of the low-level attributes of the DCD.
+
+    :Methods:
+       ``d = DCDWriter(dcdfilename, numatoms, start, step, delta, remarks)``
+
+    .. Note::
+
+       The Writer will write the **unit cell information** to the DCD in a
+       format compatible with NAMD and older CHARMM versions, namely the unit
+       cell lengths in Angstrom and the angle cosines (see
+       :class:`Timestep`). Newer versions of CHARMM (at least c36b2) store the
+       matrix of the box vectors. Writing this matrix to a DCD is currently not
+       supported (although reading is supported with the
+       :class:`DCDReader`); instead the angle cosines are written,
+       which *might make the DCD file unusable in CHARMM itself*. See
+       `Issue 187`_ for further information.
+
+       The writing behavior of the :class:`DCDWriter` is identical to
+       that of the DCD molfile plugin of VMD with the exception that
+       by default it will use AKMA time units.
+
+    .. _Issue 187: https://code.google.com/p/mdanalysis/issues/detail?id=187
     """
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
@@ -223,15 +311,35 @@ class DCDWriter(base.Writer):
         self._write_next_frame(pos[:, 0], pos[:, 1], pos[:, 2], unitcell)
         self.frames_written += 1
 
-    def convert_dimensions_to_unitcell(self, ts, _ts_order=Timestep._ts_order):
-        """Read dimensions from timestep *ts* and return appropriate unitcell.
+#     def convert_dimensions_to_unitcell(self, ts, _ts_order=Timestep._ts_order):
+#         """Read dimensions from timestep *ts* and return appropriate unitcell.
 
-        .. SeeAlso:: :class:`Timestep`
+#         .. SeeAlso:: :class:`Timestep`
+#         """
+#         unitcell = super(DCDWriter, self).convert_dimensions_to_unitcell(ts)
+#         # unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level
+#         # DCD routines
+
+    def convert_dimensions_to_unitcell(self, ts, _ts_order=Timestep._ts_order):
+        """Read dimensions from timestep *ts* and return appropriate native unitcell.
+
+        .. SeeAlso:: :attr:`Timestep.dimensions`
         """
-        unitcell = super(DCDWriter, self).convert_dimensions_to_unitcell(ts)
-        # unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level
-        # DCD routines
-        return numpy.take(unitcell, _ts_order)
+        # unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level DCD routines
+        lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
+        self.convert_pos_to_native(lengths)
+        unitcell = numpy.zeros_like(ts.dimensions)
+        # __write_DCD_frame() wants uc_array = [A, gamma, B, beta, alpha, C] and
+        # will write the lengths and the angle cosines to the DCD. NOTE: It
+        # will NOT write CHARMM36+ box matrix vectors. When round-tripping a
+        # C36+ DCD, we loose the box vector information. However, MDAnalysis
+        # itself will not detect this because the DCDReader contains the
+        # heuristic to deal with either lengths/angles or box matrix on the fly.
+        #
+        # use numpy.put so that we can re-use ts_order (otherwise we
+        # would need a ts_reverse_order such as _ts_reverse_order = [0, 5, 1, 4, 3, 2])
+        numpy.put(unitcell, _ts_order, numpy.concatenate([lengths, angles]))
+        return unitcell
 
     def close(self):
         """Close trajectory and flush buffers."""
@@ -249,8 +357,7 @@ class DCDReader(base.Reader):
 
     :Data:
         ts
-          :class:`~MDAnalysis.coordinates.base.Timestep` object
-          containing coordinates of current frame
+          :class:`Timestep` object containing coordinates of current frame
 
     :Methods:
         ``dcd = DCD(dcdfilename)``
@@ -267,6 +374,23 @@ class DCDReader(base.Reader):
            retrieve a subset of coordinate information for a group of atoms
         ``data = dcd.correl(...)``
            populate a :class:`MDAnalysis.core.Timeseries.Collection` object with computed timeseries
+
+    .. Note:: The DCD file format is not well defined. In particular,
+              NAMD and CHARMM use it differently. Currently,
+              MDAnalysis tries to guess the correct format for the
+              unitcell representation but it can be wrong. **Check the
+              unitcell dimensions**, especially for triclinic
+              unitcells (see `Issue 187`_ and
+              :attr:`Timestep.dimensions`). A second potential issue
+              are the units of time (TODO).
+
+    .. versionchanged:: 0.9.0
+       The underlying DCD reader (written in C and derived from the
+       catdcd/molfile plugin code of VMD) is now reading the unitcell in
+       NAMD ordering: ``[A, B, C, sin(gamma), sin(beta),
+       sin(alpha)]``. See `Issue 187`_ for further details.
+
+    .. _Issue 187: https://code.google.com/p/mdanalysis/issues/detail?id=187
     """
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
@@ -457,7 +581,7 @@ class DCDReader(base.Reader):
            The keyword arguments set the low-level attributes of the DCD
            according to the CHARMM format. The time between two frames would be
            *delta* * *step* !
- 
+
         .. SeeAlso:: :class:`DCDWriter` has detailed argument description
         """
         numatoms = kwargs.pop('numatoms', self.numatoms)

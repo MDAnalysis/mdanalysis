@@ -32,8 +32,7 @@ The rules for this file:
   * PQRWriter (write PQR files)
   * HydrogenBond analysis: new keyword distance_type to alternatively
     look at the distance between heavy atoms (Issue 185)
-  * TopologyGroup/TopologyDict system overhauled.
-    (Issue 194)
+  * TopologyGroup/TopologyDict system overhauled. (Issue 194)
   * TopologyObject class created, Bonds/Angles/etc nicer to work with.
   * Topology information is now loaded lazily into Universe, can be forced to
     load all with u.load_topology(). All topology information is now stored in
@@ -68,6 +67,10 @@ The rules for this file:
 
   Changes
 
+  * DCD unitcell format changed: MDAnalysis will now read it as [A,
+    gamma, B, beta, alpha, C] instead of [A, alpha, B, beta, gamma,
+    C]. The new CHARMM box vector unitcell format is heuristically guessed.
+    (see Issue 187 for a full discussion and implications).
   * __getstate__() and __setstate__() raise an NotImplementedError for
     Universe and AtomGroup; before they were silently accepted on
     pickling and a cryptic "TypeError: AtomGroup is not callable" was
@@ -89,6 +92,9 @@ The rules for this file:
 
   Fixes
 
+  * fixed DCD triclinic unit cell reading and writing (although the new CHARMM
+    format with the box matrix is not supported for writing) (Issue 187)
+    ATTENTION: Support for triclinic boxes from DCDs was BROKEN prior to this fix!
   * fixed creation of residues and segments in Merge() 
   * resolves Issue 188 regarding Helanal Finish Argument
   * fixed Issue 184 (TPR files with double precision)

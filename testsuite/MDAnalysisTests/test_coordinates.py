@@ -27,7 +27,9 @@ import sys
 from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, \
     PDB, CRD, XTC, XTC_offsets, TRR, TRR_offsets, GRO, DMS, CONECT, \
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
-    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini
+    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini, \
+    PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC
+
 from . import knownfailure
 
 import os
@@ -1534,6 +1536,70 @@ class TestDCDWriter_Issue59(TestCase):
         assert_array_almost_equal(dcd.atoms.coordinates(), xtc.atoms.coordinates(), 2,
                                   err_msg="DCD -> XTC: coordinates are messed up (frame %d)" % dcd.trajectory.frame)
 
+class RefCHARMMtriclinicDCD(object):
+    topology = PSF_TRICLINIC
+    trajectory = DCD_TRICLINIC
+    # time(ps) A B C alpha beta gamma (length in Angstrome, angles in degrees)
+    ref_dimensions = np.array([
+            # [  0.     ,  35.     ,  35.     ,  35.     ,  90.     ,  60.     ,         45.     ], # dcd starts at t=1ps
+            [  1.     ,  35.44604,  35.06156,  34.1585 ,  91.32802,  61.73521,         44.40703],
+            [  2.     ,  34.65957,  34.22689,  33.09897,  90.56206,  61.79192,         44.14549],
+            [  3.     ,  34.52772,  34.66422,  33.53881,  90.55859,  63.11228,         40.14044],
+            [  4.     ,  34.43749,  33.38432,  34.02133,  88.82457,  64.98057,         36.77397],
+            [  5.     ,  33.73129,  32.47752,  34.18961,  89.88102,  65.89032,         36.10921],
+            [  6.     ,  33.78703,  31.90317,  34.98833,  90.03092,  66.12877,         35.07141],
+            [  7.     ,  33.24708,  31.18271,  34.9654 ,  93.11122,  68.17743,         35.73643],
+            [  8.     ,  32.92599,  30.31393,  34.99197,  93.89051,  69.3799 ,         33.48945],
+            [  9.     ,  32.15295,  30.43056,  34.96157,  96.01416,  71.50115,         32.56111],
+            [ 10.     ,  31.99748,  30.21518,  35.24292,  95.85821,  71.08429,         31.85939]])
+
+class RefNAMDtriclinicDCD(object):
+    topology = PSF_NAMD_TRICLINIC
+    trajectory = DCD_NAMD_TRICLINIC
+    # vmd topology trajectory
+    # molinfo 0 get {a b c alpha beta gamma}
+    # time(ps) A B C alpha beta gamma (length in Angstrome, angles in degrees)
+    ref_dimensions = np.array([
+            [1., 38.426594, 38.393101, 44.759800, 90.000000, 90.000000, 60.028915],
+            ])
+
+class _TestDCDReader_TriclinicUnitcell(TestCase):
+    def setUp(self):
+        self.u = MDAnalysis.Universe(self.topology, self.trajectory)
+        fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
+        os.close(fd)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.dcd)
+        except (AttributeError, OSError):
+            pass
+        del self.u
+
+    @attr('issue')
+    def test_read_triclinic(self):
+        """test reading of triclinic unitcell (Issue 187) for NAMD or new CHARMM format (at least since c36b2)"""
+        for ts, box in itertools.izip(self.u.trajectory, self.ref_dimensions[:, 1:]):
+            assert_array_almost_equal(ts.dimensions, box, 4,
+                                     err_msg="box dimensions A,B,C,alpha,beta,gamma not identical at frame {}".format(ts.frame))
+    @attr('issue')
+    def test_write_triclinic(self):
+        """test writing of triclinic unitcell (Issue 187) for NAMD or new CHARMM format (at least since c36b2)"""
+        with self.u.trajectory.OtherWriter(self.dcd) as w:
+            for ts in self.u.trajectory:
+                w.write(ts)
+        w = MDAnalysis.Universe(self.topology, self.dcd)
+        for ts_orig, ts_copy in itertools.izip(self.u.trajectory, w.trajectory):
+            assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 4,
+                                err_msg="DCD->DCD: unit cell dimensions wrong at frame {}".format(ts_orig.frame))
+        del w
+
+class TestDCDReader_CHARMM_Unitcell(_TestDCDReader_TriclinicUnitcell, RefCHARMMtriclinicDCD):
+    pass
+
+class TestDCDReader_NAMD_Unitcell(_TestDCDReader_TriclinicUnitcell, RefNAMDtriclinicDCD):
+    pass
+
 
 class TestNCDF2DCD(TestCase):
     def setUp(self):
@@ -1557,17 +1623,13 @@ class TestNCDF2DCD(TestCase):
 
     @attr('issue')
     def test_unitcell(self):
-        """Test that DCDWriter correctly writes the CHARMM unit cell"""
-        from itertools import izip
-
-        for ts_orig, ts_copy in izip(self.u.trajectory, self.w.trajectory):
+        """NCDFReader: Test that DCDWriter correctly writes the CHARMM unit cell"""
+        for ts_orig, ts_copy in itertools.izip(self.u.trajectory, self.w.trajectory):
             assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 3,
                                 err_msg="NCDF->DCD: unit cell dimensions wrong at frame %d" % ts_orig.frame)
 
     def test_coordinates(self):
-        from itertools import izip
-
-        for ts_orig, ts_copy in izip(self.u.trajectory, self.w.trajectory):
+        for ts_orig, ts_copy in itertools.izip(self.u.trajectory, self.w.trajectory):
             assert_almost_equal(self.u.atoms.positions, self.w.atoms.positions, 3,
                                 err_msg="NCDF->DCD: coordinates wrong at frame %d" % ts_orig.frame)
 
@@ -1765,15 +1827,13 @@ class TestChainReader(TestCase):
     @dec.slow
     def test_write_dcd(self):
         """test that ChainReader written dcd (containing crds) is correct (Issue 81)"""
-        from itertools import izip
-
         W = MDAnalysis.Writer(self.outfile, self.universe.atoms.numberOfAtoms())
         for ts in self.universe.trajectory:
             W.write(self.universe)
         W.close()
         self.universe.trajectory.rewind()
         u = MDAnalysis.Universe(PSF, self.outfile)
-        for (ts_orig, ts_new) in izip(self.universe.trajectory, u.trajectory):
+        for (ts_orig, ts_new) in itertools.izip(self.universe.trajectory, u.trajectory):
             assert_almost_equal(ts_orig._pos, ts_new._pos, self.prec,
                                 err_msg="Coordinates disagree at frame %d" % ts_orig.frame)
 
@@ -2277,9 +2337,8 @@ class _GromacsWriterIssue101(TestCase):
 
     def _single_frame(self, filename):
         u = MDAnalysis.Universe(filename)
-        W = self.Writer(self.outfile, u.atoms.numberOfAtoms())
-        W.write(u.atoms)
-        W.close()
+        with self.Writer(self.outfile, u.atoms.numberOfAtoms()) as W:
+            W.write(u.atoms)
         w = MDAnalysis.Universe(filename, self.outfile)
         assert_equal(w.trajectory.numframes, 1, "single frame trajectory has wrong number of frames")
         assert_almost_equal(w.atoms.coordinates(), u.atoms.coordinates(), self.prec,
@@ -2671,7 +2730,7 @@ class _TestLammpsData_Coords(TestCase):
     def test_velos(self):
         assert_equal(self.u.atoms[0].velocity, self.vel_atom1)
 
-    def test_dims(self):
+    def test_dimensions(self):
         assert_equal(self.u.dimensions, self.dimensions)
 
     def test_singleframe(self):

@@ -51,7 +51,6 @@ class Timestep(base.Timestep):
     def dimensions(self, box):
         self._unitcell[:] = box
 
-
 class CRDReader(base.Reader):
     """CRD reader that implements the standard and extended CRD coordinate formats
     """
