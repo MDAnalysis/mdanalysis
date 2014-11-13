@@ -18,9 +18,9 @@
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
                                       merge_protein, merge_water, merge_ligand, \
-                                      TRZ, TRZ_psf
+                                      TRZ, TRZ_psf, PSF_notop, PSF_BAD
 import MDAnalysis.core.AtomGroup
-from MDAnalysis.core.AtomGroup import Atom, AtomGroup
+from MDAnalysis.core.AtomGroup import Atom, AtomGroup, asUniverse
 from MDAnalysis import NoDataError
 
 import numpy
@@ -61,6 +61,7 @@ class TestAtom(TestCase):
     def tearDown(self):
         del self.universe
         del self.atom
+        del self.known_pos
 
     def test_attributes_names(self):
         a = self.atom
@@ -92,6 +93,35 @@ class TestAtom(TestCase):
         assert_equal(a.segment, u.s4AKE)
         assert_equal(a.residue, u.residues[66])
 
+    def test_bad_add(self):
+        def bad_add():
+            return self.atom + 1
+        assert_raises(TypeError, bad_add)
+
+    def test_add_AG(self):
+        ag = self.universe.atoms[:2]
+
+        ag2 = self.atom + ag
+
+        for at in [self.atom, ag[0], ag[1]]:
+            assert_equal(at in ag2, True)
+
+    def test_no_velo(self):
+        def lookup_velo():
+            return self.atom.velocity
+        assert_raises(NoDataError, lookup_velo)
+
+    def test_atom_centroid(self):
+        assert_equal(self.atom.position, self.atom.centroid())
+
+    def test_no_uni(self):
+        at = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
+        def lookup_uni(a):
+            return a.universe
+
+        assert_raises(AttributeError, lookup_uni, at)
+
+
 class TestAtomGroup(TestCase):
     """Tests of AtomGroup; selections are tested separately."""
     def setUp(self):
@@ -107,11 +137,17 @@ class TestAtomGroup(TestCase):
         assert_equal(newag.numberOfResidues(), 5)
         assert_almost_equal(newag.totalMass(),  40.044999999999995) # check any special method
 
+    def test_bad_make(self):
+        assert_raises(TypeError, AtomGroup, ['these', 'are', 'not', 'atoms'])
+
     def test_numberOfAtoms(self):
         assert_equal(self.ag.numberOfAtoms(), 3341)
 
     def test_numberOfResidues(self):
         assert_equal(self.ag.numberOfResidues(), 214)
+
+    def test_numberOfSegments(self):
+        assert_equal(self.ag.numberOfSegments(), 1)
 
     def test_len(self):
         """testing that len(atomgroup) == atomgroup.numberOfAtoms()"""
@@ -201,9 +237,63 @@ class TestAtomGroup(TestCase):
         bfactors = self.ag.bfactors   # property, not method!
         assert_array_equal(bfactors[0:3], numpy.array([None, None, None]))
 
+    def test_no_uni(self):
+        at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
+        at2 = Atom(2, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
+        ag = AtomGroup([at1, at1])
+        assert_equal(ag.universe, None)
+
+    def test_badd_add_AG(self):
+        def bad_add():
+            return self.ag + [1, 2, 3]
+
+        assert_raises(TypeError, bad_add)
     # TODO: add all other methods except selectAtoms(), see test_selections.py
+    def test_set_charge(self):
+        # Charges are initially 0
+        at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
+        at2 = Atom(2, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
+        ag = AtomGroup([at1, at2])
+
+        charges = [1.0, 2.0]
+        ag.set_charge(charges)
+        for at, val in zip(ag, charges):
+            assert_equal(at.charge, val)
+
+    def test_set_radius(self):
+        at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
+        at2 = Atom(2, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
+        ag = AtomGroup([at1, at2])
+
+        radii = [1.0, 2.0]
+        ag.set_radius(radii)
+        for at, val in zip(ag, radii):
+            assert_equal(at.radius, val)
+
+    def test_set_bfactor(self):
+        at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
+        at2 = Atom(2, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
+        ag = AtomGroup([at1, at2])
+
+        bfacs = [1.0, 2.0]
+        ag.set_bfactor(bfacs)
+        for at, val in zip(ag, bfacs):
+            assert_equal(at.bfactor, val)
 
     # add new methods here...
+    def test_packintobox_badshape(self):
+        ag = self.universe.atoms[:10]
+        box = numpy.zeros(9, dtype=numpy.float32).reshape(3,3)
+        def badpack(a):
+            return a.packIntoBox(box=box)
+        assert_raises(ValueError, badpack, ag)
+
+    def test_packintobox_noshape(self):
+        ag = self.universe.atoms[:10]
+        def badpack(a):
+            return a.packIntoBox()
+        assert_raises(ValueError, badpack, ag)
+
     def test_packintobox(self):
         """test AtomGroup.packIntoBox(): Tests application of periodic boundary conditions on coordinates
 
@@ -211,14 +301,10 @@ class TestAtomGroup(TestCase):
         """
         u = self.universe
         u.trajectory.rewind() #just to make sure...
-        ag = u.atoms
-
-        def badpack(ag=ag):
-            ag.packIntoBox()
-        assert_raises(ValueError, badpack) #This system has no dimensions, so by default can't pack
+        ag = u.atoms[1000:2000:200]
 
         ag.packIntoBox(box=numpy.array([5.,5.,5.],  dtype=numpy.float32)) #Provide arbitrary box
-        assert_array_almost_equal(ag.coordinates()[1000:2000:200],
+        assert_array_almost_equal(ag.coordinates(),
                                   array([[ 3.94543672,  2.5939188 ,  2.73179913],
                                          [ 3.21632767,  0.879035  ,  0.32085133],
                                          [ 2.07735443,  0.99395466,  4.09301519],
@@ -278,12 +364,27 @@ class TestAtomGroup(TestCase):
         assert_equal(osel.resnames(), ['ALA', 'PRO'])
 
     def test_chi1_selection(self):
-        sel =  self.universe.s4AKE.r8.chi1_selection()
-        assert_equal(sel, None)  # ALA
         sel =  self.universe.s4AKE.r13.chi1_selection()  # LYS
         assert_equal(sel.names(), ['N', 'CA', 'CB', 'CG'])
         assert_equal(sel.resids(), [13])
         assert_equal(sel.resnames(), ['LYS'])
+
+    # Test failed selections of phi/psi/omega/chi1
+    def test_phi_sel_fail(self):
+        sel = self.universe.residues[0].phi_selection()
+        assert_equal(sel, None)
+        
+    def test_psi_sel_fail(self):
+        sel = self.universe.residues[-1].psi_selection()
+        assert_equal(sel, None)
+
+    def test_omega_sel_fail(self):
+        sel = self.universe.residues[-1].omega_selection()
+        assert_equal(sel, None)
+
+    def test_ch1_sel_fail(self):
+        sel =  self.universe.s4AKE.r8.chi1_selection()
+        assert_equal(sel, None)  # ALA
 
     def test_dihedral_phi(self):
         u = self.universe
@@ -339,11 +440,25 @@ class TestAtomGroup(TestCase):
         assert_almost_equal(sel2.bond(), 2.1210737228393555, 3,
                             "distance of Glu98 OE1--OE2 wrong")
 
+    def test_bond_pbc(self):
+        self.universe.trajectory.rewind()
+        sel2 = self.universe.s4AKE.r98.selectAtoms("name OE1", "name OE2")
+        assert_almost_equal(sel2.bond(pbc=True), 2.1210737228393555, 3,
+                            "distance of Glu98 OE1--OE2 wrong")
+
+    def test_bond_ValueError(self):
+        ag = self.universe.atoms[:4]
+        assert_raises(ValueError, ag.bond)
+
     def test_angle(self):
         self.universe.trajectory.rewind()   # just to make sure...
         sel3 = self.universe.s4AKE.r98.selectAtoms("name OE1", "name CD", "name OE2")
         assert_almost_equal(sel3.angle(), 117.46187591552734, 3,
                             "angle of Glu98 OE1-CD-OE2 wrong")
+
+    def test_angle_ValueError(self):
+        ag = self.universe.atoms[:2]
+        assert_raises(ValueError, ag.angle)
 
     def test_shapeParameter(self):
         s = self.universe.s4AKE.shapeParameter()
@@ -385,6 +500,24 @@ class TestAtomGroup(TestCase):
         # trj has no velocities
         assert_raises(NoDataError, get_vel)
 
+    def test_set_velocities_NoData(self):
+        def set_vel():
+            return self.universe.atoms[:2].set_velocities([0.2])
+
+        assert_raises(NoDataError, set_vel)
+
+    def test_get_forces_NoData(self):
+        def get_for():
+            return self.universe.atoms[:2].get_forces()
+
+        assert_raises(NoDataError, get_for)
+
+    def test_set_forces_NoData(self):
+        def set_for():
+            return self.universe.atoms[:2].set_forces([0.2])
+
+        assert_raises(NoDataError, set_for)
+
     def test_set_resid(self):
         ag = self.universe.selectAtoms("bynum 12:42")
         resid = 999
@@ -396,6 +529,13 @@ class TestAtomGroup(TestCase):
         # check residues
         assert_equal(ag.resids(), 999*numpy.ones(ag.numberOfResidues()),
                      err_msg="failed to set_resid of residues belonging to atoms 12:42 to same resid")
+
+    def test_set_names(self):
+        ag = self.universe.atoms[:2]
+        names = ['One', 'Two']
+        ag.set_name(names)
+        for a, b in zip(ag, names):
+            assert_equal(a.name, b)
 
     def test_set_resids(self):
         """test_set_resid: set AtomGroup resids on a per-atom basis"""
@@ -442,6 +582,101 @@ class TestAtomGroup(TestCase):
         import cPickle
         ag = self.universe.selectAtoms("bynum 12:42 and name H*")
         assert_raises(NotImplementedError, cPickle.dumps, ag, protocol=cPickle.HIGHEST_PROTOCOL)
+
+    def test_unpickle_raises_NotImp(self):
+        ag = self.universe.atoms[:3]
+        def ag_setstate(ag):
+            return ag.__setstate__('a')
+
+        assert_raises(NotImplementedError, ag_setstate, ag)
+
+    def test_wronglen_set(self):
+        """Give the setter function a list of wrong length"""
+        assert_raises(ValueError, self.ag.set_mass, [0.1, 0.2])
+
+
+class TestAtomGroupNoTop(TestCase):
+    def setUp(self):
+        self.u = MDAnalysis.Universe(PSF_notop, DCD)
+        self.ag = self.u.atoms[:10]
+
+    def tearDown(self):
+        del self.u
+        del self.ag
+
+    def test_nobonds(self):
+        assert_equal(self.ag.bonds, None)
+
+    def test_noangles(self):
+        assert_equal(self.ag.angles, None)
+
+    def test_notorsions(self):
+        assert_equal(self.ag.torsions, None)
+
+    def test_noimps(self):
+        assert_equal(self.ag.impropers, None)
+
+    # Because I'm messing with atom info, I've put these here separated from other tests
+    def test_clear_cache(self):
+        self.ag._clear_caches()
+
+        assert_equal(self.ag._AtomGroup__cache, dict())
+
+    def test_rebuild_cache_residues(self):
+        assert_equal(len(self.ag.residues), 1)
+
+        # Mess with stuff, add a different residues and segment for the first atom
+        self.ag[0].residue = self.u.atoms[100].residue
+
+        # There's actually 2 residues now, but because of cache this isn't detected
+        assert_equal(len(self.ag.residues), 1)
+
+        # After cache rebuild second residue is finally seen
+        self.ag._rebuild_caches()
+        assert_equal(len(self.ag.residues), 2)
+
+    def test_rebuild_cache_segments(self):
+        # This test is similar to above, but a second segment has to be taken from a new universe
+        assert_equal(len(self.ag.segments), 1)
+
+        u2 = MDAnalysis.Universe(PSF_notop, DCD)
+        self.ag[0].segment = u2.atoms[0].segment
+
+        assert_equal(len(self.ag.segments), 1)
+        self.ag._rebuild_caches()
+        assert_equal(len(self.ag.segments), 2)
+
+    def test_atom_cachesize_change(self):
+        # By default 10,000 atoms are required to necessitate cache lookup, we can change this though
+        ag = self.u.atoms[:100]
+        # run a __contains__ query
+        val = self.u.atoms[10] in ag
+        # Check that cache wasn't used
+        assert_equal('atoms' in ag._AtomGroup__cache, False)
+        ag._atomcache_size = 50  # now will make cache if size > 50
+        # Run another query
+        val = self.u.atoms[10] in ag
+        # Check if cache was built this time
+        assert_equal('atoms' in ag._AtomGroup__cache, True)
+
+    def test_atomcache_use(self):
+        # Tests that lookup with 'atoms' cache works
+        ag = self.u.atoms[:100]
+        ag._atomcache_size = 50
+        assert_equal(self.u.atoms[50] in ag, True)
+
+    def test_rebuild_atomcache_no(self):
+        # Don't always add atoms into cache
+        ag = self.u.atoms[:100]
+        ag._rebuild_caches()
+        assert_equal('atoms' in ag._AtomGroup__cache, False)
+
+    def test_rebuild_atomcache(self):
+        # Tests that 'atoms' is built into cache if size is enough
+        ag = self.u.atoms[:100]
+        ag._atomcache_size = 50
+        ag._rebuild_caches()
+        assert_equal('atoms' in ag._AtomGroup__cache, True)
 
 
 class TestResidue(TestCase):
@@ -534,6 +769,54 @@ class TestResidueGroup(TestCase):
         assert_equal(rg.resids(), numpy.unique(resids),
                      err_msg="old selection was not changed in place after set_resid")
 
+    def test_set_resnum_single(self):
+        rg = self.universe.residues[:3]
+        new = 22
+        rg.set_resnum(new)
+
+        assert_equal(all(rg.resnums() == new), True)
+        for r in rg:
+            assert_equal(r.resnum, new)
+
+    def test_set_resnum_many(self):
+        rg = self.universe.residues[:3]
+        new = [22, 23, 24]
+        rg.set_resnum(new)
+
+        assert_equal(all(rg.resnums() == new), True)
+        for r, v in zip(rg, new):
+            assert_equal(r.resnum, v)
+
+    def test_set_resnum_ValueError(self):
+        rg = self.universe.residues[:3]
+        new = [22, 23, 24, 25]
+
+        assert_raises(ValueError, rg.set_resnum, new)
+
+    def test_set_resname_single(self):
+        rg = self.universe.residues[:3]
+        new = 'newname'
+
+        rg.set_resname(new)
+        assert_equal(all(rg.resnames() == new), True)
+        for r in rg:
+            assert_equal(r.name, new)
+
+    def test_set_resname_many(self):
+        rg = self.universe.residues[:3]
+        new = ['a', 'b', 'c']
+        rg.set_resname(new)
+
+        assert_equal(all(rg.resnames() == new), True)
+        for r, v in zip(rg, new):
+            assert_equal(r.name, v)
+
+    def test_set_resname_ValueError(self):
+        rg = self.universe.residues[:3]
+        new = ['a', 'b', 'c', 'd']
+
+        assert_raises(ValueError, rg.set_resname, new)
+
     def test_merge_residues(self):
         rg = self.universe.selectAtoms("resid 12:14").residues
         nres_old = self.universe.atoms.numberOfResidues()
@@ -557,6 +840,7 @@ class TestResidueGroup(TestCase):
         assert_equal([a.mass for a in rg.atoms],
                      mass*numpy.ones(rg.numberOfAtoms()),
                      err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(mass))
+
 
 class TestSegment(TestCase):
     def setUp(self):
@@ -584,6 +868,16 @@ class TestSegment(TestCase):
         res = self.sB[[3,7,2,4]]
         assert_equal(len(res), 4)
         assert_equal(type(res), MDAnalysis.core.AtomGroup.ResidueGroup)
+
+    def test_id(self):
+        assert_equal(self.sB.name, self.sB.id)
+
+    def test_set_id(self):
+        # Test setting the name via the id attribute
+        new = 'something'
+        self.sB.id = new
+        for val in [self.sB.id, self.sB.name]:
+            assert_equal(val, new)
 
 
 class TestSegmentGroup(TestCase):
@@ -636,7 +930,7 @@ class TestSegmentGroup(TestCase):
         g.set_segid('ADK')
         assert_equal(g.segids(), ['ADK'],
                      err_msg="old selection was not changed in place after set_segid")
-
+        
     def test_set_mass(self):
         g = self.universe.selectAtoms("bynum 12:42 and name H*").segments
         mass = 2.0
@@ -645,6 +939,10 @@ class TestSegmentGroup(TestCase):
         assert_equal([a.mass for a in g.atoms],
                      mass*numpy.ones(g.numberOfAtoms()),
                      err_msg="failed to set_mass in segment of  H* atoms in resid 12:42 to {0}".format(mass))
+
+    def test_set_segid_ValueError(self):
+        assert_raises(ValueError, self.g.set_resid, [1, 2, 3, 4])
+
 
 class TestAtomGroupVelocities(TestCase):
     """Tests of velocity-related functions in AtomGroup"""
@@ -827,6 +1125,13 @@ class TestUniverse(TestCase):
         u = MDAnalysis.Universe(PSF, PDB_small)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
+    def test_load_bad_topology(self):
+        # tests that Universe builds produce the right error message
+        def bad_load():
+            return MDAnalysis.Universe(PSF_BAD, DCD)
+
+        assert_raises(ValueError, bad_load)
+
     @attr('issue')
     def test_load_new(self):
         u = MDAnalysis.Universe(PSF, DCD)
@@ -842,6 +1147,12 @@ class TestUniverse(TestCase):
         u = MDAnalysis.Universe(PSF, DCD)
         u.load_new(PDB_small, permissive=True)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=True)")
+
+    def test_load_new_TypeError(self):
+        u = MDAnalysis.Universe(PSF, DCD)
+        def bad_load(uni):
+            return uni.load_new('filename.notarealextension')
+        assert_raises(TypeError, bad_load, u)
 
     def test_load_structure(self):
         # Universe(struct)
@@ -969,3 +1280,26 @@ class TestPBCFlag(TestCase):
         assert_almost_equal(self.ag.bsphere(pbc=False)[1], self.ref_noPBC['BSph'][1], self.prec)
         assert_almost_equal(self.ag.principalAxes(pbc=False), self.ref_noPBC['PAxes'], self.prec)
         MDAnalysis.core.flags['use_pbc'] = False
+
+class TestAsUniverse(TestCase):
+    def setUp(self):
+        self.u = MDAnalysis.Universe(PSF_notop, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    def test_empty_TypeError(self):
+        assert_raises(TypeError, asUniverse)
+
+    def test_passback(self):
+        returnval = asUniverse(self.u)
+
+        assert_equal(returnval is self.u, True)
+
+    def test_makeuni(self):
+        returnval = asUniverse(PSF_notop, DCD)
+
+        ## __eq__ method for Universe doesn't exist, make one up here
+        assert_equal(set(returnval.atoms), set(self.u.atoms))
+
+    

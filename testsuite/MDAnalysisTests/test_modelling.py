@@ -189,3 +189,16 @@ class TestMerge(TestCase):
         m = Merge(u1.atoms, u2.atoms)
         assert_equal(m.atoms.segments[0].universe, m,
                      "wrong universe reference for segments after Merge()")
+
+
+    def test_empty_ValueError(self):
+        assert_raises(ValueError, Merge)
+
+    def test_nonsense_TypeError(self):
+        assert_raises(TypeError, Merge, ['1', 2])
+
+    def test_emptyAG_ValueError(self):
+        a = AtomGroup([])
+        b = AtomGroup([])
+
+        assert_raises(ValueError, Merge, a, b)

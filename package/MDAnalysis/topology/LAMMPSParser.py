@@ -138,7 +138,7 @@ def _parse_section(psffile, nlines, nentries):
     section = []
     for i in xrange(nlines):
         line = psffile.next().split()
-        logging.debug("Line is: {}".format(line))
+#        logging.debug("Line is: {}".format(line))
         section.append(tuple(map(zeroint, line[2:2+nentries])))
 
     return tuple(section)
@@ -148,8 +148,8 @@ def _parse_atom_line(line):
     """Parse a atom line into MDA stuff"""
     line = line.split()
     n = len(line)
-    logger.debug('Line length: {}'.format(n))
-    logger.debug('Line is {}'.format(line))
+#    logger.debug('Line length: {}'.format(n))
+#    logger.debug('Line is {}'.format(line))
     q = 0.0  # charge is zero by default
     
     idx, resid, atype = map(int, line[:3])
@@ -177,7 +177,7 @@ def _parse_atoms(psffile, natoms, mass, atom_style):
     psffile.next()
     for i in xrange(natoms):
         line = psffile.next().strip()
-        logger.debug("Line: {} contains: {}".format(i, line))
+#        logger.debug("Line: {} contains: {}".format(i, line))
         idx, resid, atype, q, x, y, z = _parse_atom_line(line)
         m = mass.get(atype, 0.0)
         # Atom() format:

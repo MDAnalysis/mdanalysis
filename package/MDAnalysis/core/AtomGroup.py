@@ -389,6 +389,7 @@ class Atom(object):
         self.angles = None
         self.torsions = None
         self.impropers = None
+        self.__universe = None
 
     def __repr__(self):
         return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
@@ -409,7 +410,7 @@ class Atom(object):
         if isinstance(other, Atom):
             return AtomGroup([self, other])
         else:
-            return AtomGroup([self]+other.atoms)
+            return AtomGroup([self] + other._atoms)
 
     @property
     def pos(self):
@@ -540,9 +541,13 @@ class AtomGroup(object):
     .. versionchanged:: 0.7.6
        An empty AtomGroup can be created and no longer raises a
        :exc:`NoDataError`.
+    .. versionchanged:: 0.8.2
+       The size at which cache is used for atom lookup is now stored as variable
+       _atomcache_size within the class.
     """
     # for generalized __getitem__ (override _containername for ResidueGroup and SegmentGroup)
     _containername = "_atoms"
+    _atomcache_size = 10000
     def __init__(self, atoms):
         if len(atoms) > 0:
             # __atoms property is effectively readonly
@@ -587,34 +592,43 @@ class AtomGroup(object):
         * masses (:meth:`AtomGroup.masses`)
         * residues (:attr:`AtomGroup.residues`)
         * segments (:attr:`AtomGroup.segments`)
+        * bonds (:attr:`AtomGroup.bonds`)
+        * angles (:attr:`AtomGroup.angles`)
+        * torsions (:attr:`AtomGroup.torsions`)
+        * improper torsions (:attr:`AtomGroup.impropers`)
 
         .. SeeAlso:: :meth:`_clear_caches`
 
         .. versionadded:: 0.7.5
+        .. versionchanged:: 0.8.2
+           Added bonds/angles/torsions/impropers to rebuild.
+           Reworked how things are rebuilt to avoid code duplication.
         """
         # If the number of atoms is very large, create a dictionary cache for lookup
-        if len(self._atoms) > 10000:
+        if len(self._atoms) > self._atomcache_size:
             self.__cache['atoms'] = dict(((x,None) for x in self.__atoms))
+
+        # Delete preexisting cache if exists
+        for att in ['indices', 'residues', 'segments', 'masses',
+                    'bonds', 'angles', 'torsions', 'impropers']:
+            try:
+                del self.__cache[att]
+            except KeyError:
+                pass
+        # Call each in turn to force them to build into cache
         # indices
-        self.__cache['indices'] = numpy.array([atom.number for atom in self._atoms])
+        self.__cache['indices'] = self.indices()
         # residue instances
-        residues = []
-        current_residue = None
-        for atom in self._atoms:
-            if atom.residue != current_residue:
-                residues.append(atom.residue)
-            current_residue = atom.residue
-        self.__cache['residues'] = ResidueGroup(residues)
+        self.__cache['residues'] = self.residues
         # segment instances
-        segments = []
-        current_segment = None
-        for atom in self._atoms:
-            if atom.segment != current_segment:
-                segments.append(atom.segment)
-            current_segment = atom.segment
-        self.__cache['segments'] = SegmentGroup(segments)
+        self.__cache['segments'] = self.segments
         # masses
-        self.__cache['masses'] = numpy.array([atom.mass for atom in self._atoms])
+        self.__cache['masses'] = self.masses()
+        # bonds angles torsions impropers
+        self.__cache['bonds'] = self.bonds
+        self.__cache['angles'] = self.angles
+        self.__cache['torsions'] = self.torsions
+        self.__cache['impropers'] = self.impropers
 
     def _clear_caches(self, *args):
         """Clear cache for all *args*.
@@ -709,7 +723,7 @@ class AtomGroup(object):
 
     def __contains__(self, other):
         # If the number of atoms is very large, create a dictionary cache for lookup
-        if len(self) > 10000 and not 'atoms' in self.__cache:
+        if len(self) > self._atomcache_size and not 'atoms' in self.__cache:
             self.__cache['atoms'] = dict(((x,None) for x in self.__atoms))
         try:
             return other in self.__cache['atoms']
@@ -1992,7 +2006,8 @@ class AtomGroup(object):
             #return tuple(atomselections)
             return atomgrp
 
-    def write(self,filename=None,format="PDB",filenamefmt="%(trjname)s_%(frame)d", **kwargs):
+    def write(self,filename=None,format="PDB",
+              filenamefmt="%(trjname)s_%(frame)d", **kwargs):
         """Write AtomGroup to a file.
 
         AtomGroup.write(filename[,format])
@@ -2001,8 +2016,9 @@ class AtomGroup(object):
           *filename*
                ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
           *format*
-                PDB, CRD, GRO; case-insensitive and can also be supplied as
-                the filename extension [PDB]
+                PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str);
+                case-insensitive and can also be supplied as the filename
+                extension [PDB]
           *filenamefmt*
                 format string for default filename; use substitution tokens
                 'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
@@ -2018,10 +2034,13 @@ class AtomGroup(object):
 
                 * ``None``: do not write out bonds
 
+        .. versionchanged:: 0.8.2 
+           Merged with write_selection.  This method can now write both
+           selections out.
         """
         import util
         import os.path
-        import MDAnalysis.coordinates
+        import MDAnalysis.coordinates, MDAnalysis.selections
 
         trj = self.universe.trajectory    # unified trajectory API
         frame = trj.ts.frame
@@ -2032,9 +2051,32 @@ class AtomGroup(object):
             trjname,ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt % vars()
         filename = util.filename(filename,ext=format.lower(),keep=True)
-        framewriter = MDAnalysis.coordinates.writer(filename, **kwargs)
-        framewriter.write(self)         # wants a atomgroup
-        framewriter.close()         # always close single frames (eg PDB writer writes END)
+
+        # From the following blocks, one must pass.
+        # Both can't pass as the extensions don't overlap.
+        try:
+            writer = MDAnalysis.coordinates.writer(filename, **kwargs)
+        except TypeError:
+            coords = False
+            pass  # might be selections format
+        else:
+            coords = True
+
+        try:
+            SelectionWriter = MDAnalysis.selections.get_writer(filename, format)
+        except (TypeError, NotImplementedError):
+            selection = False
+            pass
+        else:
+            writer = SelectionWriter(filename, **kwargs)
+            selection = True
+
+        if not (coords or selection):
+            raise ValueError("No writer found for format: {}".format(filename))
+        else:
+            writer.write(self.atoms)
+            if coords:  # only these writers have a close method
+                writer.close()
 
     # TODO: This is _almost_ the same code as write() --- should unify!
     def write_selection(self,filename=None,format="vmd",filenamefmt="%(trjname)s_%(frame)d",
@@ -2055,6 +2097,8 @@ class AtomGroup(object):
                 additional keywords are passed on to the appropriate
                 :class:`~MDAnalysis.selections.base.SelectionWriter`
 
+        .. deprecated:: 0.8.2
+           Use :meth:`write`
         """
         import util
         import os.path
@@ -2074,7 +2118,7 @@ class AtomGroup(object):
         filename = util.filename(filename,ext=extension,keep=True)
 
         writer = SelectionWriter(filename, **kwargs)
-        writer.write(self)         # wants a atomgroup
+        writer.write(self.atoms)         # wants a atomgroup
 
     # properties
     @property
@@ -2166,11 +2210,12 @@ class Residue(AtomGroup):
                   found in the previous residue (by resid) then this
                   method returns ``None``.
         """
-        try:
-            return self.universe.selectAtoms(
-                'segid %s and resid %d and name C' % (self.segment.id, self.id-1)) +\
-                self.N + self.CA + self.C
-        except (SelectionError, NoDataError):
+        sel = self.universe.selectAtoms(
+            'segid %s and resid %d and name C' % (self.segment.id, self.id-1)) +\
+            self.N + self.CA + self.C
+        if len(sel) == 4:  # selectAtoms doesnt raise errors if nothing found, so check size
+            return sel
+        else:
             return None
 
     def psi_selection(self):
@@ -2180,11 +2225,12 @@ class Residue(AtomGroup):
                   found in the following residue (by resid) then this
                   method returns ``None``.
         """
-        try:
-            return self.N + self.CA + self.C + \
-                self.universe.selectAtoms(
-                'segid %s and resid %d and name N' % (self.segment.id, self.id + 1))
-        except (SelectionError, NoDataError):
+        sel = self.N + self.CA + self.C + \
+              self.universe.selectAtoms(
+                  'segid %s and resid %d and name N' % (self.segment.id, self.id + 1))
+        if len(sel) == 4:
+            return sel
+        else:
             return None
 
     def omega_selection(self):
@@ -2201,12 +2247,13 @@ class Residue(AtomGroup):
         """
         nextres = self.id + 1
         segid = self.segment.id
-        try:
-            return self.CA + self.C +\
-                self.universe.selectAtoms(
-                'segid %s and resid %d and name N' % (segid, nextres),
-                'segid %s and resid %d and name CA' % (segid, nextres))
-        except (SelectionError, NoDataError):
+        sel = self.CA + self.C +\
+              self.universe.selectAtoms(
+                  'segid %s and resid %d and name N' % (segid, nextres),
+                  'segid %s and resid %d and name CA' % (segid, nextres))
+        if len(sel) == 4:
+            return sel
+        else:
             return None
 
     def chi1_selection(self):
@@ -2461,7 +2508,7 @@ class Segment(ResidueGroup):
         return self.name
 
     @id.setter
-    def id_setter(self,x):
+    def id(self,x):
         self.name = x
 
     def __getitem__(self, item):
@@ -2781,10 +2828,8 @@ class Universe(object):
             self.trajectory = None
             return
 
-        try:
-            topologyfile = args[0]
-        except IndexError:
-            raise ValueError("Universe requires at least a single topology or structure file.")
+        topologyfile = args[0]
+
         # old behaviour (explicit coordfile) overrides new behaviour
         coordinatefile = args[1:] if kwargs['coordinatefile'] is None else kwargs['coordinatefile']
 
@@ -2811,7 +2856,7 @@ class Universe(object):
                                     bonds=kwargs.get('bonds', False),
                                     format=topology_format)
             struc = parser(topologyfile)
-        except TypeError as err:
+        except (TypeError, ValueError, IOError) as err:
             raise ValueError("Failed to build a topology from the topology file {0}. Error: {1}".format(self.filename, err))
 
         # populate atoms etc

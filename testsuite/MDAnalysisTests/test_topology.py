@@ -16,7 +16,9 @@
 #
 
 import MDAnalysis
-from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass
+from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass, \
+    guess_format
+from MDAnalysis.topology.core import TopologyObject
 from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD, \
     LAMMPSdata, trz4data
 
@@ -256,8 +258,6 @@ class TestTopologyObjects(TestCase):
     len
     """
     def setUp(self):
-        from MDAnalysis.topology.core import TopologyObject
-
         self.u = MDAnalysis.Universe(PSF, DCD)
         self.u.build_topology()
         self.a1 = list(self.u.atoms[1:3])
@@ -281,16 +281,23 @@ class TestTopologyObjects(TestCase):
         assert_equal(repr(self.TO1), 
                      '< TopologyObject between: Atom 2 (HT1 of MET-1), Atom 3 (HT2 of MET-1) >')
 
-    def test_eq_ne(self):
-        from MDAnalysis.topology.core import TopologyObject
-
+    def test_eq(self):
         TO1_b = TopologyObject(self.a1)
 
         assert_equal(self.TO1 == TO1_b, True)
         assert_equal(self.TO1 == self.TO2, False)
 
+    def test_ne(self):
+        TO1_b = TopologyObject(self.a1)
+
         assert_equal(self.TO1 != TO1_b, False)
         assert_equal(self.TO1 != self.TO2, True)
+
+    def test_gt(self):
+        assert_equal(self.TO1 > self.TO2, False)
+
+    def test_lt(self):
+        assert_equal(self.TO1 < self.TO2, True)
 
     def test_iter(self):
         assert_equal(self.a1, list(self.TO1))
@@ -341,7 +348,7 @@ class TestTopologyObjects(TestCase):
         assert_almost_equal(imp.improper(), -3.8370631, 4)
 
 
-class Test_TopologyGroup(TestCase):
+class TestTopologyGroup(TestCase):
     """Tests TopologyDict and TopologyGroup classes with psf input"""
     def setUp(self):
         topology = PSF
@@ -937,6 +944,7 @@ class TestLammpsData(TestCase):
     """
     def setUp(self):
         self.u = MDAnalysis.Universe(LAMMPSdata, trz4data)
+        self.ag = self.u.atoms[:300]
 
     def tearDown(self):
         del self.u
@@ -945,11 +953,11 @@ class TestLammpsData(TestCase):
         assert_equal(len(self.u.atoms), 18360)
 
     def test_atomtypes(self):
-        typs = self.u.atoms.types()
+        typs = self.ag.types()
         # Correct number of types found
         assert_equal(len(set(typs)), 6)
         # Correct number of a given types
-        assert_equal(len(typs[typs=='1']), 9696)
+        assert_equal(len(typs[typs=='1']), 160)
 
     def test_charge(self):
         # No charges were supplied, should default to 0.0
@@ -975,3 +983,12 @@ class TestLammpsData(TestCase):
 
     def test_masses(self):
         assert_equal(self.u.atoms[0].mass, 0.012)
+
+
+class TestGuessFormat(TestCase):
+    """Tests the guess_format function in core.topology"""
+    def test_weirdinput(self):
+        assert_raises(TypeError, guess_format, 123)
+
+    def test_unknowntopology(self):
+        assert_raises(TypeError, guess_format, 'file.jpg')
