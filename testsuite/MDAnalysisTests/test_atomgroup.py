@@ -248,6 +248,44 @@ class TestAtomGroup(TestCase):
             return self.ag + [1, 2, 3]
 
         assert_raises(TypeError, bad_add)
+
+    def test_repr(self):
+        # Should make sure that the user facing info stays as expected
+        assert_equal(repr(self.ag), "<AtomGroup with 3341 atoms>")
+
+    ## Issue 202 following 4 tests
+    def test_set_resnum_single(self):
+        ag = self.universe.atoms[:3]
+        new = 5
+        ag.set_resnum(new)
+        for at in ag:
+            assert_equal(at.resnum, new)
+        assert_equal(all(ag.resnums() == new), True)
+
+    def test_set_resnum_many(self):
+        ag = self.universe.atoms[:3]
+        new = [22, 23, 24]
+        ag.set_resnum(new)
+        for at, v in zip(ag, new):
+            assert_equal(at.resnum, v)
+        assert_equal(all(ag.resnums() == new), True)
+
+    def test_set_resname_single(self):
+        ag = self.universe.atoms[:3]
+        new = 'abc'
+        ag.set_resname(new)
+        for at in ag:
+            assert_equal(at.resname, new)
+        assert_equal(all(ag.resnames() == new), True)
+
+    def test_set_resname_many(self):
+        ag = self.universe.atoms[:3]
+        new = ['aa', 'bb', 'cc']
+        ag.set_resname(new)
+        for at, v in zip(ag, new):
+            assert_equal(at.resname, v)
+        assert_equal(all(ag.resnames() == new), True)
+
     # TODO: add all other methods except selectAtoms(), see test_selections.py
     def test_set_charge(self):
         # Charges are initially 0
