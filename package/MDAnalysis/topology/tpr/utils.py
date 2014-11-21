@@ -69,11 +69,23 @@ def fver_err(fver):
             "Your tpx version is {0}, which this parser does not support, yet ".format(
                 fver))
 
+
+def define_unpack_real(prec, data):
+    """Define an unpack_real method of data based on the float precision used"""
+    if prec == 4:
+        data.unpack_real = data.unpack_float
+    elif prec == 8:
+        data.unpack_real = data.unpack_double
+    else:
+        raise ValueError("unsupported precision: {0}".format(prec))
+
+
 def read_tpxheader(data):
     """this function is now compatible with do_tpxheader in tpxio.c"""
     number = data.unpack_int()                     # ?
     ver_str = data.unpack_string()                 # version string e.g. VERSION 4.0.5
     precision = data.unpack_int()                  # e.g. 4
+    define_unpack_real(precision, data)
     fver = data.unpack_int()                       # version of tpx file
     fver_err(fver)
 
