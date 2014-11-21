@@ -122,8 +122,22 @@ ndo_ivec = U.ndo_ivec
 
 def log_header(th):
     logger.info("Gromacs version   : {0}".format(th.ver_str))
-    logger.info("tpx     version   : {0}".format(th.fver))
-    logger.info("tpx     generation: {0}".format(th.fgen))
+    logger.info("tpx version       : {0}".format(th.fver))
+    logger.info("tpx generation    : {0}".format(th.fgen))
+    logger.info("tpx number        : {0}".format(th.number))
+    logger.info("tpx precision     : {0}".format(th.precision))
+    logger.info("tpx file_tag      : {0}".format(th.file_tag))
+    logger.info("tpx natoms        : {0}".format(th.natoms))
+    logger.info("tpx ngtc          : {0}".format(th.ngtc))
+    logger.info("tpx fep_state     : {0}".format(th.fep_state))
+    logger.info("tpx lambda        : {0}".format(th.lamb))
+    logger.debug("tpx bIr (input record): {0}".format(th.bIr))
+    logger.debug("tpx bTop         : {0}".format(th.bTop))
+    logger.debug("tpx bX           : {0}".format(th.bX))
+    logger.debug("tpx bV           : {0}".format(th.bV))
+    logger.debug("tpx bF           : {0}".format(th.bF))
+    logger.debug("tpx bBox         : {0}".format(th.bBox))
+
 
 def parse(tprfile):
     """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
