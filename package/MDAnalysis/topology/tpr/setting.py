@@ -195,7 +195,7 @@ def do_inputrec(data):
     data.unpack_int()                                       # ir_nslist
     data.unpack_int()                                       # ir_ndelta
 
-    data.unpack_float()                                     # ir_rtpi
+    data.unpack_real()                                     # ir_rtpi
     data.unpack_int()                                       # ir_nstcomm
     abs(data.unpack_int())                                  # ir_comm_mode
 
@@ -210,53 +210,53 @@ def do_inputrec(data):
     data.unpack_int()                                       # ir_nstenergy
     data.unpack_int()                                       # ir_nstxtcout
 
-    data.unpack_float()                              # ir_init_t = rdum =
-    data.unpack_float()                              # ir_delta_t = rdum =
+    data.unpack_real()                              # ir_init_t = rdum =
+    data.unpack_real()                              # ir_delta_t = rdum =
 
-    data.unpack_float()                                     # ir_xtcprec
-    ir_rlist = data.unpack_float()
+    data.unpack_real()                                     # ir_xtcprec
+    ir_rlist = data.unpack_real()
 
     data.unpack_int()                                       # ir_coulombtype
-    data.unpack_float()                                     # ir_rcoulomb_switch
-    ir_rcoulomb = data.unpack_float()
+    data.unpack_real()                                     # ir_rcoulomb_switch
+    ir_rcoulomb = data.unpack_real()
 
     data.unpack_int()                                       # ir_rvdwtype
-    data.unpack_float()                                     # ir_rvdw_switch
-    ir_rvdw = data.unpack_float()
+    data.unpack_real()                                     # ir_rvdw_switch
+    ir_rvdw = data.unpack_real()
 
     max(ir_rlist, max(ir_rvdw, ir_rcoulomb))                # ir_rlistlong
 
     data.unpack_int()                                       # ir_eDispCorr
-    data.unpack_float()                                     # ir_epsilon_r
-    data.unpack_float()                                     # ir_epsilon_rf
+    data.unpack_real()                                     # ir_epsilon_r
+    data.unpack_real()                                     # ir_epsilon_rf
 
-    data.unpack_float()                                     # ir_tabext
+    data.unpack_real()                                     # ir_tabext
 
     data.unpack_int()                                       # ir_gb_algorithm
     data.unpack_int()                                       # ir_nstgbradii
-    data.unpack_float()                                     # ir_rgbradii
-    data.unpack_float()                                     # ir_gb_saltconc
+    data.unpack_real()                                     # ir_rgbradii
+    data.unpack_real()                                     # ir_gb_saltconc
     data.unpack_int()                                       # ir_implicit_solvent
 
-    data.unpack_float()                                     # ir_gb_epsilon_solvent
-    data.unpack_float()                                     # ir_gb_obc_alpha
-    data.unpack_float()                                     # ir_gb_obc_beta
-    data.unpack_float()                                     # ir_gb_obc_gamma
+    data.unpack_real()                                     # ir_gb_epsilon_solvent
+    data.unpack_real()                                     # ir_gb_obc_alpha
+    data.unpack_real()                                     # ir_gb_obc_beta
+    data.unpack_real()                                     # ir_gb_obc_gamma
 
     # not relevant here
     # ir_gb_dielectric_offset = 0.009
     # ir_sa_algorithm = 0                                     # esaAPPROX
 
-    data.unpack_float()                             # ir_sa_surface_tension
+    data.unpack_real()                             # ir_sa_surface_tension
 
     data.unpack_int()                                       # ir_nkx
     data.unpack_int()                                       # ir_nky
     data.unpack_int()                                       # ir_nkz
     data.unpack_int()                                       # ir_pme_order
-    data.unpack_float()                                     # ir_ewald_rtol
+    data.unpack_real()                                     # ir_ewald_rtol
     data.unpack_int()                                       # ir_ewald_geometry
 
-    data.unpack_float()                                     # ir_epsilon_surface
+    data.unpack_real()                                     # ir_epsilon_surface
 
     data.unpack_bool()                                      # ir_bOptFFT
     data.unpack_bool()                                      # ir_bContinuation
@@ -270,34 +270,34 @@ def do_inputrec(data):
 
     # not relevant here
     # ir_nstpcouple = ir_nstcalcenergy
-    data.unpack_float()                                     # tau_p
+    data.unpack_real()                                     # tau_p
 
-    data.unpack_farray(DIM, data.unpack_float)              # ir_ref_p_XX
-    data.unpack_farray(DIM, data.unpack_float)              # ir_ref_p_YY
-    data.unpack_farray(DIM, data.unpack_float)              # ir_ref_p_ZZ
+    data.unpack_farray(DIM, data.unpack_real)              # ir_ref_p_XX
+    data.unpack_farray(DIM, data.unpack_real)              # ir_ref_p_YY
+    data.unpack_farray(DIM, data.unpack_real)              # ir_ref_p_ZZ
 
-    data.unpack_farray(DIM, data.unpack_float)              # ir_compress_XX
-    data.unpack_farray(DIM, data.unpack_float)              # ir_compress_YY
-    data.unpack_farray(DIM, data.unpack_float)              # ir_compress_ZZ
+    data.unpack_farray(DIM, data.unpack_real)              # ir_compress_XX
+    data.unpack_farray(DIM, data.unpack_real)              # ir_compress_YY
+    data.unpack_farray(DIM, data.unpack_real)              # ir_compress_ZZ
 
     data.unpack_int()                                       # ir_refcoord_scaling
-    data.unpack_farray(DIM, data.unpack_float)              # ir_posres_com
-    data.unpack_farray(DIM, data.unpack_float)             # ir_posres_comB
+    data.unpack_farray(DIM, data.unpack_real)              # ir_posres_com
+    data.unpack_farray(DIM, data.unpack_real)             # ir_posres_comB
 
     data.unpack_int()                                       # ir_andersen_seed
-    data.unpack_float()                                     # ir_shake_tol
+    data.unpack_real()                                     # ir_shake_tol
     data.unpack_int()                                       # ir_efep
 
-    data.unpack_float()                             # ir_init_lambda = rdum =
-    data.unpack_float()                             # ir_delta_lambda = rdum =
+    data.unpack_real()                             # ir_init_lambda = rdum =
+    data.unpack_real()                             # ir_delta_lambda = rdum =
 
     # Not relevant here
     # ir_n_flambda = 0
     # ir_flambda   = None
 
-    data.unpack_float()                                     # ir_sc_alpha
+    data.unpack_real()                                     # ir_sc_alpha
     data.unpack_int()                                       # ir_sc_power
-    data.unpack_float()                                     # ir_sc_sigma
+    data.unpack_real()                                     # ir_sc_sigma
 
     # not relevant here
     # ir_sc_sigma_min = 0
@@ -311,44 +311,44 @@ def do_inputrec(data):
     data.unpack_int()                                       # ir_eDisre_weighting
     data.unpack_bool()                                      # ir_bDisreMixed
 
-    data.unpack_float()                                     # ir_dr_fc
-    data.unpack_float()                                     # ir_dr_tau
+    data.unpack_real()                                     # ir_dr_fc
+    data.unpack_real()                                     # ir_dr_tau
     data.unpack_int()                                       # ir_nstdisreout
 
-    data.unpack_float()                                     # ir_orires_fc
-    data.unpack_float()                                     # ir_orires_tau
+    data.unpack_real()                                     # ir_orires_fc
+    data.unpack_real()                                     # ir_orires_tau
     data.unpack_int()                                       # ir_nstorireout
 
-    data.unpack_float()                                     # ir_dihre_fc
+    data.unpack_real()                                     # ir_dihre_fc
 
-    data.unpack_float()                                     # ir_em_stepsize
-    data.unpack_float()                                     # ir_em_tol
+    data.unpack_real()                                     # ir_em_stepsize
+    data.unpack_real()                                     # ir_em_tol
 
     data.unpack_bool()                                      # ir_bShakeSOR
     data.unpack_int()                                       # ir_niter
 
-    data.unpack_float()                                     # ir_fc_stepsize
+    data.unpack_real()                                     # ir_fc_stepsize
 
     data.unpack_int()                                       # ir_eConstrAlg
     data.unpack_int()                                       # ir_nProjOrder
-    data.unpack_float()                                     # ir_LincsWarnAngle
+    data.unpack_real()                                     # ir_LincsWarnAngle
     data.unpack_int()                                       # ir_nLincsIter
 
-    data.unpack_float()                                     # ir_bd_fric
+    data.unpack_real()                                     # ir_bd_fric
     data.unpack_int()                                       # ir_ld_seed
 
     U.ndo_rvec(data, DIM)                                     # ir_deform
 
-    data.unpack_float()                                 # ir_cos_accel
+    data.unpack_real()                                 # ir_cos_accel
 
     data.unpack_int()                                   # ir_userint1
     data.unpack_int()                                   # ir_userint2
     data.unpack_int()                                   # ir_userint3
     data.unpack_int()                                   # ir_userint4
-    data.unpack_float()                                 # ir_userreal1
-    data.unpack_float()                                 # ir_userreal2
-    data.unpack_float()                                 # ir_userreal3
-    data.unpack_float()                                 # ir_userreal4
+    data.unpack_real()                                 # ir_userreal1
+    data.unpack_real()                                 # ir_userreal2
+    data.unpack_real()                                 # ir_userreal3
+    data.unpack_real()                                 # ir_userreal4
 
     # pull_stuff
     data.unpack_int()                                       # ir_ePull
@@ -386,7 +386,7 @@ def do_inputrec(data):
     # Walls
     data.unpack_int()                                   # ir_nwall
     data.unpack_int()                                   # ir_nwall_type
-    data.unpack_float()                                 # ir_wall_r_linpot
+    data.unpack_real()                                 # ir_wall_r_linpot
 
     # ir->wall_atomtype[0], ir->wall_atomtype[1]
     ir_wall_atomtype = []
@@ -395,10 +395,10 @@ def do_inputrec(data):
 
     # ir->wall_density[0], ir->wall_density[1]
     ir_wall_density = []
-    ir_wall_density.append(data.unpack_float())
-    ir_wall_density.append(data.unpack_float())
+    ir_wall_density.append(data.unpack_real())
+    ir_wall_density.append(data.unpack_real())
 
-    data.unpack_float()                                    # ir_wall_ewald_zfac
+    data.unpack_real()                                    # ir_wall_ewald_zfac
 
     # cosine stuff for electric fields
     ir_ex_n, ir_et_n, ir_ex_a, ir_ex_phi, ir_et_a, ir_et_phi = [], [], [], [], [], []
@@ -416,7 +416,7 @@ def do_inputrec(data):
     # QMM stuff
     data.unpack_bool()                                  # ir_bQMMM
     data.unpack_int()                                   # ir_bQMMMscheme
-    data.unpack_float()                                 # ir_scalefactor
+    data.unpack_real()                                 # ir_scalefactor
     data.unpack_int()                                   # ir_opts_ngQM
 
     # if ir_opts_ngQM > 0:
