@@ -78,14 +78,14 @@ class LeafletFinder(object):
        leaflet0.residues.atoms
     """
 
-    def __init__(self, universe, selectionstring, cutoff=15.0, pbc=False):
+    def __init__(self, universe, selectionstring, cutoff=15.0, pbc=False, sparse=None):
         """Initialize from a *universe* or pdb file.
 
         :Arguments:
              *universe*
                  :class:`MDAnalysis.Universe` or a PDB file name.
-             *selectionstring*
-                 :class:`MDAnalysis.core.AtomGroup.AtomGroup` or a 
+             *selection*
+                 :class:`MDAnalysis.core.AtomGroup.AtomGroup` or a
                  :meth:`MDAnalysis.Universe.selectAtoms` selection string
                  for atoms that define the lipid head groups, e.g.
                  universe.atoms.PO4 or "name PO4" or "name P*"
@@ -96,6 +96,11 @@ class LeafletFinder(object):
              *pbc*
                  take periodic boundary conditions into account (only works
                  for orthorhombic boxes) [``False``]
+             *sparse*
+                 ``None``: use fastest possible routine; ``True``: use slow
+                 sparse matrix implementation (for large systems); ``False``:
+                 use fast :func:`~MDAnalysis.analysis.distances.distance_array`
+                 implementation [``None``].
         """
         universe = MDAnalysis.asUniverse(universe)
         self.universe = universe
@@ -105,6 +110,7 @@ class LeafletFinder(object):
         else:
             self.selection = universe.selectAtoms(self.selectionstring)
         self.pbc = pbc
+        self.sparse = sparse
         self._init_graph(cutoff)
 
     def _init_graph(self, cutoff):
@@ -125,14 +131,27 @@ class LeafletFinder(object):
             box = self.universe.trajectory.ts.dimensions
         else:
             box = None
-        coord = self.selection.coordinates()
-        # this works for small systems
-        try:
-            adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="numpy",box=box)
-        # but use a sparse matrix method for larger systems for memory reasons
-        except ValueError:
-            warnings.warn('N x N matrix too big - switching to sparse matrix method (works fine, but is currently rather slow)' , category=UserWarning , stacklevel=2)
+        coord = self.selection.positions
+        if self.sparse is False:
+            # only try distance array
+            try:
+                adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="numpy",box=box)
+            except ValueError:
+                warnings.warn('N x N matrix too big, use sparse=True or sparse=None' , category=UserWarning , stacklevel=2)
+                raise
+        elif self.sparse is True:
+            # only try sparse
             adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="sparse",box=box)
+        else:
+            # use distance_array and fall back to sparse matrix
+            try:
+                # this works for small-ish systems and depends on system memory
+                adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="numpy",box=box)
+            except ValueError:
+                # but use a sparse matrix method for larger systems for memory reasons
+                warnings.warn('N x N matrix too big - switching to sparse matrix method (works fine, but is currently rather slow)' ,
+                              category=UserWarning , stacklevel=2)
+                adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="sparse",box=box)
         return NX.Graph(adj)
 
     def _get_components(self):
