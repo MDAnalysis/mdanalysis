@@ -30,6 +30,7 @@ Note that the files are actually located in a separate package,
  from MDAnalysisTestData.datafiles import *
 """
 __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
+           "PSF_notop", "PSF_BAD",      # Same as PSF but no bonds etc, malformed version of previous
            "DCD_empty",
            "PSF_NAMD", "PDB_NAMD",            # NAMD
            "PSF_nosegid",                     # psf without a segid, Issue 121
@@ -71,6 +72,8 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
 from pkg_resources import resource_filename
 
 PSF = resource_filename(__name__, 'data/adk.psf')
+PSF_notop = resource_filename(__name__, 'data/adk_notop.psf')
+PSF_BAD = resource_filename(__name__, 'data/adk_notop_BAD.psf')
 DCD = resource_filename(__name__, 'data/adk_dims.dcd')
 DCD_empty = resource_filename(__name__, 'data/empty.dcd')
 CRD = resource_filename(__name__, 'data/adk_open.crd')

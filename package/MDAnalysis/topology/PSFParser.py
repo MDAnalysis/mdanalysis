@@ -35,11 +35,6 @@ from MDAnalysis import FileFormatWarning
 import logging
 logger = logging.getLogger("MDAnalysis.topology.PSF")
 
-
-class PSFParseError(Exception):
-    """Signifies an error during parsing of a CHARMM PSF file."""
-    pass
-
 def parse(filename):
     """Parse CHARMM/NAMD/XPLOR PSF_ file *filename*.
 
@@ -51,7 +46,7 @@ def parse(filename):
         header = next_line()
         if header[:3] != "PSF":
             logger.error("%s is not valid PSF file (header = %r)", psffile.name, header)
-            raise PSFParseError("%s is not a valid PSF file" % psffile.name)
+            raise ValueError("%s is not a valid PSF file" % psffile.name)
         header_flags = header[3:].split()
         if "NAMD" in header_flags:
             format = "NAMD"        # NAMD/VMD
@@ -63,7 +58,7 @@ def parse(filename):
         title = next_line().split()
         if not (title[1] == "!NTITLE"):
             logger.error("%s is not a valid PSF file", psffile.name)
-            raise PSFParseError("%s is not a valid PSF file" % psffile.name)
+            raise ValueError("%s is not a valid PSF file" % psffile.name)
         psfremarks = [next_line() for i in range(int(title[0]))]
         logger.debug("PSF file %r: format %r", psffile.name, format)
 
@@ -81,7 +76,7 @@ def parse(filename):
             # Make sure the section type matches the desc
             if not (sect_type == desc):
                 logger.error("Expected section %r but found %r", desc, sect_type)
-                raise PSFParseError("Expected section {0} but found {1}".format(desc, sect_type))
+                raise ValueError("Expected section {0} but found {1}".format(desc, sect_type))
             # Now figure out how many lines to read
             numlines = int(ceil(float(num)/per_line))
             # Too bad I don't have generator expressions [said Naveen in 2005]
@@ -107,7 +102,7 @@ def parse(filename):
             # Reached the end of the file before we expected
             if not structure.has_key("_atoms"):
                 logger.error("The PSF file didn't contain the minimum required section of NATOM")
-                raise PSFParseError("The PSF file didn't contain the minimum required section of NATOM")
+                raise ValueError("The PSF file didn't contain the minimum required section of NATOM")
 
     # Who cares about the rest
     return structure

@@ -387,8 +387,8 @@ def guess_format(filename, format=None):
     if format is None:
         # simple extension checking... something more complicated is left
         # for the ambitious
-        root, ext = os.path.splitext(filename)
         try:
+            root, ext = os.path.splitext(filename)
             if ext.startswith('.'):
                 ext = ext[1:]
             format = ext.upper()
@@ -1123,7 +1123,7 @@ class TopologyGroup(object):
 
     # Distance calculation methods below
     # "Slow" versions exist as a way of testing the Cython implementations
-    def _bondsSlow(self, pbc=False):  # for testing purposes only
+    def _bondsSlow(self, pbc=False):  # pragma: no cover
         """Slow version of bond (numpy implementation)"""
         if not self.toptype == 'Bond':
             return TypeError("TopologyGroup is not of type 'Bond'")
@@ -1166,7 +1166,7 @@ class TopologyGroup(object):
                                         self.atom2.coordinates(),
                                         result=result)
 
-    def _anglesSlow(self):  # for testing purposes only
+    def _anglesSlow(self):  # pragma: no cover
         """Slow version of angle (numpy implementation)"""
         if not self.toptype == 'Angle':
             raise TypeError("TopologyGroup is not of type 'Angle'")
@@ -1213,7 +1213,7 @@ class TopologyGroup(object):
                                          self.atom3.coordinates(),
                                          result=result)
 
-    def _torsionsSlow(self):  # for testing purposes only
+    def _torsionsSlow(self):  # pragma: no cover
         """Slow version of torsion (numpy implementation)"""
         if self.toptype not in ['Torsion', 'Improper_Torsion']:
             raise TypeError("TopologyGroup is not of type 'Torsion' or "

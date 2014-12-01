@@ -36,10 +36,6 @@ except ImportError:
 import MDAnalysis.coordinates.pdb.extensions
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
 
-class PDBParseError(Exception):
-    """Signifies an error while reading a PDB file."""
-    pass
-
 def parse(pdbfile):
     """Parse atom information from PDB file *pdbfile*.
 
@@ -55,7 +51,7 @@ def parse(pdbfile):
     """
     root,ext = os.path.splitext(pdbfile)
     if ext.lower() not in ('.pdb', '.ent'):
-        raise PDBParseError("%(pdbfile)r is probably not in PDB format (wrong extension).")
+        raise ValueError("%(pdbfile)r is probably not in PDB format (wrong extension).")
     structure = {}
     # use Sloppy PDB parser to cope with big PDBs!
     pdb =  MDAnalysis.coordinates.pdb.extensions.get_structure(pdbfile,"0UNK")

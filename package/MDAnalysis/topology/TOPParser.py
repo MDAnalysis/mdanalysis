@@ -26,9 +26,6 @@ The format is defined in `PARM parameter/topology file specification`_.
 The reader tries to detect if it is a newer (AMBER 12?) file format
 by looking for the flag "ATOMIC_NUMBER".
 
-The parser raises a :exc:`TOPParserError` if it fails to read
-the topology file.
-
 .. Note::
 
    The Amber charge is converted to electron charges as used in
@@ -47,10 +44,6 @@ import MDAnalysis.core
 import MDAnalysis.core.units
 from MDAnalysis.core import util
 
-class TOPParseError(Exception):
-    """Signifies an error during parsing of a Amber PRMTOP file."""
-    pass
-
 def parse(filename):
     """Parse Amber PRMTOP topology file *filename*.
 
@@ -68,10 +61,10 @@ def parse(filename):
         next_line = skip_line = topfile.next
         header = next_line()
         if header[:3] != "%VE":
-            raise TOPParseError("%s is not a valid TOP file" % topfile)
+            raise ValueError("%s is not a valid TOP file" % topfile)
         title = next_line().split()
         if not (title[1] == "TITLE"):
-            raise TOPParseError("%s is not a valid TOP file" % topfile)
+            raise ValueError("%s is not a valid TOP file" % topfile)
         while header[:14] != '%FLAG POINTERS':
             header = next_line()
         header = next_line()
@@ -163,7 +156,7 @@ def parse(filename):
             for info in sections[formatversion]:
                  parse_sec(info)
         except StopIteration:
-            raise TOPParseError("The TOP file didn't contain the minimum required section of ATOM_NAME")
+            raise ValueError("The TOP file didn't contain the minimum required section of ATOM_NAME")
         # Completing info respoint to include all atoms in last resid
         structure["_respoint"].append(sys_info[0])
         structure["_respoint"][-1] = structure["_respoint"][-1] + 1
