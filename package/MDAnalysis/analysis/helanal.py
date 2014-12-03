@@ -10,9 +10,9 @@
 #               Integrated into MDAnalysis and NumPy-fied
 
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
+# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
 #               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see website for details)
+#               and contributors (see AUTHORS for the full list)
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
