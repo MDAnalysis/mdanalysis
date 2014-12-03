@@ -28,7 +28,7 @@ import sys
 from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, \
     PDB, CRD, XTC, XTC_offsets, TRR, TRR_offsets, GRO, DMS, CONECT, \
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
-    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata
+    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini
 from . import knownfailure
 
 import os
@@ -679,7 +679,7 @@ class TestMultiPDBReader(TestCase):
 
     @attr('slow')
     def test_numframes(self):
-        assert_equal(self.multiverse.trajectory.numframes, 24, 
+        assert_equal(self.multiverse.trajectory.numframes, 24,
                      "Wrong number of frames read from PDB muliple model file")
 
     @attr('slow')
@@ -687,9 +687,9 @@ class TestMultiPDBReader(TestCase):
         u = self.multiverse
         desired = 392
         for frame in u.trajectory:
-            assert_equal(len(u.atoms), desired, 
+            assert_equal(len(u.atoms), desired,
                          err_msg=("The number of atoms in the Universe (%d) does not"
-                                  " match the number of atoms in the test case (%d) at frame %d" 
+                                  " match the number of atoms in the test case (%d) at frame %d"
                                   % (len(u.atoms), desired, u.trajectory.frame)))
 
     @attr('slow')
@@ -2433,36 +2433,53 @@ class TestTimestep_Copy_XTC(TestTimestep_Copy):
         self.universe = mda.Universe(PDB, XTC)
         self.name = 'XTC'
 
+class RefLAMMPSData(object):
+    filename = LAMMPSdata
+    numatoms = 18360
+    pos_atom1 = np.array([ 11.89985657,  48.4455719 ,  19.09719849], dtype=np.float32)
+    vel_atom1 = np.array([-5.667593  ,  7.91380978, -3.00779533], dtype=np.float32)
+    dimensions = np.array([ 55.42282867,  55.42282867,  55.42282867,  90., 90.,  90.],
+                          dtype=np.float32)
 
-class TestLammpsData_Coords(TestCase):
+class RefLAMMPSDataMini(object):
+    filename = LAMMPSdata_mini
+    numatoms = 1
+    pos_atom1 = np.array([ 11.89985657,  48.4455719 ,  19.09719849], dtype=np.float32)
+    vel_atom1 = np.array([-5.667593  ,  7.91380978, -3.00779533], dtype=np.float32)
+    dimensions = np.array([ 60., 50., 30.,  90., 90.,  90.], dtype=np.float32)
+
+class _TestLammpsData_Coords(TestCase):
     """Tests using a .data file for loading single frame.
 
     All topology loading from .data is done in test_topology
     """
     def setUp(self):
-        self.u = MDAnalysis.Universe(LAMMPSdata)
+        self.u = MDAnalysis.Universe(self.filename)
 
     def tearDown(self):
         del self.u
 
-    def test_coords(self):
-        ref = np.array([ 11.89985657,  48.4455719 ,  19.09719849], dtype=np.float32)
+    def test_numatoms(self):
+        assert_equal(self.u.atoms.numberOfAtoms(), self.numatoms)
 
-        assert_equal(self.u.atoms[0].pos, ref)
+    def test_coords(self):
+        assert_equal(self.u.atoms[0].pos, self.pos_atom1)
 
     def test_velos(self):
-        ref = np.array([-5.667593  ,  7.91380978, -3.00779533], dtype=np.float32)
-
-        assert_equal(self.u.atoms[0].velocity, ref)
+        assert_equal(self.u.atoms[0].velocity, self.vel_atom1)
 
     def test_dims(self):
-        ref = np.array([ 55.42282867,  55.42282867,  55.42282867,  90., 90.,  90.], 
-                       dtype=np.float32)
-
-        assert_equal(self.u.dimensions, ref)
+        assert_equal(self.u.dimensions, self.dimensions)
 
     def test_singleframe(self):
         assert_raises(IOError, self.u.trajectory.next)
 
     def test_seek(self):
         assert_raises(IndexError, self.u.trajectory.__getitem__, 1)
+
+class TestLammpsData_Coords(_TestLammpsData_Coords, RefLAMMPSData):
+    pass
+
+class TestLammpsDataMini_Coords(_TestLammpsData_Coords, RefLAMMPSDataMini):
+    pass
+
