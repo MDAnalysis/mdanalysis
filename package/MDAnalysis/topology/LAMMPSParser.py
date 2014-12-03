@@ -29,13 +29,11 @@ Functions and classes
 
 .. autofunc:: parse
 
-.. autoexception:: LAMPPSParserError
-
 
 Deprecated classes
 ------------------
 
-.. autoclass:: LAMMPSData
+.. autoclass:: LAMMPSDataConverter
    :members:
 
 """
@@ -44,6 +42,7 @@ import numpy
 import logging
 
 from MDAnalysis.core.AtomGroup import Atom
+from MDAnalysis.core import util
 
 logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
 
@@ -77,7 +76,7 @@ def read_DATA_timestep(ts, datafile):
     read_atoms = False
     read_velocities = False
 
-    with open(datafile, 'r') as psffile:
+    with util.openany(datafile, 'r') as psffile:
         nitems, ntypes, box = _parse_header(psffile)
 
         # lammps box: xlo, xhi, ylo, yhi, zlo, zhi
@@ -234,18 +233,25 @@ def _parse_header(psffile):
     return nitems, ntypes, box
 
 def parse(filename, **kwargs):
-    """Parse a LAMMPS_ data file.
+    """Parses a LAMMPS_ DATA file.
+
+    The parser implements the `LAMMPS DATA file format`_ but only for
+    the LAMMPS `atom_style`_ *full* (numeric ids 7, 10) and
+    *molecular* (6, 9).
 
     :Returns: MDAnalysis internal *structure* dict as defined here.
 
     .. versionadded:: 0.8.2
+
+    .. _LAMMPS DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
+    .. _`atom_style`: http://lammps.sandia.gov/doc/atom_style.html
     """
     # Can pass atom_style to help parsing
     atom_style = kwargs.get('atom_style', None)
 
     # Used this to do data format:
     # http://lammps.sandia.gov/doc/2001/data_format.html
-    with open(filename, 'r') as psffile:
+    with util.openany(filename, 'r') as psffile:
         # Check format of file somehow
         structure = {}
 
@@ -322,9 +328,6 @@ class LAMMPSAtom(object):
         pos = self.pos
         return iter((self.index+1, self.chainid, self.type, self.charge, self.mass, pos[0], pos[1], pos[2]))
 
-class LAMMPSParseError(Exception):
-    """An error occured while parsing a LAMMPS_ data file."""
-    pass
 
 header_keywords= ["atoms","bonds","angles","dihedrals","impropers","atom types","bond types","angle types","dihedral types","improper types","xlo xhi","ylo yhi","zlo zhi"]
 connections = dict([["Bonds",("bonds", 3)],["Angles",("angles", 3)],
@@ -346,18 +349,18 @@ def conv_float(l):
         n = l
     return n
 
-class LAMMPSData(object):
+class LAMMPSDataConverter(object):
     """Class to parse a LAMMPS_ data file.
 
     The data file contains both topology and coordinate information.
 
-    The :class:`LAMMPSData` class can extract topology information and
+    The :class:`LAMMPSDataConverter` class can extract topology information and
     coordinates from a LAMMPS_ data file. For instance, in order to
     produce a PSF file of the topology and a PDB file of the coordinates
     from a data file "lammps.data" you can use::
 
       from MDAnalysis.topology.LAMMPSParser import LAMPPSData
-      d = LAMMPSData("lammps.data")
+      d = LAMMPSDataConverter("lammps.data")
       d.writePSF("lammps.psf")
       d.writePDB("lammps.pdb")
 
@@ -367,6 +370,9 @@ class LAMMPSData(object):
       u = MDAnalysis.Unverse("lammps.psf", "lammps.dcd", format="LAMMPS")
 
     .. deprecated:: 0.8.2
+
+    .. versionchanged:: 0.8.2
+       Renamed from ``LAMMPSData`` to ``LAMMPSDataConverter``.
     """
     def __init__(self, filename=None):
         self.names = {}

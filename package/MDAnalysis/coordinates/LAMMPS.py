@@ -63,7 +63,9 @@ Classes
 .. autoclass:: DCDWriter
    :members:
    :inherited-members:
-
+.. autoclass:: DATAReader
+   :members:
+   :inherited-members:
 """
 
 import DCD
@@ -163,6 +165,6 @@ class DATAReader(base.Reader):
         return self.ts
 
     def _read_next_timestep(self):
-        # PDB file only contains a single frame
+        # DATA file only contains a single frame
         raise IOError
 
