@@ -43,7 +43,7 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "PDB", "GRO", "XTC", "XTC_offsets", "TRR", "TRR_offsets", "TPR", "GRO_velocity",   # Gromacs (AdK)
            "PDB_xvf", "TPR_xvf", "TRR_xvf",     # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
            "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
-           "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455",
+           "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
            "TPR460", "TPR461",
            "PDB_sub_sol", "PDB_sub_dry",        # TRRReader sub selection
            "TRR_sub_sol",
@@ -121,6 +121,8 @@ TPR452 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.2.tpr')
 TPR453 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.3.tpr')
 TPR454 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.4.tpr')
 TPR455 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.5.tpr')
+# double precision
+TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
 TPR461 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.1.tpr')
 

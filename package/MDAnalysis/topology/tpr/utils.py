@@ -50,14 +50,14 @@ def ndo_int(data, n):
 
 def ndo_real(data, n):
     """mimic of gmx_fio_ndo_real in gromacs"""
-    return [data.unpack_float() for i in xrange(n)]
+    return [data.unpack_real() for i in xrange(n)]
 
 def do_rvec(data):
-    return data.unpack_farray(S.DIM, data.unpack_float)
+    return data.unpack_farray(S.DIM, data.unpack_real)
 
 def ndo_rvec(data, n):
     """mimic of gmx_fio_ndo_rvec in gromacs"""
-    return [data.unpack_farray(S.DIM, data.unpack_float) for i in xrange(n)]
+    return [data.unpack_farray(S.DIM, data.unpack_real) for i in xrange(n)]
 
 def ndo_ivec(data, n):
     """mimic of gmx_fio_ndo_rvec in gromacs"""
@@ -69,11 +69,23 @@ def fver_err(fver):
             "Your tpx version is {0}, which this parser does not support, yet ".format(
                 fver))
 
+
+def define_unpack_real(prec, data):
+    """Define an unpack_real method of data based on the float precision used"""
+    if prec == 4:
+        data.unpack_real = data.unpack_float
+    elif prec == 8:
+        data.unpack_real = data.unpack_double
+    else:
+        raise ValueError("unsupported precision: {0}".format(prec))
+
+
 def read_tpxheader(data):
     """this function is now compatible with do_tpxheader in tpxio.c"""
     number = data.unpack_int()                     # ?
     ver_str = data.unpack_string()                 # version string e.g. VERSION 4.0.5
     precision = data.unpack_int()                  # e.g. 4
+    define_unpack_real(precision, data)
     fver = data.unpack_int()                       # version of tpx file
     fver_err(fver)
 
@@ -98,13 +110,13 @@ def read_tpxheader(data):
     if fver < 62:
         # not sure what these two are for.
         data.unpack_int()                             # idum
-        data.unpack_float()                           # rdum
+        data.unpack_real()                           # rdum
 
-    fep_state = data.unpack_int() if fver > 79 else 0
+    fep_state = data.unpack_int() if fver >= 79 else 0
 
     # actually, it's lambda, not sure what is it. us lamb because lambda is a
     # keywod in python
-    lamb = data.unpack_float()
+    lamb = data.unpack_real()
     bIr =  data.unpack_int()                          # has input record or not
     bTop =  data.unpack_int()                         # has topology or not
     bX =  data.unpack_int()                           # has coordinates or not
@@ -205,7 +217,7 @@ def do_ffparams(data, fver):
     functype = ndo_int(data, ntypes)
     reppow = data.unpack_double() if fver >= 66 else 12.0
     if fver >= 57:
-        fudgeQQ = data.unpack_float()
+        fudgeQQ = data.unpack_real()
 
     # mimicing the c code,
     # remapping the functype due to inconsistency in different versions
@@ -223,10 +235,10 @@ def do_ffparams(data, fver):
     return params
 
 def do_harm(data):
-    data.unpack_float()                                     # rA
-    data.unpack_float()                                     # krA
-    data.unpack_float()                                     # rB
-    data.unpack_float()                                     # krB
+    data.unpack_real()                                     # rA
+    data.unpack_real()                                     # krA
+    data.unpack_real()                                     # rB
+    data.unpack_real()                                     # krB
 
 def do_iparams(data, functypes, fver):
     # Not all elif cases in this function has been used and tested
@@ -235,125 +247,147 @@ def do_iparams(data, functypes, fver):
                    S.F_BONDS, S.F_G96BONDS,
                    S.F_HARMONIC, S.F_IDIHS]:
             do_harm(data)
+        elif i in [S.F_LINEAR_ANGLES]:
+            data.unpack_real() # linangle.klinA
+            data.unpack_real() # linangle.aA
+            data.unpack()       # linangle.klinB
+            data.unpack()       # linangle.aB);
         elif i in [S.F_FENEBONDS]:
-            data.unpack_float()                             # fene.bm
-            data.unpack_float()                             # fene.kb
+            data.unpack_real()                             # fene.bm
+            data.unpack_real()                             # fene.kb
         elif i in [S.F_RESTRBONDS]:
-            data.unpack_float()                             # restraint.lowA
-            data.unpack_float()                             # restraint.up1A
-            data.unpack_float()                             # restraint.up2A
-            data.unpack_float()                             # restraint.kA
-            data.unpack_float()                             # restraint.lowB
-            data.unpack_float()                             # restraint.up1B
-            data.unpack_float()                             # restraint.up2B
-            data.unpack_float()                             # restraint.kB
+            data.unpack_real()                             # restraint.lowA
+            data.unpack_real()                             # restraint.up1A
+            data.unpack_real()                             # restraint.up2A
+            data.unpack_real()                             # restraint.kA
+            data.unpack_real()                             # restraint.lowB
+            data.unpack_real()                             # restraint.up1B
+            data.unpack_real()                             # restraint.up2B
+            data.unpack_real()                             # restraint.kB
         elif i in [S.F_TABBONDS, S.F_TABBONDSNC, S.F_TABANGLES, S.F_TABDIHS]:
-            data.unpack_float()                             # tab.kA
+            data.unpack_real()                             # tab.kA
             data.unpack_int()                               # tab.table
-            data.unpack_float()                             # tab.kB
+            data.unpack_real()                             # tab.kB
         elif i in [S.F_CROSS_BOND_BONDS]:
-            data.unpack_float()                             # cross_bb.r1e
-            data.unpack_float()                             # cross_bb.r2e
-            data.unpack_float()                             # cross_bb.krr
+            data.unpack_real()                             # cross_bb.r1e
+            data.unpack_real()                             # cross_bb.r2e
+            data.unpack_real()                             # cross_bb.krr
         elif i in [S.F_CROSS_BOND_ANGLES]:
-            data.unpack_float()                             # cross_ba.r1e
-            data.unpack_float()                             # cross_ba.r2e
-            data.unpack_float()                             # cross_ba.r3e
-            data.unpack_float()                             # cross_ba.krt
+            data.unpack_real()                             # cross_ba.r1e
+            data.unpack_real()                             # cross_ba.r2e
+            data.unpack_real()                             # cross_ba.r3e
+            data.unpack_real()                             # cross_ba.krt
         elif i in [S.F_UREY_BRADLEY]:
-            data.unpack_float()                             # u_b.theta
-            data.unpack_float()                             # u_b.ktheta
-            data.unpack_float()                             # u_b.r13
-            data.unpack_float()                             # u_b.kUB
+            data.unpack_real()                             # u_b.theta
+            data.unpack_real()                             # u_b.ktheta
+            data.unpack_real()                             # u_b.r13
+            data.unpack_real()                             # u_b.kUB
+            if fver >= 79:
+                data.unpack_real() # u_b.thetaB
+                data.unpack_real() # u_b.kthetaB
+                data.unpack_real() # u_b.r13B
+                data.unpack_real() # u_b.kUBB
         elif i in [S.F_QUARTIC_ANGLES]:
-            data.unpack_float()                             # qangle.theta
+            data.unpack_real()                             # qangle.theta
             ndo_real(data, 5);                              # qangle.c
-
         elif i in [S.F_BHAM]:
-            data.unpack_float()                             # bham.a
-            data.unpack_float()                             # bham.b
-            data.unpack_float()                             # bham.c
+            data.unpack_real()                             # bham.a
+            data.unpack_real()                             # bham.b
+            data.unpack_real()                             # bham.c
         elif i in [S.F_MORSE]:
-            data.unpack_float()                             # morse.b0
-            data.unpack_float()                             # morse.cb
-            data.unpack_float()                             # morse.beta
+            data.unpack_real()                             # morse.b0
+            data.unpack_real()                             # morse.cb
+            data.unpack_real()                             # morse.beta
+            if fver >= 79:
+                data.unpack_real() # morse.b0B
+                data.unpack_real() # morse.cbB
+                data.unpack_real() # morse.betaB
         elif i in [S.F_CUBICBONDS]:
-            data.unpack_float()                             # cubic.b0
-            data.unpack_float()                             # cubic.kb
-            data.unpack_float()                             # cubic.kcub
+            data.unpack_real()                             # cubic.b0
+            data.unpack_real()                             # cubic.kb
+            data.unpack_real()                             # cubic.kcub
         elif i in [S.F_CONNBONDS]:
             pass
         elif i in [S.F_POLARIZATION]:
-            data.unpack_float()                             # polarize.alpha
+            data.unpack_real()                             # polarize.alpha
+        elif i in [S.F_ANHARM_POL]:
+            data.unpack_real() # anharm_polarize.alpha
+            data.unpack_real() # anharm_polarize.drcut
+            data.unpack_real() # anharm_polarize.khyp
         elif i in [S.F_WATER_POL]:
             if fver < 31:
                 fver_err(fver)
-            data.unpack_float()                             # wpol.al_x
-            data.unpack_float()                             # wpol.al_y
-            data.unpack_float()                             # wpol.al_z
-            data.unpack_float()                             # wpol.rOH
-            data.unpack_float()                             # wpol.rHH
-            data.unpack_float()                             # wpol.rOD
+            data.unpack_real()                             # wpol.al_x
+            data.unpack_real()                             # wpol.al_y
+            data.unpack_real()                             # wpol.al_z
+            data.unpack_real()                             # wpol.rOH
+            data.unpack_real()                             # wpol.rHH
+            data.unpack_real()                             # wpol.rOD
         elif i in [S.F_THOLE_POL]:
-            data.unpack_float()                             # thole.a
-            data.unpack_float()                             # thole.alpha1
-            data.unpack_float()                             # thole.alpha2
-            data.unpack_float()                             # thole.rfac
+            data.unpack_real()                             # thole.a
+            data.unpack_real()                             # thole.alpha1
+            data.unpack_real()                             # thole.alpha2
+            data.unpack_real()                             # thole.rfac
 
         elif i in [S.F_LJ]:
-            data.unpack_float()                             # lj_c6
-            data.unpack_float()                             # lj_c9
+            data.unpack_real()                             # lj_c6
+            data.unpack_real()                             # lj_c9
         elif i in [S.F_LJ14]:
-            data.unpack_float()                            # lj14_c6A
-            data.unpack_float()                            # lj14_c12A
-            data.unpack_float()                            # lj14_c6B
-            data.unpack_float()                            # lj14_c12B
+            data.unpack_real()                            # lj14_c6A
+            data.unpack_real()                            # lj14_c12A
+            data.unpack_real()                            # lj14_c6B
+            data.unpack_real()                            # lj14_c12B
         elif i in [S.F_LJC14_Q]:
-            data.unpack_float()                             # ljc14.fqq
-            data.unpack_float()                             # ljc14.qi
-            data.unpack_float()                             # ljc14.qj
-            data.unpack_float()                             # ljc14.c6
-            data.unpack_float()                             # ljc14.c12
+            data.unpack_real()                             # ljc14.fqq
+            data.unpack_real()                             # ljc14.qi
+            data.unpack_real()                             # ljc14.qj
+            data.unpack_real()                             # ljc14.c6
+            data.unpack_real()                             # ljc14.c12
         elif i in [S.F_LJC_PAIRS_NB]:
-            data.unpack_float()                             # ljcnb.qi
-            data.unpack_float()                             # ljcnb.qj
-            data.unpack_float()                             # ljcnb.c6
-            data.unpack_float()                             # ljcnb.c12
+            data.unpack_real()                             # ljcnb.qi
+            data.unpack_real()                             # ljcnb.qj
+            data.unpack_real()                             # ljcnb.c6
+            data.unpack_real()                             # ljcnb.c12
 
         elif i in [S.F_PIDIHS, S.F_ANGRES,
                    S.F_ANGRESZ, S.F_PDIHS]:
-            data.unpack_float()                             # pdihs_phiA
-            data.unpack_float()                             # pdihs_cpA
+            data.unpack_real()                             # pdihs_phiA
+            data.unpack_real()                             # pdihs_cpA
             if (i == S.F_ANGRES or i == S.F_ANGRESZ) and fver < 42:
-                data.unpack_float()                         # harmonic.rB
-                data.unpack_float()                         # harmonic.krB
+                data.unpack_real()                         # harmonic.rB
+                data.unpack_real()                         # harmonic.krB
             else:
-                data.unpack_float()                         # pdihs_phiB
-                data.unpack_float()                         # pdihs_cpB
+                data.unpack_real()                         # pdihs_phiB
+                data.unpack_real()                         # pdihs_cpB
                 data.unpack_int()                           # pdihs_mult
 
         elif i in [S.F_DISRES]:
             data.unpack_int()                               # disres.label
             data.unpack_int()                               # disres.type
-            data.unpack_float()                             # disres.low
-            data.unpack_float()                             # disres.up1
-            data.unpack_float()                             # disres.up2
-            data.unpack_float()                             # disres.kfac
+            data.unpack_real()                             # disres.low
+            data.unpack_real()                             # disres.up1
+            data.unpack_real()                             # disres.up2
+            data.unpack_real()                             # disres.kfac
 
         elif i in [S.F_ORIRES]:
             data.unpack_int()                               # orires.ex
             data.unpack_int()                               # orires.label
             data.unpack_int()                               # orires.power
-            data.unpack_float()                             # orires.c
-            data.unpack_float()                             # orires.obs
-            data.unpack_float()                             # orires.kfac
+            data.unpack_real()                             # orires.c
+            data.unpack_real()                             # orires.obs
+            data.unpack_real()                             # orires.kfac
 
         elif i in [S.F_DIHRES]:
-            data.unpack_int()                               # dihres.power
-            data.unpack_int()                               # dihres.label
-            data.unpack_float()                             # dihres.phi
-            data.unpack_float()                             # dihres.dphi
-            data.unpack_float()                             # dihres.kfac
+            if fver < 72:
+                data.unpack_int() # idum
+                data.unpack_int() # idum
+            data.unpack_real()                             # dihres.phiA
+            data.unpack_real()                             # dihres.dphiA
+            data.unpack_real()                             # dihres.kfacA
+            if fver >= 72:
+                data.unpack_real() # dihres.phiB
+                data.unpack_real() # dihres.dphiB
+                data.unpack_real() # dihres.kfacB
 
         elif i in [S.F_POSRES]:
             do_rvec(data)                                   # posres.pos0A
@@ -375,41 +409,41 @@ def do_iparams(data, functypes, fver):
             ndo_real(data, S.NR_RBDIHS);                    # rbdihs.rbcB
 
         elif i in [S.F_CONSTR, S.F_CONSTRNC]:
-            data.unpack_float()                             # dA
-            data.unpack_float()                             # dB
+            data.unpack_real()                             # dA
+            data.unpack_real()                             # dB
 
         elif i in [S.F_SETTLE]:
-            data.unpack_float()                             # settle.doh
-            data.unpack_float()                             # settle.dhh
+            data.unpack_real()                             # settle.doh
+            data.unpack_real()                             # settle.dhh
 
         elif i in [S.F_VSITE2]:
-            data.unpack_float()                             # vsite.a
+            data.unpack_real()                             # vsite.a
 
         elif i in [S.F_VSITE3, S.F_VSITE3FD, S.F_VSITE3FAD]:
-            data.unpack_float()                             # vsite.a
-            data.unpack_float()                             # vsite.b
+            data.unpack_real()                             # vsite.a
+            data.unpack_real()                             # vsite.b
 
         elif i in [S.F_VSITE3OUT, S.F_VSITE4FD, S.F_VSITE4FDN]:
-            data.unpack_float()                             # vsite.a
-            data.unpack_float()                             # vsite.b
-            data.unpack_float()                             # vsite.c
+            data.unpack_real()                             # vsite.a
+            data.unpack_real()                             # vsite.b
+            data.unpack_real()                             # vsite.c
 
         elif i in [S.F_VSITEN]:
             data.unpack_int()                               # vsiten.n
-            data.unpack_float()                             # vsiten.a
+            data.unpack_real()                             # vsiten.a
 
         elif i in [S.F_GB12, S.F_GB13, S.F_GB14]:
             # /* We got rid of some parameters in version 68 */
             if fver < 68:
-                data.unpack_float()                         # rdum
-                data.unpack_float()                         # rdum
-                data.unpack_float()                         # rdum
-                data.unpack_float()                         # rdum
-            data.unpack_float()                             # gb.sar
-            data.unpack_float()                             # gb.st
-            data.unpack_float()                             # gb.pi
-            data.unpack_float()                             # gb.gbr
-            data.unpack_float()                             # gb.bmlt
+                data.unpack_real()                         # rdum
+                data.unpack_real()                         # rdum
+                data.unpack_real()                         # rdum
+                data.unpack_real()                         # rdum
+            data.unpack_real()                             # gb.sar
+            data.unpack_real()                             # gb.st
+            data.unpack_real()                             # gb.pi
+            data.unpack_real()                             # gb.gbr
+            data.unpack_real()                             # gb.bmlt
 
         elif i in [S.F_CMAP]:
             data.unpack_int()                               # cmap.cmapA
@@ -513,10 +547,10 @@ def do_resinfo(data, symtab, fver, nres):
     return resnames
 
 def do_atom(data, fver):
-    m = data.unpack_float()                                 # mass
-    q = data.unpack_float()                                 # charge
-    mB = data.unpack_float()
-    qB = data.unpack_float()
+    m = data.unpack_real()                                 # mass
+    q = data.unpack_real()                                 # charge
+    mB = data.unpack_real()
+    qB = data.unpack_real()
     tp = data.unpack_uint()                       # type is a keyword in python
     typeB = data.unpack_uint()
     ptype = data.unpack_int()       # regular atom, virtual site or others
