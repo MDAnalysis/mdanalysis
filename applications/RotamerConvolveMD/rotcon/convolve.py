@@ -1,5 +1,5 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # Convolve MTSS rotamers with MD trajectory.
 # Copyright (c) 2011-2013 Philip Fowler, Oliver Beckstein

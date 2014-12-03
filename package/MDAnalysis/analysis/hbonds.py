@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Hydrogen Bonding Analysis
 """
 Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds`

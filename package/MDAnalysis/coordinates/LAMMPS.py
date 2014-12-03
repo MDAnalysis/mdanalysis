@@ -1,5 +1,5 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
 # Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
@@ -124,7 +124,7 @@ class DATAReader(base.Reader):
     Reads a single frame of coordinate information from a LAMMPS DATA file.
 
     .. versionadded:: 0.8.2
-    """    
+    """
     format = 'DATA'
     units = {'time': None, 'length': 'Angstrom'}
 

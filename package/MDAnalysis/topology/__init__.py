@@ -1,5 +1,5 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
 # Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
@@ -35,7 +35,7 @@ The following table lists the currently supported topology formats.
    ================ ==========  =====================================================
    Name             extension   remarks
    ================ ==========  =====================================================
-   CHARMM/XPLOR     psf         reads either format, atoms, bonds, angles, 
+   CHARMM/XPLOR     psf         reads either format, atoms, bonds, angles,
                                 torsions/dihedrals information is all used;
                                 :mod:`MDAnalysis.topology.PSFParser`
 
@@ -168,7 +168,7 @@ _bonds
 **Bonds** are represented as a :class:`tuple` of :class:`tuple`. Each tuple
 contains two atom numbers, which indicate the atoms between which the
 bond is formed. Only one of the two permutations is stored, typically
-the one with the lower atom number first. 
+the one with the lower atom number first.
 
 
 _bondorder

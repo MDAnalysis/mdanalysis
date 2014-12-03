@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # Python implementation of FORTRAN HELANAL
 # [Bansal et al, J Biomol Struct Dyn. 17 (2000), 811]
@@ -245,7 +245,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
               is chosen [``None``]
 
         :Raises:
-           FinishTimeException 
+           FinishTimeException
             If the specified finish time precedes the specified start time or current time stamp of trajectory object.
 
         """
@@ -270,7 +270,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         if finish != None:
             if trajectory.time > finish: #you'd be starting with a finish time (in ps) that has already passed or not available
                 raise FinishTimeException('The input finish time ({finish} ps) precedes the current trajectory time of {traj_time} ps.'.format(finish=finish,traj_time=trajectory.time))
-            
+
 
         if start != None and end != None:
                         print "Analysing from residue", start, "to", end

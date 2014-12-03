@@ -1,5 +1,5 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
 # Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
@@ -42,7 +42,7 @@ class Timestep(base.Timestep):
     def dimensions(self):
         """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
 
-        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
+        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Ã…), and
         angles are in degrees.
 
         :attr:`dimensions` is read-only because it transforms the
