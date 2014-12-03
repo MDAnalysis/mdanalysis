@@ -1,20 +1,56 @@
 #!/bin/bash
+# -*- coding: utf-8 -*-
 # Written by Sébastien Buchoux, 2012-2013
 # Placed into the Public Domain
 
-# Get root dir
-cur_dir="`pwd`"
-root_dir="`pwd`/`dirname $0`/.."
-root_dir="`cd \"$root_dir\"; pwd; cd \"$cur_dir\";`" # Trick to get a clean string
+LOGFILE="$PWD/unittests_$(date +'%Y%m%d').txt"
+usage="$0 [options]
 
-# Report Env
-python -c "from __future__ import print_function;import sys;\
+Build MDAnalysis and run the unit tests.
+
+Options
+-h                this help
+-i                print information about python and paths
+-o FILE           also write output to FILE,
+                  set to /dev/null if you do not want it.
+                  [default: ${LOGFILE}]
+"
+
+function get_root_dir () {
+    # Get root dir
+    local cur_dir root_dir
+    cur_dir="`pwd`"
+    root_dir="`pwd`/`dirname $0`/.."
+    root_dir="`cd \"$root_dir\"; pwd; cd \"$cur_dir\";`" # Trick to get a clean string
+    echo "$root_dir"
+}
+
+function report_python_env () {
+   # Report Env
+    python -c "\
+from __future__ import print_function;import sys;\
 print('Python executable: %s' % sys.executable);
 print('Python version: %s' % sys.version);
-print('Architecture: %s' % sys.arch);"
-echo ""
+#print('Architecture: %s' % sys.arch);"
+    echo ""
+}
 
 
+while getopts hio: OPT; do
+    case "$OPT" in
+	h)  echo "$usage"; exit 0;;
+	i)  echo "rootdir: $(get_root_dir)";
+            report_python_env;
+	    exit 0;;        
+        o)  LOGFILE=${OPTARG};;
+	*)  echo "Unknown option $OPT"; exit 2;;
+    esac
+done
+
+
+
+
+root_dir=$(get_root_dir)
 
 # Build core
 echo "Building MDAnalysis..."
@@ -32,14 +68,14 @@ python setup.py build
 cd "$cur_dir"
 
 # Get the lib dirs
-lib_dir="`ls "$root_dir/package/build" | grep \"lib\"`"
+lib_dir="`ls \"$root_dir/package/build\" | grep \"lib\"`"
 package_lib="$root_dir/package/build/$lib_dir"
 testsuite_lib="$root_dir/testsuite/build/lib"
 
 # Run the tests
 echo
-echo "Running the tests..."
+echo "Running the tests... (output to ${LOGFILE})"
 
 cd "$package_lib"
-nosetests -v "$testsuite_lib/MDAnalysisTests"
+nosetests -v "$testsuite_lib/MDAnalysisTests" 2>&1 | tee $LOGFILE
 cd "$cur_dir"
