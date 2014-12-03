@@ -1341,3 +1341,108 @@ class TestAsUniverse(TestCase):
         assert_equal(set(returnval.atoms), set(self.u.atoms))
 
     
+class TestFragments(TestCase):
+    def setUp(self):
+        self.u = MDAnalysis.Universe(PSF, DCD)
+        # To create a fragment with only one atom in, remove a bond
+        self.u._psf['_bonds'].remove((2, 0))
+
+    def tearDown(self):
+        del self.u
+
+    def test_nobondsfail(self):
+        u2 = MDAnalysis.Universe(TRZ_psf, TRZ)
+        
+        def query_frag(u):
+            return u.fragments
+
+        assert_raises(NoDataError, query_frag, u2)
+
+    def test_make_fragments(self):
+        # Test that the Universe method for making fragments works
+        # This checks that the correct number of fragments are made
+        frag = self.u.fragments
+
+        assert_equal(len(frag), 2)  # normally has one but I removed a bond
+
+    def test_single_fragment(self):
+        # I removed the bond from this atom so it's in a fragment on its own
+        assert_equal(len(self.u.atoms[2].fragment), 1)
+
+    def test_fragment_coverage(self):
+        # Test that fragments contain all the atoms in Universe
+        frags = self.u.fragments
+
+        natoms = sum([len(f) for f in frags])
+
+        assert_equal(natoms, len(self.u.atoms))
+    
+    def test_make_fragDict(self):
+        # Test that the fragDict contains all Atoms
+        fd = self.u._fragmentDict
+
+        for a in self.u.atoms:
+            assert_equal(a in fd, True)
+
+    def test_atom_lookup(self):
+        # check that looking up a fragment from an Atom when "cold" works
+        assert_equal(self.u.atoms[0].fragment is self.u.atoms[4].fragment, True)
+
+    def test_atomgroup_lookup(self):
+        # check that atomgroups return the fragments ok
+        ag = self.u.atoms[100:200]
+        assert_equal(len(ag.fragments), 1)
+
+
+class TestUniverseCache(TestCase):
+    def setUp(self):
+        self.u = MDAnalysis.Universe()  # not using atoms so just blank universe
+        self.fill = [1, 2, 3]
+
+    def tearDown(self):
+        del self.u
+        del self.fill
+
+    def test_add_to_cache(self):
+        # add an item to cache and see if it sticks
+        cache = 'aa'
+        self.u._fill_cache(cache, self.fill)
+
+        assert_equal('aa' in self.u._Universe__cache, True)
+        assert_equal(self.u._Universe__cache[cache], self.fill)
+
+    def test_remove_single(self):
+        # remove a single item from cache
+        cache = 'bb'
+
+        self.u._fill_cache(cache, self.fill)
+
+        assert_equal(cache in self.u._Universe__cache, True)
+
+        self.u._clear_caches(cache)
+        
+        assert_equal(cache in self.u._Universe__cache, False)
+
+    def test_remove_list(self):
+        # remove a few things from cache
+        caches = ['cc', 'dd']
+        for c in caches:
+            self.u._fill_cache(c, self.fill)
+
+        for c in caches:
+            assert_equal(c in self.u._Universe__cache, True)
+
+        self.u._clear_caches(*caches)
+
+        for c in caches:
+            assert_equal(c in self.u._Universe__cache, False)
+
+    def test_clear_all(self):
+        # remove everything from cache
+        caches = ['ee', 'ff', 'gg']
+        for c in caches:
+            self.u._fill_cache(c, self.fill)
+
+        self.u._clear_caches()
+
+        assert_equal(self.u._Universe__cache, dict())
