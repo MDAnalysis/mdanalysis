@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/14  richardjgowers, tyler.je.reddy, orbeckst,  e.jjordan12
+??/??/14  richardjgowers, tyler.je.reddy, orbeckst,  e.jjordan12, zhuyi.xue
 
   * 0.8.2
 
@@ -65,6 +65,7 @@ The rules for this file:
 
   * fixed creation of residues and segments in Merge() 
   * resolves Issue 188 regarding Helanal Finish Argument
+  * fixed Issue 184 (TPR files with double precision)
 
 
 04/01/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
