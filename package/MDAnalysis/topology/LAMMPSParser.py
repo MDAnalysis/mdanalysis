@@ -84,8 +84,8 @@ def read_DATA_timestep(ts, datafile):
         ly = box[3] - box[2]
         lz = box[5] - box[4]
         # mda unitcell: A alpha B beta gamma C
-        ts._unitcell[[0, 2, 5]] = lx, ly, lz
-        ts._unitcell[[1, 3, 4]] = 90.0
+        ts._unitcell[[0, 1, 2]] = lx, ly, lz
+        ts._unitcell[[3, 4, 5]] = 90.0
 
         while True:
             try:
@@ -195,7 +195,10 @@ def _skip_section(psffile):
     psffile.next()
     line = psffile.next().split()
     while len(line) != 0:
-        line = psffile.next().split()
+        try:
+            line = psffile.next().split()
+        except StopIteration:
+            break
 
     return
 
@@ -204,24 +207,28 @@ def _parse_header(psffile):
 
     This should be fixed in all files
     """
-    psffile.next()
-    psffile.next()
-    nitems = {}
-    nitems['_atoms'] = int(psffile.next().split()[0])
-    nitems['_bonds'] = int(psffile.next().split()[0])
-    nitems['_angles'] = int(psffile.next().split()[0])
-    nitems['_dihe'] = int(psffile.next().split()[0])
-    nitems['_impr'] = int(psffile.next().split()[0])
-    psffile.next()
+    hvals = {'atoms':'_atoms',
+             'bonds':'_bonds',
+             'angles':'_angles',
+             'dihedrals':'_dihe',
+             'impropers':'_impr'}
+    nitems = {k:0 for k in hvals.values()}
 
-    # If these values weren't 0 then there'll be a ### types line
-    # these are used later to parse sections
-    ntypes = {}
-    for val in ['_atoms', '_bonds', '_angles', '_dihe', '_impr']:
-        if nitems[val] != 0:
-            line = psffile.next().split()
-            ntypes[val] = int(line[0])
-    psffile.next()
+    psffile.next() # Title
+    psffile.next() # Blank line
+
+    line = psffile.next().strip()
+    while line:
+        val, key = line.split()
+        nitems[hvals[key]] = int(val)
+        line = psffile.next().strip()
+
+    ntypes = {k:0 for k in hvals.values()}
+    line = psffile.next().strip()
+    while line:
+        val, key, _ = line.split()
+        ntypes[hvals[key + 's']] = int(val)
+        line = psffile.next().strip()
 
     # Read box information next
     box = numpy.zeros(6, dtype=numpy.float64)
@@ -299,7 +306,10 @@ def parse(filename, **kwargs):
 
         if fix_masses:
             for a in structure['_atoms']:
-                a.mass = masses[a.type]
+                try:
+                    a.mass = masses[a.type]
+                except KeyError:  # default mass to 0.0
+                    a.mass = 0.0
 
     return structure
 
