@@ -121,6 +121,22 @@ class DCDReader(DCD.DCDReader):
         super(DCDReader, self).__init__(dcdfilename, **kwargs)
 
 
+class DATATimestep(base.Timestep):
+    """Data file time step"""
+    @property
+    def dimensions(self):
+        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+
+        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
+        angles are in degrees.
+
+        :attr:`dimensions` is read-only because it transforms the
+        actual format of the unitcell (which differs between different
+        trajectory formats) to the representation described here,
+        which is used everywhere in MDAnalysis.
+        """
+        return self._unitcell
+
 class DATAReader(base.Reader):
     """
     Reads a single frame of coordinate information from a LAMMPS DATA file.
@@ -141,7 +157,7 @@ class DATAReader(base.Reader):
             raise ValueError("DATAReader requires numatoms keyword")
         self.numatoms = numatoms
 
-        self.ts = base.Timestep(self.numatoms)
+        self.ts = DATATimestep(self.numatoms)
         read_DATA_timestep(self.ts, self.filename)
 
         self.numframes = 1
