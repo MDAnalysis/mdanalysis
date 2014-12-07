@@ -89,7 +89,9 @@ def read_DATA_timestep(ts, datafile):
 
         while True:
             try:
-                section = psffile.next().strip()
+                section = psffile.next().strip().split()[0]
+            except IndexError:  # blank lines don't split
+                section = ''
             except StopIteration:
                 break
 
@@ -277,11 +279,14 @@ def parse(filename, **kwargs):
         # will have zero mass, can fix this later
         masses = {}
         read_masses = False
+        read_coords = False
 
         # Now go through section by section
         while True:
             try:
-                section = psffile.next().strip()
+                section = psffile.next().strip().split()[0]
+            except IndexError:
+                section = ''  # blank lines don't split
             except StopIteration:
                 break
 
@@ -291,6 +296,7 @@ def parse(filename, **kwargs):
 
                 structure['_atoms'] = _parse_atoms(psffile, nitems['_atoms'],
                                                    masses, atom_style)
+                read_coords = True
             elif section == 'Masses':
                 read_masses = True
                 masses = _parse_masses(psffile, ntypes['_atoms'])
@@ -303,6 +309,9 @@ def parse(filename, **kwargs):
                 _skip_section(psffile)
             else:  # for blank lines
                 continue
+
+        if not read_coords:
+            raise IOError("Failed to find coordinate data")
 
         if fix_masses:
             for a in structure['_atoms']:
