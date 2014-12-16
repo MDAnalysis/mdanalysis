@@ -46,7 +46,11 @@ The rules for this file:
   * Added LAMMPS data parser for topology files with the .data suffix. Can also
     read single frame coordinate & velocity information from these files.
     (Issue 139)
-
+  * Added Fragments.  Fragments are continuously bonded groups of atoms.
+    These are lazily built, and accessible via the Atom.fragment and AtomGroup.fragments
+    attributes.
+    (Issue 190)
+  * Added ability to remove items from Universe cache with _clear_caches.
 
   Changes
 

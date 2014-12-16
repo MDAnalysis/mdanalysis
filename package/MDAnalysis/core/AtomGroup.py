@@ -359,6 +359,9 @@ class Atom(object):
     For performance reasons, only a predefined number of attributes
     are included (and thus it is not possible to add attributes "on
     the fly"; they have to be included in the class definition).
+
+    .. versionchanged 0.8.2 
+       Added fragment managed property.
     """
 
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
@@ -471,6 +474,14 @@ class Atom(object):
     def universe(self, universe):
         self.__universe = universe
 
+    @property
+    def fragment(self):
+        """The fragment that this atom is part of
+
+        .. versionadded 0.8.2
+        """
+        return self.universe._fragmentDict[self]
+
 
 class AtomGroup(object):
     """A group of atoms.
@@ -544,6 +555,7 @@ class AtomGroup(object):
     .. versionchanged:: 0.8.2
        The size at which cache is used for atom lookup is now stored as variable
        _atomcache_size within the class.
+       Added fragments manged property. Is a lazily built, cached entry, similar to residues.
     """
     # for generalized __getitem__ (override _containername for ResidueGroup and SegmentGroup)
     _containername = "_atoms"
@@ -784,6 +796,19 @@ class AtomGroup(object):
         .. versionadded 0.8.2
         """
         return numpy.array([a.type for a in self._atoms])
+
+    @property
+    def fragments(self):
+        """Read-only list of fragments.
+
+        Contains all fragments that any Atom in this AtomGroup is part of, the contents of 
+        the fragments may extend beyond the contents of this AtomGroup.
+
+        .. versionadded 0.8.2
+        """
+        if not 'fragments' in self.__cache:
+            self.__cache['fragments'] = tuple(set(a.fragment for a in self._atoms))
+        return self.__cache['fragments']
 
     @property
     def residues(self):
@@ -2738,6 +2763,7 @@ class Universe(object):
        :meth:`build_topology`
        Changed .bonds attribute to be a :class:`~MDAnalysis.topology.core.TopologyGroup`
        Added .angles and .torsions attribute as :class:`~MDAnalysis.topology.core.TopologyGroup`
+       Added fragments to Universe cache
     """
     def __init__(self, *args, **kwargs):
         """Initialize the central MDAnalysis Universe object.
@@ -2822,6 +2848,15 @@ class Universe(object):
         if kwargs.get('permissive', None) is None:
             kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
 
+        # Cache is used to store objects which are built lazily into Universe
+        # Currently cached objects (managed property name and cache key):
+        # - bonds
+        # - angles
+        # - torsions
+        # - improper torsions
+        # - fragments
+        self.__cache = dict()
+
         if len(args) == 0:
             # create an empty universe
             self.atoms = AtomGroup([])
@@ -2857,7 +2892,8 @@ class Universe(object):
                                     format=topology_format)
             struc = parser(topologyfile)
         except (TypeError, ValueError, IOError) as err:
-            raise ValueError("Failed to build a topology from the topology file {0}. Error: {1}".format(self.filename, err))
+            raise ValueError("Failed to build a topology from the topology file {0}. "
+                             "Error: {1}".format(self.filename, err))
 
         # populate atoms etc
         self._init_topology(struc)
@@ -2865,13 +2901,29 @@ class Universe(object):
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
         
-        # Cache is used to store 'bonds' 'angles' and 'torsions' which are 
-        # master lists of all topology in the universe.
-        # These are lazily built, or can be forced by .build_topology()
-        # The Atom.bonds/angles/torsions attribute point toward objects in 
-        # this TopologyGroup.  
-        self.__cache = dict()
 
+    def _clear_caches(self, *args):
+        """Clear cache for all *args*.
+
+        If not args are provided, all caches are cleared.
+
+        .. versionadded 0.8.2
+        """
+        if len(args) == 0:
+            self.__cache = dict()
+        else:
+            for name in args:
+                try:
+                    del self.__cache[name]
+                except KeyError:
+                    pass
+
+    def _fill_cache(self, name, value):
+        """Populate __cache[name] with value.
+
+        .. versionadded:: 0.8.2
+        """
+        self.__cache[name] = value
 
     def _init_topology(self, struc):
         """Populate Universe attributes from the structure dictionary *struc*."""
@@ -2916,26 +2968,13 @@ class Universe(object):
         self.universe = self    # for Writer.write(universe), see Issue 49
 
     def _init_bonds(self):
-        """Set bond information.
+        """Set bond information from u._psf['_bonds']
 
-        * FIXME JD: bonds generated from connect records are different than those
-          guessed from atom distances it'd be good to keep a record of weather a bond
-          is guessed or created
-        * FIXME by OB: the CONECT bonds should take priority over the guessed bonds
-        
         .. versionchanged 0.8.2
            Now returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
            Now only accepts list of tuples as input, previously accepted either
            lists of tuples or lists of Bonds.
         """
-        # TODO wrap-around in a BondGroup class, translating bonds to lists of Atom objects; otherwise indexing becomes a pain
-        # TODO move to universe._psf.bonds
-        #MDAnalysis.topology.core.build_bondlists(self.atoms, self._bonds)
-        # FIXME JD: bonds generated from connect records are different than those
-        # guessed from atom distances it'd be good to keep a record of weather a bond
-        # is guessed or created
-        # FIXME by OB: the CONECT bonds should take priority over the guessed bonds
-        #bonds.extend(guessed_bonds)
         from MDAnalysis.topology.core import Bond, TopologyGroup
 
         def fix_order(bondset):
@@ -3046,6 +3085,97 @@ class Universe(object):
             else:
                 return None
         
+    def _init_fragments(self):
+        """Build all fragments in the Universe
+
+        Generally built on demand by an Atom querying its fragment property.
+
+        .. versionadded 0.8.2
+        """
+        # Check that bond information is present, else inform
+        bonds = self.bonds
+        if bonds is None:
+            raise NoDataError("Fragments require that the Universe has Bond information")
+
+        # This current finds all fragments from all Atoms
+        # Could redo this to only find fragments for a queried atom (ie. only fill out
+        # a single fragment).  This would then make it scale better for large systems.
+        # eg:
+        # try: 
+        #    return self._fragDict[a]
+        # except KeyError: 
+        #    self._init_fragments(a)  # builds the fragment a belongs to
+
+        class _fragset(object):
+            """Normal sets aren't hashable, this is"""
+            def __init__(self, ats):
+                self.ats = set(ats)
+
+            def __iter__(self):
+                return iter(self.ats)
+
+            def add(self, other):
+                self.ats.add(other)
+
+            def update(self, other):
+                self.ats.update(other.ats)
+
+        f = {a:None for a in self.atoms}  # each atom starts with its own list
+
+        for a1, a2 in bonds:  # Iterate through all bonds
+            if not (f[a1] or f[a2]):  # New set made here
+                new = _fragset([a1, a2])
+                f[a1] = f[a2] = new
+            elif f[a1] and not f[a2]:  # If a2 isn't in a fragment, add it to a1's
+                f[a1].add(a2)
+                f[a2] = f[a1]
+            elif not f[a1] and f[a2]:  # If a1 isn't in a fragment, add it to a2's
+                f[a2].add(a1)
+                f[a1] = f[a2]
+            elif f[a1] is f[a2]:  # If they're in the same fragment, do nothing
+                continue
+            else:  # If they are both in different fragments, combine fragments
+                f[a1].update(f[a2])
+                f.update({a:f[a1] for a in f[a2]})           
+
+        # Lone atoms get their own fragment
+        f.update({a:_fragset((a,)) for a, val in f.items() if not val})
+
+        # All the unique values in f are the fragments
+        frags = tuple([AtomGroup(list(a.ats)) for a in set(f.values())])
+
+        return frags
+
+    @property
+    def fragments(self):
+        """Read only tuple of fragments in the Universe
+        
+        .. versionadded 0.8.2
+        """
+        if 'fragments' not in self.__cache:
+            self.__cache['fragments'] = self._init_fragments()
+
+        return self.__cache['fragments']
+
+    @property
+    def _fragmentDict(self):
+        """Lazily built dictionary of fragments.
+
+        Translates :class:`Atom` objects into the fragment they belong to.
+
+        The Atom.fragment managed property queries this dictionary.
+
+        .. versionadded 0.8.2
+        """
+        if not 'fragDict' in self.__cache:
+            frags = self.fragments  # will build if not built
+            fd = dict()
+            for f in frags:
+                for a in f:
+                    fd[a] = f
+            self.__cache['fragDict'] = fd
+        return self.__cache['fragDict']
+
     def build_topology(self):
         """
         Bond angle and torsion information is lazily constructed into the 
