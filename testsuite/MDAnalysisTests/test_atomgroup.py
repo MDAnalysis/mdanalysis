@@ -137,6 +137,37 @@ class TestAtomGroup(TestCase):
         assert_equal(newag.numberOfResidues(), 5)
         assert_almost_equal(newag.totalMass(),  40.044999999999995) # check any special method
 
+    def test_getitem_int(self):
+        assert_equal(self.universe.atoms[0], self.universe.atoms._atoms[0])
+
+    def test_getitem_slice(self):
+        assert_equal(self.universe.atoms[0:4]._atoms, self.universe.atoms._atoms[:4])
+
+    def test_getitem_slice2(self):
+        assert_equal(self.universe.atoms[0:8:2]._atoms, self.universe.atoms._atoms[0:8:2])
+
+    def test_getitem_str(self):
+        ag1 = self.universe.atoms['HT1']
+        # selectAtoms always returns an AtomGroup even if single result
+        ag2 = self.universe.selectAtoms('name HT1')[0]
+        assert_equal(ag1, ag2)
+
+    def test_getitem_list(self):
+        sel = [0, 1, 4]
+        ag1 = self.universe.atoms[sel]
+        ag2 = AtomGroup([self.universe.atoms[i] for i in sel])
+        assert_equal(ag1._atoms, ag2._atoms)
+
+    def test_getitem_nparray(self):
+        sel = numpy.arange(5)
+        ag1 = self.universe.atoms[sel]
+        ag2 = AtomGroup([self.universe.atoms[i] for i in sel])
+        assert_equal(ag1._atoms, ag2._atoms)
+
+    def test_getitem_TE(self):
+        d = {'A':1}
+        assert_raises(TypeError, self.universe.atoms.__getitem__, d)
+
     def test_bad_make(self):
         assert_raises(TypeError, AtomGroup, ['these', 'are', 'not', 'atoms'])
 
@@ -240,7 +271,7 @@ class TestAtomGroup(TestCase):
     def test_no_uni(self):
         at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         at2 = Atom(2, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
-        ag = AtomGroup([at1, at1])
+        ag = AtomGroup([at1, at2])
         assert_equal(ag.universe, None)
 
     def test_badd_add_AG(self):

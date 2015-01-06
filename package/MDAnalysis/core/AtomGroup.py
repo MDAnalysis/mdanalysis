@@ -557,7 +557,8 @@ class AtomGroup(object):
        _atomcache_size within the class.
        Added fragments manged property. Is a lazily built, cached entry, similar to residues.
     """
-    # for generalized __getitem__ (override _containername for ResidueGroup and SegmentGroup)
+    # for generalized __getitem__ __iter__ and __len__
+    # (override _containername for ResidueGroup and SegmentGroup)
     _containername = "_atoms"
     _atomcache_size = 10000
     def __init__(self, atoms):
@@ -586,6 +587,9 @@ class AtomGroup(object):
 
         # for generalized __getitem__ (override _containername for ResidueGroup and SegmentGroup)
         self._container = getattr(self, self._containername)
+        # Define the Class that gets returned by getitem
+        # Override this where return Class differs from Self (ie slicing Residue)
+        self._cls = self.__class__
 
     def _rebuild_caches(self):
         """Rebuild all AtomGroup caches.
@@ -702,15 +706,22 @@ class AtomGroup(object):
 
     def __len__(self):
         """Number of atoms in the group"""
-        return self.numberOfAtoms()
+        return len(self._container)
+
+    def __iter__(self):
+        return iter(self._container)
 
     def __getitem__(self, item):
         """Return element (index) or group (slicing).
 
         .. versionchanged:: 0.8 ResidueGroup and SegmentGroup: return groups themselves and allow advanced slicing
+        .. versionchanged:: 0.8.2
+           This method now used by all subclasses.  These subclasses override _cls to define
+           the returned class.
         """
-        container = self._container     # see __init__ and _containername: used so that __getitem__
-        cls = self.__class__            # can be used inherited in ResidueGroup and SegmentGroup
+        container = self._container
+        cls = self._cls
+
         # consistent with the way list indexing/slicing behaves:
         if numpy.dtype(type(item)) == numpy.dtype(int):
             return container[item]
@@ -719,19 +730,20 @@ class AtomGroup(object):
         elif isinstance(item, (numpy.ndarray, list)):
             # advanced slicing, requires array or list
             return cls([container[i] for i in item])
+        elif type(item) == str:
+            return getattr(self, item)
         else:
-            return super(cls, self).__getitem__(item)
+            raise TypeError("Cannot slice with type: {0}".format(type(item)))
 
     def __getattr__(self, name):
         # There can be more than one atom with the same name
         atomlist = [atom for atom in self._atoms if name == atom.name]
-        if len(atomlist) == 0: raise SelectionError("No atoms with name "+name)
-        elif len(atomlist) == 1: return atomlist[0]  # XXX: keep this, makes more sense for names
-        else: return AtomGroup(atomlist)             # XXX: but inconsistent (see residues and Issue 47)
-
-    def __iter__(self):
-        """Iterator over all atoms"""
-        return iter(self._atoms)
+        if len(atomlist) == 0:
+            raise SelectionError("No atoms or attributes with name "+name)
+        elif len(atomlist) == 1:
+            return atomlist[0]  # XXX: keep this, makes more sense for names
+        else:
+            return AtomGroup(atomlist)  # XXX: but inconsistent (see residues and Issue 47)
 
     def __contains__(self, other):
         # If the number of atoms is very large, create a dictionary cache for lookup
@@ -2209,6 +2221,7 @@ class Residue(AtomGroup):
     """
     ## FIXME (see below, Issue 70)
     ##__cache = {}
+
     def __init__(self, name, id, atoms, resnum=None):
         super(Residue, self).__init__(atoms)
         self.name = name
@@ -2222,6 +2235,8 @@ class Residue(AtomGroup):
             a.id = i
             a.resnum = self.resnum
             a.residue = self
+
+        self._cls = AtomGroup
         # Should I cache the positions of atoms within a residue?
         # FIXME: breaks when termini are used to populate the cache; termini typically
         #        have the SAME residue name but different atoms!!! Issue 70
@@ -2294,38 +2309,6 @@ class Residue(AtomGroup):
         except (SelectionError, NoDataError):
             return None
 
-    def __getitem__(self, item):
-        """Return :class:`Atom` (index) or :class:`AtomGroup` (slicing).
-
-        .. versionchanged:: 0.8 slicing/advanced slicing returns :class:`AtomGroup`, not just :class:`list`.
-        """
-        container = self._atoms
-        cls = AtomGroup
-        # consistent with the way list indexing/slicing behaves:
-        if numpy.dtype(type(item)) == numpy.dtype(int):
-            return container[item]
-        elif type(item) == slice:
-            return cls(container[item])
-        elif isinstance(item, (numpy.ndarray, list)):
-            # advanced slicing, requires array or list
-            return cls([container[i] for i in item])
-        else:
-            return super(cls, self).__getitem__(item)
-
-    def __getattr__(self, name):
-        # There can only be one atom with a certain name
-        for atom in self.atoms:
-            if (name == atom.name):
-                return atom
-        raise SelectionError("No atom in residue "+self.name+" with name "+name)
-        # Use the cache
-        ## FIXME (see above, __cache, Issue 70)
-        ##try:
-        ##    index = Residue.__cache[self.name][name]
-        ##    return self._atoms[index]
-        ##except KeyError:
-        ##    raise SelectionError("No atom in residue "+self.name+" with name "+name)
-
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self.name)+', '+repr(self.id)+'>'
 
@@ -2352,6 +2335,7 @@ class ResidueGroup(AtomGroup):
         for res in residues:
             atoms.extend(res.atoms)
         super(ResidueGroup, self).__init__(atoms)
+        self._cls = self.__class__
 
     def _set_residues(self, name, value, **kwargs):
         """Set attribute *name* to *value* for all residues in the :class:`ResidueGroup`.
@@ -2471,24 +2455,6 @@ class ResidueGroup(AtomGroup):
     # where kept separate because we can save a call to build_residues()
     # because there is no ambiguity as which residues are changed.
 
-
-    def __iter__(self):
-        return iter(self._residues)
-
-    def __len__(self):
-        return len(self._residues)
-
-#    def __getitem__(self, item):
-#        if numpy.dtype(type(item)) == numpy.dtype(int) or type(item) == slice:
-#            return self._residues[item]
-#        else:
-#            raise TypeError("Residue group indices must be int or a slice, not %s." % type(item))
-
-
-    def __getattr__(self, attr):
-        atomlist = [atom for atom in self.atoms if atom.name == attr]
-        return AtomGroup(atomlist)
-
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self._residues)+'>'
 
@@ -2526,6 +2492,7 @@ class Segment(ResidueGroup):
             res.segment = self
             for atom in res:
                 atom.segment = self
+        self._cls = ResidueGroup
 
     @property
     def id(self):
@@ -2536,24 +2503,6 @@ class Segment(ResidueGroup):
     def id(self,x):
         self.name = x
 
-    def __getitem__(self, item):
-        """Return :class:`Residue` (index) or :class:`ResidueGroup` (slicing).
-
-        .. versionchanged:: 0.8 slicing/advanced slicing returns :class:`ResidueGroup`, not just :class:`list`.
-        """
-        container = self._residues
-        cls = ResidueGroup
-        # consistent with the way list indexing/slicing behaves:
-        if numpy.dtype(type(item)) == numpy.dtype(int):
-            return container[item]
-        elif type(item) == slice:
-            return cls(container[item])
-        elif isinstance(item, (numpy.ndarray, list)):
-            # advanced slicing, requires array or list
-            return cls([container[i] for i in item])
-        else:
-            return super(cls, self).__getitem__(item)
-
     def __getattr__(self, attr):
         if attr[0] == 'r':
             resnum = int(attr[1:]) - 1   # 1-based for the user, 0-based internally
@@ -2562,10 +2511,13 @@ class Segment(ResidueGroup):
             # There can be multiple residues with the same name
             r = []
             for res in self._residues:
-                if (res.name == attr): r.append(res)
-            if (len(r) == 0): return super(Segment, self).__getattr__(attr)
+                if (res.name == attr):
+                    r.append(res)
+            if (len(r) == 0):
+                return super(Segment, self).__getattr__(attr)
             # elif (len(r) == 1): return r[0]  ## creates unexpected behaviour (Issue 47)
-            else: return ResidueGroup(r)
+            else:
+                return ResidueGroup(r)
 
     def __repr__(self):
         return '<'+self.__class__.__name__+' '+repr(self.name)+'>'
@@ -2598,6 +2550,7 @@ class SegmentGroup(ResidueGroup):
         for s in segments:
             residues.extend(s.residues)
         super(SegmentGroup, self).__init__(residues)
+        self._cls = self.__class__
 
     def _set_segments(self, name, value, **kwargs):
         """Set attribute *name* to *value* for all :class:`Segment` in this :class:`AtomGroup`.
@@ -2671,12 +2624,6 @@ class SegmentGroup(ResidueGroup):
         #attr = {'segid': 'id'}
         for seg,value in itertools.izip(self.segments, itertools.cycle(util.asiterable(segid))):
             setattr(seg, 'name', value)
-
-    def __iter__(self):
-        return iter(self._segments)
-
-    def __len__(self):
-        return len(self._segments)
 
     def __getattr__(self, attr):
         if attr.startswith('s') and attr[1].isdigit():
