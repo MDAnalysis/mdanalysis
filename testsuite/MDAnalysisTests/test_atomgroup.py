@@ -18,7 +18,7 @@
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
                                       merge_protein, merge_water, merge_ligand, \
-                                      TRZ, TRZ_psf, PSF_notop, PSF_BAD
+                                      TRZ, TRZ_psf, PSF_notop, PSF_BAD, unordered_res
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup, asUniverse
 from MDAnalysis import NoDataError
@@ -1477,3 +1477,19 @@ class TestUniverseCache(TestCase):
         self.u._clear_caches()
 
         assert_equal(self.u._Universe__cache, dict())
+
+class TestUnorderedResidues(TestCase):
+    """
+    This pdb file has resids that are non sequential
+
+    This (previously) led to too many residues being found.
+    """
+    def setUp(self):
+        self.u = MDAnalysis.Universe(unordered_res)
+
+    def tearDown(self):
+        del self.u
+        
+    @attr("issue")
+    def test_build_residues(self):
+        assert_equal(len(self.u.residues), 35)

@@ -67,6 +67,7 @@ __all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajec
            "capping_input", "capping_output", "capping_ace", "capping_nma",
            "altloc",
            "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
+           "unordered_res",  # pdb file with resids non sequential
            ]
 
 from pkg_resources import resource_filename
@@ -181,3 +182,5 @@ capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
 trz4data = resource_filename(__name__, "data/datatest.trz")
 LAMMPSdata  = resource_filename(__name__, "data/datatest.data")
 LAMMPSdata_mini = resource_filename(__name__, "data/mini.data")
+
+unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
