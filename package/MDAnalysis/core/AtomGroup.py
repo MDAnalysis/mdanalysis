@@ -828,12 +828,16 @@ class AtomGroup(object):
 
         A :class:`ResidueGroup` of all residues that contain atoms in
         this group.
+
+        .. versionchanged:: 0.8.2
+           Now returns strictly a ResidueGroup of the unique Residues that Atoms in this group
+           belong to.
         """
         if not 'residues' in self.__cache:
             residues = []
             current_residue = None
             for atom in self._atoms:
-                if atom.residue != current_residue:
+                if atom.residue != current_residue and not atom.residue in residues:
                     residues.append(atom.residue)
                 current_residue = atom.residue
             self.__cache['residues'] = ResidueGroup(residues)
@@ -869,12 +873,15 @@ class AtomGroup(object):
         """Read-only list of :class:`Segment` objects.
 
         A :class:`SegmentGroup` of all segments that contain atoms in this group.
+
+        .. versionchanged:: 0.8.2
+           Now strictly returns a SegmentGroup of a set of the Segments from this AtomGroup
         """
         if not 'segments' in self.__cache:
             segments = []
             current_segment = None
             for atom in self._atoms:
-                if atom.segment != current_segment:
+                if atom.segment != current_segment and not atom.segment in segments:
                     segments.append(atom.segment)
                 current_segment = atom.segment
             self.__cache['segments'] = SegmentGroup(segments)

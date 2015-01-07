@@ -33,6 +33,7 @@ import os.path
 from math import sqrt
 import numpy
 import sys
+from collections import defaultdict
 
 # Local imports
 from . import tables
@@ -55,36 +56,31 @@ def build_segments(atoms):
     :Returns: structure dict, which associates a segname with a
               :class:`~MDAnalysis.core.AtomGroup.Segment`
 
+    .. versionchanged:: 0.8.2
+       Now allows resids in a given Segment to be given in non sequential order.
     """
     struc = {}
-    residues = []
-    resatomlist = []
+    resatomlist = defaultdict(list)
     curr_segname = atoms[0].segid
-    curr_resnum = atoms[0].resid
-    curr_resname = atoms[0].resname
+
     for a in atoms:
-        if a.segid == curr_segname:
-            if a.resid == curr_resnum:
-                resatomlist.append(a)
-            else:
-                # New residue
-                residues.append(AtomGroup.Residue(curr_resname,
-                                                  curr_resnum, resatomlist))
-                resatomlist = [a]
-                curr_resnum = a.resid
-                curr_resname = a.resname
+        if a.segid == curr_segname:  # if still in same Segment
+            resatomlist[a.resid].append(a)
         else:
             # We've come to a new segment
-            residues.append(AtomGroup.Residue(curr_resname,
-                                              curr_resnum, resatomlist))
+            # Build the Segment we just left
+            residues = [AtomGroup.Residue(ats[0].resname, k, ats)
+                        for k, ats in resatomlist.iteritems()]
             struc[curr_segname] = AtomGroup.Segment(curr_segname, residues)
-            residues = []
-            resatomlist = [a]
-            curr_resnum = a.resid
-            curr_resname = a.resname
+
+            # Reset things and start again
+            resatomlist = defaultdict(list)
+            resatomlist[a.resid].append(a)
             curr_segname = a.segid
+
     # Add the last segment
-    residues.append(AtomGroup.Residue(curr_resname, curr_resnum, resatomlist))
+    residues = [AtomGroup.Residue(ats[0].resname, k, ats)
+                for k, ats in resatomlist.iteritems()]
     struc[curr_segname] = AtomGroup.Segment(curr_segname, residues)
     return struc
 
@@ -100,24 +96,16 @@ def build_residues(atoms):
     :Returns: List of :class:`~MDAnalysis.core.AtomGroup.Residue` instances
 
     .. versionadded:: 0.8
+    .. versionchanged:: 0.8.2
+       Now allows resids to be given in non sequential order
     """
-    struc = {}
-    residues = []
-    resatomlist = []
-    curr_resnum = atoms[0].resid
-    curr_resname = atoms[0].resname
+    resatomlist = defaultdict(list)
     for a in atoms:
-        if a.resid == curr_resnum:
-            resatomlist.append(a)
-        else:
-            # New residue
-            residues.append(AtomGroup.Residue(curr_resname,
-                                              curr_resnum, resatomlist))
-            resatomlist = [a]
-            curr_resnum = a.resid
-            curr_resname = a.resname
-    # Add the last residue
-    residues.append(AtomGroup.Residue(curr_resname, curr_resnum, resatomlist))
+        resatomlist[a.resid].append(a)
+
+    residues = [AtomGroup.Residue(ats[0].resname, k, ats)
+                for k, ats in resatomlist.iteritems()]
+
     return residues
 
 class TopologyObject(object):
