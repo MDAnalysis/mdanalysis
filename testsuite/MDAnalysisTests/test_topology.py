@@ -16,9 +16,11 @@
 #
 
 import MDAnalysis
+from MDAnalysis.core.AtomGroup import AtomGroup
+from MDAnalysis.core.distances import calc_bonds, calc_angles, calc_torsions
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass, \
-    guess_format
-from MDAnalysis.topology.core import TopologyObject
+    guess_format, guess_bonds, guess_angles, guess_torsions, guess_improper_torsions
+from MDAnalysis.topology.core import Bond, Angle, Torsion, Improper_Torsion, TopologyGroup, TopologyObject, TopologyDict
 from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD, \
     LAMMPSdata, trz4data
 
@@ -315,8 +317,6 @@ class TestTopologyObjects(TestCase):
         assert_raises(ValueError, self.b.partner, a3)
 
     def test_isguessed(self):
-        from MDAnalysis.topology.core import Bond
-
         b = Bond([self.u.atoms[0], self.u.atoms[12]])
         b.is_guessed = True
 
@@ -458,7 +458,6 @@ class TestTopologyGroup(TestCase):
 
     def test_bad_creation(self):
         """Test making a TopologyDict/Group out of nonsense"""
-        from MDAnalysis.topology.core import TopologyDict, TopologyGroup
         inputlist = ['a', 'b', 'c']
         assert_raises(TypeError, TopologyDict, inputlist)
         assert_raises(TypeError, TopologyGroup, inputlist)
@@ -552,9 +551,6 @@ class TestTopologyGroup(TestCase):
                      u.torsions.atomgroup_intersection(testinput, strict=True))
 
     def test_verticalTG(self):
-        from MDAnalysis.topology.core import TopologyGroup
-        from MDAnalysis.core.AtomGroup import AtomGroup
-
         b1 = self.universe.atoms[0].torsions[0]
         b2 = self.universe.atoms[20].torsions[0]
 
@@ -627,8 +623,6 @@ class TestTopologyGroup(TestCase):
         assert_equal(list(tg2), tg.bondlist[1:4])
 
     def test_TG_getitem_fancy(self):
-        from MDAnalysis.topology.core import TopologyGroup
-
         tg = self.universe.bonds[:10]
 
         tg2 = tg[[1, 4, 5]]
@@ -683,8 +677,6 @@ class TestTopologyGroup_Cython(TestCase):
             assert_raises(TypeError, tg.bonds)
 
     def test_right_type_bonds(self):
-        from MDAnalysis.core.distances import calc_bonds
-
         assert_equal(self.bgroup.bonds(),
                      calc_bonds(self.bgroup.atom1.positions, 
                                 self.bgroup.atom2.positions))
@@ -698,8 +690,6 @@ class TestTopologyGroup_Cython(TestCase):
             assert_raises(TypeError, tg.angles)
 
     def test_right_type_angles(self):
-        from MDAnalysis.core.distances import calc_angles
-
         assert_equal(self.agroup.angles(),
                      calc_angles(self.agroup.atom1.positions,
                                  self.agroup.atom2.positions,
@@ -716,8 +706,6 @@ class TestTopologyGroup_Cython(TestCase):
             assert_raises(TypeError, tg.torsions)
 
     def test_right_type_torsions(self):
-        from MDAnalysis.core.distances import calc_torsions
-
         assert_equal(self.tgroup.torsions(),
                      calc_torsions(self.tgroup.atom1.positions,
                                    self.tgroup.atom2.positions,
@@ -732,8 +720,6 @@ class TestTopologyGroup_Cython(TestCase):
                                    box=self.u.dimensions))
 
     def test_right_type_impropers(self):
-        from MDAnalysis.core.distances import calc_torsions
-
         assert_equal(self.igroup.torsions(),
                      calc_torsions(self.igroup.atom1.positions,
                                    self.igroup.atom2.positions,
@@ -852,20 +838,14 @@ class TestTopologyGuessers(TestCase):
 
     # guess_bonds
     def test_guess_bonds_wronginput(self):  # give too few coords and watch it explode
-        from MDAnalysis.topology.core import guess_bonds
-
         assert_raises(ValueError, guess_bonds, self.u.atoms, self.u.atoms.positions[:-2])
 
     def test_guess_bonds_badtype(self):
-        from MDAnalysis.topology.core import guess_bonds
-
         # rename my carbons and watch it get confused about missing types
         self.u.selectAtoms('type C').set_type('QQ')
         assert_raises(ValueError, guess_bonds, self.u.atoms, self.u.atoms.positions)
 
     def test_guess_bonds_withag(self):
-        from MDAnalysis.topology.core import guess_bonds
-
         # here's one I prepared earlier
         bondlist = ((0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 2), (1, 3),
                     (1, 4), (2, 3), (2, 4), (2, 8), (3, 4), (4, 5), (4, 6),
@@ -878,8 +858,6 @@ class TestTopologyGuessers(TestCase):
                      bondlist)
 
     def test_guess_bonds_withlist(self):
-        from MDAnalysis.topology.core import guess_bonds
-
         bondlist = ((0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 2), (1, 3),
                     (1, 4), (2, 3), (2, 4), (2, 8), (3, 4), (4, 5), (4, 6),
                     (6, 7), (6, 8), (6, 9), (7, 8))
@@ -891,8 +869,6 @@ class TestTopologyGuessers(TestCase):
                      bondlist)
 
     def test_guess_angles(self):
-        from MDAnalysis.topology.core import guess_angles
-
         ag = self.u.atoms[:10]
 
         # Guess angles based on bond information
@@ -904,8 +880,6 @@ class TestTopologyGuessers(TestCase):
         assert_equal(set(guessed_angs), set(dump_result))
 
     def test_guess_torsions(self):
-        from MDAnalysis.topology.core import guess_torsions
-
         ag = self.u.atoms[:10]
         ag.bonds
         ag.angles
@@ -917,8 +891,6 @@ class TestTopologyGuessers(TestCase):
         assert_equal(set(guessed_tors), set(dump_result))
 
     def test_guess_improper_torsions(self):
-        from MDAnalysis.topology.core import guess_improper_torsions
-
         ag = self.u.atoms[:5]
         ag.bonds
         ag.angles
@@ -935,6 +907,23 @@ class TestTopologyGuessers(TestCase):
         imps = guess_improper_torsions(angs)
 
         assert_equal(set(result), set(imps))
+
+    # Functional testing for these functions
+    # Test that Universe accepts their output as input
+    def test_guess_angles_set(self):
+        self.u.angles = guess_angles(self.u.bonds)
+
+        assert_equal(len(self.u.angles), 6123)
+
+    def test_guess_torsions_set(self):
+        self.u.torsions = guess_torsions(self.u.angles)
+
+        assert_equal(len(self.u.torsions), 8921)
+
+    def test_guess_impropers_set(self):
+        self.u.impropers = guess_improper_torsions(self.u.angles)
+
+        assert_equal(len(self.u.impropers), 10314)
 
 
 class TestLammpsData(TestCase):

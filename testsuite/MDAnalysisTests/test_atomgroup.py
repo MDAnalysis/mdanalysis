@@ -748,6 +748,51 @@ class TestAtomGroupNoTop(TestCase):
         assert_equal('atoms' in ag._AtomGroup__cache, True)
 
 
+class TestUniverseSetTopology(TestCase):
+    """Tests setting of bonds/angles/torsions/impropers from Universe."""
+    def setUp(self):
+        self.u = MDAnalysis.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    def test_set_bonds(self):
+        assert_equal(len(self.u.bonds), 3365)
+        assert_equal(len(self.u.atoms[0].bonds), 4)
+
+        self.u.bonds = []
+
+        assert_equal(self.u.bonds, None)
+        assert_equal(len(self.u.atoms[0].bonds), 0)
+
+    def test_set_angles(self):
+        assert_equal(len(self.u.angles), 6123)
+        assert_equal(len(self.u.atoms[0].angles), 9)
+
+        self.u.angles = []
+
+        assert_equal(self.u.angles, None)
+        assert_equal(len(self.u.atoms[0].angles), 0)
+
+    def test_set_torsions(self):
+        assert_equal(len(self.u.torsions), 8921)
+        assert_equal(len(self.u.atoms[0].torsions), 14)
+
+        self.u.torsions = []
+
+        assert_equal(self.u.torsions, None)
+        assert_equal(len(self.u.atoms[0].torsions), 0)
+
+    def test_set_impropers(self):
+        assert_equal(len(self.u.impropers), 541)
+        assert_equal(len(self.u.atoms[4].impropers), 1)
+
+        self.u.impropers = []
+
+        assert_equal(self.u.impropers, None)
+        assert_equal(len(self.u.atoms[4].impropers), 0)
+
+
 class TestResidue(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)

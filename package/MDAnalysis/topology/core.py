@@ -123,9 +123,6 @@ class TopologyObject(object):
 
     def __init__(self, atoms):
         self.atoms = tuple(atoms)
-        # Overwrite this to append self to relevant attribute
-        # eg: for a in self.atoms:
-        #         a.bondname.append(self)
 
     @property
     def type(self):
@@ -197,8 +194,6 @@ class Bond(TopologyObject):
 
     def __init__(self, atoms, order=None):
         self.atoms = tuple(atoms)
-        for a in self.atoms:
-            a.bonds.append(self)
         self.order = order
         self.__is_guessed = False
 
@@ -256,12 +251,6 @@ class Angle(TopologyObject):
        * Changed class to use __slots__
        * Changed class to store atoms in .atoms attribute.
     """
-    def __init__(self, atoms):
-        self.atoms = tuple(atoms)
-        # Add this angle to Atom class
-        for a in self.atoms:
-            a.angles.append(self)
-
     def angle(self):
         """Returns the angle in degrees of this Angle.
 
@@ -294,13 +283,6 @@ class Torsion(TopologyObject):
        * Changed class to store atoms in .atoms attribute.
     """
     # http://cbio.bmt.tue.nl/pumma/uploads/Theory/dihedral.png
-    def __init__(self, atoms):
-        self.atoms = tuple(atoms)
-        # Add this torsion to Atom
-        for a in self.atoms:
-            a.torsions.append(self)
-
-
     def torsion(self):
         """Calculate the dihedral angle in degrees.
 
@@ -336,11 +318,6 @@ class Improper_Torsion(Torsion):  # subclass Torsion to inherit torsion method
     .. versionadded 0.8.2
     """
     # http://cbio.bmt.tue.nl/pumma/uploads/Theory/improper.png
-    def __init__(self, atoms):
-        self.atoms = tuple(atoms)
-        for a in self.atoms:
-            a.impropers.append(self)
-
     def improper(self):
         """Improper dihedral angle in degrees"""
         return self.torsion()
