@@ -51,6 +51,9 @@ The rules for this file:
     attributes.
     (Issue 190)
   * Added ability to remove items from Universe cache with _clear_caches.
+  * Added ability to define dimensions from AtomGroup, Universe and Timestep for most
+    formats.
+    (Issue 203)
 
   Changes
 

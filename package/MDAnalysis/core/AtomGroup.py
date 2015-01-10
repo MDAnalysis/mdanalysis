@@ -2212,6 +2212,14 @@ class AtomGroup(object):
         else:
             raise AttributeError("This AtomGroup does not belong to a Universe with a dimension.")
 
+    @dimensions.setter
+    def dimensions(self, box):
+        """Pass on to Universe setter
+
+        .. versionadded:: 0.8.2
+        """
+        self.universe.dimensions = box
+
     @property
     def ts(self):
         """Temporary Timestep that contains the selection coordinates.
@@ -3568,6 +3576,15 @@ class Universe(object):
         """Current dimensions of the unitcell"""
         return self.coord.dimensions
 
+    @dimensions.setter
+    def dimensions(self, box):
+        """Set dimensions if the Timestep allows this
+
+        .. versionadded:: 0.8.2
+        """
+        # Add fancy error handling here or use Timestep?
+        self.coord.dimensions = box
+
     @property
     def coord(self):
         """Reference to current timestep and coordinates of universe.
@@ -3591,8 +3608,10 @@ class Universe(object):
     @property
     def trajectory(self):
         """Reference to trajectory reader object containing trajectory data."""
-        if not self.__trajectory == None: return self.__trajectory
-        else: raise AttributeError("No trajectory loaded into Universe")
+        if not self.__trajectory == None:
+            return self.__trajectory
+        else:
+            raise AttributeError("No trajectory loaded into Universe")
 
     @trajectory.setter
     def trajectory(self, value):

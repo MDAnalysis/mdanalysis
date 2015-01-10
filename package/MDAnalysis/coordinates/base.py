@@ -175,7 +175,12 @@ class Timestep(object):
                 yield self[i]
         return iterTS()
     def __repr__(self):
-        return "< Timestep "+ repr(self.frame) + " with unit cell dimensions " + repr(self.dimensions) + " >"
+        desc = "< Timestep {0}".format(self.frame)
+        try:
+            tail = " with unit cell dimensions {0} >".format(self.dimensions)
+        except NotImplementedError:
+            tail = " >"
+        return desc + tail
     def copy(self):
         """Make an independent ("deep") copy of the whole :class:`Timestep`."""
         return self.__deepcopy__()

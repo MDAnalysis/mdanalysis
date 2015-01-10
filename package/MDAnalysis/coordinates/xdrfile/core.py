@@ -133,6 +133,11 @@ class Timestep(base.Timestep):
         z = self._unitcell[2]
         return triclinic_box(x,y,z)
 
+    @dimensions.setter
+    def dimensions(self, box):
+        self._unitcell = triclinic_vectors(box)
+
+
 class TrjWriter(base.Writer):
     """Writes to a Gromacs trajectory file
 

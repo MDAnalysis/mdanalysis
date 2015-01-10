@@ -42,7 +42,7 @@ class Timestep(base.Timestep):
     def dimensions(self):
         """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
 
-        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
+        lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
         angles are in degrees.
 
         :attr:`dimensions` is read-only because it transforms the
@@ -66,6 +66,13 @@ class Timestep(base.Timestep):
         # recent NAMD (>2.5?), see Issue 187
         return numpy.take(self._unitcell, self._ts_order)
 
+    @dimensions.setter
+    def dimensions(self, box):
+        """Set unitcell with (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+
+        .. versionadded:: 0.8.2
+        """
+        numpy.put(self._unitcell, self._ts_order, box)
 
 class DCDWriter(base.Writer):
     """Writes to a DCD file
