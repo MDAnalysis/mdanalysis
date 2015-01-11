@@ -67,6 +67,12 @@ class Timestep(base.Timestep):
                 z = self._unitcell['z']  # this ordering is correct! (checked it, OB)
                 return triclinic_box(x,y,z)
 
+        @dimensions.setter
+        def dimensions(self, box):
+                x, y, z = triclinic_vectors(box)
+                cell = {'x':x, 'y':y, 'z':z}
+                self._unitcell = cell
+
 class DMSReader(base.Reader):
         """
         Reads both coordinates and velocities.

@@ -40,6 +40,9 @@ from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
 from copy import deepcopy
 
 class Timestep(base.Timestep):
+        _ts_order_x = [0, 3, 4]
+        _ts_order_y = [5, 1, 6]
+        _ts_order_z = [7, 8, 2]
         @property
         def dimensions(self):
                 """unitcell dimensions (A, B, C, alpha, beta, gamma)
@@ -61,10 +64,20 @@ class Timestep(base.Timestep):
                 # unit cell line (from http://manual.gromacs.org/current/online/gro.html)
                 # v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)
                 # 0     1     2      3     4     5     6    7     8
-                x = self._unitcell[[0,3,4]]
-                y = self._unitcell[[5,1,6]]
-                z = self._unitcell[[7,8,2]]  # this ordering is correct! (checked it, OB)
+                # This information now stored as _ts_order_x/y/z to keep DRY
+                x = self._unitcell[self._ts_order_x]
+                y = self._unitcell[self._ts_order_y]
+                z = self._unitcell[self._ts_order_z]  # this ordering is correct! (checked it, OB)
                 return triclinic_box(x,y,z)
+
+        @dimensions.setter
+        def dimensions(self, box):
+                x, y, z = triclinic_vectors(box)
+                # Unitcell not made properly on init!
+                self._unitcell = numpy.zeros(9, dtype=numpy.float32)
+                numpy.put(self._unitcell, self._ts_order_x, x)
+                numpy.put(self._unitcell, self._ts_order_y, y)
+                numpy.put(self._unitcell, self._ts_order_z, z)
 
 class GROReader(base.Reader):
         '''Now reads in velocities as well, if available.'''

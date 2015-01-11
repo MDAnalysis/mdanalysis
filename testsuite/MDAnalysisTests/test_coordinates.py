@@ -2524,6 +2524,10 @@ class _GROTimestep(_BaseTimestep):
     Timestep = MDAnalysis.coordinates.GRO.Timestep
     name = "GRO"
     has_box = True
+    set_box = True
+    unitcell = np.array([10., 11., 12.,
+                         0., 0., 0.,
+                         0., 0., 0.]) 
 
 class _LAMMPSTimestep(_DCDTimestep):  # LAMMPS Timestep is a subclass of DCD Timestep
     Timestep = MDAnalysis.coordinates.LAMMPS.Timestep
@@ -2676,6 +2680,7 @@ class _TestTimestep(TestCase):
         if self.set_box:
             self.ts.dimensions = self.newbox
             assert_allclose(self.ts._unitcell, self.unitcell)
+            assert_allclose(self.ts.dimensions, self.newbox)
         else:
             pass
 
@@ -2711,7 +2716,19 @@ class TestDMSTimestep(_TestTimestep, _DMSTimestep):
     pass
 
 class TestGROTimestep(_TestTimestep, _GROTimestep):
-    pass
+    def test_unitcell_set2(self):
+        old = self.ts._unitcell
+        box = np.array([80.017, 80.017, 80.017, 60.00, 60.00, 90.00], dtype=np.float32)
+
+        ref = np.array([80.00515747, 80.00515747, 56.57218552, #v1x, v2y, v3z
+                        0., 0., #v1y v1z
+                        0., 0., #v2x v2y
+                        40.00257874,  40.00257874,], # v3x, v3y
+                       dtype=np.float32) 
+        self.ts.dimensions = box
+        assert_array_almost_equal(self.ts._unitcell, ref, decimal=2)
+
+        self.ts._unitcell = old
 
 class TestLAMMPSTimestep(_TestTimestep, _LAMMPSTimestep):
     pass
