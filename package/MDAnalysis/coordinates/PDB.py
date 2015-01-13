@@ -245,6 +245,11 @@ class Timestep(base.Timestep):
                 # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
                 return self._unitcell
 
+        @dimensions.setter
+        def dimensions(self, box):
+            self._unitcell = box
+
+
 class PDBReader(base.Reader):
     """Read a pdb file into a BioPython pdb structure.
 

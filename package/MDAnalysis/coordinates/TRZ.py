@@ -144,6 +144,21 @@ class Timestep(base.Timestep):
         z = self._unitcell[6:9]
         return triclinic_box(x,y,z)
 
+    @dimensions.setter
+    def dimensions(self, box):
+        """Set the Timestep dimensions with MDAnalysis format cell
+        (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+
+        .. versionadded:: 0.8.2
+        """
+        if len(box) == 3 or len(box) == 6:
+            self._unitcell[0] = box[0]
+            self._unitcell[4] = box[1]
+            self._unitcell[8] = box[2]
+        else:
+            raise ValueError("Must set using MDAnalysis format box")
+
+
 class TRZReader(base.Reader):
     """ Reads an IBIsCO or YASP trajectory file
 
@@ -363,7 +378,7 @@ class TRZReader(base.Reader):
             self.next()
             t1 = self.ts.step
             self.__skip_timestep = t1 - t0
-        except IOERROR:
+        except IOError:
             return 0
         finally:
             self.rewind()

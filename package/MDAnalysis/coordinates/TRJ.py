@@ -240,6 +240,10 @@ class Timestep(base.Timestep):
                 # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
                 return self._unitcell
 
+        @dimensions.setter
+        def dimensions(self, box):
+                self._unitcell = box
+
 class TRJReader(base.Reader):
         """AMBER trajectory reader.
 

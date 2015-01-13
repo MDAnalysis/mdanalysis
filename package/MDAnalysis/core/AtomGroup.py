@@ -338,6 +338,7 @@ Classes and functions
 import warnings
 import numpy
 import itertools
+from collections import defaultdict
 
 import MDAnalysis
 from MDAnalysis import SelectionError, NoDataError, SelectionWarning
@@ -362,11 +363,11 @@ class Atom(object):
 
     .. versionchanged 0.8.2 
        Added fragment managed property.
+       Changed bonds angles torsions impropers to be a managed property
     """
 
     __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
                  "mass", "charge", "residue", "segment",
-                 "bonds", "angles", "torsions", "impropers",
                  "__universe",
                  "radius", "bfactor", "resnum", "serial", "altLoc")
 
@@ -388,10 +389,6 @@ class Atom(object):
         self.radius = radius
         self.bfactor = bfactor
         self.serial = serial
-        self.bonds = None  # later replaced by lists of TopObj instances
-        self.angles = None
-        self.torsions = None
-        self.impropers = None
         self.__universe = None
 
     def __repr__(self):
@@ -467,20 +464,62 @@ class Atom(object):
     @property
     def universe(self):
         """a pointer back to the Universe"""
-        if not self.__universe == None: return self.__universe
-        else: raise AttributeError("Atom "+repr(self.number)+" is not assigned to a Universe")
+        if not self.__universe == None:
+            return self.__universe
+        else:
+            raise AttributeError("Atom "+repr(self.number)+" is not assigned to a Universe")
 
     @universe.setter
     def universe(self, universe):
         self.__universe = universe
 
+    # The following look up a dictionary stored in the Universe.
+    # These dictionaries are lazily built
     @property
     def fragment(self):
-        """The fragment that this atom is part of
+        """The fragment that this Atom is part of
 
         .. versionadded 0.8.2
         """
         return self.universe._fragmentDict[self]
+
+    @property
+    def bonds(self):
+        """A list of the bonds that this Atom is in
+        
+        .. versionchanged:: 0.8.2 
+           Changed to managed property
+        """
+        return self.universe._bondDict[self]
+
+    @property
+    def angles(self):
+        """A list of the angles that this Atom is in
+        
+        .. versionchanged:: 0.8.2 
+           Changed to managed property
+        """
+        return self.universe._angleDict[self]
+
+    @property
+    def torsions(self):
+        """A list of the torsions/dihedrals that this Atom is in
+        
+        .. versionchanged:: 0.8.2 
+           Changed to managed property
+        """
+        return self.universe._torsionDict[self]
+
+    dihedrals = torsions
+
+    @property
+    def impropers(self):
+        """A list of the improper torsions that this Atom is in
+        
+        .. versionchanged:: 0.8.2 
+           Changed to managed property
+        """
+        return self.universe._improperDict[self]
 
 
 class AtomGroup(object):
@@ -2173,6 +2212,14 @@ class AtomGroup(object):
         else:
             raise AttributeError("This AtomGroup does not belong to a Universe with a dimension.")
 
+    @dimensions.setter
+    def dimensions(self, box):
+        """Pass on to Universe setter
+
+        .. versionadded:: 0.8.2
+        """
+        self.universe.dimensions = box
+
     @property
     def ts(self):
         """Temporary Timestep that contains the selection coordinates.
@@ -2937,10 +2984,6 @@ class Universe(object):
                 
         bondlist = set()
 
-        # Atoms have no bondlist on initialisation
-        for a in self.atoms:
-            a.bonds = []
-
         defined_bonds = fix_order(self._psf.get('_bonds', set()))
         guessed_bonds = fix_order(self._psf.get('_guessed_bonds', set()))
         # Some topologies define an order for bonds, this is stored
@@ -2978,9 +3021,6 @@ class Universe(object):
         
         .. versionadded 0.8.2
         """
-        for a in self.atoms:
-            a.angles = []
-
         angle_entries = self._psf.get('_angles', None)
         if angle_entries is None:
             return None
@@ -3001,9 +3041,6 @@ class Universe(object):
         
         .. versionadded 0.8.2
         """
-        for a in self.atoms:
-            a.torsions = []
-
         torsion_entries = self._psf.get('_dihe', None)
         if torsion_entries is None:
             return None
@@ -3024,9 +3061,6 @@ class Universe(object):
         
         .. versionadded 0.8.2
         """
-        for a in self.atoms:
-            a.impropers = []
-
         torsion_entries = self._psf.get('_impr', None)
         if torsion_entries is None:
             return None
@@ -3112,6 +3146,94 @@ class Universe(object):
         return self.__cache['fragments']
 
     @property
+    def _bondDict(self):
+        """Lazily built dictionary of bonds
+
+        Translates Atom to list of bonds
+
+        .. versionadded:: 0.8.2
+        """
+        if not 'bondDict' in self.__cache:
+            bonds = self.bonds
+            bd = defaultdict(list)
+
+            if bonds is None:
+                pass
+            else:
+                for b in bonds:
+                    for a in b:
+                        bd[a].append(b)
+
+            self.__cache['bondDict'] = bd
+        return self.__cache['bondDict']
+
+    @property
+    def _angleDict(self):
+        """Lazily built dictionary of angles
+
+        Translates Atom to list of angles
+
+        .. versionadded:: 0.8.2
+        """
+        if not 'angleDict' in self.__cache:
+            bonds = self.angles
+            bd = defaultdict(list)
+    
+            if bonds is None:
+                pass
+            else:
+                for b in bonds:
+                    for a in b:
+                        bd[a].append(b)
+
+            self.__cache['angleDict'] = bd
+        return self.__cache['angleDict']
+
+    @property
+    def _torsionDict(self):
+        """Lazily built dictionary of torsions
+
+        Translates Atom to list of torsions
+
+        .. versionadded:: 0.8.2
+        """
+        if not 'torsionDict' in self.__cache:
+            bonds = self.torsions
+            bd = defaultdict(list)
+
+            if bonds is None:
+                pass
+            else:
+                for b in bonds:
+                    for a in b:
+                        bd[a].append(b)
+
+            self.__cache['torsionDict'] = bd
+        return self.__cache['torsionDict']
+
+    @property
+    def _improperDict(self):
+        """Lazily built dictionary of improper torsions
+
+        Translates Atom to list of improper torsions
+
+        .. versionadded:: 0.8.2
+        """
+        if not 'improperDict' in self.__cache:
+            bonds = self.impropers
+            bd = defaultdict(list)
+
+            if bonds is None:
+                pass
+            else:
+                for b in bonds:
+                    for a in b:
+                        bd[a].append(b)
+
+            self.__cache['improperDict'] = bd
+        return self.__cache['improperDict']
+
+    @property
     def _fragmentDict(self):
         """Lazily built dictionary of fragments.
 
@@ -3162,6 +3284,19 @@ class Universe(object):
             self.__cache['bonds'] = self._init_bonds()
         return self.__cache['bonds']
 
+    @bonds.setter
+    def bonds(self, bondlist):
+        """Can set bonds by supplying an iterable of bond tuples.
+
+        Each bond tuple must contain the zero based indices of the two Atoms in
+        the bond
+
+        .. versionadded:: 0.8.2
+        """
+        self._clear_caches('bonds', 'bondDict')
+        self._psf['_bonds'] = bondlist
+        self.__cache['bonds'] = self._init_bonds()
+
     @property
     def angles(self):
         """
@@ -3175,6 +3310,12 @@ class Universe(object):
         if 'angles' not in self.__cache:
                 self.__cache['angles'] = self._init_angles()
         return self.__cache['angles']
+
+    @angles.setter
+    def angles(self, bondlist):
+        self._clear_caches('angles', 'angleDict')
+        self._psf['_angles'] = bondlist
+        self.__cache['angles'] = self._init_angles()
 
     @property
     def torsions(self):
@@ -3190,6 +3331,12 @@ class Universe(object):
                 self.__cache['torsions'] = self._init_torsions()
         return self.__cache['torsions']
 
+    @torsions.setter
+    def torsions(self, bondlist):
+        self._clear_caches('torsions', 'torsionDict')
+        self._psf['_dihe'] = bondlist
+        self.__cache['_dihe'] = self._init_torsions()
+
     @property
     def impropers(self):
         """
@@ -3203,6 +3350,12 @@ class Universe(object):
         if 'impropers' not in self.__cache:
             self.__cache['impropers'] = self._init_impropers()
         return self.__cache['impropers']
+
+    @impropers.setter
+    def impropers(self, bondlist):
+        self._clear_caches('impropers', 'improperDict')
+        self._psf['_impr'] = bondlist
+        self.__cache['impropers'] = self._init_impropers()
 
     def load_new(self, filename, **kwargs):
         """Load coordinates from *filename*, using the suffix to detect file format.
@@ -3423,6 +3576,15 @@ class Universe(object):
         """Current dimensions of the unitcell"""
         return self.coord.dimensions
 
+    @dimensions.setter
+    def dimensions(self, box):
+        """Set dimensions if the Timestep allows this
+
+        .. versionadded:: 0.8.2
+        """
+        # Add fancy error handling here or use Timestep?
+        self.coord.dimensions = box
+
     @property
     def coord(self):
         """Reference to current timestep and coordinates of universe.
@@ -3446,8 +3608,10 @@ class Universe(object):
     @property
     def trajectory(self):
         """Reference to trajectory reader object containing trajectory data."""
-        if not self.__trajectory == None: return self.__trajectory
-        else: raise AttributeError("No trajectory loaded into Universe")
+        if not self.__trajectory == None:
+            return self.__trajectory
+        else:
+            raise AttributeError("No trajectory loaded into Universe")
 
     @trajectory.setter
     def trajectory(self, value):
