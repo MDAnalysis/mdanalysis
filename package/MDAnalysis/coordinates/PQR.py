@@ -61,7 +61,7 @@ are:
 *charge*
     A float which provides the atomic charge (in electrons).
 *radius*
-    A float which provides the atomic radius (in Ã…).
+    A float which provides the atomic radius (in Å).
 
 Clearly, this format can deviate wildly from PDB_ due to the use of whitespaces
 rather than specific column widths and alignments. This deviation can be
@@ -131,9 +131,9 @@ class PQRReader(base.Reader):
                     except ValueError:
                         # files without the chainID
                         recordName,serial,name,resName,resSeq,x,y,z,charge,radius = fields
-                        chainID = 'A'
+                        chainID = ''
                     coords.append((float(x),float(y),float(z)))
-                    atoms.append((int(serial), name, resName, chainID, int(resSeq), float(charge), float(radius),segID))
+                    atoms.append((int(serial), name, resName, chainID, int(resSeq), float(charge), float(radius), segID))
         self.numatoms = len(coords)
         self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
         self.ts._unitcell[:] = unitcell
@@ -158,6 +158,17 @@ class PQRReader(base.Reader):
         """Return an array of charges in atom order."""
         return self._atoms.charge
 
+    def Writer(self, filename, **kwargs):
+        """Returns a PQRWriter for *filename*.
+
+        :Arguments:
+           *filename*
+              filename of the output PQR file
+
+        :Returns: :class:`PQRWriter`
+        """
+        return PQRWriter(filename, **kwargs)
+
     def __iter__(self):
         yield self.ts  # Just a single frame
         raise StopIteration
@@ -170,3 +181,111 @@ class PQRReader(base.Reader):
     def _read_next_timestep(self):
         # PQR file only contains a single frame
         raise IOError
+
+class PQRWriter(base.Writer):
+    """Write a single coordinate frame in whitespace-separated PQR format.
+
+    Charges ("Q") are taken from the
+    :attr:`MDAnalysis.core.AtomGroup.Atom.charge` attribute while
+    radii are obtaine from the
+    :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.
+
+    * If the segid is 'SYSTEM' then it will be set to the empty
+      string. Otherwise the first letter will be used as the chain ID.
+    * The serial number always starts at 1 and increments sequentially
+      for the atoms.
+
+    The output format is similar to ``pdb2pqr --whitespace``.
+
+    .. versionadded:: 0.8.2
+    """
+    format = 'PQR'
+    units = {'time': None, 'length': 'Angstrom'}
+
+    fmt = {'ATOM_nochain':
+           "ATOM {0:6d} {1:<4}  {2:<3} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}\n",
+           # serial, atomName, residueName, (chainID), residueNumber, XYZ, charge, radius
+           'ATOM_chain':
+           "ATOM {0:6d} {1:<4}  {2:<3} {3:1.1} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}\n",
+           # serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius
+           }
+
+    def __init__(self, filename, convert_units=None, **kwargs):
+        """Set up a PQRWriter with full whitespace separation.
+
+        :Arguments:
+          *filename*
+             output filename
+          *remarks*
+             remark lines (list of strings) or single string to be added to the
+             top of the PQR file
+        """
+        self.filename = util.filename(filename, ext='pqr')
+
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_lengths']
+        self.convert_units = convert_units  # convert length and time to base units
+
+        self.remarks = kwargs.pop('remarks', "PQR file written by MDAnalysis")
+
+    def write(self, selection, frame=None):
+        """Write selection at current trajectory frame to file.
+
+        :Arguments:
+            *selection*
+                MDAnalysis AtomGroup (selection or Universe.atoms)
+                or also Universe
+         :Keywords:
+             *frame*
+                optionally move to frame number *frame*
+        """
+        # write() method that complies with the Trajectory API
+        u = selection.universe
+        if frame is not None:
+            u.trajectory[frame]  # advance to frame
+        else:
+            try:
+                frame = u.trajectory.ts.frame
+            except AttributeError:
+                frame = 1   # should catch cases when we are analyzing a single frame(?)
+
+        atoms = selection.atoms             # make sure to use atoms (Issue 46)
+        coordinates = atoms.coordinates()   # can write from selection == Universe (Issue 49)
+        if self.convert_units:
+            self.convert_pos_to_native(coordinates)             # inplace because coordinates is already a copy
+
+        with util.openany(self.filename, 'w') as pqrfile:
+            # Header
+            self._write_REMARK(pqrfile, self.remarks)
+            self._write_REMARK(pqrfile, "Input: frame {0} of {1}".format(frame, u.trajectory.filename), 5)
+            self._write_REMARK(pqrfile, "total charge: {0:+8.4f} e".format(atoms.totalCharge()), 6)
+            # Atom descriptions and coords
+            for atom_index, atom in enumerate(atoms):
+                XYZ = coordinates[atom_index]
+                self._write_ATOM(pqrfile, atom_index+1, atom.name, atom.resname, atom.segid, atom.resid, XYZ, atom.charge, atom.radius)
+
+    def _write_REMARK(self, fh, remarks, remarknumber=1):
+        """Write REMARK record.
+
+        The *remarknumber* is typically 1 but :program:`pdb2pgr`
+        also uses 6 for the total charge and 5 for warnings.
+        """
+        for line in util.asiterable(remarks):  # either one line or multiple lines
+            fh.write("REMARK   {0} {1}\n".format(remarknumber, line))
+
+    def _write_ATOM(self, fh, serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius):
+        """Write ATOM record.
+
+        Output should look like this (although the only real
+        requirement is *whitespace* separation between *all*
+        entries). The chainID is optional and can be omitted::
+
+              ATOM      1  N    MET     1     -11.921   26.307   10.410 -0.3000 1.8500
+              ATOM     36  NH1  ARG     2      -6.545   25.499    3.854 -0.8000 1.8500
+              ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245
+        """
+        ATOM = self.fmt['ATOM_nochain'] if (chainID == "SYSTEM" or not chainID) else self.fmt['ATOM_chain']
+        atomName = (" " + atomName) if len(atomName) < 4 else atomName  # pad so that only 4-letter atoms are left-aligned
+        fh.write(ATOM.format(serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius))
+
+

@@ -908,6 +908,61 @@ class TestPQRReader(_SingleFrameReader):
         assert_almost_equal(self.universe.SYSTEM.PRO.N.charges(), self.ref_charmm_ProNcharges, 3,
                             "Charges for N atoms in Pro residues do not match.")
 
+class TestPQRWriter(TestCase, RefAdKSmall):
+    def setUp(self):
+        self.universe = mda.Universe(PQR)
+        self.prec = 3
+        ext = ".pqr"
+        fd, self.outfile = tempfile.mkstemp(suffix=ext)
+        os.close(fd)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.universe
+
+    def test_writer_noChainID(self):
+        assert_equal(self.universe.segments.segids()[0], 'SYSTEM')  # sanity check
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        assert_equal(u.segments.segids()[0], 'SYSTEM')
+        assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec,
+                            err_msg="Writing PQR file with PQRWriter does not reproduce original coordinates")
+        assert_almost_equal(u.atoms.charges(), self.universe.atoms.charges(), self.prec,
+                            err_msg="Writing PQR file with PQRWriter does not reproduce original charges")
+        assert_almost_equal(u.atoms.radii(), self.universe.atoms.radii(), self.prec,
+                            err_msg="Writing PQR file with PQRWriter does not reproduce original radii")
+
+    def test_write_withChainID(self):
+        self.universe.atoms.set_segid('A')
+        assert_equal(self.universe.segments.segids()[0], 'A')  # sanity check
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        assert_equal(u.segments.segids()[0], 'A')
+        assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec,
+                            err_msg="Writing PQR file with PQRWriter does not reproduce original coordinates")
+        assert_almost_equal(u.atoms.charges(), self.universe.atoms.charges(), self.prec,
+                            err_msg="Writing PQR file with PQRWriter does not reproduce original charges")
+        assert_almost_equal(u.atoms.radii(), self.universe.atoms.radii(), self.prec,
+                            err_msg="Writing PQR file with PQRWriter does not reproduce original radii")
+
+    def test_timestep_not_modified_by_writer(self):
+        ts = self.universe.trajectory.ts
+        x = ts._pos.copy()
+        self.universe.atoms.write(self.outfile)
+        assert_equal(ts._pos, x,  err_msg="Positions in Timestep were modified by writer.")
+
+    def test_totalCharge(self):
+        self.universe.atoms.write(self.outfile)
+        u = mda.Universe(self.outfile)
+        assert_almost_equal(u.atoms.totalCharge(), self.ref_charmm_totalcharge, 3,
+                            "Total charge (in CHARMM) does not match expected value.")
+
+
+
+
 
 class TestGROReader(TestCase, RefAdK):
     def setUp(self):
@@ -2505,7 +2560,7 @@ class _TRZTimestep(_BaseTimestep):
     set_box = True
     unitcell = np.array([10., 0., 0.,
                          0., 11., 0.,
-                         0., 0., 12.]) 
+                         0., 0., 12.])
 
 class _DCDTimestep(_BaseTimestep):
     Timestep = MDAnalysis.coordinates.DCD.Timestep
@@ -2527,7 +2582,7 @@ class _GROTimestep(_BaseTimestep):
     set_box = True
     unitcell = np.array([10., 11., 12.,
                          0., 0., 0.,
-                         0., 0., 0.]) 
+                         0., 0., 0.])
 
 class _LAMMPSTimestep(_DCDTimestep):  # LAMMPS Timestep is a subclass of DCD Timestep
     Timestep = MDAnalysis.coordinates.LAMMPS.Timestep
@@ -2568,7 +2623,7 @@ class _xdrCoreTimestep(_BaseTimestep):
     set_box = True
     unitcell = np.array([[10., 0., 0.],
                          [0., 11., 0.],
-                         [0., 0., 12.]]) 
+                         [0., 0., 12.]])
 
 class _TRRTimestep(_xdrCoreTimestep):
     Timestep = MDAnalysis.coordinates.TRR.Timestep
@@ -2724,7 +2779,7 @@ class TestGROTimestep(_TestTimestep, _GROTimestep):
                         0., 0., #v1y v1z
                         0., 0., #v2x v2y
                         40.00257874,  40.00257874,], # v3x, v3y
-                       dtype=np.float32) 
+                       dtype=np.float32)
         self.ts.dimensions = box
         assert_array_almost_equal(self.ts._unitcell, ref, decimal=2)
 

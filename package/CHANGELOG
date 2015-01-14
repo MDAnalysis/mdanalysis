@@ -28,6 +28,7 @@ The rules for this file:
     False) to toggle consideration of periodic boundaries
   * XYZWriter (write simple XYZ trajectories)
   * TRZReader upgrades, seeking and numframes faster
+  * PQRWriter (write PQR files)
   * HydrogenBond analysis: new keyword distance_type to alternatively
     look at the distance between heavy atoms (Issue 185)
   * TopologyGroup/TopologyDict system overhauled.
@@ -67,6 +68,8 @@ The rules for this file:
     Windows compatibility)
   * Universe.bonds now returns a TopologyGroup not a list.  TopologyGroup can be
     iterated over; list(universe.bonds) should provide a fix to legacy code.
+  * PQR reader will now set segid to a chainID if found in the PQR
+    file (previously, the segid would always be set to 'SYSTEM').
 
   Fixes
 

@@ -33,10 +33,7 @@ connectivity is deduced.
 import MDAnalysis.coordinates.PQR
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass
 
-class PQRParseError(Exception):
-    pass
-
-def parse(filename):
+class PQRParser(object):
     """Parse atom information from PQR file *filename*.
 
     Only reads the list of atoms. Reads the charges and radii from the
@@ -50,33 +47,57 @@ def parse(filename):
                  :func:`MDAnalysis.topology.PSFParser.parse` and
                  :class:`~MDAnalysis.coordinates.PQR.PQRReader` is used to read
                  the PQR file.
+
+    .. versionchanged:: 0.8.2
+       Read chainID from a PQR file and use it as segid (before we always used
+       'SYSTEM' as the new segid).
     """
-    structure = {}
-    pqr =  MDAnalysis.coordinates.PQR.PQRReader(filename)
 
-    __parseatoms_(pqr, structure)
-    # TODO: reconstruct bonds from CONECT or guess from distance search
-    #       (e.g. like VMD)
-    return structure
+    def __init__(self, filename, guess_bonds_mode=False):
+        self.PQRReader = MDAnalysis.coordinates.PQR.PQRReader
+        self.filename = filename
+        self.guess_bonds_mode = guess_bonds_mode
 
-def __parseatoms_(pqr, structure):
-    from MDAnalysis.core.AtomGroup import Atom
-    attr = "_atoms"  # name of the atoms section
-    atoms = []       # list of Atom objects
+    def parse(self):
+        self.structure = {}
+        pqr =  self.PQRReader(self.filename)
 
-    # translate list of atoms to MDAnalysis Atom.
-    for iatom,atom in enumerate(pqr._atoms):
-        atomname = atom.name
-        atomtype = guess_atom_type(atomname)
-        resname = atom.resName
-        resid = atom.resSeq
-        chain = atom.chainID.strip()
-        segid = atom.segID.strip() or "SYSTEM"  # no empty segids (or Universe throws IndexError)
-        mass = guess_atom_mass(atomname)
-        charge = atom.charge
-        radius = atom.radius
+        self.__parseatoms_(pqr)
+        # TODO: reconstruct bonds from CONECT or guess from distance search
+        #       (e.g. like VMD)
+        return self.structure
 
-        atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),
-                          radius=radius))
+    def __parseatoms_(self, pqr):
+        from MDAnalysis.core.AtomGroup import Atom
+        attr = "_atoms"  # name of the atoms section
+        atoms = []       # list of Atom objects
 
-    structure[attr] = atoms
+        # translate list of atoms to MDAnalysis Atom.
+        for iatom,atom in enumerate(pqr._atoms):
+            atomname = atom.name
+            atomtype = guess_atom_type(atomname)
+            resname = atom.resName
+            resid = atom.resSeq
+            chain = atom.chainID.strip()
+            segid = atom.segID.strip() or chain or "SYSTEM"  # no empty segids (or Universe throws IndexError)
+            mass = guess_atom_mass(atomname)
+            charge = atom.charge
+            radius = atom.radius
+
+            atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),
+                              radius=radius))
+        self.structure[attr] = atoms
+
+# function to keep compatible with the current API; should be cleaned up...
+def parse(filename):
+    """Parse atom information from PQR file *filename*.
+
+    :Returns: MDAnalysis internal *structure* dict
+
+    .. SeeAlso:: The *structure* dict is defined in
+                 :func:`MDAnalysis.topology.PSFParser.parse` and the file is read with
+                 :class:`MDAnalysis.coordinates.PQR.PQRReader`.
+
+    """
+    return PQRParser(filename).parse()
+

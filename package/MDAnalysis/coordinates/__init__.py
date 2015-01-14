@@ -143,7 +143,7 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | and partial charges *q*. Module:                     |
    |               |           |       | :mod:`MDAnalysis.coordinates.PDBQT`                  |
    +---------------+-----------+-------+------------------------------------------------------+
-   | PQR [#a]_     | pqr       |  r    | PDB-like but whitespace-separated files with charge  |
+   | PQR [#a]_     | pqr       | r/w   | PDB-like but whitespace-separated files with charge  |
    |               |           |       | and radius information. Module                       |
    |               |           |       | :mod:`MDAnalysis.coordinates.PQR`                    |
    +---------------+-----------+-------+------------------------------------------------------+
@@ -658,6 +658,7 @@ _frame_writers = {
                   'CRD': CRD.CRDWriter,
                   'GRO': GRO.GROWriter,
                   'PDB': PDB.PrimitivePDBWriter,
+                  'PQR': PQR.PQRWriter,
                   'XYZ': XYZ.XYZWriter,
                   'MOL2': MOL2.MOL2Writer,
                  }
