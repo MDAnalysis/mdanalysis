@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
@@ -74,10 +74,30 @@ import gzip
 import itertools
 
 import base
-from base import Timestep
 import MDAnalysis
 import MDAnalysis.core
 import MDAnalysis.core.util as util
+
+class Timestep(base.Timestep):
+    @property
+    def dimensions(self):
+        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+
+        XYZ files do not contain unitcell information but in order to
+        allow interoperability (and give the use a chance to set the
+        simulation box themselves for e.g. writing out to different
+        formats) we add an empty unit cell, i.e. when reading a XYZ
+        file this will only contain zeros.
+
+        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
+        angles are in degrees.
+        """
+        return self._unitcell
+
+    @dimensions.setter
+    def dimensions(self, box):
+        self._unitcell[:] = box
+
 
 class XYZWriter(base.Writer):
     """Writes an XYZ file
@@ -90,6 +110,7 @@ class XYZWriter(base.Writer):
     format = 'XYZ'
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
+    _Timestep = Timestep
 
     def __init__(self, *args, **kwargs):
         """Initialize the XYZ trajectory writer

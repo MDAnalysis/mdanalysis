@@ -204,6 +204,7 @@ History
 - 2012-05-24 multiframe keyword to distinguish trajectory from single frame writers
 - 2012-06-04 missing implementations of Reader.__getitem__ should raise :exc:`TypeError`
 - 2013-08-02 Readers/Writers must conform to the Python `Context Manager`_ API
+- 2015-01-15 Timestep._init_unitcell() method added
 
 .. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
 .. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers
@@ -261,6 +262,10 @@ Methods
       iterator over all coordinates
   ``copy()``
       deep copy of the instance
+  ``_init_unitcell``
+      hook that returns empty data structure for the unitcell representation
+      of this particular file format; called from within ``__init__()`` to
+      initialize :attr:`Timestep._unitcell`.
 
 Attributes
 ..........
@@ -272,7 +277,13 @@ Attributes
   ``dimensions``
       system box dimensions (`x, y, z, alpha, beta, gamma`)
       (typically implemented as a property because it needs to translate whatever is in the
-      underlying :class:`~MDAnalysis.coordinates.base.Timestep._unitcell` attribute.
+      underlying :class:`~MDAnalysis.coordinates.base.Timestep._unitcell` attribute. Also
+      comes with a setter that takes a MDAnalysis box so that one can do ::
+
+          Timestep.dimensions = [A, B, C, alpha, beta, gamma]
+
+      which then converts automatically to the underlying representation and stores it
+      in :attr:`Timestep._unitcell`.
   ``volume``
       system box volume (derived as the determinant of the box vectors of ``dimensions``)
 
@@ -293,6 +304,9 @@ some cases it is convenient to directly use :class:`~MDAnalysis.coordinates.base
       :class:`~MDAnalysis.coordinates.base.Timestep.dimensions`
       attribute to access the data in a canonical format instead of
       accessing :class:`Timestep._unitcell` directly.
+
+      The method :meth:`Timestep._init_unitcell` is a hook to initialize
+      this attribute.
 
 Optional attributes (only implemented by some readers); if an optional
 attribute does not exist, a :exc:`AttributeError` is raised and the calling

@@ -41,30 +41,15 @@ from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
 from copy import deepcopy
 
 class Timestep(base.Timestep):
+        def _init_unitcell(self):
+                return {'x': None, 'y': None, 'z': None}
+
         @property
         def dimensions(self):
-                """unitcell dimensions (A, B, C, alpha, beta, gamma)
-
-                GRO::
-
-                  8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085
-
-                PDB::
-
-                  CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1
-
-                XTC: c.trajectory.ts._unitcell::
-
-                  array([[ 80.00515747,   0.        ,   0.        ],
-                         [  0.        ,  80.00515747,   0.        ],
-                         [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)
-                """
-                # unit cell line (from http://manual.gromacs.org/current/online/gro.html)
-                # v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)
-                # 0     1     2      3     4     5     6    7     8
+                """unitcell dimensions (A, B, C, alpha, beta, gamma)"""
                 x = self._unitcell['x']
                 y = self._unitcell['y']
-                z = self._unitcell['z']  # this ordering is correct! (checked it, OB)
+                z = self._unitcell['z']
                 return triclinic_box(x,y,z)
 
         @dimensions.setter

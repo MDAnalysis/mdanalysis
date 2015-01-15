@@ -132,7 +132,7 @@ class Timestep(object):
             self.numatoms = arg
             self._pos = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
             #self._pos = numpy.zeros((3, self.numatoms), numpy.float32)
-            self._unitcell = numpy.zeros((6), numpy.float32)
+            self._unitcell = self._init_unitcell()
         elif isinstance(arg, Timestep): # Copy constructor
             # This makes a deepcopy of the timestep
             self.frame = arg.frame
@@ -157,6 +157,12 @@ class Timestep(object):
         self._x = self._pos[:,0]
         self._y = self._pos[:,1]
         self._z = self._pos[:,2]
+
+    def _init_unitcell(self):
+        """Create custom datastructure for :attr:`_unitcell`."""
+        # override for other Timesteps
+        return numpy.zeros((6), numpy.float32)
+
     def __getitem__(self, atoms):
         if numpy.dtype(type(atoms)) == numpy.dtype(int):
             if (atoms < 0):

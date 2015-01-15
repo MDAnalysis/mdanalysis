@@ -43,6 +43,10 @@ class Timestep(base.Timestep):
         _ts_order_x = [0, 3, 4]
         _ts_order_y = [5, 1, 6]
         _ts_order_z = [7, 8, 2]
+
+        def _init_unitcell(self):                
+                return numpy.zeros(9, dtype=numpy.float32)
+                
         @property
         def dimensions(self):
                 """unitcell dimensions (A, B, C, alpha, beta, gamma)
@@ -73,8 +77,6 @@ class Timestep(base.Timestep):
         @dimensions.setter
         def dimensions(self, box):
                 x, y, z = triclinic_vectors(box)
-                # Unitcell not made properly on init!
-                self._unitcell = numpy.zeros(9, dtype=numpy.float32)
                 numpy.put(self._unitcell, self._ts_order_x, x)
                 numpy.put(self._unitcell, self._ts_order_y, y)
                 numpy.put(self._unitcell, self._ts_order_z, z)
