@@ -1388,7 +1388,7 @@ class TestDCDWriter(TestCase):
         try:
             with MDAnalysis.Writer(self.outfile, u.atoms.numberOfAtoms()) as W:
                 W.write(u.atoms)
-        except:
+        except AttributeError:  # misses __exit__
             raise AssertionError("DCDWriter: does not support with statement")
         w = MDAnalysis.Universe(PSF, self.outfile)
         assert_equal(w.trajectory.numframes, 1, "with_statement: single frame trajectory has wrong number of frames")
