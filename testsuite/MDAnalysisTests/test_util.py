@@ -23,10 +23,10 @@ from numpy import pi, sin, cos
 import MDAnalysis.core.util as util
 from MDAnalysis.tests.datafiles import PSF
 
-import StringIO
 import cStringIO
 import os.path
 import tempfile
+
 def check_parse_residue(rstring, residue):
     assert_equal(util.parse_residue(rstring), residue)
 
@@ -87,115 +87,6 @@ class TestIterable(TestCase):
         assert_equal(util.iterable("byte string"), False)
         assert_equal(util.iterable(u"unicode string"), False)
 
-class TestIsstream(TestCase):
-    def test_hasmethod(self):
-        obj = "random string"
-        assert_equal(util.hasmethod(obj, "rfind"), True)
-        assert_equal(util.hasmethod(obj, "bogusXXX"), False)
-    def test_string(self):
-        obj = PSF # filename
-        assert_equal(util.isstream(obj), False)
-    def test_list(self):
-        obj = [1,2,3]
-        assert_equal(util.isstream(obj), False)
-    def test_iterator(self):
-        obj = (i for i in xrange(3))
-        assert_equal(util.isstream(obj), False)
-    def test_file(self):
-        with open(PSF) as obj:
-            assert_equal(util.isstream(obj), True)
-    def test_cStringIO_read(self):
-        with open(PSF, "r") as f:
-            obj = cStringIO.StringIO(f.read())
-        assert_equal(util.isstream(obj), True)
-        obj.close()
-    def test_cStringIO_write(self):
-        obj = cStringIO.StringIO()
-        assert_equal(util.isstream(obj), True)
-        obj.close()
-    def test_StringIO_read(self):
-        with open(PSF, "r") as f:
-            obj = StringIO.StringIO(f)
-        assert_equal(util.isstream(obj), True)
-        obj.close()
-    def test_StringIO_write(self):
-        obj = StringIO.StringIO()
-        assert_equal(util.isstream(obj), True)
-        obj.close()
-
-class TestNamedStream(TestCase):
-    def setUp(self):
-        self.filename = PSF
-        self.numlines = 12326 # len(open(self.filename).readlines())
-        self.text = ["The Jabberwock, with eyes of flame,\n",
-                     "Came whiffling through the tulgey wood,\n",
-                     "And burbled as it came!"]
-        self.textname = "jabberwock.txt"
-        self.numtextlines = len(self.text)
-    def testClosing(self):
-        obj = cStringIO.StringIO("".join(self.text))
-        ns = util.NamedStream(obj, self.textname, close=True)
-        assert_equal(ns.closed, False)
-        ns.close()
-        assert_equal(ns.closed, True)
-    def testClosingForce(self):
-        obj = cStringIO.StringIO("".join(self.text))
-        ns = util.NamedStream(obj, self.textname)
-        assert_equal(ns.closed, False)
-        ns.close()
-        assert_equal(ns.closed, False)
-        ns.close(force=True)
-        assert_equal(ns.closed, True)
-    def testcStringIO_read(self):
-        obj = cStringIO.StringIO("".join(self.text))
-        ns = util.NamedStream(obj, self.textname)
-        assert_equal(ns.name, self.textname)
-        assert_equal(str(ns), self.textname)
-        assert_equal(len(ns.readlines()), self.numtextlines)
-        ns.reset()
-        assert_equal(len(ns.readlines()), self.numtextlines)
-        ns.close(force=True)
-    def testFile_read(self):
-        obj = open(self.filename, 'r')
-        ns = util.NamedStream(obj, self.filename)
-        assert_equal(ns.name, self.filename)
-        assert_equal(str(ns), self.filename)
-        assert_equal(len(ns.readlines()), self.numlines)
-        ns.reset()
-        assert_equal(len(ns.readlines()), self.numlines)
-        ns.close(force=True)
-    def testcStringIO_write(self):
-        obj = cStringIO.StringIO()
-        ns = util.NamedStream(obj, self.textname)
-        ns.writelines(self.text)
-        assert_equal(ns.name, self.textname)
-        assert_equal(str(ns), self.textname)
-        ns.reset()
-        assert_equal(len(ns.readlines()), len(self.text))
-        ns.reset()
-        assert_equal(ns.read(20), "".join(self.text)[:20])
-        ns.close(force=True)
-    def testFile_write(self):
-        fd, outfile = tempfile.mkstemp(suffix=".txt")
-        os.close(fd)
-        try:
-            obj = open(outfile, "w")
-            ns = util.NamedStream(obj, outfile, close=True)
-            ns.writelines(self.text)
-            ns.close()
-            text = open(outfile).readlines()
-
-            assert_equal(ns.name, outfile)
-            assert_equal(str(ns), outfile)
-            assert_equal(len(text), len(self.text))
-            assert_equal("".join(text), "".join(self.text))
-        finally:
-            ns.close()
-            obj.close()
-            try:
-                os.unlink(outfile)
-            except OSError:
-                pass
 
 class TestFilename(TestCase):
     def setUp(self):
