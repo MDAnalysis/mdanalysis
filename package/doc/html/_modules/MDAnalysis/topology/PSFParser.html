@@ -77,9 +77,9 @@
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
 <span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c">#               and contributors (see AUTHORS for the full list)</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
@@ -105,28 +105,24 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">as</span> <span class="nn">util</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">FileFormatWarning</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;MDAnalysis.topology.PSF&quot;</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="PSFParseError"><a class="viewcode-back" href="../../../documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParseError">[docs]</a><span class="k">class</span> <span class="nc">PSFParseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Signifies an error during parsing of a CHARMM PSF file.&quot;&quot;&quot;</span>
-    <span class="k">pass</span>
-</div>
 <div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../../documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Parse CHARMM/NAMD/XPLOR PSF_ file *filename*.</span>
 
 <span class="sd">    :Returns: MDAnalysis internal *structure* dict as defined here.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Open and check psf validity</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">psffile</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">psffile</span><span class="p">:</span>
         <span class="n">next_line</span> <span class="o">=</span> <span class="n">skip_line</span> <span class="o">=</span> <span class="n">psffile</span><span class="o">.</span><span class="n">next</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">header</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;PSF&quot;</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not valid PSF file (header = </span><span class="si">%r</span><span class="s">)&quot;</span><span class="p">,</span> <span class="n">psffile</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">header</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">PSFParseError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid PSF file&quot;</span> <span class="o">%</span> <span class="n">psffile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid PSF file&quot;</span> <span class="o">%</span> <span class="n">psffile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">header_flags</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="k">if</span> <span class="s">&quot;NAMD&quot;</span> <span class="ow">in</span> <span class="n">header_flags</span><span class="p">:</span>
             <span class="n">format</span> <span class="o">=</span> <span class="s">&quot;NAMD&quot;</span>        <span class="c"># NAMD/VMD</span>
@@ -138,7 +134,7 @@
         <span class="n">title</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;!NTITLE&quot;</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid PSF file&quot;</span><span class="p">,</span> <span class="n">psffile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">PSFParseError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid PSF file&quot;</span> <span class="o">%</span> <span class="n">psffile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid PSF file&quot;</span> <span class="o">%</span> <span class="n">psffile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">psfremarks</span> <span class="o">=</span> <span class="p">[</span><span class="n">next_line</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">title</span><span class="p">[</span><span class="mi">0</span><span class="p">]))]</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;PSF file </span><span class="si">%r</span><span class="s">: format </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">psffile</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">format</span><span class="p">)</span>
 
@@ -156,7 +152,7 @@
             <span class="c"># Make sure the section type matches the desc</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">sect_type</span> <span class="o">==</span> <span class="n">desc</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Expected section </span><span class="si">%r</span><span class="s"> but found </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">sect_type</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="n">PSFParseError</span><span class="p">(</span><span class="s">&quot;Expected section {0} but found {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">sect_type</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Expected section {0} but found {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">sect_type</span><span class="p">))</span>
             <span class="c"># Now figure out how many lines to read</span>
             <span class="n">numlines</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">num</span><span class="p">)</span><span class="o">/</span><span class="n">per_line</span><span class="p">))</span>
             <span class="c"># Too bad I don&#39;t have generator expressions [said Naveen in 2005]</span>
@@ -182,7 +178,7 @@
             <span class="c"># Reached the end of the file before we expected</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">structure</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&quot;_atoms&quot;</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;The PSF file didn&#39;t contain the minimum required section of NATOM&quot;</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="n">PSFParseError</span><span class="p">(</span><span class="s">&quot;The PSF file didn&#39;t contain the minimum required section of NATOM&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The PSF file didn&#39;t contain the minimum required section of NATOM&quot;</span><span class="p">)</span>
 
     <span class="c"># Who cares about the rest</span>
     <span class="k">return</span> <span class="n">structure</span>
@@ -326,10 +322,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

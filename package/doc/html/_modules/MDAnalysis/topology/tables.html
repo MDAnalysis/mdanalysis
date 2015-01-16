@@ -73,13 +73,13 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.topology.tables</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
 <span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c">#               and contributors (see AUTHORS for the full list)</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
@@ -145,12 +145,15 @@
 <span class="c">#: with :func:`MDAnalysis.topology.core.guess_atom_element`.</span></div>
 <span class="n">TABLE_ATOMELEMENTS</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
 <span class="s"># translation of atomnames to types/element</span>
-<span class="s"># based on CHARMM and AMBER usage with a little bit of GROMOS</span>
+<span class="s"># based on CHARMM and AMBER usage with a little bit of GROMOS (and PROPKA)</span>
 <span class="s"># NOTE: CL might be ambiguous and is interpreted as chloride!</span>
 
 <span class="s"># --------- ------------------</span>
 <span class="s"># atomname   element</span>
 <span class="s"># --------- ------------------</span>
+
+<span class="s"># Bromide</span>
+<span class="s">BR           BR</span>
 
 <span class="s"># Calcium</span>
 <span class="s">CAL          CA</span>
@@ -166,8 +169,12 @@
 <span class="s">CL           CL</span>
 <span class="s">CL-          CL</span>
 
+<span class="s"># Iodide</span>
+<span class="s">IOD          I</span>
+
 <span class="s"># Iron</span>
 <span class="s">FE           FE</span>
+<span class="s">FE2          FE</span>
 
 <span class="s"># Lithium</span>
 <span class="s">LIT          LI</span>
@@ -186,6 +193,7 @@
 <span class="s">##NE           NE</span>
 
 <span class="s"># Potassium</span>
+<span class="s">K            K</span>
 <span class="s">POT          K</span>
 <span class="s">K+           K</span>
 <span class="s">QK           K</span>
@@ -389,10 +397,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

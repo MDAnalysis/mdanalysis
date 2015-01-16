@@ -5,17 +5,19 @@
  Selection Commands
 ====================
 
-Once you have the :meth:`~MDAnalysis.core.Universe` object, you can select
-atoms (using a syntax very similar to `CHARMM's atom selection syntax`_)::
+Once you have the :meth:`~MDAnalysis.core.AtomGroup.Universe` object, you can
+select atoms (using a syntax very similar to `CHARMM's atom selection
+syntax`_)::
 
   >>> kalp = universe.selectAtoms("segid KALP")
 
 .. _`CHARMM's atom selection syntax`: 
    http://www.charmm.org/documentation/c37b1/select.html
 
-:meth:`MDAnalysis.core.Universe.selectAtoms` returns a
-:class:`MDAnalysis.core.AtomGroup.AtomGroup`, so you can use all the methods
-defined for AtomGroups on them. Selections always return an AtomGroup with
+The :meth:`~MDAnalysis.core.AtomGroup.Universe.selectAtoms` of a
+:class:`~MDAnalysis.core.AtomGroup.Universe` returns a
+:class:`~MDAnalysis.core.AtomGroup.AtomGroup`, so you can use all the methods
+defined for AtomGroups on them. Selections always return an :class:`AtomGroup` with
 atoms sorted according to their index in the topology (this is to ensure that
 there aren't any duplicates, which can happen with complicated selections).
 

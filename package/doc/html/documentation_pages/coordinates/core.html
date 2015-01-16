@@ -204,8 +204,11 @@ provided.</p>
 <dt id="MDAnalysis.coordinates.core.get_writer_for">
 <tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">get_writer_for</tt><big>(</big><em>filename=None</em>, <em>format='DCD'</em>, <em>multiframe=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/core.html#get_writer_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.core.get_writer_for" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an appropriate trajectory or frame writer class for <em>filename</em>.</p>
-<p>The format is determined by the <em>format</em> argument or the extension
-of <em>filename</em>. The default is to return a dcd writer (<em>format</em> = &#8216;dcd&#8217;).</p>
+<p>The format is determined by the <em>format</em> argument or the extension of
+<em>filename</em>. The default is to return a dcd writer (<em>format</em> = &#8216;dcd&#8217;). If
+the <em>filename</em> is not provided or if it is something like a
+<tt class="xref py py-class docutils literal"><span class="pre">cStringIO.StringIO</span></tt> instance then the <em>format</em> argument must be
+used.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -238,10 +241,12 @@ behaviour.</p>
 <dl class="function">
 <dt id="MDAnalysis.coordinates.core.guess_format">
 <tt class="descclassname">MDAnalysis.coordinates.core.</tt><tt class="descname">guess_format</tt><big>(</big><em>filename</em>, <em>format=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/core.html#guess_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.core.guess_format" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the type of coordinate file <em>filename</em>.</p>
-<p>The current heuristic simply looks at the filename extension but
-more complicated probes could be implemented here or in the
-individual packages (e.g. as static methods).</p>
+<dd><p>Returns the type of file <em>filename</em>.</p>
+<p>The current heuristic simply looks at the filename extension but more
+complicated probes could be implemented here or in the individual packages
+(e.g. as static methods). <em>filename</em> can also be a stream, in which case
+<em>filename.name</em> is looked at for a hint to the format if <em>format</em> is not
+provided.</p>
 <p>If <em>format</em> is supplied then it overrides the auto detection.</p>
 </dd></dl>
 
@@ -354,10 +359,10 @@ B[1] = second vector, B[2] third box vector.</p>
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

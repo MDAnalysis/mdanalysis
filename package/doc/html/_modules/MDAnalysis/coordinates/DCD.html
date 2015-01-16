@@ -73,13 +73,13 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.coordinates.DCD</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
-<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
 <span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c">#               and contributors (see AUTHORS for the full list)</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
@@ -104,10 +104,50 @@
 <span class="kn">import</span> <span class="nn">numpy</span>
 
 <span class="kn">import</span> <span class="nn">base</span>
-<span class="kn">from</span> <span class="nn">base</span> <span class="kn">import</span> <span class="n">Timestep</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis.core</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+
+<span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+    <span class="c">#: indices into :attr:`Timestep._unitcell`` to pull out</span>
+    <span class="c">#: ``[A, B, C, alpha, beta, gamma]``.</span>
+    <span class="n">_ts_order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)</span>
+
+<span class="sd">        lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and</span>
+<span class="sd">        angles are in degrees.</span>
+
+<span class="sd">        :attr:`dimensions` is read-only because it transforms the</span>
+<span class="sd">        actual format of the unitcell (which differs between different</span>
+<span class="sd">        trajectory formats) to the representation described here,</span>
+<span class="sd">        which is used everywhere in MDAnalysis.</span>
+
+<span class="sd">        .. versionchanged:: 0.8.2</span>
+<span class="sd">           unitcell is interpreted as ``[A, gamma, B, beta, alpha, C]`` instead of</span>
+<span class="sd">           ``[A, alpha, B, beta, gamma, C]`` (see `Issue 187`_ for a discussion)</span>
+
+<span class="sd">        .. _Issue 187: https://code.google.com/p/mdanalysis/issues/detail?id=187</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Layout of unitcell is [A, alpha, B, beta, gamma, C] --- (originally CHARMM DCD)</span>
+        <span class="c"># override for other formats; this strange ordering is kept for historical reasons</span>
+        <span class="c"># (the user should not need concern themselves with this)</span>
+        <span class="c">## orig MDAnalysis 0.8.1 and dcd.c (~2004)</span>
+        <span class="c">##return numpy.take(self._unitcell, [0,2,5,1,3,4])</span>
+
+        <span class="c"># recent NAMD (&gt;2.5?), see Issue 187</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">)</span>
+
+    <span class="nd">@dimensions.setter</span>
+    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set unitcell with (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)</span>
+
+<span class="sd">        .. versionadded:: 0.8.2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DCDWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter">[docs]</a><span class="k">class</span> <span class="nc">DCDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Writer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Writes to a DCD file</span>
@@ -220,9 +260,11 @@
             <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>  <span class="c"># possibly make a copy to avoid changing the trajectory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_frame</span><span class="p">(</span><span class="n">pos</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">unitcell</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frames_written</span> <span class="o">+=</span> <span class="mi">1</span></div>
-<div class="viewcode-block" id="DCDWriter.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">_ts_order</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Read dimensions from timestep *ts* and return appropriate unitcell</span>
-<span class="sd">           as [A,alpha,B,beta,gamma,C]&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DCDWriter.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">_ts_order</span><span class="o">=</span><span class="n">Timestep</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read dimensions from timestep *ts* and return appropriate unitcell.</span>
+
+<span class="sd">        .. SeeAlso:: :class:`Timestep`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">unitcell</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">DCDWriter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
         <span class="c"># unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level</span>
         <span class="c"># DCD routines</span>
@@ -272,7 +314,7 @@
         <span class="c"># Hack : test here... (but should be fixed in dcd.c)</span>
         <span class="n">stats</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dcdfilename</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">stats</span><span class="o">.</span><span class="n">st_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ENODATA</span><span class="p">,</span><span class="s">&quot;DCD file is zero size&quot;</span><span class="p">,</span><span class="n">dcdfilename</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span><span class="s">&quot;DCD file is zero size&quot;</span><span class="p">,</span><span class="n">dcdfilename</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dcdfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dcdfilename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="mi">0</span>
@@ -486,10 +528,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

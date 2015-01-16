@@ -73,7 +73,7 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.analysis.hbonds</h1><div class="highlight"><pre>
-<span class="c"># -*- encoding: utf-8 -*-</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
 <span class="c"># Hydrogen Bonding Analysis</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds`</span>
@@ -445,7 +445,7 @@
                         <span class="n">N</span><span class="o">=</span><span class="mf">1.31</span><span class="p">,</span> <span class="n">O</span><span class="o">=</span><span class="mf">1.31</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="mf">1.58</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="mf">1.55</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="o">=</span><span class="s">&#39;protein&#39;</span><span class="p">,</span> <span class="n">selection2</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span> <span class="n">selection1_type</span><span class="o">=</span><span class="s">&#39;both&#39;</span><span class="p">,</span>
-                 <span class="n">update_selection1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">update_selection2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">filter_first</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                 <span class="n">update_selection1</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">update_selection2</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">filter_first</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">distance_type</span><span class="o">=</span><span class="s">&#39;hydrogen&#39;</span><span class="p">,</span>
                  <span class="n">distance</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">,</span>
                  <span class="n">forcefield</span><span class="o">=</span><span class="s">&#39;CHARMM27&#39;</span><span class="p">,</span> <span class="n">donors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">acceptors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">start</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -486,7 +486,7 @@
 <span class="sd">          *distance*</span>
 <span class="sd">            Distance cutoff for hydrogen bonds; only interactions with a H-A distance</span>
 <span class="sd">            &lt;= *distance* (and the appropriate D-H-A angle, see *angle*) are</span>
-<span class="sd">            recorded. [3.0</span>
+<span class="sd">            recorded. (Note: *distance_type* can change this to the D-A distance.) [3.0]</span>
 <span class="sd">          *angle*</span>
 <span class="sd">            Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of</span>
 <span class="sd">            180º.  A hydrogen bond is only recorded if the D-H-A angle is</span>
@@ -526,6 +526,11 @@
 <span class="sd">            always give the correct answer but &quot;heuristic&quot; is faster,</span>
 <span class="sd">            especially when the donor list is updated each</span>
 <span class="sd">            for each frame. [&quot;distance&quot;]</span>
+<span class="sd">          *distance_type*</span>
+<span class="sd">            Measure hydrogen bond lengths between donor and acceptor heavy</span>
+<span class="sd">            attoms (&quot;heavy&quot;) or between donor hydrogen and acceptor heavy</span>
+<span class="sd">            atom (&quot;hydrogen&quot;). If using &quot;heavy&quot; then one should set the *distance*</span>
+<span class="sd">            cutoff to a higher value such as 3.5 Å. [&quot;hydrogen&quot;]</span>
 
 <span class="sd">        The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.</span>
 
@@ -548,6 +553,11 @@
 <span class="sd">           ``True`` (see `Issue 138`_). Set to ``False`` if your selections only</span>
 <span class="sd">           need to be determined once (will increase performance).</span>
 
+<span class="sd">        .. versionchanged:: 0.8.2</span>
+<span class="sd">           New keyword *distance_type* to select between calculation between</span>
+<span class="sd">           heavy atoms or hydrogen-acceptor. It defaults to the previous</span>
+<span class="sd">           behavior (i.e. &quot;hydrogen&quot;).</span>
+
 <span class="sd">        .. _`Issue 138`: http://code.google.com/p/mdanalysis/issues/detail?id=138</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_get_bonded_hydrogens_algorithms</span> <span class="o">=</span> <span class="p">{</span>
@@ -567,6 +577,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">update_selection2</span> <span class="o">=</span> <span class="n">update_selection2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_first</span> <span class="o">=</span> <span class="n">filter_first</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">=</span> <span class="n">distance_type</span>  <span class="c"># note: everything except &#39;heavy&#39; will give the default behavior</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">traj_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="bp">None</span><span class="p">,</span> <span class="c"># internal frames are 0 based</span>
                                 <span class="n">stop</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stop</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="bp">None</span><span class="p">,</span>
@@ -577,6 +588,7 @@
             <span class="n">donors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">acceptors</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">acceptors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forcefield</span> <span class="o">=</span> <span class="n">forcefield</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">donors</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_DONORS</span><span class="p">[</span><span class="n">forcefield</span><span class="p">])</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">donors</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_ACCEPTORS</span><span class="p">[</span><span class="n">forcefield</span><span class="p">])</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">acceptors</span><span class="p">))</span>
 
@@ -594,6 +606,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_selection_1</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_selection_2</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>  <span class="c"># per-frame debugging output?</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_parameters</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_log_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log important parameters to the logfile.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;HBond analysis: selection1 = </span><span class="si">%r</span><span class="s"> (update: </span><span class="si">%r</span><span class="s">)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_selection1</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;HBond analysis: selection2 = </span><span class="si">%r</span><span class="s"> (update: </span><span class="si">%r</span><span class="s">)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_selection2</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;HBond analysis: criterion: donor </span><span class="si">%s</span><span class="s"> atom and acceptor atom distance &lt;= </span><span class="si">%.3f</span><span class="s"> A&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;HBond analysis: criterion: angle D-H-A &gt;= </span><span class="si">%.3f</span><span class="s"> degrees&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;HBond analysis: force field </span><span class="si">%s</span><span class="s"> to guess donor and acceptor names&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forcefield</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;HBond analysis: bonded hydrogen detection algorithm: </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_hydrogens</span><span class="p">)</span>
 
 <div class="viewcode-block" id="HydrogenBondAnalysis._get_bonded_hydrogens"><a class="viewcode-back" href="../../../documentation_pages/analysis/hbonds.html#MDAnalysis.analysis.hbonds.HydrogenBondAnalysis._get_bonded_hydrogens">[docs]</a>    <span class="k">def</span> <span class="nf">_get_bonded_hydrogens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find hydrogens bonded to *atom*.</span>
@@ -815,7 +838,8 @@
                         <span class="n">res</span> <span class="o">=</span> <span class="n">ns_acceptors</span><span class="o">.</span><span class="n">search_list</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">h</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
                         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
                             <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_angle</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
-                            <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_eucl_distance</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+                            <span class="n">donor_atom</span> <span class="o">=</span> <span class="n">h</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">!=</span> <span class="s">&#39;heavy&#39;</span> <span class="k">else</span> <span class="n">d</span>
+                            <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_eucl_distance</span><span class="p">(</span><span class="n">donor_atom</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
                             <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="ow">and</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">:</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;S1-D: </span><span class="si">%s</span><span class="s"> &lt;-&gt; S2-A: </span><span class="si">%s</span><span class="s"> </span><span class="si">%f</span><span class="s"> A, </span><span class="si">%f</span><span class="s"> DEG&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">number</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">number</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
                                 <span class="c">#self.logger_debug(&quot;S1-D: %r &lt;-&gt; S2-A: %r %f A, %f DEG&quot; % (h, a, dist, angle))</span>
@@ -834,7 +858,8 @@
                                          <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">number</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">number</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">already_found</span><span class="p">):</span>
                                 <span class="k">continue</span>
                             <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_angle</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
-                            <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_eucl_distance</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+                            <span class="n">donor_atom</span> <span class="o">=</span> <span class="n">h</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">!=</span> <span class="s">&#39;heavy&#39;</span> <span class="k">else</span> <span class="n">d</span>
+                            <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_eucl_distance</span><span class="p">(</span><span class="n">donor_atom</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
                             <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="ow">and</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">:</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;S1-A: </span><span class="si">%s</span><span class="s"> &lt;-&gt; S2-D: </span><span class="si">%s</span><span class="s"> </span><span class="si">%f</span><span class="s"> A, </span><span class="si">%f</span><span class="s"> DEG&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">number</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">number</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span><span class="p">))</span>
                                 <span class="c">#self.logger_debug(&quot;S1-A: %r &lt;-&gt; S2-D: %r %f A, %f DEG&quot; % (a, h, dist, angle))</span>
@@ -1161,10 +1186,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

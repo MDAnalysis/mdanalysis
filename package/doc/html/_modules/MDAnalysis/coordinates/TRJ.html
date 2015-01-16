@@ -74,12 +74,12 @@
             
   <h1>Source code for MDAnalysis.coordinates.TRJ</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
-<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
 <span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c">#               and contributors (see AUTHORS for the full list)</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
@@ -298,7 +298,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
 
         <span class="nd">@property</span>
-<div class="viewcode-block" id="Timestep.dimensions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.Timestep.dimensions">[docs]</a>        <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="sd">&quot;&quot;&quot;unitcell dimensions (`A, B, C, alpha, beta, gamma`)</span>
 
 <span class="sd">                - `A, B, C` are the lengths of the primitive cell vectors `e1, e2, e3`</span>
@@ -314,6 +314,10 @@
 <span class="sd">                &quot;&quot;&quot;</span>
                 <span class="c"># Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span>
+
+        <span class="nd">@dimensions.setter</span>
+<div class="viewcode-block" id="Timestep.dimensions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.Timestep.dimensions">[docs]</a>        <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">box</span>
 </div></div>
 <div class="viewcode-block" id="TRJReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.TRJReader">[docs]</a><span class="k">class</span> <span class="nc">TRJReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;AMBER trajectory reader.</span>
@@ -478,17 +482,16 @@
 
         <span class="k">def</span> <span class="nf">_read_trj_numframes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
-                <span class="c"># the number of lines in the XYZ file will be 2 greater than the number of atoms</span>
-                <span class="n">linesPerFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">*</span> <span class="mf">3.</span> <span class="o">/</span> <span class="mf">10.</span>
 
                 <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="c"># step through the file (assuming xyzfile has an iterator)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="p">:</span>
-                        <span class="n">counter</span> <span class="o">=</span> <span class="n">counter</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="c"># need to check this is an integer!</span>
-                <span class="n">numframes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">counter</span><span class="o">/</span><span class="n">linesPerFrame</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">numframes</span>
+                <span class="k">try</span><span class="p">:</span>
+                        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+                                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
+
+                <span class="k">return</span> <span class="n">counter</span>
 
         <span class="nd">@property</span>
         <span class="k">def</span> <span class="nf">numatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -514,7 +517,7 @@
 
 <div class="viewcode-block" id="TRJReader.open_trajectory"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.TRJReader.open_trajectory">[docs]</a>        <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="sd">&quot;&quot;&quot;Open the trajectory for reading and load first frame.&quot;&quot;&quot;</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c"># ignore first line</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">80</span><span class="p">:</span>
                         <span class="c"># Chimera uses this check</span>
@@ -542,12 +545,11 @@
 </div>
         <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># start at 0 so that the first frame becomes 1</span>
                 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
                         <span class="k">try</span><span class="p">:</span>
                                 <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
                         <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
                                 <span class="k">raise</span> <span class="ne">StopIteration</span>
 
 </div>
@@ -722,7 +724,7 @@
                                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
                                         <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span>
                         <span class="k">return</span> <span class="n">iterNETCDF</span><span class="p">()</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Type {0} of argument {1} not supported&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">i</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Type {0} of argument {1} not supported&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="p">),</span> <span class="n">frame</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="NCDFReader.__iter__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFReader.__iter__">[docs]</a>        <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="sd">&quot;&quot;&quot;Iterate over the whole trajectory&quot;&quot;&quot;</span>
@@ -1023,10 +1025,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

@@ -114,14 +114,16 @@
             
   <div class="section" id="selection-commands">
 <span id="selection-commands-label"></span><h1>2. Selection Commands<a class="headerlink" href="#selection-commands" title="Permalink to this headline">¶</a></h1>
-<p>Once you have the <tt class="xref py py-meth docutils literal"><span class="pre">Universe()</span></tt> object, you can select
-atoms (using a syntax very similar to <a class="reference external" href="http://www.charmm.org/documentation/c37b1/select.html">CHARMM&#8217;s atom selection syntax</a>):</p>
+<p>Once you have the <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-meth docutils literal"><span class="pre">Universe()</span></tt></a> object, you can
+select atoms (using a syntax very similar to <a class="reference external" href="http://www.charmm.org/documentation/c37b1/select.html">CHARMM&#8217;s atom selection
+syntax</a>):</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">kalp</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid KALP&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.Universe.selectAtoms()</span></tt> returns a
-<a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a>, so you can use all the methods
-defined for AtomGroups on them. Selections always return an AtomGroup with
+<p>The <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.selectAtoms" title="MDAnalysis.core.AtomGroup.Universe.selectAtoms"><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt></a> of a
+<a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> returns a
+<a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>, so you can use all the methods
+defined for AtomGroups on them. Selections always return an <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt> with
 atoms sorted according to their index in the topology (this is to ensure that
 there aren&#8217;t any duplicates, which can happen with complicated selections).</p>
 <p>One can group subselections using parentheses:</p>
@@ -470,10 +472,10 @@ might expect:</p>
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

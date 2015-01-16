@@ -77,9 +77,9 @@
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
 <span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c">#               and contributors (see AUTHORS for the full list)</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
@@ -153,14 +153,14 @@
 <span class="sd">       leaflet0.residues.atoms</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selectionstring</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selectionstring</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize from a *universe* or pdb file.</span>
 
 <span class="sd">        :Arguments:</span>
 <span class="sd">             *universe*</span>
 <span class="sd">                 :class:`MDAnalysis.Universe` or a PDB file name.</span>
-<span class="sd">             *selectionstring*</span>
-<span class="sd">                 :class:`MDAnalysis.core.AtomGroup.AtomGroup` or a </span>
+<span class="sd">             *selection*</span>
+<span class="sd">                 :class:`MDAnalysis.core.AtomGroup.AtomGroup` or a</span>
 <span class="sd">                 :meth:`MDAnalysis.Universe.selectAtoms` selection string</span>
 <span class="sd">                 for atoms that define the lipid head groups, e.g.</span>
 <span class="sd">                 universe.atoms.PO4 or &quot;name PO4&quot; or &quot;name P*&quot;</span>
@@ -171,6 +171,11 @@
 <span class="sd">             *pbc*</span>
 <span class="sd">                 take periodic boundary conditions into account (only works</span>
 <span class="sd">                 for orthorhombic boxes) [``False``]</span>
+<span class="sd">             *sparse*</span>
+<span class="sd">                 ``None``: use fastest possible routine; ``True``: use slow</span>
+<span class="sd">                 sparse matrix implementation (for large systems); ``False``:</span>
+<span class="sd">                 use fast :func:`~MDAnalysis.analysis.distances.distance_array`</span>
+<span class="sd">                 implementation [``None``].</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">universe</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">asUniverse</span><span class="p">(</span><span class="n">universe</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
@@ -180,6 +185,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectionstring</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span> <span class="o">=</span> <span class="n">pbc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sparse</span> <span class="o">=</span> <span class="n">sparse</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_graph</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_init_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
@@ -200,14 +206,27 @@
             <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">box</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
-        <span class="c"># this works for small systems</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">adj</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">contact_matrix</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span><span class="n">cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span><span class="n">returntype</span><span class="o">=</span><span class="s">&quot;numpy&quot;</span><span class="p">,</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-        <span class="c"># but use a sparse matrix method for larger systems for memory reasons</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;N x N matrix too big - switching to sparse matrix method (works fine, but is currently rather slow)&#39;</span> <span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span> <span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="o">.</span><span class="n">positions</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="c"># only try distance array</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">adj</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">contact_matrix</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span><span class="n">cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span><span class="n">returntype</span><span class="o">=</span><span class="s">&quot;numpy&quot;</span><span class="p">,</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;N x N matrix too big, use sparse=True or sparse=None&#39;</span> <span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span> <span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">raise</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="c"># only try sparse</span>
             <span class="n">adj</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">contact_matrix</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span><span class="n">cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span><span class="n">returntype</span><span class="o">=</span><span class="s">&quot;sparse&quot;</span><span class="p">,</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># use distance_array and fall back to sparse matrix</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c"># this works for small-ish systems and depends on system memory</span>
+                <span class="n">adj</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">contact_matrix</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span><span class="n">cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span><span class="n">returntype</span><span class="o">=</span><span class="s">&quot;numpy&quot;</span><span class="p">,</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="c"># but use a sparse matrix method for larger systems for memory reasons</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;N x N matrix too big - switching to sparse matrix method (works fine, but is currently rather slow)&#39;</span> <span class="p">,</span>
+                              <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span> <span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">adj</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">contact_matrix</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span><span class="n">cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span><span class="n">returntype</span><span class="o">=</span><span class="s">&quot;sparse&quot;</span><span class="p">,</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">NX</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -349,10 +368,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

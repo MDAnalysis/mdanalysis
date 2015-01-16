@@ -97,8 +97,6 @@ partial charges and masses from the PRMTOP file.</p>
 <p>The format is defined in <a class="reference external" href="http://ambermd.org/formats.html#topology">PARM parameter/topology file specification</a>.
 The reader tries to detect if it is a newer (AMBER 12?) file format
 by looking for the flag &#8220;ATOMIC_NUMBER&#8221;.</p>
-<p>The parser raises a <tt class="xref py py-exc docutils literal"><span class="pre">TOPParserError</span></tt> if it fails to read
-the topology file.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The Amber charge is converted to electron charges as used in
@@ -108,12 +106,6 @@ by 18.2223.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.7.6: </span>parses both amber10 and amber12 formats</p>
 </div>
-<dl class="exception">
-<dt id="MDAnalysis.topology.TOPParser.TOPParseError">
-<em class="property">exception </em><tt class="descclassname">MDAnalysis.topology.TOPParser.</tt><tt class="descname">TOPParseError</tt><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParseError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParseError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Signifies an error during parsing of a Amber PRMTOP file.</p>
-</dd></dl>
-
 <dl class="function">
 <dt id="MDAnalysis.topology.TOPParser.parse">
 <tt class="descclassname">MDAnalysis.topology.TOPParser.</tt><tt class="descname">parse</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.parse" title="Permalink to this definition">¶</a></dt>
@@ -160,10 +152,10 @@ by 18.2223.</p>
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

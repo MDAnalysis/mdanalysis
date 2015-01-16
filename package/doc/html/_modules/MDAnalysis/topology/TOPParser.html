@@ -77,9 +77,9 @@
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
 <span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c">#               and contributors (see AUTHORS for the full list)</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
@@ -101,9 +101,6 @@
 <span class="sd">The reader tries to detect if it is a newer (AMBER 12?) file format</span>
 <span class="sd">by looking for the flag &quot;ATOMIC_NUMBER&quot;.</span>
 
-<span class="sd">The parser raises a :exc:`TOPParserError` if it fails to read</span>
-<span class="sd">the topology file.</span>
-
 <span class="sd">.. Note::</span>
 
 <span class="sd">   The Amber charge is converted to electron charges as used in</span>
@@ -122,35 +119,31 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis.core.units</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core</span> <span class="kn">import</span> <span class="n">util</span>
 
-<div class="viewcode-block" id="TOPParseError"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParseError">[docs]</a><span class="k">class</span> <span class="nc">TOPParseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Signifies an error during parsing of a Amber PRMTOP file.&quot;&quot;&quot;</span>
-    <span class="k">pass</span>
-</div>
 <div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Parse Amber PRMTOP topology file *filename*.</span>
 
 <span class="sd">    :Returns: MDAnalysis internal *structure* dict.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">formatversion</span> <span class="o">=</span> <span class="mi">10</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">topfile</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">topfile</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">topfile</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%F</span><span class="s">LAG ATOMIC_NUMBER&quot;</span><span class="p">):</span>
                 <span class="n">formatversion</span> <span class="o">=</span> <span class="mi">12</span>
                 <span class="k">break</span>
     <span class="c"># Open and check top validity</span>
     <span class="c">######  Reading header info POINTERS  #################</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">topfile</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">topfile</span><span class="p">:</span>
         <span class="n">next_line</span> <span class="o">=</span> <span class="n">skip_line</span> <span class="o">=</span> <span class="n">topfile</span><span class="o">.</span><span class="n">next</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">header</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;%VE&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TOPParseError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid TOP file&quot;</span> <span class="o">%</span> <span class="n">topfile</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid TOP file&quot;</span> <span class="o">%</span> <span class="n">topfile</span><span class="p">)</span>
         <span class="n">title</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;TITLE&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">TOPParseError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid TOP file&quot;</span> <span class="o">%</span> <span class="n">topfile</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is not a valid TOP file&quot;</span> <span class="o">%</span> <span class="n">topfile</span><span class="p">)</span>
         <span class="k">while</span> <span class="n">header</span><span class="p">[:</span><span class="mi">14</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;</span><span class="si">%F</span><span class="s">LAG POINTERS&#39;</span><span class="p">:</span>
             <span class="n">header</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">next_line</span><span class="p">()</span>
-        <span class="n">topremarks</span> <span class="o">=</span> <span class="p">[</span><span class="n">next_line</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
+        <span class="n">topremarks</span> <span class="o">=</span> <span class="p">[</span><span class="n">next_line</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
         <span class="n">sys_info</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">topremarks</span><span class="p">:</span>
             <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
@@ -238,7 +231,7 @@
             <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">[</span><span class="n">formatversion</span><span class="p">]:</span>
                  <span class="n">parse_sec</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TOPParseError</span><span class="p">(</span><span class="s">&quot;The TOP file didn&#39;t contain the minimum required section of ATOM_NAME&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The TOP file didn&#39;t contain the minimum required section of ATOM_NAME&quot;</span><span class="p">)</span>
         <span class="c"># Completing info respoint to include all atoms in last resid</span>
         <span class="n">structure</span><span class="p">[</span><span class="s">&quot;_respoint&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sys_info</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">structure</span><span class="p">[</span><span class="s">&quot;_respoint&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">structure</span><span class="p">[</span><span class="s">&quot;_respoint&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
@@ -290,14 +283,12 @@
     <span class="n">y</span> <span class="o">=</span> <span class="n">lines</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%F</span><span class="s">ORMAT(&quot;</span><span class="p">)</span>
     <span class="n">y</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot;)&quot;</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">FORTRANReader</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-    <span class="n">liz</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">numlines</span><span class="p">):</span>
         <span class="n">l</span> <span class="o">=</span> <span class="n">lines</span><span class="p">()</span>
         <span class="c"># Subtract 1 from each number to ensure zero-indexing for the atoms</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">entries</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">entries</span><span class="p">)):</span>
                 <span class="n">section</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
-                <span class="n">liz</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">except</span><span class="p">:</span>
                 <span class="k">continue</span>
     <span class="n">structure</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">section</span>
@@ -358,10 +349,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

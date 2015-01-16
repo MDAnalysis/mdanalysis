@@ -74,12 +74,12 @@
             
   <h1>Source code for MDAnalysis.coordinates.PQR</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8; -*-</span>
-<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
 <span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c">#               and contributors (see AUTHORS for the full list)</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
@@ -136,7 +136,7 @@
 <span class="sd">*charge*</span>
 <span class="sd">    A float which provides the atomic charge (in electrons).</span>
 <span class="sd">*radius*</span>
-<span class="sd">    A float which provides the atomic radius (in Ã…).</span>
+<span class="sd">    A float which provides the atomic radius (in Å).</span>
 
 <span class="sd">Clearly, this format can deviate wildly from PDB_ due to the use of whitespaces</span>
 <span class="sd">rather than specific column widths and alignments. This deviation can be</span>
@@ -206,9 +206,9 @@
                     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                         <span class="c"># files without the chainID</span>
                         <span class="n">recordName</span><span class="p">,</span><span class="n">serial</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">resName</span><span class="p">,</span><span class="n">resSeq</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">charge</span><span class="p">,</span><span class="n">radius</span> <span class="o">=</span> <span class="n">fields</span>
-                        <span class="n">chainID</span> <span class="o">=</span> <span class="s">&#39;A&#39;</span>
+                        <span class="n">chainID</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
                     <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">z</span><span class="p">)))</span>
-                    <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">serial</span><span class="p">),</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">resSeq</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">charge</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">),</span><span class="n">segID</span><span class="p">))</span>
+                    <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">serial</span><span class="p">),</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">resSeq</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">charge</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">),</span> <span class="n">segID</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">unitcell</span>
@@ -233,6 +233,17 @@
         <span class="sd">&quot;&quot;&quot;Return an array of charges in atom order.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">charge</span>
 </div>
+<div class="viewcode-block" id="PQRReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a PQRWriter for *filename*.</span>
+
+<span class="sd">        :Arguments:</span>
+<span class="sd">           *filename*</span>
+<span class="sd">              filename of the output PQR file</span>
+
+<span class="sd">        :Returns: :class:`PQRWriter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PQRWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>  <span class="c"># Just a single frame</span>
         <span class="k">raise</span> <span class="ne">StopIteration</span>
@@ -244,8 +255,114 @@
 
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># PQR file only contains a single frame</span>
-        <span class="k">raise</span> <span class="ne">IOError</span></div>
-</pre></div>
+        <span class="k">raise</span> <span class="ne">IOError</span>
+</div>
+<div class="viewcode-block" id="PQRWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRWriter">[docs]</a><span class="k">class</span> <span class="nc">PQRWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Writer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write a single coordinate frame in whitespace-separated PQR format.</span>
+
+<span class="sd">    Charges (&quot;Q&quot;) are taken from the</span>
+<span class="sd">    :attr:`MDAnalysis.core.AtomGroup.Atom.charge` attribute while</span>
+<span class="sd">    radii are obtaine from the</span>
+<span class="sd">    :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.</span>
+
+<span class="sd">    * If the segid is &#39;SYSTEM&#39; then it will be set to the empty</span>
+<span class="sd">      string. Otherwise the first letter will be used as the chain ID.</span>
+<span class="sd">    * The serial number always starts at 1 and increments sequentially</span>
+<span class="sd">      for the atoms.</span>
+
+<span class="sd">    The output format is similar to ``pdb2pqr --whitespace``.</span>
+
+<span class="sd">    .. versionadded:: 0.8.2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;PQR&#39;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>
+
+    <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;ATOM_nochain&#39;</span><span class="p">:</span>
+           <span class="s">&quot;ATOM {0:6d} {1:&lt;4}  {2:&lt;3} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+           <span class="c"># serial, atomName, residueName, (chainID), residueNumber, XYZ, charge, radius</span>
+           <span class="s">&#39;ATOM_chain&#39;</span><span class="p">:</span>
+           <span class="s">&quot;ATOM {0:6d} {1:&lt;4}  {2:&lt;3} {3:1.1} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+           <span class="c"># serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius</span>
+           <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set up a PQRWriter with full whitespace separation.</span>
+
+<span class="sd">        :Arguments:</span>
+<span class="sd">          *filename*</span>
+<span class="sd">             output filename</span>
+<span class="sd">          *remarks*</span>
+<span class="sd">             remark lines (list of strings) or single string to be added to the</span>
+<span class="sd">             top of the PQR file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s">&#39;pqr&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">convert_units</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>  <span class="c"># convert length and time to base units</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;remarks&#39;</span><span class="p">,</span> <span class="s">&quot;PQR file written by MDAnalysis&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PQRWriter.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to file.</span>
+
+<span class="sd">        :Arguments:</span>
+<span class="sd">            *selection*</span>
+<span class="sd">                MDAnalysis AtomGroup (selection or Universe.atoms)</span>
+<span class="sd">                or also Universe</span>
+<span class="sd">         :Keywords:</span>
+<span class="sd">             *frame*</span>
+<span class="sd">                optionally move to frame number *frame*</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># write() method that complies with the Trajectory API</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">universe</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>  <span class="c"># advance to frame</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>   <span class="c"># should catch cases when we are analyzing a single frame(?)</span>
+
+        <span class="n">atoms</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">atoms</span>             <span class="c"># make sure to use atoms (Issue 46)</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>   <span class="c"># can write from selection == Universe (Issue 49)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>             <span class="c"># inplace because coordinates is already a copy</span>
+
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pqrfile</span><span class="p">:</span>
+            <span class="c"># Header</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_REMARK</span><span class="p">(</span><span class="n">pqrfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_REMARK</span><span class="p">(</span><span class="n">pqrfile</span><span class="p">,</span> <span class="s">&quot;Input: frame {0} of {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_REMARK</span><span class="p">(</span><span class="n">pqrfile</span><span class="p">,</span> <span class="s">&quot;total charge: {0:+8.4f} e&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">totalCharge</span><span class="p">()),</span> <span class="mi">6</span><span class="p">)</span>
+            <span class="c"># Atom descriptions and coords</span>
+            <span class="k">for</span> <span class="n">atom_index</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
+                <span class="n">XYZ</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">atom_index</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_write_ATOM</span><span class="p">(</span><span class="n">pqrfile</span><span class="p">,</span> <span class="n">atom_index</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_write_REMARK</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">remarks</span><span class="p">,</span> <span class="n">remarknumber</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write REMARK record.</span>
+
+<span class="sd">        The *remarknumber* is typically 1 but :program:`pdb2pgr`</span>
+<span class="sd">        also uses 6 for the total charge and 5 for warnings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">remarks</span><span class="p">):</span>  <span class="c"># either one line or multiple lines</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;REMARK   {0} {1}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">remarknumber</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_write_ATOM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">serial</span><span class="p">,</span> <span class="n">atomName</span><span class="p">,</span> <span class="n">residueName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="n">residueNumber</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write ATOM record.</span>
+
+<span class="sd">        Output should look like this (although the only real</span>
+<span class="sd">        requirement is *whitespace* separation between *all*</span>
+<span class="sd">        entries). The chainID is optional and can be omitted::</span>
+
+<span class="sd">              ATOM      1  N    MET     1     -11.921   26.307   10.410 -0.3000 1.8500</span>
+<span class="sd">              ATOM     36  NH1  ARG     2      -6.545   25.499    3.854 -0.8000 1.8500</span>
+<span class="sd">              ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ATOM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s">&#39;ATOM_nochain&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">chainID</span> <span class="o">==</span> <span class="s">&quot;SYSTEM&quot;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">chainID</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s">&#39;ATOM_chain&#39;</span><span class="p">]</span>
+        <span class="n">atomName</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">atomName</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomName</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="k">else</span> <span class="n">atomName</span>  <span class="c"># pad so that only 4-letter atoms are left-aligned</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ATOM</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">serial</span><span class="p">,</span> <span class="n">atomName</span><span class="p">,</span> <span class="n">residueName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="n">residueNumber</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">radius</span><span class="p">))</span>
+</pre></div></div>
 
           </div>
         </div>
@@ -271,10 +388,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

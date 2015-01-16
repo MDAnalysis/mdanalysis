@@ -73,13 +73,13 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.coordinates.base</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-</span>
-<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
 <span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c">#               and contributors (see AUTHORS for the full list)</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
@@ -207,7 +207,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">arg</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
             <span class="c">#self._pos = numpy.zeros((3, self.numatoms), numpy.float32)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_unitcell</span><span class="p">()</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Timestep</span><span class="p">):</span> <span class="c"># Copy constructor</span>
             <span class="c"># This makes a deepcopy of the timestep</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">frame</span>
@@ -232,6 +232,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_init_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create custom datastructure for :attr:`_unitcell`.&quot;&quot;&quot;</span>
+        <span class="c"># override for other Timesteps</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">atoms</span><span class="p">))</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">atoms</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
@@ -250,7 +256,12 @@
                 <span class="k">yield</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">iterTS</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt; Timestep &quot;</span><span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; with unit cell dimensions &quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; &gt;&quot;</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="s">&quot;&lt; Timestep {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tail</span> <span class="o">=</span> <span class="s">&quot; with unit cell dimensions {0} &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+            <span class="n">tail</span> <span class="o">=</span> <span class="s">&quot; &gt;&quot;</span>
+        <span class="k">return</span> <span class="n">desc</span> <span class="o">+</span> <span class="n">tail</span>
 <div class="viewcode-block" id="Timestep.copy"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make an independent (&quot;deep&quot;) copy of the whole :class:`Timestep`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__deepcopy__</span><span class="p">()</span></div>
@@ -260,14 +271,14 @@
 
 <div class="viewcode-block" id="Timestep.copy_slice"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.copy_slice">[docs]</a>    <span class="k">def</span> <span class="nf">copy_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make a new Timestep containing a subset of the original Timestep.</span>
-<span class="sd">     </span>
+
 <span class="sd">        ``ts.copy_slice(slice(start, stop, skip))``</span>
 <span class="sd">        ``ts.copy_slice([list of indices])``</span>
 
 <span class="sd">        :Returns: A Timestep object of the same type containing all header information and all atom information</span>
 <span class="sd">                  relevent to the selection.</span>
 
-<span class="sd">        .. Note:: The selection must be a 0 based slice or array of the atom indices in this Timestep </span>
+<span class="sd">        .. Note:: The selection must be a 0 based slice or array of the atom indices in this Timestep</span>
 
 <span class="sd">        .. versionadded:: 0.8</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -281,7 +292,7 @@
         <span class="c"># List of attributes which will require slicing if present</span>
         <span class="n">per_atom</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;_x&#39;</span><span class="p">,</span> <span class="s">&#39;_y&#39;</span><span class="p">,</span> <span class="s">&#39;_z&#39;</span><span class="p">,</span> <span class="s">&#39;_pos&#39;</span><span class="p">,</span> <span class="s">&#39;_velocities&#39;</span><span class="p">,</span> <span class="s">&#39;_forces&#39;</span><span class="p">,</span>
                     <span class="s">&#39;_tpos&#39;</span><span class="p">,</span><span class="s">&#39;_tvelocities&#39;</span><span class="p">,</span><span class="s">&#39;_tforces&#39;</span><span class="p">]</span>
-            
+
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">per_atom</span><span class="p">:</span> <span class="c"># Header type information</span>
                 <span class="n">new_TS</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
@@ -291,7 +302,6 @@
         <span class="n">new_TS</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">new_numatoms</span> <span class="c"># This will have been overwritten, so fix here</span>
 
         <span class="k">return</span> <span class="n">new_TS</span>
-
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Timestep.dimensions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -305,11 +315,11 @@
 <span class="sd">        trajectory formats) to the representation described here,</span>
 <span class="sd">        which is used everywhere in MDAnalysis.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c"># Layout of unitcell is [A, alpha, B, beta, gamma, C] --- (originally CHARMM DCD)</span>
-        <span class="c"># override for other formats; this strange ordering is kept for historical reasons</span>
-        <span class="c"># (the user should not need concern themselves with this)</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+        <span class="c"># The actual Timestep._unitcell depends on the underlying</span>
+        <span class="c"># trajectory format. It can be e.g. six floats representing</span>
+        <span class="c"># the box edges and angles or the 6 unique components of the</span>
+        <span class="c"># box matrix or the full box matrix.</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;The Timestep class needs to define how to process _unitcell.&quot;</span><span class="p">)</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Timestep.volume"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.volume">[docs]</a>    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1039,10 +1049,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

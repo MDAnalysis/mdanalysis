@@ -77,9 +77,9 @@
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
 <span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c">#               and contributors (see AUTHORS for the full list)</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
@@ -111,10 +111,6 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis.coordinates.pdb.extensions</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="n">guess_atom_type</span><span class="p">,</span> <span class="n">guess_atom_mass</span><span class="p">,</span> <span class="n">guess_atom_charge</span>
 
-<div class="viewcode-block" id="PDBParseError"><a class="viewcode-back" href="../../../documentation_pages/topology/PDBParser.html#MDAnalysis.topology.PDBParser.PDBParseError">[docs]</a><span class="k">class</span> <span class="nc">PDBParseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Signifies an error while reading a PDB file.&quot;&quot;&quot;</span>
-    <span class="k">pass</span>
-</div>
 <div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../../documentation_pages/topology/PDBParser.html#MDAnalysis.topology.PDBParser.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Parse atom information from PDB file *pdbfile*.</span>
 
@@ -130,7 +126,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">root</span><span class="p">,</span><span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;.pdb&#39;</span><span class="p">,</span> <span class="s">&#39;.ent&#39;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">PDBParseError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%(pdbfile)r</span><span class="s"> is probably not in PDB format (wrong extension).&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%(pdbfile)r</span><span class="s"> is probably not in PDB format (wrong extension).&quot;</span><span class="p">)</span>
     <span class="n">structure</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c"># use Sloppy PDB parser to cope with big PDBs!</span>
     <span class="n">pdb</span> <span class="o">=</span>  <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span><span class="s">&quot;0UNK&quot;</span><span class="p">)</span>
@@ -190,10 +186,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

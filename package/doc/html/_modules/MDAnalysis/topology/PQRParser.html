@@ -77,9 +77,9 @@
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
 <span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c">#               and contributors (see AUTHORS for the full list)</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
@@ -108,10 +108,7 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis.coordinates.PQR</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="n">guess_atom_type</span><span class="p">,</span> <span class="n">guess_atom_mass</span>
 
-<span class="k">class</span> <span class="nc">PQRParseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../../documentation_pages/topology/PQRParser.html#MDAnalysis.topology.PQRParser.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="PQRParser"><a class="viewcode-back" href="../../../documentation_pages/topology/PQRParser.html#MDAnalysis.topology.PQRParser.PQRParser">[docs]</a><span class="k">class</span> <span class="nc">PQRParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Parse atom information from PQR file *filename*.</span>
 
 <span class="sd">    Only reads the list of atoms. Reads the charges and radii from the</span>
@@ -125,37 +122,60 @@
 <span class="sd">                 :func:`MDAnalysis.topology.PSFParser.parse` and</span>
 <span class="sd">                 :class:`~MDAnalysis.coordinates.PQR.PQRReader` is used to read</span>
 <span class="sd">                 the PQR file.</span>
+
+<span class="sd">    .. versionchanged:: 0.8.2</span>
+<span class="sd">       Read chainID from a PQR file and use it as segid (before we always used</span>
+<span class="sd">       &#39;SYSTEM&#39; as the new segid).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">structure</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">pqr</span> <span class="o">=</span>  <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">PQR</span><span class="o">.</span><span class="n">PQRReader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
-    <span class="n">__parseatoms_</span><span class="p">(</span><span class="n">pqr</span><span class="p">,</span> <span class="n">structure</span><span class="p">)</span>
-    <span class="c"># TODO: reconstruct bonds from CONECT or guess from distance search</span>
-    <span class="c">#       (e.g. like VMD)</span>
-    <span class="k">return</span> <span class="n">structure</span>
-</div>
-<span class="k">def</span> <span class="nf">__parseatoms_</span><span class="p">(</span><span class="n">pqr</span><span class="p">,</span> <span class="n">structure</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">Atom</span>
-    <span class="n">attr</span> <span class="o">=</span> <span class="s">&quot;_atoms&quot;</span>  <span class="c"># name of the atoms section</span>
-    <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>       <span class="c"># list of Atom objects</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">guess_bonds_mode</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PQRReader</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">PQR</span><span class="o">.</span><span class="n">PQRReader</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds_mode</span> <span class="o">=</span> <span class="n">guess_bonds_mode</span>
 
-    <span class="c"># translate list of atoms to MDAnalysis Atom.</span>
-    <span class="k">for</span> <span class="n">iatom</span><span class="p">,</span><span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pqr</span><span class="o">.</span><span class="n">_atoms</span><span class="p">):</span>
-        <span class="n">atomname</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span>
-        <span class="n">atomtype</span> <span class="o">=</span> <span class="n">guess_atom_type</span><span class="p">(</span><span class="n">atomname</span><span class="p">)</span>
-        <span class="n">resname</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">resName</span>
-        <span class="n">resid</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">resSeq</span>
-        <span class="n">chain</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">chainID</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="n">segid</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">segID</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s">&quot;SYSTEM&quot;</span>  <span class="c"># no empty segids (or Universe throws IndexError)</span>
-        <span class="n">mass</span> <span class="o">=</span> <span class="n">guess_atom_mass</span><span class="p">(</span><span class="n">atomname</span><span class="p">)</span>
-        <span class="n">charge</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">charge</span>
-        <span class="n">radius</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">radius</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">pqr</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">PQRReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
-        <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atom</span><span class="p">(</span><span class="n">iatom</span><span class="p">,</span><span class="n">atomname</span><span class="p">,</span><span class="n">atomtype</span><span class="p">,</span><span class="n">resname</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">resid</span><span class="p">),</span><span class="n">segid</span><span class="p">,</span><span class="nb">float</span><span class="p">(</span><span class="n">mass</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">charge</span><span class="p">),</span>
-                          <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__parseatoms_</span><span class="p">(</span><span class="n">pqr</span><span class="p">)</span>
+        <span class="c"># TODO: reconstruct bonds from CONECT or guess from distance search</span>
+        <span class="c">#       (e.g. like VMD)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span>
 
-    <span class="n">structure</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span>
-</pre></div>
+    <span class="k">def</span> <span class="nf">__parseatoms_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pqr</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">Atom</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="s">&quot;_atoms&quot;</span>  <span class="c"># name of the atoms section</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>       <span class="c"># list of Atom objects</span>
+
+        <span class="c"># translate list of atoms to MDAnalysis Atom.</span>
+        <span class="k">for</span> <span class="n">iatom</span><span class="p">,</span><span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pqr</span><span class="o">.</span><span class="n">_atoms</span><span class="p">):</span>
+            <span class="n">atomname</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">atomtype</span> <span class="o">=</span> <span class="n">guess_atom_type</span><span class="p">(</span><span class="n">atomname</span><span class="p">)</span>
+            <span class="n">resname</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">resName</span>
+            <span class="n">resid</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">resSeq</span>
+            <span class="n">chain</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">chainID</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">segid</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">segID</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="n">chain</span> <span class="ow">or</span> <span class="s">&quot;SYSTEM&quot;</span>  <span class="c"># no empty segids (or Universe throws IndexError)</span>
+            <span class="n">mass</span> <span class="o">=</span> <span class="n">guess_atom_mass</span><span class="p">(</span><span class="n">atomname</span><span class="p">)</span>
+            <span class="n">charge</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">charge</span>
+            <span class="n">radius</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">radius</span>
+
+            <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atom</span><span class="p">(</span><span class="n">iatom</span><span class="p">,</span><span class="n">atomname</span><span class="p">,</span><span class="n">atomtype</span><span class="p">,</span><span class="n">resname</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">resid</span><span class="p">),</span><span class="n">segid</span><span class="p">,</span><span class="nb">float</span><span class="p">(</span><span class="n">mass</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">charge</span><span class="p">),</span>
+                              <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span>
+
+<span class="c"># function to keep compatible with the current API; should be cleaned up...</span></div>
+<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../../documentation_pages/topology/PQRParser.html#MDAnalysis.topology.PQRParser.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parse atom information from PQR file *filename*.</span>
+
+<span class="sd">    :Returns: MDAnalysis internal *structure* dict</span>
+
+<span class="sd">    .. SeeAlso:: The *structure* dict is defined in</span>
+<span class="sd">                 :func:`MDAnalysis.topology.PSFParser.parse` and the file is read with</span>
+<span class="sd">                 :class:`MDAnalysis.coordinates.PQR.PQRReader`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">PQRParser</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+</pre></div></div>
 
           </div>
         </div>
@@ -181,10 +201,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

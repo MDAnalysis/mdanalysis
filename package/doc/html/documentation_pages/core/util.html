@@ -62,11 +62,12 @@
   <ul>
 <li><a class="reference internal" href="#">7.9. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a><ul>
 <li><a class="reference internal" href="#files-and-directories">7.9.1. Files and directories</a></li>
-<li><a class="reference internal" href="#containers-and-lists">7.9.2. Containers and lists</a></li>
-<li><a class="reference internal" href="#file-parsing">7.9.3. File parsing</a></li>
-<li><a class="reference internal" href="#data-manipulation-and-handling">7.9.4. Data manipulation and handling</a></li>
-<li><a class="reference internal" href="#strings">7.9.5. Strings</a></li>
-<li><a class="reference internal" href="#mathematics-and-geometry">7.9.6. Mathematics and Geometry</a></li>
+<li><a class="reference internal" href="#streams">7.9.2. Streams</a></li>
+<li><a class="reference internal" href="#containers-and-lists">7.9.3. Containers and lists</a></li>
+<li><a class="reference internal" href="#file-parsing">7.9.4. File parsing</a></li>
+<li><a class="reference internal" href="#data-manipulation-and-handling">7.9.5. Data manipulation and handling</a></li>
+<li><a class="reference internal" href="#strings">7.9.6. Strings</a></li>
+<li><a class="reference internal" href="#mathematics-and-geometry">7.9.7. Mathematics and Geometry</a></li>
 </ul>
 </li>
 </ul>
@@ -118,19 +119,27 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em></dt>
-<dd><p class="first last">filename; extension is replaced unless keep=True</p>
+<dd><p class="first last">filename; extension is replaced unless keep=True;
+<em>name</em> can also be a <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> (and its
+<tt class="xref py py-attr docutils literal"><span class="pre">NamedStream.name</span></tt> will be changed accordingly)</p>
 </dd>
 <dt><em>ext</em></dt>
 <dd><p class="first last">extension</p>
 </dd>
 <dt><em>keep</em></dt>
-<dd><p class="first last"><tt class="docutils literal"><span class="pre">False</span></tt>: replace existing extension; <tt class="docutils literal"><span class="pre">True</span></tt>: keep if exists</p>
+<dd><ul class="first last simple">
+<li><tt class="docutils literal"><span class="pre">False</span></tt>: replace existing extension with <em>ext</em>;</li>
+<li><tt class="docutils literal"><span class="pre">True</span></tt>: keep old extension if one existed</li>
+</ul>
 </dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8.2: </span>Also permits <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> to pass through.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -142,24 +151,45 @@
 
 <dl class="function">
 <dt id="MDAnalysis.core.util.anyopen">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">anyopen</tt><big>(</big><em>datasource</em>, <em>mode='r'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#anyopen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.anyopen" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">anyopen</tt><big>(</big><em>datasource</em>, <em>mode='r'</em>, <em>reset=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#anyopen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.anyopen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open datasource (gzipped, bzipped, uncompressed) and return a stream.</p>
+<p><em>datasource</em> can be a filename or a stream (see <a class="reference internal" href="#MDAnalysis.core.util.isstream" title="MDAnalysis.core.util.isstream"><tt class="xref py py-func docutils literal"><span class="pre">isstream()</span></tt></a>). By
+default, a stream is reset to its start if possible (via
+<a class="reference external" href="http://docs.python.org/library/io.html#io.IOBase.seek" title="(in Python v2.7)"><tt class="xref py py-meth docutils literal"><span class="pre">seek()</span></tt></a> or <tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt>).</p>
+<p>If possible, the attribute <tt class="docutils literal"><span class="pre">stream.name</span></tt> is set to the filename or
+&#8220;&lt;stream&gt;&#8221; if no filename could be associated with the <em>datasource</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>datasource</em></dt>
-<dd><p class="first last">a file or a stream</p>
+<dd><p class="first last">a file (from <tt class="xref py py-class docutils literal"><span class="pre">file</span></tt> or <a class="reference external" href="http://docs.python.org/library/functions.html#open" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">open()</span></tt></a>) or a stream (e.g. from
+<a class="reference external" href="http://docs.python.org/library/urllib2.html#urllib2.urlopen" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">urllib2.urlopen()</span></tt></a> or <tt class="xref py py-class docutils literal"><span class="pre">cStringIO.StringIO</span></tt>)</p>
 </dd>
 <dt><em>mode</em></dt>
-<dd><p class="first last">&#8216;r&#8217; or &#8216;w&#8217;</p>
+<dd><p class="first last">&#8216;r&#8217; or &#8216;w&#8217; or &#8216;a&#8217;, more complicated modes (&#8216;r+&#8217;, &#8216;w+&#8217; are not supported because
+only the first letter is looked at) [<tt class="docutils literal"><span class="pre">'r'</span></tt>]</p>
+</dd>
+<dt><em>reset</em></dt>
+<dd><p class="first last">try to read (<em>mode</em> &#8216;r&#8217;) the stream from the start [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 </dl>
 </td>
 </tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple <tt class="docutils literal"><span class="pre">stream</span></tt> which is a file-like object</p>
+</td>
+</tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.core.util.openany" title="MDAnalysis.core.util.openany"><tt class="xref py py-func docutils literal"><span class="pre">openany()</span></tt></a> to be used with the <a class="reference external" href="http://docs.python.org/reference/compound_stmts.html#with" title="(in Python v2.7)"><tt class="xref std std-keyword docutils literal"><span class="pre">with</span></tt></a> statement.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8.2: </span>Only returns the <tt class="docutils literal"><span class="pre">stream</span></tt> and tries to set <tt class="docutils literal"><span class="pre">stream.name</span> <span class="pre">=</span> <span class="pre">filename</span></tt> instead of the previous
+behavior to return a tuple <tt class="docutils literal"><span class="pre">(stream,</span> <span class="pre">filename)</span></tt>.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -171,7 +201,7 @@
 <dl class="function">
 <dt id="MDAnalysis.core.util.which">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">which</tt><big>(</big><em>program</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#which"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.which" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine full path of executable <em>program</em> on <span class="target" id="index-0"></span><a class="reference external" href="http://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v1.3.1)"><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt></a>.</p>
+<dd><p>Determine full path of executable <em>program</em> on <span class="target" id="index-0"></span><a class="reference external" href="http://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v1.4.2)"><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt></a>.</p>
 <p>(Jay at <a class="reference external" href="http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python">http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python</a>)</p>
 </dd></dl>
 
@@ -184,8 +214,279 @@
 </dd></dl>
 
 </div>
+<div class="section" id="streams">
+<h2>7.9.2. Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h2>
+<p>Many of the readers are not restricted to just reading files. They can
+also use gzip-compressed or bzip2-compressed files (through the
+internal use of <a class="reference internal" href="#MDAnalysis.core.util.openany" title="MDAnalysis.core.util.openany"><tt class="xref py py-func docutils literal"><span class="pre">openany()</span></tt></a>). It is also possible to provide more
+general streams as inputs, such as a <a class="reference external" href="http://docs.python.org/library/stringio.html#cStringIO.StringIO" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">cStringIO.StringIO()</span></tt></a>
+instances (essentially, a memory buffer) by wrapping these instances
+into a <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a>. This <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> can then be
+used in place of an ordinary file name (typically, with a
+class:<cite>~MDAnalysis.core.AtomGroup.Universe</cite> but it is also possible to
+<em>write</em> to such a stream using <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></tt>).</p>
+<p>In the following example, we use a PDB stored as a string <tt class="docutils literal"><span class="pre">pdb_s</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">import</span> <span class="n">NamedStream</span>
+<span class="kn">import</span> <span class="nn">cStringIO</span>
+
+<span class="n">pdb_s</span> <span class="o">=</span> <span class="s">&quot;TITLE     Lonely Ion</span><span class="se">\n</span><span class="s">ATOM      1  NA  NA+     1      81.260  64.982  10.926  1.00  0.00</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">(</span><span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">pdb_s</span><span class="p">),</span> <span class="s">&quot;ion.pdb&quot;</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="c">#  &lt;Universe with 1 atoms&gt;</span>
+<span class="k">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+<span class="c"># [[ 81.26000214  64.98200226  10.92599964]]</span>
+</pre></div>
+</div>
+<p>It is important to provide a proper pseudo file name with the correct extension
+(&#8221;.pdb&#8221;) to <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> because the file type recognition uses the
+extension of the file name to determine the file format or alternatively
+provide the <tt class="docutils literal"><span class="pre">format=&quot;pdb&quot;</span></tt> keyword argument to the
+<a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>.</p>
+<p>The use of streams becomes more interesting when MDAnalysis is used as glue
+between different analysis packages and when one can arrange things so that
+intermediate frames (typically in the PDB format) are not written to disk but
+remain in memory via e.g. <a class="reference external" href="http://docs.python.org/library/stringio.html#module-cStringIO" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">cStringIO</span></tt></a> buffers.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A remote connection created by <a class="reference external" href="http://docs.python.org/library/urllib2.html#urllib2.urlopen" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">urllib2.urlopen()</span></tt></a> is not seekable
+and therefore will often not work as an input. But try it...</p>
+</div>
+<dl class="class">
+<dt id="MDAnalysis.core.util.NamedStream">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">NamedStream</tt><big>(</big><em>stream</em>, <em>filename</em>, <em>reset=True</em>, <em>close=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stream that also provides a (fake) name.</p>
+<p>By wrapping a stream <em>stream</em> in this class, it can be passed to
+code that uses inspection of the filename to make decisions. For
+instance. <a class="reference external" href="http://docs.python.org/library/os.path.html#os.path.split" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">os.path.split()</span></tt></a> will work correctly on a
+<a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a>.</p>
+<p>The class can be used as a context manager.</p>
+<p><a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> is derived from <a class="reference external" href="http://docs.python.org/library/io.html#io.IOBase" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">io.IOBase</span></tt></a> (to indicate that
+it is a stream) <em>and</em> <tt class="xref py py-class docutils literal"><span class="pre">basestring</span></tt> (that one can use
+<a class="reference internal" href="#MDAnalysis.core.util.iterable" title="MDAnalysis.core.util.iterable"><tt class="xref py py-func docutils literal"><span class="pre">iterable()</span></tt></a> in the same way as for strings).</p>
+<p class="rubric">Example</p>
+<p>Wrap a <a class="reference external" href="http://docs.python.org/library/stringio.html#cStringIO.StringIO" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">cStringIO.StringIO()</span></tt></a> instance to write to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">cStringIO</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">NamedStream</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="s">&quot;output.pdb&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Wrap a <tt class="xref py py-class docutils literal"><span class="pre">file</span></tt> instance to read from:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">stream</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;input.pdb&quot;</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">NamedStream</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">stream</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use as a context manager (closes stream automatically when the
+<a class="reference external" href="http://docs.python.org/reference/compound_stmts.html#with" title="(in Python v2.7)"><tt class="xref std std-keyword docutils literal"><span class="pre">with</span></tt></a> block is left):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">NamedStream</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s">&quot;input.pdb&quot;</span><span class="p">),</span> <span class="s">&quot;input.pdb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+   <span class="c"># use f</span>
+   <span class="k">print</span> <span class="n">f</span><span class="o">.</span><span class="n">closed</span>  <span class="c"># --&gt; False</span>
+   <span class="c"># ...</span>
+<span class="k">print</span> <span class="n">f</span><span class="o">.</span><span class="n">closed</span>     <span class="c"># --&gt; True</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This class uses its own <tt class="xref py py-meth docutils literal"><span class="pre">__getitem__()</span></tt> method so if <em>stream</em>
+implements <tt class="xref py py-meth docutils literal"><span class="pre">stream.__getitem__()</span></tt> then that will be masked and this
+class should not be used.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">By default, <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.close" title="MDAnalysis.core.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></tt></a> will <strong>not close the
+stream</strong> but instead <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.reset" title="MDAnalysis.core.util.NamedStream.reset"><tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt></a> it to the
+beginning. <a class="footnote-reference" href="#namedstreamclose" id="id1">[1]</a> Provide the <tt class="docutils literal"><span class="pre">force=True</span></tt> keyword
+to <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.close" title="MDAnalysis.core.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></tt></a> to always close the stream.</p>
+</div>
+<p>Initialize the <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> from a <em>stream</em> and give it a <em>name</em>.</p>
+<p>The constructor attempts to rewind the stream to the beginning unless
+the keyword <em>reset</em> is set to <tt class="docutils literal"><span class="pre">False</span></tt>. If rewinding fails, a
+<tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.StreamWarning</span></tt> is issued.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, this stream will <em>not</em> be closed by <a class="reference external" href="http://docs.python.org/reference/compound_stmts.html#with" title="(in Python v2.7)"><tt class="xref std std-keyword docutils literal"><span class="pre">with</span></tt></a> and
+<a class="reference internal" href="#MDAnalysis.core.util.NamedStream.close" title="MDAnalysis.core.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">close()</span></tt></a> (see there) unless the <em>close</em> keyword is set to
+<tt class="docutils literal"><span class="pre">True</span></tt>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>stream</em></dt>
+<dd><p class="first last">open stream (e.g. <tt class="xref py py-class docutils literal"><span class="pre">file</span></tt> or <a class="reference external" href="http://docs.python.org/library/stringio.html#cStringIO.StringIO" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">cStringIO.StringIO()</span></tt></a>)</p>
+</dd>
+<dt><em>filename</em></dt>
+<dd><p class="first last">the filename that should be associated with the stream</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>reset</em></dt>
+<dd><p class="first last">start the stream from the beginning (either <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.reset" title="MDAnalysis.core.util.NamedStream.reset"><tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt></a> or <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.seek" title="MDAnalysis.core.util.NamedStream.seek"><tt class="xref py py-meth docutils literal"><span class="pre">seek()</span></tt></a>)
+when the class instance is constructed [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
+</dd>
+<dt><em>close</em></dt>
+<dd><p class="first last">close the stream when a <a class="reference external" href="http://docs.python.org/reference/compound_stmts.html#with" title="(in Python v2.7)"><tt class="xref std std-keyword docutils literal"><span class="pre">with</span></tt></a> block exits or when
+<a class="reference internal" href="#MDAnalysis.core.util.NamedStream.close" title="MDAnalysis.core.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">close()</span></tt></a> is called; note that the default is <strong>not to close
+the stream</strong> [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.2.</span></p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.core.util.NamedStream.close">
+<tt class="descname">close</tt><big>(</big><em>force=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset or close the stream.</p>
+<p>If <tt class="xref py py-attr docutils literal"><span class="pre">NamedStream.close_stream</span></tt> is set to <tt class="docutils literal"><span class="pre">False</span></tt> (the default)
+then this method will <em>not close the stream</em> and only <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.reset" title="MDAnalysis.core.util.NamedStream.reset"><tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt></a> it.</p>
+<p>If the <em>force</em> = <tt class="docutils literal"><span class="pre">True</span></tt> keyword is provided, the stream will be
+closed.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This <tt class="docutils literal"><span class="pre">close()</span></tt> method is non-standard. <tt class="docutils literal"><span class="pre">del</span> <span class="pre">NamedStream</span></tt>
+always closes the underlying stream.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.util.NamedStream.closed">
+<tt class="descname">closed</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.closed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.closed" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">True</span></tt> if stream is closed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.util.NamedStream.fileno">
+<tt class="descname">fileno</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.fileno"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.fileno" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the underlying file descriptor (an integer) of the stream if it exists.</p>
+<p>An <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> is raised if the IO object does not use a file descriptor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.util.NamedStream.flush">
+<tt class="descname">flush</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flush the write buffers of the stream if applicable.</p>
+<p>This does nothing for read-only and non-blocking streams. For file
+objects one also needs to call <a class="reference external" href="http://docs.python.org/library/os.html#os.fsync" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">os.fsync()</span></tt></a> to write contents to
+disk.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.util.NamedStream.readable">
+<tt class="descname">readable</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.readable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.readable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <tt class="docutils literal"><span class="pre">True</span></tt> if the stream can be read from.</p>
+<p>If <tt class="docutils literal"><span class="pre">False</span></tt>, <tt class="xref py py-meth docutils literal"><span class="pre">read()</span></tt> will raise <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.util.NamedStream.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move to the beginning of the stream</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.util.NamedStream.seek">
+<tt class="descname">seek</tt><big>(</big><em>offset</em>, <em>whence=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.seek"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.seek" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the stream position to the given byte <em>offset</em> .</p>
+<p><em>offset</em> is interpreted relative to the position indicated by
+<em>whence</em>. Values for <em>whence</em> are:</p>
+<ul class="simple">
+<li><tt class="xref py py-data docutils literal"><span class="pre">io.SEEK_SET</span></tt> or 0 – start of the stream (the default); <em>offset</em>
+should be zero or positive</li>
+<li><tt class="xref py py-data docutils literal"><span class="pre">io.SEEK_CUR</span></tt> or 1 – current stream position; <em>offset</em> may be
+negative</li>
+<li><tt class="xref py py-data docutils literal"><span class="pre">io.SEEK_END</span></tt> or 2 – end of the stream; <em>offset</em> is usually
+negative</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the new absolute position.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.util.NamedStream.seekable">
+<tt class="descname">seekable</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.seekable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.seekable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <tt class="docutils literal"><span class="pre">True</span></tt> if the stream supports random access.</p>
+<p>If <tt class="docutils literal"><span class="pre">False</span></tt>, <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.seek" title="MDAnalysis.core.util.NamedStream.seek"><tt class="xref py py-meth docutils literal"><span class="pre">seek()</span></tt></a>, <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.tell" title="MDAnalysis.core.util.NamedStream.tell"><tt class="xref py py-meth docutils literal"><span class="pre">tell()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.truncate" title="MDAnalysis.core.util.NamedStream.truncate"><tt class="xref py py-meth docutils literal"><span class="pre">truncate()</span></tt></a> will raise <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.util.NamedStream.tell">
+<tt class="descname">tell</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.tell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.tell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current stream position.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.util.NamedStream.truncate">
+<tt class="descname">truncate</tt><big>(</big><em>*size</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.truncate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.truncate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Truncate the stream&#8217;s size to <em>size</em>.</p>
+<p>The size defaults to the current position (if no <em>size</em> argument is
+supplied). The current file position is not changed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.util.NamedStream.writable">
+<tt class="descname">writable</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.writable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.writable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <tt class="docutils literal"><span class="pre">True</span></tt> if the stream can be written to.</p>
+<p>If <tt class="docutils literal"><span class="pre">False</span></tt>, <tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt> will raise <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.util.isstream">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">isstream</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#isstream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.isstream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect if <em>obj</em> is a stream.</p>
+<p>We consider anything a stream that has the methods</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">close()</span></tt></li>
+</ul>
+<p>and either set of the following</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">read()</span></tt>, <tt class="docutils literal"><span class="pre">readline()</span></tt>, <tt class="docutils literal"><span class="pre">readlines()</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">write()</span></tt>, <tt class="docutils literal"><span class="pre">writeline()</span></tt>, <tt class="docutils literal"><span class="pre">writelines()</span></tt></li>
+</ul>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="http://docs.python.org/library/io.html#module-io" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">io</span></tt></a></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>obj</em></dt>
+<dd><p class="first last">stream or string</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt> is <em>obj</em> is a stream, <tt class="docutils literal"><span class="pre">False</span></tt> otherwise</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.2.</span></p>
+</div>
+</dd></dl>
+
+</div>
 <div class="section" id="containers-and-lists">
-<h2>7.9.2. Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline">¶</a></h2>
+<h2>7.9.3. Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.iterable">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">iterable</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.iterable" title="Permalink to this definition">¶</a></dt>
@@ -198,9 +499,15 @@
 <dd><p>Returns obj so that it can be iterated over; a string is <em>not</em> treated as iterable</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="MDAnalysis.core.util.hasmethod">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">hasmethod</tt><big>(</big><em>obj</em>, <em>m</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#hasmethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.hasmethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <tt class="docutils literal"><span class="pre">True</span></tt> if object <em>obj</em> contains the method <em>m</em>.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="file-parsing">
-<h2>7.9.3. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
+<h2>7.9.4. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.util.FORTRANReader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">FORTRANReader</tt><big>(</big><em>fmt</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#FORTRANReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader" title="Permalink to this definition">¶</a></dt>
@@ -282,7 +589,7 @@ forms.</p>
 
 </div>
 <div class="section" id="data-manipulation-and-handling">
-<h2>7.9.4. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
+<h2>7.9.5. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.fixedwidth_bins">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">fixedwidth_bins</tt><big>(</big><em>delta</em>, <em>xmin</em>, <em>xmax</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#fixedwidth_bins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.fixedwidth_bins" title="Permalink to this definition">¶</a></dt>
@@ -293,7 +600,7 @@ forms.</p>
 
 </div>
 <div class="section" id="strings">
-<h2>7.9.5. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
+<h2>7.9.6. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.convert_aa_code">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">convert_aa_code</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#convert_aa_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.convert_aa_code" title="Permalink to this definition">¶</a></dt>
@@ -347,7 +654,7 @@ otherwise the original object is passed back.</p>
 
 </div>
 <div class="section" id="mathematics-and-geometry">
-<h2>7.9.6. Mathematics and Geometry<a class="headerlink" href="#mathematics-and-geometry" title="Permalink to this headline">¶</a></h2>
+<h2>7.9.7. Mathematics and Geometry<a class="headerlink" href="#mathematics-and-geometry" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.normal">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">normal</tt><big>(</big><em>vec1</em>, <em>vec2</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#normal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.normal" title="Permalink to this definition">¶</a></dt>
@@ -363,7 +670,7 @@ otherwise the original object is passed back.</p>
 <dd><p>Returns the length of a vector, <tt class="docutils literal"><span class="pre">sqrt(v.v)</span></tt>.</p>
 <div class="math">
 \[v = \sqrt{\mathbf{v}\cdot\mathbf{v}}\]</div>
-<p>Faster than <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v1.8)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></tt></a> because no frills.</p>
+<p>Faster than <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v1.9)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></tt></a> because no frills.</p>
 </dd></dl>
 
 <dl class="function">
@@ -401,6 +708,22 @@ vectors</p>
 \[V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)\]</div>
 </dd></dl>
 
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="namedstreamclose" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>The reason why <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.close" title="MDAnalysis.core.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></tt></a> does
+not close a stream by default (but just rewinds it to the
+beginning) is so that one can use the class <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> as
+a drop-in replacement for file names, which are often re-opened
+(e.g. when the same file is used as a topology and coordinate file
+or when repeatedly iterating through a trajectory in some
+implementations). The <tt class="docutils literal"><span class="pre">close=True</span></tt> keyword can be supplied in
+order to make <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.close" title="MDAnalysis.core.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></tt></a> actually close the
+underlying stream and <tt class="docutils literal"><span class="pre">NamedStream.close(force=True)</span></tt> will also
+close it.</td></tr>
+</tbody>
+</table>
 </div>
 </div>
 
@@ -434,10 +757,10 @@ vectors</p>
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

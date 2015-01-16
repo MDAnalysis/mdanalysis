@@ -128,7 +128,7 @@ of distances from the centre of geometry (or possibly simply the
 algorithm.</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.leaflet.</tt><tt class="descname">LeafletFinder</tt><big>(</big><em>universe</em>, <em>selectionstring</em>, <em>cutoff=15.0</em>, <em>pbc=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.leaflet.</tt><tt class="descname">LeafletFinder</tt><big>(</big><em>universe</em>, <em>selectionstring</em>, <em>cutoff=15.0</em>, <em>pbc=False</em>, <em>sparse=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identify atoms in the same leaflet of a lipid bilayer.</p>
 <p>The components of the graph are stored in the list
 <tt class="xref py py-attr docutils literal"><span class="pre">LeafletFinder.components</span></tt>; the atoms in each component are numbered
@@ -157,8 +157,8 @@ instance. Similarly, all atoms in the first leaflet are then</p>
 <dt><em>universe</em></dt>
 <dd><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> or a PDB file name.</p>
 </dd>
-<dt><em>selectionstring</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a> or a 
+<dt><em>selection</em></dt>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a> or a
 <tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.Universe.selectAtoms()</span></tt> selection string
 for atoms that define the lipid head groups, e.g.
 universe.atoms.PO4 or &#8220;name PO4&#8221; or &#8220;name P*&#8221;</p>
@@ -174,6 +174,12 @@ Angstroms are deemed to be in the same leaflet [15.0]</p>
 <dt><em>pbc</em></dt>
 <dd><p class="first last">take periodic boundary conditions into account (only works
 for orthorhombic boxes) [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+<dt><em>sparse</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">None</span></tt>: use fastest possible routine; <tt class="docutils literal"><span class="pre">True</span></tt>: use slow
+sparse matrix implementation (for large systems); <tt class="docutils literal"><span class="pre">False</span></tt>:
+use fast <a class="reference internal" href="distances.html#MDAnalysis.analysis.distances.distance_array" title="MDAnalysis.analysis.distances.distance_array"><tt class="xref py py-func docutils literal"><span class="pre">distance_array()</span></tt></a>
+implementation [<tt class="docutils literal"><span class="pre">None</span></tt>].</p>
 </dd>
 </dl>
 </td>
@@ -309,10 +315,10 @@ can be found; needs to be made more robust</p>
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

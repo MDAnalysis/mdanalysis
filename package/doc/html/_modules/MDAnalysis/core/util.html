@@ -73,13 +73,13 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.core.util</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-</span>
-<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
 <span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c">#               and contributors (see AUTHORS for the full list)</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
@@ -106,19 +106,77 @@
 <span class="sd">   (uses :func:`anyopen`).</span>
 
 <span class="sd">.. autofunction:: anyopen</span>
-
 <span class="sd">.. autofunction:: greedy_splitext</span>
-
 <span class="sd">.. autofunction:: which</span>
-
 <span class="sd">.. autofunction:: realpath</span>
+
+<span class="sd">Streams</span>
+<span class="sd">-------</span>
+
+<span class="sd">Many of the readers are not restricted to just reading files. They can</span>
+<span class="sd">also use gzip-compressed or bzip2-compressed files (through the</span>
+<span class="sd">internal use of :func:`openany`). It is also possible to provide more</span>
+<span class="sd">general streams as inputs, such as a :func:`cStringIO.StringIO`</span>
+<span class="sd">instances (essentially, a memory buffer) by wrapping these instances</span>
+<span class="sd">into a :class:`NamedStream`. This :class:`NamedStream` can then be</span>
+<span class="sd">used in place of an ordinary file name (typically, with a</span>
+<span class="sd">class:`~MDAnalysis.core.AtomGroup.Universe` but it is also possible to</span>
+<span class="sd">*write* to such a stream using :func:`MDAnalysis.Writer`).</span>
+
+<span class="sd">.. rubric: Examples</span>
+
+<span class="sd">In the following example, we use a PDB stored as a string ``pdb_s``::</span>
+
+<span class="sd">   import MDAnalysis</span>
+<span class="sd">   from MDAnalysis.core.util import NamedStream</span>
+<span class="sd">   import cStringIO</span>
+
+<span class="sd">   pdb_s = &quot;TITLE     Lonely Ion\\nATOM      1  NA  NA+     1      81.260  64.982  10.926  1.00  0.00\\n&quot;</span>
+<span class="sd">   u = MDAnalysis.Universe(NamedStream(cStringIO.StringIO(pdb_s), &quot;ion.pdb&quot;))</span>
+<span class="sd">   print(u)</span>
+<span class="sd">   #  &lt;Universe with 1 atoms&gt;</span>
+<span class="sd">   print(u.atoms.positions)</span>
+<span class="sd">   # [[ 81.26000214  64.98200226  10.92599964]]</span>
+
+<span class="sd">It is important to provide a proper pseudo file name with the correct extension</span>
+<span class="sd">(&quot;.pdb&quot;) to :class:`NamedStream` because the file type recognition uses the</span>
+<span class="sd">extension of the file name to determine the file format or alternatively</span>
+<span class="sd">provide the ``format=&quot;pdb&quot;`` keyword argument to the</span>
+<span class="sd">:class:`~MDAnalysis.core.AtomGroup.Universe`.</span>
+
+<span class="sd">The use of streams becomes more interesting when MDAnalysis is used as glue</span>
+<span class="sd">between different analysis packages and when one can arrange things so that</span>
+<span class="sd">intermediate frames (typically in the PDB format) are not written to disk but</span>
+<span class="sd">remain in memory via e.g. :mod:`cStringIO` buffers.</span>
+
+
+<span class="sd">.. The following does *not* work because most readers need to</span>
+<span class="sd">.. reopen files, which is not possible with http streams. Might</span>
+<span class="sd">.. need to implement a buffer.</span>
+<span class="sd">..</span>
+<span class="sd">.. Read a test LAMMPS data file from the MDAnalysis repository::</span>
+<span class="sd">..</span>
+<span class="sd">..   import MDAnalysis</span>
+<span class="sd">..   from MDAnalysis.core.util import NamedStream</span>
+<span class="sd">..   import urllib2</span>
+<span class="sd">..   URI = &quot;https://mdanalysis.googlecode.com/git-history/develop/testsuite/MDAnalysisTests/data/mini.data&quot;</span>
+<span class="sd">..   urldata = NamedStream(urllib2.urlopen(URI), &quot;mini.data&quot;)</span>
+<span class="sd">..   u = MDAnalysis.Universe(urldata)</span>
+
+<span class="sd">.. Note::  A remote connection created by :func:`urllib2.urlopen` is not seekable</span>
+<span class="sd">           and therefore will often not work as an input. But try it...</span>
+
+<span class="sd">.. autoclass:: NamedStream</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autofunction:: isstream</span>
 
 <span class="sd">Containers and lists</span>
 <span class="sd">--------------------</span>
 
 <span class="sd">.. autofunction:: iterable</span>
 <span class="sd">.. autofunction:: asiterable</span>
-
+<span class="sd">.. autofunction:: hasmethod</span>
 
 <span class="sd">File parsing</span>
 <span class="sd">------------</span>
@@ -151,64 +209,162 @@
 <span class="sd">.. autofunction:: dihedral</span>
 <span class="sd">.. autofunction:: stp</span>
 
+<span class="sd">.. Rubric:: Footnotes</span>
+
+<span class="sd">.. [#NamedStreamClose] The reason why :meth:`NamedStream.close` does</span>
+<span class="sd">   not close a stream by default (but just rewinds it to the</span>
+<span class="sd">   beginning) is so that one can use the class :class:`NamedStream` as</span>
+<span class="sd">   a drop-in replacement for file names, which are often re-opened</span>
+<span class="sd">   (e.g. when the same file is used as a topology and coordinate file</span>
+<span class="sd">   or when repeatedly iterating through a trajectory in some</span>
+<span class="sd">   implementations). The ``close=True`` keyword can be supplied in</span>
+<span class="sd">   order to make :meth:`NamedStream.close` actually close the</span>
+<span class="sd">   underlying stream and ``NamedStream.close(force=True)`` will also</span>
+<span class="sd">   close it.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext en&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">os.path</span><span class="o">,</span> <span class="nn">errno</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
 <span class="kn">import</span> <span class="nn">bz2</span><span class="o">,</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<div class="viewcode-block" id="filename"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.filename">[docs]</a><span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">ext</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<span class="c"># Python 3.0, 3.1 do not have the builtin callable()</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="nb">callable</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="c"># http://bugs.python.org/issue10518</span>
+    <span class="kn">import</span> <span class="nn">collections</span>
+    <span class="k">def</span> <span class="nf">callable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">)</span>
+
+<div class="viewcode-block" id="filename"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.filename">[docs]</a><span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return a new name that has suffix attached; replaces other extensions.</span>
 
 <span class="sd">    :Arguments:</span>
 <span class="sd">      *name*</span>
-<span class="sd">           filename; extension is replaced unless keep=True</span>
+<span class="sd">           filename; extension is replaced unless keep=True;</span>
+<span class="sd">           *name* can also be a :class:`NamedStream` (and its</span>
+<span class="sd">           :attr:`NamedStream.name` will be changed accordingly)</span>
 <span class="sd">      *ext*</span>
 <span class="sd">           extension</span>
 <span class="sd">      *keep*</span>
-<span class="sd">           ``False``: replace existing extension; ``True``: keep if exists</span>
+<span class="sd">           - ``False``: replace existing extension with *ext*;</span>
+<span class="sd">           - ``True``: keep old extension if one existed</span>
+
+<span class="sd">    .. versionchanged:: 0.8.2</span>
+<span class="sd">       Also permits :class:`NamedStream` to pass through.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ext</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">name</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">ext</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">extsep</span><span class="p">):</span>
-        <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">extsep</span> <span class="o">+</span> <span class="n">ext</span>
-    <span class="c">#if name.find(ext) &gt; 0:    # normally &gt;= 0 but if we start with &#39;.&#39; then we keep it</span>
-    <span class="c">#    return name</span>
-    <span class="n">root</span><span class="p">,</span> <span class="n">origext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">origext</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">keep</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">root</span> <span class="o">+</span> <span class="n">ext</span>
-    <span class="k">return</span> <span class="n">name</span>
+    <span class="k">if</span> <span class="n">ext</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ext</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">extsep</span><span class="p">):</span>
+            <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">extsep</span> <span class="o">+</span> <span class="n">ext</span>
+        <span class="n">root</span><span class="p">,</span> <span class="n">origext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keep</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">origext</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">newname</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="n">ext</span>
+            <span class="k">if</span> <span class="n">isstream</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                <span class="n">name</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">newname</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">newname</span>
+    <span class="k">return</span> <span class="n">name</span> <span class="k">if</span> <span class="n">isstream</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 </div>
 <span class="nd">@contextmanager</span>
-<div class="viewcode-block" id="openany"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.openany">[docs]</a><span class="k">def</span> <span class="nf">openany</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Open the datasource and close it when the context exits.&quot;&quot;&quot;</span>
-    <span class="n">stream</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">anyopen</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">yield</span> <span class="n">stream</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</div>
-<div class="viewcode-block" id="anyopen"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.anyopen">[docs]</a><span class="k">def</span> <span class="nf">anyopen</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Open datasource (gzipped, bzipped, uncompressed) and return a stream.</span>
+<div class="viewcode-block" id="openany"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.openany">[docs]</a><span class="k">def</span> <span class="nf">openany</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Context manager for :func:`anyopen`.</span>
+
+<span class="sd">    Open the *datasource* and close it when the context of the :keyword:`with`</span>
+<span class="sd">    statement exits.</span>
+
+<span class="sd">    *datasource* can be a filename or a stream (see :func:`isstream`). A stream</span>
+<span class="sd">    is reset to its start if possible (via :meth:`~io.IOBase.seek` or</span>
+<span class="sd">    :meth:`~cString.StringIO.reset`).</span>
+
+<span class="sd">    The advantage of this function is that very different input sources</span>
+<span class="sd">    (&quot;streams&quot;) can be used for a &quot;file&quot;, ranging from files on disk (including</span>
+<span class="sd">    compressed files) to open file objects to sockets and strings---as long as</span>
+<span class="sd">    they have a file-like interface.</span>
 
 <span class="sd">    :Arguments:</span>
 <span class="sd">     *datasource*</span>
 <span class="sd">        a file or a stream</span>
 <span class="sd">     *mode*</span>
 <span class="sd">        &#39;r&#39; or &#39;w&#39;</span>
+<span class="sd">     *reset*</span>
+<span class="sd">        try to read (*mode* &#39;r&#39;) the stream from the start [``True``]</span>
+
+<span class="sd">    .. rubric:: Examples</span>
+
+<span class="sd">    Open a gzipped file and process it line by line::</span>
+
+<span class="sd">       with openany(&quot;input.pdb.gz&quot;) as pdb:</span>
+<span class="sd">          for line in pdb:</span>
+<span class="sd">              if line.startswith(&#39;ATOM&#39;): print(line)</span>
+
+<span class="sd">    Open a URL and read it::</span>
+
+<span class="sd">       import urllib2</span>
+<span class="sd">       with openany(urllib2.urlopen(&quot;http://mdanalysis.googlecode.com/&quot;)) as html:</span>
+<span class="sd">          print(html.read())</span>
+
+<span class="sd">    .. SeeAlso:: :func:`anyopen`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">anyopen</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="n">reset</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">stream</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="anyopen"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.anyopen">[docs]</a><span class="k">def</span> <span class="nf">anyopen</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Open datasource (gzipped, bzipped, uncompressed) and return a stream.</span>
+
+<span class="sd">    *datasource* can be a filename or a stream (see :func:`isstream`). By</span>
+<span class="sd">    default, a stream is reset to its start if possible (via</span>
+<span class="sd">    :meth:`~io.IOBase.seek` or :meth:`~cString.StringIO.reset`).</span>
+
+<span class="sd">    If possible, the attribute ``stream.name`` is set to the filename or</span>
+<span class="sd">    &quot;&lt;stream&gt;&quot; if no filename could be associated with the *datasource*.</span>
+
+<span class="sd">    :Arguments:</span>
+<span class="sd">     *datasource*</span>
+<span class="sd">        a file (from :class:`file` or :func:`open`) or a stream (e.g. from</span>
+<span class="sd">        :func:`urllib2.urlopen` or :class:`cStringIO.StringIO`)</span>
+<span class="sd">     *mode*</span>
+<span class="sd">        &#39;r&#39; or &#39;w&#39; or &#39;a&#39;, more complicated modes (&#39;r+&#39;, &#39;w+&#39; are not supported because</span>
+<span class="sd">        only the first letter is looked at) [``&#39;r&#39;``]</span>
+<span class="sd">     *reset*</span>
+<span class="sd">        try to read (*mode* &#39;r&#39;) the stream from the start [``True``]</span>
+
+<span class="sd">    :Returns: tuple ``stream`` which is a file-like object</span>
+
+<span class="sd">    .. SeeAlso:: :func:`openany` to be used with the :keyword:`with` statement.</span>
+
+<span class="sd">    .. versionchanged:: 0.8.2</span>
+<span class="sd">       Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous</span>
+<span class="sd">       behavior to return a tuple ``(stream, filename)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">StreamWarning</span>
     <span class="n">handlers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;bz2&#39;</span><span class="p">:</span> <span class="n">bz2</span><span class="o">.</span><span class="n">BZ2File</span><span class="p">,</span> <span class="s">&#39;gz&#39;</span><span class="p">:</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">:</span> <span class="nb">file</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;r&#39;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span><span class="s">&#39;next&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span><span class="s">&#39;readline&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">isstream</span><span class="p">(</span><span class="n">datasource</span><span class="p">):</span>
             <span class="n">stream</span> <span class="o">=</span> <span class="n">datasource</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;(</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="n">stream</span><span class="o">.</span><span class="n">name</span>  <span class="c"># maybe that does not always work?</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c"># maybe that does not always work?</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;&lt;stream&gt;&quot;</span>
+            <span class="k">if</span> <span class="n">reset</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">stream</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">stream</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="il">0L</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Stream {}: not guaranteed to be at the beginning.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span>
+                                      <span class="n">category</span><span class="o">=</span><span class="n">StreamWarning</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">stream</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">datasource</span>
@@ -218,11 +374,14 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">stream</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                     <span class="k">break</span>
             <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Cannot open </span><span class="si">%(filename)r</span><span class="s"> in mode=</span><span class="si">%(mode)r</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="nb">vars</span><span class="p">())</span>
-    <span class="k">elif</span> <span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;w&#39;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="s">&#39;write&#39;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span> <span class="s">&quot;Cannot open file or stream in mode=</span><span class="si">%(mode)r</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="nb">vars</span><span class="p">(),</span> <span class="nb">repr</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">):</span>   <span class="c"># append &#39;a&#39; not tested...</span>
+        <span class="k">if</span> <span class="n">isstream</span><span class="p">(</span><span class="n">datasource</span><span class="p">):</span>
             <span class="n">stream</span> <span class="o">=</span> <span class="n">datasource</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;(</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="n">stream</span><span class="o">.</span><span class="n">name</span>  <span class="c"># maybe that does not always work?</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c"># maybe that does not always work?</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;&lt;stream&gt;&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">stream</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">datasource</span>
@@ -234,25 +393,34 @@
             <span class="n">openfunc</span> <span class="o">=</span> <span class="n">handlers</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span>
             <span class="n">stream</span> <span class="o">=</span> <span class="n">openfunc</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Cannot open </span><span class="si">%(filename)r</span><span class="s"> in mode=</span><span class="si">%(mode)r</span><span class="s"> with type </span><span class="si">%(ext)r</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="nb">vars</span><span class="p">())</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span> <span class="s">&quot;Cannot open file or stream in mode=</span><span class="si">%(mode)r</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="nb">vars</span><span class="p">(),</span> <span class="nb">repr</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Sorry, mode=</span><span class="si">%(mode)r</span><span class="s"> is not implemented for </span><span class="si">%(datasource)r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">vars</span><span class="p">())</span>
-
-    <span class="k">return</span> <span class="n">stream</span><span class="p">,</span> <span class="n">filename</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">filename</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="k">pass</span>  <span class="c"># can&#39;t set name (e.g. cStringIO.StringIO)</span>
+    <span class="k">return</span> <span class="n">stream</span>
 </div>
 <span class="k">def</span> <span class="nf">_get_stream</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">openfunction</span><span class="o">=</span><span class="nb">file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return open stream if *filename* can be opened with *openfunction* or else ``None``.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">stream</span> <span class="o">=</span> <span class="n">openfunction</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">None</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">stream</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-        <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">stream</span> <span class="o">=</span> <span class="n">openfunction</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-        <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">stream</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;r&#39;</span><span class="p">):</span>
+        <span class="c"># additional check for reading (eg can we uncompress) --- is this needed?</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">stream</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">stream</span> <span class="o">=</span> <span class="n">openfunction</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">stream</span>
 
 <div class="viewcode-block" id="greedy_splitext"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.greedy_splitext">[docs]</a><span class="k">def</span> <span class="nf">greedy_splitext</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
@@ -265,6 +433,46 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ext</span><span class="p">:</span>
             <span class="k">break</span>
     <span class="k">return</span> <span class="n">root</span><span class="p">,</span> <span class="n">extension</span>
+
+</div>
+<div class="viewcode-block" id="hasmethod"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.hasmethod">[docs]</a><span class="k">def</span> <span class="nf">hasmethod</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return ``True`` if object *obj* contains the method *m*.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="isstream"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.isstream">[docs]</a><span class="k">def</span> <span class="nf">isstream</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Detect if *obj* is a stream.</span>
+
+<span class="sd">    We consider anything a stream that has the methods</span>
+
+<span class="sd">    - ``close()``</span>
+
+<span class="sd">    and either set of the following</span>
+
+<span class="sd">    - ``read()``, ``readline()``, ``readlines()``</span>
+<span class="sd">    - ``write()``, ``writeline()``, ``writelines()``</span>
+
+<span class="sd">    .. SeeAlso:: :mod:`io`</span>
+
+<span class="sd">    :Arguments:</span>
+<span class="sd">      *obj*</span>
+<span class="sd">          stream or string</span>
+
+<span class="sd">    :Returns: ``True`` is *obj* is a stream, ``False`` otherwise</span>
+
+<span class="sd">    .. versionadded:: 0.8.2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">signature_methods</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;close&quot;</span><span class="p">,)</span>
+    <span class="n">alternative_methods</span> <span class="o">=</span> <span class="p">((</span><span class="s">&quot;read&quot;</span><span class="p">,</span> <span class="s">&quot;readline&quot;</span><span class="p">,</span> <span class="s">&quot;readlines&quot;</span><span class="p">),</span>
+                           <span class="p">(</span><span class="s">&quot;write&quot;</span><span class="p">,</span> <span class="s">&quot;writeline&quot;</span><span class="p">,</span> <span class="s">&quot;writelines&quot;</span><span class="p">))</span>
+
+    <span class="c"># Must have ALL the signature methods</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">signature_methods</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">hasmethod</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="c"># Must have at least one complete set of alternative_methods</span>
+    <span class="n">alternative_results</span> <span class="o">=</span> <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">hasmethod</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">alternatives</span><span class="p">])</span>
+                           <span class="k">for</span> <span class="n">alternatives</span> <span class="ow">in</span> <span class="n">alternative_methods</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">alternative_results</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="which"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.which">[docs]</a><span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Determine full path of executable *program* on :envvar:`PATH`.</span>
@@ -284,6 +492,296 @@
             <span class="k">if</span> <span class="n">is_exe</span><span class="p">(</span><span class="n">exe_file</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">exe_file</span>
     <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="NamedStream"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.NamedStream">[docs]</a><span class="k">class</span> <span class="nc">NamedStream</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Stream that also provides a (fake) name.</span>
+
+<span class="sd">    By wrapping a stream *stream* in this class, it can be passed to</span>
+<span class="sd">    code that uses inspection of the filename to make decisions. For</span>
+<span class="sd">    instance. :func:`os.path.split` will work correctly on a</span>
+<span class="sd">    :class:`NamedStream`.</span>
+
+<span class="sd">    The class can be used as a context manager.</span>
+
+<span class="sd">    :class:`NamedStream` is derived from :class:`io.IOBase` (to indicate that</span>
+<span class="sd">    it is a stream) *and* :class:`basestring` (that one can use</span>
+<span class="sd">    :func:`iterable` in the same way as for strings).</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    Wrap a :func:`cStringIO.StringIO` instance to write to::</span>
+
+<span class="sd">      import cStringIO</span>
+<span class="sd">      import os.path</span>
+<span class="sd">      stream = cStringIO.StringIO()</span>
+<span class="sd">      f = NamedStream(stream, &quot;output.pdb&quot;)</span>
+<span class="sd">      print(os.path.splitext(f))</span>
+
+<span class="sd">    Wrap a :class:`file` instance to read from::</span>
+
+<span class="sd">      stream = open(&quot;input.pdb&quot;)</span>
+<span class="sd">      f = NamedStream(stream, stream.name)</span>
+
+<span class="sd">    Use as a context manager (closes stream automatically when the</span>
+<span class="sd">    :keyword:`with` block is left)::</span>
+
+<span class="sd">      with NamedStream(open(&quot;input.pdb&quot;), &quot;input.pdb&quot;) as f:</span>
+<span class="sd">         # use f</span>
+<span class="sd">         print f.closed  # --&gt; False</span>
+<span class="sd">         # ...</span>
+<span class="sd">      print f.closed     # --&gt; True</span>
+
+<span class="sd">    .. Note::</span>
+
+<span class="sd">       This class uses its own :meth:`__getitem__` method so if *stream*</span>
+<span class="sd">       implements :meth:`stream.__getitem__` then that will be masked and this</span>
+<span class="sd">       class should not be used.</span>
+
+<span class="sd">    .. Warning::</span>
+
+<span class="sd">       By default, :meth:`NamedStream.close` will **not close the</span>
+<span class="sd">       stream** but instead :meth:`~NamedStream.reset` it to the</span>
+<span class="sd">       beginning. [#NamedStreamClose]_ Provide the ``force=True`` keyword</span>
+<span class="sd">       to :meth:`NamedStream.close` to always close the stream.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">close</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the :class:`NamedStream` from a *stream* and give it a *name*.</span>
+
+<span class="sd">        The constructor attempts to rewind the stream to the beginning unless</span>
+<span class="sd">        the keyword *reset* is set to ``False``. If rewinding fails, a</span>
+<span class="sd">        :class:`MDAnalysis.StreamWarning` is issued.</span>
+
+<span class="sd">        .. Note::</span>
+
+<span class="sd">           By default, this stream will *not* be closed by :keyword:`with` and</span>
+<span class="sd">           :meth:`close` (see there) unless the *close* keyword is set to</span>
+<span class="sd">           ``True``.</span>
+
+<span class="sd">        :Arguments:</span>
+
+<span class="sd">           *stream*</span>
+<span class="sd">               open stream (e.g. :class:`file` or :func:`cStringIO.StringIO`)</span>
+<span class="sd">           *filename*</span>
+<span class="sd">               the filename that should be associated with the stream</span>
+
+<span class="sd">        :Keywords:</span>
+
+<span class="sd">           *reset*</span>
+<span class="sd">               start the stream from the beginning (either :meth:`reset` or :meth:`seek`)</span>
+<span class="sd">               when the class instance is constructed [``True``]</span>
+<span class="sd">           *close*</span>
+<span class="sd">               close the stream when a :keyword:`with` block exits or when</span>
+<span class="sd">               :meth:`close` is called; note that the default is **not to close</span>
+<span class="sd">               the stream** [``False``]</span>
+
+<span class="sd">        .. versionadded:: 0.8.2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span> <span class="o">=</span> <span class="n">stream</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_stream</span> <span class="o">=</span> <span class="n">close</span>
+        <span class="k">if</span> <span class="n">reset</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+<div class="viewcode-block" id="NamedStream.reset"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.NamedStream.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Move to the beginning of the stream&quot;&quot;&quot;</span>
+        <span class="c"># try to rewind</span>
+        <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">StreamWarning</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>       <span class="c"># e.g. StreamIO</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="il">0L</span><span class="p">)</span>  <span class="c"># typical file objects</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;NamedStream {}: not guaranteed to be at the beginning.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                              <span class="n">category</span><span class="o">=</span><span class="n">StreamWarning</span><span class="p">)</span>
+
+    <span class="c"># access the stream</span></div>
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># do not call the stream __enter__ because the stream is already open</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="c"># NOTE: By default (close=False) we only reset the stream and NOT close it; this makes</span>
+        <span class="c">#       it easier to use it as a drop-in replacement for a filename that might</span>
+        <span class="c">#       be opened repeatedly (at least in MDAnalysis)</span>
+        <span class="c">#try:</span>
+        <span class="c">#    return self.stream.__exit__(*args)</span>
+        <span class="c">#except AttributeError:</span>
+        <span class="c">#    super(NamedStream, self).__exit__(*args)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c"># override more IOBase methods, as these are provided by IOBase and are not</span>
+    <span class="c"># caught with __getattr__ (ugly...)</span>
+<div class="viewcode-block" id="NamedStream.close"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.NamedStream.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reset or close the stream.</span>
+
+<span class="sd">        If :attr:`NamedStream.close_stream` is set to ``False`` (the default)</span>
+<span class="sd">        then this method will *not close the stream* and only :meth:`reset` it.</span>
+
+<span class="sd">        If the *force* = ``True`` keyword is provided, the stream will be</span>
+<span class="sd">        closed.</span>
+
+<span class="sd">        .. Note:: This ``close()`` method is non-standard. ``del NamedStream``</span>
+<span class="sd">                  always closes the underlying stream.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_stream</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+</div>
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Always closes the stream.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="NamedStream.closed"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.NamedStream.closed">[docs]</a>    <span class="k">def</span> <span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;``True`` if stream is closed.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">closed</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">closed</span>
+</div>
+<div class="viewcode-block" id="NamedStream.seek"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.NamedStream.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">whence</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">SEEK_SET</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Change the stream position to the given byte *offset* .</span>
+
+<span class="sd">        *offset* is interpreted relative to the position indicated by</span>
+<span class="sd">        *whence*. Values for *whence* are:</span>
+
+<span class="sd">        - :data:`io.SEEK_SET` or 0 – start of the stream (the default); *offset*</span>
+<span class="sd">          should be zero or positive</span>
+<span class="sd">        - :data:`io.SEEK_CUR` or 1 – current stream position; *offset* may be</span>
+<span class="sd">          negative</span>
+<span class="sd">        - :data:`io.SEEK_END` or 2 – end of the stream; *offset* is usually</span>
+<span class="sd">          negative</span>
+
+<span class="sd">        :Returns: the new absolute position.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">whence</span><span class="p">)</span>  <span class="c"># file.seek: no kw</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">whence</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="NamedStream.tell"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.NamedStream.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the current stream position.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="NamedStream.truncate"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.NamedStream.truncate">[docs]</a>    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Truncate the stream&#39;s size to *size*.</span>
+
+<span class="sd">        The size defaults to the current position (if no *size* argument is</span>
+<span class="sd">        supplied). The current file position is not changed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="o">*</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="o">*</span><span class="n">size</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="NamedStream.seekable"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.NamedStream.seekable">[docs]</a>    <span class="k">def</span> <span class="nf">seekable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return ``True`` if the stream supports random access.</span>
+
+<span class="sd">        If ``False``, :meth:`seek`, :meth:`tell` and :meth:`truncate` will raise :exc:`IOError`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">seekable</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">seekable</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="NamedStream.readable"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.NamedStream.readable">[docs]</a>    <span class="k">def</span> <span class="nf">readable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return ``True`` if the stream can be read from.</span>
+
+<span class="sd">        If ``False``, :meth:`read` will raise :exc:`IOError`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">readable</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">readable</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="NamedStream.writable"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.NamedStream.writable">[docs]</a>    <span class="k">def</span> <span class="nf">writable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return ``True`` if the stream can be written to.</span>
+
+<span class="sd">        If ``False``, :meth:`write` will raise :exc:`IOError`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">writable</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">writable</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="NamedStream.flush"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.NamedStream.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Flush the write buffers of the stream if applicable.</span>
+
+<span class="sd">        This does nothing for read-only and non-blocking streams. For file</span>
+<span class="sd">        objects one also needs to call :func:`os.fsync` to write contents to</span>
+<span class="sd">        disk.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="NamedStream.fileno"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.NamedStream.fileno">[docs]</a>    <span class="k">def</span> <span class="nf">fileno</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the underlying file descriptor (an integer) of the stream if it exists.</span>
+
+<span class="sd">        An :exc:`IOError` is raised if the IO object does not use a file descriptor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="c"># IOBase.fileno does not raise IOError as advertised so we do this here</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;This NamedStream does not use a file descriptor.&quot;</span><span class="p">)</span>
+
+    <span class="c"># fake the important parts of the string API</span>
+    <span class="c"># (other methods such as rfind() are automatically dealt with via __getattr__)</span></div>
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">__neq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">&gt;</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">&gt;=</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">&lt;</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">&lt;=</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__format__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;NamedStream({0}, {1})&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="realpath"><a class="viewcode-back" href="../../../documentation_pages/core/util.html#MDAnalysis.core.util.realpath">[docs]</a><span class="k">def</span> <span class="nf">realpath</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Join all args and return the real path, rooted at /.</span>
@@ -691,10 +1189,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

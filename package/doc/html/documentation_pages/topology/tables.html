@@ -96,7 +96,7 @@
 tables are dictionaries that are indexed by the element.</p>
 <dl class="data">
 <dt id="MDAnalysis.topology.tables.atomelements">
-<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">atomelements</tt><em class="property"> = {'BC': 'C', 'K+': 'K', 'AC': 'C', 'LIT': 'LI', 'CA2+': 'CA', 'FE': 'FE', 'CAL': 'CA', 'MG2+': 'MG', 'CL-': 'CL', 'CLAL': 'CL', 'SOD': 'NA', 'CS+': 'CS', 'NA': 'NA', 'POT': 'K', 'LI': 'LI', 'CES': 'CS', 'RB': 'RB', 'C0': 'CA', 'ZN': 'ZN', 'CL': 'CL', 'CLA': 'CL', 'CS': 'CS', 'CU': 'CU', 'MG': 'MG', 'QR': 'RB', 'NA+': 'NA', 'LI+': 'LI', 'QC': 'CE', 'QK': 'K', 'QL': 'LI', 'QN': 'NA'}</em><a class="headerlink" href="#MDAnalysis.topology.tables.atomelements" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">atomelements</tt><em class="property"> = {'BC': 'C', 'K+': 'K', 'AC': 'C', 'LIT': 'LI', 'CA2+': 'CA', 'FE': 'FE', 'BR': 'BR', 'CAL': 'CA', 'MG2+': 'MG', 'CL-': 'CL', 'CLAL': 'CL', 'SOD': 'NA', 'CS+': 'CS', 'NA': 'NA', 'POT': 'K', 'LI': 'LI', 'CES': 'CS', 'RB': 'RB', 'FE2': 'FE', 'IOD': 'I', 'ZN': 'ZN', 'CL': 'CL', 'K': 'K', 'CLA': 'CL', 'QR': 'RB', 'CS': 'CS', 'CU': 'CU', 'MG': 'MG', 'C0': 'CA', 'NA+': 'NA', 'LI+': 'LI', 'QC': 'CE', 'QK': 'K', 'QL': 'LI', 'QN': 'NA'}</em><a class="headerlink" href="#MDAnalysis.topology.tables.atomelements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary with hard-coded special atom names, used for guessing atom types
 with <a class="reference internal" href="core.html#MDAnalysis.topology.core.guess_atom_type" title="MDAnalysis.topology.core.guess_atom_type"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.core.guess_atom_type()</span></tt></a>.</p>
 </dd></dl>
@@ -125,15 +125,15 @@ separates key and value.</li>
 <li>Leading whitespace is ignored.</li>
 </ul>
 <p>The <em>convertor</em> is a function that converts its single argument to
-a valid Python type. The default is <a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">str()</span></tt></a> but other
-possibilities are <a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">int()</span></tt></a> (for integers) or <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">float()</span></tt></a> for
+a valid Python type. The default is <tt class="xref py py-func docutils literal"><span class="pre">str()</span></tt> but other
+possibilities are <tt class="xref py py-func docutils literal"><span class="pre">int()</span></tt> (for integers) or <tt class="xref py py-func docutils literal"><span class="pre">float()</span></tt> for
 floating point numbers.</p>
 </dd></dl>
 
 <p>The raw tables are stored in the strings</p>
 <dl class="data">
 <dt id="MDAnalysis.topology.tables.TABLE_ATOMELEMENTS">
-<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">TABLE_ATOMELEMENTS</tt><em class="property"> = '\n# translation of atomnames to types/element\n# based on CHARMM and AMBER usage with a little bit of GROMOS\n# NOTE: CL might be ambiguous and is interpreted as chloride!\n\n# --------- ------------------\n# atomname   element\n# --------- ------------------\n\n# Calcium\nCAL          CA\nC0           CA\nCA2+         CA\n\n# Cesium\nCES          CS\n\n# Chloride\nCLA          CL\nCLAL         CL\nCL           CL\nCL-          CL\n\n# Iron\nFE           FE\n\n# Lithium\nLIT          LI\nLI           LI\nLI+          LI\nQL           LI\n\n# Magnesium\nMG           MG\nMG2+         MG\n\n# Noble gases\n## XXX collides with NE, HE in Arg  XXX\n## XXX so we remove the noble gases XXX\n##HE           HE\n##NE           NE\n\n# Potassium\nPOT          K\nK+           K\nQK           K\n\n# Sodium\nSOD          NA\nNA           NA\nNA+          NA\nQN           NA\n\n# Zink\nZN           ZN\n\n# Copper\nCU           CU\n\n# Cesium\nCS           CS\nCS+          CS\nCES          CS\n\n# Cerium??\nQC           CE\n\n# Rubidium\nRB           RB\nQR           RB\n\n# special carbons (Amber?)\nBC           C\nAC           C\n\n# other types are guessed from the name; see\n# topology.core.guess_atom_elements()\n'</em><a class="headerlink" href="#MDAnalysis.topology.tables.TABLE_ATOMELEMENTS" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.tables.</tt><tt class="descname">TABLE_ATOMELEMENTS</tt><em class="property"> = '\n# translation of atomnames to types/element\n# based on CHARMM and AMBER usage with a little bit of GROMOS (and PROPKA)\n# NOTE: CL might be ambiguous and is interpreted as chloride!\n\n# --------- ------------------\n# atomname   element\n# --------- ------------------\n\n# Bromide\nBR           BR\n\n# Calcium\nCAL          CA\nC0           CA\nCA2+         CA\n\n# Cesium\nCES          CS\n\n# Chloride\nCLA          CL\nCLAL         CL\nCL           CL\nCL-          CL\n\n# Iodide\nIOD          I\n\n# Iron\nFE           FE\nFE2          FE\n\n# Lithium\nLIT          LI\nLI           LI\nLI+          LI\nQL           LI\n\n# Magnesium\nMG           MG\nMG2+         MG\n\n# Noble gases\n## XXX collides with NE, HE in Arg  XXX\n## XXX so we remove the noble gases XXX\n##HE           HE\n##NE           NE\n\n# Potassium\nK            K\nPOT          K\nK+           K\nQK           K\n\n# Sodium\nSOD          NA\nNA           NA\nNA+          NA\nQN           NA\n\n# Zink\nZN           ZN\n\n# Copper\nCU           CU\n\n# Cesium\nCS           CS\nCS+          CS\nCES          CS\n\n# Cerium??\nQC           CE\n\n# Rubidium\nRB           RB\nQR           RB\n\n# special carbons (Amber?)\nBC           C\nAC           C\n\n# other types are guessed from the name; see\n# topology.core.guess_atom_elements()\n'</em><a class="headerlink" href="#MDAnalysis.topology.tables.TABLE_ATOMELEMENTS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Table with hard-coded special atom names, used for guessing atom types
 with <a class="reference internal" href="core.html#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.core.guess_atom_element()</span></tt></a>.</p>
 </dd></dl>
@@ -176,10 +176,10 @@ with <a class="reference internal" href="core.html#MDAnalysis.topology.core.gues
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

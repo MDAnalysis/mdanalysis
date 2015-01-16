@@ -77,9 +77,9 @@
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
+<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
 <span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c">#               and contributors (see AUTHORS for the full list)</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
@@ -175,8 +175,11 @@
 <div class="viewcode-block" id="get_writer_for"><a class="viewcode-back" href="../../../documentation_pages/coordinates/core.html#MDAnalysis.coordinates.core.get_writer_for">[docs]</a><span class="k">def</span> <span class="nf">get_writer_for</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;DCD&#39;</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return an appropriate trajectory or frame writer class for *filename*.</span>
 
-<span class="sd">    The format is determined by the *format* argument or the extension</span>
-<span class="sd">    of *filename*. The default is to return a dcd writer (*format* = &#39;dcd&#39;).</span>
+<span class="sd">    The format is determined by the *format* argument or the extension of</span>
+<span class="sd">    *filename*. The default is to return a dcd writer (*format* = &#39;dcd&#39;). If</span>
+<span class="sd">    the *filename* is not provided or if it is something like a</span>
+<span class="sd">    :class:`cStringIO.StringIO` instance then the *format* argument must be</span>
+<span class="sd">    used.</span>
 
 <span class="sd">    :Arguments:</span>
 <span class="sd">      *filename*</span>
@@ -194,7 +197,7 @@
 <span class="sd">       Added *multiframe* keyword; the default ``None`` reflects the previous</span>
 <span class="sd">       behaviour.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">filename</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span> <span class="n">filename</span><span class="p">:</span>
         <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="n">format</span> <span class="o">=</span> <span class="n">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">multiframe</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -267,37 +270,47 @@
         <span class="n">ext</span> <span class="o">=</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
     <span class="k">return</span> <span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-<div class="viewcode-block" id="guess_format"><a class="viewcode-back" href="../../../documentation_pages/coordinates/core.html#MDAnalysis.coordinates.core.guess_format">[docs]</a><span class="k">def</span> <span class="nf">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the type of coordinate file *filename*.</span>
+<span class="k">def</span> <span class="nf">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Guess file format from the file extension&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Cannot determine file format for </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="n">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">format</span>
 
-<span class="sd">    The current heuristic simply looks at the filename extension but</span>
-<span class="sd">    more complicated probes could be implemented here or in the</span>
-<span class="sd">    individual packages (e.g. as static methods).</span>
+<div class="viewcode-block" id="guess_format"><a class="viewcode-back" href="../../../documentation_pages/coordinates/core.html#MDAnalysis.coordinates.core.guess_format">[docs]</a><span class="k">def</span> <span class="nf">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the type of file *filename*.</span>
+
+<span class="sd">    The current heuristic simply looks at the filename extension but more</span>
+<span class="sd">    complicated probes could be implemented here or in the individual packages</span>
+<span class="sd">    (e.g. as static methods). *filename* can also be a stream, in which case</span>
+<span class="sd">    *filename.name* is looked at for a hint to the format if *format* is not</span>
+<span class="sd">    provided.</span>
 
 <span class="sd">    If *format* is supplied then it overrides the auto detection.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">format</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="c"># simple extension checking... something more complicated is left</span>
-        <span class="c"># for the ambitious</span>
-        <span class="c"># Note: at the moment the upper-case extension *is* the format specifier</span>
-        <span class="k">if</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-            <span class="c"># list of filenames, handled by ChainReader</span>
-            <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;CHAIN&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">isstream</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="c"># perhaps StringIO or open stream</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Cannot determine coordinate format for </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
-            <span class="n">format</span> <span class="o">=</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-            <span class="n">format</span> <span class="o">=</span> <span class="n">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c"># internally, formats are all uppercase</span>
-        <span class="c"># enable chain reader with explicit format</span>
-        <span class="k">if</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-            <span class="c"># list of filenames, handled by ChainReader</span>
-            <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;CHAIN&#39;</span>
+                <span class="n">format</span> <span class="o">=</span> <span class="n">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">if</span> <span class="n">format</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;guess_format requires an explicit format specifier for stream {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">format</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">format</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="c"># iterator, list, filename: simple extension checking... something more</span>
+            <span class="c"># complicated is left for the ambitious.</span>
+            <span class="c"># Note: at the moment the upper-case extension *is* the format specifier</span>
+            <span class="c"># and list of filenames is handled by ChainReader</span>
+            <span class="n">format</span> <span class="o">=</span> <span class="n">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">else</span> <span class="s">&#39;CHAIN&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># format was set; but a list of filenames is always handled by ChainReader</span>
+        <span class="n">format</span> <span class="o">=</span> <span class="n">format</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">else</span> <span class="s">&#39;CHAIN&#39;</span>
+
+    <span class="n">format</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">format</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
 
     <span class="c"># sanity check</span>
     <span class="k">if</span> <span class="n">format</span> <span class="o">!=</span> <span class="s">&#39;CHAIN&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">format</span> <span class="ow">in</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">_trajectory_readers</span><span class="p">:</span>
@@ -442,10 +455,10 @@
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>
