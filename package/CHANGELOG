@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/14  richardjgowers, tyler.je.reddy, orbeckst,  e.jjordan12, zhuyi.xue
+??/??/15  richardjgowers, tyler.je.reddy, orbeckst, e.jjordan12, zhuyi.xue
 
   * 0.8.2
 
@@ -55,6 +55,11 @@ The rules for this file:
   * Added ability to define dimensions from AtomGroup, Universe and Timestep for most
     formats.
     (Issue 203)
+  * streamIO: many readers can directly use gzip- or bzip2 compressed
+    files or a stream (such as cStringIO.StringIO) wrapped in
+    util.NamedStream; currently supported: PDB, PSF, CRD, PQR, PDBQT,
+    GRO, MOL2, XYZ
+  
 
   Changes
 
@@ -70,6 +75,9 @@ The rules for this file:
     iterated over; list(universe.bonds) should provide a fix to legacy code.
   * PQR reader will now set segid to a chainID if found in the PQR
     file (previously, the segid would always be set to 'SYSTEM').
+  * util.anyopen() only returns the stream and not the tuple (stream,
+    filename) anymore; it tries to set stream.name instead
+
 
   Fixes
 

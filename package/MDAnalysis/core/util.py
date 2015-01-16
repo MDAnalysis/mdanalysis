@@ -38,13 +38,62 @@ Files and directories
 Streams
 -------
 
-In some cases it is possible to provide streams instead of file names, for
-instance buffer-based :class:`cStringIO.StringIO` instances. In order to
-integrate these streams with code that analyzes the filename itself for
-information, wrap the stream into :class:`NamedStream`.
+Many of the readers are not restricted to just reading files. They can
+also use gzip-compressed or bzip2-compressed files (through the
+internal use of :func:`openany`). It is also possible to provide more
+general streams as inputs, such as a :func:`cStringIO.StringIO`
+instances (essentially, a memory buffer) by wrapping these instances
+into a :class:`NamedStream`. This :class:`NamedStream` can then be
+used in place of an ordinary file name (typically, with a
+class:`~MDAnalysis.core.AtomGroup.Universe` but it is also possible to
+*write* to such a stream using :func:`MDAnalysis.Writer`).
+
+.. rubric: Examples
+
+In the following example, we use a PDB stored as a string ``pdb_s``::
+
+   import MDAnalysis
+   from MDAnalysis.core.util import NamedStream
+   import cStringIO
+
+   pdb_s = "TITLE     Lonely Ion\\nATOM      1  NA  NA+     1      81.260  64.982  10.926  1.00  0.00\\n"
+   u = MDAnalysis.Universe(NamedStream(cStringIO.StringIO(pdb_s), "ion.pdb"))
+   print(u)
+   #  <Universe with 1 atoms>
+   print(u.atoms.positions)
+   # [[ 81.26000214  64.98200226  10.92599964]]
+
+It is important to provide a proper pseudo file name with the correct extension
+(".pdb") to :class:`NamedStream` because the file type recognition uses the
+extension of the file name to determine the file format or alternatively
+provide the ``format="pdb"`` keyword argument to the
+:class:`~MDAnalysis.core.AtomGroup.Universe`.
+
+The use of streams becomes more interesting when MDAnalysis is used as glue
+between different analysis packages and when one can arrange things so that
+intermediate frames (typically in the PDB format) are not written to disk but
+remain in memory via e.g. :mod:`cStringIO` buffers.
+
+
+.. The following does *not* work because most readers need to
+.. reopen files, which is not possible with http streams. Might
+.. need to implement a buffer.
+..
+.. Read a test LAMMPS data file from the MDAnalysis repository::
+..
+..   import MDAnalysis
+..   from MDAnalysis.core.util import NamedStream
+..   import urllib2
+..   URI = "https://mdanalysis.googlecode.com/git-history/develop/testsuite/MDAnalysisTests/data/mini.data"
+..   urldata = NamedStream(urllib2.urlopen(URI), "mini.data")
+..   u = MDAnalysis.Universe(urldata)
+
+.. Note::  A remote connection created by :func:`urllib2.urlopen` is not seekable
+           and therefore will often not work as an input. But try it...
 
 .. autoclass:: NamedStream
    :members:
+
 .. autofunction:: isstream
 
 Containers and lists
@@ -87,11 +136,16 @@ Mathematics and Geometry
 
 .. Rubric:: Footnotes
 
-.. [#NamedStreamClose] This is implemented to facilitate the use of the class
-   :class:`NamedStream` as a drop-in replacement for file names, which are
-   often re-opened (e.g. when the same file is used as a topology and
-   coordinate file or when repeatedly iterating through a trajectory in some
-   implementations.)
+.. [#NamedStreamClose] The reason why :meth:`NamedStream.close` does
+   not close a stream by default (but just rewinds it to the
+   beginning) is so that one can use the class :class:`NamedStream` as
+   a drop-in replacement for file names, which are often re-opened
+   (e.g. when the same file is used as a topology and coordinate file
+   or when repeatedly iterating through a trajectory in some
+   implementations). The ``close=True`` keyword can be supplied in
+   order to make :meth:`NamedStream.close` actually close the
+   underlying stream and ``NamedStream.close(force=True)`` will also
+   close it.
 """
 
 __docformat__ = "restructuredtext en"
@@ -380,7 +434,7 @@ class NamedStream(io.IOBase, basestring):
 
     .. rubric:: Example
 
-    Wrap a :class:`cStringIO.StringIO` instance to write to::
+    Wrap a :func:`cStringIO.StringIO` instance to write to::
 
       import cStringIO
       import os.path
@@ -410,8 +464,10 @@ class NamedStream(io.IOBase, basestring):
 
     .. Warning::
 
-       By default, :meth:`NamedStream.close` will **not close the stream** but
-       instead :meth:`~NamedStream.reset`` it to the start. [#NamedStreamClose]_
+       By default, :meth:`NamedStream.close` will **not close the
+       stream** but instead :meth:`~NamedStream.reset` it to the
+       beginning. [#NamedStreamClose]_ Provide the ``force=True`` keyword
+       to :meth:`NamedStream.close` to always close the stream.
 
     """
     def __init__(self, stream, filename, reset=True, close=False):
@@ -430,7 +486,7 @@ class NamedStream(io.IOBase, basestring):
         :Arguments:
 
            *stream*
-               open stream (e.g. :class:`file` or :class:`cStringIO.StringIO`
+               open stream (e.g. :class:`file` or :func:`cStringIO.StringIO`)
            *filename*
                the filename that should be associated with the stream
 
