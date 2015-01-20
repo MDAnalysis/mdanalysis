@@ -84,6 +84,7 @@ from MDAnalysis.coordinates.core import triclinic_box
 class Timestep(base.Timestep):
     """ TRZ custom Timestep"""
     def __init__(self, arg, **kwargs):
+        self.has_force = kwargs.pop('has_force', False)
         if numpy.dtype(type(arg)) == numpy.dtype(int):
             self.frame = 0
             self.step = 0
@@ -97,7 +98,9 @@ class Timestep(base.Timestep):
             self.temperature = 0.0
             self._pos        = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order ='F')
             self._velocities = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order ='F')
-            self._unitcell   = numpy.zeros((9),                dtype=numpy.float64, order ='F')
+            if self.has_force:
+                self._forces = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
+            self._unitcell   = numpy.zeros((9), dtype=numpy.float64, order ='F')
         elif isinstance(arg, Timestep): # Copy constructor
             # This makes a deepcopy of the timestep
             self.frame = arg.frame
@@ -113,6 +116,8 @@ class Timestep(base.Timestep):
             self._unitcell = numpy.array(arg._unitcell)
             self._pos = numpy.array(arg._pos, order='F')
             self._velocities = numpy.array(arg._velocities, order='F')
+            if self.has_force:
+                self._forces = numpy.array(arg._forces, order='F')
         elif isinstance(arg, numpy.ndarray):
             if len(arg.shape) != 2:
                 raise ValueError("numpy array can only have 2 dimensions")
@@ -214,48 +219,67 @@ class TRZReader(base.Reader):
         self.skip = 1 #Step size for iterating through trajectory
         self.periodic = False # Box info for PBC
 
+        self._read_trz_header()
+        self.ts = Timestep(self.numatoms, has_force=self.has_force)
+
         # structured dtype of a single trajectory frame
         readarg = str(numatoms) + 'f4'
-        self._dtype = numpy.dtype([('p1','i4'),
-                                   ('nframe','i4'),
-                                   ('ntrj','i4'),
-                                   ('natoms','i4'),
-                                   ('treal','f8'),
-                                   ('p2','2i4'),
-                                   ('box','9f8'),
-                                   ('p3','2i4'),
-                                   ('pressure','f8'),
-                                   ('ptensor','6f8'),
-                                   ('p4','3i4'),
-                                   ('etot','f8'),
-                                   ('ptot','f8'),
-                                   ('ek','f8'),
-                                   ('T','f8'),
-                                   ('p5','6i4'),
-                                   ('rx',readarg),
-                                   ('pad2','2i4'),
-                                   ('ry',readarg),
-                                   ('pad3','2i4'),
-                                   ('rz',readarg),
-                                   ('pad4','2i4'),
-                                   ('vx',readarg),
-                                   ('pad5','2i4'),
-                                   ('vy',readarg),
-                                   ('pad6','2i4'),
-                                   ('vz',readarg),
-                                   ('pad7','i4')])
+        frame_contents = [('p1','i4'),
+                          ('nframe','i4'),
+                          ('ntrj','i4'),
+                          ('natoms','i4'),
+                          ('treal','f8'),
+                          ('p2','2i4'),
+                          ('box','9f8'),
+                          ('p3','2i4'),
+                          ('pressure','f8'),
+                          ('ptensor','6f8'),
+                          ('p4','3i4'),
+                          ('etot','f8'),
+                          ('ptot','f8'),
+                          ('ek','f8'),
+                          ('T','f8'),
+                          ('p5','6i4'),
+                          ('rx',readarg),
+                          ('pad2','2i4'),
+                          ('ry',readarg),
+                          ('pad3','2i4'),
+                          ('rz',readarg),
+                          ('pad4','2i4'),
+                          ('vx',readarg),
+                          ('pad5','2i4'),
+                          ('vy',readarg),
+                          ('pad6','2i4'),
+                          ('vz',readarg)]
+        if not self.has_force:
+            frame_contents += [('pad7', 'i4')]
+        else:
+            frame_contents += [('pad7', '2i4'),
+                               ('fx', readarg),
+                               ('pad8', '2i4'),
+                               ('fy', readarg),
+                               ('pad9', '2i4'),
+                               ('fz', readarg),
+                               ('pad10', 'i4')]
+        self._dtype = numpy.dtype(frame_contents)
 
-        self._read_trz_header()
-        self.ts = Timestep(self.numatoms)
         self._read_next_timestep()
 
     def _read_trz_header(self):
         """Reads the header of the trz trajectory"""
         self._headerdtype = numpy.dtype([('p1','i4'),
                                          ('title','80c'),
-                                         ('p2','4i4')])
+                                         ('p2','2i4'),
+                                         ('force','i4'),
+                                         ('p3','i4')])
         data = numpy.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
         self.title = ''.join(data['title'][0])
+        if data['force'] == 10:
+            self.has_force = False
+        elif data['force'] == 20:
+            self.has_force = True
+        else:
+            raise IOError
 
     def _read_next_timestep(self, ts=None): # self.next() is from base Reader class and calls this
         if ts is None:
@@ -263,6 +287,9 @@ class TRZReader(base.Reader):
 
         try:
             data = numpy.fromfile(self.trzfile, dtype=self._dtype, count=1)
+        except IndexError: #Raises indexerror if data has no data (EOF)
+            raise IOError
+        else:
             ts.frame = data['nframe'][0]
             ts.step = data['ntrj'][0]
             ts.time = data['treal'][0]
@@ -279,15 +306,18 @@ class TRZReader(base.Reader):
             ts._velocities[:,0] = data['vx']
             ts._velocities[:,1] = data['vy']
             ts._velocities[:,2] = data['vz']
+            if self.has_force:
+                ts._forces[:,0] = data['fx']
+                ts._forces[:,1] = data['fy']
+                ts._forces[:,2] = data['fz']
 
-            if self.convert_units: #Convert things read into MDAnalysis' native formats (nm -> angstroms in this case)
+            # Convert things read into MDAnalysis' native formats (nm -> angstroms)
+            if self.convert_units:
                 self.convert_pos_from_native(self.ts._pos)
                 self.convert_pos_from_native(self.ts._unitcell)
                 self.convert_velocities_from_native(self.ts._velocities)
 
             return ts
-        except IndexError: #Raises indexerror if data has no data (EOF)
-            raise IOError
 
     @property
     def numatoms(self):
