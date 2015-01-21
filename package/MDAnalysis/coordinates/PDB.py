@@ -256,6 +256,9 @@ class PDBReader(base.Reader):
     The coordinates are also supplied as one numpy array and wrapped
     into a Timestep object; attributes are set so that the PDBReader
     object superficially resembles the DCDReader object.
+
+    .. Note:: The Biopython.PDB reader does not parse the ``CRYST1``
+              record and hence the unitcell dimensions are not set.
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
@@ -278,7 +281,7 @@ class PDBReader(base.Reader):
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1
-        #self.ts._unitcell[:] = ??? , from CRYST1?
+        #self.ts._unitcell[:] = ??? , from CRYST1? --- not implemented in Biopython.PDB
         self.ts = self._Timestep(pos)
         self.ts.frame = 1
         del pos

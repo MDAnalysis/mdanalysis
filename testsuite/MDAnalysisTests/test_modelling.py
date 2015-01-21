@@ -17,9 +17,9 @@
 
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
-                                      TRZ, TRZ_psf, \
-                                      capping_input, capping_output, capping_ace, capping_nma, \
-                                            merge_protein,    merge_ligand,   merge_water
+    TRZ, TRZ_psf, \
+    capping_input,capping_output, capping_ace, capping_nma, \
+    merge_protein,merge_ligand, merge_water
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup
 from MDAnalysis import NoDataError

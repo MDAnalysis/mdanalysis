@@ -51,6 +51,7 @@ class RefAdKSmall(object):
        All distances must be in ANGSTROEM as this is the MDAnalysis
        default unit. All readers must return Angstroem by default.
     """
+    filename = PDB_small
     ref_coordinates = {
         'A10CA': np.array([ -1.198, 7.937, 22.654]),   # G11:CA, copied frm adk_open.pdb
         }
@@ -61,7 +62,7 @@ class RefAdKSmall(object):
     ref_charmm_Hcharges = [0.33] + 203*[0.31]
     ref_charmm_ArgCAcharges = 13 * [0.07]
     ref_charmm_ProNcharges = 10 * [-0.29]
-    ref_unitcell = np.array([0,0,0, 0,0,0], dtype=np.float32)
+    ref_unitcell = np.array([ 80.017,  80.017,  80.017,  60., 60., 90.], dtype=np.float32)
     ref_volume = 0.0
 
 class RefAdK(object):
@@ -74,6 +75,7 @@ class RefAdK(object):
        All distances must be in ANGSTROEM as this is the MDAnalysis
        default unit. All readers must return Angstroem by default.
     """
+    filename = PDB
     ref_coordinates = {
         'A10CA': np.array([ 62.97600174,  62.08800125,  20.2329998 ]),  # Angstroem as MDAnalysis unit!!
         }
@@ -557,13 +559,18 @@ class TestPDBReader(_SingleFrameReader):
         ##mda.core.flags['permissive_pdb_reader'] = False # enable Bio.PDB reader!!
         # use permissive=False instead of changing the global flag as this
         # can lead to race conditions when testing in parallel
-        self.universe = mda.Universe(PDB_small, permissive=False)
+        self.universe = mda.Universe(RefAdKSmall.filename, permissive=False)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
     def test_uses_Biopython(self):
         from MDAnalysis.coordinates.PDB import PDBReader
         assert_(isinstance(self.universe.trajectory, PDBReader), "failed to choose Biopython PDBReader")
 
+    @knownfailure("Biopython PDB reader does not parse CRYST1", AssertionError)
+    def test_dimensions(self):
+        assert_almost_equal(self.universe.trajectory.ts.dimensions, RefAdKSmall.ref_unitcell, 
+                            self.prec,
+                            "Biopython reader failed to get unitcell dimensions from CRYST1")
 
 class TestPSF_CRDReader(_SingleFrameReader):
     def setUp(self):
@@ -602,6 +609,12 @@ class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+
+    def test_dimensions(self):
+        assert_almost_equal(self.universe.trajectory.ts.dimensions, RefAdKSmall.ref_unitcell, 
+                            self.prec,
+                            "Primitive PDB reader failed to get unitcell dimensions from CRYST1")
+
 
 class TestPrimitivePDBWriter(TestCase):
     def setUp(self):
