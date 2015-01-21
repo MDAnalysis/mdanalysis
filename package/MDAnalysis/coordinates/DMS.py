@@ -42,7 +42,7 @@ from copy import deepcopy
 
 class Timestep(base.Timestep):
         def _init_unitcell(self):
-                return {'x': None, 'y': None, 'z': None}
+                return {'x': 0, 'y': 0, 'z': 0}
 
         @property
         def dimensions(self):
