@@ -169,6 +169,11 @@ containing coordinates of current frame</p>
 <dt><em>delta</em></dt>
 <dd><p class="first last">MD integrator time step (!), in AKMA units</p>
 </dd>
+<dt><em>dt</em></dt>
+<dd><p class="first last"><strong>Override</strong> <em>step</em> and <em>delta</em> so that the DCD records that <em>dt</em> ps
+lie between two frames. (It sets <em>step</em> = 1 and <em>delta</em> = <tt class="docutils literal"><span class="pre">AKMA(dt)</span></tt>.)
+The default is <tt class="docutils literal"><span class="pre">None</span></tt>, in which case <em>step</em> and <em>delta</em> are used.</p>
+</dd>
 <dt><em>remarks</em></dt>
 <dd><p class="first last">string that is stored in the DCD header [XXX &#8211; max length?]</p>
 </dd>
@@ -185,6 +190,10 @@ containing coordinates of current frame</p>
 <p class="last">The keyword arguments set the low-level attributes of the DCD
 according to the CHARMM format. The time between two frames would be
 <em>delta</em> * <em>step</em> !</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="MDAnalysis.coordinates.DCD.DCDWriter"><tt class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></tt></a> has detailed argument description</p>
 </div>
 </dd></dl>
 
@@ -243,18 +252,18 @@ coordinates)</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.DCD.DCDWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">DCDWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=1.0</em>, <em>remarks='Created by DCDWriter'</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">DCDWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=20.45482949774598</em>, <em>dt=None</em>, <em>remarks='Created by DCDWriter'</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes to a DCD file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Methods:</th><td class="field-body"><tt class="docutils literal"><span class="pre">d</span> <span class="pre">=</span> <span class="pre">DCDWriter(dcdfilename,</span> <span class="pre">numatoms,</span> <span class="pre">start,</span> <span class="pre">step,</span> <span class="pre">delta,</span> <span class="pre">remarks)</span></tt></td>
-</tr>
-</tbody>
-</table>
+<p>Typical usage:</p>
+<div class="highlight-python"><div class="highlight"><pre>with DCDWriter(&quot;new.dcd&quot;, u.atoms.numberOfAtoms()) as w:
+    for ts in u.trajectory
+        w.write_next_timestep(ts)
+</pre></div>
+</div>
+<p>Keywords are available to set some of the low-level attributes of the DCD.</p>
 <p>Create a new DCDWriter</p>
-<table class="docutils field-list" frame="void" rules="none">
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -269,13 +278,20 @@ coordinates)</p>
 <dd><p class="first last">starting timestep</p>
 </dd>
 <dt><em>step</em></dt>
-<dd><p class="first last">skip between subsequent timesteps</p>
+<dd><p class="first last">skip between subsequent timesteps (indicate that <em>step</em> MD
+integrator steps (!) make up one trajectory frame); default is 1.</p>
 </dd>
 <dt><em>delta</em></dt>
-<dd><p class="first last">timestep</p>
+<dd><p class="first last">timestep (MD integrator time step (!), in AKMA units); default is
+20.45482949774598 (corresponding to 1 ps).</p>
 </dd>
 <dt><em>remarks</em></dt>
 <dd><p class="first last">comments to annotate dcd file</p>
+</dd>
+<dt><em>dt</em></dt>
+<dd><p class="first last"><strong>Override</strong> <em>step</em> and <em>delta</em> so that the DCD records that <em>dt</em> ps
+lie between two frames. (It sets <em>step</em> = 1 and <em>delta</em> = <tt class="docutils literal"><span class="pre">AKMA(dt)</span></tt>.)
+The default is <tt class="docutils literal"><span class="pre">None</span></tt>, in which case <em>step</em> and <em>delta</em> are used.</p>
 </dd>
 <dt><em>convert_units</em></dt>
 <dd><p class="first last">units are converted to the MDAnalysis base format; <tt class="docutils literal"><span class="pre">None</span></tt> selects
@@ -287,6 +303,15 @@ the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAn
 </tr>
 </tbody>
 </table>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The keyword arguments set the low-level attributes of the DCD
+according to the CHARMM format. The time between two frames would be
+<em>delta</em> * <em>step</em> ! For convenience, one can alternatively supply the
+<em>dt</em> keyword (see above) to just tell the writer that it should
+record &#8220;There are dt ps between each frame&#8221;.</p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDWriter.close">
 <tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.close" title="Permalink to this definition">¶</a></dt>
@@ -352,7 +377,7 @@ if no coordinates to be written.</p>
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

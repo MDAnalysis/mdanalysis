@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.1.5. Calculating root mean square quantities — MDAnalysis.analysis.rms &mdash; MDAnalysis 0.8.2-dev documentation</title>
+    <title>3.1.4. Calculating root mean square quantities — MDAnalysis.analysis.rms &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -30,8 +30,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
-    <link rel="next" title="3.2.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole" href="hole.html" />
-    <link rel="prev" title="3.1.4. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds" href="hbonds.html" /> 
+    <link rel="next" title="3.2.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis" href="hbond_analysis.html" />
+    <link rel="prev" title="3.1.3. Distance analysis — MDAnalysis.analysis.distances" href="distances.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,10 +44,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="hole.html" title="3.2.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole"
+          <a href="hbond_analysis.html" title="3.2.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="hbonds.html" title="3.1.4. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds"
+          <a href="distances.html" title="3.1.3. Distance analysis — MDAnalysis.analysis.distances"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
@@ -60,23 +60,23 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">3.1.5. Calculating root mean square quantities &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a><ul>
-<li><a class="reference internal" href="#examples">3.1.5.1. Examples</a><ul>
-<li><a class="reference internal" href="#calculating-rmsd-for-multiple-domains">3.1.5.1.1. Calculating RMSD for multiple domains</a></li>
+<li><a class="reference internal" href="#">3.1.4. Calculating root mean square quantities &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a><ul>
+<li><a class="reference internal" href="#examples">3.1.4.1. Examples</a><ul>
+<li><a class="reference internal" href="#calculating-rmsd-for-multiple-domains">3.1.4.1.1. Calculating RMSD for multiple domains</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#functions">3.1.5.2. Functions</a></li>
-<li><a class="reference internal" href="#analysis-classes">3.1.5.3. Analysis classes</a></li>
+<li><a class="reference internal" href="#functions">3.1.4.2. Functions</a></li>
+<li><a class="reference internal" href="#analysis-classes">3.1.4.3. Analysis classes</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="hbonds.html"
-                        title="previous chapter">3.1.4. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds</span></tt></a></p>
+  <p class="topless"><a href="distances.html"
+                        title="previous chapter">3.1.3. Distance analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.distances</span></tt></a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="hole.html"
-                        title="next chapter">3.2.1. Generation and Analysis of HOLE pore profiles &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hole</span></tt></a></p>
+  <p class="topless"><a href="hbond_analysis.html"
+                        title="next chapter">3.2.1. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/analysis/rms.txt"
@@ -104,7 +104,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.analysis.rms"></span><div class="section" id="calculating-root-mean-square-quantities-mdanalysis-analysis-rms">
-<h1>3.1.5. Calculating root mean square quantities &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a><a class="headerlink" href="#calculating-root-mean-square-quantities-mdanalysis-analysis-rms" title="Permalink to this headline">¶</a></h1>
+<h1>3.1.4. Calculating root mean square quantities &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a><a class="headerlink" href="#calculating-root-mean-square-quantities-mdanalysis-analysis-rms" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -137,9 +137,9 @@ implemented in
 </dl>
 </div>
 <div class="section" id="examples">
-<h2>3.1.5.1. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<h2>3.1.4.1. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="calculating-rmsd-for-multiple-domains">
-<h3>3.1.5.1.1. Calculating RMSD for multiple domains<a class="headerlink" href="#calculating-rmsd-for-multiple-domains" title="Permalink to this headline">¶</a></h3>
+<h3>3.1.4.1.1. Calculating RMSD for multiple domains<a class="headerlink" href="#calculating-rmsd-for-multiple-domains" title="Permalink to this headline">¶</a></h3>
 <p>In this example we will globally fit a protein to a reference
 structure and investigate the relative movements of domains by
 computing the RMSD of the domains to the reference. The example is a
@@ -188,7 +188,7 @@ using backbone atoms</li>
 </div>
 </div>
 <div class="section" id="functions">
-<h2>3.1.5.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<h2>3.1.4.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.rms.rmsd">
 <tt class="descclassname">MDAnalysis.analysis.rms.</tt><tt class="descname">rmsd</tt><big>(</big><em>a</em>, <em>b</em>, <em>weights=None</em>, <em>center=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#rmsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.rmsd" title="Permalink to this definition">¶</a></dt>
@@ -225,7 +225,7 @@ for a weighted RMSD calculation.</p>
 
 </div>
 <div class="section" id="analysis-classes">
-<h2>3.1.5.3. Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline">¶</a></h2>
+<h2>3.1.4.3. Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.rms.RMSD">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.rms.</tt><tt class="descname">RMSD</tt><big>(</big><em>traj</em>, <em>reference=None</em>, <em>select='all'</em>, <em>groupselections=None</em>, <em>filename='rmsd.dat'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.1</em>, <em>ref_frame=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD" title="Permalink to this definition">¶</a></dt>
@@ -373,10 +373,10 @@ constructor is used.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="hole.html" title="3.2.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole"
+          <a href="hbond_analysis.html" title="3.2.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis"
              >next</a> |</li>
         <li class="right" >
-          <a href="hbonds.html" title="3.1.4. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds"
+          <a href="distances.html" title="3.1.3. Distance analysis — MDAnalysis.analysis.distances"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
@@ -390,7 +390,7 @@ constructor is used.</p>
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

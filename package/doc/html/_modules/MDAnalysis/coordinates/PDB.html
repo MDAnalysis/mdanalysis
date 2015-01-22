@@ -331,6 +331,9 @@
 <span class="sd">    The coordinates are also supplied as one numpy array and wrapped</span>
 <span class="sd">    into a Timestep object; attributes are set so that the PDBReader</span>
 <span class="sd">    object superficially resembles the DCDReader object.</span>
+
+<span class="sd">    .. Note:: The Biopython.PDB reader does not parse the ``CRYST1``</span>
+<span class="sd">              record and hence the unitcell dimensions are not set.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;PDB&#39;</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>
@@ -353,7 +356,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip_timestep</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="c">#self.ts._unitcell[:] = ??? , from CRYST1?</span>
+        <span class="c">#self.ts._unitcell[:] = ??? , from CRYST1? --- not implemented in Biopython.PDB</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">del</span> <span class="n">pos</span>
@@ -1481,7 +1484,7 @@
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>
