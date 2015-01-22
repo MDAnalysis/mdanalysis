@@ -12,7 +12,8 @@ that uses the sources.
 Options
 
 -h       help
--d       develop install
+-d       develop install (MODE = develop)
+-u       user install (setup.py MODE --user)
 "
 
 die () {
@@ -22,23 +23,26 @@ die () {
 }
 
 setup_py () {
-    local command="${1}" dir="$2"
+    local command="${1}" dir="$2" options="$3"
     pushd "$dir" || die "failed to cd to '$dir'" $?
     echo ">>     cd $dir"
-    echo ">>     python setup.py ${command}"
-    python setup.py ${command}
+    echo ">>     python setup.py ${command} ${options}"
+    python setup.py ${command} ${options}
     popd
 }
 
 command="install"
-while getopts hd OPT; do
+options=""
+while getopts hdu OPT; do
     case $OPT in 
 	h) echo "$usage"; exit 0;;
 	d) command="develop";;
+	u) options="${options} --user";;
+	'?') die "Unknown option. Try -h for help." 2;;
     esac
 done
 
-setup_py $command package
-setup_py $command testsuite
+setup_py $command package "${options}"
+setup_py $command testsuite "${options}"
 
 
