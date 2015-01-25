@@ -134,6 +134,11 @@ Mathematics and Geometry
 .. autofunction:: dihedral
 .. autofunction:: stp
 
+Class decorators
+----------------
+
+.. autofunction:: cached
+
 .. Rubric:: Footnotes
 
 .. [#NamedStreamClose] The reason why :meth:`NamedStream.close` does
@@ -1088,3 +1093,34 @@ def conv_float(s):
         return float(s)
     except ValueError:
         return s
+
+def cached(key):
+    """Cache a property within a class
+
+    Requires the Class to have a cache dict called "_cache"
+
+    Usage:
+
+    class A(object):
+        def__init__(self):
+            self._cache = dict()
+
+        @property
+        @cached('keyname')
+        def size(self):
+            # This code gets ran only if the lookup of keyname fails
+            # After this code has been ran once, the result is stored in 
+            # _cache with the key: 'keyname'
+            size = 10.0
+
+    .. versionadded:: 0.8.2
+    """
+    def cached_lookup(func):
+        def wrapper(self, *args, **kwargs):
+            try:
+                return self._cache[key]
+            except KeyError:
+                self._cache[key] = ret = func(self, *args, **kwargs)
+                return ret
+        return wrapper
+    return cached_lookup

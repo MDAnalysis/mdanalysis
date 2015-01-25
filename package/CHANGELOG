@@ -39,11 +39,13 @@ The rules for this file:
     .bonds .angles .torsions and .impropers attributes.
   * Added support for improper torsions.
   * AtomGroup now has .bonds .angles .torsions and .impropers attributes which
-    retrieverelevant TopologyGroups
+    retrieve relevant TopologyGroups
   * Increased performance of topology.core.guess_bonds greatly
   * Added topology.core.guess_angles guess_torsions and guess_improper_torsions
     which given accurate bond information can calculate the rest of the
     topology info.
+  * Universe topology information is now settable after initialisation using lists of indices
+    such as those provided by the guess_* functions.
   * Added LAMMPS data parser for topology files with the .data suffix. Can also
     read single frame coordinate & velocity information from these files.
     (Issue 139)

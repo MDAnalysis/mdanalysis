@@ -21,6 +21,7 @@ from numpy.testing import *
 from numpy import pi, sin, cos
 
 import MDAnalysis.core.util as util
+from MDAnalysis.core.util import cached
 from MDAnalysis.tests.datafiles import PSF
 
 import cStringIO
@@ -209,3 +210,146 @@ class TestGeometryFunctions(TestCase):
         cd = bc + self.e3
         assert_almost_equal(util.dihedral(ab, bc, cd), -pi/2)
 
+class Class_with_Caches(object):
+    def __init__(self):
+        self._cache = dict()
+        self.ref1 = 1.0
+        self.ref2 = 2.0
+        self.ref3 = 3.0
+        self.ref4 = 4.0
+        self.ref5 = 5.0
+
+    @cached('val1')
+    def val1(self):
+        return self.ref1
+
+    # Do one with property decorator as these are used together often
+    @property
+    @cached('val2')
+    def val2(self):
+        return self.ref2
+
+    # Check use of property setters
+    @property
+    @cached('val3')
+    def val3(self):
+        return self.ref3
+
+    @val3.setter
+    def val3(self, new):
+        self._clear_caches('val3')
+        self._fill_cache('val3', new)
+
+    @val3.deleter
+    def val3(self):
+        self._clear_caches('val3')
+
+    # Check that args are passed through to underlying functions
+    @cached('val4')
+    def val4(self, n1, n2):
+        return self._init_val_4(n1, n2)
+
+    def _init_val_4(self, m1, m2):
+        return self.ref4 + m1 + m2
+
+    # Args and Kwargs
+    @cached('val5')
+    def val5(self, n, s=None):
+        return self._init_val_5(n, s=s)
+
+    def _init_val_5(self, n, s=None):
+        return n * s
+
+    # These are designed to mimic the AG and Universe cache methods
+    def _clear_caches(self, *args):
+        if len(args) == 0:
+            self._cache = dict()
+        else:
+            for name in args:
+                try:
+                    del self._cache[name]
+                except KeyError:
+                    pass
+
+    def _fill_cache(self, name, value):
+        self._cache[name] = value
+
+class TestCachedDecorator(TestCase):
+    def setUp(self):
+        self.obj = Class_with_Caches()
+
+    def tearDown(self):
+        del self.obj
+
+    def test_val1_lookup(self):
+        self.obj._clear_caches()
+        assert_equal('val1' in self.obj._cache, False)
+        assert_equal(self.obj.val1(), self.obj.ref1)
+        ret = self.obj.val1()
+        assert_equal('val1' in self.obj._cache, True)
+        assert_equal(self.obj._cache['val1'], ret)
+        assert_equal(self.obj.val1() is self.obj._cache['val1'], True)
+
+    def test_val1_inject(self):
+        # Put something else into the cache and check it gets returned
+        # this tests that the cache is blindly being used
+        self.obj._clear_caches()
+        ret = self.obj.val1()
+        assert_equal('val1' in self.obj._cache, True)
+        assert_equal(ret, self.obj.ref1)        
+        new = 77.0
+        self.obj._fill_cache('val1', new)
+        assert_equal(self.obj.val1(), new)
+
+    # Managed property
+    def test_val2_lookup(self):
+        self.obj._clear_caches()
+        assert_equal('val2' in self.obj._cache, False)
+        assert_equal(self.obj.val2, self.obj.ref2)
+        ret = self.obj.val2
+        assert_equal('val2' in self.obj._cache, True)
+        assert_equal(self.obj._cache['val2'], ret)
+
+    def test_val2_inject(self):
+        self.obj._clear_caches()
+        ret = self.obj.val2
+        assert_equal('val2' in self.obj._cache, True)
+        assert_equal(ret, self.obj.ref2)        
+        new = 77.0
+        self.obj._fill_cache('val2', new)
+        assert_equal(self.obj.val2, new)        
+
+    # Setter on cached attribute
+    def test_val3_set(self):
+        self.obj._clear_caches()
+        assert_equal(self.obj.val3, self.obj.ref3)
+        new = 99.0
+        self.obj.val3 = new
+        assert_equal(self.obj.val3, new)
+        assert_equal(self.obj._cache['val3'], new)
+
+    def test_val3_del(self):
+        # Check that deleting the property removes it from cache,
+        self.obj._clear_caches()
+        assert_equal(self.obj.val3, self.obj.ref3)
+        assert_equal('val3' in self.obj._cache, True)
+        del self.obj.val3
+        assert_equal('val3' in self.obj._cache, False)
+        # But allows it to work as usual afterwards
+        assert_equal(self.obj.val3, self.obj.ref3)
+        assert_equal('val3' in self.obj._cache, True)
+
+    # Pass args
+    def test_val4_args(self):
+        self.obj._clear_caches()
+        assert_equal(self.obj.val4(1, 2), 1 + 2 + self.obj.ref4)
+        # Further calls should yield the old result
+        # this arguably shouldn't be cached...
+        assert_equal(self.obj.val4(3, 4), 1 + 2 + self.obj.ref4)
+
+    # Pass args and kwargs
+    def test_val5_kwargs(self):
+        self.obj._clear_caches()
+        assert_equal(self.obj.val5(5, s='abc'), 5 * 'abc')
+
+        assert_equal(self.obj.val5(5, s='!!!'), 5 * 'abc')
