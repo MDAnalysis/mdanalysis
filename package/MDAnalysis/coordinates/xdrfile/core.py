@@ -57,9 +57,9 @@ for the XTC and TRR format.
 
 import os
 import errno
-import sys
-
 import numpy
+import sys
+import cPickle as pkl
 
 import libxdrfile2
 import statno
@@ -368,6 +368,11 @@ class TrjReader(base.Reader):
                 The length of this array must be <= to the actual number of atoms in the trajectory, and
                 equal to number of atoms in the Universe.
 
+        :Keywords:
+            *refresh_offsets*
+                if ``True``, do not retrieve cached offsets, but instead generate
+                new ones [``False``]
+
         """
         self.filename = filename
         # Convert filename to ascii because of SWIG bug.
@@ -440,6 +445,10 @@ class TrjReader(base.Reader):
         # Read in the first timestep
         self._read_next_timestep()
 
+        # try retrieving stored offsets
+        if not kwargs.pop('refresh_offsets', False):
+            self._retrieve_offsets()
+
     @property
     def numatoms(self):
         """The number of publically available atoms that this reader will store in the timestep.
@@ -459,8 +468,10 @@ class TrjReader(base.Reader):
         The result is cached. If for any reason the trajectory cannot
         be read then 0 is returned.
 
-        This  takes a  long time  because  the frames  are counted  by
-        iterating through the whole trajectory.
+        This takes a long time because the frames are counted by
+        iterating through the whole trajectory. If the trajectory
+        was previously loaded and saved offsets exist, then
+        loading will be significantly faster.
         """
         if not self.__numframes is None:  # return cached value
             return self.__numframes
@@ -471,18 +482,6 @@ class TrjReader(base.Reader):
             return 0
         else:
             return self.__numframes
-
-    @property
-    def offsets(self):
-        if self.__offsets is not None:
-            return self.__offsets
-        try:
-            self._read_trj_numframes(self.filename)
-        except IOError:
-            self.__offsets = []
-            return 0
-        else:
-            return self.__offsets
 
     @property
     def delta(self):
@@ -519,37 +518,122 @@ class TrjReader(base.Reader):
         """Number-of-frames extractor/indexer for XTC and TRR."""
         if self.format == 'XTC':
             self.__numframes, self.__offsets = libxdrfile2.read_xtc_numframes(filename)
+            self._store_offsets()
         elif self.format == 'TRR':
             self.__numframes, self.__offsets = libxdrfile2.read_trr_numframes(filename)
+            self._store_offsets()
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return
 
+    def _offset_filename(self):
+        head, tail = os.path.split(self.filename)
+
+        return os.path.join(head, '.{}_offsets.pkl'.format(tail))
+
+    def _store_offsets(self):
+        """Stores offsets for trajectory as a hidden file in the same directory
+            as the trajectory itself.
+
+        .. versionadded: 0.9.0
+        """
+        # try to store offsets; if fails (due perhaps to permissions), then
+        # don't bother
+        try:
+            self.save_offsets(self._offset_filename())
+        except IOError:
+            pass
+
+    def _retrieve_offsets(self):
+        """Attempts to retrieve previously autosaved offsets for trajectory.
+
+        .. versionadded: 0.9.0
+        """
+        try:
+            self.load_offsets(self._offset_filename(), check=True)
+        except IOError:
+            pass
+
     def save_offsets(self, filename):
-        """Saves current trajectory offsets into *filename*, in numpy format. A ".npy" suffix will be appended to
-        *filename* if not already present.
+        """Saves current trajectory offsets into *filename*, as a pickled object.
+
+        Along with the offsets themselves, the ctime and file size of the
+        trajectory file are also saved.  These are used upon load as a check to
+        ensure the offsets still match the trajectory they are being applied
+        to.
 
         :Arguments:
           *filename*
-              filename in which to save the frame offset numpy array.
+              filename in which to save the frame offsets
 
         .. versionadded: 0.8.0
+        .. versionchanged: 0.9.0
         """
         if self.__offsets is None:
             self._read_trj_numframes(self.filename)
-        numpy.save(filename, self.__offsets)
 
-    def load_offsets(self, filename):
-        """Loads current trajectory offsets from *filename* (in numpy format). No error checking is performed.
+        output = {'ctime': os.path.getctime(self.filename),
+                  'size': os.path.getsize(self.filename),
+                  'offsets': self.__offsets}
+
+        with open(filename, 'wb') as f:
+            pkl.dump(output, f)
+
+    def load_offsets(self, filename, check=False):
+        """Loads current trajectory offsets from pickled *filename*. No error
+            checking for file presence performed.
+
+        Checks if ctime and size of trajectory file matches that stored in
+        pickled *filename*.  If either does not match (and ``*check* == False``)
+        then the offsets are not loaded.  This is intended to conservatively
+        avoid loading out-of-date offsets.
 
         :Arguments:
           *filename*
-              filename of a saved numpy array with the frame offsets for the loaded trajectory.
+              filename of pickle file saved with :meth:`~TrjReader._store_offsets` 
+              with the frame offsets for the loaded trajectory
+
+        :Keywords:
+          *check*
+              if False, ignore ctime and size check of trajectory file
 
         .. versionadded: 0.8.0
+        .. versionchanged: 0.9.0
         """
-        self.__offsets = numpy.load(filename)
-        self.__numframes = len(self.__offsets)
+        with open(filename, 'rb') as f:
+            offsets = pkl.load(f)
+
+        try:
+            ## ensure all conditions are met
+            # ctime of file must match that stored
+            conditions = (os.path.getctime(self.filename) == offsets['ctime'])
+
+            # file size must also match
+            conditions = (os.path.getsize(self.filename) == offsets['size']) and conditions
+        except KeyError:
+            return
+
+        # if conditions aren't met, abort retrieval
+        if (not check) or conditions:
+            self.__offsets = offsets['offsets']
+            self.__numframes = len(self.__offsets)
+        else:
+            return
+
+        # finally, check that loaded offsets appear to work by trying
+        # to load last frame; otherwise, dump them so they are regenerated
+
+        #store current frame
+        frame = self.frame
+        try:
+            self.__getitem__(-1)
+        except IndexError, IOError:
+            self.__offsets = None
+            self.__numframes = None
+
+        # ensure we return to the frame we started with
+        # this will generate new offsets
+        self.__getitem__(frame - 1)
 
     def open_trajectory(self):
         """Open xdr trajectory file.

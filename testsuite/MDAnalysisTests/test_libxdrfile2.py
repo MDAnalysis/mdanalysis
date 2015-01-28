@@ -15,7 +15,7 @@
 #
 
 import MDAnalysis
-import numpy as np
+import cPickle as pkl
 from numpy.testing import *
 from MDAnalysis.tests.datafiles import XTC, XTC_offsets, TRR, TRR_offsets
 
@@ -61,8 +61,11 @@ class TestXTC(TestCase):
     def test_numframes_offsets(self):
         numframes, offsets = xdr.read_xtc_numframes(XTC)
         assert_equal(numframes, 10, "Number of frames in XTC trajectory")
-        assert_array_almost_equal(offsets, np.load(XTC_offsets), err_msg="wrong xtc frame offsets")
 
+        with open(XTC_offsets, 'rb') as f:
+            s_offsets = pkl.load(f)
+
+        assert_array_almost_equal(offsets, s_offsets['offsets'], err_msg="wrong xtc frame offsets")
 
 class TestTRR(TestCase):
     def test_numatoms(self):
@@ -72,4 +75,9 @@ class TestTRR(TestCase):
     def test_numframes_offsets(self):
         numframes, offsets = xdr.read_trr_numframes(TRR)
         assert_equal(numframes, 10, "Number of frames in TRR trajectory")
-        assert_array_almost_equal(offsets, np.load(TRR_offsets), err_msg="wrong trr frame offsets")
+
+        with open(TRR_offsets, 'rb') as f:
+            s_offsets = pkl.load(f)
+
+        assert_array_almost_equal(offsets, s_offsets['offsets'], err_msg="wrong trr frame offsets")
+

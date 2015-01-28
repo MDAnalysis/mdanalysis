@@ -20,6 +20,7 @@ import MDAnalysis.coordinates
 import MDAnalysis.coordinates.core
 
 import numpy as np
+import cPickle as pkl
 from numpy.testing import *
 from nose.plugins.attrib import attr
 import sys
@@ -33,6 +34,7 @@ from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, P
 from . import knownfailure
 
 import os
+import shutil
 import errno
 import tempfile
 import itertools
@@ -1902,22 +1904,34 @@ class _GromacsReader(TestCase):
     ref_offset_file = None
 
     def setUp(self):
+        # since offsets are automatically generated in the same directory
+        # as the trajectory, we do everything from a temporary directory
+
+        self.tmpdir = tempfile.mkdtemp()
         # loading from GRO is 4x faster than the PDB reader
-        self.universe = mda.Universe(GRO, self.filename, convert_units=True)
+        shutil.copy(GRO, self.tmpdir)
+        shutil.copy(self.filename, self.tmpdir)
+
+        self.top = os.path.join(self.tmpdir, os.path.basename(GRO))
+        self.traj = os.path.join(self.tmpdir, os.path.basename(self.filename))
+
+        self.universe = mda.Universe(self.top, self.traj, convert_units=True)
         self.trajectory = self.universe.trajectory
         self.prec = 3
         self.ts = self.universe.coord
+        
         # dummy output file
         ext = os.path.splitext(self.filename)[1]
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
         os.close(fd)
-        fd, self.outfile_offsets = tempfile.mkstemp(suffix='.npy')
+        fd, self.outfile_offsets = tempfile.mkstemp(suffix='.pkl')
         os.close(fd)
 
     def tearDown(self):
         try:
             os.unlink(self.outfile)
             os.unlink(self.outfile_offsets)
+            shutil.rmtree(self.tmpdir)
         except:
             pass
         del self.universe
@@ -2025,12 +2039,82 @@ class _GromacsReader(TestCase):
                                   err_msg="error loading frame offsets")
         # Saving
         self.trajectory.save_offsets(self.outfile_offsets)
-        saved_offsets = np.load(self.outfile_offsets)
-        assert_array_almost_equal(self.trajectory._TrjReader__offsets, saved_offsets,
-                                  err_msg="error saving frame offsets")
-        assert_array_almost_equal(self.ref_offsets, saved_offsets,
-                                  err_msg="saved frame offsets don't match the known ones")
+        with open(self.outfile_offsets, 'rb') as f:
+            saved_offsets = pkl.load(f)
+        assert_array_almost_equal(self.trajectory._TrjReader__offsets, saved_offsets['offsets'], err_msg="error saving frame offsets")
+        assert_array_almost_equal(self.ref_offsets, saved_offsets['offsets'], err_msg="saved frame offsets don't match the known ones")
 
+    @dec.slow
+    def test_persistent_offsets(self):
+
+        # check that offsets were newly generated and not loaded from stored
+        # offsets
+        assert_equal(self.trajectory._TrjReader__offsets, None)
+
+        # build offsets
+        self.trajectory.numframes
+        assert_equal((self.trajectory._TrjReader__offsets is None), False)
+    
+        # check that stored offsets present
+        assert_equal(os.path.exists(self.trajectory._offset_filename()), True)
+
+        with open(self.trajectory._offset_filename(), 'rb') as f:
+            saved_offsets = pkl.load(f)
+
+        # check that stored offsets ctime matches that of trajectory file
+        assert_equal(saved_offsets['ctime'], os.path.getctime(self.traj))
+    
+        # check that stored offsets size matches that of trajectory file
+        assert_equal(saved_offsets['size'], os.path.getsize(self.traj))
+
+        # check that stored offsets are loaded for new universe
+        u = mda.Universe(self.top, self.traj)
+        assert_equal((u.trajectory._TrjReader__offsets is not None), True)
+
+        # check that stored offsets are not loaded when trajectory ctime
+        # differs from stored ctime
+        with open(self.trajectory._offset_filename(), 'rb') as f:
+            saved_offsets = pkl.load(f)
+        saved_offsets['ctime'] = saved_offsets['ctime'] - 1
+        with open(self.trajectory._offset_filename(), 'wb') as f:
+            pkl.dump(saved_offsets, f)
+
+        u = mda.Universe(self.top, self.traj)
+        assert_equal((u.trajectory._TrjReader__offsets is None), True)
+        
+        # check that stored offsets are not loaded when trajectory size differs
+        # from stored size
+        with open(self.trajectory._offset_filename(), 'rb') as f:
+            saved_offsets = pkl.load(f)
+        saved_offsets['size'] = saved_offsets['size'] + 1
+        with open(self.trajectory._offset_filename(), 'wb') as f:
+            pkl.dump(saved_offsets, f)
+
+        u = mda.Universe(self.top, self.traj)
+        assert_equal((u.trajectory._TrjReader__offsets is None), True)
+        
+        # check that stored offsets are not loaded when the offsets themselves
+        # appear to be wrong
+        with open(self.trajectory._offset_filename(), 'rb') as f:
+            saved_offsets = pkl.load(f)
+        saved_offsets['offsets'] = saved_offsets['offsets'] + 1
+        with open(self.trajectory._offset_filename(), 'wb') as f:
+            pkl.dump(saved_offsets, f)
+
+        u = mda.Universe(self.top, self.traj)
+        assert_equal((u.trajectory._TrjReader__offsets is None), True)
+
+        # check that if directory is read-only offsets aren't stored
+        os.unlink(self.trajectory._offset_filename())
+        for root, dirs, files in os.walk(self.tmpdir, topdown=False):  
+            for item in dirs:  
+                os.chmod(os.path.join(root, item), 0444)
+            for item in files:
+                os.chmod(os.path.join(root, item), 0444)
+
+        u = mda.Universe(self.top, self.traj)
+        assert_equal(os.path.exists(self.trajectory._offset_filename()), False)
+        
     @dec.slow
     def test_get_Writer(self):
         W = self.universe.trajectory.Writer(self.outfile)
@@ -2066,7 +2150,8 @@ class _GromacsReader(TestCase):
 
 class TestXTCReader(_GromacsReader):
     filename = XTC
-    ref_offsets = np.load(XTC_offsets)
+    with open(XTC_offsets, 'rb') as f:
+        ref_offsets = pkl.load(f)['offsets']
     ref_offset_file = XTC_offsets
 
 
@@ -2086,7 +2171,8 @@ class TestXTCReaderClass(TestCase):
 
 class TestTRRReader(_GromacsReader):
     filename = TRR
-    ref_offsets = np.load(TRR_offsets)
+    with open(TRR_offsets, 'rb') as f:
+        ref_offsets = pkl.load(f)['offsets']
     ref_offset_file = TRR_offsets
 
     @dec.slow

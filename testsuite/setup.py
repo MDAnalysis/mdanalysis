@@ -61,6 +61,7 @@ if sys.version_info[:2] < (2, 6):
     print("Please upgrade your version of Python.")
     sys.exit(-1)
 
+
 if __name__ == '__main__':
     RELEASE = "0.8.2-dev"  # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
@@ -104,7 +105,7 @@ For details see the report for `Issue 87`_.
                   'data/*.gro', 'data/*.xtc', 'data/*.trr', 'data/*npy',
                   'data/*.crd', 'data/*.xyz',
                   'data/*.prmtop', 'data/*.top', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',
-                  'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
+                  'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2', 'data/.*.pkl',
                   'data/*.fasta',
                   'data/*.dms',
                   'data/merge/2zmm/*.pdb',
