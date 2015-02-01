@@ -180,7 +180,7 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
 
     A[0] = A[1] = A[2] = A[3] = A[4] = A[5] = A[6] = A[7] = A[8] = 0.0
 
-    if (weight != None):
+    if (weight is not None):
         for i in xrange(N):
             x1 = weight[i] * coords1[0,i]
             y1 = weight[i] * coords1[1,i]
@@ -339,7 +339,7 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.f
     # the fabs() is to guard against extremely small, but *negative* numbers due to floating point error
     rms = sqrt(fabs(2.0 * (E0 - mxEigenV)/N))
 
-    if (rot == None):
+    if (rot is None):
         return rms # Don't bother with rotation.
 
     a11 = SxxpSyy + Szz-mxEigenV; a12 = SyzmSzy; a13 = - SxzmSzx; a14 = SxymSyx

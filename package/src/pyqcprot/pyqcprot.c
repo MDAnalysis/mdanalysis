@@ -1464,7 +1464,7 @@ static PyObject *__pyx_pf_4core_6qcprot_InnerProduct(CYTHON_UNUSED PyObject *__p
   long __pyx_t_7;
   long __pyx_t_8;
   long __pyx_t_9;
-  PyObject *__pyx_t_10 = NULL;
+  int __pyx_t_10;
   int __pyx_t_11;
   int __pyx_t_12;
   unsigned int __pyx_t_13;
@@ -1520,6 +1520,7 @@ static PyObject *__pyx_pf_4core_6qcprot_InnerProduct(CYTHON_UNUSED PyObject *__p
   long __pyx_t_63;
   long __pyx_t_64;
   long __pyx_t_65;
+  PyObject *__pyx_t_66 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1584,7 +1585,7 @@ static PyObject *__pyx_pf_4core_6qcprot_InnerProduct(CYTHON_UNUSED PyObject *__p
  * 
  *     A[0] = A[1] = A[2] = A[3] = A[4] = A[5] = A[6] = A[7] = A[8] = 0.0             # <<<<<<<<<<<<<<
  * 
- *     if (weight != None):
+ *     if (weight is not None):
  */
   __pyx_t_1 = 0;
   *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_1, __pyx_pybuffernd_A.diminfo[0].strides) = 0.0;
@@ -1608,18 +1609,17 @@ static PyObject *__pyx_pf_4core_6qcprot_InnerProduct(CYTHON_UNUSED PyObject *__p
   /* "src/pyqcprot/pyqcprot.pyx":183
  *     A[0] = A[1] = A[2] = A[3] = A[4] = A[5] = A[6] = A[7] = A[8] = 0.0
  * 
- *     if (weight != None):             # <<<<<<<<<<<<<<
+ *     if (weight is not None):             # <<<<<<<<<<<<<<
  *         for i in xrange(N):
  *             x1 = weight[i] * coords1[0,i]
  */
-  __pyx_t_10 = PyObject_RichCompare(((PyObject *)__pyx_v_weight), Py_None, Py_NE); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_11 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+  __pyx_t_10 = (((PyObject *)__pyx_v_weight) != Py_None);
+  __pyx_t_11 = (__pyx_t_10 != 0);
   if (__pyx_t_11) {
 
     /* "src/pyqcprot/pyqcprot.pyx":184
  * 
- *     if (weight != None):
+ *     if (weight is not None):
  *         for i in xrange(N):             # <<<<<<<<<<<<<<
  *             x1 = weight[i] * coords1[0,i]
  *             y1 = weight[i] * coords1[1,i]
@@ -1629,7 +1629,7 @@ static PyObject *__pyx_pf_4core_6qcprot_InnerProduct(CYTHON_UNUSED PyObject *__p
       __pyx_v_i = __pyx_t_13;
 
       /* "src/pyqcprot/pyqcprot.pyx":185
- *     if (weight != None):
+ *     if (weight is not None):
  *         for i in xrange(N):
  *             x1 = weight[i] * coords1[0,i]             # <<<<<<<<<<<<<<
  *             y1 = weight[i] * coords1[1,i]
@@ -2012,10 +2012,10 @@ static PyObject *__pyx_pf_4core_6qcprot_InnerProduct(CYTHON_UNUSED PyObject *__p
  * @cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_10 = PyFloat_FromDouble(((__pyx_v_G1 + __pyx_v_G2) * 0.5)); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 235; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_10);
-  __pyx_r = __pyx_t_10;
-  __pyx_t_10 = 0;
+  __pyx_t_66 = PyFloat_FromDouble(((__pyx_v_G1 + __pyx_v_G2) * 0.5)); if (unlikely(!__pyx_t_66)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 235; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_66);
+  __pyx_r = __pyx_t_66;
+  __pyx_t_66 = 0;
   goto __pyx_L0;
 
   /* "src/pyqcprot/pyqcprot.pyx":139
@@ -2028,7 +2028,7 @@ static PyObject *__pyx_pf_4core_6qcprot_InnerProduct(CYTHON_UNUSED PyObject *__p
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_66);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
     __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_A.rcbuffer->pybuffer);
@@ -2259,7 +2259,7 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
   __pyx_t_5numpy_float64_t __pyx_t_20;
   double __pyx_t_21;
   int __pyx_t_22;
-  long __pyx_t_23;
+  int __pyx_t_23;
   long __pyx_t_24;
   long __pyx_t_25;
   long __pyx_t_26;
@@ -2277,6 +2277,7 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
   long __pyx_t_38;
   long __pyx_t_39;
   long __pyx_t_40;
+  long __pyx_t_41;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2775,7 +2776,7 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *     # the fabs() is to guard against extremely small, but *negative* numbers due to floating point error
  *     rms = sqrt(fabs(2.0 * (E0 - mxEigenV)/N))             # <<<<<<<<<<<<<<
  * 
- *     if (rot == None):
+ *     if (rot is None):
  */
   __pyx_t_21 = (2.0 * (__pyx_v_E0 - __pyx_v_mxEigenV));
   if (unlikely(__pyx_v_N == 0)) {
@@ -2793,18 +2794,17 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
   /* "src/pyqcprot/pyqcprot.pyx":342
  *     rms = sqrt(fabs(2.0 * (E0 - mxEigenV)/N))
  * 
- *     if (rot == None):             # <<<<<<<<<<<<<<
+ *     if (rot is None):             # <<<<<<<<<<<<<<
  *         return rms # Don't bother with rotation.
  * 
  */
-  __pyx_t_1 = PyObject_RichCompare(((PyObject *)__pyx_v_rot), Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 342; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_22 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_22 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 342; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__pyx_t_22) {
+  __pyx_t_22 = (((PyObject *)__pyx_v_rot) == Py_None);
+  __pyx_t_23 = (__pyx_t_22 != 0);
+  if (__pyx_t_23) {
 
     /* "src/pyqcprot/pyqcprot.pyx":343
  * 
- *     if (rot == None):
+ *     if (rot is None):
  *         return rms # Don't bother with rotation.             # <<<<<<<<<<<<<<
  * 
  *     a11 = SxxpSyy + Szz-mxEigenV; a12 = SyzmSzy; a13 = - SxzmSzx; a14 = SxymSyx
@@ -2947,8 +2947,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *         q1 =  a12*a3344_4334 - a13*a3244_4234 + a14*a3243_4233
  *         q2 = -a11*a3344_4334 + a13*a3144_4134 - a14*a3143_4133
  */
-  __pyx_t_22 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
-  if (__pyx_t_22) {
+  __pyx_t_23 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
+  if (__pyx_t_23) {
 
     /* "src/pyqcprot/pyqcprot.pyx":365
  * 
@@ -3002,8 +3002,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *             a1324_1423 = a13 * a24 - a14 * a23
  *             a1224_1422 = a12 * a24 - a14 * a22
  */
-    __pyx_t_22 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
-    if (__pyx_t_22) {
+    __pyx_t_23 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
+    if (__pyx_t_23) {
 
       /* "src/pyqcprot/pyqcprot.pyx":372
  * 
@@ -3111,8 +3111,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *                 q1 =  a32 * a1324_1423 - a33 * a1224_1422 + a34 * a1223_1322
  *                 q2 = -a31 * a1324_1423 + a33 * a1124_1421 - a34 * a1123_1321
  */
-      __pyx_t_22 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
-      if (__pyx_t_22) {
+      __pyx_t_23 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
+      if (__pyx_t_23) {
 
         /* "src/pyqcprot/pyqcprot.pyx":386
  * 
@@ -3166,8 +3166,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *                     # if qsqr is still too small, return the identity matrix. #
  *                     rot[0] = rot[4] = rot[8] = 1.0
  */
-        __pyx_t_22 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
-        if (__pyx_t_22) {
+        __pyx_t_23 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
+        if (__pyx_t_23) {
 
           /* "src/pyqcprot/pyqcprot.pyx":394
  *                 if (qsqr < evecprec):
@@ -3176,12 +3176,12 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *                     rot[1] = rot[2] = rot[3] = rot[5] = rot[6] = rot[7] = 0.0
  * 
  */
-          __pyx_t_23 = 0;
-          *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_23, __pyx_pybuffernd_rot.diminfo[0].strides) = 1.0;
-          __pyx_t_24 = 4;
+          __pyx_t_24 = 0;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_24, __pyx_pybuffernd_rot.diminfo[0].strides) = 1.0;
-          __pyx_t_25 = 8;
+          __pyx_t_25 = 4;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_rot.diminfo[0].strides) = 1.0;
+          __pyx_t_26 = 8;
+          *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_26, __pyx_pybuffernd_rot.diminfo[0].strides) = 1.0;
 
           /* "src/pyqcprot/pyqcprot.pyx":395
  *                     # if qsqr is still too small, return the identity matrix. #
@@ -3190,18 +3190,18 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  * 
  *                     return
  */
-          __pyx_t_26 = 1;
-          *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_26, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
-          __pyx_t_27 = 2;
+          __pyx_t_27 = 1;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_27, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
-          __pyx_t_28 = 3;
+          __pyx_t_28 = 2;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_28, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
-          __pyx_t_29 = 5;
+          __pyx_t_29 = 3;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
-          __pyx_t_30 = 6;
+          __pyx_t_30 = 5;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
-          __pyx_t_31 = 7;
+          __pyx_t_31 = 6;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_31, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
+          __pyx_t_32 = 7;
+          *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_32, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
 
           /* "src/pyqcprot/pyqcprot.pyx":397
  *                     rot[1] = rot[2] = rot[3] = rot[5] = rot[6] = rot[7] = 0.0
@@ -3406,8 +3406,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *     rot[1] = 2 * (xy + az)
  *     rot[2] = 2 * (zx - ay)
  */
-  __pyx_t_32 = 0;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_32, __pyx_pybuffernd_rot.diminfo[0].strides) = (((__pyx_v_a2 + __pyx_v_x2) - __pyx_v_y2) - __pyx_v_z2);
+  __pyx_t_33 = 0;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_33, __pyx_pybuffernd_rot.diminfo[0].strides) = (((__pyx_v_a2 + __pyx_v_x2) - __pyx_v_y2) - __pyx_v_z2);
 
   /* "src/pyqcprot/pyqcprot.pyx":419
  * 
@@ -3416,8 +3416,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *     rot[2] = 2 * (zx - ay)
  *     rot[3] = 2 * (xy - az)
  */
-  __pyx_t_33 = 1;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_33, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_xy + __pyx_v_az));
+  __pyx_t_34 = 1;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_xy + __pyx_v_az));
 
   /* "src/pyqcprot/pyqcprot.pyx":420
  *     rot[0] = a2 + x2 - y2 - z2
@@ -3426,8 +3426,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *     rot[3] = 2 * (xy - az)
  *     rot[4] = a2 - x2 + y2 - z2
  */
-  __pyx_t_34 = 2;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_zx - __pyx_v_ay));
+  __pyx_t_35 = 2;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_35, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_zx - __pyx_v_ay));
 
   /* "src/pyqcprot/pyqcprot.pyx":421
  *     rot[1] = 2 * (xy + az)
@@ -3436,8 +3436,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *     rot[4] = a2 - x2 + y2 - z2
  *     rot[5] = 2 * (yz + ax)
  */
-  __pyx_t_35 = 3;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_35, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_xy - __pyx_v_az));
+  __pyx_t_36 = 3;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_36, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_xy - __pyx_v_az));
 
   /* "src/pyqcprot/pyqcprot.pyx":422
  *     rot[2] = 2 * (zx - ay)
@@ -3446,8 +3446,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *     rot[5] = 2 * (yz + ax)
  *     rot[6] = 2 * (zx + ay)
  */
-  __pyx_t_36 = 4;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_36, __pyx_pybuffernd_rot.diminfo[0].strides) = (((__pyx_v_a2 - __pyx_v_x2) + __pyx_v_y2) - __pyx_v_z2);
+  __pyx_t_37 = 4;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_rot.diminfo[0].strides) = (((__pyx_v_a2 - __pyx_v_x2) + __pyx_v_y2) - __pyx_v_z2);
 
   /* "src/pyqcprot/pyqcprot.pyx":423
  *     rot[3] = 2 * (xy - az)
@@ -3456,8 +3456,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *     rot[6] = 2 * (zx + ay)
  *     rot[7] = 2 * (yz - ax)
  */
-  __pyx_t_37 = 5;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_yz + __pyx_v_ax));
+  __pyx_t_38 = 5;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_38, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_yz + __pyx_v_ax));
 
   /* "src/pyqcprot/pyqcprot.pyx":424
  *     rot[4] = a2 - x2 + y2 - z2
@@ -3466,8 +3466,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *     rot[7] = 2 * (yz - ax)
  *     rot[8] = a2 - x2 - y2 + z2
  */
-  __pyx_t_38 = 6;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_38, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_zx + __pyx_v_ay));
+  __pyx_t_39 = 6;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_39, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_zx + __pyx_v_ay));
 
   /* "src/pyqcprot/pyqcprot.pyx":425
  *     rot[5] = 2 * (yz + ax)
@@ -3476,8 +3476,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  *     rot[8] = a2 - x2 - y2 + z2
  * 
  */
-  __pyx_t_39 = 7;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_39, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_yz - __pyx_v_ax));
+  __pyx_t_40 = 7;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_yz - __pyx_v_ax));
 
   /* "src/pyqcprot/pyqcprot.pyx":426
  *     rot[6] = 2 * (zx + ay)
@@ -3486,8 +3486,8 @@ static PyObject *__pyx_pf_4core_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED P
  * 
  *     return rms
  */
-  __pyx_t_40 = 8;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_rot.diminfo[0].strides) = (((__pyx_v_a2 - __pyx_v_x2) - __pyx_v_y2) + __pyx_v_z2);
+  __pyx_t_41 = 8;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_41, __pyx_pybuffernd_rot.diminfo[0].strides) = (((__pyx_v_a2 - __pyx_v_x2) - __pyx_v_y2) + __pyx_v_z2);
 
   /* "src/pyqcprot/pyqcprot.pyx":428
  *     rot[8] = a2 - x2 - y2 + z2

@@ -84,6 +84,7 @@ The rules for this file:
   * fixed creation of residues and segments in Merge() 
   * resolves Issue 188 regarding Helanal Finish Argument
   * fixed Issue 184 (TPR files with double precision)
+  * fixed Issue 199 (FutureWarning in pyqcprot)
 
 
 04/01/14  orbeckst, jandom, zhuyi.xue, xdeupi, tyler.je.reddy,
