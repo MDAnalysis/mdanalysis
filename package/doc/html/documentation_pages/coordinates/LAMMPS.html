@@ -234,6 +234,11 @@ available). <em>numatoms</em> is always set from <tt class="xref py py-attr docu
 <dt><em>delta</em></dt>
 <dd><p class="first last">MD integrator time step (!), in AKMA units</p>
 </dd>
+<dt><em>dt</em></dt>
+<dd><p class="first last"><strong>Override</strong> <em>step</em> and <em>delta</em> so that the DCD records that <em>dt</em> ps
+lie between two frames. (It sets <em>step</em> = 1 and <em>delta</em> = <tt class="docutils literal"><span class="pre">AKMA(dt)</span></tt>.)
+The default is <tt class="docutils literal"><span class="pre">None</span></tt>, in which case <em>step</em> and <em>delta</em> are used.</p>
+</dd>
 <dt><em>remarks</em></dt>
 <dd><p class="first last">string that is stored in the DCD header [XXX &#8211; max length?]</p>
 </dd>
@@ -250,6 +255,10 @@ available). <em>numatoms</em> is always set from <tt class="xref py py-attr docu
 <p class="last">The keyword arguments set the low-level attributes of the DCD
 according to the CHARMM format. The time between two frames would be
 <em>delta</em> * <em>step</em> !</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter" title="MDAnalysis.coordinates.LAMMPS.DCDWriter"><tt class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></tt></a> has detailed argument description</p>
 </div>
 </dd></dl>
 
@@ -842,7 +851,7 @@ returned.</p>
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

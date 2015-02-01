@@ -41,8 +41,16 @@ Distances and contacts
    analysis/align
    analysis/contacts
    analysis/distances
-   analysis/hbonds
    analysis/rms
+
+Hydrogen bonding
+================
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/hbond_analysis
+   analysis/hbond_autocorrel
 
 Membranes and membrane proteins
 ===============================

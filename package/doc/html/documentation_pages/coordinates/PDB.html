@@ -835,6 +835,11 @@ with the help of <a class="reference external" href="http://docs.python.org/libr
 <p>The coordinates are also supplied as one numpy array and wrapped
 into a Timestep object; attributes are set so that the PDBReader
 object superficially resembles the DCDReader object.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The Biopython.PDB reader does not parse the <tt class="docutils literal"><span class="pre">CRYST1</span></tt>
+record and hence the unitcell dimensions are not set.</p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBReader.Writer">
 <tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader.Writer" title="Permalink to this definition">¶</a></dt>
@@ -966,7 +971,7 @@ implemented in Python. Bioinformatics, 19, 2308-2310. <a class="reference extern
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

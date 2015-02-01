@@ -38,7 +38,7 @@ from collections import defaultdict
 # Local imports
 from . import tables
 from ..core import distances
-from ..core.util import norm, dihedral
+from ..core.util import norm, dihedral, cached
 from ..core import AtomGroup
 
 
@@ -824,7 +824,7 @@ class TopologyGroup(object):
         # Sorted so that slicing returns sensible results
         self.bondlist = tuple(sorted(set(bondlist)))
 
-        self.__cache = dict()  # used for topdict saving
+        self._cache = dict()  # used for topdict saving
 
     def selectBonds(self, selection):
         """Retrieves a selection from this topology group based on types.
@@ -843,6 +843,7 @@ class TopologyGroup(object):
         return self.topDict.keys()
 
     @property
+    @cached('dict')
     def topDict(self):
         """
         Returns the TopologyDict for this topology group.
@@ -855,9 +856,7 @@ class TopologyGroup(object):
 
         .. versionadded 0.8.2
         """
-        if 'dict' not in self.__cache:
-            self.__cache['dict'] = TopologyDict(self.bondlist)
-        return self.__cache['dict']
+        return TopologyDict(self.bondlist)
 
     def atomgroup_intersection(self, ag, **kwargs):
         """Retrieve all bonds from within this TopologyGroup that are within
@@ -1006,32 +1005,24 @@ class TopologyGroup(object):
         return bondlist
 
     @property
+    @cached('atom1')
     def atom1(self):
-        if 'atom1' not in self.__cache:
-            self.__cache['atom1'] = AtomGroup.AtomGroup(
-                [b[0] for b in self.bondlist])
-        return self.__cache['atom1']
+        return AtomGroup.AtomGroup([b[0] for b in self.bondlist])
 
     @property
+    @cached('atom2')
     def atom2(self):
-        if 'atom2' not in self.__cache:
-            self.__cache['atom2'] = AtomGroup.AtomGroup(
-                [b[1] for b in self.bondlist])
-        return self.__cache['atom2']
+        return AtomGroup.AtomGroup([b[1] for b in self.bondlist])
 
     @property
+    @cached('atom3')
     def atom3(self):
-        if 'atom3' not in self.__cache:
-            self.__cache['atom3'] = AtomGroup.AtomGroup(
-                [b[2] for b in self.bondlist])
-        return self.__cache['atom3']
+        return AtomGroup.AtomGroup([b[2] for b in self.bondlist])
 
     @property
+    @cached('atom4')
     def atom4(self):
-        if 'atom4' not in self.__cache:
-            self.__cache['atom4'] = AtomGroup.AtomGroup(
-                [b[3] for b in self.bondlist])
-        return self.__cache['atom4']
+        return AtomGroup.AtomGroup([b[3] for b in self.bondlist])
 
     def __len__(self):
         """Number of bonds in the topology group"""

@@ -689,7 +689,7 @@ class TestAtomGroupNoTop(TestCase):
     def test_clear_cache(self):
         self.ag._clear_caches()
 
-        assert_equal(self.ag._AtomGroup__cache, dict())
+        assert_equal(self.ag._cache, dict())
 
     def test_rebuild_cache_residues(self):
         assert_equal(len(self.ag.residues), 1)
@@ -721,12 +721,12 @@ class TestAtomGroupNoTop(TestCase):
         # run a __contains__ query
         val = self.u.atoms[10] in ag
         # Check that cache wasn't used
-        assert_equal('atoms' in ag._AtomGroup__cache, False)
+        assert_equal('atoms' in ag._cache, False)
         ag._atomcache_size = 50  # now will make cache if size > 50
         # Run another query
         val = self.u.atoms[10] in ag
         # Check if cache was built this time
-        assert_equal('atoms' in ag._AtomGroup__cache, True)
+        assert_equal('atoms' in ag._cache, True)
 
     def test_atomcache_use(self):
         # Tests that lookup with 'atoms' cache works
@@ -738,14 +738,14 @@ class TestAtomGroupNoTop(TestCase):
         # Don't always add atoms into cache
         ag = self.u.atoms[:100]
         ag._rebuild_caches()
-        assert_equal('atoms' in ag._AtomGroup__cache, False)
+        assert_equal('atoms' in ag._cache, False)
 
     def test_rebuild_atomcache(self):
         # Tests that 'atoms' is built into cache if size is enough
         ag = self.u.atoms[:100]
         ag._atomcache_size = 50
         ag._rebuild_caches()
-        assert_equal('atoms' in ag._AtomGroup__cache, True)
+        assert_equal('atoms' in ag._cache, True)
 
     def test_dimensions(self):
         assert_raises(AttributeError, getattr, self.u.atoms[:10], "dimensions")
@@ -1500,8 +1500,8 @@ class TestUniverseCache(TestCase):
         cache = 'aa'
         self.u._fill_cache(cache, self.fill)
 
-        assert_equal('aa' in self.u._Universe__cache, True)
-        assert_equal(self.u._Universe__cache[cache], self.fill)
+        assert_equal('aa' in self.u._cache, True)
+        assert_equal(self.u._cache[cache], self.fill)
 
     def test_remove_single(self):
         # remove a single item from cache
@@ -1509,11 +1509,11 @@ class TestUniverseCache(TestCase):
 
         self.u._fill_cache(cache, self.fill)
 
-        assert_equal(cache in self.u._Universe__cache, True)
+        assert_equal(cache in self.u._cache, True)
 
         self.u._clear_caches(cache)
         
-        assert_equal(cache in self.u._Universe__cache, False)
+        assert_equal(cache in self.u._cache, False)
 
     def test_remove_list(self):
         # remove a few things from cache
@@ -1522,12 +1522,12 @@ class TestUniverseCache(TestCase):
             self.u._fill_cache(c, self.fill)
 
         for c in caches:
-            assert_equal(c in self.u._Universe__cache, True)
+            assert_equal(c in self.u._cache, True)
 
         self.u._clear_caches(*caches)
 
         for c in caches:
-            assert_equal(c in self.u._Universe__cache, False)
+            assert_equal(c in self.u._cache, False)
 
     def test_clear_all(self):
         # remove everything from cache
@@ -1537,7 +1537,7 @@ class TestUniverseCache(TestCase):
 
         self.u._clear_caches()
 
-        assert_equal(self.u._Universe__cache, dict())
+        assert_equal(self.u._cache, dict())
 
 class TestUnorderedResidues(TestCase):
     """

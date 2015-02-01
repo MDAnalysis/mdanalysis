@@ -343,6 +343,7 @@ from collections import defaultdict
 import MDAnalysis
 from MDAnalysis import SelectionError, NoDataError, SelectionWarning
 import util
+from util import cached
 import copy
 import logging
 logger = logging.getLogger("MDAnalysis.core.AtomGroup")
@@ -622,7 +623,7 @@ class AtomGroup(object):
         # caches:
         # - built on the fly when they are needed
         # - delete entry to invalidate
-        self.__cache = dict()
+        self._cache = dict()
 
         # for generalized __getitem__ (override _containername for ResidueGroup and SegmentGroup)
         self._container = getattr(self, self._containername)
@@ -661,29 +662,29 @@ class AtomGroup(object):
         """
         # If the number of atoms is very large, create a dictionary cache for lookup
         if len(self._atoms) > self._atomcache_size:
-            self.__cache['atoms'] = dict(((x,None) for x in self.__atoms))
+            self._cache['atoms'] = dict(((x,None) for x in self.__atoms))
 
         # Delete preexisting cache if exists
         for att in ['indices', 'residues', 'segments', 'masses',
                     'bonds', 'angles', 'torsions', 'impropers']:
             try:
-                del self.__cache[att]
+                del self._cache[att]
             except KeyError:
                 pass
         # Call each in turn to force them to build into cache
         # indices
-        self.__cache['indices'] = self.indices()
+        self._cache['indices'] = self.indices()
         # residue instances
-        self.__cache['residues'] = self.residues
+        self._cache['residues'] = self.residues
         # segment instances
-        self.__cache['segments'] = self.segments
+        self._cache['segments'] = self.segments
         # masses
-        self.__cache['masses'] = self.masses()
+        self._cache['masses'] = self.masses()
         # bonds angles torsions impropers
-        self.__cache['bonds'] = self.bonds
-        self.__cache['angles'] = self.angles
-        self.__cache['torsions'] = self.torsions
-        self.__cache['impropers'] = self.impropers
+        self._cache['bonds'] = self.bonds
+        self._cache['angles'] = self.angles
+        self._cache['torsions'] = self.torsions
+        self._cache['impropers'] = self.impropers
 
     def _clear_caches(self, *args):
         """Clear cache for all *args*.
@@ -695,20 +696,20 @@ class AtomGroup(object):
         .. versionadded:: 0.8
         """
         if len(args) == 0:
-            self.__cache = {}
+            self._cache = {}
         else:
             for name in args:
                 try:
-                    del self.__cache[name]
+                    del self._cache[name]
                 except KeyError:
                     pass
 
     def _fill_cache(self, name, value):
-        """Populate __cache[name] with value.
+        """Populate _cache[name] with value.
 
         .. versionadded:: 0.8
         """
-        self.__cache[name] = value
+        self._cache[name] = value
 
     # AtomGroup.atoms is guaranteed to be a AtomGroup, too; keeps a consistent API
     # between AtomGroup, Residue, ResidueGroup, Segment; access the list as
@@ -786,10 +787,10 @@ class AtomGroup(object):
 
     def __contains__(self, other):
         # If the number of atoms is very large, create a dictionary cache for lookup
-        if len(self) > self._atomcache_size and not 'atoms' in self.__cache:
-            self.__cache['atoms'] = dict(((x,None) for x in self.__atoms))
+        if len(self) > self._atomcache_size and not 'atoms' in self._cache:
+            self._cache['atoms'] = dict(((x,None) for x in self.__atoms))
         try:
-            return other in self.__cache['atoms']
+            return other in self._cache['atoms']
         except KeyError:
             return other in self._atoms
 
@@ -822,6 +823,7 @@ class AtomGroup(object):
         """Total number of segments in the group"""
         return len(self.segments)
 
+    @cached('indices')
     def indices(self):
         """Array of all :attr:`Atom.number` in the group.
 
@@ -829,9 +831,7 @@ class AtomGroup(object):
         :attr:`Universe.atoms` or the coordinate array
         :attr:`MDAnalysis.coordinates.base.Timestep._pos`.
         """
-        if not 'indices' in self.__cache:
-            self.__cache['indices'] = numpy.array([atom.number for atom in self._atoms])
-        return self.__cache['indices']
+        return numpy.array([atom.number for atom in self._atoms])
 
     def names(self):
         """Returns a list of atom names.
@@ -849,6 +849,7 @@ class AtomGroup(object):
         return numpy.array([a.type for a in self._atoms])
 
     @property
+    @cached('fragments')
     def fragments(self):
         """Read-only list of fragments.
 
@@ -857,11 +858,10 @@ class AtomGroup(object):
 
         .. versionadded 0.8.2
         """
-        if not 'fragments' in self.__cache:
-            self.__cache['fragments'] = tuple(set(a.fragment for a in self._atoms))
-        return self.__cache['fragments']
+        return tuple(set(a.fragment for a in self._atoms))
 
     @property
+    @cached('residues')
     def residues(self):
         """Read-only list of :class:`Residue` objects.
 
@@ -872,15 +872,13 @@ class AtomGroup(object):
            Now returns strictly a ResidueGroup of the unique Residues that Atoms in this group
            belong to.
         """
-        if not 'residues' in self.__cache:
-            residues = []
-            current_residue = None
-            for atom in self._atoms:
-                if atom.residue != current_residue and not atom.residue in residues:
-                    residues.append(atom.residue)
-                current_residue = atom.residue
-            self.__cache['residues'] = ResidueGroup(residues)
-        return self.__cache['residues']
+        residues = []
+        current_residue = None
+        for atom in self._atoms:
+            if atom.residue != current_residue and not atom.residue in residues:
+                residues.append(atom.residue)
+            current_residue = atom.residue
+        return ResidueGroup(residues)
 
     def resids(self):
         """Returns a list of residue numbers.
@@ -908,6 +906,7 @@ class AtomGroup(object):
         return numpy.array([r.resnum for r in self.residues])
 
     @property
+    @cached('segments')
     def segments(self):
         """Read-only list of :class:`Segment` objects.
 
@@ -916,15 +915,13 @@ class AtomGroup(object):
         .. versionchanged:: 0.8.2
            Now strictly returns a SegmentGroup of a set of the Segments from this AtomGroup
         """
-        if not 'segments' in self.__cache:
-            segments = []
-            current_segment = None
-            for atom in self._atoms:
-                if atom.segment != current_segment and not atom.segment in segments:
-                    segments.append(atom.segment)
-                current_segment = atom.segment
-            self.__cache['segments'] = SegmentGroup(segments)
-        return self.__cache['segments']
+        segments = []
+        current_segment = None
+        for atom in self._atoms:
+            if atom.segment != current_segment and not atom.segment in segments:
+                segments.append(atom.segment)
+            current_segment = atom.segment
+        return SegmentGroup(segments)
 
     def segids(self):
         """Returns a list of segment ids (=segment names).
@@ -935,6 +932,7 @@ class AtomGroup(object):
         return numpy.array([s.name for s in self.segments])
 
     @property
+    @cached('bonds')
     def bonds(self):
         """All the bonds in this AtomGroup
 
@@ -944,18 +942,15 @@ class AtomGroup(object):
 
         .. versionadded 0.8.2
         """
-        if 'bonds' not in self.__cache:
-            from MDAnalysis.topology.core import TopologyGroup
-            self.universe.bonds # make sure that the bond info is loaded
-            mybonds = [b for a in self._atoms for b in a.bonds]
-            if len(mybonds) == 0:
-                self.__cache['bonds'] = None
-            else:
-                self.__cache['bonds'] = TopologyGroup(mybonds)
-#            self.__cache['bonds'] = self.universe.bonds.selectBonds(self) # scales very badly
-        return self.__cache['bonds']
+        from MDAnalysis.topology.core import TopologyGroup
+        mybonds = [b for a in self._atoms for b in a.bonds]
+        if len(mybonds) == 0:
+            return None
+        else:
+            return TopologyGroup(mybonds)
 
     @property
+    @cached('angles')
     def angles(self):
         """All the angles in this AtomGroup
 
@@ -965,17 +960,15 @@ class AtomGroup(object):
      
         .. versionadded 0.8.2
         """
-        if 'angles' not in self.__cache:
-            from MDAnalysis.topology.core import TopologyGroup
-            self.universe.angles # force topology info to load
-            mybonds = [b for a in self._atoms for b in a.angles]
-            if len(mybonds) == 0:
-                self.__cache['angles'] = None
-            else:
-                self.__cache['angles'] = TopologyGroup(mybonds)
-        return self.__cache['angles']
+        from MDAnalysis.topology.core import TopologyGroup
+        mybonds = [b for a in self._atoms for b in a.angles]
+        if len(mybonds) == 0:
+            return None
+        else:
+            return TopologyGroup(mybonds)
 
     @property
+    @cached('torsions')
     def torsions(self):
         """All the torsions in this AtomGroup
 
@@ -985,17 +978,15 @@ class AtomGroup(object):
    
         .. versionadded 0.8.2
         """
-        if 'torsions' not in self.__cache:
-            from MDAnalysis.topology.core import TopologyGroup
-            self.universe.torsions # force topology info to load
-            mybonds = [b for a in self._atoms for b in a.torsions]
-            if len(mybonds) == 0:
-                self.__cache['torsions'] = None
-            else:
-                self.__cache['torsions'] = TopologyGroup(mybonds)
-        return self.__cache['torsions']
+        from MDAnalysis.topology.core import TopologyGroup
+        mybonds = [b for a in self._atoms for b in a.torsions]
+        if len(mybonds) == 0:
+            return None
+        else:
+            return TopologyGroup(mybonds)
 
     @property
+    @cached('impropers')
     def impropers(self):
         """All the improper torsions in this AtomGroup
 
@@ -1005,21 +996,17 @@ class AtomGroup(object):
    
         .. versionadded 0.8.2
         """
-        if 'impropers' not in self.__cache:
-            from MDAnalysis.topology.core import TopologyGroup
-            self.universe.impropers # force topology info to load
-            mybonds = [b for a in self._atoms for b in a.impropers]
-            if len(mybonds) == 0:
-                self.__cache['impropers'] = None
-            else:
-                self.__cache['impropers'] = TopologyGroup(mybonds)
-        return self.__cache['impropers']
+        from MDAnalysis.topology.core import TopologyGroup
+        mybonds = [b for a in self._atoms for b in a.impropers]
+        if len(mybonds) == 0:
+            return None
+        else:
+            return TopologyGroup(mybonds)
 
+    @cached('masses')
     def masses(self):
         """Array of atomic masses (as defined in the topology)"""
-        if not 'masses' in self.__cache:
-            self.__cache['masses'] = numpy.array([atom.mass for atom in self._atoms])
-        return self.__cache['masses']
+        return numpy.array([atom.mass for atom in self._atoms])
 
     def totalMass(self):
         """Total mass of the selection (masses are taken from the topology or guessed)."""
@@ -1054,7 +1041,7 @@ class AtomGroup(object):
         *value* is neither of length 1 (or a scalar) nor of the length of the
         group then a :exc:`ValueError` is raised.
 
-        A cache entry ``__cache[groupname]`` is deleted if it exists.
+        A cache entry ``_cache[groupname]`` is deleted if it exists.
 
         :Keywords:
 
@@ -2274,7 +2261,7 @@ class Residue(AtomGroup):
        Added :attr:`Residue.resnum` attribute and *resnum* keyword argument.
     """
     ## FIXME (see below, Issue 70)
-    ##__cache = {}
+    ##_cache = {}
 
     def __init__(self, name, id, atoms, resnum=None):
         super(Residue, self).__init__(atoms)
@@ -2294,8 +2281,8 @@ class Residue(AtomGroup):
         # Should I cache the positions of atoms within a residue?
         # FIXME: breaks when termini are used to populate the cache; termini typically
         #        have the SAME residue name but different atoms!!! Issue 70
-        ##if not Residue.__cache.has_key(name):
-        ##    Residue.__cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
+        ##if not Residue._cache.has_key(name):
+        ##    Residue._cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
 
     def phi_selection(self):
         """AtomGroup corresponding to the phi protein backbone dihedral C'-N-CA-C.
@@ -2856,7 +2843,7 @@ class Universe(object):
         # - torsions
         # - improper torsions
         # - fragments
-        self.__cache = dict()
+        self._cache = dict()
 
         if len(args) == 0:
             # create an empty universe
@@ -2911,20 +2898,20 @@ class Universe(object):
         .. versionadded 0.8.2
         """
         if len(args) == 0:
-            self.__cache = dict()
+            self._cache = dict()
         else:
             for name in args:
                 try:
-                    del self.__cache[name]
+                    del self._cache[name]
                 except KeyError:
                     pass
 
     def _fill_cache(self, name, value):
-        """Populate __cache[name] with value.
+        """Populate _cache[name] with value.
 
         .. versionadded:: 0.8.2
         """
-        self.__cache[name] = value
+        self._cache[name] = value
 
     def _init_topology(self, struc):
         """Populate Universe attributes from the structure dictionary *struc*."""
@@ -3135,17 +3122,16 @@ class Universe(object):
         return frags
 
     @property
+    @cached('fragments')
     def fragments(self):
         """Read only tuple of fragments in the Universe
         
         .. versionadded 0.8.2
         """
-        if 'fragments' not in self.__cache:
-            self.__cache['fragments'] = self._init_fragments()
-
-        return self.__cache['fragments']
+        return self._init_fragments()
 
     @property
+    @cached('bondDict')
     def _bondDict(self):
         """Lazily built dictionary of bonds
 
@@ -3153,21 +3139,19 @@ class Universe(object):
 
         .. versionadded:: 0.8.2
         """
-        if not 'bondDict' in self.__cache:
-            bonds = self.bonds
-            bd = defaultdict(list)
+        bonds = self.bonds
+        bd = defaultdict(list)
 
-            if bonds is None:
-                pass
-            else:
-                for b in bonds:
-                    for a in b:
-                        bd[a].append(b)
-
-            self.__cache['bondDict'] = bd
-        return self.__cache['bondDict']
+        if bonds is None:
+            pass
+        else:
+            for b in bonds:
+                for a in b:
+                    bd[a].append(b)
+        return bd
 
     @property
+    @cached('angleDict')
     def _angleDict(self):
         """Lazily built dictionary of angles
 
@@ -3175,21 +3159,19 @@ class Universe(object):
 
         .. versionadded:: 0.8.2
         """
-        if not 'angleDict' in self.__cache:
-            bonds = self.angles
-            bd = defaultdict(list)
+        bonds = self.angles
+        bd = defaultdict(list)
     
-            if bonds is None:
-                pass
-            else:
-                for b in bonds:
-                    for a in b:
-                        bd[a].append(b)
-
-            self.__cache['angleDict'] = bd
-        return self.__cache['angleDict']
+        if bonds is None:
+            pass
+        else:
+            for b in bonds:
+                for a in b:
+                    bd[a].append(b)
+        return bd
 
     @property
+    @cached('torsionDict')
     def _torsionDict(self):
         """Lazily built dictionary of torsions
 
@@ -3197,21 +3179,19 @@ class Universe(object):
 
         .. versionadded:: 0.8.2
         """
-        if not 'torsionDict' in self.__cache:
-            bonds = self.torsions
-            bd = defaultdict(list)
+        bonds = self.torsions
+        bd = defaultdict(list)
 
-            if bonds is None:
-                pass
-            else:
-                for b in bonds:
-                    for a in b:
-                        bd[a].append(b)
-
-            self.__cache['torsionDict'] = bd
-        return self.__cache['torsionDict']
+        if bonds is None:
+            pass
+        else:
+            for b in bonds:
+                for a in b:
+                    bd[a].append(b)
+        return bd
 
     @property
+    @cached('improperDict')
     def _improperDict(self):
         """Lazily built dictionary of improper torsions
 
@@ -3219,21 +3199,19 @@ class Universe(object):
 
         .. versionadded:: 0.8.2
         """
-        if not 'improperDict' in self.__cache:
-            bonds = self.impropers
-            bd = defaultdict(list)
+        bonds = self.impropers
+        bd = defaultdict(list)
 
-            if bonds is None:
-                pass
-            else:
-                for b in bonds:
-                    for a in b:
-                        bd[a].append(b)
-
-            self.__cache['improperDict'] = bd
-        return self.__cache['improperDict']
+        if bonds is None:
+            pass
+        else:
+            for b in bonds:
+                for a in b:
+                    bd[a].append(b)
+        return bd
 
     @property
+    @cached('fragDict')
     def _fragmentDict(self):
         """Lazily built dictionary of fragments.
 
@@ -3243,14 +3221,12 @@ class Universe(object):
 
         .. versionadded 0.8.2
         """
-        if not 'fragDict' in self.__cache:
-            frags = self.fragments  # will build if not built
-            fd = dict()
-            for f in frags:
-                for a in f:
-                    fd[a] = f
-            self.__cache['fragDict'] = fd
-        return self.__cache['fragDict']
+        frags = self.fragments  # will build if not built
+        fd = dict()
+        for f in frags:
+            for a in f:
+                fd[a] = f
+        return fd
 
     def build_topology(self):
         """
@@ -3261,16 +3237,17 @@ class Universe(object):
         
         .. versionadded 0.8.2
         """
-        if 'bonds' not in self.__cache:
-            self.__cache['bonds'] = self._init_bonds()
-        if 'angles' not in self.__cache:
-            self.__cache['angles'] = self._init_angles()
-        if 'torsions' not in self.__cache:
-            self.__cache['torsions'] = self._init_torsions()
-        if 'impropers' not in self.__cache:
-            self.__cache['impropers'] = self._init_impropers()
+        if 'bonds' not in self._cache:
+            self._cache['bonds'] = self._init_bonds()
+        if 'angles' not in self._cache:
+            self._cache['angles'] = self._init_angles()
+        if 'torsions' not in self._cache:
+            self._cache['torsions'] = self._init_torsions()
+        if 'impropers' not in self._cache:
+            self._cache['impropers'] = self._init_impropers()
 
     @property
+    @cached('bonds')
     def bonds(self):
         """
         Returns a :class:`~MDAnalysis.topology.core.TopologyGroup` of all
@@ -3280,9 +3257,7 @@ class Universe(object):
         .. versionchaged 0.8.2
            Now a lazily built :class:`~MDAnalysis.topology.core.TopologyGroup`
         """
-        if 'bonds' not in self.__cache:
-            self.__cache['bonds'] = self._init_bonds()
-        return self.__cache['bonds']
+        return self._init_bonds()
 
     @bonds.setter
     def bonds(self, bondlist):
@@ -3293,11 +3268,22 @@ class Universe(object):
 
         .. versionadded:: 0.8.2
         """
-        self._clear_caches('bonds', 'bondDict')
+        del self.bonds
         self._psf['_bonds'] = bondlist
-        self.__cache['bonds'] = self._init_bonds()
+        self._fill_cache('bonds', self._init_bonds())
+
+    @bonds.deleter
+    def bonds(self):
+        """Delete the bonds from Universe
+
+        This must also remove the per atom record of bonds (bondDict)
+    
+        .. versionadded:: 0.8.2
+        """
+        self._clear_caches('bonds', 'bondDict')
 
     @property
+    @cached('angles')
     def angles(self):
         """
         Returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
@@ -3307,17 +3293,20 @@ class Universe(object):
         
         .. versionadded 0.8.2
         """
-        if 'angles' not in self.__cache:
-                self.__cache['angles'] = self._init_angles()
-        return self.__cache['angles']
+        return self._init_angles()
 
     @angles.setter
     def angles(self, bondlist):
-        self._clear_caches('angles', 'angleDict')
+        del self.angles
         self._psf['_angles'] = bondlist
-        self.__cache['angles'] = self._init_angles()
+        self._fill_cache('angles', self._init_angles())
+
+    @angles.deleter
+    def angles(self):
+        self._clear_caches('angles', 'angleDict')
 
     @property
+    @cached('torsions')
     def torsions(self):
         """
         Returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
@@ -3327,17 +3316,20 @@ class Universe(object):
         
         .. versionadded 0.8.2
         """
-        if 'torsions' not in self.__cache:
-                self.__cache['torsions'] = self._init_torsions()
-        return self.__cache['torsions']
+        return self._init_torsions()
 
     @torsions.setter
     def torsions(self, bondlist):
-        self._clear_caches('torsions', 'torsionDict')
+        del self.torsions
         self._psf['_dihe'] = bondlist
-        self.__cache['_dihe'] = self._init_torsions()
+        self._fill_cache('torsions', self._init_torsions())
+
+    @torsions.deleter
+    def torsions(self):
+        self._clear_caches('torsions', 'torsionDict')
 
     @property
+    @cached('impropers')
     def impropers(self):
         """
         Returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
@@ -3347,15 +3339,17 @@ class Universe(object):
         
         .. versionadded 0.8.2
         """
-        if 'impropers' not in self.__cache:
-            self.__cache['impropers'] = self._init_impropers()
-        return self.__cache['impropers']
+        return self._init_impropers()
 
     @impropers.setter
     def impropers(self, bondlist):
-        self._clear_caches('impropers', 'improperDict')
+        del self.impropers
         self._psf['_impr'] = bondlist
-        self.__cache['impropers'] = self._init_impropers()
+        self._fill_cache('impropers', self._init_impropers())
+
+    @impropers.deleter
+    def impropers(self):
+        self._clear_caches('impropers', 'improperDict')
 
     def load_new(self, filename, **kwargs):
         """Load coordinates from *filename*, using the suffix to detect file format.

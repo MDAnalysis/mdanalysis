@@ -159,6 +159,7 @@
 <div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; TRZ custom Timestep&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_force</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;has_force&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
@@ -172,7 +173,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="mf">0.0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span>        <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span>   <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">9</span><span class="p">),</span>                <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_force</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_forces</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span>   <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">9</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Timestep</span><span class="p">):</span> <span class="c"># Copy constructor</span>
             <span class="c"># This makes a deepcopy of the timestep</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">frame</span>
@@ -188,6 +191,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_pos</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_velocities</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_force</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_forces</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_forces</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;numpy array can only have 2 dimensions&quot;</span><span class="p">)</span>
@@ -289,48 +294,67 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="mi">1</span> <span class="c">#Step size for iterating through trajectory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="bp">False</span> <span class="c"># Box info for PBC</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_trz_header</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">has_force</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">has_force</span><span class="p">)</span>
+
         <span class="c"># structured dtype of a single trajectory frame</span>
         <span class="n">readarg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">numatoms</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;f4&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s">&#39;p1&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;nframe&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;ntrj&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;natoms&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;treal&#39;</span><span class="p">,</span><span class="s">&#39;f8&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;p2&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;box&#39;</span><span class="p">,</span><span class="s">&#39;9f8&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;p3&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;pressure&#39;</span><span class="p">,</span><span class="s">&#39;f8&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;ptensor&#39;</span><span class="p">,</span><span class="s">&#39;6f8&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;p4&#39;</span><span class="p">,</span><span class="s">&#39;3i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;etot&#39;</span><span class="p">,</span><span class="s">&#39;f8&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;ptot&#39;</span><span class="p">,</span><span class="s">&#39;f8&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;ek&#39;</span><span class="p">,</span><span class="s">&#39;f8&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;T&#39;</span><span class="p">,</span><span class="s">&#39;f8&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;p5&#39;</span><span class="p">,</span><span class="s">&#39;6i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;rx&#39;</span><span class="p">,</span><span class="n">readarg</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;pad2&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;ry&#39;</span><span class="p">,</span><span class="n">readarg</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;pad3&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;rz&#39;</span><span class="p">,</span><span class="n">readarg</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;pad4&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;vx&#39;</span><span class="p">,</span><span class="n">readarg</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;pad5&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;vy&#39;</span><span class="p">,</span><span class="n">readarg</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;pad6&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;vz&#39;</span><span class="p">,</span><span class="n">readarg</span><span class="p">),</span>
-                                   <span class="p">(</span><span class="s">&#39;pad7&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">)])</span>
+        <span class="n">frame_contents</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;p1&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;nframe&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;ntrj&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;natoms&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;treal&#39;</span><span class="p">,</span><span class="s">&#39;f8&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;p2&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;box&#39;</span><span class="p">,</span><span class="s">&#39;9f8&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;p3&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;pressure&#39;</span><span class="p">,</span><span class="s">&#39;f8&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;ptensor&#39;</span><span class="p">,</span><span class="s">&#39;6f8&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;p4&#39;</span><span class="p">,</span><span class="s">&#39;3i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;etot&#39;</span><span class="p">,</span><span class="s">&#39;f8&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;ptot&#39;</span><span class="p">,</span><span class="s">&#39;f8&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;ek&#39;</span><span class="p">,</span><span class="s">&#39;f8&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;T&#39;</span><span class="p">,</span><span class="s">&#39;f8&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;p5&#39;</span><span class="p">,</span><span class="s">&#39;6i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;rx&#39;</span><span class="p">,</span><span class="n">readarg</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;pad2&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;ry&#39;</span><span class="p">,</span><span class="n">readarg</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;pad3&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;rz&#39;</span><span class="p">,</span><span class="n">readarg</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;pad4&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;vx&#39;</span><span class="p">,</span><span class="n">readarg</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;pad5&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;vy&#39;</span><span class="p">,</span><span class="n">readarg</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;pad6&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
+                          <span class="p">(</span><span class="s">&#39;vz&#39;</span><span class="p">,</span><span class="n">readarg</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_force</span><span class="p">:</span>
+            <span class="n">frame_contents</span> <span class="o">+=</span> <span class="p">[(</span><span class="s">&#39;pad7&#39;</span><span class="p">,</span> <span class="s">&#39;i4&#39;</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">frame_contents</span> <span class="o">+=</span> <span class="p">[(</span><span class="s">&#39;pad7&#39;</span><span class="p">,</span> <span class="s">&#39;2i4&#39;</span><span class="p">),</span>
+                               <span class="p">(</span><span class="s">&#39;fx&#39;</span><span class="p">,</span> <span class="n">readarg</span><span class="p">),</span>
+                               <span class="p">(</span><span class="s">&#39;pad8&#39;</span><span class="p">,</span> <span class="s">&#39;2i4&#39;</span><span class="p">),</span>
+                               <span class="p">(</span><span class="s">&#39;fy&#39;</span><span class="p">,</span> <span class="n">readarg</span><span class="p">),</span>
+                               <span class="p">(</span><span class="s">&#39;pad9&#39;</span><span class="p">,</span> <span class="s">&#39;2i4&#39;</span><span class="p">),</span>
+                               <span class="p">(</span><span class="s">&#39;fz&#39;</span><span class="p">,</span> <span class="n">readarg</span><span class="p">),</span>
+                               <span class="p">(</span><span class="s">&#39;pad10&#39;</span><span class="p">,</span> <span class="s">&#39;i4&#39;</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">frame_contents</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_read_trz_header</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_read_trz_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reads the header of the trz trajectory&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_headerdtype</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s">&#39;p1&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">),</span>
                                          <span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">,</span><span class="s">&#39;80c&#39;</span><span class="p">),</span>
-                                         <span class="p">(</span><span class="s">&#39;p2&#39;</span><span class="p">,</span><span class="s">&#39;4i4&#39;</span><span class="p">)])</span>
+                                         <span class="p">(</span><span class="s">&#39;p2&#39;</span><span class="p">,</span><span class="s">&#39;2i4&#39;</span><span class="p">),</span>
+                                         <span class="p">(</span><span class="s">&#39;force&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">),</span>
+                                         <span class="p">(</span><span class="s">&#39;p3&#39;</span><span class="p">,</span><span class="s">&#39;i4&#39;</span><span class="p">)])</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_headerdtype</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;force&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">has_force</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;force&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">has_force</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span>
 
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span> <span class="c"># self.next() is from base Reader class and calls this</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -338,6 +362,9 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span> <span class="c">#Raises indexerror if data has no data (EOF)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;nframe&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;ntrj&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;treal&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -354,15 +381,18 @@
             <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;vx&#39;</span><span class="p">]</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;vy&#39;</span><span class="p">]</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;vz&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_force</span><span class="p">:</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;fx&#39;</span><span class="p">]</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;fy&#39;</span><span class="p">]</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">&#39;fz&#39;</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span> <span class="c">#Convert things read into MDAnalysis&#39; native formats (nm -&gt; angstroms in this case)</span>
+            <span class="c"># Convert things read into MDAnalysis&#39; native formats (nm -&gt; angstroms)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">ts</span>
-        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span> <span class="c">#Raises indexerror if data has no data (EOF)</span>
-            <span class="k">raise</span> <span class="ne">IOError</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="TRZReader.numatoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader.numatoms">[docs]</a>    <span class="k">def</span> <span class="nf">numatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -720,7 +750,7 @@
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

@@ -47,7 +47,8 @@ Available analysis modules
     :func:`~MDAnalysis.analysis.distances.distance_array` function.
 
 :mod:`~MDAnalysis.analysis.hbonds`
-    Analyze hydrogen bonds.
+    Analyze hydrogen bonds, including both the per frame results as well
+    as the dynamic properties and lifetimes.
 
 :mod:`~MDAnalysis.analysis.helanal`
     Analysis of helices with the HELANAL_ algorithm.
@@ -74,7 +75,7 @@ Available analysis modules
 
 """
 __all__ = ['align', 'contacts', 'density', 'distances',
-           'helanal', 'hbonds', 'leaflet', 'nuclinfo' ,
+           'hbonds', 'helanal', 'leaflet', 'nuclinfo' ,
            'rms', 'x3dna',
            ]
 
