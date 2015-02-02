@@ -2530,6 +2530,10 @@ class RefLAMMPSDataMini(object):
     vel_atom1 = np.array([-5.667593  ,  7.91380978, -3.00779533], dtype=np.float32)
     dimensions = np.array([ 60., 50., 30.,  90., 90.,  90.], dtype=np.float32)
 
+def test_datareader_VE():
+    from MDAnalysis.coordinates.LAMMPS import DATAReader
+    assert_raises(ValueError, DATAReader, 'filename')
+
 class _TestLammpsData_Coords(TestCase):
     """Tests using a .data file for loading single frame.
 
@@ -2558,6 +2562,14 @@ class _TestLammpsData_Coords(TestCase):
 
     def test_seek(self):
         assert_raises(IndexError, self.u.trajectory.__getitem__, 1)
+
+    def test_seek_2(self):
+        ts = self.u.trajectory[0]
+        assert_equal(type(ts), MDAnalysis.coordinates.LAMMPS.DATATimestep)
+
+    def test_iter(self):
+        # Check that iterating works, but only gives a single frame
+        assert_equal(len(list(iter(self.u.trajectory))), 1)
 
 class TestLammpsData_Coords(_TestLammpsData_Coords, RefLAMMPSData):
     pass

@@ -185,8 +185,7 @@ class DATAReader(base.Reader):
         raise StopIteration
 
     def _read_frame(self, frame):
-        if frame != 0:
-            raise IndexError("DATAReader only contains a single frame at frame index 0")
+        """Bounds checking of frame is done in __iter__ """
         return self.ts
 
     def _read_next_timestep(self):

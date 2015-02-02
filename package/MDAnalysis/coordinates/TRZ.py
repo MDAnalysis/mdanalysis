@@ -210,14 +210,13 @@ class TRZReader(base.Reader):
         self.trzfile = util.anyopen(self.filename, 'rb')
 
         self.__numatoms = numatoms
+        self.fixed = False
+        self.periodic = True
+        self.skip = 1
         self.__numframes = None
         self.__delta = None
         self.__dt = None
         self.__skip_timestep = None
-
-        self.fixed = 0 #Are any atoms fixed in place? Not used in trz files
-        self.skip = 1 #Step size for iterating through trajectory
-        self.periodic = False # Box info for PBC
 
         self._read_trz_header()
         self.ts = Timestep(self.numatoms, has_force=self.has_force)
@@ -321,26 +320,7 @@ class TRZReader(base.Reader):
     @property
     def numatoms(self):
         """Number of atoms in a frame"""
-        if not self.__numatoms is None:
-            return  self.__numatoms
-        try:
-            self._reopen()
-            self.__numatoms = self._read_trz_natoms(self.trzfile)
-        except IOError:
-            return 0
-        else:
-            return self.__numatoms
-
-    def _read_trz_natoms(self, trzfile):
-        #Read start of next frame and reopen file
-        try:
-            data = numpy.fromfile(trzfile, dtype=self._dtype, count=1)
-            natoms = data['natoms']
-        except IndexError:
-            raise IOError
-        else:
-            self._reopen()
-            return natoms
+        return self.__numatoms
 
     @property
     def numframes(self):
@@ -464,11 +444,6 @@ class TRZReader(base.Reader):
 
             self.trzfile.seek(seeksize,1)
 
-    def rewind(self):
-        """Reposition reader onto first frame"""
-        self._reopen()
-        self.next()
-
     def _reopen(self):
         self.close()
         self.open_trajectory()
@@ -499,14 +474,12 @@ class TRZReader(base.Reader):
 
     def close(self):
         """Close trz file if it was open"""
-        if self.trzfile is None:
-            return
-        self.trzfile.close()
-        self.trzfile = None
+        if not self.trzfile is None:
+            self.trzfile.close()
+            self.trzfile = None
 
     def __del__(self):
-        if not self.trzfile is None:
-            self.close()
+        self.close()
 
 class TRZWriter(base.Writer):
     """Writes a TRZ format trajectory.

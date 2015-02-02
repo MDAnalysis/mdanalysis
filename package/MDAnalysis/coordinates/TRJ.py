@@ -402,9 +402,6 @@ class TRJReader(base.Reader):
                 else:
                         return self.__numframes
 
-        def _read_trj_numatoms(self, filename):
-                raise NotImplementedError("It is not possible to reliably deduce NATOMS from AMBER trj files")
-
         def _read_trj_numframes(self, filename):
                 self._reopen()
 
@@ -420,21 +417,11 @@ class TRJReader(base.Reader):
 
         @property
         def numatoms(self):
-                if not self.__numatoms is None:   # return cached value
-                        return self.__numatoms
-                try:
-                        self.__numatoms = self._read_trj_numatoms(self.filename)
-                except IOError:
-                        return 0
-                else:
-                        return self.__numatoms
+                return self.__numatoms
 
         def __del__(self):
                 if not self.trjfile is None:
                         self.close()
-
-        def __len__(self):
-                return self.numframes
 
         def _reopen(self):
                 self.close()
