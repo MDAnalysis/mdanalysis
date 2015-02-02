@@ -287,9 +287,6 @@ class TRZReader(base.Reader):
 
         try:
             data = numpy.fromfile(self.trzfile, dtype=self._dtype, count=1)
-        except IndexError: #Raises indexerror if data has no data (EOF)
-            raise IOError
-        else:
             ts.frame = data['nframe'][0]
             ts.step = data['ntrj'][0]
             ts.time = data['treal'][0]
@@ -310,7 +307,9 @@ class TRZReader(base.Reader):
                 ts._forces[:,0] = data['fx']
                 ts._forces[:,1] = data['fy']
                 ts._forces[:,2] = data['fz']
-
+        except IndexError: #Raises indexerror if data has no data (EOF)
+            raise IOError
+        else:
             # Convert things read into MDAnalysis' native formats (nm -> angstroms)
             if self.convert_units:
                 self.convert_pos_from_native(self.ts._pos)
