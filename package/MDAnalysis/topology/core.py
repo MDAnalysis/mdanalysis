@@ -930,10 +930,6 @@ class TopologyGroup(object):
         # i'll get keyerrors which i'll pass
         count_dict = {b: 0 for b in self.bondlist}
 
-        # hack to allow Atoms to function identically to AtomGroups
-        if isinstance(other, AtomGroup.Atom):
-            other = [other]
-
         # then go through ag and count appearances of bonds
 # This seems to benchmark slow, because __getattribute__ is slower than a.bonds
 #        for atom in other:
