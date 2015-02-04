@@ -70,7 +70,7 @@ Classes
 
 import DCD
 from MDAnalysis.core import units
-from MDAnalysis.topology.LAMMPSParser import read_DATA_timestep
+from MDAnalysis.topology.LAMMPSParser import DATAParser
 import MDAnalysis.core
 import base
 
@@ -143,7 +143,7 @@ class DATATimestep(base.Timestep):
 
         .. versionadded:: 0.8.2
         """
-        self._unitcell = box
+        self._unitcell[:] = box
 
 
 class DATAReader(base.Reader):
@@ -167,7 +167,8 @@ class DATAReader(base.Reader):
         self.numatoms = numatoms
 
         self.ts = DATATimestep(self.numatoms)
-        read_DATA_timestep(self.ts, self.filename)
+        with DATAParser(self.filename) as p:
+            p.read_DATA_timestep(self.ts)
 
         self.numframes = 1
         self.fixed = 0  # parse B field for fixed atoms?

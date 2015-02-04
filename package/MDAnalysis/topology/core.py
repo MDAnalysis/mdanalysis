@@ -28,17 +28,17 @@ module. They are mostly of use to developers.
 """
 from __future__ import print_function
 # Global imports
-import itertools
 import os.path
 from math import sqrt
 import numpy
-import sys
 from collections import defaultdict
+from itertools import izip
 
 # Local imports
 from . import tables
 from ..core import distances
 from ..core.util import norm, dihedral, cached
+from ..core.util import angle as slowang
 from ..core import AtomGroup
 
 
@@ -323,21 +323,19 @@ class Improper_Torsion(Torsion):  # subclass Torsion to inherit torsion method
         return self.torsion()
 
 
-def get_parser_for(filename, permissive=False, bonds=False, format=None):
+def get_parser_for(filename, permissive=False, tformat=None):
     """Return the appropriate topology parser for *filename*.
 
     Automatic detection is disabled when an explicit *format* is
     provided.
     """
-    from . import _topology_parsers_permissive, _topology_parsers, \
-        _topology_parsers_bonds
-    format = guess_format(filename, format=format)
-    if permissive and not bonds:
-        return _topology_parsers_permissive[format]
-    if permissive and bonds:
-        return _topology_parsers_bonds[format]
-    return _topology_parsers[format]
+    from . import _topology_parsers
 
+    tformat = guess_format(filename, format=tformat)
+    if tformat == 'PDB' and permissive:
+        return _topology_parsers['Permissive_PDB']
+    else:
+        return _topology_parsers[tformat]
 
 def guess_format(filename, format=None):
     """Returns the type of topology file *filename*.
@@ -349,6 +347,7 @@ def guess_format(filename, format=None):
     If *format* is supplied then it overrides the auto detection.
     """
     from . import _topology_parsers
+
     if format is None:
         # simple extension checking... something more complicated is left
         # for the ambitious
@@ -611,7 +610,7 @@ def get_atom_mass(element):
 
     Masses are looked up in :data:`MDAnalysis.topology.tables.masses`.
 
-    .. Warning:: Unknown masses are set to 0.
+    .. Warning:: Unknown masses are set to 0.00
     """
     try:
         return tables.masses[element]
@@ -1122,8 +1121,6 @@ class TopologyGroup(object):
         """Slow version of angle (numpy implementation)"""
         if not self.toptype == 'Angle':
             raise TypeError("TopologyGroup is not of type 'Angle'")
-        from MDAnalysis.core.util import angle as slowang
-        from itertools import izip
 
         vec1 = self.atom1.coordinates() - self.atom2.coordinates()
         vec2 = self.atom3.coordinates() - self.atom2.coordinates()
@@ -1170,8 +1167,6 @@ class TopologyGroup(object):
         if self.toptype not in ['Torsion', 'Improper_Torsion']:
             raise TypeError("TopologyGroup is not of type 'Torsion' or "
                             "'Improper_Torsion'")
-        from MDAnalysis.core.util import dihedral
-        from itertools import izip
 
         vec1 = self.atom2.coordinates() - self.atom1.coordinates()
         vec2 = self.atom3.coordinates() - self.atom2.coordinates()

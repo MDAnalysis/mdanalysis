@@ -19,10 +19,11 @@ import MDAnalysis
 from MDAnalysis.core.AtomGroup import AtomGroup
 from MDAnalysis.core.distances import calc_bonds, calc_angles, calc_torsions
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass, \
-    guess_format, guess_bonds, guess_angles, guess_torsions, guess_improper_torsions
+    guess_format, guess_bonds, guess_angles, guess_torsions, guess_improper_torsions, \
+    get_parser_for
 from MDAnalysis.topology.core import Bond, Angle, Torsion, Improper_Torsion, TopologyGroup, TopologyObject, TopologyDict
 from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD, \
-    LAMMPSdata, trz4data
+    LAMMPSdata, trz4data, TPR, PDB
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -131,7 +132,30 @@ class _TestTopology(TestCase):
     def tearDown(self):
         del self.universe
 
+    def test_correct_parser(self):
+        """Check that get_parser returns the intended parser"""
+        try:
+            perm = self.perm
+        except AttributeError:
+            perm = False
+        ret = get_parser_for(self.topology, permissive=perm)
+
+        assert_equal(self.parser, ret)
+
     def test_parser(self):
+        """Check that the parser works as intended, 
+        and that the returned value is a dictionary
+        """
+        with self.parser(self.topology) as p:
+            ret = p.parse()
+        assert_equal(type(ret), type(dict()))
+
+#    def test_parser_raises_IOE(self):
+#        """Check that when given junk input, they raise IOError"""
+#        p = self.parser(trz4data)
+#        assert_raises(IOError, p.parse) or assert_raises(ValueError, p.parse)
+
+    def test_parser_atoms(self):
         assert_equal(self.universe.atoms.numberOfAtoms(),
                      self.ref_numatoms,
                      "wrong number of atoms in topology")
@@ -151,6 +175,7 @@ class RefAdKSmall(object):
     Based on small PDB with AdK (:data:`PDB_small`).
     """
     topology = PSF
+    parser = MDAnalysis.topology.PSFParser.PSFParser
     ref_numatoms = 3341
     ref_numresidues = 214
 
@@ -165,6 +190,7 @@ class RefNAMD_CGENFF(object):
     http://code.google.com/p/mdanalysis/issues/detail?id=107
     """
     topology = PSF_NAMD
+    parser = MDAnalysis.topology.PSFParser.PSFParser
     ref_numatoms = 130
     ref_numresidues = 6
 
@@ -741,6 +767,7 @@ class RefCappedAla(object):
     Capped Ala in water
     """
     topology = PRMpbc
+    parser = MDAnalysis.topology.TOPParser.TOPParser
     ref_numatoms = 5071
     ref_numresidues = 1686
     ref_proteinatoms = 22
@@ -748,6 +775,7 @@ class RefCappedAla(object):
 class RefAMBER12(object):
     """Fixture data for testing AMBER12 reading (Issue 100)"""
     topology = PRM12
+    parser = MDAnalysis.topology.TOPParser.TOPParser
     ref_numatoms = 8923
     ref_numresidues = 2861
     ref_proteinatoms = 0
@@ -766,24 +794,35 @@ class TestAMBER12(_TestTopology, RefAMBER12):
 
 class RefPDB(object):
     topology = PDB_small
+    parser = MDAnalysis.topology.PDBParser.PDBParser
     ref_numatoms = 3341
     ref_numresidues = 214
 
+class RefPDB_Perm(RefPDB):
+    perm = True
+    parser = MDAnalysis.topology.PrimitivePDBParser.PrimitivePDBParser
+
 class TestPDB(_TestTopology, RefPDB):
     """Testing PDB topology parsing (PrimitivePDB)"""
+    pass
+
+class TestPDB_Perm(_TestTopology, RefPDB_Perm):
+    pass
+
+class RefXPDB(object):
+    topology = PDB
+    parser = MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser
+    ref_numatoms = 47681
+    ref_numresidues = 11302
 
 # DESRES
+class RefDMS(object):
+    topology = DMS
+    parser = MDAnalysis.topology.DMSParser.DMSParser
+    ref_numatoms = 3341
+    ref_numresidues = 214
 
-class TestDMSReader(TestCase):
-    def setUp(self):
-        self.universe = MDAnalysis.Universe(DMS)
-        self.universe.build_topology()
-        self.ts = self.universe.trajectory.ts
-
-    def tearDown(self):
-        del self.universe
-        del self.ts
-
+class TestDMSReader(_TestTopology, RefDMS):
     def test_number_of_bonds(self):
         # Desired value taken from VMD
         #      Info)    Atoms: 3341
@@ -816,11 +855,16 @@ class TestDMSReader(TestCase):
         assert_equal(self.universe.atoms[-1].number, 3341 - 1,
                      "last atom has wrong Atom.number")
 
-
-    
-
 # GROMACS TPR
-# see test_tprparser
+# see also test_tprparser
+class RefTPR(object):
+    parser = MDAnalysis.topology.TPRParser.TPRParser
+    topology = TPR
+    ref_numatoms = 47681
+    ref_numresidues = 11302
+
+class TestTPRParser(_TestTopology, RefTPR):
+    pass
 
 class TestTopologyGuessers(TestCase):
     """Test the various ways of automating topology creation in the Universe
@@ -926,52 +970,40 @@ class TestTopologyGuessers(TestCase):
         assert_equal(len(self.u.impropers), 10314)
 
 
-class TestLammpsData(TestCase):
+class RefLammpsData(object):
+    topology = LAMMPSdata
+    parser = MDAnalysis.topology.LAMMPSParser.DATAParser
+    ref_numatoms = 18360
+    ref_numresidues = 24
+
+class TestLammpsData(_TestTopology, RefLammpsData):
     """Tests the reading of lammps .data topology files.
 
     The reading of coords and velocities is done separately in test_coordinates
     """
-    def setUp(self):
-        self.u = MDAnalysis.Universe(LAMMPSdata, trz4data)
-        self.ag = self.u.atoms[:300]
-
-    def tearDown(self):
-        del self.u
-
-    def test_numatoms(self):
-        assert_equal(len(self.u.atoms), 18360)
-
-    def test_atomtypes(self):
-        typs = self.ag.types()
-        # Correct number of types found
-        assert_equal(len(set(typs)), 6)
-        # Correct number of a given types
-        assert_equal(len(typs[typs=='1']), 160)
-
     def test_charge(self):
         # No charges were supplied, should default to 0.0
-        assert_equal(self.u.atoms[0].charge, 0.0)
+        assert_equal(self.universe.atoms[0].charge, 0.0)
 
     def test_resid(self):
-        assert_equal(len(self.u.residues), 24)
-        assert_equal(len(self.u.residues[0]), 765)
+        assert_equal(len(self.universe.residues[0]), 765)
 
     # Testing _psf prevent building TGs
     # test length and random item from within
     def test_bonds(self):
-        assert_equal(len(self.u._psf['_bonds']), 18336)
-        assert_equal((5684, 5685) in self.u._psf['_bonds'], True)
+        assert_equal(len(self.universe._psf['_bonds']), 18336)
+        assert_equal((5684, 5685) in self.universe._psf['_bonds'], True)
 
     def test_angles(self):
-        assert_equal(len(self.u._psf['_angles']), 29904)
-        assert_equal((7575, 7578, 7579) in self.u._psf['_angles'], True)
+        assert_equal(len(self.universe._psf['_angles']), 29904)
+        assert_equal((7575, 7578, 7579) in self.universe._psf['_angles'], True)
 
     def test_torsions(self):
-        assert_equal(len(self.u._psf['_dihe']), 5712)
-        assert_equal((3210, 3212, 3215, 3218) in self.u._psf['_dihe'], True)
+        assert_equal(len(self.universe._psf['_dihe']), 5712)
+        assert_equal((3210, 3212, 3215, 3218) in self.universe._psf['_dihe'], True)
 
     def test_masses(self):
-        assert_equal(self.u.atoms[0].mass, 0.012)
+        assert_equal(self.universe.atoms[0].mass, 0.012)
 
 
 class TestGuessFormat(TestCase):

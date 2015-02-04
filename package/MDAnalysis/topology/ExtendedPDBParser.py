@@ -61,30 +61,6 @@ class ExtendedPDBParser(PrimitivePDBParser.PrimitivePDBParser):
 
     .. versionadded:: 0.8
     """
-    def __init__(self, *args, **kwargs):
-        super(ExtendedPDBParser, self).__init__(*args, **kwargs)
+    def __init__(self, filename, **kwargs):
+        super(ExtendedPDBParser, self).__init__(filename, **kwargs)
         self.PDBReader = MDAnalysis.coordinates.PDB.ExtendedPDBReader
-
-# function to keep compatible with the current API; should be cleaned up...
-def parse(filename):
-    """Parse atom information from extended PDB file *filename*.
-
-    :Returns: MDAnalysis internal *structure* dict
-
-    .. SeeAlso:: The *structure* dict is defined in
-                 :func:`MDAnalysis.topology.PSFParser.parse` and the file is read with
-                 :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
-
-    """
-    return ExtendedPDBParser(filename).parse()
-
-def parse_bonds(filename):
-    """Parse atom information from extended PDB file *filename* and guesses bonds.
-
-    :Returns: MDAnalysis internal *structure* dict
-
-    .. SeeAlso:: The *structure* dict is defined in
-                 :func:`MDAnalysis.topology.PSFParser.parse` and the file is read with
-                 :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
-    """
-    return ExtendedPDBParser(filename, guess_bonds_mode=True).parse()

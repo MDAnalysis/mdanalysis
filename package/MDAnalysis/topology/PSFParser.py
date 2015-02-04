@@ -29,94 +29,106 @@ space-separated "PSF" file variants.
 .. _PSF: http://www.charmm.org/documentation/c35b1/struct.html
 """
 
-import warnings
-import MDAnalysis.core.util as util
-from MDAnalysis import FileFormatWarning
-
 import logging
+from math import ceil
+
+from MDAnalysis.core.AtomGroup import Atom
+from MDAnalysis.core.util import openany
+from .base import TopologyReader
+
 logger = logging.getLogger("MDAnalysis.topology.PSF")
 
-def parse(filename):
-    """Parse CHARMM/NAMD/XPLOR PSF_ file *filename*.
 
-    :Returns: MDAnalysis internal *structure* dict as defined here.
-    """
-    # Open and check psf validity
-    with util.openany(filename,'r') as psffile:
-        next_line = skip_line = psffile.next
-        header = next_line()
-        if header[:3] != "PSF":
-            logger.error("%s is not valid PSF file (header = %r)", psffile.name, header)
-            raise ValueError("%s is not a valid PSF file" % psffile.name)
-        header_flags = header[3:].split()
-        if "NAMD" in header_flags:
-            format = "NAMD"        # NAMD/VMD
-        elif "EXT" in header_flags:
-            format = "EXTENDED"    # CHARMM
-        else:
-            format = "STANDARD"    # CHARMM
-        skip_line()
-        title = next_line().split()
-        if not (title[1] == "!NTITLE"):
-            logger.error("%s is not a valid PSF file", psffile.name)
-            raise ValueError("%s is not a valid PSF file" % psffile.name)
-        psfremarks = [next_line() for i in range(int(title[0]))]
-        logger.debug("PSF file %r: format %r", psffile.name, format)
+class PSFParser(TopologyReader):
+    def parse(self):
+        """Parse CHARMM/NAMD/XPLOR PSF_ file *filename*.
 
-        structure = {}
+        :Returns: MDAnalysis internal *structure* dict as defined here.
+        """
+        # Open and check psf validity
+        with openany(self.filename, 'r') as psffile:
+            header = psffile.next()
+            if header[:3] != "PSF":
+                err = ("{} is not valid PSF file (header = {})"
+                       "".format(self.filename, header))
+                logger.error(err)
+                raise ValueError(err)
+            header_flags = header[3:].split()
 
-        def parse_sec(section_info, **kwargs):
-            desc, atoms_per, per_line, parsefunc, data_struc = section_info
-            from math import ceil
-            header = next_line()
-            while header.strip() == "": header = next_line()
-            header = header.split()
-            # Get the number
-            num = int(header[0])
-            sect_type = header[1].strip('!:')
-            # Make sure the section type matches the desc
-            if not (sect_type == desc):
-                logger.error("Expected section %r but found %r", desc, sect_type)
-                raise ValueError("Expected section {0} but found {1}".format(desc, sect_type))
-            # Now figure out how many lines to read
-            numlines = int(ceil(float(num)/per_line))
-            # Too bad I don't have generator expressions [said Naveen in 2005]
-            #def repeat(func, num):
-            #    for i in xrange(num):
-            #        yield func()
-            #lines = repeat(next_line, numlines)
-            parsefunc(next_line, atoms_per, data_struc, structure, numlines, **kwargs)
+            if "NAMD" in header_flags:
+                self._format = "NAMD"        # NAMD/VMD
+            elif "EXT" in header_flags:
+                self._format = "EXTENDED"    # CHARMM
+            else:
+                self._format = "STANDARD"    # CHARMM
 
-        sections = [("NATOM", 1, 1, __parseatoms_, "_atoms"),
-                    ("NBOND", 2, 4, __parsesection_, "_bonds"),
-                    ("NTHETA", 3, 3, __parsesection_, "_angles"),
-                    ("NPHI", 4, 2, __parsesection_, "_dihe"),
-                    ("NIMPHI", 4, 2, __parsesection_, "_impr"),
-                    ("NDON", 2, 4, __parsesection_,"_donors"),
-                    ("NACC", 2, 4, __parsesection_,"_acceptors")]
+            psffile.next()
+            title = psffile.next().split()
+            if not (title[1] == "!NTITLE"):
+                err = "{} is not a valid PSF file".format(psffile.name)
+                logger.error(err)
+                raise ValueError(err)
+            # psfremarks = [psffile.next() for i in range(int(title[0]))]
+            for _ in range(int(title[0])):
+                psffile.next()
+            logger.debug("PSF file {}: format {}"
+                         "".format(psffile.name, self._format))
 
-        try:
-            for info in sections:
-                skip_line()
-                parse_sec(info, format=format)
-        except StopIteration:
-            # Reached the end of the file before we expected
-            if not structure.has_key("_atoms"):
-                logger.error("The PSF file didn't contain the minimum required section of NATOM")
-                raise ValueError("The PSF file didn't contain the minimum required section of NATOM")
+            structure = {}
 
-    # Who cares about the rest
-    return structure
+            sections = (
+                ("_atoms", ("NATOM", 1, 1, self._parseatoms)),
+                ("_bonds", ("NBOND", 2, 4, self._parsesection)),
+                ("_angles", ("NTHETA", 3, 3, self._parsesection)),
+                ("_dihe", ("NPHI", 4, 2, self._parsesection)),
+                ("_impr", ("NIMPHI", 4, 2, self._parsesection)),
+                ("_donors", ("NDON", 2, 4, self._parsesection)),
+                ("_acceptors", ("NACC", 2, 4, self._parsesection))
+            )
 
-def __parseatoms_(lines, atoms_per, attr, structure, numlines, **kwargs):
-    """Parses atom section in a Charmm PSF file.
+            try:
+                for attr, info in sections:
+                    psffile.next()
+                    structure[attr] = self._parse_sec(psffile, info)
+            except StopIteration:
+                # Reached the end of the file before we expected
+                if "_atoms" not in structure:
+                    err = ("The PSF file didn't contain the required"
+                           " section of NATOM")
+                    logger.error(err)
+                    raise ValueError(err)
 
-    Normal (standard) and extended (EXT) PSF format are
-    supported. CHEQ is supported in the sense that CHEQ data is simply
-    ignored.
+        # Who cares about the rest
+        return structure
+
+    def _parse_sec(self, psffile, section_info):
+        desc, atoms_per, per_line, parsefunc = section_info
+        header = psffile.next()
+        while header.strip() == "":
+            header = psffile.next()
+        header = header.split()
+        # Get the number
+        num = float(header[0])
+        sect_type = header[1].strip('!:')
+        # Make sure the section type matches the desc
+        if not sect_type == desc:
+            err = "Expected section {} but found {}".format(desc, sect_type)
+            logger.error(err)
+            raise ValueError(err)
+        # Now figure out how many lines to read
+        numlines = int(ceil(num/per_line))
+
+        return parsefunc(psffile.next, atoms_per, numlines)
+
+    def _parseatoms(self, lines, atoms_per, numlines):
+        """Parses atom section in a Charmm PSF file.
+
+        Normal (standard) and extended (EXT) PSF format are
+        supported. CHEQ is supported in the sense that CHEQ data is simply
+        ignored.
 
 
-    CHARMM Format from ``source/psffres.src``:
+        CHARMM Format from ``source/psffres.src``:
 
         CHEQ::
           II,LSEGID,LRESID,LRES,TYPE(I),IAC(I),CG(I),AMASS(I),IMOVE(I),ECH(I),EHA(I)
@@ -138,87 +150,80 @@ def __parseatoms_(lines, atoms_per, attr, structure, numlines, **kwargs):
             (I10,1X,A8,1X,A8,1X,A8,1X,A8,1X,I4,1X,2G14.6,I8)
             (I10,1X,A8,1X,A8,1X,A8,1X,A8,1X,A4,1X,2G14.6,I8) XPLOR
 
-    NAMD PSF
+        NAMD PSF
 
-      space separated, see release notes for VMD 1.9.1, psfplugin at
-      http://www.ks.uiuc.edu/Research/vmd/current/devel.html :
+        space separated, see release notes for VMD 1.9.1, psfplugin at
+        http://www.ks.uiuc.edu/Research/vmd/current/devel.html :
 
-      psfplugin: Added more logic to the PSF plugin to determine cases where the
-      CHARMM "EXTended" PSF format cannot accomodate long atom types, and we add
-      a "NAMD" keyword to the PSF file flags line at the top of the file. Upon
-      reading, if we detect the "NAMD" flag there, we know that it is possible
-      to parse the file correctly using a simple space-delimited scanf() format
-      string, and we use that strategy rather than holding to the inflexible
-      column-based fields that are a necessity for compatibility with CHARMM,
-      CNS, X-PLOR, and other formats. NAMD and the psfgen plugin already assume
-      this sort of space-delimited formatting, but that's because they aren't
-      expected to parse the PSF variants associated with the other programs. For
-      the VMD PSF plugin, having the "NAMD" tag in the flags line makes it
-      absolutely clear that we're dealing with a NAMD-specific file so we can
-      take the same approach.
+        psfplugin: Added more logic to the PSF plugin to determine cases where the
+        CHARMM "EXTended" PSF format cannot accomodate long atom types, and we add
+        a "NAMD" keyword to the PSF file flags line at the top of the file. Upon
+        reading, if we detect the "NAMD" flag there, we know that it is possible
+        to parse the file correctly using a simple space-delimited scanf() format
+        string, and we use that strategy rather than holding to the inflexible
+        column-based fields that are a necessity for compatibility with CHARMM,
+        CNS, X-PLOR, and other formats. NAMD and the psfgen plugin already assume
+        this sort of space-delimited formatting, but that's because they aren't
+        expected to parse the PSF variants associated with the other programs. For
+        the VMD PSF plugin, having the "NAMD" tag in the flags line makes it
+        absolutely clear that we're dealing with a NAMD-specific file so we can
+        take the same approach.
 
-    """
-    format = kwargs.pop('format', 'STANDARD')
-
-    # how to partition the line into the individual atom components
-    atom_parsers = {
-        'STANDARD': lambda l:
-            (l[:8], l[9:13].strip() or "SYSTEM", l[14:18], l[19:23].strip(), l[24:28].strip(),
-             l[29:33].strip(), l[34:48], l[48:62], l[62:70]),   #  l[70:84], l[84:98] ignore ECH and EHA,
-        'EXTENDED': lambda l:
-            (l[:10], l[11:19].strip() or "SYSTEM", l[20:28], l[29:37].strip(), l[38:46].strip(),
-             l[47:51].strip(), l[52:66], l[66:70], l[70:78]),   #  l[78:84], l[84:98] ignore ECH and EHA,
-        'NAMD': lambda l: l.split()[:9],  # will fail if SEGID is empty!
+        """
+        # how to partition the line into the individual atom components
+        atom_parsers = {
+            'STANDARD': lambda l:
+            (l[:8], l[9:13].strip() or "SYSTEM", l[14:18],
+             l[19:23].strip(), l[24:28].strip(),
+             l[29:33].strip(), l[34:48], l[48:62]),
+            # l[62:70], l[70:84], l[84:98] ignore IMOVE, ECH and EHA,
+            'EXTENDED': lambda l:
+            (l[:10], l[11:19].strip() or "SYSTEM", l[20:28],
+             l[29:37].strip(), l[38:46].strip(),
+             l[47:51].strip(), l[52:66], l[66:70]),
+            # l[70:78],  l[78:84], l[84:98] ignore IMOVE, ECH and EHA,
+            'NAMD': lambda l: l.split()[:8],
         }
-    atom_parser = atom_parsers[format]
+        atom_parser = atom_parsers[self._format]
+        # once partitioned, assigned each component the correct type
+        set_type = lambda x: (int(x[0]) - 1, x[1] or "SYSTEM", int(x[2]), x[3],
+                              x[4], x[5], float(x[6]), float(x[7]))
 
-    atoms = [None,]*numlines
-    from MDAnalysis.core.AtomGroup import Atom
+        # Oli: I don't think that this is the correct OUTPUT format:
+        #   psf_atom_format = "   %5d %4s %4d %4s %-4s %-4s %10.6f      %7.4f%s\n"
+        # It should be rather something like:
+        #   psf_ATOM_format = '%(iatom)8d %(segid)4s %(resid)-4d %(resname)4s '+\
+        #                     '%(name)-4s %(type)4s %(charge)-14.6f%(mass)-14.4f%(imove)8d\n'
 
-    # Oli: I don't think that this is the correct OUTPUT format:
-    #   psf_atom_format = "   %5d %4s %4d %4s %-4s %-4s %10.6f      %7.4f%s\n"
-    # It should be rather something like:
-    #   psf_ATOM_format = '%(iatom)8d %(segid)4s %(resid)-4d %(resname)4s '+\
-    #                     '%(name)-4s %(type)4s %(charge)-14.6f%(mass)-14.4f%(imove)8d\n'
+        # source/psfres.src (CHEQ and now can be used for CHEQ EXTended), see comments above
+        #   II,LSEGID,LRESID,LRES,TYPE(I),IAC(I),CG(I),AMASS(I),IMOVE(I),ECH(I),EHA(I)
+        #  (I8,1X,A4, 1X,A4,  1X,A4,  1X,A4,  1X,I4,  1X,2G14.6,     I8,   2G14.6)
+        #   0:8   9:13   14:18   19:23   24:28   29:33   34:48 48:62 62:70 70:84 84:98
 
-    # source/psfres.src (CHEQ and now can be used for CHEQ EXTended), see comments above
-    #   II,LSEGID,LRESID,LRES,TYPE(I),IAC(I),CG(I),AMASS(I),IMOVE(I),ECH(I),EHA(I)
-    #  (I8,1X,A4, 1X,A4,  1X,A4,  1X,A4,  1X,I4,  1X,2G14.6,     I8,   2G14.6)
-    #   0:8   9:13   14:18   19:23   24:28   29:33   34:48 48:62 62:70 70:84 84:98
+        atoms = [None, ]*numlines
+        for i in xrange(numlines):
+            line = lines()
+            try:
+                iatom, segid, resid, resname, atomname, atomtype, charge, mass = set_type(atom_parser(line))
+            except ValueError:
+                # last ditch attempt: this *might* be a NAMD/VMD space-separated "PSF" file from
+                # VMD version < 1.9.1
+                atom_parser = atom_parsers['NAMD']
+                iatom, segid, resid, resname, atomname, atomtype, charge, mass = set_type(atom_parser(line))
+                logger.warn("Guessing that this is actually a NAMD-type PSF file..."
+                            " continuing with fingers crossed!")
+                logger.debug("First NAMD-type line: {}: {}".format(i, line.rstrip()))
 
+            atoms[i] = Atom(iatom, atomname, atomtype, resname, resid,
+                            segid, mass, charge)
+        return atoms
 
-    for i in xrange(numlines):
-        line = lines()
-        try:
-            iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove = atom_parser(line)
-            # Atom(atomno, atomname, type, resname, resid, segid, mass, charge)
-            # We want zero-indexing for atom numbers to make it easy
-            atom_desc = Atom(int(iatom)-1,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge))
-        except ValueError:
-            # last ditch attempt: this *might* be a NAMD/VMD space-separated "PSF" file from
-            # VMD version < 1.9.1
-            atom_parser = atom_parsers['NAMD']
-            iatom, segid, resid, resname, atomname, atomtype, charge, mass, imove = atom_parser(line)
-            atom_desc = Atom(int(iatom)-1,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge))
-            # SB: Commenting out the warning to avoid redundancy with the logger
-            # warnings.warn("Guessing that this is actually a NAMD-type PSF file... continuing with fingers crossed!",
-            #              category=FileFormatWarning)
-            logger.warn("Guessing that this is actually a NAMD-type PSF file... continuing with fingers crossed!")
-            logger.debug("First NAMD-type line: %d: %r", i, line.rstrip())
+    def _parsesection(self, lines, atoms_per, numlines):
+        section = []  # [None,]*numlines
 
-        atoms[i] = atom_desc
-
-    structure[attr] = atoms
-
-def __parsesection_(lines, atoms_per, attr, structure, numlines, **kwargs):
-    section = [] #[None,]*numlines
-    #for l in lines:
-    for i in xrange(numlines):
-        l = lines()
-        # Subtract 1 from each number to ensure zero-indexing for the atoms
-        f = map(int, l.split())
-        fields = [a-1 for a in f]
-        for j in range(0, len(fields), atoms_per):
-            section.append(tuple(fields[j:j+atoms_per]))
-    structure[attr] = section
-
+        for i in xrange(numlines):
+            # Subtract 1 from each number to ensure zero-indexing for the atoms
+            fields = map(lambda x: int(x) - 1, lines().split())
+            for j in range(0, len(fields), atoms_per):
+                section.append(tuple(fields[j:j+atoms_per]))
+        return section

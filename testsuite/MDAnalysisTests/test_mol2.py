@@ -41,6 +41,10 @@ class TestMol2(TestCase):
         assert_equal(len(gr0), len(gr1))
       
     def test_broken_molecule(self):
+        assert_raises(ValueError, Universe, mol2_broken_molecule)
+
         with self.assertRaises(Exception) as context:
             u = Universe(mol2_broken_molecule)
-        self.assertEqual(context.exception.message, "The mol2 block (BrokenMolecule.mol2:0) has no atoms")
+        self.assertEqual("The mol2 block (BrokenMolecule.mol2:0) has no atoms" in context.exception.message, 
+                         True)
+                         

@@ -21,65 +21,57 @@ CRD topology parser
 
 Read a list of atoms from a CHARMM CARD coordinate file (CRD) to build a basic topology.
 
-Atom types and masses are guessed.
+Atom types, charges and masses are guessed.
 """
 
-
 from MDAnalysis.core.AtomGroup import Atom
-import MDAnalysis.core.util as util
+from MDAnalysis.core.util import openany, FORTRANReader
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
+from .base import TopologyReader
 
 
-extformat = util.FORTRANReader('2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
-stdformat = util.FORTRANReader('2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5')
+class CRDParser(TopologyReader):
+    def parse(self):
+        """Parse CRD file *filename* and return the dict `structure`.
 
-def parse(filename):
-    """Parse CRD file *filename* and return the dict `structure`.
+        Only reads the list of atoms.
 
-    Only reads the list of atoms.
+        :Returns: MDAnalysis internal *structure* dict
 
-    :Returns: MDAnalysis internal *structure* dict
+        .. SeeAlso:: The *structure* dict is defined in
+                     `MDAnalysis.topology`
+        """
+        extformat = FORTRANReader('2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
+        stdformat = FORTRANReader('2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5')
 
-    .. SeeAlso:: The *structure* dict is defined in
-                 :func:`MDAnalysis.topology.PSFParser.parse`.
-    """
-    atoms = []
-    atom_serial = 0
-    with util.openany(filename) as crd:
-        for linenum,line in enumerate(crd):
-            # reading header
-            if line.split()[0] == '*':
-                continue
-            elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) == True:
-                extended = True
-                continue
-            elif line.split()[0] == line.split()[-1] and line.split()[0] != '*':
-                extended = False
-                continue
-            # anything else should be an atom
-            try:
-                if extended:
-                    # 2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10
-                    serial,TotRes,resName,name,x,y,z,chainID,resSeq,tempFactor = extformat.read(line)
-                else:
-                    # 2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5
-                    serial,TotRes,resName,name,x,y,z,chainID,resSeq,tempFactor = stdformat.read(line)
-            except:
-                print "Check CRD format at line %d: %s" % (linenum, line.rstrip())
-                raise #IOError("Check CRD format at line %d: %s" % (linenum, line.rstrip()))
+        atoms = []
+        atom_serial = 0
+        with openany(self.filename) as crd:
+            for linenum,line in enumerate(crd):
+                # reading header
+                if line.split()[0] == '*':
+                    continue
+                elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) == True:
+                    r = extformat
+                    continue
+                elif line.split()[0] == line.split()[-1] and line.split()[0] != '*':
+                    r = stdformat
+                    continue
+                # anything else should be an atom
+                try:
+                    serial,TotRes,resName,name,x,y,z,chainID,resSeq,tempFactor = r.read(line)
+                except:
+                    raise ValueError("Check CRD format at line {}: {}".format(
+                        linenum, line.rstrip()))
 
-            atomtype = guess_atom_type(name)
-            mass =  guess_atom_mass(name)
-            charge = guess_atom_charge(name)
-            atom_desc = Atom(atom_serial,name,atomtype,resName,TotRes,chainID,mass,charge)
-            atoms.append(atom_desc)
-            atom_serial += 1
+                atomtype = guess_atom_type(name)
+                mass =  guess_atom_mass(name)
+                charge = guess_atom_charge(name)
+                atoms.append(Atom(atom_serial,name,atomtype,resName,TotRes,chainID,mass,charge))
+                atom_serial += 1
 
         structure = {}
         structure["_atoms"] = atoms
-        # Other attributes are not read since they are not included in .crd files
-        other_attrs = ["_bonds" , "_angles" , "_dihe" , "_impr" , "_donors" , "_acceptors"]
-        for attr in other_attrs:
-                structure[attr] = []
+
         return structure
 

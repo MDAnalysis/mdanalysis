@@ -37,47 +37,44 @@ This does not support multi-model PDBQT files (yet!)
 """
 
 import MDAnalysis.coordinates.PDBQT
+from MDAnalysis.core.AtomGroup import Atom
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
+from .base import TopologyReader
 
-class PDBQTParseError(Exception):
-    """Signifies an error during parsing a PDBQT file."""
-    pass
+class PDBQTParser(TopologyReader):
+    def parse(self):
+        """Parse atom information from PDBQT file *filename*.
 
-def parse(filename):
-    """Parse atom information from PDBQT file *filename*.
+        :Returns: MDAnalysis internal *structure* dict
 
-    :Returns: MDAnalysis internal *structure* dict
+        .. SeeAlso:: The *structure* dict is defined in
+                     :func:`MDAnalysis.topology.PSFParser.PSFParser` and the file
+                     is read with
+                     :class:`MDAnalysis.coordinates.PDBQT.PDBQTReader`.
+        """
+        structure = {}
+        pdb =  MDAnalysis.coordinates.PDBQT.PDBQTReader(self.filename)
 
-    .. SeeAlso:: The *structure* dict is defined in
-                 :func:`MDAnalysis.topology.PSFParser.parse` and the file is read with
-                 :class:`MDAnalysis.coordinates.PDBQT.PDBQTReader`.
-    """
-    structure = {}
-    pdb =  MDAnalysis.coordinates.PDBQT.PDBQTReader(filename)
+        structure['_atoms'] = self._parseatoms_(pdb)
 
-    __parseatoms_(pdb, structure)
-    # TODO: reconstruct bonds from CONECT or guess from distance search
-    #       (e.g. like VMD)
-    return structure
+        return structure
 
-def __parseatoms_(pdb, structure):
-    from MDAnalysis.core.AtomGroup import Atom
-    attr = "_atoms"  # name of the atoms section
-    atoms = []       # list of Atom objects
+    def _parseatoms_(self, pdb):
+        atoms = []
 
-    # translate list of atoms to MDAnalysis Atom.
-    for iatom,atom in enumerate(pdb._atoms):
-        atomname = atom.name
-        atomtype = atom.type        # always set in PDBQT
-        resname = atom.resName
-        resid = atom.resSeq
-        chain = atom.chainID.strip()
-        segid = chain or "SYSTEM"   # no empty segids (or Universe throws IndexError)
-        mass = guess_atom_mass(atomname)
-        charge = atom.partialCharge # always set in PDBQT
-        bfactor = atom.tempFactor
-        occupancy = atom.occupancy
-        atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),
-                          bfactor=bfactor))
-
-    structure[attr] = atoms
+        # translate list of atoms to MDAnalysis Atom.
+        for iatom,atom in enumerate(pdb._atoms):
+            atomname = atom.name
+            atomtype = atom.type        # always set in PDBQT
+            resname = atom.resName
+            resid = int(atom.resSeq)
+            chain = atom.chainID.strip()
+            segid = chain or "SYSTEM"   # no empty segids (or Universe throws IndexError)
+            mass = guess_atom_mass(atomname)
+            charge = float(atom.partialCharge) # always set in PDBQT
+            bfactor = atom.tempFactor
+            # occupancy = atom.occupancy
+            atoms.append(Atom(iatom,atomname,atomtype,resname,resid,segid,
+                              mass,charge,bfactor=bfactor))
+            
+        return atoms

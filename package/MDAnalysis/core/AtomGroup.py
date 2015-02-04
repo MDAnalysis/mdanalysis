@@ -2874,21 +2874,26 @@ class Universe(object):
         # build the topology (or at least a list of atoms)
         self.filename = topologyfile
         try:
-            parser = get_parser_for(topologyfile, 
-                                    permissive=kwargs['permissive'], 
-                                    bonds=kwargs.get('bonds', False),
-                                    format=topology_format)
-            struc = parser(topologyfile)
-        except (TypeError, ValueError, IOError) as err:
-            raise ValueError("Failed to build a topology from the topology file {0}. "
-                             "Error: {1}".format(self.filename, err))
+            parser = get_parser_for(topologyfile,
+                                    permissive=kwargs['permissive'],
+                                    tformat=topology_format)
+            with parser(self.filename,
+                        guess_bonds_mode=kwargs.get('bonds', False)) as p:
+                struc = p.parse()
+        except IOError as err:
+            raise IOError("Failed to load from the topology file {}"
+                          " with parser {}.\n"
+                          "Error: {}".format(self.filename, parser, err))
+        except ValueError as err:
+            raise ValueError("Failed to construct topology from file {}"
+                             " with parser {} \n"
+                             "Error: {}".format(self.filename, parser, err))
 
         # populate atoms etc
         self._init_topology(struc)
 
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
-        
 
     def _clear_caches(self, *args):
         """Clear cache for all *args*.
@@ -3392,19 +3397,27 @@ class Universe(object):
         if kwargs.get('permissive', None) is None:
             kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
         if len(util.asiterable(filename)) == 1:
-            filename = util.asiterable(filename)[0]  # make sure a single filename is not handed to the ChainReader
+            # make sure a single filename is not handed to the ChainReader
+            filename = util.asiterable(filename)[0]
         logger.debug("Universe.load_new(): loading {0}...".format(filename))
         try:
-            TRJReader = get_reader_for(filename, permissive=kwargs.pop('permissive'),
-                                       format=kwargs.pop('format', None))
+            reader = get_reader_for(filename,
+                                    permissive=kwargs.pop('permissive'),
+                                    format=kwargs.pop('format', None))
         except TypeError as err:
-            raise TypeError("Universe.load_new() cannot find an appropriate coordinate reader "
-                            "for file %r.\n%r" % (filename, err))
+            raise TypeError("Cannot find an appropriate coordinate reader "
+                            "for file {}.\n{}".format(filename, err))
         # supply number of atoms for readers that cannot do it for themselves
         kwargs['numatoms'] = self.atoms.numberOfAtoms()
-        self.trajectory = TRJReader(filename, **kwargs)    # unified trajectory API
+        self.trajectory = reader(filename, **kwargs)    # unified trajectory API
         if self.trajectory.numatoms != self.atoms.numberOfAtoms():
-            raise ValueError("The topology and %s trajectory files don't have the same number of atoms!" % self.trajectory.format)
+            raise ValueError("The topology and {} trajectory files don't"
+                             " have the same number of atoms!\n"
+                             "Topology number of atoms {}\n"
+                             "Trajectory: {} Number of atoms {}".format(
+                                 self.trajectory.format,
+                                 len(self.atoms),
+                                 filename, self.trajectory.numatoms))
         return filename, self.trajectory.format
 
     def selectAtoms(self, sel, *othersel, **selgroups):

@@ -27,29 +27,29 @@ format (DMS_) coordinate files (as used by the Desmond_ MD package).
 .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
 """
 
+import sqlite3
+import os
 
 from MDAnalysis.core.AtomGroup import Atom
 from MDAnalysis.topology.core import guess_atom_type
-import sqlite3, os
+from .base import TopologyReader
 
-class DMSParseError(Exception):
-        pass
-
-def parse(filename):
+class DMSParser(TopologyReader):
+    def parse(self):
         """Parse DMS file *filename* and return the dict `structure`.
-
+                
         Only reads the list of atoms.
-
+                
         :Returns: MDAnalysis internal *structure* dict, which contains
-                  Atom and Bond objects
-
+        Atom and Bond objects
+                
         .. SeeAlso:: The *structure* dict is defined in
-                     :func:`MDAnalysis.topology.PSFParser.parse`.
+        `MDAnalysis.topology`.
 
         """
         # Fix by SB: Needed because sqlite3.connect does not raise anything if file is not there
-        if not os.path.isfile(filename):
-            raise IOError("No such file: %s" % filename)
+        if not os.path.isfile(self.filename):
+            raise IOError("No such file: {}".format(self.filename))
 
         def dict_factory(cursor, row):
             """
@@ -60,40 +60,45 @@ def parse(filename):
                 d[col[0]] = row[idx]
             return d
 
-        atoms = None
-        with sqlite3.connect(filename) as con:
-            # This will return dictionaries instead of tuples, when calling cur.fetch() or fetchall()
-            con.row_factory = dict_factory
-            cur = con.cursor()
-            cur.execute('SELECT * FROM particle')
-            particles = cur.fetchall()
-
-            # p["anum"] contains the atomic number
-            atoms = [ (p["id"], Atom(p["id"], p["name"].strip(), guess_atom_type(p["name"].strip()), p["resname"].strip(), p["resid"], p["segid"].strip(), p["mass"], p["charge"]))  for p in particles]
-
-            atoms_dictionary = dict(atoms)
-
-            cur.execute('SELECT * FROM bond')
-            bonds = cur.fetchall()
-
-            bondlist = []
-            bondorder = {}
-            for b in bonds:
+        with sqlite3.connect(self.filename) as con:
+            try:
+                # This will return dictionaries instead of tuples,
+                # when calling cur.fetch() or fetchall()
+                con.row_factory = dict_factory
+                cur = con.cursor()
+                cur.execute('SELECT * FROM particle')
+                particles = cur.fetchall()
+            except sqlite3.DatabaseError:
+                raise IOError("Failed reading the atoms from DMS Database")
+            else:
+                # p["anum"] contains the atomic number
+                try:
+                    atoms = [Atom(p["id"], p["name"].strip(),
+                                  guess_atom_type(p["name"].strip()),
+                                  p["resname"].strip(), p["resid"],
+                                  p["segid"].strip(), p["mass"], p["charge"])
+                             for p in particles]
+                except KeyError:
+                    raise ValueError("Failed reading atom information")
+            try:
+                cur.execute('SELECT * FROM bond')
+                bonds = cur.fetchall()
+            except sqlite3.DatabaseError:
+                raise IOError("Failed reading the bonds from DMS Database")
+            else:
+                bondlist = []
+                bondorder = {}
+                for b in bonds:
                     desc = tuple(sorted([b['p0'], b['p1']]))
                     bondlist.append(desc)
                     bondorder[desc] = b['order']
 
-#            bonds = [ Bond([atoms_dictionary[b["p0"]], atoms_dictionary[b["p1"]]],
-#                           b["order"] )  for b in bonds]
-
         # All the records below besides donors and acceptors can be contained in a DMS file.
-        # In addition to the coordinates and bonds, DMS may contain the entire force-field information (terms+parameters),
-        return {"_atoms": [ atom[1] for atom in atoms],
-                "_bonds": tuple(bondlist),
-                "_bondorder": bondorder,
-                "_angles": [],
-                "_dihe": [],
-                "_impr": [],
-                "_donors": [],
-                "_acceptors": [],
-                }
+        # In addition to the coordinates and bonds, DMS may contain the entire force-field
+        # information (terms+parameters),
+        structure = {"_atoms": atoms,
+                     "_bonds": tuple(bondlist),
+                     "_bondorder": bondorder,
+                 }
+
+        return structure

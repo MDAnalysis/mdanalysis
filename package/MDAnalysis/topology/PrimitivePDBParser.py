@@ -44,26 +44,23 @@ numbers up to 99,999.
 
 """
 
-from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge, guess_bonds
 import numpy as np
+
+from MDAnalysis.core.AtomGroup import Atom
+from MDAnalysis.topology.core import (guess_atom_type, guess_atom_mass,
+                                      guess_atom_charge, guess_bonds)
 import MDAnalysis.coordinates.PDB
-import MDAnalysis.core.util as util
+from MDAnalysis.core.util import openany
+from .base import TopologyReader
 
-class PDBParseError(Exception):
-    """Signifies an error during parsing a PDB file."""
-    pass
-
-
-class PrimitivePDBParser(object):
+class PrimitivePDBParser(TopologyReader):
     """Parser that obtains a list of atoms from a standard PDB file.
 
     .. versionadded:: 0.8
     """
-
-    def __init__(self, filename, guess_bonds_mode=False):
+    def __init__(self, filename, **kwargs):
+        super(PrimitivePDBParser, self).__init__(filename, **kwargs)
         self.PDBReader = MDAnalysis.coordinates.PDB.PrimitivePDBReader
-        self.filename = filename
-        self.guess_bonds_mode = guess_bonds_mode
 
     def parse(self):
         """Parse atom information from PDB file *filename*.
@@ -71,91 +68,70 @@ class PrimitivePDBParser(object):
         :Returns: MDAnalysis internal *structure* dict
 
         .. SeeAlso:: The *structure* dict is defined in
-                     :func:`MDAnalysis.topology.PSFParser.parse` and the file is read with
+                     `MDAnalysis.topology` and the file is
+                     read with
                      :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
         """
         self.structure = {}
-        pdb =  self.PDBReader(self.filename)
+        try:
+            pdb =  self.PDBReader(self.filename)
+        except ValueError:
+            raise IOError("Failed to open and read PDB file")
 
         self._parseatoms(pdb)
-        # TODO: reconstruct bonds from CONECT or guess from distance search
-        #       (e.g. like VMD)
-        self._parsebonds(self.filename, pdb)
+        self._parsebonds(pdb)
         return self.structure
 
     def _parseatoms(self, pdb):
-        from MDAnalysis.core.AtomGroup import Atom
-        attr = "_atoms"  # name of the atoms section
-        atoms = []       # list of Atom objects
+        atoms = []
 
         # translate list of atoms to MDAnalysis Atom.
         for iatom,atom in enumerate(pdb._atoms):
-
             # ATOM
             if len(atom.__dict__) == 10:
                 atomname = atom.name
                 atomtype = atom.element or guess_atom_type(atomname)
                 resname = atom.resName
-                resid = atom.resSeq
+                resid = int(atom.resSeq)
                 chain = atom.chainID.strip()
-                segid = atom.segID.strip() or chain or "SYSTEM"  # no empty segids (or Universe throws IndexError)
+                # no empty segids (or Universe throws IndexError)
+                segid = atom.segID.strip() or chain or "SYSTEM"
                 mass = guess_atom_mass(atomname)
                 charge = guess_atom_charge(atomname)
                 bfactor = atom.tempFactor
-                occupancy = atom.occupancy
+                # occupancy = atom.occupancy
                 altLoc = atom.altLoc
 
-                atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),\
-                                  bfactor=bfactor,serial=atom.serial, altLoc=altLoc))
+                atoms.append(Atom(iatom,atomname,atomtype,resname,resid,
+                                  segid,mass,charge,
+                                  bfactor=bfactor,serial=atom.serial,
+                                  altLoc=altLoc))
             # TER atoms
-            elif len(atom.__dict__) == 5:
-                pass
-                #atoms.append(None)
-        self.structure[attr] = atoms
+            #elif len(atom.__dict__) == 5:
+            #    pass
+            #    #atoms.append(None)
+        self.structure["_atoms"] = atoms
 
-    def _parsebonds(self, filename, primitive_pdb_reader):
-        guessed_bonds = set()
+    def _parsebonds(self, primitive_pdb_reader):
         if self.guess_bonds_mode:
-            guessed_bonds = guess_bonds(self.structure["_atoms"], np.array(primitive_pdb_reader.ts))
+            guessed_bonds = guess_bonds(self.structure["_atoms"],
+                                        np.array(primitive_pdb_reader.ts))
+            self.structure["_guessed_bonds"] = guessed_bonds
 
-        #
-        # Mapping between the atom array indicies a.number and atom ids (serial) in the original PDB file
-        #
-        mapping =  dict((a.serial, a.number) for a in  self.structure["_atoms"])
+        # Mapping between the atom array indicies a.number and atom ids
+        # (serial) in the original PDB file
+
+        mapping = dict((a.serial, a.number) for a in self.structure["_atoms"])
 
         bonds = set()
-        with util.openany(filename, "r") as filename:
-            lines = ((num, line[6:].split()) for num,line in enumerate(filename) if line[:6] == "CONECT")
+        with openany(self.filename, "r") as fname:
+            lines = ((num, line[6:].split()) for num,line in enumerate(fname)
+                     if line[:6] == "CONECT")
             for num, bond in lines:
                 atom, atoms = int(bond[0]) , map(int,bond[1:])
                 for a in atoms:
-                    bond = tuple([mapping[atom], mapping[a] ])
+                    bond = tuple([mapping[atom], mapping[a]])
                     bonds.add(bond)
 
-        # FIXME by JD: we could use a BondsGroup class perhaps
         self.structure["_bonds"] = tuple(bonds)
-        self.structure["_guessed_bonds"] = guessed_bonds
 
-# function to keep compatible with the current API; should be cleaned up...
-def parse(filename):
-    """Parse atom information from PDB file *filename*.
-
-    :Returns: MDAnalysis internal *structure* dict
-
-    .. SeeAlso:: The *structure* dict is defined in
-                 :func:`MDAnalysis.topology.PSFParser.parse` and the file is read with
-                 :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
-
-    """
-    return PrimitivePDBParser(filename).parse()
-
-def parse_bonds(filename):
-    """Parse atom information from PDB file *filename* and guesses bonds.
-
-    :Returns: MDAnalysis internal *structure* dict
-
-    .. SeeAlso:: The *structure* dict is defined in
-                 :func:`MDAnalysis.topology.PSFParser.parse` and the file is read with
-                 :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
-    """
-    return PrimitivePDBParser(filename, guess_bonds_mode=True).parse()

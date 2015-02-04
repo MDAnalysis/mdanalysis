@@ -80,6 +80,9 @@ The rules for this file:
     file (previously, the segid would always be set to 'SYSTEM').
   * util.anyopen() only returns the stream and not the tuple (stream,
     filename) anymore; it tries to set stream.name instead
+  * topology reading now done via classes (similar to trajectory reading)
+    rather than functions.
+    (Issue 210)
 
 
   Fixes

@@ -26,63 +26,60 @@ Use a PDB file to build a minimum internal structure representation.
              are guessed and set to 0 if unknown.
 """
 
-import os.path
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
     import Bio.PDB
 except ImportError:
     raise ImportError("Bio.PDB from biopython not found. Required for PDB->PSF parser.")
 
+from .base import TopologyReader
+from MDAnalysis.core.AtomGroup import Atom
 import MDAnalysis.coordinates.pdb.extensions
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
 
-def parse(pdbfile):
-    """Parse atom information from PDB file *pdbfile*.
+class PDBParser(TopologyReader):
+    def parse(self):
+        """Parse atom information from PDB file *pdbfile*.
 
-    Only reads the list of atoms.
+        Only reads the list of atoms.
 
-    This functions uses the :class:`Bio.PDB.PDBParser` as used by
-    :func:`MDAnalysis.coordinates.pdb.extensions.get_structure`.
+        This functions uses the :class:`Bio.PDB.PDBParser` as used by
+        :func:`MDAnalysis.coordinates.pdb.extensions.get_structure`.
+        
+        :Returns: MDAnalysis internal *structure* dict
 
-    :Returns: MDAnalysis internal *structure* dict
+        .. SeeAlso:: The *structure* dict is defined in
+           `MDAnalysis.topology`.
+        """
+        structure = {}
+        # use Sloppy PDB parser to cope with big PDBs!
+        pdb = MDAnalysis.coordinates.pdb.extensions.get_structure(self.filename,"0UNK")
 
-    .. SeeAlso:: The *structure* dict is defined in
-                 :func:`MDAnalysis.topology.PSFParser.parse`.
-    """
-    root,ext = os.path.splitext(pdbfile)
-    if ext.lower() not in ('.pdb', '.ent'):
-        raise ValueError("%(pdbfile)r is probably not in PDB format (wrong extension).")
-    structure = {}
-    # use Sloppy PDB parser to cope with big PDBs!
-    pdb =  MDAnalysis.coordinates.pdb.extensions.get_structure(pdbfile,"0UNK")
+        structure['_atoms'] = self._parseatoms(pdb)
 
-    __parseatoms_(pdb, structure)
-    # TODO: reconstruct bonds from CONECT or guess from distance search
-    #       (e.g. like VMD)
-    return structure
+        return structure
 
-def __parseatoms_(pdb, structure):
-    from MDAnalysis.core.AtomGroup import Atom
-    attr = "_atoms"  # name of the atoms section
-    atoms = []       # list of Atom objects
+    def _parseatoms(self, pdb):
+        atoms = []
 
-    # translate Bio.PDB atom objects to MDAnalysis Atom.
-    for iatom,atom in enumerate(pdb.get_atoms()):
-        residue = atom.parent
-        chain_id = residue.parent.id
+        # translate Bio.PDB atom objects to MDAnalysis Atom.
+        for iatom,atom in enumerate(pdb.get_atoms()):
+            residue = atom.parent
+            chain_id = residue.parent.id
 
-        atomname = atom.name
-        atomtype = guess_atom_type(atomname)
-        resname = residue.resname
-        resid = residue.id[1]
-        segid = residue.get_segid().strip() or chain_id or "SYSTEM"  # no empty segids (or Universe throws IndexError)
-        mass = guess_atom_mass(atomname)
-        charge = guess_atom_charge(atomname)
-        bfactor = atom.bfactor
-        occupancy = atom.occupancy
+            atomname = atom.name
+            atomtype = guess_atom_type(atomname)
+            resname = residue.resname
+            resid = int(residue.id[1])
+            # no empty segids (or Universe throws IndexError)
+            segid = residue.get_segid().strip() or chain_id or "SYSTEM"
+            mass = guess_atom_mass(atomname)
+            charge = guess_atom_charge(atomname)
+            bfactor = atom.bfactor
+            # occupancy = atom.occupancy
 
-        atoms.append(Atom(iatom,atomname,atomtype,resname,int(resid),segid,float(mass),float(charge),
-                          bfactor=bfactor))
+            atoms.append(Atom(iatom,atomname,atomtype,resname,resid,segid,
+                              mass,charge,bfactor=bfactor))
 
-    structure[attr] = atoms
+        return atoms
 

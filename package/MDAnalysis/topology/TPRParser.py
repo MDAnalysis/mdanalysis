@@ -59,7 +59,7 @@ supported.
 Functions
 ---------
 
-.. autofunction:: parse
+.. autoclass:: TPRParser
 
 Development notes
 -----------------
@@ -107,82 +107,67 @@ before 4.x)
 __author__      = "Zhuyi Xue"
 __copyright__   = "GNU Public Licence, v2"
 
-import sys
 import xdrlib
 
 import MDAnalysis.core.util
 from tpr import utils as U
+from .base import TopologyReader
 
 import logging
 logger = logging.getLogger("MDAnalysis.topology.TPRparser")
 
-ndo_int = U.ndo_int
-ndo_real = U.ndo_real
-ndo_rvec = U.ndo_rvec
-ndo_ivec = U.ndo_ivec
 
-def log_header(th):
-    logger.info("Gromacs version   : {0}".format(th.ver_str))
-    logger.info("tpx version       : {0}".format(th.fver))
-    logger.info("tpx generation    : {0}".format(th.fgen))
-    logger.info("tpx number        : {0}".format(th.number))
-    logger.info("tpx precision     : {0}".format(th.precision))
-    logger.info("tpx file_tag      : {0}".format(th.file_tag))
-    logger.info("tpx natoms        : {0}".format(th.natoms))
-    logger.info("tpx ngtc          : {0}".format(th.ngtc))
-    logger.info("tpx fep_state     : {0}".format(th.fep_state))
-    logger.info("tpx lambda        : {0}".format(th.lamb))
-    logger.debug("tpx bIr (input record): {0}".format(th.bIr))
-    logger.debug("tpx bTop         : {0}".format(th.bTop))
-    logger.debug("tpx bX           : {0}".format(th.bX))
-    logger.debug("tpx bV           : {0}".format(th.bV))
-    logger.debug("tpx bF           : {0}".format(th.bF))
-    logger.debug("tpx bBox         : {0}".format(th.bBox))
+class TPRParser(TopologyReader):
+    def parse(self):
+        """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
 
+        :Returns: ``structure`` dict
+        """
+        #ndo_int = U.ndo_int
+        ndo_real = U.ndo_real
+        #ndo_rvec = U.ndo_rvec
+        #ndo_ivec = U.ndo_ivec
 
-def parse(tprfile):
-    """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
+        tprf = MDAnalysis.core.util.anyopen(self.filename).read()
+        data = xdrlib.Unpacker(tprf)
+        try:
+            th = U.read_tpxheader(data)                    # tpxheader
+        except EOFError:
+            msg = "{0}: Invalid tpr file or cannot be recognized".format(self.filename)
+            logger.critical(msg)
+            raise IOError(msg)
 
-    :Returns: ``structure`` dict
-    """
-    tprf = MDAnalysis.core.util.anyopen(tprfile).read()
-    data = xdrlib.Unpacker(tprf)
-    try:
-        th = U.read_tpxheader(data)                    # tpxheader
-    except EOFError:
-        msg = "{0}: Invalid tpr file or cannot be recognized".format(tprfile)
-        logger.critical(msg)
-        raise ValueError(msg)
+        self._log_header(th)
 
-    log_header(th)
+        V = th.fver                                    # since it's used very often
 
-    V = th.fver                                    # since it's used very often
+        state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c
+        if th.bBox:
+            U.extract_box_info(data, V)
 
-    state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c
-    if th.bBox:
-        U.extract_box_info(data, V)
+        if state_ngtc > 0 and V >= 28:
+            if V < 69:                      # redundancy due to  different versions
+                ndo_real(data, state_ngtc)
+            ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
 
-    if state_ngtc > 0 and V >= 28:
-        if V < 69:                      # redundancy due to  different versions
-            ndo_real(data, state_ngtc)
-        ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
+        if V < 26:
+            U.fver_err(V)
 
-    if V < 26:
-        U.fver_err(V)
-
-    if th.bTop:
-        tpr_top = U.do_mtop(data, V)
-        structure = {
-            '_atoms': tpr_top.atoms,
-            '_bonds': tpr_top.bonds,
-            '_angles': tpr_top.angles,
-            '_dihe': tpr_top.dihe,
-            '_impr': tpr_top.impr
+        if th.bTop:
+            tpr_top = U.do_mtop(data, V)
+            structure = {
+                '_atoms': tpr_top.atoms,
+                '_bonds': tpr_top.bonds,
+                '_angles': tpr_top.angles,
+                '_dihe': tpr_top.dihe,
+                '_impr': tpr_top.impr
             }
-    else:
-        msg = "{0}: No topology found in tpr file".formation(tprfile)
-        logger.critical(msg)
-        raise ValueError(msg)
+        else:
+            msg = "{0}: No topology found in tpr file".format(self.filename)
+            logger.critical(msg)
+            raise IOError(msg)
+
+        return structure
 
     # THE FOLLOWING CODE IS WORKING FOR TPX VERSION 58, BUT SINCE THESE INFO IS
     # NOT INTERESTED, SO IT'S NOT COVERED IN ALL VERSIONS. PARSING STOPS HERE.
@@ -209,12 +194,20 @@ def parse(tprfile):
     #         # (240 lines), so put it in setting.py
     #         setting.do_inputrec(data)
 
-    return structure
-
-if __name__ == "__main__":
-    try:
-        parse(sys.argv[1])
-    except EOFError:
-        print "{0}\nInvalid tpr file or cannot be recognized\n".format(sys.argv[1])
-    except IndexError:
-        print "Please feed an tpr file or use this file as a module"
+    def _log_header(self, th):
+        logger.info("Gromacs version   : {0}".format(th.ver_str))
+        logger.info("tpx version       : {0}".format(th.fver))
+        logger.info("tpx generation    : {0}".format(th.fgen))
+        logger.info("tpx number        : {0}".format(th.number))
+        logger.info("tpx precision     : {0}".format(th.precision))
+        logger.info("tpx file_tag      : {0}".format(th.file_tag))
+        logger.info("tpx natoms        : {0}".format(th.natoms))
+        logger.info("tpx ngtc          : {0}".format(th.ngtc))
+        logger.info("tpx fep_state     : {0}".format(th.fep_state))
+        logger.info("tpx lambda        : {0}".format(th.lamb))
+        logger.debug("tpx bIr (input record): {0}".format(th.bIr))
+        logger.debug("tpx bTop         : {0}".format(th.bTop))
+        logger.debug("tpx bX           : {0}".format(th.bX))
+        logger.debug("tpx bV           : {0}".format(th.bV))
+        logger.debug("tpx bF           : {0}".format(th.bF))
+        logger.debug("tpx bBox         : {0}".format(th.bBox))

@@ -230,22 +230,18 @@ import PSFParser, TOPParser, PDBParser, PrimitivePDBParser, \
 # (all parser should essentially do the same thing; the PSFParser is
 # the reference implementation). The keys in :data:`_topology_parsers`
 # are the known topology formats.
-_topology_parsers = {'PSF': PSFParser.parse,
-                     'PDB': PDBParser.parse,
-                     'XPDB': ExtendedPDBParser.parse,
-                     'PQR': PQRParser.parse,
-                     'GRO': GROParser.parse,
-                     'CRD': CRDParser.parse,
-                     'TOP': TOPParser.parse,
-                     'PRMTOP': TOPParser.parse,
-                     'PDBQT': PDBQTParser.parse,
-                     'TPR': TPRParser.parse,
-                     'DMS': DMSParser.parse,
-                     'MOL2': MOL2Parser.parse,
-                     'DATA': LAMMPSParser.parse,
+_topology_parsers = {'PSF': PSFParser.PSFParser,
+                     'PDB': PDBParser.PDBParser,
+                     'Permissive_PDB': PrimitivePDBParser.PrimitivePDBParser,
+                     'XPDB': ExtendedPDBParser.ExtendedPDBParser,
+                     'PQR': PQRParser.PQRParser,
+                     'GRO': GROParser.GROParser,
+                     'CRD': CRDParser.CRDParser,
+                     'TOP': TOPParser.TOPParser,
+                     'PRMTOP': TOPParser.TOPParser,
+                     'PDBQT': PDBQTParser.PDBQTParser,
+                     'TPR': TPRParser.TPRParser,
+                     'DMS': DMSParser.DMSParser,
+                     'MOL2': MOL2Parser.MOL2Parser,
+                     'DATA': LAMMPSParser.DATAParser,
                      }
-_topology_parsers_permissive = _topology_parsers.copy()
-_topology_parsers_permissive['PDB'] = PrimitivePDBParser.parse
-
-_topology_parsers_bonds = _topology_parsers.copy()
-_topology_parsers_bonds['PDB'] = PrimitivePDBParser.parse_bonds
