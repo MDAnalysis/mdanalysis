@@ -63,7 +63,7 @@ relative to a density rho0 in g/cm^3::
 from `rho/rho0 = n/(N_A * M**-1) / rho0`  where `[n] = 1/Volume`, `[rho] = mass/Volume`
 
 
-.. SeeAlso:: Maybe we should simply use Quantities_?
+.. SeeAlso:: Maybe we should simply use Quantities_ or :mod:`scipy.constants`?
 
 .. _Quantities: http://packages.python.org/quantities/
 
@@ -76,6 +76,7 @@ Functions
 Data
 ----
 
+.. autodata:: constants
 .. autodata:: lengthUnit_factor
 .. autodata:: N_Avogadro
 .. autodata:: water
@@ -99,6 +100,20 @@ References
 
 """
 
+#: `Avogadro's constant`_ in mol**-1.
+#: .. deprecated:: 0.9.0
+#:    Use *N_Avogadro* in dict :data:`constants` instead.
+N_Avogadro = 6.02214129e+23  # mol**-1
+
+#: Physical constants with values from `CODATA 2010 at NIST`_.
+#: .. _`CODATA 2010 at NIST`: http://physics.nist.gov/cuu/Constants/
+#:
+#: .. versionadded:: 0.9.0
+constants = {
+    'N_Avogadro': 6.02214129e+23,         # mol**-1
+    'elementary_charge': 1.602176565e-19, # As
+}
+
 #: The basic unit of *length* in MDAnalysis is the Angstrom.
 #: Conversion factors between the base unit and other lengthUnits *x* are stored.
 #: Conversions follow `L/x = L/Angstrom * lengthUnit_factor[x]`.
@@ -109,9 +124,6 @@ lengthUnit_factor = {'Angstrom': 1.0, 'A': 1.0, 'Å': 1.0, 'angstrom': 1.0,
                      'fm': 1e5, 'femtometer': 1e5,
                      }
 
-
-#: `Avogadro's constant`_ in mol**-1,
-N_Avogadro = 6.02214179e+23  # mol**-1
 
 #: water density values ay 1179: T=298K, P=1atm [Jorgensen1998]_
 #:  ======== =========
@@ -169,11 +181,18 @@ forceUnit_factor = {'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*A)': 1.0, 'kJ/(mol*Å)': 
                     }
 # (TODO: build this combinatorically from lengthUnit and ... a new energyUnit)
 
+#: *Energy* is measured in kJ/mol.
+energyUnit_factor = {'kJ/mol': 1.0,
+                     'kcal/mol': 1/4.184,
+                     'J': 1e3/N_Avogadro,
+                     'eV': 1e3/(constants['N_Avogadro'] * constants['elementary_charge']),
+                     }
+
 #: *Charge* is measured in multiples of the `electron charge`_
 #: *e* =  1.602176487 x 10**(-19) C.
 chargeUnit_factor = {'e': 1.0,
                      'Amber': 18.2223,  # http://ambermd.org/formats.html#parm
-                     'C': 1.602176487e-19, 'As': 1.602176487e-19,
+                     'C': constants['elementary_charge'], 'As': constants['elementary_charge'],
                      }
 
 #: :data:`conversion_factor` is used by :func:`get_conversion_factor`:
@@ -185,6 +204,7 @@ conversion_factor = {'length': lengthUnit_factor,
                      'charge': chargeUnit_factor,
                      'speed': speedUnit_factor,
                      'force': forceUnit_factor,
+                     'energy': energyUnit_factor,
                      }
 
 #: Generated lookup table (dict): returns the type of unit for a known input unit.

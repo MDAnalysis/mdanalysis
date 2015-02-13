@@ -33,7 +33,7 @@ class TestDefaultUnits(TestCase):
                      "The default behaviour should be to auto-convert Gromacs trajectories")
 
 class TestConversion(TestCase):
-    def testLength(TestCase):
+    def testLength(self):
         nm = 12.34567
         A = nm * 10.
         assert_almost_equal(units.convert(nm, 'nm', 'A'), A,
@@ -41,8 +41,14 @@ class TestConversion(TestCase):
         assert_almost_equal(units.convert(A, 'Angstrom', 'nm'), nm,
                             err_msg="Conversion A -> nm failed")
 
-    def testTime(TestCase):
+    def testTime(self):
         assert_almost_equal(units.convert(1, 'ps', 'AKMA'), 20.45482949774598,
                             err_msg="Conversion ps -> AKMA failed")
         assert_almost_equal(units.convert(1, 'AKMA', 'ps'), 0.04888821,
                             err_msg="Conversion AKMA -> ps failed")
+
+    def testEnergy(self):
+        assert_almost_equal(units.convert(1, 'kcal/mol', 'kJ/mol'), 4.184,
+                            err_msg="Conversion kcal/mol -> kJ/mol failed")
+        assert_almost_equal(units.convert(1, 'kcal/mol', 'eV'), 0.0433641,
+                            err_msg="Conversion kcal/mol -> kJ/mol failed")
