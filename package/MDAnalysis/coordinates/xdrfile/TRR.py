@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 Gromacs TRR I/O
@@ -48,6 +48,7 @@ import numpy
 import core
 import libxdrfile2
 from MDAnalysis import NoDataError
+
 
 class Timestep(core.Timestep):
     """Timestep for a Gromacs_ TRR trajectory.
@@ -116,10 +117,12 @@ class Timestep(core.Timestep):
 It might be the case that your trajectory doesn't have %s, or not every frame. In the latter case you can \
 (1) get rid of %s-less frames before passing the trajectory to MDAnalysis, or \
 (2) reflow your code to not access %s when they're not there, by making use of the '%s' flag of Timestep objects."
+
     def __init__(self, arg, **kwargs):
-        DIM = libxdrfile2.DIM    # compiled-in dimension (most likely 3)
+        DIM = libxdrfile2.DIM  # compiled-in dimension (most likely 3)
         # These flags control which attributes were actually initialized in this Timestep. Due to the possibility of TRR
-        #  frames with no coords/vels/forces, and the way reading is handled, the _tpos, _tvelocities and _tforces arrays
+        #  frames with no coords/vels/forces, and the way reading is handled, the _tpos, _tvelocities and _tforces
+        # arrays
         #  may end up containing data from different frames when the relevant attribute is missing in the trajectory.
         #  This is flagged and exceptions can be raised whenever there is an attempt to read flagged data.
         if numpy.dtype(type(arg)) == numpy.dtype(int):
@@ -132,13 +135,13 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
             self._tpos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             self._tvelocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             self._tforces = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
-            self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
+            self._unitcell = numpy.zeros((DIM, DIM), dtype=numpy.float32)
             # additional data for xtc
             self.status = libxdrfile2.exdrOK
             self.step = 0
             self.time = 0
             self.lmbda = 0
-        elif isinstance(arg, Timestep): # Copy constructor
+        elif isinstance(arg, Timestep):  # Copy constructor
             # This makes a deepcopy of the timestep
             self.frame = arg.frame
             self.numatoms = arg.numatoms
@@ -171,7 +174,9 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
                 except ValueError as err:
                     raise ValueError("Attempted to create a Timestep with invalid velocity data: " + err.message)
                 except AttributeError:
-                    raise AttributeError("Attempted to create a new Timestep from inconsistent Timestep data (the passed Timestep object has the 'has_v' flag set, but the '_velocities' attribute is missing.)")
+                    raise AttributeError(
+                        "Attempted to create a new Timestep from inconsistent Timestep data (the passed Timestep "
+                        "object has the 'has_v' flag set, but the '_velocities' attribute is missing.)")
             else:
                 self._tvelocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             # FORCES:
@@ -181,7 +186,9 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
                 except ValueError as err:
                     raise ValueError("Attempted to create a Timestep with invalid force data: " + err.message)
                 except AttributeError:
-                    raise AttributeError("Attempted to create a new Timestep from inconsistent Timestep data (the passed Timestep object has the 'has_f' flag set, but the '_forces' attribute is missing.)")
+                    raise AttributeError(
+                        "Attempted to create a new Timestep from inconsistent Timestep data (the passed Timestep "
+                        "object has the 'has_f' flag set, but the '_forces' attribute is missing.)")
             else:
                 self._tforces = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             ##
@@ -196,28 +203,30 @@ It might be the case that your trajectory doesn't have %s, or not every frame. I
             # The 'has_' flags are set from the named arguments passed to the constructor,
             # but default to what fields are available from the input array.
             self.has_x = kwargs.pop('has_x', True)
-            self.has_v = kwargs.pop('has_v', arg.shape[1] == 3*DIM)
-            self.has_f = kwargs.pop('has_f', arg.shape[1] == 3*DIM)
+            self.has_v = kwargs.pop('has_v', arg.shape[1] == 3 * DIM)
+            self.has_f = kwargs.pop('has_f', arg.shape[1] == 3 * DIM)
             if len(arg.shape) != 2:
                 raise ValueError("packed numpy array (x,v,f) can only have 2 dimensions")
-            self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
+            self._unitcell = numpy.zeros((DIM, DIM), dtype=numpy.float32)
             self.frame = 0
-            if (arg.shape[0] == 3*DIM and arg.shape[1] != 3*DIM) or \
+            if (arg.shape[0] == 3 * DIM and arg.shape[1] != 3 * DIM) or \
                     (arg.shape[0] == DIM and arg.shape[1] != DIM):
                 # wrong order (but need to exclude case where natoms == DIM or natoms == 3*DIM!)
-                raise ValueError("TRR timestep is to be initialized from an array with dimensions (natoms, 3*%d) or (natoms, %d). \
+                raise ValueError("TRR timestep is to be initialized from an array with dimensions (natoms, "
+                                 "3*%d) or (natoms, %d). \
 If you wish to skip a property set the corresponding 'has_' flag to False on construction." % (DIM, DIM))
             self.numatoms = arg.shape[0]
-            if arg.shape[1] != DIM and arg.shape[1] != 3*DIM:
-                raise ValueError("TRR timestep doesn't have second dimension %d or 3*%d: shape=%r" % (DIM,DIM,arg.shape))
+            if arg.shape[1] != DIM and arg.shape[1] != 3 * DIM:
+                raise ValueError(
+                    "TRR timestep doesn't have second dimension %d or 3*%d: shape=%r" % (DIM, DIM, arg.shape))
             # COORDINATES
-            self._tpos = arg[:,0:DIM].copy('C')                   # C-order
+            self._tpos = arg[:, 0:DIM].copy('C')  # C-order
             # Velocities and forces, if the array seems to have them.
             # VELOCITIES
             if arg.shape[1] == DIM:
-                self._tvelocities = arg[:,DIM:2*DIM].copy('C')    # C-order
-            # FORCES
-                self._tforces = arg[:,2*DIM:3*DIM].copy('C')      # C-order
+                self._tvelocities = arg[:, DIM:2 * DIM].copy('C')  # C-order
+                # FORCES
+                self._tforces = arg[:, 2 * DIM:3 * DIM].copy('C')  # C-order
             else:
                 self._tvelocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
                 self._tforces = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
@@ -230,8 +239,8 @@ If you wish to skip a property set the corresponding 'has_' flag to False on con
         else:
             raise ValueError("Cannot create an empty Timestep")
 
-# The entire coordinate/velocity/force information is now hidden behind
-#  existence-checking decorated functions.
+        # The entire coordinate/velocity/force information is now hidden behind
+        #  existence-checking decorated functions.
 
     # COORDINATES
     @property
@@ -239,7 +248,8 @@ If you wish to skip a property set the corresponding 'has_' flag to False on con
         if self.has_x:
             return self._tpos
         else:
-            raise NoDataError(self._nodataerr % ("coordinates","coordinates","coordinate","coordinates","has_x"))
+            raise NoDataError(self._nodataerr % ("coordinates", "coordinates", "coordinate", "coordinates", "has_x"))
+
     @_pos.setter
     def _pos(self, x):
         if x.shape == (self.numatoms, libxdrfile2.DIM):
@@ -248,26 +258,33 @@ If you wish to skip a property set the corresponding 'has_' flag to False on con
         else:
             raise ValueError("You are attempting to set the positions array of a Timestep with an array \
 that doesn't have the same number of atoms or the same number of dimensions. The Timestep \
-has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((self.numatoms,libxdrfile2.DIM),x.shape))
+has number-of-atoms,dimensions %r, and you supplied an array of shape %r." %
+                             ((self.numatoms, libxdrfile2.DIM), x.shape))
+
     #
     @property
     def _x(self):
-        return self._pos[:,0]
+        return self._pos[:, 0]
+
     @_x.setter
     def _x(self, x):
-        self._tpos[:,0] = x
+        self._tpos[:, 0] = x
+
     @property
     def _y(self):
-        return self._pos[:,0]
+        return self._pos[:, 0]
+
     @_y.setter
     def _y(self, y):
-        self._tpos[:,0] = y
+        self._tpos[:, 0] = y
+
     @property
     def _z(self):
-        return self._pos[:,0]
+        return self._pos[:, 0]
+
     @_z.setter
     def _z(self, z):
-        self._tpos[:,0] = z
+        self._tpos[:, 0] = z
 
     # VELOCITIES
     @property
@@ -275,7 +292,8 @@ has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((s
         if self.has_v:
             return self._tvelocities
         else:
-            raise NoDataError(self._nodataerr % ("velocities","velocities","velocity","velocities","has_v"))
+            raise NoDataError(self._nodataerr % ("velocities", "velocities", "velocity", "velocities", "has_v"))
+
     @_velocities.setter
     def _velocities(self, v):
         if v.shape == (self.numatoms, libxdrfile2.DIM):
@@ -284,7 +302,8 @@ has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((s
         else:
             raise ValueError("You are attempting to set the velocities array of a Timestep with an array \
 that doesn't have the same number of atoms or the same number of dimensions. The Timestep \
-has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((self.numatoms,libxdrfile2.DIM),v.shape))
+has number-of-atoms,dimensions %r, and you supplied an array of shape %r." %
+                             ((self.numatoms, libxdrfile2.DIM), v.shape))
 
     #FORCES
     @property
@@ -292,7 +311,8 @@ has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((s
         if self.has_f:
             return self._tforces
         else:
-            raise NoDataError(self._nodataerr % ("forces","forces","force","forces","has_f"))
+            raise NoDataError(self._nodataerr % ("forces", "forces", "force", "forces", "has_f"))
+
     @_forces.setter
     def _forces(self, f):
         if f.shape == (self.numatoms, libxdrfile2.DIM):
@@ -301,7 +321,9 @@ has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((s
         else:
             raise ValueError("You are attempting to set the forces array of a Timestep with an array \
 that doesn't have the same number of atoms or the same number of dimensions. The Timestep \
-has number-of-atoms,dimensions %r, and you supplied an array of shape %r." % ((self.numatoms,libxdrfile2.DIM),f.shape))
+has number-of-atoms,dimensions %r, and you supplied an array of shape %r." %
+                             ((self.numatoms, libxdrfile2.DIM), f.shape))
+
 
 class TRRWriter(core.TrjWriter):
     """Write a Gromacs_ TRR trajectory.
@@ -309,7 +331,8 @@ class TRRWriter(core.TrjWriter):
     .. _Gromacs: http://www.gromacs.org
     """
     format = "TRR"
-    units = {'time': 'ps', 'length':'nm', 'velocity':'nm/ps', 'force':'kJ/(mol*nm)'}
+    units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps', 'force': 'kJ/(mol*nm)'}
+
 
 class TRRReader(core.TrjReader):
     """Read a Gromacs_ TRR trajectory.
@@ -326,5 +349,4 @@ class TRRReader(core.TrjReader):
     format = "TRR"
     _Timestep = Timestep
     _Writer = TRRWriter
-    units = {'time': 'ps', 'length':'nm', 'velocity':'nm/ps', 'force':'kJ/(mol*nm)'}
-
+    units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps', 'force': 'kJ/(mol*nm)'}

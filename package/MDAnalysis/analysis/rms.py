@@ -1,20 +1,18 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2012 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
 """
 Calculating root mean square quantities --- :mod:`MDAnalysis.analysis.rms`
 ==========================================================================
@@ -127,11 +125,13 @@ from MDAnalysis.core.util import asiterable
 
 
 import logging
+
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
 
 import warnings
 
-def rmsd(a,b, weights=None, center=False):
+
+def rmsd(a, b, weights=None, center=False):
     """Returns RMSD between two coordinate sets *a* and *b*.
 
     *a* and *b* are arrays of the coordinates of N atoms of shape N*3
@@ -168,7 +168,7 @@ def rmsd(a,b, weights=None, center=False):
     """
     if weights is not None:
         # weights are constructed as relative to the mean
-        relative_weights = numpy.asarray(weights)/numpy.mean(weights)
+        relative_weights = numpy.asarray(weights) / numpy.mean(weights)
     else:
         relative_weights = None
     if center:
@@ -176,8 +176,9 @@ def rmsd(a,b, weights=None, center=False):
         # weights=None is equivalent to all weights 1
         a = a - numpy.average(a, axis=0, weights=weights)
         b = b - numpy.average(b, axis=0, weights=weights)
-    return qcp.CalcRMSDRotationalMatrix(a.T.astype(numpy.float64),b.T.astype(numpy.float64),
+    return qcp.CalcRMSDRotationalMatrix(a.T.astype(numpy.float64), b.T.astype(numpy.float64),
                                         a.shape[0], None, relative_weights)
+
 
 def _process_selection(select):
     """Return a canonical selection dictionary.
@@ -196,10 +197,10 @@ def _process_selection(select):
               be iterable (so that one can provide selections that retain order)
     """
     if type(select) is str:
-        select = {'reference':select,'mobile':select}
+        select = {'reference': select, 'mobile': select}
     elif type(select) is tuple:
         try:
-            select = {'mobile':select[0], 'reference':select[1]}
+            select = {'mobile': select[0], 'reference': select[1]}
         except IndexError:
             raise IndexError("select must contain two selection strings "
                              "(reference, mobile)")
@@ -224,6 +225,7 @@ def _process_selection(select):
     select['reference'] = asiterable(select['reference'])
     return select
 
+
 class RMSD(object):
     """Class to perform RMSD analysis on a trajectory.
 
@@ -237,6 +239,7 @@ class RMSD(object):
 
     .. versionadded:: 0.7.7
     """
+
     def __init__(self, traj, reference=None, select='all', groupselections=None, filename="rmsd.dat",
                  mass_weighted=False, tol_mass=0.1, ref_frame=0):
         """Setting up the RMSD analysis.
@@ -308,20 +311,21 @@ class RMSD(object):
         natoms = self.traj_atoms.numberOfAtoms()
         if len(self.ref_atoms) != len(self.traj_atoms):
             logger.exception()
-            raise SelectionError("Reference and trajectory atom selections do not contain "+
-                                 "the same number of atoms: N_ref=%d, N_traj=%d" % \
+            raise SelectionError("Reference and trajectory atom selections do not contain " +
+                                 "the same number of atoms: N_ref=%d, N_traj=%d" %
                                  (len(self.ref_atoms), len(self.traj_atoms)))
         logger.info("RMS calculation for %d atoms." % len(self.ref_atoms))
         mass_mismatches = (numpy.absolute(self.ref_atoms.masses() - self.traj_atoms.masses()) > self.tol_mass)
         if numpy.any(mass_mismatches):
             # diagnostic output:
             logger.error("Atoms: reference | trajectory")
-            for ar,at in izip(self.ref_atoms, self.traj_atoms):
+            for ar, at in izip(self.ref_atoms, self.traj_atoms):
                 if ar.name != at.name:
-                    logger.error("%4s %3d %3s %3s %6.3f  |  %4s %3d %3s %3s %6.3f" %  \
-                          (ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
-                           at.segid, at.resid, at.resname, at.name, at.mass,))
-            errmsg = "Inconsistent selections, masses differ by more than %f; mis-matching atoms are shown above." % self.tol_mass
+                    logger.error("%4s %3d %3s %3s %6.3f  |  %4s %3d %3s %3s %6.3f" %
+                                 (ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
+                                 at.segid, at.resid, at.resname, at.name, at.mass,))
+            errmsg = "Inconsistent selections, masses differ by more than %f; mis-matching atoms are shown above." % \
+                     self.tol_mass
             logger.error(errmsg)
             raise SelectionError(errmsg)
         del mass_mismatches
@@ -330,21 +334,22 @@ class RMSD(object):
         # - make a group comparison a class that contains the checks above
         # - use this class for the *select* group and the additional *groupselections* groups
         # each a dict with reference/mobile
-        self.groupselections_atoms = [{'reference': self.reference.selectAtoms(*s['reference']),
-                                       'mobile': self.universe.selectAtoms(*s['mobile']),
-                                       }
-                                      for s in self.groupselections]
+        self.groupselections_atoms = [
+            {
+                'reference': self.reference.selectAtoms(*s['reference']),
+                'mobile': self.universe.selectAtoms(*s['mobile']),
+            }
+            for s in self.groupselections]
         # sanity check
         for igroup, (sel, atoms) in enumerate(zip(self.groupselections, self.groupselections_atoms)):
             if len(atoms['mobile']) != len(atoms['reference']):
                 logger.exception()
-                raise SelectionError("Group selection {0}: {1} | {2}: Reference and trajectory atom selections do not contain "+
-                                     "the same number of atoms: N_ref={3}, N_traj={4}".format(
+                raise SelectionError(
+                    "Group selection {0}: {1} | {2}: Reference and trajectory atom selections do not contain " +
+                    "the same number of atoms: N_ref={3}, N_traj={4}".format(
                         igroup, sel['reference'], sel['mobile'], len(atoms['reference']), len(atoms['mobile'])))
 
-
         self.rmsd = None
-
 
     def run(self, **kwargs):
         """Perform RMSD analysis on the trajectory.
@@ -379,7 +384,7 @@ class RMSD(object):
 
         if mass_weighted:
             # if performing a mass-weighted alignment/rmsd calculation
-            weight = self.ref_atoms.masses()/self.ref_atoms.masses().mean()
+            weight = self.ref_atoms.masses() / self.ref_atoms.masses().mean()
         else:
             weight = None
 
@@ -393,7 +398,8 @@ class RMSD(object):
             ref_coordinates = self.ref_atoms.positions - ref_com  # makes a copy
             if self.groupselections_atoms:
                 groupselections_ref_coords_T_64 = [
-                    self.reference.selectAtoms(*s['reference']).positions.T.astype(numpy.float64) for s in self.groupselections]
+                    self.reference.selectAtoms(*s['reference']).positions.T.astype(numpy.float64) for s in
+                    self.groupselections]
         finally:
             # Move back to the original frame
             self.reference.trajectory[current_frame]
@@ -407,25 +413,25 @@ class RMSD(object):
             # R: rotation matrix that aligns r-r_com, x~-x~com
             #    (x~: selected coordinates, x: all coordinates)
             # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
-            rot = numpy.zeros(9,dtype=numpy.float64)      # allocate space for calculation
-            R = numpy.matrix(rot.reshape(3,3))
+            rot = numpy.zeros(9, dtype=numpy.float64)  # allocate space for calculation
+            R = numpy.matrix(rot.reshape(3, 3))
         else:
             rot = None
 
         # RMSD timeseries
-        nframes = len(numpy.arange(0,len(trajectory))[start:stop:step])
+        nframes = len(numpy.arange(0, len(trajectory))[start:stop:step])
         rmsd = numpy.zeros((nframes, 3 + len(self.groupselections_atoms)))
 
         percentage = ProgressMeter(nframes, interval=10,
                                    format="RMSD %(rmsd)5.2f A at frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
 
-        for k,ts in enumerate(trajectory[start:stop:step]):
+        for k, ts in enumerate(trajectory[start:stop:step]):
             # shift coordinates for rotation fitting
             # selection is updated with the time frame
             x_com = traj_atoms.centerOfMass().astype(numpy.float32)
             traj_coordinates[:] = traj_atoms.coordinates() - x_com
 
-            rmsd[k,:2] = ts.frame, trajectory.time
+            rmsd[k, :2] = ts.frame, trajectory.time
 
             if self.groupselections_atoms:
                 # 1) superposition structures
@@ -437,16 +443,17 @@ class RMSD(object):
                 rmsd[k, 2] = qcp.CalcRMSDRotationalMatrix(ref_coordinates_T_64,
                                                           traj_coordinates.T.astype(numpy.float64),
                                                           natoms, rot, weight)
-                R[:,:] = rot.reshape(3,3)
+                R[:, :] = rot.reshape(3, 3)
 
                 # Transform each atom in the trajectory (use inplace ops to avoid copying arrays)
                 # (Marginally (~3%) faster than "ts._pos[:] = (ts._pos - x_com) * R + ref_com".)
-                ts._pos   -= x_com
-                ts._pos[:] = ts._pos * R # R acts to the left & is broadcasted N times.
-                ts._pos   += ref_com
+                ts._pos -= x_com
+                ts._pos[:] = ts._pos * R  # R acts to the left & is broadcasted N times.
+                ts._pos += ref_com
 
                 # 2) calculate secondary RMSDs
-                for igroup, (refpos, atoms) in enumerate(izip(groupselections_ref_coords_T_64, self.groupselections_atoms), 3):
+                for igroup, (refpos, atoms) in enumerate(
+                        izip(groupselections_ref_coords_T_64, self.groupselections_atoms), 3):
                     rmsd[k, igroup] = qcp.CalcRMSDRotationalMatrix(refpos,
                                                                    atoms['mobile'].positions.T.astype(numpy.float64),
                                                                    atoms['mobile'].numberOfAtoms(), None, weight)
@@ -457,7 +464,7 @@ class RMSD(object):
                                                           traj_coordinates.T.astype(numpy.float64),
                                                           natoms, None, weight)
 
-            percentage.echo(ts.frame, rmsd=rmsd[k,2])
+            percentage.echo(ts.frame, rmsd=rmsd[k, 2])
         self.rmsd = rmsd
 
     def save(self, filename=None):
@@ -479,5 +486,6 @@ class RMSD(object):
 
 class RMSF(object):
     """Calculate root mean square fluctuations"""
+
     def __init__(self, *args, **kwargs):
         raise NotImplementedError

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 """
 :Author: Oliver Beckstein
 :Year: 2010
@@ -50,6 +51,7 @@ import numpy
 import MDAnalysis
 from MDAnalysis.analysis.leaflet import LeafletFinder, optimize_cutoff
 
+
 def get_membrane_parameters(universe, leafletfinder):
     L = leafletfinder
 
@@ -57,8 +59,8 @@ def get_membrane_parameters(universe, leafletfinder):
     L1 = L.group(1)
 
     parameters = {}
-    parameters['thickness'] = numpy.abs((L1.centroid() - L0.centroid())[2])   # z coordinate
-    parameters['zmem'] = 0.5*(L1.centroid() + L0.centroid())[2]   # z coordinate
+    parameters['thickness'] = numpy.abs((L1.centroid() - L0.centroid())[2])  # z coordinate
+    parameters['zmem'] = 0.5 * (L1.centroid() + L0.centroid())[2]  # z coordinate
     return parameters
 
 
@@ -70,34 +72,32 @@ if __name__ == "__main__":
     parser = OptionParser(usage=usage % vars())
     parser.add_option("-t", "--topology", dest="topology",
                       help="optional topology file e.g. PSF; useful when using "
-                      "a PDB file as structure, which only provides 3-letter resnames")
+                           "a PDB file as structure, which only provides 3-letter resnames")
     parser.add_option("--pbc", dest="pbc", action="store_true",
                       help="take periodic boundaries into account? "
-                      "(Only works for orthorhombic boxes) [%default]")
+                           "(Only works for orthorhombic boxes) [%default]")
     parser.add_option("-d", "--cutoff", dest="cutoff", type="float", metavar="DIST",
                       help="look for neighbouring lipids within DIST Angstroem [%default]")
     parser.add_option("-S", "--headgroup-selection", dest="selection", metavar="SELECTION",
                       help="MDAnalysis selection string that selects one atom from "
-                      "each headgroup of every lipid ['%default']")
+                           "each headgroup of every lipid ['%default']")
     parser.add_option("--optimize", dest="optimize", action="store_true",
                       help="find cutoff automatically that minimizes the total number "
-                      "of unconnected groups but is larger than a single group. "
-                      "Can take a while... Ignores --cutoff. [%default]")
+                           "of unconnected groups but is larger than a single group. "
+                           "Can take a while... Ignores --cutoff. [%default]")
     parser.add_option("--max-imbalance", dest="max_imbalance", type="float",
                       metavar="Q",
                       help="When optimizing, discard any solutions for which "
-                      "|N0 - N1|/|N0 + N1| > Q (Ni = number of lipids in group i) "
-                      "This heuristic picks groups with balanced numbers of lipids. "
-                      "[%default]")
+                           "|N0 - N1|/|N0 + N1| > Q (Ni = number of lipids in group i) "
+                           "This heuristic picks groups with balanced numbers of lipids. "
+                           "[%default]")
 
-
-    parser.set_defaults(pbc=False, cutoff=15.0,optimize=False,
+    parser.set_defaults(pbc=False, cutoff=15.0, optimize=False,
                         max_imbalance=0.2,
                         # PO-lipids (and CHOL for CG) but not CHARMM K+
-                        selection="(name P* or name ROH) and not name POT",
-                        )
+                        selection="(name P* or name ROH) and not name POT")
     # TODO: selection should be set based on the identities of lipids.
-    #       combined with fingerprinting in the future to do this automagically;
+    # combined with fingerprinting in the future to do this automagically;
     #       Hard coded for now.
 
     options, args = parser.parse_args()
@@ -131,8 +131,7 @@ if __name__ == "__main__":
     p = get_membrane_parameters(u, LF)
 
     # show results
-    print "#" + 60*"="
+    print "#" + 60 * "="
     print "thickness tmem = %(thickness).2f A" % p
     print "center    zmem = %(zmem).2f A" % p
-    print "#" + 60*"="
-
+    print "#" + 60 * "="

@@ -1,18 +1,17 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 # MDAnalysis -- density analysis
@@ -85,12 +84,14 @@ Classes and Functions
 """
 import numpy  # need v >= 1.0.3
 import sys
-import os,os.path,errno
+import os
+import os.path
+import errno
 import cPickle
 import warnings
 
 try:
-    from gridData import Grid    # http://github.com/orbeckst/GridDataFormats
+    from gridData import Grid  # http://github.com/orbeckst/GridDataFormats
 except ImportError:
     print """ERROR --- The GridDataFormats package can not be found!
 
@@ -113,7 +114,9 @@ from MDAnalysis.core.util import fixedwidth_bins, iterable, asiterable
 from MDAnalysis import NoDataError, MissingDataWarning
 
 import logging
+
 logger = logging.getLogger("MDAnalysis.analysis.density")
+
 
 class Density(Grid):
     """Class representing a density on a regular cartesian grid.
@@ -194,6 +197,7 @@ class Density(Grid):
     .. _PyMOL: http://www.pymol.org/
     .. _GridDataFormats: https://github.com/orbeckst/GridDataFormats
     """
+
     def __init__(self, *args, **kwargs):
         """Create a :class:`Density` from data.
 
@@ -247,24 +251,24 @@ class Density(Grid):
 
         super(Density, self).__init__(*args, **kwargs)
 
-        self.parameters = parameters    # isDensity: set by make_density()
+        self.parameters = parameters  # isDensity: set by make_density()
         self.units = units
 
-    def _check_set_unit(self,u):
-        """Check that all bindings ``{unit_type : value, ...}`` in the dict `u` are valid and set the object's units attribute.
+    def _check_set_unit(self, u):
+        """Check that all bindings ``{unit_type : value, ...}`` in the dict `u` are valid and set the object's units
+        attribute.
         """
         # all this unit crap should be a class...
         try:
-            for unit_type,value in u.items():
-                if value is None:   # check here, too iffy to use dictionary[None]=None
+            for unit_type, value in u.items():
+                if value is None:  # check here, too iffy to use dictionary[None]=None
                     self.units[unit_type] = None
                     continue
                 try:
                     MDAnalysis.core.units.conversion_factor[unit_type][value]
                     self.units[unit_type] = value
                 except KeyError:
-                    raise ValueError('Unit '+str(value)+\
-                                     ' of type '+str(unit_type)+' is not recognized.')
+                    raise ValueError('Unit ' + str(value) + ' of type ' + str(unit_type) + ' is not recognized.')
         except AttributeError:
             errmsg = '"unit" must be a dictionary with keys "length" and "density.'
             logger.fatal(errmsg)
@@ -294,7 +298,7 @@ class Density(Grid):
             warnings.warn(msg)
             return
 
-        dedges = map(numpy.diff,self.edges)
+        dedges = map(numpy.diff, self.edges)
         D = len(self.edges)
         for i in xrange(D):
             shape = numpy.ones(D, int)
@@ -303,7 +307,7 @@ class Density(Grid):
         self.parameters['isDensity'] = True
         self.units['density'] = self.units['length'] + "^{-3}"  # see core.units.densityUnit_factor
 
-    def convert_length(self,unit='Angstrom'):
+    def convert_length(self, unit='Angstrom'):
         """Convert Grid object to the new *unit*.
 
           Grid.convert_length(<unit>)
@@ -320,12 +324,12 @@ class Density(Grid):
         """
         if unit == self.units['length']:
             return
-        cvnfact = MDAnalysis.core.units.get_conversion_factor('length',self.units['length'],unit)
+        cvnfact = MDAnalysis.core.units.get_conversion_factor('length', self.units['length'], unit)
         self.edges = [x * cvnfact for x in self.edges]
         self.units['length'] = unit
-        self._update()        # needed to recalculate midpoints and origin
+        self._update()  # needed to recalculate midpoints and origin
 
-    def convert_density(self,unit='Angstrom'):
+    def convert_density(self, unit='Angstrom'):
         """Convert the density to the physical units given by *unit*.
 
           Grid.convert_to(unit)
@@ -359,7 +363,7 @@ class Density(Grid):
         if unit == self.units['density']:
             return
         try:
-            self.grid *= MDAnalysis.core.units.get_conversion_factor('density',self.units['density'],unit)
+            self.grid *= MDAnalysis.core.units.get_conversion_factor('density', self.units['density'], unit)
         except KeyError:
             raise ValueError("The name of the unit (%r supplied) must be one of:\n%r" %
                              (unit, MDAnalysis.core.units.conversion_factor['density'].keys()))
@@ -370,11 +374,10 @@ class Density(Grid):
             grid_type = 'density'
         else:
             grid_type = 'histogram'
-        return '<Density '+grid_type+' with '+str(self.grid.shape)+' bins>'
+        return '<Density ' + grid_type + ' with ' + str(self.grid.shape) + ' bins>'
 
 
-
-def density_from_trajectory(*args,**kwargs):
+def density_from_trajectory(*args, **kwargs):
     """Create a density grid from a trajectory.
 
          density_from_trajectory(PSF, DCD, delta=1.0, atomselection='name OH2', ...) --> density
@@ -412,10 +415,11 @@ def density_from_trajectory(*args,**kwargs):
 
     .. SeeAlso:: docs for :func:`density_from_Universe` (defaults for kwargs are defined there).
     """
-    return density_from_Universe(MDAnalysis.Universe(*args),**kwargs)
+    return density_from_Universe(MDAnalysis.Universe(*args), **kwargs)
 
-def density_from_Universe(universe,delta=1.0,atomselection='name OH2',
-                          metadata=None,padding=2.0,cutoff=0,soluteselection=None,
+
+def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
+                          metadata=None, padding=2.0, cutoff=0, soluteselection=None,
                           use_kdtree=True, **kwargs):
     """Create a density grid from a MDAnalysis.Universe object.
 
@@ -457,22 +461,25 @@ def density_from_Universe(universe,delta=1.0,atomselection='name OH2',
     u = universe
     if cutoff > 0 and soluteselection is not None:
         # special fast selection for '<atomsel> not within <cutoff> of <solutesel>'
-        notwithin_coordinates = notwithin_coordinates_factory(u,atomselection,soluteselection,cutoff,use_kdtree=use_kdtree)
+        notwithin_coordinates = notwithin_coordinates_factory(u, atomselection, soluteselection, cutoff,
+                                                              use_kdtree=use_kdtree)
+
         def current_coordinates():
             return notwithin_coordinates()
     else:
         group = u.selectAtoms(atomselection)
+
         def current_coordinates():
             return group.coordinates()
 
     coord = current_coordinates()
     logger.info("Selected %d atoms out of %d atoms (%s) from %d total." %
-        (coord.shape[0],len(u.selectAtoms(atomselection)),atomselection,len(u.atoms)))
+                (coord.shape[0], len(u.selectAtoms(atomselection)), atomselection, len(u.atoms)))
 
     # mild warning; typically this is run on RMS-fitted trajectories and
     # so the box information is rather meaningless
-    box,angles = u.trajectory.ts.dimensions[:3], u.trajectory.ts.dimensions[3:]
-    if tuple(angles) <> (90.,90.,90.):
+    box, angles = u.trajectory.ts.dimensions[:3], u.trajectory.ts.dimensions[3:]
+    if tuple(angles) != (90., 90., 90.):
         msg = "Non-orthorhombic unit-cell --- make sure that it has been remapped properly!"
         warnings.warn(msg)
         logger.warn(msg)
@@ -484,58 +491,59 @@ def density_from_Universe(universe,delta=1.0,atomselection='name OH2',
     # ideal solution would use images: implement 'looking across the
     # periodic boundaries' but that gets complicate when the box
     # rotates due to RMS fitting.
-    smin = numpy.min(coord,axis=0) - padding
-    smax = numpy.max(coord,axis=0) + padding
+    smin = numpy.min(coord, axis=0) - padding
+    smax = numpy.max(coord, axis=0) + padding
 
     BINS = fixedwidth_bins(delta, smin, smax)
-    arange = zip(BINS['min'],BINS['max'])
+    arange = zip(BINS['min'], BINS['max'])
     bins = BINS['Nbins']
 
     # create empty grid with the right dimensions (and get the edges)
-    grid,edges = numpy.histogramdd(numpy.zeros((1,3)),bins=bins,range=arange,normed=False)
+    grid, edges = numpy.histogramdd(numpy.zeros((1, 3)), bins=bins, range=arange, normed=False)
     grid *= 0.0
     h = grid.copy()
 
     for ts in u.trajectory:
         print "Histograming %6d atoms in frame %5d/%d  [%5.1f%%]\r" % \
-            (len(coord), ts.frame,u.trajectory.numframes,100.0*ts.frame/u.trajectory.numframes),
+              (len(coord), ts.frame, u.trajectory.numframes, 100.0 * ts.frame / u.trajectory.numframes),
         coord = current_coordinates()
-        if len(coord) == 0: continue
-        h[:],edges[:] = numpy.histogramdd(coord, bins=bins, range=arange, normed=False)
+        if len(coord) == 0:
+            continue
+        h[:], edges[:] = numpy.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
     print
     numframes = u.trajectory.numframes / u.trajectory.skip
     grid /= float(numframes)
 
     # pick from kwargs
-    metadata = kwargs.pop('metadata',{})
+    metadata = kwargs.pop('metadata', {})
     metadata['psf'] = u.filename
     metadata['dcd'] = u.trajectory.filename
     metadata['atomselection'] = atomselection
     metadata['numframes'] = numframes
     metadata['totaltime'] = round(u.trajectory.numframes * u.trajectory.dt, 3)
     metadata['dt'] = u.trajectory.dt
-    metadata['time_unit'] =  MDAnalysis.core.flags['time_unit']
+    metadata['time_unit'] = MDAnalysis.core.flags['time_unit']
     metadata['trajectory_skip'] = u.trajectory.skip_timestep  # frames
-    metadata['trajectory_delta'] = u.trajectory.delta         # in native units
+    metadata['trajectory_delta'] = u.trajectory.delta  # in native units
     if cutoff > 0 and soluteselection is not None:
         metadata['soluteselection'] = soluteselection
-        metadata['cutoff'] = cutoff             # in Angstrom
+        metadata['cutoff'] = cutoff  # in Angstrom
 
-    parameters = kwargs.pop('parameters',{})
-    parameters['isDensity'] = False             # must override
+    parameters = kwargs.pop('parameters', {})
+    parameters['isDensity'] = False  # must override
 
     # all other kwargs are discarded
 
-    g = Density(grid=grid,edges=edges,units={'length': MDAnalysis.core.flags['length_unit']},
-                parameters=parameters,metadata=metadata)
+    g = Density(grid=grid, edges=edges, units={'length': MDAnalysis.core.flags['length_unit']},
+                parameters=parameters, metadata=metadata)
     g.make_density()
     logger.info("Density completed (initial density in Angstrom**-3)")
 
     return g
 
 
-def notwithin_coordinates_factory(universe,sel1, sel2, cutoff, not_within=True, use_kdtree=True):
+def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True, use_kdtree=True):
     """Generate optimized selection for '*sel1* not within *cutoff* of *sel2*'
 
     Example usage::
@@ -572,38 +580,41 @@ def notwithin_coordinates_factory(universe,sel1, sel2, cutoff, not_within=True, 
         # using faster hand-coded 'not within' selection with kd-tree
         import MDAnalysis.KDTree.NeighborSearch as NS
         import MDAnalysis.core.AtomGroup
-        set_solvent = set(solvent)     # need sets to do bulk = allsolvent - selection
+
+        set_solvent = set(solvent)  # need sets to do bulk = allsolvent - selection
         if not_within is True:  # default
             def notwithin_coordinates(cutoff=cutoff):
                 # must update every time step
                 ns_w = NS.AtomNeighborSearch(solvent)  # build kd-tree on solvent (N_w > N_protein)
-                solvation_shell = ns_w.search_list(protein,cutoff)  # solvent within CUTOFF of protein
-                group = MDAnalysis.core.AtomGroup.AtomGroup(set_solvent - set(solvation_shell)) # bulk
+                solvation_shell = ns_w.search_list(protein, cutoff)  # solvent within CUTOFF of protein
+                group = MDAnalysis.core.AtomGroup.AtomGroup(set_solvent - set(solvation_shell))  # bulk
                 return group.coordinates()
         else:
             def notwithin_coordinates(cutoff=cutoff):
                 # acts as '<solvent> WITHIN <cutoff> OF <protein>'
                 # must update every time step
                 ns_w = NS.AtomNeighborSearch(solvent)  # build kd-tree on solvent (N_w > N_protein)
-                group = ns_w.search_list(protein,cutoff)  # solvent within CUTOFF of protein
+                group = ns_w.search_list(protein, cutoff)  # solvent within CUTOFF of protein
                 return group.coordinates()
     else:
         # slower distance matrix based (calculate all with all distances first)
         import MDAnalysis.analysis.distances
-        dist = numpy.zeros((len(solvent),len(protein)),dtype=numpy.float64)
+
+        dist = numpy.zeros((len(solvent), len(protein)), dtype=numpy.float64)
         box = None  # as long as s_coor is not minimum-image remapped
-        if not_within is True:   # default
+        if not_within is True:  # default
             compare = numpy.greater
             aggregatefunc = numpy.all
         else:
             compare = numpy.less_equal
             aggregatefunc = numpy.any
+
         def notwithin_coordinates(cutoff=cutoff):
             s_coor = solvent.coordinates()
             p_coor = protein.coordinates()
             # Does water i satisfy d[i,j] > r for ALL j?
-            d = MDAnalysis.analysis.distances.distance_array(s_coor,p_coor,box=box,result=dist)
-            return s_coor[aggregatefunc(compare(d,cutoff), axis=1)]
+            d = MDAnalysis.analysis.distances.distance_array(s_coor, p_coor, box=box, result=dist)
+            return s_coor[aggregatefunc(compare(d, cutoff), axis=1)]
     return notwithin_coordinates
 
 
@@ -626,7 +637,8 @@ def Bfactor2RMSF(B):
 
     .. [Willis1975]  BTM Willis and AW Pryor. *Thermal vibrations in crystallography*. Cambridge Univ. Press, 1975
     """
-    return numpy.sqrt(3.*B/8.)/numpy.pi
+    return numpy.sqrt(3. * B / 8.) / numpy.pi
+
 
 def density_from_PDB(pdb, **kwargs):
     """Create a density from a single frame PDB.
@@ -670,7 +682,8 @@ def density_from_PDB(pdb, **kwargs):
     :Returns: a :class:`Density` object with a density measured relative to the
               water density at standard conditions
     """
-    return BfactorDensityCreator(pdb,**kwargs).Density()
+    return BfactorDensityCreator(pdb, **kwargs).Density()
+
 
 class BfactorDensityCreator(object):
     """Create a density grid from a pdb file using MDAnalysis.
@@ -695,8 +708,9 @@ class BfactorDensityCreator(object):
     ..   :meth:`BfactorDensityCreator.Density` helper method is clumsy.
 
     """
-    def __init__(self,pdb,delta=1.0,atomselection='resname HOH and name O',
-                metadata=None,padding=1.0, sigma=None):
+
+    def __init__(self, pdb, delta=1.0, atomselection='resname HOH and name O',
+                 metadata=None, padding=1.0, sigma=None):
         """Construct the density from psf and pdb and the atomselection.
 
           DC = BfactorDensityCreator(pdb, delta=<delta>, atomselection=<MDAnalysis selection>,
@@ -730,22 +744,23 @@ class BfactorDensityCreator(object):
 
         """
         from MDAnalysis import asUniverse
+
         u = asUniverse(pdb)
         group = u.selectAtoms(atomselection)
         coord = group.coordinates()
         logger.info("Selected %d atoms (%s) out of %d total." %
-            (coord.shape[0],atomselection,len(u.atoms)))
-        smin = numpy.min(coord,axis=0) - padding
-        smax = numpy.max(coord,axis=0) + padding
+                    (coord.shape[0], atomselection, len(u.atoms)))
+        smin = numpy.min(coord, axis=0) - padding
+        smax = numpy.max(coord, axis=0) + padding
 
         BINS = fixedwidth_bins(delta, smin, smax)
-        arange = zip(BINS['min'],BINS['max'])
+        arange = zip(BINS['min'], BINS['max'])
         bins = BINS['Nbins']
 
         # get edges by doing a fake run
-        grid,self.edges = numpy.histogramdd(numpy.zeros((1,3)),
-                                            bins=bins,range=arange,normed=False)
-        self.delta = numpy.diag(map(lambda e: (e[-1] - e[0])/(len(e)-1), self.edges))
+        grid, self.edges = numpy.histogramdd(numpy.zeros((1, 3)),
+                                             bins=bins, range=arange, normed=False)
+        self.delta = numpy.diag(map(lambda e: (e[-1] - e[0]) / (len(e) - 1), self.edges))
         self.midpoints = map(lambda e: 0.5 * (e[:-1] + e[1:]), self.edges)
         self.origin = map(lambda m: m[0], self.midpoints)
         numframes = 1
@@ -756,16 +771,16 @@ class BfactorDensityCreator(object):
             if numpy.any(group.bfactors == 0.0):
                 wmsg = "Some B-factors are Zero (will be skipped)."
                 logger.warn(wmsg)
-                warnings.warn(wmsg,category=MissingDataWarning)
+                warnings.warn(wmsg, category=MissingDataWarning)
             rmsf = Bfactor2RMSF(group.bfactors)
             grid *= 0.0  # reset grid
-            self.g = self._smear_rmsf(coord,grid,self.edges,rmsf)
+            self.g = self._smear_rmsf(coord, grid, self.edges, rmsf)
         else:
             # histogram 'delta functions'
-            grid,self.edges = numpy.histogramdd(coord,bins=bins,range=arange,normed=False)
+            grid, self.edges = numpy.histogramdd(coord, bins=bins, range=arange, normed=False)
             logger.info("Histogrammed %6d atoms from pdb." % len(group.atoms))
             # just a convolution of the density with a Gaussian
-            self.g = self._smear_sigma(grid,sigma)
+            self.g = self._smear_sigma(grid, sigma)
 
         try:
             metadata['pdb'] = pdb
@@ -780,60 +795,55 @@ class BfactorDensityCreator(object):
 
         # Density automatically converts histogram to density for isDensity=False -- ??[OB]
 
-    def Density(self,threshold=None):
+    def Density(self, threshold=None):
         """Returns a Density object.
         """
-        d = Density(grid=self.g,edges=self.edges,units=dict(length='Angstrom'),
-                    parameters=dict(isDensity=False),metadata=self.metadata)
+        d = Density(grid=self.g, edges=self.edges, units=dict(length='Angstrom'),
+                    parameters=dict(isDensity=False), metadata=self.metadata)
         d.make_density()
         d.convert_density('water')
         return d
 
-    def _smear_sigma(self,grid,sigma):
+    def _smear_sigma(self, grid, sigma):
         # smear out points
         # (not optimized -- just to test the principle; faster approach could use
         # convolution of the whole density with a single Gaussian via FFTs:
         # rho_smeared = F^-1[ F[g]*F[rho] ]
-        g = numpy.zeros(grid.shape)   # holds the smeared out density
-        pos = numpy.where(grid <> 0)  # position in histogram (as bin numbers)
-        for iwat in xrange(len(pos[0])): # super-ugly loop
+        g = numpy.zeros(grid.shape)  # holds the smeared out density
+        pos = numpy.where(grid != 0)  # position in histogram (as bin numbers)
+        for iwat in xrange(len(pos[0])):  # super-ugly loop
             p = tuple([wp[iwat] for wp in pos])
-            g += grid[p] * \
-                numpy.fromfunction(self._gaussian,grid.shape,dtype=numpy.int,
-                                   p=p,sigma=sigma)
-            print "Smearing out atom position %4d/%5d with RMSF %4.2f A\r" %  \
-                    (iwat+1,len(pos[0]),sigma),
+            g += grid[p] * numpy.fromfunction(self._gaussian, grid.shape, dtype=numpy.int, p=p, sigma=sigma)
+            print "Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
+                  (iwat + 1, len(pos[0]), sigma),
         return g
 
-    def _smear_rmsf(self,coordinates,grid,edges,rmsf):
+    def _smear_rmsf(self, coordinates, grid, edges, rmsf):
         # smear out each water with its individual Gaussian
         # (slower than smear_sigma)
-        g = numpy.zeros(grid.shape)   # holds the smeared out density
-        N,D = coordinates.shape
-        for iwat,coord in enumerate(coordinates):
+        g = numpy.zeros(grid.shape)  # holds the smeared out density
+        N, D = coordinates.shape
+        for iwat, coord in enumerate(coordinates):
             if rmsf[iwat] == 0:
                 continue
-            g += numpy.fromfunction(self._gaussian_cartesian,grid.shape,dtype=numpy.int,
-                                    c=coord,sigma=rmsf[iwat])
-            print "Smearing out atom position %4d/%5d with RMSF %4.2f A\r" %  \
-                    (iwat+1,N,rmsf[iwat]),
+            g += numpy.fromfunction(self._gaussian_cartesian, grid.shape, dtype=numpy.int,
+                                    c=coord, sigma=rmsf[iwat])
+            print "Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
+                  (iwat + 1, N, rmsf[iwat]),
         return g
 
-
-    def _gaussian(self,i,j,k,p,sigma):
+    def _gaussian(self, i, j, k, p, sigma):
         # i,j,k can be numpy arrays
         # p is center of gaussian as grid index, sigma its width (in A)
-        x = self.delta[0,0]*(i - p[0])  # in Angstrom
-        y = self.delta[1,1]*(j - p[1])
-        z = self.delta[2,2]*(k - p[2])
-        return (2*numpy.pi*sigma)**(-1.5) * numpy.exp(-(x*x+y*y+z*z)/(2*sigma*sigma))
+        x = self.delta[0, 0] * (i - p[0])  # in Angstrom
+        y = self.delta[1, 1] * (j - p[1])
+        z = self.delta[2, 2] * (k - p[2])
+        return (2 * numpy.pi * sigma) ** (-1.5) * numpy.exp(-(x * x + y * y + z * z) / (2 * sigma * sigma))
 
-    def _gaussian_cartesian(self,i,j,k,c,sigma):
+    def _gaussian_cartesian(self, i, j, k, c, sigma):
         # i,j,k can be numpy arrays
         # c is center of gaussian in cartesian coord (A), sigma its width (in A)
-        x = self.origin[0] + self.delta[0,0]*i - c[0]  # in Angstrom
-        y = self.origin[1] + self.delta[1,1]*j - c[1]
-        z = self.origin[2] + self.delta[2,2]*k - c[2]
-        return (2*numpy.pi*sigma)**(-1.5) * numpy.exp(-(x*x+y*y+z*z)/(2*sigma*sigma))
-
-
+        x = self.origin[0] + self.delta[0, 0] * i - c[0]  # in Angstrom
+        y = self.origin[1] + self.delta[1, 1] * j - c[1]
+        z = self.origin[2] + self.delta[2, 2] * k - c[2]
+        return (2 * numpy.pi * sigma) ** (-1.5) * numpy.exp(-(x * x + y * y + z * z) / (2 * sigma * sigma))

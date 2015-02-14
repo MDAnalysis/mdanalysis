@@ -1,18 +1,17 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 import numpy as np
@@ -21,16 +20,20 @@ from numpy.testing import *
 import MDAnalysis.core.units as units
 from MDAnalysis.core import flags
 
+
 class TestDefaultUnits(TestCase):
     def testLength(self):
         assert_equal(flags['length_unit'], 'Angstrom',
                      "The default length unit should be Angstrom (in core.flags)")
+
     def testTime(self):
         assert_equal(flags['time_unit'], 'ps',
                      "The default length unit should be pico seconds (in core.flags)")
+
     def testConvertGromacsTrajectories(self):
         assert_equal(flags['convert_lengths'], True,
                      "The default behaviour should be to auto-convert Gromacs trajectories")
+
 
 class TestConversion(TestCase):
     def testLength(self):

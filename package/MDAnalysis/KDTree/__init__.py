@@ -1,4 +1,4 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 
@@ -10,7 +10,7 @@
 #
 # Changes to the original __init__.py:
 # 2008-08-24 Oliver Beckstein <orbeckst@gmail.com>
-#    Added the modified NeighborSearch module to the KDTree package
+# Added the modified NeighborSearch module to the KDTree package
 
 """
 .. KDTree distance searches --- :mod:`MDAnalysis.KDTree`
@@ -27,6 +27,6 @@ that are within a certain radius of each other. See "Computational Geometry:
 Algorithms and Applications" (Mark de Berg, Marc van Kreveld, Mark Overmars,
 Otfried Schwarzkopf) [deBerg2000].
 """
-__all__ = ['KDTree','NeighborSearch']
+__all__ = ['KDTree', 'NeighborSearch']
 
 from KDTree import KDTree

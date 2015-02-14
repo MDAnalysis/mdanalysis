@@ -1,20 +1,18 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
 import numpy
 from numpy.testing import *
 
@@ -35,32 +33,40 @@ class TestIsstream(TestCase):
         obj = "random string"
         assert_equal(util.hasmethod(obj, "rfind"), True)
         assert_equal(util.hasmethod(obj, "bogusXXX"), False)
+
     def test_string(self):
-        obj = datafiles.PSF # filename
+        obj = datafiles.PSF  # filename
         assert_equal(util.isstream(obj), False)
+
     def test_list(self):
-        obj = [1,2,3]
+        obj = [1, 2, 3]
         assert_equal(util.isstream(obj), False)
+
     def test_iterator(self):
         obj = (i for i in xrange(3))
         assert_equal(util.isstream(obj), False)
+
     def test_file(self):
         with open(datafiles.PSF) as obj:
             assert_equal(util.isstream(obj), True)
+
     def test_cStringIO_read(self):
         with open(datafiles.PSF, "r") as f:
             obj = cStringIO.StringIO(f.read())
         assert_equal(util.isstream(obj), True)
         obj.close()
+
     def test_cStringIO_write(self):
         obj = cStringIO.StringIO()
         assert_equal(util.isstream(obj), True)
         obj.close()
+
     def test_StringIO_read(self):
         with open(datafiles.PSF, "r") as f:
             obj = StringIO.StringIO(f)
         assert_equal(util.isstream(obj), True)
         obj.close()
+
     def test_StringIO_write(self):
         obj = StringIO.StringIO()
         assert_equal(util.isstream(obj), True)
@@ -70,18 +76,21 @@ class TestIsstream(TestCase):
 class TestNamedStream(TestCase):
     def setUp(self):
         self.filename = datafiles.PSF
-        self.numlines = 12326 # len(open(self.filename).readlines())
-        self.text = ["The Jabberwock, with eyes of flame,\n",
-                     "Came whiffling through the tulgey wood,\n",
-                     "And burbled as it came!"]
+        self.numlines = 12326  # len(open(self.filename).readlines())
+        self.text = [
+            "The Jabberwock, with eyes of flame,\n",
+            "Came whiffling through the tulgey wood,\n",
+            "And burbled as it came!"]
         self.textname = "jabberwock.txt"
         self.numtextlines = len(self.text)
+
     def testClosing(self):
         obj = cStringIO.StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname, close=True)
         assert_equal(ns.closed, False)
         ns.close()
         assert_equal(ns.closed, True)
+
     def testClosingForce(self):
         obj = cStringIO.StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
@@ -90,6 +99,7 @@ class TestNamedStream(TestCase):
         assert_equal(ns.closed, False)
         ns.close(force=True)
         assert_equal(ns.closed, True)
+
     def testcStringIO_read(self):
         obj = cStringIO.StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
@@ -99,6 +109,7 @@ class TestNamedStream(TestCase):
         ns.reset()
         assert_equal(len(ns.readlines()), self.numtextlines)
         ns.close(force=True)
+
     def testFile_read(self):
         obj = open(self.filename, 'r')
         ns = util.NamedStream(obj, self.filename)
@@ -108,6 +119,7 @@ class TestNamedStream(TestCase):
         ns.reset()
         assert_equal(len(ns.readlines()), self.numlines)
         ns.close(force=True)
+
     def testcStringIO_write(self):
         obj = cStringIO.StringIO()
         ns = util.NamedStream(obj, self.textname)
@@ -119,6 +131,7 @@ class TestNamedStream(TestCase):
         ns.reset()
         assert_equal(ns.read(20), "".join(self.text)[:20])
         ns.close(force=True)
+
     def testFile_write(self):
         fd, outfile = tempfile.mkstemp(suffix=".txt")
         os.close(fd)
@@ -141,22 +154,22 @@ class TestNamedStream(TestCase):
             except OSError:
                 pass
 
+
 class _StreamData(object):
     """Data for StreamIO functions."""
     filenames = {
-        'PSF':  datafiles.PSF,
-        'CRD':  datafiles.CRD,
-        'PDB':  datafiles.PDB_small,
-        'PQR':  datafiles.PQR,
-        'GRO':  datafiles.GRO_velocity,
+        'PSF': datafiles.PSF,
+        'CRD': datafiles.CRD,
+        'PDB': datafiles.PDB_small,
+        'PQR': datafiles.PQR,
+        'GRO': datafiles.GRO_velocity,
         'MOL2': datafiles.mol2_molecules,
-        'PDBQT':datafiles.PDBQT_input,
-        }
+        'PDBQT': datafiles.PDBQT_input,
+    }
 
     def __init__(self):
         self.buffers = dict(
-            (name, "".join(open(fn).readlines()))
-            for name, fn in self.filenames.iteritems())
+            (name, "".join(open(fn).readlines())) for name, fn in self.filenames.iteritems())
         self.filenames['XYZ_PSF'] = "bogus/path/mini.psf"
         self.buffers['XYZ_PSF'] = """\
 PSF CMAP
@@ -218,12 +231,13 @@ frame 3
     def as_NamedStream(self, name):
         return util.NamedStream(self.as_cStringIO(name), self.filenames[name])
 
+
 streamData = _StreamData()
 del _StreamData
 
+
 # possibly add tests to individual readers instead?
 class TestStreamIO(TestCase, RefAdKSmall):
-
     def test_PrimitivePDBReader(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         assert_equal(u.atoms.numberOfAtoms(), self.ref_numatoms)
@@ -232,7 +246,7 @@ class TestStreamIO(TestCase, RefAdKSmall):
     def test_PDBReader(self):
         try:
             u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'), permissive=False)
-        except Exception, err:
+        except Exception as err:
             raise AssertionError("StreamIO not supported:\n>>>>> {}".format(err))
         assert_equal(u.atoms.numberOfAtoms(), self.ref_numatoms)
 
@@ -273,9 +287,8 @@ class TestStreamIO(TestCase, RefAdKSmall):
                             10. * numpy.array([1.275, 0.053, 0.622]), 3,  # manually convert nm -> A
                             err_msg="wrong coordinates for water 2 OW")
         assert_almost_equal(u.atoms[3].velocity,
-                            10. * numpy.array([0.2519, 0.3140, -0.1734]), 3, # manually convert nm/ps -> A/ps
+                            10. * numpy.array([0.2519, 0.3140, -0.1734]), 3,  # manually convert nm/ps -> A/ps
                             err_msg="wrong velocity for water 2 OW")
-
 
     def test_MOL2Reader(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('MOL2'))
@@ -294,5 +307,5 @@ class TestStreamIO(TestCase, RefAdKSmall):
         assert_equal(u.trajectory.frame, 1)  # !!!! ???
         u.trajectory.next()  # frame 2
         assert_equal(u.trajectory.frame, 2)
-        assert_almost_equal(u.atoms[2].position, numpy.array([ 0.45600, 18.48700, 16.26500]), 3,
+        assert_almost_equal(u.atoms[2].position, numpy.array([0.45600, 18.48700, 16.26500]), 3,
                             err_msg="wrong coordinates for atom CA at frame 2")

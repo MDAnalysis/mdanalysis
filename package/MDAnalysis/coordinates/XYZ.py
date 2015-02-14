@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """XYZ trajectory reader --- :mod:`MDAnalysis.coordinates.XYZ`
 ==============================================================
@@ -67,7 +67,8 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
 
 """
 
-import os, errno
+import os
+import errno
 import numpy
 import bz2
 import gzip
@@ -77,6 +78,7 @@ import base
 import MDAnalysis
 import MDAnalysis.core
 import MDAnalysis.core.util as util
+
 
 class Timestep(base.Timestep):
     @property
@@ -135,20 +137,25 @@ class XYZWriter(base.Writer):
         self.filename = args[0]
         # convert length and time to base units on the fly?
         convert_units = kwargs.pop('convert_units', None)
-        self.convert_units = convert_units if convert_units is not None else  MDAnalysis.core.flags['convert_lengths']
+        self.convert_units = convert_units if convert_units is not None else MDAnalysis.core.flags['convert_lengths']
         self.atomnames = self._get_atomnames(kwargs.pop('atoms', "X"))
-        self.remark = kwargs.pop('remark', "Written by {0} (release {1})".format(self.__class__.__name__, MDAnalysis.__version__))
+        self.remark = kwargs.pop('remark',
+                                 "Written by {0} (release {1})".format(self.__class__.__name__, MDAnalysis.__version__))
 
         self.xyz = util.anyopen(self.filename, 'w')  # can also be gz, bz2
 
     def _get_atomnames(self, atoms):
         """Return a list of atom names"""
         # AtomGroup
-        try: return atoms.names()
-        except AttributeError: pass
+        try:
+            return atoms.names()
+        except AttributeError:
+            pass
         # universe?
-        try: return atoms.atoms.names()
-        except AttributeError: pass
+        try:
+            return atoms.atoms.names()
+        except AttributeError:
+            pass
         # list or string (can be a single atom name... deal with this in write_next_timestep() once we know numatoms)
         return numpy.asarray(util.asiterable(atoms))
 
@@ -219,8 +226,9 @@ class XYZWriter(base.Writer):
 
         self.xyz.write("{0:d}\n".format(ts.numatoms))
         self.xyz.write("frame {0}\n".format(ts.frame))
-        for atom,(x,y,z) in itertools.izip(self.atomnames, coordinates):
+        for atom, (x, y, z) in itertools.izip(self.atomnames, coordinates):
             self.xyz.write("%8s  %10.5f %10.5f %10.5f\n" % (atom, x, y, z))
+
 
 class XYZReader(base.Reader):
     """Reads from an XYZ file
@@ -273,7 +281,7 @@ class XYZReader(base.Reader):
         self.fixed = 0
         self.skip = 1
         self.periodic = False
-        self.delta = kwargs.pop("delta", 1.0)   # can set delta manually, default is 1ps (taken from TRJReader)
+        self.delta = kwargs.pop("delta", 1.0)  # can set delta manually, default is 1ps (taken from TRJReader)
         self.skip_timestep = 1
 
         self.ts = self._Timestep(self.numatoms)  # numatoms has sideeffects: read trajectory... (FRAGILE)
@@ -287,7 +295,7 @@ class XYZReader(base.Reader):
     @property
     def numatoms(self):
         """number of atoms in a frame"""
-        if not self.__numatoms is None:   # return cached value
+        if not self.__numatoms is None:  # return cached value
             return self.__numatoms
         try:
             self.__numatoms = self._read_xyz_natoms(self.filename)
@@ -296,7 +304,7 @@ class XYZReader(base.Reader):
         else:
             return self.__numatoms
 
-    def _read_xyz_natoms(self,filename):
+    def _read_xyz_natoms(self, filename):
         # this assumes that this is only called once at startup and that the filestream is already open
         # (FRAGILE)
         n = self.xyzfile.readline()
@@ -306,7 +314,7 @@ class XYZReader(base.Reader):
 
     @property
     def numframes(self):
-        if not self.__numframes is None:   # return cached value
+        if not self.__numframes is None:  # return cached value
             return self.__numframes
         try:
             self.__numframes = self._read_xyz_numframes(self.filename)
@@ -318,7 +326,7 @@ class XYZReader(base.Reader):
     def _read_xyz_numframes(self, filename):
         self._reopen()
         # the number of lines in the XYZ file will be 2 greater than the number of atoms
-        linesPerFrame = self.numatoms+2
+        linesPerFrame = self.numatoms + 2
         counter = 0
         # step through the file (assuming xyzfile has an iterator)
         for i in self.xyzfile:
@@ -326,7 +334,7 @@ class XYZReader(base.Reader):
         self.close()
 
         # need to check this is an integer!
-        numframes = int(counter/linesPerFrame)
+        numframes = int(counter / linesPerFrame)
         return numframes
 
     def __iter__(self):
@@ -365,7 +373,7 @@ class XYZReader(base.Reader):
             # stop when the cursor has reached the end of that block
             if counter == self.numatoms:
                 ts._unitcell = numpy.zeros((6), numpy.float32)
-                ts._x[:] = x # more efficient to do it this way to avoid re-creating the numpy arrays
+                ts._x[:] = x  # more efficient to do it this way to avoid re-creating the numpy arrays
                 ts._y[:] = y
                 ts._z[:] = z
                 ts.frame += 1
@@ -419,5 +427,3 @@ class XYZReader(base.Reader):
             return
         self.xyzfile.close()
         self.xyzfile = None
-
-

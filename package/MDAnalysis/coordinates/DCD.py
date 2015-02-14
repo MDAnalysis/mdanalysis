@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """DCD trajectory I/O  --- :mod:`MDAnalysis.coordinates.DCD`
 ============================================================
@@ -25,7 +25,8 @@ as this is auto-detected.
 The classes in this module are the reference implementations for the
 Trajectory API.
 """
-import os, errno
+import os
+import errno
 import numpy
 
 import base
@@ -34,10 +35,11 @@ import MDAnalysis.core
 import MDAnalysis.core.units
 from MDAnalysis import NoDataError
 
+
 class Timestep(base.Timestep):
     #: indices into :attr:`Timestep._unitcell`` to pull out
     #: ``[A, B, C, alpha, beta, gamma]``.
-    _ts_order = [0,2,5,4,3,1]
+    _ts_order = [0, 2, 5, 4, 3, 1]
 
     @property
     def dimensions(self):
@@ -75,6 +77,7 @@ class Timestep(base.Timestep):
         """
         numpy.put(self._unitcell, self._ts_order, box)
 
+
 class DCDWriter(base.Writer):
     """Writes to a DCD file
 
@@ -89,7 +92,7 @@ class DCDWriter(base.Writer):
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
-    def __init__(self, filename, numatoms, start=0, step=1, 
+    def __init__(self, filename, numatoms, start=0, step=1,
                  delta=MDAnalysis.core.units.convert(1., 'ps', 'AKMA'), dt=None,
                  remarks="Created by DCDWriter", convert_units=None):
         """Create a new DCDWriter
@@ -131,13 +134,13 @@ class DCDWriter(base.Writer):
             raise ValueError("DCDWriter: no atoms in output trajectory")
         elif numatoms is None:
             # probably called from MDAnalysis.Writer() so need to give user a gentle heads up...
-            raise ValueError("DCDWriter: REQUIRES the number of atoms in the 'numatoms' argument\n"+\
-                                 " "*len("ValueError: ") +\
-                                 "For example: numatoms=universe.atoms.numberOfAtoms()")
+            raise ValueError("DCDWriter: REQUIRES the number of atoms in the 'numatoms' argument\n" +
+                             " " * len("ValueError: ") +
+                             "For example: numatoms=universe.atoms.numberOfAtoms()")
         self.filename = filename
         # convert length and time to base units on the fly?
         self.convert_units = MDAnalysis.core.flags['convert_lengths'] if convert_units is None \
-                             else convert_units
+            else convert_units
         self.numatoms = numatoms
 
         self.frames_written = 0
@@ -187,10 +190,12 @@ class DCDWriter(base.Writer):
         # seems to do the job on Mac OS X 10.6.4 ... but I have no idea why,
         # given that the C code seems to define them as normal integers
         import struct
-        desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart',
-                'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr',
-                'reverse', 'charmm', 'first', 'with_unitcell']
-        return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii",self._dcd_C_str)))
+
+        desc = [
+            'file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart',
+            'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr',
+            'reverse', 'charmm', 'first', 'with_unitcell']
+        return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii", self._dcd_C_str)))
 
     def write_next_timestep(self, ts=None):
         ''' write a new timestep to the dcd file
@@ -211,10 +216,11 @@ class DCDWriter(base.Writer):
             raise ValueError("DCDWriter: Timestep does not have the correct number of atoms")
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
         if not ts._pos.flags.f_contiguous:  # Not in fortran format
-            ts = Timestep(ts)               # wrap in a new fortran formatted Timestep
+            ts = Timestep(ts)  # wrap in a new fortran formatted Timestep
         if self.convert_units:
-            pos = self.convert_pos_to_native(ts._pos, inplace=False)  # possibly make a copy to avoid changing the trajectory
-        self._write_next_frame(pos[:,0], pos[:,1], pos[:,2], unitcell)
+            pos = self.convert_pos_to_native(ts._pos,
+                                             inplace=False)  # possibly make a copy to avoid changing the trajectory
+        self._write_next_frame(pos[:, 0], pos[:, 1], pos[:, 2], unitcell)
         self.frames_written += 1
 
     def convert_dimensions_to_unitcell(self, ts, _ts_order=Timestep._ts_order):
@@ -236,6 +242,7 @@ class DCDWriter(base.Writer):
     def __del__(self):
         if hasattr(self, 'dcdfile') and not self.dcdfile is None:
             self.close()
+
 
 class DCDReader(base.Reader):
     """Reads from a DCD file
@@ -317,21 +324,25 @@ class DCDReader(base.Reader):
         # seems to do the job on Mac OS X 10.6.4 ... but I have no idea why,
         # given that the C code seems to define them as normal integers
         import struct
-        desc = ['file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart',
-                'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse',
-                'charmm', 'first', 'with_unitcell']
+
+        desc = [
+            'file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart',
+            'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse',
+            'charmm', 'first', 'with_unitcell']
         return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii", self._dcd_C_str)))
 
     def __iter__(self):
         # Reset the trajectory file, read from the start
         # usage is "from ts in dcd:" where dcd does not have indexes
         self._reset_dcd_read()
+
         def iterDCD():
             for i in xrange(0, self.numframes, self.skip):  # FIXME: skip is not working!!!
                 try:
                     yield self._read_next_timestep()
-                except IOError: 
+                except IOError:
                     raise StopIteration
+
         return iterDCD()
 
     def _read_next_timestep(self, ts=None):
@@ -351,19 +362,21 @@ class DCDReader(base.Reader):
                 raise IndexError
             self._jump_to_frame(frame)  # XXX required!!
             ts = self.ts
-            ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1) # XXX required!!
+            ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)  # XXX required!!
             return ts
-        elif type(frame) == slice: # if frame is a slice object
-            if not (((type(frame.start) == int) or (frame.start == None)) and
-                    ((type(frame.stop) == int) or (frame.stop == None)) and
-                    ((type(frame.step) == int) or (frame.step == None))):
+        elif type(frame) == slice:  # if frame is a slice object
+            if not (((type(frame.start) == int) or (frame.start is None)) and
+               ((type(frame.stop) == int) or (frame.stop is None)) and
+               ((type(frame.step) == int) or (frame.step is None))):
                 raise TypeError("Slice indices are not integers")
+
             def iterDCD(start=frame.start, stop=frame.stop, step=frame.step):
                 start, stop, step = self._check_slice_indices(start, stop, step)
                 for i in xrange(start, stop, step):
                     yield self[i]
+
             return iterDCD()
- 
+
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
         """Return a subset of coordinate data for an AtomGroup
 
@@ -462,6 +475,7 @@ class DCDReader(base.Reader):
 # Add the c functions to their respective classes so they act as class methods
 import _dcdmodule
 import new
+
 DCDReader._read_dcd_header = new.instancemethod(_dcdmodule.__read_dcd_header, None, DCDReader)
 DCDReader._read_next_frame = new.instancemethod(_dcdmodule.__read_next_frame, None, DCDReader)
 DCDReader._jump_to_frame = new.instancemethod(_dcdmodule.__jump_to_frame, None, DCDReader)
@@ -472,11 +486,11 @@ DCDReader._read_timeseries = new.instancemethod(_dcdmodule.__read_timeseries, No
 DCDWriter._write_dcd_header = new.instancemethod(_dcdmodule.__write_dcd_header, None, DCDWriter)
 DCDWriter._write_next_frame = new.instancemethod(_dcdmodule.__write_next_frame, None, DCDWriter)
 DCDWriter._finish_dcd_write = new.instancemethod(_dcdmodule.__finish_dcd_write, None, DCDWriter)
-del(_dcdmodule)
+del (_dcdmodule)
 
 # dcdtimeseries is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex
 import dcdtimeseries
 #DCDReader._read_timeseries = new.instancemethod(dcdtimeseries.__read_timeseries, None, DCDReader)
 DCDReader._read_timecorrel = new.instancemethod(dcdtimeseries.__read_timecorrel, None, DCDReader)
-del(dcdtimeseries)
-del(new)
+del (dcdtimeseries)
+del (new)

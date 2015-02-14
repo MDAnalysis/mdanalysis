@@ -1,18 +1,17 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 import MDAnalysis
@@ -28,7 +27,7 @@ import MDAnalysis.coordinates.xdrfile.libxdrfile2 as xdr
 try:
     from numpy.testing import assert_
 except ImportError:
-    def assert_(val, msg='') :
+    def assert_(val, msg=''):
         """
         Assert that works in release mode.
 
@@ -39,7 +38,7 @@ except ImportError:
 
         (Code taken from numpy.testing 1.4)
         """
-        if not val :
+        if not val:
             raise AssertionError(msg)
 
 
@@ -49,9 +48,10 @@ class TestLib(TestCase):
 
     def test_xdropen(self):
         XDR = xdr.xdrfile_open(XTC, 'r')
-        assert_(XDR != None, "Failed to open xtc file")
+        assert_(XDR is not None, "Failed to open xtc file")
         rc = xdr.xdrfile_close(XDR)
         assert_equal(rc, 0, "Failed to close xtc file")  # this can segfault
+
 
 class TestXTC(TestCase):
     def test_numatoms(self):
@@ -61,15 +61,15 @@ class TestXTC(TestCase):
     def test_numframes_offsets(self):
         numframes, offsets = xdr.read_xtc_numframes(XTC)
         assert_equal(numframes, 10, "Number of frames in XTC trajectory")
-        assert_array_almost_equal(offsets,np.load(XTC_offsets), err_msg="wrong xtc frame offsets")
+        assert_array_almost_equal(offsets, np.load(XTC_offsets), err_msg="wrong xtc frame offsets")
+
 
 class TestTRR(TestCase):
     def test_numatoms(self):
         natoms = xdr.read_trr_natoms(TRR)
         assert_equal(natoms, 47681, "Number of atoms in TRR frame")
 
-    def test_numframes_offsets(self): 
+    def test_numframes_offsets(self):
         numframes, offsets = xdr.read_trr_numframes(TRR)
         assert_equal(numframes, 10, "Number of frames in TRR trajectory")
-        assert_array_almost_equal(offsets,np.load(TRR_offsets), err_msg="wrong trr frame offsets")
-
+        assert_array_almost_equal(offsets, np.load(TRR_offsets), err_msg="wrong trr frame offsets")

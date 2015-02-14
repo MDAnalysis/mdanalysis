@@ -35,34 +35,36 @@ logger = logging.getLogger("MDAnalysis.app")
 
 if __name__ == "__main__":
         from optparse import OptionParser
+
         parser = OptionParser(usage=__doc__)
         parser.add_option("--resid", type=int, nargs=2, dest="residues", default=None,
-                          help ="REQUIRED: the pair of residues to compute DEER distances for")
+                          help="REQUIRED: the pair of residues to compute DEER distances for")
         parser.add_option("--discard", dest="discardFrames", type=int, default=0,
                           help="discard the first N frames [%default]")
-        parser.add_option("--histogramBins", dest="histogramBins", type=float, nargs=3, default=(0,80,1),
-                          help ="the start, end and incr distance for the histogram of the distances in Angstroms [%default]")
+        parser.add_option("--histogramBins", dest="histogramBins", type=float, nargs=3, default=(0, 80, 1),
+                          help="the start, end and incr distance for the histogram of the distances "
+                               "in Angstroms [%default]")
         parser.add_option("--clashDistance", dest="clashDistance", type=float, default=2.2,
-                          help ="the distance between heavy-atoms of the label and protein within which "
-                          "they are assumed to be clashing [%default Angstroms]")
+                          help="the distance between heavy-atoms of the label and protein within which "
+                               "they are assumed to be clashing [%default Angstroms]")
         parser.add_option("--output", dest="outputFile", default="output.dat",
-                          help ="the path and name of the output histogram file; the filename will "
-                          "have resid 1 and resid 2 inserted before the extension [%default]")
+                          help="the path and name of the output histogram file; the filename will "
+                               "have resid 1 and resid 2 inserted before the extension [%default]")
         parser.add_option("--dcdfilename", dest="dcdFilename", metavar="FILENAME",
-                          help ="the path and stem of the DCD files of the fitted MTSS rotamers")
+                          help="the path and stem of the DCD files of the fitted MTSS rotamers")
         parser.add_option("--libname", dest="libname", metavar="NAME", default="MTSSL 298K",
                           help="name of the rotamer library [%default]")
         parser.add_option("--plotname", dest="plotname", metavar="FILENAME", default=None,
                           help="plot the histogram to FILENAME (the extensions determines the format) "
-                          "By default <outputFile>.pdf.")
-
+                               "By default <outputFile>.pdf.")
 
         options, args = parser.parse_args()
 
         MDAnalysis.start_logging()
         logger.info("Rotamer Convolve MD --- Copyright (c) Philip W Fowler, Oliver Beckstein 2011-2013")
         logger.info("Released under the GNU Public Licence, version 2 (or higher)")
-        logger.info("Please cite: LS Stelzl, PW Fowler, MSP Sansom, O Beckstein. J Mol Biol 426 (2014), 735-751, doi:10.1016/j.jmb.2013.10.024")
+        logger.info("Please cite: LS Stelzl, PW Fowler, MSP Sansom, O Beckstein. "
+                    "J Mol Biol 426 (2014), 735-751, doi:10.1016/j.jmb.2013.10.024")
 
         # load the reference protein structure
         try:
@@ -79,11 +81,12 @@ if __name__ == "__main__":
                 options.dcdFilename = options.outputFile + "-tmp"
 
         startTime = time.time()
-        R = rotcon.convolve.RotamerDistances(proteinStructure, options.residues,
-                                               outputFile=options.outputFile, dcdFilename=options.dcdFilename,
-                                               libname=options.libname, discardFrames=options.discardFrames,
-                                               clashDistance=options.clashDistance,
-                                               histogramBins=options.histogramBins)
+        R = rotcon.convolve.RotamerDistances(proteinStructure,
+                                             options.residues,
+                                             outputFile=options.outputFile, dcdFilename=options.dcdFilename,
+                                             libname=options.libname, discardFrames=options.discardFrames,
+                                             clashDistance=options.clashDistance,
+                                             histogramBins=options.histogramBins)
         logger.info("DONE with analysis, elapsed time %6i s" % (int(time.time() - startTime)))
 
         if options.plotname is None:
@@ -92,5 +95,3 @@ if __name__ == "__main__":
         R.plot(filename=options.plotname, linewidth=2)
 
         MDAnalysis.stop_logging()
-
-

@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 Helper functions --- :mod:`MDAnalysis.core.util`
@@ -155,14 +155,18 @@ Class decorators
 
 __docformat__ = "restructuredtext en"
 
-import os, os.path, errno
+import os
+import os.path
+import errno
 from contextlib import contextmanager
-import bz2, gzip
+import bz2
+import gzip
 import re
 import io
 import warnings
 
 import numpy
+
 
 # Python 3.0, 3.1 do not have the builtin callable()
 try:
@@ -170,8 +174,10 @@ try:
 except NameError:
     # http://bugs.python.org/issue10518
     import collections
+
     def callable(obj):
         return isinstance(obj, collections.Callable)
+
 
 def filename(name, ext=None, keep=False):
     """Return a new name that has suffix attached; replaces other extensions.
@@ -201,6 +207,7 @@ def filename(name, ext=None, keep=False):
             else:
                 name = newname
     return name if isstream(name) else str(name)
+
 
 @contextmanager
 def openany(datasource, mode='r', reset=True):
@@ -248,6 +255,7 @@ def openany(datasource, mode='r', reset=True):
     finally:
         stream.close()
 
+
 def anyopen(datasource, mode='r', reset=True):
     """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
 
@@ -277,6 +285,7 @@ def anyopen(datasource, mode='r', reset=True):
        behavior to return a tuple ``(stream, filename)``.
     """
     from MDAnalysis import StreamWarning
+
     handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': file}
 
     if mode.startswith('r'):
@@ -298,14 +307,14 @@ def anyopen(datasource, mode='r', reset=True):
         else:
             stream = None
             filename = datasource
-            for ext in ('bz2', 'gz', ''):   # file == '' should be last
+            for ext in ('bz2', 'gz', ''):  # file == '' should be last
                 openfunc = handlers[ext]
                 stream = _get_stream(datasource, openfunc, mode=mode)
                 if not stream is None:
                     break
             if stream is None:
                 raise IOError(errno.EIO, "Cannot open file or stream in mode=%(mode)r." % vars(), repr(filename))
-    elif mode.startswith('w') or mode.startswith('a'):   # append 'a' not tested...
+    elif mode.startswith('w') or mode.startswith('a'):  # append 'a' not tested...
         if isstream(datasource):
             stream = datasource
             try:
@@ -319,7 +328,7 @@ def anyopen(datasource, mode='r', reset=True):
             if ext.startswith('.'):
                 ext = ext[1:]
             if not ext in ('bz2', 'gz'):
-                ext = ''   # anything else but bz2 or gz is just a normal file
+                ext = ''  # anything else but bz2 or gz is just a normal file
             openfunc = handlers[ext]
             stream = openfunc(datasource, mode=mode)
             if stream is None:
@@ -331,6 +340,7 @@ def anyopen(datasource, mode='r', reset=True):
     except (AttributeError, TypeError):
         pass  # can't set name (e.g. cStringIO.StringIO)
     return stream
+
 
 def _get_stream(filename, openfunction=file, mode='r'):
     """Return open stream if *filename* can be opened with *openfunction* or else ``None``."""
@@ -353,6 +363,7 @@ def _get_stream(filename, openfunction=file, mode='r'):
             stream = openfunction(filename, mode=mode)
     return stream
 
+
 def greedy_splitext(p):
     """Split extension in path *p* at the left-most separator."""
     path, root = os.path.split(p)
@@ -368,6 +379,7 @@ def greedy_splitext(p):
 def hasmethod(obj, m):
     """Return ``True`` if object *obj* contains the method *m*."""
     return hasattr(obj, m) and callable(getattr(obj, m))
+
 
 def isstream(obj):
     """Detect if *obj* is a stream.
@@ -392,25 +404,30 @@ def isstream(obj):
     .. versionadded:: 0.8.2
     """
     signature_methods = ("close",)
-    alternative_methods = (("read", "readline", "readlines"),
-                           ("write", "writeline", "writelines"))
+    alternative_methods = (
+        ("read", "readline", "readlines"),
+        ("write", "writeline", "writelines"))
 
     # Must have ALL the signature methods
     for m in signature_methods:
         if not hasmethod(obj, m):
             return False
     # Must have at least one complete set of alternative_methods
-    alternative_results = [numpy.all([hasmethod(obj, m) for m in alternatives])
-                           for alternatives in alternative_methods]
+    alternative_results = [
+        numpy.all([hasmethod(obj, m) for m in alternatives])
+        for alternatives in alternative_methods]
     return numpy.any(alternative_results)
+
 
 def which(program):
     """Determine full path of executable *program* on :envvar:`PATH`.
 
     (Jay at http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python)
     """
+
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
     fpath, fname = os.path.split(program)
     if fpath:
         real_program = realpath(program)
@@ -422,6 +439,7 @@ def which(program):
             if is_exe(exe_file):
                 return exe_file
     return None
+
 
 class NamedStream(io.IOBase, basestring):
     """Stream that also provides a (fake) name.
@@ -475,6 +493,7 @@ class NamedStream(io.IOBase, basestring):
        to :meth:`NamedStream.close` to always close the stream.
 
     """
+
     def __init__(self, stream, filename, reset=True, close=False):
         """Initialize the :class:`NamedStream` from a *stream* and give it a *name*.
 
@@ -517,8 +536,9 @@ class NamedStream(io.IOBase, basestring):
         """Move to the beginning of the stream"""
         # try to rewind
         from MDAnalysis import StreamWarning
+
         try:
-            self.stream.reset()       # e.g. StreamIO
+            self.stream.reset()  # e.g. StreamIO
         except (AttributeError, IOError):
             try:
                 self.stream.seek(0L)  # typical file objects
@@ -728,15 +748,16 @@ def realpath(*args):
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
     if isinstance(obj, basestring):
-        return False    # avoid iterating over characters of a string
+        return False  # avoid iterating over characters of a string
 
     if hasattr(obj, 'next'):
-        return True    # any iterator will do
+        return True  # any iterator will do
     try:
-        len(obj)       # anything else that might work
+        len(obj)  # anything else that might work
     except TypeError:
         return False
     return True
+
 
 def asiterable(obj):
     """Returns obj so that it can be iterated over; a string is *not* treated as iterable"""
@@ -751,9 +772,11 @@ def asiterable(obj):
 FORTRAN_format_regex = "(?P<repeat>\d+?)(?P<format>[IFEAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?"
 _FORTRAN_format_pattern = re.compile(FORTRAN_format_regex)
 
+
 def strip(s):
     """Convert *s* to a string and return it white-space stripped."""
     return str(s).strip()
+
 
 class FixedcolumnEntry(object):
     """Represent an entry at specific fixed columns.
@@ -762,6 +785,7 @@ class FixedcolumnEntry(object):
     typespecifier.
     """
     convertors = {'I': int, 'F': float, 'E': float, 'A': strip}
+
     def __init__(self, start, stop, typespecifier):
         """
         :Arguments:
@@ -779,17 +803,21 @@ class FixedcolumnEntry(object):
         self.stop = stop
         self.typespecifier = typespecifier
         self.convertor = self.convertors[typespecifier]
+
     def read(self, line):
         """Read the entry from *line* and convert to appropriate type."""
         try:
             return self.convertor(line[self.start:self.stop])
         except ValueError:
             raise ValueError("%r: Failed to read&convert %r" % (self, line[self.start:self.stop]))
+
     def __len__(self):
         """Length of the field in columns (stop - start)"""
         return self.stop - self.start
+
     def __repr__(self):
         return "FixedcolumnEntry(%d,%d,%r)" % (self.start, self.stop, self.typespecifier)
+
 
 class FORTRANReader(object):
     """FORTRANReader provides a method to parse FORTRAN formatted lines in a file.
@@ -825,7 +853,7 @@ class FORTRANReader(object):
             if d['format'] != 'X':
                 for x in range(d['repeat']):
                     stop = start + d['length']
-                    self.entries.append(FixedcolumnEntry(start,stop,d['format']))
+                    self.entries.append(FixedcolumnEntry(start, stop, d['format']))
                     start = stop
             else:
                 start += d['totallength']
@@ -875,7 +903,7 @@ class FORTRANReader(object):
         m = _FORTRAN_format_pattern.match(edit_descriptor.upper())
         if m is None:
             try:
-                m = _FORTRAN_format_pattern.match("1"+edit_descriptor.upper())
+                m = _FORTRAN_format_pattern.match("1" + edit_descriptor.upper())
                 if m is None:
                     raise ValueError  # really no idea what the descriptor is supposed to mean
             except:
@@ -885,12 +913,12 @@ class FORTRANReader(object):
             d['repeat'] = 1
         if d['format'] == 'X':
             d['length'] = 1
-        for k in ('repeat','length','decimals'):
+        for k in ('repeat', 'length', 'decimals'):
             try:
                 d[k] = int(d[k])
-            except ValueError:   # catches ''
+            except ValueError:  # catches ''
                 d[k] = 0
-            except TypeError:    # keep None
+            except TypeError:  # keep None
                 pass
         d['totallength'] = d['repeat'] * d['length']
         return d
@@ -900,9 +928,10 @@ class FORTRANReader(object):
         return len(self.entries)
 
     def __repr__(self):
-        return self.__class__.__name__+"("+",".join(self.fmt)+")"
+        return self.__class__.__name__ + "(" + ",".join(self.fmt) + ")"
 
-def fixedwidth_bins(delta,xmin,xmax):
+
+def fixedwidth_bins(delta, xmin, xmax):
     """Return bins of width delta that cover xmin,xmax (or a larger range).
 
     dict = fixedwidth_bins(delta,xmin,xmax)
@@ -911,13 +940,13 @@ def fixedwidth_bins(delta,xmin,xmax):
     """
     if not numpy.all(xmin < xmax):
         raise ValueError('Boundaries are not sane: should be xmin < xmax.')
-    _delta = numpy.asarray(delta,dtype=numpy.float_)
-    _xmin = numpy.asarray(xmin,dtype=numpy.float_)
-    _xmax = numpy.asarray(xmax,dtype=numpy.float_)
+    _delta = numpy.asarray(delta, dtype=numpy.float_)
+    _xmin = numpy.asarray(xmin, dtype=numpy.float_)
+    _xmax = numpy.asarray(xmax, dtype=numpy.float_)
     _length = _xmax - _xmin
-    N = numpy.ceil(_length/_delta).astype(numpy.int_)      # number of bins
-    dx = 0.5 * (N*_delta - _length)   # add half of the excess to each end
-    return {'Nbins':N, 'delta':_delta,'min':_xmin-dx, 'max':_xmax+dx}
+    N = numpy.ceil(_length / _delta).astype(numpy.int_)  # number of bins
+    dx = 0.5 * (N * _delta - _length)  # add half of the excess to each end
+    return {'Nbins': N, 'delta': _delta, 'min': _xmin - dx, 'max': _xmax + dx}
 
 
 # geometric functions
@@ -930,7 +959,8 @@ def norm(v):
 
     Faster than :func:`numpy.linalg.norm` because no frills.
     """
-    return numpy.sqrt(numpy.dot(v,v))
+    return numpy.sqrt(numpy.dot(v, v))
+
 
 def normal(vec1, vec2):
     r"""Returns the unit vector normal to two vectors.
@@ -945,17 +975,19 @@ def normal(vec1, vec2):
     n = norm(normal)
     if n == 0.0:
         return normal  # returns [0,0,0] instead of [nan,nan,nan]
-    return normal/n    # ... could also use numpy.nan_to_num(normal/norm(normal))
+    return normal / n  # ... could also use numpy.nan_to_num(normal/norm(normal))
+
 
 def angle(a, b):
     """Returns the angle between two vectors in radians"""
-    x = numpy.dot(a, b) / (norm(a)*norm(b))
+    x = numpy.dot(a, b) / (norm(a) * norm(b))
     # catch roundoffs that lead to nan otherwise
     if x > 1.0:
         return 0.0
     elif x < -1.0:
         return -numpy.pi
     return numpy.arccos(x)
+
 
 def stp(vec1, vec2, vec3):
     r"""Takes the scalar triple product of three vectors.
@@ -968,6 +1000,7 @@ def stp(vec1, vec2, vec3):
         V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)
     """
     return numpy.dot(vec3, numpy.cross(vec1, vec2))
+
 
 def dihedral(ab, bc, cd):
     r"""Returns the dihedral angle in radians between vectors connecting A,B,C,D.
@@ -994,22 +1027,25 @@ def dihedral(ab, bc, cd):
 
 #: translation table for 3-letter codes --> 1-letter codes
 #: .. SeeAlso:: :data:`alternative_inverse_aa_codes`
-canonical_inverse_aa_codes = {'ALA':'A', 'CYS':'C', 'ASP':'D', 'GLU':'E',
-                              'PHE':'F', 'GLY':'G', 'HIS':'H', 'ILE':'I',
-                              'LYS':'K', 'LEU':'L', 'MET':'M', 'ASN':'N',
-                              'PRO':'P', 'GLN':'Q', 'ARG':'R', 'SER':'S',
-                              'THR':'T', 'VAL':'V', 'TRP':'W', 'TYR':'Y'}
+canonical_inverse_aa_codes = {
+    'ALA': 'A', 'CYS': 'C', 'ASP': 'D', 'GLU': 'E',
+    'PHE': 'F', 'GLY': 'G', 'HIS': 'H', 'ILE': 'I',
+    'LYS': 'K', 'LEU': 'L', 'MET': 'M', 'ASN': 'N',
+    'PRO': 'P', 'GLN': 'Q', 'ARG': 'R', 'SER': 'S',
+    'THR': 'T', 'VAL': 'V', 'TRP': 'W', 'TYR': 'Y'}
 #: translation table for 1-letter codes --> *canonical* 3-letter codes.
 #: The table is used for :func:`convert_aa_code`.
-amino_acid_codes = dict([(one, three) for three,one in canonical_inverse_aa_codes.items()])
+amino_acid_codes = dict([(one, three) for three, one in canonical_inverse_aa_codes.items()])
 #: non-default charge state amino acids or special charge state descriptions
 #: (Not fully synchronized with :class:`MDAnalysis.core.Selection.ProteinSelection`.)
-alternative_inverse_aa_codes = {'HISA':'H', 'HISB':'H', 'HSE':'H', 'HSD':'H', 'HID':'H', 'HIE':'H', 'HIS1':'H', 'HIS2':'H',
-                                'ASPH': 'D', 'ASH': 'D',
-                                'GLUH': 'E', 'GLH': 'E',
-                                'LYSH': 'K', 'LYN': 'K',
-                                'ARGN': 'R',
-                                'CYSH':'C', 'CYS1':'C', 'CYS2':'C'}
+alternative_inverse_aa_codes = {
+    'HISA': 'H', 'HISB': 'H', 'HSE': 'H', 'HSD': 'H', 'HID': 'H', 'HIE': 'H', 'HIS1': 'H',
+    'HIS2': 'H',
+    'ASPH': 'D', 'ASH': 'D',
+    'GLUH': 'E', 'GLH': 'E',
+    'LYSH': 'K', 'LYN': 'K',
+    'ARGN': 'R',
+    'CYSH': 'C', 'CYS1': 'C', 'CYS2': 'C'}
 #: lookup table from 3/4 letter resnames to 1-letter codes. Note that non-standard residue names
 #: for tautomers or different protonation states such as HSE are converted to canonical 1-letter codes ("H").
 #: The table is used for :func:`convert_aa_code`.
@@ -1017,6 +1053,7 @@ alternative_inverse_aa_codes = {'HISA':'H', 'HISB':'H', 'HSE':'H', 'HSD':'H', 'H
 inverse_aa_codes = {}
 inverse_aa_codes.update(canonical_inverse_aa_codes)
 inverse_aa_codes.update(alternative_inverse_aa_codes)
+
 
 def convert_aa_code(x):
     """Converts between 3-letter and 1-letter amino acid codes.
@@ -1047,6 +1084,7 @@ RESIDUE = re.compile("""
                  )?                                # possibly one
             """, re.VERBOSE | re.IGNORECASE)
 
+
 # from GromacsWrapper cbook.IndexBuilder
 def parse_residue(residue):
     """Process residue string.
@@ -1075,9 +1113,9 @@ def parse_residue(residue):
     resid = int(m.group('resid'))
     residue = m.group('aa')
     if len(residue) == 1:
-        resname = convert_aa_code(residue) # only works for AA
+        resname = convert_aa_code(residue)  # only works for AA
     else:
-        resname = residue                            # use 3-letter for any resname
+        resname = residue  # use 3-letter for any resname
     atomname = m.group('atom')
     return (resname, resid, atomname)
 
@@ -1093,6 +1131,7 @@ def conv_float(s):
         return float(s)
     except ValueError:
         return s
+
 
 def cached(key):
     """Cache a property within a class
@@ -1115,6 +1154,7 @@ def cached(key):
 
     .. versionadded:: 0.8.2
     """
+
     def cached_lookup(func):
         def wrapper(self, *args, **kwargs):
             try:
@@ -1122,5 +1162,7 @@ def cached(key):
             except KeyError:
                 self._cache[key] = ret = func(self, *args, **kwargs)
                 return ret
+
         return wrapper
+
     return cached_lookup

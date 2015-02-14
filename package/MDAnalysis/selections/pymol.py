@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 PyMOL selections
@@ -36,10 +36,11 @@ The selections should appear in the user interface.
 
 import base
 
+
 class SelectionWriter(base.SelectionWriter):
     format = "PyMol"
     ext = "pml"
-    continuation = '\\' # quoted backslash!
+    continuation = '\\'  # quoted backslash!
     commentfmt = "# %s"
     default_numterms = 6
 
@@ -47,10 +48,9 @@ class SelectionWriter(base.SelectionWriter):
         # PyMol index is 1-based
         def _index(atom):
             return "index %d" % (atom.number + 1)
+
         return base.join(atoms, ' |', _index)
 
     def _write_head(self, out, **kwargs):
         out.write(self.comment("MDAnalysis PyMol selection"))
         out.write("select %(name)s, " % kwargs + self.continuation + '\n')
-
-

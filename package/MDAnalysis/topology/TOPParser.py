@@ -1,18 +1,16 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
-#
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -48,6 +46,7 @@ from MDAnalysis.core.util import openany, FORTRANReader
 from MDAnalysis.core import flags
 from .base import TopologyReader
 
+
 class TOPParser(TopologyReader):
     def parse(self):
         """Parse Amber PRMTOP topology file *filename*.
@@ -62,15 +61,15 @@ class TOPParser(TopologyReader):
                     break
         if formatversion == 12:
             sections = [
-                ("ATOM_NAME", 1, 20, self._parseatoms, "_name",0),
-                ("CHARGE",1, 5, self._parsesection,"_charge",0),
-                ("ATOMIC_NUMBER", 1, 10, self._parsesectionint,"_skip",0),
-                ("MASS",1, 5, self._parsesection,"_mass",0),
-                ("ATOM_TYPE_INDEX", 1, 10, self._parsesectionint,"_atom_type",0),
-                ("NUMBER_EXCLUDED_ATOMS", 1, 10, self._parseskip,"_skip",8),
-                ("NONBONDED_PARM_INDEX", 1, 10, self._parseskip,"_skip",8),
-                ("RESIDUE_LABEL", 1, 20, self._parseatoms, "_resname",11),
-                ("RESIDUE_POINTER", 2, 10, self._parsesectionint,"_respoint",11),
+                ("ATOM_NAME", 1, 20, self._parseatoms, "_name", 0),
+                ("CHARGE", 1, 5, self._parsesection, "_charge", 0),
+                ("ATOMIC_NUMBER", 1, 10, self._parsesectionint, "_skip", 0),
+                ("MASS", 1, 5, self._parsesection, "_mass", 0),
+                ("ATOM_TYPE_INDEX", 1, 10, self._parsesectionint, "_atom_type", 0),
+                ("NUMBER_EXCLUDED_ATOMS", 1, 10, self._parseskip, "_skip", 8),
+                ("NONBONDED_PARM_INDEX", 1, 10, self._parseskip, "_skip", 8),
+                ("RESIDUE_LABEL", 1, 20, self._parseatoms, "_resname", 11),
+                ("RESIDUE_POINTER", 2, 10, self._parsesectionint, "_respoint", 11),
             ]
                 #("BOND_FORCE_CONSTANT", 1, 5, self._parseskip,"_skip",8),
                 #("BOND_EQUIL_VALUE", 1, 5, self._parseskip,"_skip",8),
@@ -90,14 +89,14 @@ class TOPParser(TopologyReader):
                 #("NACC", 2, 4, self._parsesection,"_acceptors"),
         elif formatversion == 10:
             sections = [
-                ("ATOM_NAME", 1, 20, self._parseatoms, "_name",0),
-                ("CHARGE",1, 5, self._parsesection,"_charge",0),
-                ("MASS",1, 5, self._parsesection,"_mass",0),
-                ("ATOM_TYPE_INDEX", 1, 10, self._parsesectionint,"_atom_type",0),
-                ("NUMBER_EXCLUDED_ATOMS", 1, 10, self._parseskip,"_skip",8),
-                ("NONBONDED_PARM_INDEX", 1, 10, self._parseskip,"_skip",8),
-                ("RESIDUE_LABEL", 1, 20, self._parseatoms, "_resname",11),
-                ("RESIDUE_POINTER", 2, 10, self._parsesectionint,"_respoint",11),
+                ("ATOM_NAME", 1, 20, self._parseatoms, "_name", 0),
+                ("CHARGE", 1, 5, self._parsesection, "_charge", 0),
+                ("MASS", 1, 5, self._parsesection, "_mass", 0),
+                ("ATOM_TYPE_INDEX", 1, 10, self._parsesectionint, "_atom_type", 0),
+                ("NUMBER_EXCLUDED_ATOMS", 1, 10, self._parseskip, "_skip", 8),
+                ("NONBONDED_PARM_INDEX", 1, 10, self._parseskip, "_skip", 8),
+                ("RESIDUE_LABEL", 1, 20, self._parseatoms, "_resname", 11),
+                ("RESIDUE_POINTER", 2, 10, self._parsesectionint, "_respoint", 11),
             ]
                 #("BOND_FORCE_CONSTANT", 1, 5, self._parseskip,"_skip",8),
                 #("BOND_EQUIL_VALUE", 1, 5, self._parseskip,"_skip",8),
@@ -122,12 +121,10 @@ class TOPParser(TopologyReader):
             next_line = topfile.next
             header = next_line()
             if header[:3] != "%VE":
-                raise ValueError("{} is not a valid TOP file."
-                    " %VE Missing in header".format(topfile))
+                raise ValueError("{} is not a valid TOP file. %VE Missing in header".format(topfile))
             title = next_line().split()
             if not (title[1] == "TITLE"):
-                raise ValueError("{} is not a valid TOP file."
-                    " 'TITLE' missing in header".format(topfile))
+                raise ValueError("{} is not a valid TOP file. 'TITLE' missing in header".format(topfile))
             while header[:14] != '%FLAG POINTERS':
                 header = next_line()
             header = next_line()
@@ -149,7 +146,7 @@ class TOPParser(TopologyReader):
             structure["_respoint"].append(sys_info[0])
             structure["_respoint"][-1] = structure["_respoint"][-1] + 1
 
-        atoms = [None,]*sys_info[0]
+        atoms = [None, ]*sys_info[0]
 
         j = 0
         segid = "SYSTEM"
@@ -169,7 +166,7 @@ class TOPParser(TopologyReader):
             atomname = structure["_name"][i]
             #segid = 'SYSTEM'  # does not exist in Amber
 
-            atoms[i] = Atom(i,atomname,atomtype,resname,resid,segid,mass,charge)
+            atoms[i] = Atom(i, atomname, atomtype, resname, resid, segid, mass, charge)
         final_structure["_atoms"] = atoms
         final_structure["_numatoms"] = sys_info[0]
         return final_structure
@@ -178,7 +175,7 @@ class TOPParser(TopologyReader):
         desc, atoms_per, per_line, parsefunc, data_struc, sect_num = section_info
         # Get the number
         num = sys_info[sect_num]
-        if data_struc in ["_resname","_bond"]:
+        if data_struc in ["_resname", "_bond"]:
             pass
         else:
             header = next_line()
@@ -196,7 +193,7 @@ class TOPParser(TopologyReader):
             pass
 
     def _parsebond(self, lines, atoms_per, attr, structure, numlines):
-        section = [] #[None,]*numlines
+        section = []  # [None,]*numlines
         for i in xrange(numlines):
             l = lines()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
@@ -207,7 +204,7 @@ class TOPParser(TopologyReader):
         structure[attr] = section
 
     def _parsesectionint(self, lines, atoms_per, attr, structure, numlines):
-        section = [] #[None,]*numlines
+        section = []  # [None,]*numlines
         y = lines().strip("%FORMAT(")
         y.strip(")")
         x = FORTRANReader(y)
@@ -222,7 +219,7 @@ class TOPParser(TopologyReader):
         structure[attr] = section
 
     def _parsesection(self, lines, atoms_per, attr, structure, numlines):
-        section = [] #[None,]*numlines
+        section = []  # [None,]*numlines
         y = lines().strip("%FORMAT(")
         y.strip(")")
         x = FORTRANReader(y)
@@ -237,7 +234,7 @@ class TOPParser(TopologyReader):
         structure[attr] = section
 
     def _parseatoms(self, lines, atoms_per, attr, structure, numlines):
-        section = [] #[None,]*numlines
+        section = []  # [None,]*numlines
         y = lines().strip("%FORMAT(")
         y.strip(")")
         x = FORTRANReader(y)

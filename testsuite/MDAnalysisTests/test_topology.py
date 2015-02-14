@@ -1,18 +1,16 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
-#
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 import MDAnalysis
@@ -28,17 +26,21 @@ from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
+
 def check_atom_type(atype, aname):
     assert_equal(guess_atom_type(aname), atype)
 
+
 def check_atom_element(element, aname):
     assert_equal(guess_atom_element(aname), element)
+
 
 class _TestGuessAtomType(object):
     atype = None
     testnames = []
     mass = None
     element = None
+
     def test_guess_atom_type(self):
         for aname in self.testnames:
             yield check_atom_type, self.atype, aname
@@ -57,11 +59,13 @@ class TestHydrogen(_TestGuessAtomType):
     mass = 1.008
     testnames = ['H', 'HZ', '1HZ', '2HW', 'HE']
 
+
 class TestCarbon(_TestGuessAtomType):
     atype = 'C'
     element = 'C'
     mass = 12.0110
     testnames = ['C', 'CA']
+
 
 class TestSodium(_TestGuessAtomType):
     atype = 'NA'
@@ -69,11 +73,13 @@ class TestSodium(_TestGuessAtomType):
     mass = 22.989770
     testnames = ['NA', 'NA+', 'SOD', 'QN']
 
+
 class TestPotassium(_TestGuessAtomType):
     atype = 'K'
     element = 'K'
     mass = 39.102
     testnames = ['K', 'K+', 'POT', 'QK']
+
 
 class TestChloride(_TestGuessAtomType):
     atype = 'CL'
@@ -81,11 +87,13 @@ class TestChloride(_TestGuessAtomType):
     mass = 35.450
     testnames = ['CL', 'CL-', 'CLA', 'CLAL']
 
+
 class TestNitrogen(_TestGuessAtomType):
     atype = 'N'
     element = 'N'
     mass = 14.007
     testnames = ['N', 'NZ', 'NE']
+
 
 class TestPhosphorous(_TestGuessAtomType):
     atype = 'P'
@@ -93,11 +101,13 @@ class TestPhosphorous(_TestGuessAtomType):
     mass = 30.974000
     testnames = ['P', 'PL', 'PO']
 
+
 class TestSulfur(_TestGuessAtomType):
     atype = 'S'
     element = 'S'
     mass = 32.06000
     testnames = ['S', 'SG']
+
 
 class TestOxygen(_TestGuessAtomType):
     atype = 'O'
@@ -105,11 +115,13 @@ class TestOxygen(_TestGuessAtomType):
     mass = 15.99900
     testnames = ['O', 'OA', 'OXT', '1OG', 'OW']
 
+
 class TestCalcium(_TestGuessAtomType):
     atype = 'CA'
     element = 'CA'
     mass = 40.080000
-    testnames = ['CAL','CA2+', 'C0']
+    testnames = ['CAL', 'CA2+', 'C0']
+
 
 class TestMagnesium(_TestGuessAtomType):
     atype = 'MG'
@@ -150,10 +162,10 @@ class _TestTopology(TestCase):
             ret = p.parse()
         assert_equal(type(ret), type(dict()))
 
-#    def test_parser_raises_IOE(self):
-#        """Check that when given junk input, they raise IOError"""
-#        p = self.parser(trz4data)
-#        assert_raises(IOError, p.parse) or assert_raises(ValueError, p.parse)
+    #    def test_parser_raises_IOE(self):
+    #        """Check that when given junk input, they raise IOError"""
+    #        p = self.parser(trz4data)
+    #        assert_raises(IOError, p.parse) or assert_raises(ValueError, p.parse)
 
     def test_parser_atoms(self):
         assert_equal(self.universe.atoms.numberOfAtoms(),
@@ -169,6 +181,7 @@ class _TestTopology(TestCase):
         assert_equal(self.universe.atoms[-1].number, self.ref_numatoms - 1,
                      "last atom has wrong Atom.number")
 
+
 class RefAdKSmall(object):
     """Mixin class to provide comparison numbers.
 
@@ -179,8 +192,10 @@ class RefAdKSmall(object):
     ref_numatoms = 3341
     ref_numresidues = 214
 
+
 class TestPSF_CHARMM_STANDARD(_TestTopology, RefAdKSmall):
     """Testing CHARMM standard PSF file format"""
+
 
 class RefNAMD_CGENFF(object):
     """Testfiles provided by JiyongPark77.
@@ -194,8 +209,10 @@ class RefNAMD_CGENFF(object):
     ref_numatoms = 130
     ref_numresidues = 6
 
+
 class TestPSF_NAMD_CGENFF(_TestTopology, RefNAMD_CGENFF):
     """Testing NAMD PSF file (with CGENFF atom types, Issue 107)"""
+
 
 class TestPSF_Issue121(TestCase):
     @attr('issue')
@@ -206,6 +223,7 @@ class TestPSF_Issue121(TestCase):
             raise AssertionError("Issue 121 not fixed: cannot load PSF with empty SEGID")
         assert_equal(u.atoms.numberOfAtoms(), 98)
         assert_equal(u.atoms.segids(), ["SYSTEM"])
+
 
 class TestPSF_bonds(TestCase):
     """Tests reading of bonds angles and torsions in psf files"""
@@ -231,12 +249,12 @@ class TestPSF_bonds(TestCase):
         a5 = self.universe.atoms[4]
         a42 = self.universe.atoms[41]
         # Bonds might change order, so use any checks through bond list
-        assert_equal(all([a1 in b for b in a1.bonds]), True) # check all bonds have this atom
-        assert_equal(any([a2 in b for b in a1.bonds]), True) # then check certain atoms are present
+        assert_equal(all([a1 in b for b in a1.bonds]), True)  # check all bonds have this atom
+        assert_equal(any([a2 in b for b in a1.bonds]), True)  # then check certain atoms are present
         assert_equal(any([a3 in b for b in a1.bonds]), True)
         assert_equal(any([a4 in b for b in a1.bonds]), True)
         assert_equal(any([a5 in b for b in a1.bonds]), True)
-        assert_equal(any([a42 in b for b in a1.bonds]), False) # and check everything isn't True
+        assert_equal(any([a42 in b for b in a1.bonds]), False)  # and check everything isn't True
 
     def test_angles_counts(self):
         assert_equal(len(self.universe._psf['_angles']), 6123)
@@ -249,12 +267,13 @@ class TestPSF_bonds(TestCase):
         a3 = self.universe.atoms[2]
         a5 = self.universe.atoms[4]
         a6 = self.universe.atoms[5]
-        a42 = self.universe.atoms[41]     
+        a42 = self.universe.atoms[41]
         assert_equal(all([a1 in b for b in a1.angles]), True)
         assert_equal(any([a2 in b and a3 in b for b in a1.angles]), True)
         assert_equal(any([a5 in b and a6 in b for b in a1.angles]), True)
         assert_equal(any([a42 in b for b in a1.angles]), False)
-        assert_equal(any([a2 in b and a6 in b for b in a1.angles]), False) #both a2 and a6 feature, but never simultaneously 
+        assert_equal(any([a2 in b and a6 in b for b in a1.angles]),
+                     False)  # both a2 and a6 feature, but never simultaneously
 
     def test_torsions_counts(self):
         assert_equal(len(self.universe._psf['_dihe']), 8921)
@@ -267,7 +286,7 @@ class TestPSF_bonds(TestCase):
         a5 = self.universe.atoms[4]
         a6 = self.universe.atoms[5]
         a7 = self.universe.atoms[6]
-        a42 = self.universe.atoms[41]  
+        a42 = self.universe.atoms[41]
         assert_equal(all([a1 in b for b in a1.torsions]), True)
         assert_equal(any([a2 in b and a5 in b and a6 in b for b in a1.torsions]), True)
         assert_equal(any([a2 in b and a5 in b and a7 in b for b in a1.torsions]), True)
@@ -285,6 +304,7 @@ class TestTopologyObjects(TestCase):
     iter
     len
     """
+
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
         self.u.build_topology()
@@ -306,7 +326,7 @@ class TestTopologyObjects(TestCase):
         del self.b
 
     def test_repr(self):
-        assert_equal(repr(self.TO1), 
+        assert_equal(repr(self.TO1),
                      '< TopologyObject between: Atom 2 (HT1 of MET-1), Atom 3 (HT2 of MET-1) >')
 
     def test_eq(self):
@@ -354,7 +374,7 @@ class TestTopologyObjects(TestCase):
     def test_bondrepr(self):
         assert_equal(repr(self.b),
                      '< Bond between: Atom 10 (CG of MET 1 None) and Atom 13 (SD of MET1 None), length 1.77 A>')
-        
+
     # Angle class checks
     def test_angle(self):
         angle = self.u.atoms[210].angles[0]
@@ -376,6 +396,7 @@ class TestTopologyObjects(TestCase):
 
 class TestTopologyGroup(TestCase):
     """Tests TopologyDict and TopologyGroup classes with psf input"""
+
     def setUp(self):
         topology = PSF
         self.universe = MDAnalysis.Universe(topology)
@@ -425,8 +446,7 @@ class TestTopologyGroup(TestCase):
         bondtypes = self.universe.bonds.types()
         # check that a key doesn't appear in reversed format in keylist
         # have to exclude case of b[::-1] == b as this is false positive
-        assert_equal(any([b[::-1] in bondtypes for b in bondtypes if
-                          b[::-1] != b]), 
+        assert_equal(any([b[::-1] in bondtypes for b in bondtypes if b[::-1] != b]),
                      False)
 
     def test_bond_reversal(self):
@@ -447,8 +467,7 @@ class TestTopologyGroup(TestCase):
 
     def test_angles_uniqueness(self):
         bondtypes = self.a_td.keys()
-        assert_equal(any([b[::-1] in bondtypes for b in bondtypes if
-                          b[::-1] != b]), 
+        assert_equal(any([b[::-1] in bondtypes for b in bondtypes if b[::-1] != b]),
                      False)
 
     def test_angles_reversal(self):
@@ -469,8 +488,7 @@ class TestTopologyGroup(TestCase):
 
     def test_torsions_uniqueness(self):
         bondtypes = self.t_td.keys()
-        assert_equal(any([b[::-1] in bondtypes for b in bondtypes if
-                          b[::-1] != b]), 
+        assert_equal(any([b[::-1] in bondtypes for b in bondtypes if b[::-1] != b]),
                      False)
 
     def test_torsions_reversal(self):
@@ -515,9 +533,9 @@ class TestTopologyGroup(TestCase):
     # Loose TG intersection
     def test_TG_loose_intersection(self):
         """Pull bonds from a TG which are at least partially in an AG"""
+
         def check_loose_intersection(topg, atomg):
-            return all([any([a in ag for a in b.atoms]) 
-                        for b in topg.bondlist])
+            return all([any([a in ag for a in b.atoms]) for b in topg.bondlist])
 
         def manual(topg, atomg):
             man = []
@@ -533,7 +551,7 @@ class TestTopologyGroup(TestCase):
         for TG in [u.bonds, u.angles, u.torsions, u.impropers]:
             newTG = TG.atomgroup_intersection(ag)
 
-            assert_equal(check_loose_intersection(newTG, ag), True, 
+            assert_equal(check_loose_intersection(newTG, ag), True,
                          err_msg="Loose intersection failed with: " + TG.toptype)
             assert_equal(manual(TG, ag), newTG,
                          err_msg="Loose intersection failed with: " + TG.toptype)
@@ -541,11 +559,11 @@ class TestTopologyGroup(TestCase):
     # Strict TG intersection
     def test_TG_strict_intersection(self):
         """Pull bonds from TG which are fully in an AG"""
+
         def check_strict_intersection(topg, atomg):
             new_topg = topg.atomgroup_intersection(atomg, strict=True)
 
-            return all([all([a in atomg for a in b.atoms])
-                        for b in new_topg.bondlist])
+            return all([all([a in atomg for a in b.atoms]) for b in new_topg.bondlist])
 
         def manual(topg, atomg):
             if len(atomg) == 1:  # hack for Atom input
@@ -565,7 +583,7 @@ class TestTopologyGroup(TestCase):
 
         # bonds
         assert_equal(check_strict_intersection(u.bonds, testinput), True)
-        assert_equal(manual(u.bonds, testinput), 
+        assert_equal(manual(u.bonds, testinput),
                      u.bonds.atomgroup_intersection(testinput, strict=True))
         # angles
         assert_equal(check_strict_intersection(u.angles, testinput), True)
@@ -589,21 +607,21 @@ class TestTopologyGroup(TestCase):
 
         # the lists might be in one of two formats, but always in a strict order
         # ie any(1234 or 4321) but not (1324)
-        assert_equal(any([all([list(x) == list(y) for x, y in zip(forwards, verts)]), 
-                          all([list(x) == list(y) for x, y in zip(backwards, verts)])]), 
-                     True)                    
+        assert_equal(any([
+            all([list(x) == list(y) for x, y in zip(forwards, verts)]),
+            all([list(x) == list(y) for x, y in zip(backwards, verts)])]), True)
 
     def test_add_TopologyGroups(self):
         res1_tg = self.res1.bonds.selectBonds(('23', '3'))
         res2_tg = self.res2.bonds.selectBonds(('23', '3'))
 
-        combined_tg = res1_tg + res2_tg # add tgs together
+        combined_tg = res1_tg + res2_tg  # add tgs together
         assert_equal(len(combined_tg), 10)
 
         big_tg = self.universe.atoms.bonds.selectBonds(('23', '3'))
 
-        big_tg += combined_tg # try and add some already included bonds
-        assert_equal(len(big_tg), 494) # check len doesn't change
+        big_tg += combined_tg  # try and add some already included bonds
+        assert_equal(len(big_tg), 494)  # check len doesn't change
 
     def test_add_singleitem(self):
         tg = self.universe.bonds[:10]
@@ -612,8 +630,8 @@ class TestTopologyGroup(TestCase):
         assert_equal(len(tg + to), 11)
 
     def test_add_wrongtype_TopologyGroup(self):
-        def adder(a,b):
-            return a+b
+        def adder(a, b):
+            return a + b
 
         tg = self.universe.bonds[:10]  # TG of bonds
 
@@ -624,8 +642,8 @@ class TestTopologyGroup(TestCase):
             assert_raises(TypeError, adder, tg, other)
 
     def test_bad_add_TopologyGroup(self):
-        def adder(a,b):
-            return a+b
+        def adder(a, b):
+            return a + b
 
         tg = self.universe.bonds[:10]  # TopologyGroup
 
@@ -638,7 +656,7 @@ class TestTopologyGroup(TestCase):
 
         bondlist = list(tg)
         bond = tg[0]
-        
+
         assert_equal(bond, bondlist[0])
 
     def test_TG_getitem_slice(self):
@@ -679,6 +697,7 @@ class TestTopologyGroup_Cython(TestCase):
      - work (return proper values)
      - catch errors
     """
+
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
         self.u.build_topology()
@@ -704,12 +723,13 @@ class TestTopologyGroup_Cython(TestCase):
 
     def test_right_type_bonds(self):
         assert_equal(self.bgroup.bonds(),
-                     calc_bonds(self.bgroup.atom1.positions, 
+                     calc_bonds(self.bgroup.atom1.positions,
                                 self.bgroup.atom2.positions))
         assert_equal(self.bgroup.bonds(pbc=True),
-                     calc_bonds(self.bgroup.atom1.positions, 
+                     calc_bonds(self.bgroup.atom1.positions,
                                 self.bgroup.atom2.positions,
                                 box=self.u.dimensions))
+
     # angles
     def test_wrong_type_angles(self):
         for tg in [self.bgroup, self.tgroup, self.igroup]:
@@ -758,7 +778,7 @@ class TestTopologyGroup_Cython(TestCase):
                                    self.igroup.atom3.positions,
                                    self.igroup.atom4.positions,
                                    box=self.u.dimensions))
-        
+
 
 # AMBER
 class RefCappedAla(object):
@@ -771,6 +791,7 @@ class RefCappedAla(object):
     ref_numatoms = 5071
     ref_numresidues = 1686
     ref_proteinatoms = 22
+
 
 class RefAMBER12(object):
     """Fixture data for testing AMBER12 reading (Issue 100)"""
@@ -787,8 +808,10 @@ class TestAMBER(_TestTopology, RefCappedAla):
     #       so this test really checks that we did not break the parser for the
     #       existing test cases
 
+
 class TestAMBER12(_TestTopology, RefAMBER12):
     """Testing AMBER 12 PRMTOP parser (Issue 100)"""
+
 
 # PDB
 
@@ -798,22 +821,27 @@ class RefPDB(object):
     ref_numatoms = 3341
     ref_numresidues = 214
 
+
 class RefPDB_Perm(RefPDB):
     perm = True
     parser = MDAnalysis.topology.PrimitivePDBParser.PrimitivePDBParser
+
 
 class TestPDB(_TestTopology, RefPDB):
     """Testing PDB topology parsing (PrimitivePDB)"""
     pass
 
+
 class TestPDB_Perm(_TestTopology, RefPDB_Perm):
     pass
+
 
 class RefXPDB(object):
     topology = PDB
     parser = MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser
     ref_numatoms = 47681
     ref_numresidues = 11302
+
 
 # DESRES
 class RefDMS(object):
@@ -822,18 +850,19 @@ class RefDMS(object):
     ref_numatoms = 3341
     ref_numresidues = 214
 
+
 class TestDMSReader(_TestTopology, RefDMS):
     def test_number_of_bonds(self):
         # Desired value taken from VMD
         #      Info)    Atoms: 3341
-        assert_equal(len(self.universe.bonds),3365)
+        assert_equal(len(self.universe.bonds), 3365)
 
     def test_bond_order(self):
         pass
 
     def test_segid(self):
         segid = set([a.segid for a in self.universe.atoms])
-        assert_equal(segid, set(("4AKE",) ))
+        assert_equal(segid, set(("4AKE",)))
 
     def test_atomsels(self):
         # Desired value taken from VMD atomsel
@@ -855,6 +884,7 @@ class TestDMSReader(_TestTopology, RefDMS):
         assert_equal(self.universe.atoms[-1].number, 3341 - 1,
                      "last atom has wrong Atom.number")
 
+
 # GROMACS TPR
 # see also test_tprparser
 class RefTPR(object):
@@ -863,8 +893,10 @@ class RefTPR(object):
     ref_numatoms = 47681
     ref_numresidues = 11302
 
+
 class TestTPRParser(_TestTopology, RefTPR):
     pass
+
 
 class TestTopologyGuessers(TestCase):
     """Test the various ways of automating topology creation in the Universe
@@ -874,6 +906,7 @@ class TestTopologyGuessers(TestCase):
     guess_torsions
     guess_improper_torsions
     """
+
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
 
@@ -891,10 +924,11 @@ class TestTopologyGuessers(TestCase):
 
     def test_guess_bonds_withag(self):
         # here's one I prepared earlier
-        bondlist = ((0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 2), (1, 3),
-                    (1, 4), (2, 3), (2, 4), (2, 8), (3, 4), (4, 5), (4, 6),
-                    (6, 7), (6, 8), (6, 9), (7, 8))
-        user_vdw = {'56':1.5, '2':1.5, '22':1.5, '6':1.5, '23':1.5, '3':1.5}
+        bondlist = (
+            (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 2), (1, 3),
+            (1, 4), (2, 3), (2, 4), (2, 8), (3, 4), (4, 5), (4, 6),
+            (6, 7), (6, 8), (6, 9), (7, 8))
+        user_vdw = {'56': 1.5, '2': 1.5, '22': 1.5, '6': 1.5, '23': 1.5, '3': 1.5}
 
         assert_equal(guess_bonds(self.u.atoms[:10],
                                  self.u.atoms.positions[:10],
@@ -902,10 +936,11 @@ class TestTopologyGuessers(TestCase):
                      bondlist)
 
     def test_guess_bonds_withlist(self):
-        bondlist = ((0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 2), (1, 3),
-                    (1, 4), (2, 3), (2, 4), (2, 8), (3, 4), (4, 5), (4, 6),
-                    (6, 7), (6, 8), (6, 9), (7, 8))
-        user_vdw = {'56':1.5, '2':1.5, '22':1.5, '6':1.5, '23':1.5, '3':1.5}
+        bondlist = (
+            (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 2), (1, 3),
+            (1, 4), (2, 3), (2, 4), (2, 8), (3, 4), (4, 5), (4, 6),
+            (6, 7), (6, 8), (6, 9), (7, 8))
+        user_vdw = {'56': 1.5, '2': 1.5, '22': 1.5, '6': 1.5, '23': 1.5, '3': 1.5}
 
         assert_equal(guess_bonds(list(self.u.atoms[:10]),
                                  self.u.atoms.positions[:10],
@@ -943,10 +978,11 @@ class TestTopologyGuessers(TestCase):
         angs = self.u.angles.atomgroup_intersection(ag, strict=True)
 
         # Pre calculated reference result
-        result = ((0, 4, 3, 2), (0, 3, 1, 4), (0, 4, 1, 3),
-                  (0, 2, 1, 4), (0, 4, 2, 1), (0, 4, 1, 2),
-                  (0, 3, 2, 4), (0, 3, 2, 1), (0, 4, 3, 1),
-                  (0, 3, 1, 2), (0, 4, 2, 3), (0, 2, 1, 3))
+        result = (
+            (0, 4, 3, 2), (0, 3, 1, 4), (0, 4, 1, 3),
+            (0, 2, 1, 4), (0, 4, 2, 1), (0, 4, 1, 2),
+            (0, 3, 2, 4), (0, 3, 2, 1), (0, 4, 3, 1),
+            (0, 3, 1, 2), (0, 4, 2, 3), (0, 2, 1, 3))
 
         imps = guess_improper_torsions(angs)
 
@@ -976,11 +1012,13 @@ class RefLammpsData(object):
     ref_numatoms = 18360
     ref_numresidues = 24
 
+
 class TestLammpsData(_TestTopology, RefLammpsData):
     """Tests the reading of lammps .data topology files.
 
     The reading of coords and velocities is done separately in test_coordinates
     """
+
     def test_charge(self):
         # No charges were supplied, should default to 0.0
         assert_equal(self.universe.atoms[0].charge, 0.0)
@@ -1008,6 +1046,7 @@ class TestLammpsData(_TestTopology, RefLammpsData):
 
 class TestGuessFormat(TestCase):
     """Tests the guess_format function in core.topology"""
+
     def test_weirdinput(self):
         assert_raises(TypeError, guess_format, 123)
 

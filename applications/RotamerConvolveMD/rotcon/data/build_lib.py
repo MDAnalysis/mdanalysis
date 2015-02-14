@@ -20,9 +20,11 @@ To get structure and probability::
 
 """
 
+import sys
 import numpy as np
 import MDAnalysis
 from itertools import izip
+
 
 def build_trr(trr="./rotamer1_R1A_298K.trr"):
     L = MDAnalysis.Universe("./rotamer1_R1A_298K.pdb", "./rotamer1_R1A_298K.dcd")
@@ -32,6 +34,7 @@ def build_trr(trr="./rotamer1_R1A_298K.trr"):
             ts.lmbda = p  # add lambda for TRR
             W.write(ts)
     return trr
+
 
 def test(trr="rotamer1_R1A_298K.trr"):
     u = MDAnalysis.Universe("rotamer1_R1A_298K.pdb", trr)
@@ -43,7 +46,8 @@ if __name__ == "__main__":
     import argparse
     # http://stackoverflow.com/questions/12151306/argparse-way-to-include-default-values-in-help
     # http://stackoverflow.com/questions/4480075/argparse-optional-positional-arguments
-    parser = argparse.ArgumentParser(description='Build a TRR-formated rotamer library from the original DCD and dat files.',
+    parser = argparse.ArgumentParser(description='Build a TRR-formated rotamer library'
+                                                 ' from the original DCD and dat files.',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('filename', nargs="?", default="./rotamer1_R1A_298K.trr",
                         help="Write library to TRR filename")

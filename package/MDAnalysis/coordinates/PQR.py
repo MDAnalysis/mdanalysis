@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8; -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 PQR file format --- :mod:`MDAnalysis.coordinates.PQR`
@@ -91,6 +91,7 @@ import base
 from base import Timestep
 import pdb.extensions
 
+
 class PQRReader(base.Reader):
     """Read a PQR_ file into MDAnalysis.
 
@@ -127,20 +128,21 @@ class PQRReader(base.Reader):
                 if line[:6] in ('ATOM  ', 'HETATM'):
                     fields = line.split()
                     try:
-                        recordName,serial,name,resName,chainID,resSeq,x,y,z,charge,radius = fields
+                        recordName, serial, name, resName, chainID, resSeq, x, y, z, charge, radius = fields
                     except ValueError:
                         # files without the chainID
-                        recordName,serial,name,resName,resSeq,x,y,z,charge,radius = fields
+                        recordName, serial, name, resName, resSeq, x, y, z, charge, radius = fields
                         chainID = ''
-                    coords.append((float(x),float(y),float(z)))
-                    atoms.append((int(serial), name, resName, chainID, int(resSeq), float(charge), float(radius), segID))
+                    coords.append((float(x), float(y), float(z)))
+                    atoms.append(
+                        (int(serial), name, resName, chainID, int(resSeq), float(charge), float(radius), segID))
         self.numatoms = len(coords)
         self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 1  # 1-based frame number
         if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)             # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)
+            self.convert_pos_from_native(self.ts._pos)  # in-place !
+            self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
         self.numframes = 1
         self.fixed = 0
         self.skip = 1
@@ -182,6 +184,7 @@ class PQRReader(base.Reader):
         # PQR file only contains a single frame
         raise IOError
 
+
 class PQRWriter(base.Writer):
     """Write a single coordinate frame in whitespace-separated PQR format.
 
@@ -202,13 +205,14 @@ class PQRWriter(base.Writer):
     format = 'PQR'
     units = {'time': None, 'length': 'Angstrom'}
 
-    fmt = {'ATOM_nochain':
-           "ATOM {0:6d} {1:<4}  {2:<3} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}\n",
-           # serial, atomName, residueName, (chainID), residueNumber, XYZ, charge, radius
-           'ATOM_chain':
-           "ATOM {0:6d} {1:<4}  {2:<3} {3:1.1} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}\n",
-           # serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius
-           }
+    fmt = {
+        'ATOM_nochain':
+        "ATOM {0:6d} {1:<4}  {2:<3} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}\n",
+        # serial, atomName, residueName, (chainID), residueNumber, XYZ, charge, radius
+        'ATOM_chain':
+        "ATOM {0:6d} {1:<4}  {2:<3} {3:1.1} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}\n",
+        # serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius
+    }
 
     def __init__(self, filename, convert_units=None, **kwargs):
         """Set up a PQRWriter with full whitespace separation.
@@ -247,12 +251,12 @@ class PQRWriter(base.Writer):
             try:
                 frame = u.trajectory.ts.frame
             except AttributeError:
-                frame = 1   # should catch cases when we are analyzing a single frame(?)
+                frame = 1  # should catch cases when we are analyzing a single frame(?)
 
-        atoms = selection.atoms             # make sure to use atoms (Issue 46)
-        coordinates = atoms.coordinates()   # can write from selection == Universe (Issue 49)
+        atoms = selection.atoms  # make sure to use atoms (Issue 46)
+        coordinates = atoms.coordinates()  # can write from selection == Universe (Issue 49)
         if self.convert_units:
-            self.convert_pos_to_native(coordinates)             # inplace because coordinates is already a copy
+            self.convert_pos_to_native(coordinates)  # inplace because coordinates is already a copy
 
         with util.openany(self.filename, 'w') as pqrfile:
             # Header
@@ -262,7 +266,8 @@ class PQRWriter(base.Writer):
             # Atom descriptions and coords
             for atom_index, atom in enumerate(atoms):
                 XYZ = coordinates[atom_index]
-                self._write_ATOM(pqrfile, atom_index+1, atom.name, atom.resname, atom.segid, atom.resid, XYZ, atom.charge, atom.radius)
+                self._write_ATOM(pqrfile, atom_index + 1, atom.name, atom.resname, atom.segid, atom.resid, XYZ,
+                                 atom.charge, atom.radius)
 
     def _write_REMARK(self, fh, remarks, remarknumber=1):
         """Write REMARK record.
@@ -285,7 +290,6 @@ class PQRWriter(base.Writer):
               ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245
         """
         ATOM = self.fmt['ATOM_nochain'] if (chainID == "SYSTEM" or not chainID) else self.fmt['ATOM_chain']
-        atomName = (" " + atomName) if len(atomName) < 4 else atomName  # pad so that only 4-letter atoms are left-aligned
+        atomName = (" " + atomName) if len(
+            atomName) < 4 else atomName  # pad so that only 4-letter atoms are left-aligned
         fh.write(ATOM.format(serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius))
-
-

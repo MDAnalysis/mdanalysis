@@ -1,19 +1,18 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
-#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+
 # TRZ Reader written by Richard J. Gowers (2013)
 
 """TRZ trajectory I/O  --- :mod:`MDAnalysis.coordinates.TRZ`
@@ -73,7 +72,8 @@ Reads coordinates, velocities and more (see attributes of the
    :members:
 """
 
-import os, errno
+import os
+import errno
 import base
 from base import Timestep
 import MDAnalysis.core
@@ -81,8 +81,10 @@ import MDAnalysis.core.util as util
 import numpy
 from MDAnalysis.coordinates.core import triclinic_box
 
+
 class Timestep(base.Timestep):
     """ TRZ custom Timestep"""
+
     def __init__(self, arg, **kwargs):
         self.has_force = kwargs.pop('has_force', False)
         if numpy.dtype(type(arg)) == numpy.dtype(int):
@@ -96,12 +98,12 @@ class Timestep(base.Timestep):
             self.potential_energy = 0.0
             self.kinetic_energy = 0.0
             self.temperature = 0.0
-            self._pos        = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order ='F')
-            self._velocities = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order ='F')
+            self._pos = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
+            self._velocities = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
             if self.has_force:
                 self._forces = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
-            self._unitcell   = numpy.zeros((9), dtype=numpy.float64, order ='F')
-        elif isinstance(arg, Timestep): # Copy constructor
+            self._unitcell = numpy.zeros((9), dtype=numpy.float64, order='F')
+        elif isinstance(arg, Timestep):  # Copy constructor
             # This makes a deepcopy of the timestep
             self.frame = arg.frame
             self.step = arg.step
@@ -131,14 +133,14 @@ class Timestep(base.Timestep):
             self.total_energy = 0.0
             self.potential_energy = 0.0
             self.kinetic_energy = 0.0
-            self.temperature = 0.0 #Temperature in Kelvin
-            self._velocities = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order ='F')
-            self._pos = arg.astype(numpy.float32).copy('Fortran',)
+            self.temperature = 0.0  # Temperature in Kelvin
+            self._velocities = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
+            self._pos = arg.astype(numpy.float32).copy('Fortran', )
         else:
             raise ValueError("Cannot create an empty Timestep")
-        self._x = self._pos[:,0]
-        self._y = self._pos[:,1]
-        self._z = self._pos[:,2]
+        self._x = self._pos[:, 0]
+        self._y = self._pos[:, 1]
+        self._z = self._pos[:, 2]
 
     @property
     def dimensions(self):
@@ -148,7 +150,7 @@ class Timestep(base.Timestep):
         x = self._unitcell[0:3]
         y = self._unitcell[3:6]
         z = self._unitcell[6:9]
-        return triclinic_box(x,y,z)
+        return triclinic_box(x, y, z)
 
     @dimensions.setter
     def dimensions(self, box):
@@ -186,7 +188,7 @@ class TRZReader(base.Reader):
 
     format = "TRZ"
 
-    units = {'time':'ps', 'length':'nm', 'velocity':'nm/ps'}
+    units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
     def __init__(self, trzfilename, numatoms=None, convert_units=None, **kwargs):
         """Creates a TRZ Reader
@@ -223,54 +225,57 @@ class TRZReader(base.Reader):
 
         # structured dtype of a single trajectory frame
         readarg = str(numatoms) + 'f4'
-        frame_contents = [('p1','i4'),
-                          ('nframe','i4'),
-                          ('ntrj','i4'),
-                          ('natoms','i4'),
-                          ('treal','f8'),
-                          ('p2','2i4'),
-                          ('box','9f8'),
-                          ('p3','2i4'),
-                          ('pressure','f8'),
-                          ('ptensor','6f8'),
-                          ('p4','3i4'),
-                          ('etot','f8'),
-                          ('ptot','f8'),
-                          ('ek','f8'),
-                          ('T','f8'),
-                          ('p5','6i4'),
-                          ('rx',readarg),
-                          ('pad2','2i4'),
-                          ('ry',readarg),
-                          ('pad3','2i4'),
-                          ('rz',readarg),
-                          ('pad4','2i4'),
-                          ('vx',readarg),
-                          ('pad5','2i4'),
-                          ('vy',readarg),
-                          ('pad6','2i4'),
-                          ('vz',readarg)]
+        frame_contents = [
+            ('p1', 'i4'),
+            ('nframe', 'i4'),
+            ('ntrj', 'i4'),
+            ('natoms', 'i4'),
+            ('treal', 'f8'),
+            ('p2', '2i4'),
+            ('box', '9f8'),
+            ('p3', '2i4'),
+            ('pressure', 'f8'),
+            ('ptensor', '6f8'),
+            ('p4', '3i4'),
+            ('etot', 'f8'),
+            ('ptot', 'f8'),
+            ('ek', 'f8'),
+            ('T', 'f8'),
+            ('p5', '6i4'),
+            ('rx', readarg),
+            ('pad2', '2i4'),
+            ('ry', readarg),
+            ('pad3', '2i4'),
+            ('rz', readarg),
+            ('pad4', '2i4'),
+            ('vx', readarg),
+            ('pad5', '2i4'),
+            ('vy', readarg),
+            ('pad6', '2i4'),
+            ('vz', readarg)]
         if not self.has_force:
             frame_contents += [('pad7', 'i4')]
         else:
-            frame_contents += [('pad7', '2i4'),
-                               ('fx', readarg),
-                               ('pad8', '2i4'),
-                               ('fy', readarg),
-                               ('pad9', '2i4'),
-                               ('fz', readarg),
-                               ('pad10', 'i4')]
+            frame_contents += [
+                ('pad7', '2i4'),
+                ('fx', readarg),
+                ('pad8', '2i4'),
+                ('fy', readarg),
+                ('pad9', '2i4'),
+                ('fz', readarg),
+                ('pad10', 'i4')]
         self._dtype = numpy.dtype(frame_contents)
 
         self._read_next_timestep()
 
     def _read_trz_header(self):
         """Reads the header of the trz trajectory"""
-        self._headerdtype = numpy.dtype([('p1','i4'),
-                                         ('title','80c'),
-                                         ('p2','2i4'),
-                                         ('force','i4'),
-                                         ('p3','i4')])
+        self._headerdtype = numpy.dtype([
+            ('p1', 'i4'),
+            ('title', '80c'),
+            ('p2', '2i4'),
+            ('force', 'i4'),
+            ('p3', 'i4')])
         data = numpy.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
         self.title = ''.join(data['title'][0])
         if data['force'] == 10:
@@ -280,7 +285,7 @@ class TRZReader(base.Reader):
         else:
             raise IOError
 
-    def _read_next_timestep(self, ts=None): # self.next() is from base Reader class and calls this
+    def _read_next_timestep(self, ts=None):  # self.next() is from base Reader class and calls this
         if ts is None:
             ts = self.ts
 
@@ -299,14 +304,14 @@ class TRZReader(base.Reader):
             ts._x[:] = data['rx']
             ts._y[:] = data['ry']
             ts._z[:] = data['rz']
-            ts._velocities[:,0] = data['vx']
-            ts._velocities[:,1] = data['vy']
-            ts._velocities[:,2] = data['vz']
+            ts._velocities[:, 0] = data['vx']
+            ts._velocities[:, 1] = data['vy']
+            ts._velocities[:, 2] = data['vz']
             if self.has_force:
-                ts._forces[:,0] = data['fx']
-                ts._forces[:,1] = data['fy']
-                ts._forces[:,2] = data['fz']
-        except IndexError: #Raises indexerror if data has no data (EOF)
+                ts._forces[:, 0] = data['fx']
+                ts._forces[:, 1] = data['fy']
+                ts._forces[:, 2] = data['fz']
+        except IndexError: # Raises indexerror if data has no data (EOF)
             raise IOError
         else:
             # Convert things read into MDAnalysis' native formats (nm -> angstroms)
@@ -340,12 +345,12 @@ class TRZReader(base.Reader):
         .. versionchanged:: 0.8.2
            Now is based on filesize rather than reading entire file
         """
-        fsize = os.fstat(trzfile.fileno()).st_size # size of file in bytes
+        fsize = os.fstat(trzfile.fileno()).st_size  # size of file in bytes
 
         if not (fsize - self._headerdtype.itemsize) % self._dtype.itemsize == 0:
-            raise IOError("Trajectory has incomplete frames") # check that division is sane
+            raise IOError("Trajectory has incomplete frames")  # check that division is sane
 
-        nframes = int((fsize - self._headerdtype.itemsize) / self._dtype.itemsize) # returns long int otherwise
+        nframes = int((fsize - self._headerdtype.itemsize) / self._dtype.itemsize)  # returns long int otherwise
 
         return nframes
 
@@ -406,7 +411,7 @@ class TRZReader(base.Reader):
     # can use base.Reader __getitem__ implementation
     def _read_frame(self, frame):
         """Move to *frame* and fill timestep with data."""
-        move = frame  - (self.ts.frame - 1) # difference from current frame to desired frame
+        move = frame - (self.ts.frame - 1)  # difference from current frame to desired frame
         if move is not 0:
             self._seek(move - 1)
             self.next()
@@ -414,6 +419,7 @@ class TRZReader(base.Reader):
 
     def _seek(self, nframes):
         from sys import maxint
+
         """Move *nframes* in the trajectory
 
         Note that this doens't read the trajectory (ts remains unchanged)
@@ -421,7 +427,7 @@ class TRZReader(base.Reader):
         .. versionadded:: 0.8.2
         """
         if (numpy.dtype(type(nframes)) != numpy.dtype(int)):
-            raise ValueError("TRZfile seek requires an integer number of frames got %r" %type(nframes))
+            raise ValueError("TRZfile seek requires an integer number of frames got %r" % type(nframes))
 
         maxi_l = long(maxint)
 
@@ -433,8 +439,8 @@ class TRZReader(base.Reader):
             framesize = long(framesize)
             seeksize = framesize * nframes
 
-            nreps = int(seeksize / maxi_l) # number of max seeks we'll have to do
-            rem = int(seeksize % maxi_l) # amount leftover to do once max seeks done
+            nreps = int(seeksize / maxi_l)  # number of max seeks we'll have to do
+            rem = int(seeksize % maxi_l)  # amount leftover to do once max seeks done
 
             for _ in range(nreps):
                 self.trzfile.seek(maxint, 1)
@@ -442,12 +448,12 @@ class TRZReader(base.Reader):
         else:
             seeksize = int(seeksize)
 
-            self.trzfile.seek(seeksize,1)
+            self.trzfile.seek(seeksize, 1)
 
     def _reopen(self):
         self.close()
         self.open_trajectory()
-        self._read_trz_header() # Moves to start of first frame
+        self._read_trz_header()  # Moves to start of first frame
 
     def open_trajectory(self):
         """Open the trajectory file"""
@@ -461,25 +467,26 @@ class TRZReader(base.Reader):
         #Reset ts
         ts = self.ts
         ts.status = 1
-        ts.frame =0
+        ts.frame = 0
         ts.step = 0
         ts.time = 0
         return self.trzfile
 
     def Writer(self, filename, numatoms=None):
-        if numatoms == None:
+        if numatoms is None:
             # guess that they want to write the whole timestep unless told otherwise?
             numatoms = self.ts.numatoms
         return TRZWriter(filename, numatoms)
 
     def close(self):
         """Close trz file if it was open"""
-        if not self.trzfile is None:
+        if self.trzfile is not None:
             self.trzfile.close()
             self.trzfile = None
 
     def __del__(self):
         self.close()
+
 
 class TRZWriter(base.Writer):
     """Writes a TRZ format trajectory.
@@ -488,9 +495,9 @@ class TRZWriter(base.Writer):
        ``W = TRZWriter(trzfilename, numatoms, title='TRZ')``
     """
 
-    format='TRZ'
+    format = 'TRZ'
 
-    units = {'time':'ps', 'length':'nm', 'velocity':'nm/ps'}
+    units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
     def __init__(self, filename, numatoms, title='TRZ', convert_units=None):
         """Create a TRZWriter
@@ -525,50 +532,52 @@ class TRZWriter(base.Writer):
         self._writeheader(title)
 
         floatsize = str(numatoms) + 'f4'
-        self.frameDtype = numpy.dtype([('p1a','i4'),
-                                       ('nframe','i4'),
-                                       ('ntrj','i4'),
-                                       ('natoms','i4'),
-                                       ('treal','f8'),
-                                       ('p1b','i4'),
-                                       ('p2a','i4'),
-                                       ('box','9f8'),
-                                       ('p2b','i4'),
-                                       ('p3a','i4'),
-                                       ('pressure','f8'),
-                                       ('ptensor','6f8'),
-                                       ('p3b','i4'),
-                                       ('p4a','i4'),
-                                       ('six','i4'),
-                                       ('etot','f8'),
-                                       ('ptot','f8'),
-                                       ('ek','f8'),
-                                       ('T','f8'),
-                                       ('blanks','2f8'),
-                                       ('p4b','i4'),
-                                       ('p5a','i4'),
-                                       ('rx',floatsize),
-                                       ('p5b','i4'),
-                                       ('p6a','i4'),
-                                       ('ry',floatsize),
-                                       ('p6b','i4'),
-                                       ('p7a','i4'),
-                                       ('rz',floatsize),
-                                       ('p7b','i4'),
-                                       ('p8a','i4'),
-                                       ('vx',floatsize),
-                                       ('p8b','i4'),
-                                       ('p9a','i4'),
-                                       ('vy',floatsize),
-                                       ('p9b','i4'),
-                                       ('p10a','i4'),
-                                       ('vz',floatsize),
-                                       ('p10b','i4')])
+        self.frameDtype = numpy.dtype([
+            ('p1a', 'i4'),
+            ('nframe', 'i4'),
+            ('ntrj', 'i4'),
+            ('natoms', 'i4'),
+            ('treal', 'f8'),
+            ('p1b', 'i4'),
+            ('p2a', 'i4'),
+            ('box', '9f8'),
+            ('p2b', 'i4'),
+            ('p3a', 'i4'),
+            ('pressure', 'f8'),
+            ('ptensor', '6f8'),
+            ('p3b', 'i4'),
+            ('p4a', 'i4'),
+            ('six', 'i4'),
+            ('etot', 'f8'),
+            ('ptot', 'f8'),
+            ('ek', 'f8'),
+            ('T', 'f8'),
+            ('blanks', '2f8'),
+            ('p4b', 'i4'),
+            ('p5a', 'i4'),
+            ('rx', floatsize),
+            ('p5b', 'i4'),
+            ('p6a', 'i4'),
+            ('ry', floatsize),
+            ('p6b', 'i4'),
+            ('p7a', 'i4'),
+            ('rz', floatsize),
+            ('p7b', 'i4'),
+            ('p8a', 'i4'),
+            ('vx', floatsize),
+            ('p8b', 'i4'),
+            ('p9a', 'i4'),
+            ('vy', floatsize),
+            ('p9b', 'i4'),
+            ('p10a', 'i4'),
+            ('vz', floatsize),
+            ('p10b', 'i4')])
 
     def _writeheader(self, title):
-        hdt = numpy.dtype([('pad1','i4'),('title','80c'),('pad2','i4'),
-                           ('pad3','i4'),('nrec','i4'),('pad4','i4')])
-        out = numpy.zeros((), dtype = hdt)
+        hdt = numpy.dtype([
+            ('pad1', 'i4'), ('title', '80c'), ('pad2', 'i4'),
+            ('pad3', 'i4'), ('nrec', 'i4'), ('pad4', 'i4')])
+        out = numpy.zeros((), dtype=hdt)
         out['pad1'], out['pad2'] = 80, 80
         out['title'] = title
         out['pad3'], out['pad4'] = 4, 4
@@ -597,7 +606,7 @@ class TRZWriter(base.Writer):
         out['ek'] = ts.kinetic_energy
         out['T'] = ts.temperature
         out['blanks'] = 0.0, 0.0
-        size = ts.numatoms * 4 # size of float for vels & coords
+        size = ts.numatoms * 4  # size of float for vels & coords
         out['p5a'], out['p5b'] = size, size
         out['rx'] = self.convert_pos_to_native(ts._x, inplace=False)
         out['p6a'], out['p6b'] = size, size
@@ -605,11 +614,11 @@ class TRZWriter(base.Writer):
         out['p7a'], out['p7b'] = size, size
         out['rz'] = self.convert_pos_to_native(ts._z, inplace=False)
         out['p8a'], out['p8b'] = size, size
-        out['vx'] = self.convert_velocities_to_native(ts._velocities[:,0], inplace=False)
+        out['vx'] = self.convert_velocities_to_native(ts._velocities[:, 0], inplace=False)
         out['p9a'], out['p9b'] = size, size
-        out['vy'] = self.convert_velocities_to_native(ts._velocities[:,1], inplace=False)
+        out['vy'] = self.convert_velocities_to_native(ts._velocities[:, 1], inplace=False)
         out['p10a'], out['p10b'] = size, size
-        out['vz'] = self.convert_velocities_to_native(ts._velocities[:,2], inplace=False)
+        out['vz'] = self.convert_velocities_to_native(ts._velocities[:, 2], inplace=False)
         out.tofile(self.trzfile)
 
     def close(self):

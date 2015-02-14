@@ -1,24 +1,22 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PDBQT_input, PDBQT_querypdb
 import MDAnalysis.KDTree.NeighborSearch as kdNS
-
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -26,11 +24,12 @@ from nose.plugins.attrib import attr
 import os
 import tempfile
 
+
 class TestPDBQT(TestCase):
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
-        self.universe = MDAnalysis.Universe(PDBQT_input) # PDBQT
-        self.query_universe = MDAnalysis.Universe(PDBQT_querypdb) # PDB file
+        self.universe = MDAnalysis.Universe(PDBQT_input)  # PDBQT
+        self.query_universe = MDAnalysis.Universe(PDBQT_querypdb)  # PDB file
         fd, self.outfile = tempfile.mkstemp(suffix='.pdbqt')
         os.close(fd)
 

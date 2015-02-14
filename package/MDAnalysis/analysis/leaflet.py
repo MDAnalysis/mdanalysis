@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 Leaflet identification --- :mod:`MDAnalysis.analysis.leaflet`
@@ -55,6 +55,7 @@ import MDAnalysis
 import networkx as NX
 import distances
 import warnings
+
 
 class LeafletFinder(object):
     """Identify atoms in the same leaflet of a lipid bilayer.
@@ -135,23 +136,26 @@ class LeafletFinder(object):
         if self.sparse is False:
             # only try distance array
             try:
-                adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="numpy",box=box)
+                adj = distances.contact_matrix(coord, cutoff=self.cutoff, returntype="numpy", box=box)
             except ValueError:
-                warnings.warn('N x N matrix too big, use sparse=True or sparse=None' , category=UserWarning , stacklevel=2)
+                warnings.warn('N x N matrix too big, use sparse=True or sparse=None', category=UserWarning,
+                              stacklevel=2)
                 raise
         elif self.sparse is True:
             # only try sparse
-            adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="sparse",box=box)
+            adj = distances.contact_matrix(coord, cutoff=self.cutoff, returntype="sparse", box=box)
         else:
             # use distance_array and fall back to sparse matrix
             try:
                 # this works for small-ish systems and depends on system memory
-                adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="numpy",box=box)
+                adj = distances.contact_matrix(coord, cutoff=self.cutoff, returntype="numpy", box=box)
             except ValueError:
                 # but use a sparse matrix method for larger systems for memory reasons
-                warnings.warn('N x N matrix too big - switching to sparse matrix method (works fine, but is currently rather slow)' ,
-                              category=UserWarning , stacklevel=2)
-                adj = distances.contact_matrix(coord,cutoff=self.cutoff,returntype="sparse",box=box)
+                warnings.warn(
+                    'N x N matrix too big - switching to sparse matrix method (works fine, but is currently rather '
+                    'slow)',
+                    category=UserWarning, stacklevel=2)
+                adj = distances.contact_matrix(coord, cutoff=self.cutoff, returntype="sparse", box=box)
         return NX.Graph(adj)
 
     def _get_components(self):
@@ -166,7 +170,7 @@ class LeafletFinder(object):
 
     def sizes(self):
         """Dict of component index with size of component."""
-        return dict(((idx,len(component)) for idx,component in enumerate(self.components)))
+        return dict(((idx, len(component)) for idx, component in enumerate(self.components)))
 
     def groups(self, component_index=None):
         """Return a :class:`MDAnalysis.core.AtomGroup.AtomGroup` for *component_index*.
@@ -201,19 +205,20 @@ class LeafletFinder(object):
         options.
         """
         import MDAnalysis.selections
-        SelectionWriter = MDAnalysis.selections.get_writer(filename, kwargs.pop('format',None))
+
+        SelectionWriter = MDAnalysis.selections.get_writer(filename, kwargs.pop('format', None))
         writer = SelectionWriter(
             filename, mode=kwargs.pop('mode', 'wa'),
             preamble="leaflets based on selection=%(selectionstring)r cutoff=%(cutoff)f\n" % vars(self),
             **kwargs)
         for i, ag in enumerate(self.groups_iter()):
-            name = "leaflet_%d" % (i+1)
+            name = "leaflet_%d" % (i + 1)
             writer.write(ag, name=name)
 
     def __repr__(self):
         return "<LeafletFinder(%r, cutoff=%.1f A) with %d atoms in %d groups>" % \
-            (self.selectionstring, self.cutoff, self.selection.numberOfAtoms(),
-             len(self.components))
+               (self.selectionstring, self.cutoff, self.selection.numberOfAtoms(),
+               len(self.components))
 
 
 def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
@@ -258,12 +263,12 @@ def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
             continue
         n0 = float(sizes[0])  # sizes of two biggest groups ...
         n1 = float(sizes[1])  # ... assumed to be the leaflets
-        imbalance = numpy.abs(n0 - n1)/(n0 + n1)
+        imbalance = numpy.abs(n0 - n1) / (n0 + n1)
         # print "sizes: %(sizes)r; imbalance=%(imbalance)f" % vars()
         if imbalance > max_imbalance:
             continue
         _sizes.append((cutoff, len(LF.sizes())))
     results = numpy.rec.fromrecords(_sizes, names="cutoff,N")
     del _sizes
-    results.sort(order=["N","cutoff"])  # sort ascending by N, then cutoff
-    return results[0]     # (cutoff,N) with N>1 and shortest cutoff
+    results.sort(order=["N", "cutoff"])  # sort ascending by N, then cutoff
+    return results[0]  # (cutoff,N) with N>1 and shortest cutoff

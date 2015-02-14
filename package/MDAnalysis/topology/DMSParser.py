@@ -1,18 +1,16 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
-#
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -33,6 +31,7 @@ import os
 from MDAnalysis.core.AtomGroup import Atom
 from MDAnalysis.topology.core import guess_atom_type
 from .base import TopologyReader
+
 
 class DMSParser(TopologyReader):
     def parse(self):
@@ -96,9 +95,6 @@ class DMSParser(TopologyReader):
         # All the records below besides donors and acceptors can be contained in a DMS file.
         # In addition to the coordinates and bonds, DMS may contain the entire force-field
         # information (terms+parameters),
-        structure = {"_atoms": atoms,
-                     "_bonds": tuple(bondlist),
-                     "_bondorder": bondorder,
-                 }
+        structure = {"_atoms": atoms, "_bonds": tuple(bondlist), "_bondorder": bondorder}
 
         return structure

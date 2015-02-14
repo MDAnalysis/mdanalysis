@@ -1,18 +1,17 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -77,7 +76,7 @@ to look at the pure rotation one needs to superimpose the centres of
 mass (or geometry) first:
 
    >>> ref0 =  ref.atoms.CA.coordinates() - ref.atoms.CA.centerOfMass()
-   >>> mobile0 =  mobile.atoms.CA.coordinates() - mobile.atoms.CA.centerOfMass()
+   >>> mobile0 = mobile.atoms.CA.coordinates() - mobile.atoms.CA.centerOfMass()
    >>> rmsd(mobile0, ref0)
     6.8093965864717951
 
@@ -154,21 +153,22 @@ normal users.
 """
 
 import numpy
-
-import MDAnalysis
 import MDAnalysis.core.qcprot as qcp
+
 from MDAnalysis import SelectionError
 from MDAnalysis.core.log import ProgressMeter
-#from MDAnalysis.core.util import asiterable # unused
+
+# from MDAnalysis.core.util import asiterable # unused
 from MDAnalysis.analysis.rms import rmsd, _process_selection
 
 import os.path
 
 import logging
+
 logger = logging.getLogger('MDAnalysis.analysis.align')
 
 
-def rotation_matrix(a,b, weights=None):
+def rotation_matrix(a, b, weights=None):
     """Returns the 3x3 rotation matrix for RMSD fitting coordinate sets *a* and *b*.
 
     The rotation matrix *R* transforms *a* to overlap with *b* (i.e. *b* is the
@@ -209,11 +209,11 @@ def rotation_matrix(a,b, weights=None):
     """
     if not weights is None:
         # weights are constructed as relative to the mean
-        weights = numpy.asarray(weights)/numpy.mean(weights)
+        weights = numpy.asarray(weights) / numpy.mean(weights)
     rot = numpy.zeros(9, dtype=numpy.float64)
     rmsd = qcp.CalcRMSDRotationalMatrix(a.T.astype(numpy.float64), b.T.astype(numpy.float64),
                                         b.shape[0], rot, weights)
-    return numpy.matrix(rot.reshape(3,3)), rmsd
+    return numpy.matrix(rot.reshape(3, 3)), rmsd
 
 
 def alignto(mobile, reference, select="all", mass_weighted=False,
@@ -305,7 +305,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     check_same_atoms(ref_atoms, mobile_atoms, tol_mass=tol_mass)
 
     if mass_weighted:
-        weights = ref_atoms.masses()/numpy.mean(ref_atoms.masses())
+        weights = ref_atoms.masses() / numpy.mean(ref_atoms.masses())
         ref_com = ref_atoms.centerOfMass()
         mobile_com = mobile_atoms.centerOfMass()
     else:
@@ -410,8 +410,8 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
 
     kwargs.setdefault('remarks', 'RMS fitted trajectory to reference')
     if filename is None:
-        path,fn = os.path.split(frames.filename)
-        filename = os.path.join(path,prefix+fn)
+        path, fn = os.path.split(frames.filename)
+        filename = os.path.join(path, prefix + fn)
         _Writer = frames.Writer
     else:
         _Writer = frames.OtherWriter
@@ -431,7 +431,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     logger.info("RMS-fitting on %d atoms." % len(ref_atoms))
     if mass_weighted:
         # if performing a mass-weighted alignment/rmsd calculation
-        weight = ref_atoms.masses()/ref_atoms.masses().mean()
+        weight = ref_atoms.masses() / ref_atoms.masses().mean()
     else:
         weight = None
 
@@ -450,13 +450,13 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     # R: rotation matrix that aligns r-r_com, x~-x~com
     #    (x~: selected coordinates, x: all coordinates)
     # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
-    rot = numpy.zeros(9,dtype=numpy.float64)      # allocate space for calculation
-    R = numpy.matrix(rot.reshape(3,3))
+    rot = numpy.zeros(9, dtype=numpy.float64)  # allocate space for calculation
+    R = numpy.matrix(rot.reshape(3, 3))
 
     percentage = ProgressMeter(nframes, interval=10, quiet=quiet,
                                format="Fitted frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
 
-    for k,ts in enumerate(frames):
+    for k, ts in enumerate(frames):
         # shift coordinates for rotation fitting
         # selection is updated with the time frame
         x_com = traj_atoms.centerOfMass().astype(numpy.float32)
@@ -470,20 +470,20 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         rmsd[k] = qcp.CalcRMSDRotationalMatrix(ref_coordinates.T.astype(numpy.float64),
                                                traj_coordinates.T.astype(numpy.float64),
                                                natoms, rot, weight)
-        R[:,:] = rot.reshape(3,3)
+        R[:, :] = rot.reshape(3, 3)
 
         # Transform each atom in the trajectory (use inplace ops to avoid copying arrays)
         # (Marginally (~3%) faster than "ts._pos[:] = (ts._pos - x_com) * R + ref_com".)
-        ts._pos   -= x_com
-        ts._pos[:] = ts._pos * R # R acts to the left & is broadcasted N times.
-        ts._pos   += ref_com
+        ts._pos -= x_com
+        ts._pos[:] = ts._pos * R  # R acts to the left & is broadcasted N times.
+        ts._pos += ref_com
 
-        writer.write(traj.atoms) # write whole input trajectory system
+        writer.write(traj.atoms)  # write whole input trajectory system
         percentage.echo(ts.frame)
     logger.info("Wrote %d RMS-fitted coordinate frames to file %r",
                 frames.numframes, filename)
     if not rmsdfile is None:
-        numpy.savetxt(rmsdfile,rmsd)
+        numpy.savetxt(rmsdfile, rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
 
     if quiet:
@@ -492,9 +492,10 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
 
     return filename
 
-def fasta2select(fastafilename,is_aligned=False,
+
+def fasta2select(fastafilename, is_aligned=False,
                  ref_resids=None, target_resids=None,
-                 ref_offset=0,target_offset=0,verbosity=3,
+                 ref_offset=0, target_offset=0, verbosity=3,
                  alnfilename=None, treefilename=None, clustalw="clustalw2"):
     """Return selection strings that will select equivalent residues.
 
@@ -558,7 +559,9 @@ def fasta2select(fastafilename,is_aligned=False,
           that can be used immediately in :func:`rms_fit_trj` as
           ``select=select_dict``.
     """
-    import Bio.SeqIO, Bio.AlignIO, Bio.Alphabet
+    import Bio.SeqIO
+    import Bio.AlignIO
+    import Bio.Alphabet
     import numpy
 
     protein_gapped = Bio.Alphabet.Gapped(Bio.Alphabet.IUPAC.protein)
@@ -569,11 +572,12 @@ def fasta2select(fastafilename,is_aligned=False,
     else:
         from Bio.Align.Applications import ClustalwCommandline
         import os.path
+
         if alnfilename is None:
-            filepath,ext = os.path.splitext(fastafilename)
+            filepath, ext = os.path.splitext(fastafilename)
             alnfilename = filepath + '.aln'
         if treefilename is None:
-            filepath,ext = os.path.splitext(alnfilename)
+            filepath, ext = os.path.splitext(alnfilename)
             treefilename = filepath + '.dnd'
         run_clustalw = ClustalwCommandline(clustalw, infile=fastafilename, type="protein",
                                            align=True, outfile=alnfilename, newtree=treefilename)
@@ -594,24 +598,24 @@ def fasta2select(fastafilename,is_aligned=False,
     if nseq != 2:
         raise ValueError("Only two sequences in the alignment can be processed.")
 
-    orig_resids = [ref_resids,target_resids] # implict assertion that
-                                             # we only have two sequences in the alignment
-    offsets = [ref_offset,target_offset]
-    for iseq,a in enumerate(alignment):      # need iseq index to change orig_resids
+    orig_resids = [ref_resids, target_resids]  # implict assertion that
+    # we only have two sequences in the alignment
+    offsets = [ref_offset, target_offset]
+    for iseq, a in enumerate(alignment):  # need iseq index to change orig_resids
         if orig_resids[iseq] is None:
             # build default: assume consecutive numbering of all
             # residues in the alignment
             GAP = a.seq.alphabet.gap_char
             length = len(a.seq) - a.seq.count(GAP)
-            orig_resids[iseq] = numpy.arange(1,length+1)
+            orig_resids[iseq] = numpy.arange(1, length + 1)
         else:
             orig_resids[iseq] = numpy.asarray(orig_resids[iseq])
     # add offsets to the sequence <--> resid translation table
-    seq2resids = [resids + offset for resids,offset in zip(orig_resids,offsets)]
+    seq2resids = [resids + offset for resids, offset in zip(orig_resids, offsets)]
     del orig_resids
     del offsets
 
-    def resid_factory(alignment,seq2resids):
+    def resid_factory(alignment, seq2resids):
         """Return a function that gives the resid for a position ipos in
         the nseq'th alignment.
 
@@ -640,45 +644,47 @@ def fasta2select(fastafilename,is_aligned=False,
         """
         # could maybe use Bio.PDB.StructureAlignment instead?
         nseq = len(alignment)
-        t = numpy.zeros((nseq,alignment.get_alignment_length()),dtype=int)
-        for iseq,a in enumerate(alignment):
+        t = numpy.zeros((nseq, alignment.get_alignment_length()), dtype=int)
+        for iseq, a in enumerate(alignment):
             GAP = a.seq.alphabet.gap_char
-            t[iseq,:] = seq2resids[iseq][numpy.cumsum(numpy.where(
-                        numpy.array(list(a.seq))==GAP,0,1)) - 1]
+            t[iseq, :] = seq2resids[iseq][numpy.cumsum(numpy.where(
+                numpy.array(list(a.seq)) == GAP, 0, 1)) - 1]
             # -1 because seq2resid is index-1 based (resids start at 1)
 
-        def resid(nseq,ipos,t=t):
-            return t[nseq,ipos]
-        return resid
-    resid = resid_factory(alignment,seq2resids)
+        def resid(nseq, ipos, t=t):
+            return t[nseq, ipos]
 
-    res_list = []     # collect individual selection string
+        return resid
+
+    resid = resid_factory(alignment, seq2resids)
+
+    res_list = []  # collect individual selection string
     # could collect just resid and type (with/without CB) and
     # then post-process and use ranges for continuous stretches, eg
     # ( resid 1:35 and ( backbone or name CB ) ) or ( resid 36 and backbone ) ...
 
-    GAP = alignment[0].seq.alphabet.gap_char        # should be the same for both seqs
+    GAP = alignment[0].seq.alphabet.gap_char  # should be the same for both seqs
     if GAP != alignment[1].seq.alphabet.gap_char:
         raise ValueError("Different gap characters in sequence 'target' and 'mobile'.")
     for ipos in xrange(alignment.get_alignment_length()):
         aligned = list(alignment[:, ipos])
         if GAP in aligned:
-            continue       # skip residue
+            continue  # skip residue
         template = "resid %i"
         if 'G' not in aligned:
             # can use CB
             template += " and ( backbone or name CB )"
         else:
             template += " and backbone"
-        template = "( "+template+" )"
+        template = "( " + template + " )"
 
-        res_list.append([template % resid(iseq,ipos) for iseq in xrange(nseq)])
+        res_list.append([template % resid(iseq, ipos) for iseq in xrange(nseq)])
 
     sel = numpy.array(res_list).transpose()
 
-    ref_selection =  " or ".join(sel[0])
-    target_selection =  " or ".join(sel[1])
-    return {'reference':ref_selection, 'mobile':target_selection}
+    ref_selection = " or ".join(sel[0])
+    target_selection = " or ".join(sel[1])
+    return {'reference': ref_selection, 'mobile': target_selection}
 
 
 def check_same_atoms(ag1, ag2, tol_mass=0.1):
@@ -704,9 +710,13 @@ def check_same_atoms(ag1, ag2, tol_mass=0.1):
     """
 
     if len(ag1) != len(ag2):
-        data1, data2 = ag1.resids() , ag2.resids()
-        errmsg = "Reference and trajectory atom selections do not contain "\
-            "the same number of atoms: N_ref={0}, N_traj={1}\nResids_ref ={2}\nResids_traj={3}".format(len(ag1), len(ag2), repr(sorted(ag1.resids())), repr(sorted(ag2.resids())))
+        data1, data2 = ag1.resids(), ag2.resids()
+        errmsg = "Reference and trajectory atom selections do not contain " \
+                 "the same number of atoms: N_ref={0}, N_traj={1}" \
+                 "nResids_ref ={2}\nResids_traj={3}".format(len(ag1),
+                                                            len(ag2),
+                                                            repr(sorted(ag1.resids())),
+                                                            repr(sorted(ag2.resids())))
         logger.error(errmsg)
         raise SelectionError(errmsg)
     mass_mismatches = (numpy.absolute(ag1.masses() - ag2.masses()) > tol_mass)
@@ -714,12 +724,13 @@ def check_same_atoms(ag1, ag2, tol_mass=0.1):
         # Test 2 failed.
         # diagnostic output:
         logger.error("Atoms: reference | trajectory")
-        for ar,at in zip(ag1, ag2):
+        for ar, at in zip(ag1, ag2):
             if ar.name != at.name:
-                logger.error("%4s %3d %3s %3s %6.3f  |  %4s %3d %3s %3s %6.3f" %  \
-                      (ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
-                       at.segid, at.resid, at.resname, at.name, at.mass,))
-        errmsg = "Inconsistent selections, masses differ by more than {0}; mis-matching atoms are shown above.".format(tol_mass)
+                logger.error("%4s %3d %3s %3s %6.3f  |  %4s %3d %3s %3s %6.3f" %
+                             (ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
+                             at.segid, at.resid, at.resname, at.name, at.mass,))
+        errmsg = "Inconsistent selections, masses differ by more than {0}; mis-matching atoms are shown above.".format(
+            tol_mass)
         logger.error(errmsg)
         raise SelectionError(errmsg)
     return True

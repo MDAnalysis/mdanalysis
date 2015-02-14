@@ -1,18 +1,16 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
-#
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -49,6 +47,7 @@ from .core import guess_atom_mass, guess_atom_charge
 
 logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
 
+
 class DATAParser(TopologyReader):
     """Contains a parse function for topology reading as well as a coordinate
     reader as DATA files can be used standalone.
@@ -58,6 +57,7 @@ class DATAParser(TopologyReader):
     
     .. versionadded:: 0.9
     """
+
     def parse(self):
         """Parses a LAMMPS_ DATA file.
 
@@ -86,14 +86,16 @@ class DATAParser(TopologyReader):
             except:
                 raise IOError("Failed to read DATA header")
 
-            strkey = {'Bonds':'_bonds',
-                      'Angles':'_angles',
-                      'Dihedrals':'_dihe',
-                      'Impropers':'_impr'}
-            nentries = {'_bonds':2,
-                        '_angles':3,
-                        '_dihe':4,
-                        '_impr':4}
+            strkey = {
+                'Bonds': '_bonds',
+                'Angles': '_angles',
+                'Dihedrals': '_dihe',
+                'Impropers': '_impr'}
+            nentries = {
+                '_bonds': 2,
+                '_angles': 3,
+                '_dihe': 4,
+                '_impr': 4}
             # Masses can appear after Atoms section.
             # If this happens, this blank dict will be used and all atoms
             # will have zero mass, can fix this later
@@ -149,7 +151,7 @@ class DATAParser(TopologyReader):
                         a.mass = masses[a.type]
                     except KeyError:
                         a.mass = 0.0
-#                        a.mass = guess_atom_mass(a.name)
+                    #                        a.mass = guess_atom_mass(a.name)
 
             return structure
 
@@ -212,7 +214,7 @@ class DATAParser(TopologyReader):
             # assumes atom ids are well behaved?
             # LAMMPS sometimes dumps atoms in random order
             pos[idx] = x, y, z
-            
+
     def _parse_atom_line(self, line):
         """Parse a atom line into MDA stuff
 
@@ -234,9 +236,9 @@ class DATAParser(TopologyReader):
 
         idx, resid, atype = map(int, line[:3])
         idx -= 1  # 0 based atom ids in mda, 1 based in lammps
-        if n in [7, 10]:  #atom_style full
+        if n in [7, 10]:  # atom_style full
             q, x, y, z = map(float, line[3:7])
-        elif n in [6, 9]: #atom_style molecular
+        elif n in [6, 9]:  # atom_style molecular
             x, y, z = map(float, line[3:6])
 
         return idx, resid, atype, q, x, y, z
@@ -258,7 +260,7 @@ class DATAParser(TopologyReader):
             line = psffile.next().split()
             # logging.debug("Line is: {}".format(line))
             # map to 0 based int
-            section.append(tuple(map(lambda x:int(x)-1, line[2:2+nentries])))
+            section.append(tuple(map(lambda x: int(x) - 1, line[2:2 + nentries])))
 
         return tuple(section)
 
@@ -285,7 +287,7 @@ class DATAParser(TopologyReader):
                 m = mass[atype]
             except KeyError:
                 m = 0.0
-#                m = guess_atom_mass(name)  # i think types are just ints though?
+            #                m = guess_atom_mass(name)  # i think types are just ints though?
             # Atom() format:
             # Number, name, type, resname, resid, segid, mass, charge
             atoms.append(Atom(idx, name, atype,
@@ -327,15 +329,16 @@ class DATAParser(TopologyReader):
 
         This should be fixed in all files
         """
-        hvals = {'atoms':'_atoms',
-                 'bonds':'_bonds',
-                 'angles':'_angles',
-                 'dihedrals':'_dihe',
-                 'impropers':'_impr'}
-        nitems = {k:0 for k in hvals.values()}
+        hvals = {
+            'atoms': '_atoms',
+            'bonds': '_bonds',
+            'angles': '_angles',
+            'dihedrals': '_dihe',
+            'impropers': '_impr'}
+        nitems = {k: 0 for k in hvals.values()}
 
-        psffile.next() # Title
-        psffile.next() # Blank line
+        psffile.next()  # Title
+        psffile.next()  # Blank line
 
         line = psffile.next().strip()
         while line:
@@ -343,7 +346,7 @@ class DATAParser(TopologyReader):
             nitems[hvals[key]] = int(val)
             line = psffile.next().strip()
 
-        ntypes = {k:0 for k in hvals.values()}
+        ntypes = {k: 0 for k in hvals.values()}
         line = psffile.next().strip()
         while line:
             val, key, _ = line.split()
@@ -362,6 +365,7 @@ class DATAParser(TopologyReader):
 
 class LAMMPSAtom(object):
     __slots__ = ("index", "name", "type", "chainid", "charge", "mass", "_positions")
+
     def __init__(self, index, name, type, chain_id, charge=0, mass=1):
         self.index = index
         self.name = repr(type)
@@ -369,21 +373,29 @@ class LAMMPSAtom(object):
         self.chainid = chain_id
         self.charge = charge
         self.mass = mass
+
     def __repr__(self):
-        return "<LAMMPSAtom "+repr(self.index+1)+ ": name " + repr(self.type) +" of chain "+repr(self.chainid)+">"
+        return "<LAMMPSAtom " + repr(self.index + 1) + ": name " + repr(self.type) + " of chain " + repr(
+            self.chainid) + ">"
+
     def __cmp__(self, other):
         return cmp(self.index, other.index)
+
     def __eq__(self, other):
         return self.index == other.index
+
     def __hash__(self):
         return hash(self.index)
+
     def __getattr__(self, attr):
         if attr == 'pos':
             return self._positions[self.index]
-        else: super(LAMMPSAtom, self).__getattribute__(attr)
+        else:
+            super(LAMMPSAtom, self).__getattribute__(attr)
+
     def __iter__(self):
         pos = self.pos
-        return iter((self.index+1, self.chainid, self.type, self.charge, self.mass, pos[0], pos[1], pos[2]))
+        return iter((self.index + 1, self.chainid, self.type, self.charge, self.mass, pos[0], pos[1], pos[2]))
 
 
 class LAMMPSDataConverter(object):
@@ -411,30 +423,32 @@ class LAMMPSDataConverter(object):
     .. versionchanged:: 0.8.2
        Renamed from ``LAMMPSData`` to ``LAMMPSDataConverter``.
     """
-    header_keywords= ["atoms","bonds","angles","dihedrals","impropers",
-                      "atom types","bond types","angle types",
-                      "dihedral types","improper types",
-                      "xlo xhi","ylo yhi","zlo zhi"]
+    header_keywords = [
+        "atoms", "bonds", "angles", "dihedrals", "impropers",
+        "atom types", "bond types", "angle types",
+        "dihedral types", "improper types",
+        "xlo xhi", "ylo yhi", "zlo zhi"]
 
-    connections = dict([["Bonds",("bonds", 3)],
-                        ["Angles",("angles", 3)],
-                        ["Dihedrals",("dihedrals", 4)],
-                        ["Impropers",("impropers", 2)]])
+    connections = dict([
+        ["Bonds", ("bonds", 3)],
+        ["Angles", ("angles", 3)],
+        ["Dihedrals", ("dihedrals", 4)],
+        ["Impropers", ("impropers", 2)]])
 
-    coeff = dict([["Masses",("atom types", 1)],
-                  ["Velocities",("atoms", 3)],
-                  ["Pair Coeffs",("atom types", 4)],
-                  ["Bond Coeffs",("bond types", 2)],
-                  ["Angle Coeffs",("angle types", 4)],
-                  ["Dihedral Coeffs",("dihedral types", 3)],
-                  ["Improper Coeffs",("improper types", 2)]])
-
+    coeff = dict([
+        ["Masses", ("atom types", 1)],
+        ["Velocities", ("atoms", 3)],
+        ["Pair Coeffs", ("atom types", 4)],
+        ["Bond Coeffs", ("bond types", 2)],
+        ["Angle Coeffs", ("angle types", 4)],
+        ["Dihedral Coeffs", ("dihedral types", 3)],
+        ["Improper Coeffs", ("improper types", 2)]])
 
     def __init__(self, filename=None):
         self.names = {}
         self.headers = {}
         self.sections = {}
-        if filename == None:
+        if filename is None:
             self.title = "LAMMPS data file"
         else:
             # Open and check validity
@@ -456,7 +470,7 @@ class LAMMPSDataConverter(object):
                                 headers[keyword] = (float(values[0]), float(values[1]))
                             else:
                                 headers[keyword] = int(values[0])
-                    if found == False:
+                    if found is False:
                         break
 
             # Parse sections
@@ -493,8 +507,9 @@ class LAMMPSDataConverter(object):
                         data = []
                         for i in xrange(headers["atoms"]):
                             fields = file_iter.next().strip().split()
-                            index = int(fields[0])-1
-                            a = LAMMPSAtom(index=index, name=fields[2], type=int(fields[2]), chain_id=int(fields[1]), charge=float(fields[3]))
+                            index = int(fields[0]) - 1
+                            a = LAMMPSAtom(index=index, name=fields[2], type=int(fields[2]), chain_id=int(fields[1]),
+                                           charge=float(fields[3]))
                             a._positions = positions
                             data.append(a)
                             positions[index] = numpy.array([float(fields[4]), float(fields[5]), float(fields[6])])
@@ -521,15 +536,22 @@ class LAMMPSDataConverter(object):
             file.write(string.rjust(str(len(self.sections["Atoms"])), 8) + ' !NATOM\n')
             #print self.sections["Masses"]
             for i, atom in enumerate(self.sections["Atoms"]):
-                if names != None: resname, atomname = names[i]
-                else: resname, atomname = 'TEMP', 'XXXX'
+                if names is not None:
+                    resname, atomname = names[i]
+                else:
+                    resname, atomname = 'TEMP', 'XXXX'
                 for j, liz in enumerate(self.sections["Masses"]):
-                        liz = liz[0]
-                        #print j+1, atom.type, liz
-                        if j+1 == atom.type: line = [i+1, 'TEMP', str(atom.chainid), resname, atomname, str(atom.type+1), atom.charge, float(liz), 0.]
-                        else: continue
+                    liz = liz[0]
+                    #print j+1, atom.type, liz
+                    if j + 1 == atom.type:
+                        line = [
+                            i + 1, 'TEMP',
+                            str(atom.chainid), resname, atomname, str(atom.type + 1), atom.charge,
+                            float(liz), 0.]
+                    else:
+                        continue
                 #print line
-                file.write(psf_atom_format%tuple(line))
+                file.write(psf_atom_format % tuple(line))
 
             file.write("\n")
             num_bonds = len(self.sections["Bonds"])
@@ -537,11 +559,11 @@ class LAMMPSDataConverter(object):
             file.write(string.rjust(str(num_bonds), 8) + ' !NBOND\n')
             for index in range(0, num_bonds, 4):
                 try:
-                    bonds = bond_list[index:index+4]
+                    bonds = bond_list[index:index + 4]
                 except IndexError:
                     bonds = bond_list[index:-1]
-                bond_line = map(lambda bond: string.rjust(str(bond[1]), 8)+string.rjust(str(bond[2]), 8), bonds)
-                file.write(''.join(bond_line)+'\n')
+                bond_line = map(lambda bond: string.rjust(str(bond[1]), 8) + string.rjust(str(bond[2]), 8), bonds)
+                file.write(''.join(bond_line) + '\n')
 
     def writePDB(self, filename):
         """Export coordinates to a simple PDB file."""
@@ -549,5 +571,7 @@ class LAMMPSDataConverter(object):
         p = self.positions
         with openany(filename, 'w') as file:
             for i, atom in enumerate(self.sections["Atoms"]):
-                line = ["ATOM  ", str(i+1), 'XXXX', 'TEMP', str(atom.type+1), p[i,0], p[i,1], p[i,2], 0.0, 0.0, str(atom.type)]
-                file.write(atom_format%tuple(line))
+                line = [
+                    "ATOM  ", str(i + 1), 'XXXX', 'TEMP', str(atom.type + 1), p[i, 0], p[i, 1], p[i, 2], 0.0, 0.0,
+                    str(atom.type)]
+                file.write(atom_format % tuple(line))

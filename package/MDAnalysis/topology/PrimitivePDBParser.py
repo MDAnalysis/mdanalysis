@@ -1,18 +1,16 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
-#
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -53,6 +51,7 @@ import MDAnalysis.coordinates.PDB
 from MDAnalysis.core.util import openany
 from .base import TopologyReader
 
+
 class PrimitivePDBParser(TopologyReader):
     """Parser that obtains a list of atoms from a standard PDB file.
 
@@ -74,7 +73,7 @@ class PrimitivePDBParser(TopologyReader):
         """
         self.structure = {}
         try:
-            pdb =  self.PDBReader(self.filename)
+            pdb = self.PDBReader(self.filename)
         except ValueError:
             raise IOError("Failed to open and read PDB file")
 
@@ -86,7 +85,7 @@ class PrimitivePDBParser(TopologyReader):
         atoms = []
 
         # translate list of atoms to MDAnalysis Atom.
-        for iatom,atom in enumerate(pdb._atoms):
+        for iatom, atom in enumerate(pdb._atoms):
             # ATOM
             if len(atom.__dict__) == 10:
                 atomname = atom.name
@@ -102,9 +101,9 @@ class PrimitivePDBParser(TopologyReader):
                 # occupancy = atom.occupancy
                 altLoc = atom.altLoc
 
-                atoms.append(Atom(iatom,atomname,atomtype,resname,resid,
-                                  segid,mass,charge,
-                                  bfactor=bfactor,serial=atom.serial,
+                atoms.append(Atom(iatom, atomname, atomtype, resname, resid,
+                                  segid, mass, charge,
+                                  bfactor=bfactor, serial=atom.serial,
                                   altLoc=altLoc))
             # TER atoms
             #elif len(atom.__dict__) == 5:
@@ -125,13 +124,12 @@ class PrimitivePDBParser(TopologyReader):
 
         bonds = set()
         with openany(self.filename, "r") as fname:
-            lines = ((num, line[6:].split()) for num,line in enumerate(fname)
+            lines = ((num, line[6:].split()) for num, line in enumerate(fname)
                      if line[:6] == "CONECT")
             for num, bond in lines:
-                atom, atoms = int(bond[0]) , map(int,bond[1:])
+                atom, atoms = int(bond[0]), map(int, bond[1:])
                 for a in atoms:
                     bond = tuple([mapping[atom], mapping[a]])
                     bonds.add(bond)
 
         self.structure["_bonds"] = tuple(bonds)
-

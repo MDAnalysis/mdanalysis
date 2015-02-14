@@ -1,18 +1,16 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
-#
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 """
 Common functions for topology building --- :mod:`MDAnalysis.topology.core`
@@ -108,6 +106,7 @@ def build_residues(atoms):
 
     return residues
 
+
 class TopologyObject(object):
     """Base class for all Topology items
 
@@ -137,8 +136,7 @@ class TopologyObject(object):
 
     def __repr__(self):
         return ("< " + self.__class__.__name__ + " between: " +
-                ", ".join(["Atom %d (%s of %s-%d)"%(
-                    a.number+1, a.name, a.resname, a.resid)
+                ", ".join(["Atom %d (%s of %s-%d)" % (a.number+1, a.name, a.resname, a.resid)
                            for a in self.atoms]) + " >")
 
     def __contains__(self, other):
@@ -265,8 +263,7 @@ class Angle(TopologyObject):
         """
         a = self[0].pos - self[1].pos
         b = self[2].pos - self[1].pos
-        return numpy.rad2deg(numpy.arccos(numpy.dot(a, b) /
-                    (numpy.linalg.norm(a)*numpy.linalg.norm(b))))        
+        return numpy.rad2deg(numpy.arccos(numpy.dot(a, b) / (numpy.linalg.norm(a)*numpy.linalg.norm(b))))
 
 
 class Torsion(TopologyObject):
@@ -303,6 +300,7 @@ class Torsion(TopologyObject):
         cd = C.position - D.position
         return numpy.rad2deg(dihedral(ab, bc, cd))
 
+
 class Improper_Torsion(Torsion):  # subclass Torsion to inherit torsion method
     """
     Improper Torsion (improper dihedral angle) between four
@@ -336,6 +334,7 @@ def get_parser_for(filename, permissive=False, tformat=None):
         return _topology_parsers['Permissive_PDB']
     else:
         return _topology_parsers[tformat]
+
 
 def guess_format(filename, format=None):
     """Returns the type of topology file *filename*.
@@ -483,7 +482,6 @@ def guess_bonds(atoms, coords, **kwargs):
                           ". These can be defined manually using the" +
                           " keyword 'vdwradii'"))
 
-
     lower_bound = kwargs.get('lower_bound', 0.1)
     
     box = kwargs.get('box', None)
@@ -544,6 +542,7 @@ def guess_angles(bonds):
 
     return tuple(angles_found)
 
+
 def guess_torsions(angles):
     """Given a list of Angles, find all torsions that exist between atoms.
 
@@ -572,6 +571,7 @@ def guess_torsions(angles):
                     torsions_found.add(desc)
 
     return tuple(torsions_found)
+
 
 def guess_improper_torsions(angles):
     """Given a list of Angles, find all improper torsions that exist between 
@@ -604,6 +604,7 @@ def guess_improper_torsions(angles):
                 torsions_found.add(desc)
 
     return tuple(torsions_found)
+
 
 def get_atom_mass(element):
     """Return the atomic mass in u for *element*.

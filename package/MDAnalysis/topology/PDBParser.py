@@ -1,18 +1,16 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
-#
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -37,6 +35,7 @@ from MDAnalysis.core.AtomGroup import Atom
 import MDAnalysis.coordinates.pdb.extensions
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
 
+
 class PDBParser(TopologyReader):
     def parse(self):
         """Parse atom information from PDB file *pdbfile*.
@@ -53,7 +52,7 @@ class PDBParser(TopologyReader):
         """
         structure = {}
         # use Sloppy PDB parser to cope with big PDBs!
-        pdb = MDAnalysis.coordinates.pdb.extensions.get_structure(self.filename,"0UNK")
+        pdb = MDAnalysis.coordinates.pdb.extensions.get_structure(self.filename, "0UNK")
 
         structure['_atoms'] = self._parseatoms(pdb)
 
@@ -63,7 +62,7 @@ class PDBParser(TopologyReader):
         atoms = []
 
         # translate Bio.PDB atom objects to MDAnalysis Atom.
-        for iatom,atom in enumerate(pdb.get_atoms()):
+        for iatom, atom in enumerate(pdb.get_atoms()):
             residue = atom.parent
             chain_id = residue.parent.id
 
@@ -78,8 +77,7 @@ class PDBParser(TopologyReader):
             bfactor = atom.bfactor
             # occupancy = atom.occupancy
 
-            atoms.append(Atom(iatom,atomname,atomtype,resname,resid,segid,
-                              mass,charge,bfactor=bfactor))
+            atoms.append(Atom(iatom, atomname, atomtype, resname, resid, segid,
+                              mass, charge, bfactor=bfactor))
 
         return atoms
-

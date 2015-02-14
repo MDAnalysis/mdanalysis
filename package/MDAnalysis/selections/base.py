@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 Base classes for the selection writers
@@ -36,6 +36,7 @@ import os.path
 import MDAnalysis.core.util as util
 import MDAnalysis.selections
 
+
 def join(seq, string="", func=None):
     """Create a list from sequence.
 
@@ -47,12 +48,13 @@ def join(seq, string="", func=None):
         func = lambda x: x
     return [func(x) + string for x in seq[:-1]] + [func(seq[-1])]
 
+
 def get_writer(filename, defaultformat):
     """Return a :class:`SelectionWriter` for *filename* or a *defaultformat*."""
     if filename:
         format = os.path.splitext(filename)[1][1:]  # strip initial dot!
-    format = format or defaultformat                # use default if no fmt from fn
-    format = format.strip().lower()                 # canonical for lookup
+    format = format or defaultformat  # use default if no fmt from fn
+    format = format.strip().lower()  # canonical for lookup
     try:
         return MDAnalysis.selections._selection_writers[format]
     except KeyError:
@@ -105,7 +107,7 @@ class SelectionWriter(object):
            *kwargs*
                use as defaults for :meth:`write`
         """
-        self.filename = util.filename(filename,ext=self.ext)
+        self.filename = util.filename(filename, ext=self.ext)
         if not mode in ('a', 'w', 'wa'):
             raise ValueError("mode must be one of 'w', 'a', 'wa', not %r" % mode)
         self.mode = mode
@@ -138,12 +140,12 @@ class SelectionWriter(object):
     def write_preamble(self):
         """Write a header, depending on the file format."""
         if self.preamble is None:
-           return
+            return
         with open(self.filename, self._current_mode) as out:
             out.write(self.comment(self.preamble))
         self._current_mode = 'a'
 
-    def write(self,selection,number=None,name=None,frame=None,mode=None):
+    def write(self, selection, number=None, name=None, frame=None, mode=None):
         """Write selection to the output file.
 
         :Arguments:
@@ -167,7 +169,7 @@ class SelectionWriter(object):
             try:
                 frame = u.trajectory.ts.frame
             except AttributeError:
-                frame = 1   # should catch cases when we are analyzing a single PDB (?)
+                frame = 1  # should catch cases when we are analyzing a single PDB (?)
         name = name or self.otherargs.get('name', None)
         if name is None:
             if number is None:
@@ -182,13 +184,13 @@ class SelectionWriter(object):
         with open(self.filename, self._current_mode) as out:
             self._write_head(out, name=name)
             for iatom in xrange(0, len(selection.atoms), step):
-                line = selection_terms[iatom:iatom+step]
+                line = selection_terms[iatom:iatom + step]
                 out.write(" ".join(line))
-                if len(line) == step and not iatom+step == len(selection.atoms):
+                if len(line) == step and not iatom + step == len(selection.atoms):
                     out.write(' ' + self.continuation + '\n')
             out.write(' ')  # safe so that we don't have to put a space at the start of tail
             self._write_tail(out)
-            out.write('\n') # always terminate with newline
+            out.write('\n')  # always terminate with newline
 
             if self.mode == 'wa':
                 self._current_mode = 'a'  # switch after first write
@@ -216,6 +218,3 @@ class SelectionWriter(object):
     def _write_tail(self, out, **kwargs):
         """Last output to open file object *out*."""
         pass
-
-
-

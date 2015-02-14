@@ -1,4 +1,19 @@
-# -*- coding: utf-8 -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+
 # Hydrogen Bonding Analysis
 """
 Hydrogen Bond analysis --- :mod:`MDAnalysis.analysis.hbonds.hbond_analysis`
@@ -295,7 +310,6 @@ Classes
 
 """
 
-
 from collections import defaultdict
 import numpy
 
@@ -307,7 +321,9 @@ from MDAnalysis.core.log import ProgressMeter
 
 import warnings
 import logging
+
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
+
 
 class HydrogenBondAnalysis(object):
     """Perform a hydrogen bond analysis
@@ -345,28 +361,30 @@ class HydrogenBondAnalysis(object):
     # table; set() takes care for removing duplicates. At the end the
     # DEFAULT_DONORS and DEFAULT_ACCEPTORS should simply be tuples.
 
-    #: default heavy atom names whose hydrogens are treated as *donors*
-    #: (see :ref:`Default atom names for hydrogen bonding analysis`)
+    # : default heavy atom names whose hydrogens are treated as *donors*
+    # : (see :ref:`Default atom names for hydrogen bonding analysis`)
     #: Use the keyword *donors* to add a list of additional donor names.
-    DEFAULT_DONORS = {'CHARMM27': tuple(set(['N', 'OH2', 'OW', 'NE', 'NH1', 'NH2', 'ND2', 'SG', 'NE2',
-                                'ND1', 'NZ', 'OG', 'OG1', 'NE1', 'OH'])),
-                      'GLYCAM06': tuple(set(['N','NT','N3','OH','OW'])),
-                      'other':  tuple(set([]))}
+    DEFAULT_DONORS = {
+        'CHARMM27': tuple(set([
+            'N', 'OH2', 'OW', 'NE', 'NH1', 'NH2', 'ND2', 'SG', 'NE2', 'ND1', 'NZ', 'OG', 'OG1', 'NE1', 'OH'])),
+        'GLYCAM06': tuple(set(['N', 'NT', 'N3', 'OH', 'OW'])),
+        'other': tuple(set([]))}
 
     #: default atom names that are treated as hydrogen *acceptors*
     #: (see :ref:`Default atom names for hydrogen bonding analysis`)
     #: Use the keyword *acceptors* to add a list of additional acceptor names.
-    DEFAULT_ACCEPTORS = {'CHARMM27': tuple(set(['O', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1',
-                                     'OE2', 'ND1', 'NE2', 'SD', 'OG', 'OG1', 'OH'])),
-                         'GLYCAM06': tuple(set(['N','NT','O','O2','OH','OS','OW','OY','SM'])),
-                         'other':  tuple(set([]))}
+    DEFAULT_ACCEPTORS = {
+        'CHARMM27': tuple(set([
+            'O', 'OH2', 'OW', 'OD1', 'OD2', 'SG', 'OE1', 'OE1', 'OE2', 'ND1', 'NE2', 'SD', 'OG', 'OG1', 'OH'])),
+        'GLYCAM06': tuple(set(['N', 'NT', 'O', 'O2', 'OH', 'OS', 'OW', 'OY', 'SM'])),
+        'other': tuple(set([]))}
 
     #: A :class:`collections.defaultdict` of covalent radii of common donors
     #: (used in :meth`_get_bonded_hydrogens_list` to check if a hydrogen is
     #: sufficiently close to its donor heavy atom). Values are stored for
     #: N, O, P, and S. Any other heavy atoms are assumed to have hydrogens
     #: covalently bound at a maximum distance of 1.5 Å.
-    r_cov = defaultdict(lambda : 1.5,   # default value
+    r_cov = defaultdict(lambda: 1.5,  # default value
                         N=1.31, O=1.31, P=1.58, S=1.55)
 
     def __init__(self, universe, selection1='protein', selection2='all', selection1_type='both',
@@ -486,9 +504,9 @@ class HydrogenBondAnalysis(object):
         .. _`Issue 138`: http://code.google.com/p/mdanalysis/issues/detail?id=138
         """
         self._get_bonded_hydrogens_algorithms = {
-            "distance": self._get_bonded_hydrogens_dist,      # 0.7.6 default
-            "heuristic": self._get_bonded_hydrogens_list,     # pre 0.7.6
-            }
+            "distance": self._get_bonded_hydrogens_dist,  # 0.7.6 default
+            "heuristic": self._get_bonded_hydrogens_list,  # pre 0.7.6
+        }
         if not detect_hydrogens in self._get_bonded_hydrogens_algorithms:
             raise ValueError("detect_hydrogens must be one of %r" %
                              self._get_bonded_hydrogens_algorithms.keys())
@@ -504,7 +522,7 @@ class HydrogenBondAnalysis(object):
         self.distance = distance
         self.distance_type = distance_type  # note: everything except 'heavy' will give the default behavior
         self.angle = angle
-        self.traj_slice = slice(start if isinstance(start, int) else None, # internal frames are 0 based
+        self.traj_slice = slice(start if isinstance(start, int) else None,  # internal frames are 0 based
                                 stop if isinstance(stop, int) else None,
                                 step)
 
@@ -525,9 +543,9 @@ class HydrogenBondAnalysis(object):
         self.timeseries = None  # final result
         self.timesteps = None  # time for each frame
 
-        self.table = None # placeholder for output table
+        self.table = None  # placeholder for output table
 
-        self.verbose = True # always enable debug output for initial selection update
+        self.verbose = True  # always enable debug output for initial selection update
         self._update_selection_1()
         self._update_selection_2()
         self.verbose = verbose  # per-frame debugging output?
@@ -538,7 +556,8 @@ class HydrogenBondAnalysis(object):
         """Log important parameters to the logfile."""
         logger.info("HBond analysis: selection1 = %r (update: %r)", self.selection1, self.update_selection1)
         logger.info("HBond analysis: selection2 = %r (update: %r)", self.selection2, self.update_selection2)
-        logger.info("HBond analysis: criterion: donor %s atom and acceptor atom distance <= %.3f A", self.distance_type, self.distance)
+        logger.info("HBond analysis: criterion: donor %s atom and acceptor atom distance <= %.3f A", self.distance_type,
+                    self.distance)
         logger.info("HBond analysis: criterion: angle D-H-A >= %.3f degrees", self.angle)
         logger.info("HBond analysis: force field %s to guess donor and acceptor names", self.forcefield)
         logger.info("HBond analysis: bonded hydrogen detection algorithm: %r", self.detect_hydrogens)
@@ -585,8 +604,9 @@ class HydrogenBondAnalysis(object):
         .. versionadded:: 0.7.6
         """
         try:
-            return atom.residue.selectAtoms("(name H* or name 1H* or name 2H* or name 3H* or type H) and around %f name %s" %
-                                            (self.r_cov[atom.name[0]], atom.name))
+            return atom.residue.selectAtoms(
+                "(name H* or name 1H* or name 2H* or name 3H* or type H) and around %f name %s" %
+                (self.r_cov[atom.name[0]], atom.name))
         except NoDataError:
             return []
 
@@ -621,9 +641,11 @@ class HydrogenBondAnalysis(object):
                       "all hydrogens; detect_hydrogens='distance' is safer.",
                       category=DeprecationWarning)
         try:
-            hydrogens = [a for a in self.u.atoms[atom.number+1:atom.number+4]
-                         if a.name.startswith(('H','1H','2H','3H')) \
-                             and self.calc_eucl_distance(atom,a) < self.r_cov[atom.name[0]]]
+            hydrogens = [
+                a for a in self.u.atoms[atom.number + 1:atom.number + 4]
+                if
+                a.name.startswith(('H', '1H', '2H', '3H'))
+                and self.calc_eucl_distance(atom, a) < self.r_cov[atom.name[0]]]
         except IndexError:
             hydrogens = []  # weird corner case that atom is the last one in universe
         return hydrogens
@@ -635,16 +657,16 @@ class HydrogenBondAnalysis(object):
         self._s1_donors_h = {}
         self._s1_acceptors = {}
         if self.selection1_type in ('donor', 'both'):
-            self._s1_donors = self._s1.selectAtoms(' or '.join([ 'name %s' % i for i in self.donors ]))
+            self._s1_donors = self._s1.selectAtoms(' or '.join(['name %s' % i for i in self.donors]))
             self._s1_donors_h = {}
-            for i,d in enumerate(self._s1_donors):
+            for i, d in enumerate(self._s1_donors):
                 tmp = self._get_bonded_hydrogens(d)
                 if tmp:
                     self._s1_donors_h[i] = tmp
             self.logger_debug("Selection 1 donors: %d" % len(self._s1_donors))
             self.logger_debug("Selection 1 donor hydrogens: %d" % len(self._s1_donors_h))
         if self.selection1_type in ('acceptor', 'both'):
-            self._s1_acceptors = self._s1.selectAtoms(' or '.join([ 'name %s' % i for i in self.acceptors ]))
+            self._s1_acceptors = self._s1.selectAtoms(' or '.join(['name %s' % i for i in self.acceptors]))
             self.logger_debug("Selection 1 acceptors: %d" % len(self._s1_acceptors))
 
     def _update_selection_2(self):
@@ -652,19 +674,19 @@ class HydrogenBondAnalysis(object):
         if self.filter_first:
             self.logger_debug("Size of selection 2 before filtering: %d atoms" % len(self._s2))
             ns_selection_2 = NS.AtomNeighborSearch(self._s2)
-            self._s2 = ns_selection_2.search_list(self._s1, 3.*self.distance)
+            self._s2 = ns_selection_2.search_list(self._s1, 3. * self.distance)
         self.logger_debug("Size of selection 2: %d atoms" % len(self._s2))
 
         self._s2_donors = {}
         self._s2_donors_h = {}
         self._s2_acceptors = {}
         if self.selection1_type in ('donor', 'both'):
-            self._s2_acceptors = self._s2.selectAtoms(' or '.join([ 'name %s' % i for i in self.acceptors ]))
+            self._s2_acceptors = self._s2.selectAtoms(' or '.join(['name %s' % i for i in self.acceptors]))
             self.logger_debug("Selection 2 acceptors: %d" % len(self._s2_acceptors))
         if self.selection1_type in ('acceptor', 'both'):
-            self._s2_donors = self._s2.selectAtoms(' or '.join([ 'name %s' % i for i in self.donors ]))
+            self._s2_donors = self._s2.selectAtoms(' or '.join(['name %s' % i for i in self.donors]))
             self._s2_donors_h = {}
-            for i,d in enumerate(self._s2_donors):
+            for i, d in enumerate(self._s2_donors):
                 tmp = self._get_bonded_hydrogens(d)
                 if tmp:
                     self._s2_donors_h[i] = tmp
@@ -696,7 +718,7 @@ class HydrogenBondAnalysis(object):
         logger.debug("HBond analysis: donors    %r", self.donors)
         logger.debug("HBond analysis: acceptors %r", self.acceptors)
 
-        remove_duplicates = kwargs.pop('remove_duplicates', True) # False: old behaviour
+        remove_duplicates = kwargs.pop('remove_duplicates', True)  # False: old behaviour
         if not remove_duplicates:
             logger.warn("Hidden feature remove_duplicates = True activated: you will probably get duplicate H-bonds.")
 
@@ -722,15 +744,17 @@ class HydrogenBondAnalysis(object):
 
         try:
             self.u.trajectory.time
+
             def _get_timestep():
                 return self.u.trajectory.time
+
             logger.debug("HBond analysis is recording time step")
         except NotImplementedError:
             # chained reader or xyz(?) cannot do time yet
             def _get_timestep():
                 return self.u.trajectory.frame
-            logger.warn("HBond analysis is recording frame number instead of time step")
 
+            logger.warn("HBond analysis is recording frame number instead of time step")
 
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
                     (self.traj_slice.start or 0),
@@ -757,38 +781,44 @@ class HydrogenBondAnalysis(object):
             if self.selection1_type in ('donor', 'both'):
                 self.logger_debug("Selection 1 Donors <-> Acceptors")
                 ns_acceptors = NS.AtomNeighborSearch(self._s2_acceptors)
-                for i,donor_h_set in self._s1_donors_h.items():
+                for i, donor_h_set in self._s1_donors_h.items():
                     d = self._s1_donors[i]
                     for h in donor_h_set:
                         res = ns_acceptors.search_list(AtomGroup([h]), self.distance)
                         for a in res:
-                            angle = self.calc_angle(d,h,a)
+                            angle = self.calc_angle(d, h, a)
                             donor_atom = h if self.distance_type != 'heavy' else d
                             dist = self.calc_eucl_distance(donor_atom, a)
                             if angle >= self.angle and dist <= self.distance:
-                                self.logger_debug("S1-D: %s <-> S2-A: %s %f A, %f DEG" % (h.number+1, a.number+1, dist, angle))
+                                self.logger_debug(
+                                    "S1-D: %s <-> S2-A: %s %f A, %f DEG" % (h.number + 1, a.number + 1, dist, angle))
                                 #self.logger_debug("S1-D: %r <-> S2-A: %r %f A, %f DEG" % (h, a, dist, angle))
-                                frame_results.append([h.number+1, a.number+1, '%s%s:%s' % (h.resname, repr(h.resid), h.name), '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
-                                already_found[(h.number+1, a.number+1)] = True
+                                frame_results.append(
+                                    [h.number + 1, a.number + 1, '%s%s:%s' % (h.resname, repr(h.resid), h.name),
+                                        '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
+                                already_found[(h.number + 1, a.number + 1)] = True
             if self.selection1_type in ('acceptor', 'both'):
                 self.logger_debug("Selection 1 Acceptors <-> Donors")
                 ns_acceptors = NS.AtomNeighborSearch(self._s1_acceptors)
-                for i,donor_h_set in self._s2_donors_h.items():
+                for i, donor_h_set in self._s2_donors_h.items():
                     d = self._s2_donors[i]
                     for h in donor_h_set:
                         res = ns_acceptors.search_list(AtomGroup([h]), self.distance)
                         for a in res:
-                            if remove_duplicates and \
-                                    ((h.number+1, a.number+1) in already_found or \
-                                         (a.number+1, h.number+1) in already_found):
+                            if remove_duplicates and (
+                                    (h.number + 1, a.number + 1) in already_found
+                                    or (a.number + 1, h.number + 1) in already_found):
                                 continue
-                            angle = self.calc_angle(d,h,a)
+                            angle = self.calc_angle(d, h, a)
                             donor_atom = h if self.distance_type != 'heavy' else d
                             dist = self.calc_eucl_distance(donor_atom, a)
                             if angle >= self.angle and dist <= self.distance:
-                                self.logger_debug("S1-A: %s <-> S2-D: %s %f A, %f DEG" % (a.number+1, h.number+1, dist, angle))
+                                self.logger_debug(
+                                    "S1-A: %s <-> S2-D: %s %f A, %f DEG" % (a.number + 1, h.number + 1, dist, angle))
                                 #self.logger_debug("S1-A: %r <-> S2-D: %r %f A, %f DEG" % (a, h, dist, angle))
-                                frame_results.append([h.number+1, a.number+1, '%s%s:%s' % (h.resname, repr(h.resid), h.name), '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
+                                frame_results.append(
+                                    [h.number + 1, a.number + 1, '%s%s:%s' % (h.resname, repr(h.resid), h.name),
+                                        '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
             self.timeseries.append(frame_results)
 
         logger.info("HBond analysis: complete; timeseries with %d hbonds in %s.timeseries",
@@ -796,8 +826,8 @@ class HydrogenBondAnalysis(object):
 
     def calc_angle(self, d, h, a):
         """Calculate the angle (in degrees) between two atoms with H at apex."""
-        v1 = h.pos-d.pos
-        v2 = h.pos-a.pos
+        v1 = h.pos - d.pos
+        v2 = h.pos - a.pos
         if numpy.all(v1 == v2):
             return 0.0
         return numpy.rad2deg(angle(v1, v2))
@@ -829,6 +859,7 @@ class HydrogenBondAnalysis(object):
         .. _recsql: http://pypi.python.org/pypi/RecSQL
         """
         from itertools import izip
+
         if self.timeseries is None:
             msg = "No timeseries computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
@@ -836,20 +867,21 @@ class HydrogenBondAnalysis(object):
             return
 
         num_records = numpy.sum([len(hframe) for hframe in self.timeseries])
-        dtype = [("time",float), ("donor_idx",int), ("acceptor_idx",int),
-                 ("donor_resnm","|S4"), ("donor_resid",int), ("donor_atom","|S4"),
-                 ("acceptor_resnm","|S4"), ("acceptor_resid",int), ("acceptor_atom","|S4"),
-                 ("distance",float), ("angle",float)]
+        dtype = [
+            ("time", float), ("donor_idx", int), ("acceptor_idx", int),
+            ("donor_resnm", "|S4"), ("donor_resid", int), ("donor_atom", "|S4"),
+            ("acceptor_resnm", "|S4"), ("acceptor_resid", int), ("acceptor_atom", "|S4"),
+            ("distance", float), ("angle", float)]
         self.table = numpy.recarray((num_records,), dtype=dtype)
 
         # according to Lukas' notes below, using a recarray at this stage is ineffective
         # and speedups of ~x10 could be achieved by filling a standard array
         # (perhaps at the cost of less clarity... but that might just be my code ;-) -- orbeckst)
         cursor = 0  # current row
-        for t,hframe in izip(self.timesteps, self.timeseries):
+        for t, hframe in izip(self.timesteps, self.timeseries):
             if len(hframe) == 0:
-                continue    # not really necessary, should also work without
-            self.table[cursor:cursor+len(hframe)].time = t
+                continue  # not really necessary, should also work without
+            self.table[cursor:cursor + len(hframe)].time = t
             for donor_idx, acceptor_idx, donor, acceptor, distance, angle in hframe:
                 r = self.table[cursor]
                 r.donor_idx = donor_idx
@@ -873,6 +905,7 @@ class HydrogenBondAnalysis(object):
         .. SeeAlso:: :mod:`cPickle` module and :class:`numpy.recarray`
         """
         import cPickle
+
         if self.table is None:
             self.generate_table()
         cPickle.dump(self.table, open(filename, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)
@@ -883,6 +916,7 @@ class HydrogenBondAnalysis(object):
         :Returns: a class:`numpy.recarray`
         """
         from itertools import izip, imap
+
         if self.timeseries is None:
             msg = "No timeseries computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
@@ -890,7 +924,7 @@ class HydrogenBondAnalysis(object):
             return
 
         out = numpy.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
-        for cursor,time_count in enumerate(izip(self.timesteps, imap(len, self.timeseries))):
+        for cursor, time_count in enumerate(izip(self.timesteps, imap(len, self.timeseries))):
             out[cursor] = time_count
         return out.view(numpy.recarray)
 
@@ -918,23 +952,26 @@ class HydrogenBondAnalysis(object):
                 acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)
                 # generate unambigous key for current hbond
                 # (the donor_heavy_atom placeholder '?' is added later)
-                hb_key = (donor_idx, acceptor_idx,
-                          donor_resnm,    donor_resid,  "?", donor_atom,
-                          acceptor_resnm, acceptor_resid, acceptor_atom)
+                hb_key = (
+                    donor_idx, acceptor_idx,
+                    donor_resnm, donor_resid, "?", donor_atom,
+                    acceptor_resnm, acceptor_resid, acceptor_atom)
 
                 hbonds[hb_key] += 1
 
         # build empty output table
-        dtype = [('donor_idx', int), ('acceptor_idx', int),
-                ('donor_resnm', 'S4'), ('donor_resid', int), ('donor_heavy_atom', 'S4'), ('donor_atom', 'S4'),
-                ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
-                ('frequency', float)]
+        dtype = [
+            ('donor_idx', int), ('acceptor_idx', int),
+            ('donor_resnm', 'S4'), ('donor_resid', int), ('donor_heavy_atom', 'S4'), ('donor_atom', 'S4'),
+            ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
+            ('frequency', float)
+        ]
         out = numpy.empty((len(hbonds),), dtype=dtype)
 
         # float because of division later
         tsteps = float(len(self.timesteps))
         for cursor, (key, count) in enumerate(hbonds.iteritems()):
-            out[cursor] = key + (count/tsteps,)
+            out[cursor] = key + (count / tsteps,)
 
         # return array as recarray
         # The recarray has not been used within the function, because accessing the
@@ -944,7 +981,7 @@ class HydrogenBondAnalysis(object):
 
         # patch in donor heavy atom names (replaces '?' in the key)
         h2donor = self._donor_lookup_table_byindex()
-        r.donor_heavy_atom[:] = [h2donor[idx-1] for idx in r.donor_idx]
+        r.donor_heavy_atom[:] = [h2donor[idx - 1] for idx in r.donor_idx]
 
         return r
 
@@ -959,6 +996,7 @@ class HydrogenBondAnalysis(object):
         :Returns: a class:`numpy.recarray`
         """
         from itertools import izip
+
         if self.timeseries is None:
             msg = "No timeseries computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
@@ -966,15 +1004,16 @@ class HydrogenBondAnalysis(object):
             return
 
         hbonds = defaultdict(list)
-        for (t,hframe) in izip(self.timesteps, self.timeseries):
+        for (t, hframe) in izip(self.timesteps, self.timeseries):
             for donor_idx, acceptor_idx, donor, acceptor, distance, angle in hframe:
                 donor_resnm, donor_resid, donor_atom = parse_residue(donor)
                 acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)
                 # generate unambigous key for current hbond
                 # (the donor_heavy_atom placeholder '?' is added later)
-                hb_key = (donor_idx, acceptor_idx,
-                          donor_resnm,    donor_resid,  "?", donor_atom,
-                          acceptor_resnm, acceptor_resid, acceptor_atom)
+                hb_key = (
+                    donor_idx, acceptor_idx,
+                    donor_resnm, donor_resid, "?", donor_atom,
+                    acceptor_resnm, acceptor_resid, acceptor_atom)
                 hbonds[hb_key].append(t)
 
         out_nrows = 0
@@ -983,10 +1022,11 @@ class HydrogenBondAnalysis(object):
             out_nrows += len(ts_list)
 
         # build empty output table
-        dtype = [('donor_idx', int), ('acceptor_idx', int),
-                ('donor_resnm', 'S4'),    ('donor_resid', int), ('donor_heavy_atom', 'S4'),  ('donor_atom', 'S4'),
-                ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
-                ('time', float)]
+        dtype = [
+            ('donor_idx', int), ('acceptor_idx', int),
+            ('donor_resnm', 'S4'), ('donor_resid', int), ('donor_heavy_atom', 'S4'), ('donor_atom', 'S4'),
+            ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
+            ('time', float)]
         out = numpy.empty((out_nrows,), dtype=dtype)
 
         out_row = 0
@@ -1003,7 +1043,7 @@ class HydrogenBondAnalysis(object):
 
         # patch in donor heavy atom names (replaces '?' in the key)
         h2donor = self._donor_lookup_table_byindex()
-        r.donor_heavy_atom[:] = [h2donor[idx-1] for idx in r.donor_idx]
+        r.donor_heavy_atom[:] = [h2donor[idx - 1] for idx in r.donor_idx]
 
         return r
 
@@ -1023,23 +1063,23 @@ class HydrogenBondAnalysis(object):
            heavy_atom_name = h2donor[resid][hydrogen_name]
 
         """
-        s1d = self._s1_donors    # list of donor Atom instances
+        s1d = self._s1_donors  # list of donor Atom instances
         s1h = self._s1_donors_h  # dict indexed by donor position in donor list, containg AtomGroups of H
         s2d = self._s2_donors
         s2h = self._s2_donors_h
 
         def _make_dict(donors, hydrogens):
             # two steps so that entry for one residue can be UPDATED for multiple donors
-            d = dict((donors[k].resid, {})  for k in xrange(len(donors)) if k in hydrogens)
+            d = dict((donors[k].resid, {}) for k in xrange(len(donors)) if k in hydrogens)
             for k in xrange(len(donors)):
                 if k in hydrogens:
                     d[donors[k].resid].update(dict((atom.name, donors[k].name) for atom in hydrogens[k]))
             return d
 
-        h2donor = _make_dict(s2d, s2h)    # 2 is typically the larger group
+        h2donor = _make_dict(s2d, s2h)  # 2 is typically the larger group
         # merge (in principle h2donor.update(_make_dict(s1d, s1h) should be sufficient
         # with our assumptions but the following should be really safe)
-        for resid,names in _make_dict(s1d, s1h).items():
+        for resid, names in _make_dict(s1d, s1h).items():
             if resid in h2donor:
                 h2donor[resid].update(names)
             else:
@@ -1068,22 +1108,21 @@ class HydrogenBondAnalysis(object):
            1-based indices.
 
         """
-        s1d = self._s1_donors    # list of donor Atom instances
+        s1d = self._s1_donors  # list of donor Atom instances
         s1h = self._s1_donors_h  # dict indexed by donor position in donor list, containg AtomGroups of H
         s2d = self._s2_donors
         s2h = self._s2_donors_h
 
         def _make_dict(donors, hydrogens):
-            #return dict(flatten_1([(atom.id, donors[k].name) for atom in hydrogens[k]] for k in xrange(len(donors)) if k in hydrogens))
+            #return dict(flatten_1([(atom.id, donors[k].name) for atom in hydrogens[k]] for k in xrange(len(donors))
+            # if k in hydrogens))
             x = []
             for k in xrange(len(donors)):
                 if k in hydrogens:
                     x.extend([(atom.number, donors[k].name) for atom in hydrogens[k]])
             return dict(x)
 
-        h2donor = _make_dict(s2d, s2h)    # 2 is typically the larger group
+        h2donor = _make_dict(s2d, s2h)  # 2 is typically the larger group
         h2donor.update(_make_dict(s1d, s1h))
 
         return h2donor
-
-

@@ -1,18 +1,16 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
-#
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -34,6 +32,7 @@ from MDAnalysis.core.AtomGroup import Atom
 import MDAnalysis.coordinates.PQR
 from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass
 from .base import TopologyReader
+
 
 class PQRParser(TopologyReader):
     """Parse atom information from PQR file *filename*.
@@ -60,7 +59,7 @@ class PQRParser(TopologyReader):
         :Returns: MDAnalysis internal *structure* dict
         """
         structure = {}
-        pqr =  MDAnalysis.coordinates.PQR.PQRReader(self.filename)
+        pqr = MDAnalysis.coordinates.PQR.PQRReader(self.filename)
 
         structure['_atoms'] = self._parseatoms(pqr)
 
@@ -70,7 +69,7 @@ class PQRParser(TopologyReader):
         atoms = []
 
         # translate list of atoms to MDAnalysis Atom.
-        for iatom,atom in enumerate(pqr._atoms):
+        for iatom, atom in enumerate(pqr._atoms):
             atomname = atom.name
             atomtype = guess_atom_type(atomname)
             resname = atom.resName
@@ -82,6 +81,6 @@ class PQRParser(TopologyReader):
             charge = float(atom.charge)
             radius = atom.radius
 
-            atoms.append(Atom(iatom,atomname,atomtype,resname,resid,
-                              segid,mass,charge,radius=radius))
+            atoms.append(Atom(iatom, atomname, atomtype, resname, resid,
+                              segid, mass, charge, radius=radius))
         return atoms

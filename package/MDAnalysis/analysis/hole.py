@@ -1,18 +1,17 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2012 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -190,6 +189,7 @@ from MDAnalysis import ApplicationError
 from MDAnalysis.core.util import which, realpath, asiterable
 
 import logging
+
 logger = logging.getLogger("MDAnalysis.analysis.hole")
 
 #: Built-in HOLE radii (based on ``simple.rad`` from the HOLE_ distribution):
@@ -236,6 +236,7 @@ BOND P??? 1.0
 BOND ???? 0.85
 """
 
+
 def write_simplerad2(filename="simple2.rad"):
     """Write the built-in radii in :data:`SIMPLE2_RAD` to *filename*.
 
@@ -247,6 +248,7 @@ def write_simplerad2(filename="simple2.rad"):
         logger.debug("Created simple radii file %(filename)r", vars())
     return filename
 
+
 def seq2str(v):
     """Return sequence *v* as a string of numbers with spaces as separators.
 
@@ -255,6 +257,7 @@ def seq2str(v):
     if v is None:
         return ""
     return " ".join([str(x) for x in v])
+
 
 class BaseHOLE(object):
     """Baseclass for HOLE analysis, providing plotting and utility functions"""
@@ -269,6 +272,7 @@ class BaseHOLE(object):
 
         """
         import cPickle
+
         cPickle.dump(self.profiles, open(filename, "wb"), cPickle.HIGHEST_PROTOCOL)
 
     def _process_plot_kwargs(self, kwargs):
@@ -292,7 +296,7 @@ class BaseHOLE(object):
         color = kwargs.pop('color', None)
         if color is None:
             cmap = kwargs.pop('cmap', matplotlib.cm.jet)
-            normalize = matplotlib.colors.normalize(vmin=numpy.min(frames),vmax=numpy.max(frames))
+            normalize = matplotlib.colors.normalize(vmin=numpy.min(frames), vmax=numpy.max(frames))
             colors = cmap(normalize(frames))
         else:
             colors = cycle(asiterable(color))
@@ -339,7 +343,7 @@ class BaseHOLE(object):
         kw, kwargs = self._process_plot_kwargs(kwargs)
 
         ax = kwargs.pop('ax', plt.subplot(111))
-        for iplot,(frame,color,linestyle) in enumerate(izip(kw['frames'],kw['colors'],kw['linestyles'])):
+        for iplot, (frame, color, linestyle) in enumerate(izip(kw['frames'], kw['colors'], kw['linestyles'])):
             kwargs['color'] = color
             kwargs['linestyle'] = linestyle
             kwargs['zorder'] = -frame
@@ -382,9 +386,9 @@ class BaseHOLE(object):
         rmax = kw.pop('rmax', None)
         ylabel = kwargs.pop('ylabel', "frames")
 
-        fig = plt.figure(figsize=kwargs.pop('figsize', (6,6)))
+        fig = plt.figure(figsize=kwargs.pop('figsize', (6, 6)))
         ax = fig.add_subplot(1, 1, 1, projection='3d')
-        for frame,color,linestyle in izip(kw['frames'],kw['colors'],kw['linestyles']):
+        for frame, color, linestyle in izip(kw['frames'], kw['colors'], kw['linestyles']):
             kwargs['color'] = color
             kwargs['linestyle'] = linestyle
             kwargs['zorder'] = -frame
@@ -394,13 +398,14 @@ class BaseHOLE(object):
                 rxncoord = profile.rxncoord
             else:
                 # does not seem to work with masked arrays but with nan hack!
-                # http://stackoverflow.com/questions/4913306/python-matplotlib-mplot3d-how-do-i-set-a-maximum-value-for-the-z-axis
+                # http://stackoverflow.com/questions/4913306/python-matplotlib-mplot3d-how-do-i-set-a-maximum-value
+                # -for-the-z-axis
                 #radius = numpy.ma.masked_greater(profile.radius, rmax)
                 #rxncoord = numpy.ma.array(profile.rxncoord, mask=radius.mask)
                 rxncoord = profile.rxncoord
                 radius = profile.radius.copy()
-                radius[radius>rmax] = numpy.nan
-            ax.plot(rxncoord, frame*numpy.ones_like(rxncoord), radius, **kwargs)
+                radius[radius > rmax] = numpy.nan
+            ax.plot(rxncoord, frame * numpy.ones_like(rxncoord), radius, **kwargs)
 
         ax.set_xlabel(r"pore coordinate $z$")
         ax.set_ylabel(ylabel)
@@ -413,7 +418,6 @@ class BaseHOLE(object):
         for q, profile in self:
             f.append([q, profile.radius.min()])
         return numpy.array(f)
-
 
     def sorted_profiles_iter(self):
         """Return an iterator over profiles sorted by frame/order parameter *q*.
@@ -671,14 +675,14 @@ class HOLE(BaseHOLE):
         self.dcd = kwargs.pop('dcd', None)
         if self.dcd:
             self.dcd = self.check_and_fix_long_filename(self.dcd)
-        self.dcd_step = kwargs.pop("step", 1) - 1   # HOLE docs description is confusing: step or skip??
+        self.dcd_step = kwargs.pop("step", 1) - 1  # HOLE docs description is confusing: step or skip??
         self.dcd_iniskip = 0
         self.cpoint = kwargs.pop("cpoint", None)
         self.cvect = kwargs.pop("cvect", None)
         self.sample = float(kwargs.pop("sample", 0.20))
         self.dotden = int(kwargs.pop("dotden", 15))
         self.endrad = float(kwargs.pop("endrad", 22.))
-        self.shorto = int(kwargs.pop("shorto", 0))     # look at using SHORTO 2 for minimum output
+        self.shorto = int(kwargs.pop("shorto", 0))  # look at using SHORTO 2 for minimum output
         self.ignore_residues = kwargs.pop("ignore_residues", self.default_ignore_residues)
         self.radius = self.check_and_fix_long_filename(
             realpath(kwargs.pop('radius', None) or write_simplerad2()))
@@ -763,7 +767,8 @@ class HOLE(BaseHOLE):
         if len(filename) <= self.HOLE_MAX_LENGTH:
             return filename
 
-        logger.debug("path check: HOLE will not read %r because it has more than %d characters.", filename, self.HOLE_MAX_LENGTH)
+        logger.debug("path check: HOLE will not read %r because it has more than %d characters.", filename,
+                     self.HOLE_MAX_LENGTH)
         # try a relative path
         newname = os.path.relpath(filename)
         if len(newname) <= self.HOLE_MAX_LENGTH:
@@ -771,7 +776,7 @@ class HOLE(BaseHOLE):
             return newname
 
         # shorten path by creating a symlink inside a safe temp dir
-        root,ext = os.path.splitext(filename)
+        root, ext = os.path.splitext(filename)
         dirname = tempfile.mkdtemp(dir=tmpdir)
         newname = os.path.join(dirname, os.path.basename(filename))
         self.tempfiles.append(newname)
@@ -849,8 +854,9 @@ class HOLE(BaseHOLE):
         fd, tmp_sos = tempfile.mkstemp(suffix=".sos", text=True)
         os.close(fd)
         try:
-            rc = subprocess.call([self.exe["sph_process"], "-sos", "-dotden", str(kwargs['dotden']),
-                                  "-color", self.sphpdb, tmp_sos])
+            rc = subprocess.call([
+                self.exe["sph_process"], "-sos", "-dotden", str(kwargs['dotden']),
+                "-color", self.sphpdb, tmp_sos])
             if rc != 0:
                 logger.fatal("sph_process failed (%d)", rc)
                 raise OSError(rc, "sph_process failed")
@@ -902,13 +908,14 @@ class HOLE(BaseHOLE):
         holeformat = FORTRANReader('3F12')
 
         hole_output = kwargs.pop("holeout", self.logfile)
-        run = kwargs.pop("run", 1)     # id number
+        run = kwargs.pop("run", 1)  # id number
         outdir = kwargs.pop("outdir", os.path.curdir)
 
         logger.info("Collecting HOLE profiles for run with id %s", run)
-        length = 1   # length of trajectory --- is this really needed?? No... just for info
+        length = 1  # length of trajectory --- is this really needed?? No... just for info
         if '*' in self.filename:
             import glob
+
             filenames = glob.glob(self.filename)
             length = len(filenames)
             if length == 0:
@@ -917,8 +924,9 @@ class HOLE(BaseHOLE):
             logger.info("Found %d input files based on glob pattern %s", length, self.filename)
         if self.dcd:
             from MDAnalysis import Universe
+
             u = Universe(self.filename, self.dcd)
-            length = int((u.trajectory.numframes - self.dcd_iniskip)/(self.dcd_step+1))
+            length = int((u.trajectory.numframes - self.dcd_iniskip) / (self.dcd_step + 1))
             logger.info("Found %d input frames in DCD trajectory %r", length, self.dcd)
 
         # one recarray for each frame, indexed by frame number
@@ -955,7 +963,8 @@ class HOLE(BaseHOLE):
                     else:
                         # end of records (empty line)
                         read_data = False
-                        frame_hole_output = numpy.rec.fromrecords(records, formats="i4,f8,f8", names="frame,rxncoord,radius")
+                        frame_hole_output = numpy.rec.fromrecords(records, formats="i4,f8,f8",
+                                                                  names="frame,rxncoord,radius")
                         # store the profile
                         self.profiles[hole_profile_no] = frame_hole_output
                         logger.debug("Collected HOLE profile for frame %d (%d datapoints)",
@@ -963,14 +972,14 @@ class HOLE(BaseHOLE):
                         # save a profile for each frame (for debugging and scripted processing)
                         # a tmp folder for each trajectory
                         if outdir is not None:
-                            rundir = os.path.join(outdir, "run_"+str(run))
+                            rundir = os.path.join(outdir, "run_" + str(run))
                             if not os.path.exists(rundir):
                                 os.makedirs(rundir)
                             frame_hole_txt = os.path.join(rundir, "radii_%s_%04d.dat.gz" % (run, hole_profile_no))
                             numpy.savetxt(frame_hole_txt, frame_hole_output)
                             logger.debug("Finished with frame %d, saved as %r", hole_profile_no, frame_hole_txt)
                         continue
-                # if we get here then we haven't found anything interesting
+                        # if we get here then we haven't found anything interesting
         if len(self.profiles) == length:
             logger.info("Collected HOLE radius profiles for %d frames", len(self.profiles))
         else:
@@ -995,6 +1004,7 @@ class HOLEtraj(BaseHOLE):
     universe and feed it to HOLE. By default it sequentially creates a PDB for
     each frame and runs HOLE on the frame.
     """
+
     def __init__(self, universe, **kwargs):
         """Set up the class.
 
@@ -1071,7 +1081,7 @@ class HOLEtraj(BaseHOLE):
             q = numpy.loadtxt(data)
         elif data is None:
             # frame numbers
-            q = numpy.arange(1, self.universe.trajectory.numframes+1)
+            q = numpy.arange(1, self.universe.trajectory.numframes + 1)
         else:
             q = numpy.asarray(data)
 
@@ -1110,7 +1120,7 @@ class HOLEtraj(BaseHOLE):
         # TODO: alternatively, dump all frames with leading framenumber and use a wildcard
         #       (although the file renaming might create problems...)
         protein = self.universe.selectAtoms(self.selection)
-        for q,ts in izip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
+        for q, ts in izip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
             logger.info("HOLE analysis frame %4d (orderparameter %g)", ts.frame, q)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)  # only need an empty file that can be overwritten, close right away (Issue 129)
@@ -1136,4 +1146,3 @@ class HOLEtraj(BaseHOLE):
         H.run()
         H.collect()
         return H.profiles
-

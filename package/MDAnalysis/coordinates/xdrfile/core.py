@@ -1,18 +1,17 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -58,32 +57,35 @@ for the XTC and TRR format.
 
 import os
 import errno
-import numpy
 import sys
 
-import libxdrfile2, statno
+import numpy
+
+import libxdrfile2
+import statno
 from MDAnalysis.coordinates import base
 from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
-
 import MDAnalysis.core
+
 
 # This is the XTC class. The TRR overrides with it's own.
 class Timestep(base.Timestep):
     """Timestep for a Gromacs trajectory."""
+
     def __init__(self, arg, **kwargs):
-        DIM = libxdrfile2.DIM    # compiled-in dimension (most likely 3)
+        DIM = libxdrfile2.DIM  # compiled-in dimension (most likely 3)
         if numpy.dtype(type(arg)) == numpy.dtype(int):
             self.frame = 0
             self.numatoms = arg
             # C floats and C-order for arrays (see libxdrfile2.i)
             self._pos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
-            self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
+            self._unitcell = numpy.zeros((DIM, DIM), dtype=numpy.float32)
             # additional data for xtc
             self.status = libxdrfile2.exdrOK
             self.step = 0
             self.time = 0
             self.prec = 0
-        elif isinstance(arg, Timestep): # Copy constructor
+        elif isinstance(arg, Timestep):  # Copy constructor
             # This makes a deepcopy of the timestep
             self.frame = arg.frame
             self.numatoms = arg.numatoms
@@ -98,15 +100,15 @@ class Timestep(base.Timestep):
         elif isinstance(arg, numpy.ndarray):
             if len(arg.shape) != 2:
                 raise ValueError("numpy array can only have 2 dimensions")
-            self._unitcell = numpy.zeros((DIM,DIM), dtype=numpy.float32)
+            self._unitcell = numpy.zeros((DIM, DIM), dtype=numpy.float32)
             self.frame = 0
-            if arg.shape[0] == DIM and arg.shape[1] != DIM:    ## wrong order (need to exclude natoms == DIM!)
+            if arg.shape[0] == DIM and arg.shape[1] != DIM:  # wrong order (need to exclude natoms == DIM!)
                 raise ValueError("Coordinate array must have shape (natoms, %(DIM)d)" % vars())
             if arg.shape[1] == DIM:
                 self.numatoms = arg.shape[0]
             else:
                 raise ValueError("XDR timestep has not second dimension 3: shape=%r" % (arg.shape,))
-            self._pos = arg.astype(numpy.float32).copy('C')  ## C-order
+            self._pos = arg.astype(numpy.float32).copy('C')  # C-order
             # additional data for xtc
             self.status = libxdrfile2.exdrOK
             self.step = 0
@@ -114,9 +116,9 @@ class Timestep(base.Timestep):
             self.prec = 0
         else:
             raise ValueError("Cannot create an empty Timestep")
-        self._x = self._pos[:,0]
-        self._y = self._pos[:,1]
-        self._z = self._pos[:,2]
+        self._x = self._pos[:, 0]
+        self._y = self._pos[:, 1]
+        self._z = self._pos[:, 2]
 
     @property
     def dimensions(self):
@@ -131,7 +133,7 @@ class Timestep(base.Timestep):
         x = self._unitcell[0]
         y = self._unitcell[1]
         z = self._unitcell[2]
-        return triclinic_box(x,y,z)
+        return triclinic_box(x, y, z)
 
     @dimensions.setter
     def dimensions(self, box):
@@ -149,8 +151,8 @@ class TrjWriter(base.Writer):
     format = None
 
     def __init__(self, filename, numatoms, start=0, step=1, delta=None, precision=1000.0, remarks=None,
-                  convert_units=None):
-        ''' Create a new TrjWriter
+                 convert_units=None):
+        """ Create a new TrjWriter
 
         :Arguments:
           *filename*
@@ -180,7 +182,7 @@ class TrjWriter(base.Writer):
            The TRR writer is now able to write TRRs without coordinates/velocities/forces,
            depending on the properties available in the :class:`Timestep` objects passed to
            :meth:`~TRRWriter.write`.
-        '''
+        """
         assert self.format in ('XTC', 'TRR')
 
         if numatoms == 0:
@@ -195,7 +197,7 @@ class TrjWriter(base.Writer):
 
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_lengths']
-        self.convert_units = convert_units    # convert length and time to base units on the fly?
+        self.convert_units = convert_units  # convert length and time to base units on the fly?
         self.numatoms = numatoms
 
         self.frames_written = 0
@@ -207,23 +209,24 @@ class TrjWriter(base.Writer):
         self.xdrfile = libxdrfile2.xdrfile_open(self.filename, 'w')
 
         self.ts = None
-        # To flag empty properties to be skipped when writing a TRR it suffices to pass an empty 2D array with shape(natoms,0)
+        # To flag empty properties to be skipped when writing a TRR it suffices to pass an empty 2D array with shape(
+        # natoms,0)
         if self.format == 'TRR':
-            self._emptyarr = numpy.array([], dtype=numpy.float32).reshape(self.numatoms,0)
+            self._emptyarr = numpy.array([], dtype=numpy.float32).reshape(self.numatoms, 0)
 
     def write_next_timestep(self, ts=None):
-        ''' write a new timestep to the trj file
+        """ write a new timestep to the trj file
 
         *ts* is a :class:`Timestep` instance containing coordinates to
         be written to trajectory file
-        '''
+        """
         if self.xdrfile is None:
             raise IOError("Attempted to write to closed file %r", self.filename)
         if ts is None:
             if not hasattr(self, "ts"):
                 raise IOError("TrjWriter: no coordinate data to write to trajectory file")
             else:
-                ts=self.ts
+                ts = self.ts
         elif not ts.numatoms == self.numatoms:
             # Check to make sure Timestep has the correct number of atoms
             raise IOError("TrjWriter: Timestep does not have the correct number of atoms")
@@ -247,9 +250,9 @@ class TrjWriter(base.Writer):
                 time = ts.time
             except AttributeError:
                 # Default to 1 time unit.
-                time = self.start+self.step*self.frames_written
+                time = self.start + self.step * self.frames_written
         else:
-            time = (self.start+self.step*self.frames_written)*self.delta
+            time = (self.start + self.step * self.frames_written) * self.delta
 
         if self.convert_units:
             time = self.convert_time_to_native(time, inplace=False)
@@ -312,7 +315,7 @@ class TrjWriter(base.Writer):
                 forces = self._emptyarr
             #
             status = libxdrfile2.write_trr(self.xdrfile, int(ts.step), float(time), float(ts.lmbda), unitcell,
-                                          pos, velocities, forces)
+                                           pos, velocities, forces)
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return status
@@ -327,6 +330,7 @@ class TrjWriter(base.Writer):
     def convert_dimensions_to_unitcell(self, ts):
         """Read dimensions from timestep *ts* and return Gromacs box vectors"""
         return self.convert_pos_to_native(triclinic_vectors(ts.dimensions))
+
 
 class TrjReader(base.Reader):
     """Generic base class for reading Gromacs trajectories inside MDAnalysis.
@@ -379,10 +383,10 @@ class TrjReader(base.Reader):
         self.xdrfile = None
 
         self.__numframes = None  # takes a long time, avoid accessing self.numframes
-        self.skip_timestep = 1   # always 1 for xdr files
-        self.__delta = None      # compute from time in first two frames!
-        self.fixed = 0           # not relevant for Gromacs xtc/trr
-        self.__offsets = None    # storage of offsets in the file
+        self.skip_timestep = 1  # always 1 for xdr files
+        self.__delta = None  # compute from time in first two frames!
+        self.fixed = 0  # not relevant for Gromacs xtc/trr
+        self.__offsets = None  # storage of offsets in the file
         self.skip = 1
         self.periodic = False
 
@@ -410,7 +414,7 @@ class TrjReader(base.Reader):
 
             # make tmp buffers
             # C floats and C-order for arrays (see libxdrfile2.i)
-            DIM = libxdrfile2.DIM    # compiled-in dimension (most likely 3)
+            DIM = libxdrfile2.DIM  # compiled-in dimension (most likely 3)
             # both xdr and trr have positions
             self.__pos_buf = numpy.zeros((self.__trr_numatoms, DIM), dtype=numpy.float32, order='C')
             if self.format == "TRR":
@@ -458,7 +462,7 @@ class TrjReader(base.Reader):
         This  takes a  long time  because  the frames  are counted  by
         iterating through the whole trajectory.
         """
-        if not self.__numframes is None:   # return cached value
+        if not self.__numframes is None:  # return cached value
             return self.__numframes
         try:
             self._read_trj_numframes(self.filename)
@@ -469,6 +473,18 @@ class TrjReader(base.Reader):
             return self.__numframes
 
     @property
+    def offsets(self):
+        if self.__offsets is not None:
+            return self.__offsets
+        try:
+            self._read_trj_numframes(self.filename)
+        except IOError:
+            self.__offsets = []
+            return 0
+        else:
+            return self.__offsets
+
+    @property
     def delta(self):
         """Time step length in ps.
 
@@ -476,7 +492,7 @@ class TrjReader(base.Reader):
         any reason the trajectory cannot be read then 0 is returned.
         """
         # no need for conversion: it's alread in our base unit ps
-        if not self.__delta is None:   # return cached value
+        if not self.__delta is None:  # return cached value
             return self.__delta
         try:
             t0 = self.ts.time
@@ -510,7 +526,8 @@ class TrjReader(base.Reader):
         return
 
     def save_offsets(self, filename):
-        """Saves current trajectory offsets into *filename*, in numpy format. A ".npy" suffix will be appended to *filename* if not already present.
+        """Saves current trajectory offsets into *filename*, in numpy format. A ".npy" suffix will be appended to
+        *filename* if not already present.
 
         :Arguments:
           *filename*
@@ -590,13 +607,13 @@ class TrjReader(base.Reader):
         kwargs['step'] = self.skip_timestep
         kwargs.setdefault('delta', self.delta)
         try:
-            kwargs['start'] = self[0].time/kwargs['delta']
+            kwargs['start'] = self[0].time / kwargs['delta']
         except (AttributeError, ZeroDivisionError):
             kwargs['start'] = 0
         try:
             kwargs.setdefault('precision', self.precision)
         except AttributeError:
-            pass                             # not needed for TRR
+            pass  # not needed for TRR
         return self._Writer(filename, numatoms, **kwargs)
 
     def __iter__(self):
@@ -605,7 +622,7 @@ class TrjReader(base.Reader):
         while True:
             try:
                 ts = self._read_next_timestep()
-            except IOError, err:
+            except IOError as err:
                 if err.errno == errno.EIO:
                     break
                 else:
@@ -621,8 +638,10 @@ class TrjReader(base.Reader):
         """Generic ts reader with minimum intelligence. Override if necessary."""
         if ts is None:
             ts = self.ts
-        elif self.format == 'TRR' and not hasattr(ts, '_tpos'): # If a foreign Timestep is passed as the receptacle of the data
-            ts = TRR.Timestep(ts)                               #  we must make sure the access-checking stuff gets set up.
+        elif self.format == 'TRR' and not hasattr(ts,
+                                                  '_tpos'):  # If a foreign Timestep is passed as the receptacle of
+                                                  # the data
+            ts = TRR.Timestep(ts)  # we must make sure the access-checking stuff gets set up.
 
         if self.xdrfile is None:
             self.open_trajectory()
@@ -635,11 +654,19 @@ class TrjReader(base.Reader):
                 ts._pos[:] = self.__pos_buf[self.__sub]
         elif self.format == 'TRR':
             if self.__sub is None:
-                ts.status, ts.step, ts.time, ts.lmbda, ts.has_x, ts.has_v, ts.has_f = libxdrfile2.read_trr(self.xdrfile, ts._unitcell, ts._tpos,
-                                                                            ts._tvelocities, ts._tforces)
+                ts.status, ts.step, ts.time, ts.lmbda,\
+                    ts.has_x, ts.has_v, ts.has_f = libxdrfile2.read_trr(self.xdrfile,
+                                                                        ts._unitcell,
+                                                                        ts._tpos,
+                                                                        ts._tvelocities,
+                                                                        ts._tforces)
             else:
-                ts.status, ts.step, ts.time, ts.lmbda, ts.has_x, ts.has_v, ts.has_f  = libxdrfile2.read_trr(self.xdrfile, ts._unitcell, self.__pos_buf,
-                                                                            self.__velocities_buf, self.__forces_buf)
+                ts.status, ts.step, ts.time, ts.lmbda,\
+                    ts.has_x, ts.has_v, ts.has_f = libxdrfile2.read_trr(self.xdrfile,
+                                                                        ts._unitcell,
+                                                                        self.__pos_buf,
+                                                                        self.__velocities_buf,
+                                                                        self.__forces_buf)
                 ts._tpos[:] = self.__pos_buf[self.__sub]
                 ts._tvelocities[:] = self.__velocities_buf[self.__sub]
                 ts._tforces[:] = self.__forces_buf[self.__sub]
@@ -653,25 +680,25 @@ class TrjReader(base.Reader):
                           self.filename)
         elif not ts.status == libxdrfile2.exdrOK:
             raise IOError(errno.EBADF, "Problem with %s file, status %s" %
-                          (self.format, statno.errorcode[ts.status]), self.filename)
+                                       (self.format, statno.errorcode[ts.status]), self.filename)
         if self.convert_units:
             # TRRs have the annoying possibility of frames without coordinates/velocities/forces...
             if self.format == 'XTC' or ts.has_x:
-                self.convert_pos_from_native(ts._pos)         # in-place !
-            self.convert_pos_from_native(ts._unitcell)        # in-place ! (note: xtc/trr contain unit vecs!)
+                self.convert_pos_from_native(ts._pos)  # in-place !
+            self.convert_pos_from_native(ts._unitcell)  # in-place ! (note: xtc/trr contain unit vecs!)
             ts.time = self.convert_time_from_native(ts.time)  # in-place does not work with scalars
             if self.format == 'TRR':
                 if ts.has_v:
-                    self.convert_velocities_from_native(ts._velocities) # in-place
+                    self.convert_velocities_from_native(ts._velocities)  # in-place
                 if ts.has_f:
-                    self.convert_forces_from_native(ts._forces)     # in-place
+                    self.convert_forces_from_native(ts._forces)  # in-place
         ts.frame += 1
         return ts
 
     def rewind(self):
         """Position at beginning of trajectory"""
         self._reopen()
-        self.next()   # read first frame
+        self.next()  # read first frame
 
     def _reopen(self):
         self.close()
@@ -688,49 +715,59 @@ class TrjReader(base.Reader):
             self._read_trj_numframes(self.filename)
         self._seek(self.__offsets[frame])
         self._read_next_timestep()
-        self.ts.frame = frame+1
+        self.ts.frame = frame + 1
         return self.ts
 
     def __getitem__(self, frame):
         if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
             raise TypeError
-        if (numpy.dtype(type(frame)) == numpy.dtype(int)):
-            if (frame < 0):
+        if numpy.dtype(type(frame)) == numpy.dtype(int):
+            if frame < 0:
                 # Interpret similar to a sequence
-                frame = len(self) + frame
+                frame += len(self)
             if (frame < 0) or (frame >= len(self)):
                 raise IndexError("0 <= frame < len(traj) is outside of trajectory boundaries")
             return self._goto_frame(frame)
-        elif type(frame) == slice: # if frame is a slice object
-            if not (((type(frame.start) == int) or (frame.start == None)) and
-                    ((type(frame.stop) == int) or (frame.stop == None)) and
-                    ((type(frame.step) == int) or (frame.step == None))):
+        elif type(frame) == slice:  # if frame is a slice object
+            if not (((type(frame.start) == int) or (frame.start is None)) and
+               ((type(frame.stop) == int) or (frame.stop is None)) and
+               ((type(frame.step) == int) or (frame.step is None))):
                 raise TypeError("Slice indices are not integers")
+
             def _iter(start=frame.start, stop=frame.stop, step=frame.step):
                 # check_slices implicitly calls len(self), thus setting numframes
                 start, stop, step = self._check_slice_indices(start, stop, step)
                 if step == 1:
-                    rng = xrange(start+1,stop,step)
+                    rng = xrange(start + 1, stop, step)
                     yield self._goto_frame(start)
                     for framenr in rng:
                         yield self._read_next_timestep()
                 else:
-                    rng = xrange(start,stop,step)
+                    rng = xrange(start, stop, step)
                     for framenr in rng:
                         yield self._goto_frame(framenr)
+
             return _iter()
 
     def _check_slice_indices(self, start, stop, step):
-        if step == None: step = 1
-        if (start < 0) and start is not None: start += len(self)
-        if (stop < 0) and stop is not None: stop += len(self)
+        if step is None:
+            step = 1
+        if (start < 0) and start is not None:
+            start += len(self)
+        if (stop < 0) and stop is not None:
+            stop += len(self)
         if step > 0:
-            if start == None: start = 0
-            if stop == None: stop = len(self)
+            if start is None:
+                start = 0
+            if stop is None:
+                stop = len(self)
         else:  # Fixes reverse iteration with default slice. (eg. trajectory[::-1])
-            if start == None: start  = len(self)-1
-            if  stop == None: stop   = -1
-        if stop > len(self): stop = len(self)
+            if start is None:
+                start = len(self) - 1
+            if stop is None:
+                stop = -1
+        if stop > len(self):
+            stop = len(self)
 
         if step > 0 and stop <= start:
             raise IndexError("Stop frame is lower than start frame")
@@ -738,10 +775,11 @@ class TrjReader(base.Reader):
             raise IndexError("Iteration step 0.")
         if start >= len(self):
             raise IndexError("Frame start outside of the range of the trajectory.")
-        return (start, stop, step)
+        return start, stop, step
 
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
         raise NotImplementedError("timeseries not available for Gromacs trajectories")
+
     def correl(self, timeseries, start=0, stop=-1, skip=1):
         raise NotImplementedError("correl not available for Gromacs trajectories")
 
@@ -756,7 +794,10 @@ class TrjReader(base.Reader):
             else:
                 status = libxdrfile2.xdr_seek(self.xdrfile, long(pos), libxdrfile2.SEEK_SET)
             if status != libxdrfile2.exdrOK:
-                raise IOError(errno.EIO, "Problem seeking to offset %d (relative to current = %s) on file %s, status %s.\nPerhaps you are trying to read a file >2GB and your system does not have large file support?" % (pos, rel, self.filename, status))
+                raise IOError(errno.EIO,
+                              "Problem seeking to offset %d (relative to current = %s) on file %s, status %s.\n"
+                              "Perhaps you are trying to read a file >2GB and your system does not have large file"
+                              "support?" % (pos, rel, self.filename, status))
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
 
@@ -767,4 +808,3 @@ class TrjReader(base.Reader):
         else:
             raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
         return offset
-

@@ -1,3 +1,18 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
 """
 Hydrogen bond autocorrelation --- :mod:`MDAnalysis.analysis.hbonds.hbond_autocorrel`
 ====================================================================================
@@ -135,6 +150,7 @@ from MDAnalysis.core.distances import distance_array, calc_angles, calc_bonds
 
 class HydrogenBondAutoCorrel(object):
     """Perform a time autocorrelation of the hydrogen bonds in the system. """
+
     def __init__(self, universe,
                  hydrogens=None, acceptors=None, donors=None,
                  bond_type=None,
@@ -211,11 +227,13 @@ class HydrogenBondAutoCorrel(object):
         self._slice_traj(sample_time)
         self.time_cut = time_cut
 
-        self.solution = {'results': None,  # Raw results
-                         'time': None,  # Time axis of raw results
-                         'fit': None,  # coefficients for fit
-                         'tau': None,  # integral of exponential fit
-                         'estimate': None}  # y values of fit against time
+        self.solution = {
+            'results': None,  # Raw results
+            'time': None,  # Time axis of raw results
+            'fit': None,  # coefficients for fit
+            'tau': None,  # integral of exponential fit
+            'estimate': None  # y values of fit against time
+        }
 
     def _slice_traj(self, sample_time):
         """Set up start and end points in the trajectory for the
@@ -237,7 +255,7 @@ class HydrogenBondAutoCorrel(object):
                           " frames in trajectory ({})"
                           .format(self.nruns, numframes), RuntimeWarning)
 
-        self._starts = numpy.arange(0, numframes, numframes/numruns, dtype=int)
+        self._starts = numpy.arange(0, numframes, numframes / numruns, dtype=int)
         # limit stop points using clip
         self._stops = numpy.clip(self._starts + req_frames, 0, numframes)
 
@@ -268,10 +286,10 @@ class HydrogenBondAutoCorrel(object):
 
         pm = ProgressMeter(self.nruns, interval=1,
                            format="Performing run %(step)5d/%(numsteps)d"
-                           "[%(percentage)5.1f%%]\r")
+                                  "[%(percentage)5.1f%%]\r")
 
         for i, (start, stop) in enumerate(izip(self._starts, self._stops)):
-            pm.echo(i+1)
+            pm.echo(i + 1)
 
             # needed else trj seek thinks a numpy.int64 isn't an int?
             results = self._single_run(int(start), int(stop))
@@ -287,8 +305,8 @@ class HydrogenBondAutoCorrel(object):
         master_results /= counter
 
         self.solution['time'] = numpy.arange(
-            len(master_results), dtype=numpy.float32) \
-            * self.u.trajectory.dt * self._skip
+            len(master_results),
+            dtype=numpy.float32) * self.u.trajectory.dt * self._skip
         self.solution['results'] = master_results
 
     def _single_run(self, start, stop):
@@ -428,12 +446,12 @@ class HydrogenBondAutoCorrel(object):
             if len(p) == 3:
                 A1, tau1, tau2 = p
                 return (A1 > 0.0) & (A1 < 1.0) & \
-                    (tau1 > 0.0) & (tau2 > 0.0)
+                       (tau1 > 0.0) & (tau2 > 0.0)
             elif len(p) == 5:
                 A1, A2, tau1, tau2, tau3 = p
                 return (A1 > 0.0) & (A1 < 1.0) & (A2 > 0.0) & \
-                    (A2 < 1.0) & ((A1+A2) < 1.0) & \
-                    (tau1 > 0.0) & (tau2 > 0.0) & (tau3 > 0.0)
+                       (A2 < 1.0) & ((A1 + A2) < 1.0) & \
+                       (tau1 > 0.0) & (tau2 > 0.0) & (tau3 > 0.0)
 
         def err(p, x, y):
             """Custom residual function, returns real residual if all
@@ -453,8 +471,7 @@ class HydrogenBondAutoCorrel(object):
         def triple(x, A1, A2, tau1, tau2, tau3):
             """ Sum of three exponential functions """
             A3 = 1 - (A1 + A2)
-            return A1 * exp(-x / tau1) + A2 * exp(-x / tau2) \
-                + A3 * exp(-x / tau3)
+            return A1 * exp(-x / tau1) + A2 * exp(-x / tau2) + A3 * exp(-x / tau3)
 
         if self.bond_type is 'continuous':
             self._my_solve = double
@@ -473,8 +490,7 @@ class HydrogenBondAutoCorrel(object):
             self._my_solve = triple
 
             if p_guess is None:
-                p_guess = (0.33, 0.33, 10 * self.sample_time, self.sample_time,
-                           0.1 * self.sample_time)
+                p_guess = (0.33, 0.33, 10 * self.sample_time, self.sample_time, 0.1 * self.sample_time)
 
             p, cov, infodict, mesg, ier = leastsq(err, p_guess,
                                                   args=(time, results),
@@ -496,5 +512,5 @@ class HydrogenBondAutoCorrel(object):
 
     def __repr__(self):
         return "< MDAnalysis HydrogenBondAutoCorrel analysis measuring the " + \
-            self.bond_type + \
-            " lifetime of {0} different hydrogens >".format(len(self.h))
+               self.bond_type + \
+               " lifetime of {0} different hydrogens >".format(len(self.h))

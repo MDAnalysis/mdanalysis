@@ -31,15 +31,17 @@ LIBDIR = "data"
 # This could be turned into a YAML file.
 #: Registry of libraries, indexed by name.
 LIBRARIES = {
-    'MTSSL 298K': {'topology': "rotamer1_R1A_298K.pdb",
-                   'ensemble': "rotamer1_R1A_298K.dcd",
-                   'populations': "R1A_298K_populations.dat",
-                   'author': "Gunnar Jeschke",
-                   'licence': "GPL v2",
-                   'citation': "Polyhach Y, Bordignon E, Jeschke G. "
-                       "Phys Chem Chem Phys. 2011; 13(6):2356-2366. doi: 10.1039/c0cp01865a",
-                  },
-    }
+    'MTSSL 298K': {
+        'topology': "rotamer1_R1A_298K.pdb",
+        'ensemble': "rotamer1_R1A_298K.dcd",
+        'populations': "R1A_298K_populations.dat",
+        'author': "Gunnar Jeschke",
+        'licence': "GPL v2",
+        'citation': "Polyhach Y, Bordignon E, Jeschke G. "
+                    "Phys Chem Chem Phys. 2011; 13(6):2356-2366. doi: 10.1039/c0cp01865a",
+    },
+}
+
 
 def find_file(filename, pkglibdir=LIBDIR):
     """Return full path to file *filename*.
@@ -50,6 +52,7 @@ def find_file(filename, pkglibdir=LIBDIR):
     if os.path.exists(filename):
         return MDAnalysis.core.util.realpath(filename)
     return pkg_resources.resource_filename(__name__, os.path.join(pkglibdir, filename))
+
 
 class RotamerLibrary(object):
     """Rotamer library
@@ -87,7 +90,8 @@ class RotamerLibrary(object):
         try:
             self.lib.update(LIBRARIES[name])  # make a copy
         except KeyError:
-            raise ValueError("No rotamer library with name {0} known: must be one of {1}".format(name, LIBRARY.keys()))
+            raise ValueError("No rotamer library with name {0} known: must be one of {1}".format(name,
+                                                                                                 LIBRARIES.keys()))
         logger.info("Using rotamer library '{0}' by {1[author]}".format(self.name, self.lib))
         logger.info("Please cite: {0[citation]}".format(self.lib))
         # adjust paths
@@ -105,11 +109,11 @@ class RotamerLibrary(object):
             logger.critical(err_msg)
             raise ValueError(err_msg)
 
-
     def read_rotamer_weights(self, filename):
         """read in the rotamer weights from *filename*"""
         # OB: Why do we need [0] prepended, i.e. what is the first frame?
         return np.concatenate(([0], np.loadtxt(filename)))
 
     def __repr__(self):
-        return "<RotamerLibrary '{0}' by {1} with {2} rotamers>".format(self.name, self.lib['author'], len(self.weights)-2)
+        return "<RotamerLibrary '{0}' by {1} with {2} rotamers>".format(self.name, self.lib['author'],
+                                                                        len(self.weights)-2)

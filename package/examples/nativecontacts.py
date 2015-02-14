@@ -40,8 +40,10 @@ from MDAnalysis.tests.datafiles import PSF, DCD  # AdK example trajectory
 
 try:
     import matplotlib
+
     matplotlib.use('agg')  # no interactive plotting, only save figures
     from pylab import savefig, clf
+
     have_matplotlib = True
 except ImportError:
     have_matplotlib = False

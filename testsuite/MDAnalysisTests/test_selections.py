@@ -1,23 +1,21 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
 import MDAnalysis
 import MDAnalysis.core.Selection
-from MDAnalysis.tests.datafiles import PSF,DCD,PRMpbc,TRJpbc_bz2,PSF_NAMD,PDB_NAMD,GRO,NUCL
+from MDAnalysis.tests.datafiles import PSF, DCD, PRMpbc, TRJpbc_bz2, PSF_NAMD, PDB_NAMD, GRO, NUCL
 
 from numpy.testing import *
 from numpy import array, float32
@@ -56,20 +54,20 @@ class TestSelectionsCHARMM(TestCase):
     def test_resid_range(self):
         sel = self.universe.selectAtoms('resid 100:105')
         assert_equal(sel.numberOfAtoms(), 89)
-        assert_equal(sel.resnames(),  ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
+        assert_equal(sel.resnames(), ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
 
     def test_selgroup(self):
         sel = self.universe.selectAtoms('not resid 100')
         sel2 = self.universe.selectAtoms('not group notr100', notr100=sel)
         assert_equal(sel2.numberOfAtoms(), 7)
-        assert_equal(sel2.resnames(),  ['GLY'])
+        assert_equal(sel2.resnames(), ['GLY'])
 
     def test_fullselgroup(self):
         sel1 = self.universe.selectAtoms('resid 101')
         sel2 = self.universe.selectAtoms('resid 100')
         sel3 = sel1.selectAtoms('fullgroup r100', r100=sel2)
         assert_equal(sel2.numberOfAtoms(), 7)
-        assert_equal(sel2.resnames(),  ['GLY'])
+        assert_equal(sel2.resnames(), ['GLY'])
 
     # resnum selections are boring here because we haven't really a mechanism yet
     # to assign the canonical PDB resnums
@@ -82,8 +80,8 @@ class TestSelectionsCHARMM(TestCase):
     def test_resnum_range(self):
         sel = self.universe.selectAtoms('resnum 100:105')
         assert_equal(sel.numberOfAtoms(), 89)
-        assert_equal(sel.resids(), range(100,106))
-        assert_equal(sel.resnames(),  ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
+        assert_equal(sel.resids(), range(100, 106))
+        assert_equal(sel.resnames(), ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
 
     def test_resname(self):
         sel = self.universe.selectAtoms('resname LEU')
@@ -101,7 +99,7 @@ class TestSelectionsCHARMM(TestCase):
         assert_equal(len(sel), 1)
         assert_equal(sel.resnames(), ['GLY'])
         assert_array_almost_equal(sel.coordinates(),
-                                  array([[ 20.38685226,  -3.44224262,  -5.92158318]], dtype=float32))
+                                  array([[20.38685226, -3.44224262, -5.92158318]], dtype=float32))
 
     def test_type(self):
         sel = self.universe.selectAtoms("type 1")
@@ -118,7 +116,7 @@ class TestSelectionsCHARMM(TestCase):
     def test_not(self):
         sel = self.universe.selectAtoms('not backbone')
         assert_equal(len(sel), 2486)
-        
+
     def test_around(self):
         sel = self.universe.selectAtoms('around 4.0 bynum 1943')
         assert_equal(len(sel), 32)
@@ -126,11 +124,11 @@ class TestSelectionsCHARMM(TestCase):
     def test_sphlayer(self):
         sel = self.universe.selectAtoms('sphlayer 4.0 6.0 bynum 1281')
         assert_equal(len(sel), 66)
-        
+
     def test_sphzone(self):
         sel = self.universe.selectAtoms('sphzone 6.0 bynum 1281')
         assert_equal(len(sel), 86)
-        
+
     def test_cylayer(self):
         sel = self.universe.selectAtoms('cylayer 4.0 6.0 10 -10 bynum 1281')
         assert_equal(len(sel), 91)
@@ -144,11 +142,11 @@ class TestSelectionsCHARMM(TestCase):
         sel2 = self.universe.selectAtoms('prop abs z < 8')
         assert_equal(len(sel), 3194)
         assert_equal(len(sel2), 2001)
-              
+
     # TODO:
     # add more test cases for byres, bynum, point
     # and also for selection keywords such as 'nucleic'
-        
+
     def test_empty_selection(self):
         """Test that empty selection can be processed (see Issue 12)"""
         assert_equal(len(self.universe.selectAtoms('resname TRP')), 0)  # no Trp in AdK
@@ -163,10 +161,8 @@ class TestSelectionsCHARMM(TestCase):
         sel = self.universe.selectAtoms('(name CA or name CB) and resname LEU')
         assert_equal(len(sel), 32)
 
-
     # TODO:
     # test for checking ordering and multiple comma-separated selections
-
     def test_concatenated_selection(self):
         E151 = self.universe.s4AKE.r151
         # note that this is not quite phi... HN should be C of prec. residue
@@ -247,7 +243,7 @@ class TestSelectionsGRO(TestCase):
         assert_equal(len(sel), 23853)
         sel = self.universe.selectAtoms('type S')
         assert_equal(len(sel), 7)
-        assert_equal(sel.resnames(),  self.universe.selectAtoms("resname CYS or resname MET").resnames())
+        assert_equal(sel.resnames(), self.universe.selectAtoms("resname CYS or resname MET").resnames())
 
     @dec.slow
     def test_resid_single(self):
@@ -261,10 +257,11 @@ class TestSelectionsGRO(TestCase):
         assert_equal(len(sel), 1)
         assert_equal(sel.resnames(), ['GLY'])
 
+
 class TestSelectionsNucleicAcids(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(NUCL)
-    
+
     def test_nucleic(self):
         rna = self.universe.selectAtoms("nucleic")
         assert_equal(rna.numberOfAtoms(), 739)

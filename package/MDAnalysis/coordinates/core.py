@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 Common functions for coordinate reading --- :mod:`MDAnalysis.coordinates.core`
@@ -42,13 +42,15 @@ import MDAnalysis.core.util
 import numpy
 
 from numpy import sin, cos, sqrt
+
 try:
-    from numpy import rad2deg, deg2rad   # numpy 1.3+
+    from numpy import rad2deg, deg2rad  # numpy 1.3+
 except ImportError:
-    def rad2deg(x):             # no need for the numpy out=[] argument
-        return 180.0*x/numpy.pi
-    def deg2rad(x):             # no need for the numpy out=[] argument
-        return x*numpy.pi/180.0
+    def rad2deg(x):  # no need for the numpy out=[] argument
+        return 180.0 * x / numpy.pi
+
+    def deg2rad(x):  # no need for the numpy out=[] argument
+        return x * numpy.pi / 180.0
 
 
 def get_reader_for(filename, permissive=False, format=None):
@@ -61,6 +63,7 @@ def get_reader_for(filename, permissive=False, format=None):
     if permissive:
         return MDAnalysis.coordinates._trajectory_readers_permissive[format]
     return MDAnalysis.coordinates._trajectory_readers[format]
+
 
 def reader(filename, **kwargs):
     """Provide a trajectory reader instance for *filename*.
@@ -90,12 +93,13 @@ def reader(filename, **kwargs):
        *kwargs*
            Keyword arguments for the selected Reader class.
     """
-    if isinstance(filename,tuple):
-        Reader = get_reader_for(filename[0],permissive=kwargs.pop('permissive', False),format=filename[1])
+    if isinstance(filename, tuple):
+        Reader = get_reader_for(filename[0], permissive=kwargs.pop('permissive', False), format=filename[1])
         return Reader(filename[0], **kwargs)
     else:
         Reader = get_reader_for(filename, permissive=kwargs.pop('permissive', False))
         return Reader(filename, **kwargs)
+
 
 def get_writer_for(filename=None, format='DCD', multiframe=None):
     """Return an appropriate trajectory or frame writer class for *filename*.
@@ -146,6 +150,7 @@ def get_writer_for(filename=None, format='DCD', multiframe=None):
     else:
         raise ValueError("Unknown value %r for multiframe, only True, False, None allowed" % multiframe)
 
+
 def writer(filename, numatoms=None, **kwargs):
     """Initialize a trajectory writer instance for *filename*.
 
@@ -181,9 +186,10 @@ def writer(filename, numatoms=None, **kwargs):
     .. versionchanged:: 0.7.6
        Added *multiframe* keyword. See also :func:`get_writer_for`.
     """
-    Writer = get_writer_for(filename, format=kwargs.pop('format',None),
+    Writer = get_writer_for(filename, format=kwargs.pop('format', None),
                             multiframe=kwargs.pop('multiframe', None))
     return Writer(filename, numatoms=numatoms, **kwargs)
+
 
 def get_ext(filename):
     """Return the lower-cased extension of *filename* without a leading dot.
@@ -195,6 +201,7 @@ def get_ext(filename):
         ext = ext[1:]
     return root, ext.lower()
 
+
 def format_from_filename_extension(filename):
     """Guess file format from the file extension"""
     try:
@@ -204,6 +211,7 @@ def format_from_filename_extension(filename):
     format = ext.upper()
     format = check_compressed_format(root, ext)
     return format
+
 
 def guess_format(filename, format=None):
     """Returns the type of file *filename*.
@@ -230,7 +238,8 @@ def guess_format(filename, format=None):
             # complicated is left for the ambitious.
             # Note: at the moment the upper-case extension *is* the format specifier
             # and list of filenames is handled by ChainReader
-            format = format_from_filename_extension(filename) if not MDAnalysis.core.util.iterable(filename) else 'CHAIN'
+            format = format_from_filename_extension(filename) if not MDAnalysis.core.util.iterable(
+                filename) else 'CHAIN'
     else:
         # format was set; but a list of filenames is always handled by ChainReader
         format = format if not MDAnalysis.core.util.iterable(filename) else 'CHAIN'
@@ -243,12 +252,13 @@ def guess_format(filename, format=None):
                         (format, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
     return format
 
+
 def check_compressed_format(root, ext):
     """Check if this is a supported gzipped/bzip2ed file format and return UPPERCASE format."""
     filename = root + '.' + ext  # only needed for diagnostics
     # XYZReader&others are setup to handle both plain and compressed (bzip2, gz) files
     # ..so if the first file extension is bzip2 or gz, look at the one to the left of it
-    if ext.lower() in ("bz2","gz"):
+    if ext.lower() in ("bz2", "gz"):
         try:
             root, ext = get_ext(root)
         except:
@@ -257,23 +267,26 @@ def check_compressed_format(root, ext):
             raise TypeError("Cannot handle %r in compressed format" % filename)
     return ext.upper()
 
+
 def _veclength(v):
     """Length of vector *v*."""
     # note: this is 3 times faster than numpy.linalg.norm
-    return numpy.sqrt(numpy.dot(v,v))
+    return numpy.sqrt(numpy.dot(v, v))
 
-def _angle(a,b):
+
+def _angle(a, b):
     """Angle between two vectors *a* and *b* in degrees.
 
     If one of the lengths is 0 then the angle is returned as 0
     (instead of `nan`).
     """
-    angle = numpy.arccos(numpy.dot(a,b) / (_veclength(a)*_veclength(b)))
+    angle = numpy.arccos(numpy.dot(a, b) / (_veclength(a) * _veclength(b)))
     if numpy.isnan(angle):
         return 0.0
     return rad2deg(angle)
 
-def triclinic_box(x,y,z):
+
+def triclinic_box(x, y, z):
     """Convert the three triclinic box vectors to [A,B,C,alpha,beta,gamma].
 
     Angles are in degrees.
@@ -284,11 +297,12 @@ def triclinic_box(x,y,z):
 
     .. SeeAlso:: Definition of angles: http://en.wikipedia.org/wiki/Lattice_constant
     """
-    A, B, C = [_veclength(v) for v in x,y,z]
-    alpha =  _angle(y,z)
-    beta  =  _angle(x,z)
-    gamma =  _angle(x,y)
-    return numpy.array([A,B,C,alpha,beta,gamma], dtype=numpy.float32)
+    A, B, C = [_veclength(v) for v in x, y, z]
+    alpha = _angle(y, z)
+    beta = _angle(x, z)
+    gamma = _angle(x, y)
+    return numpy.array([A, B, C, alpha, beta, gamma], dtype=numpy.float32)
+
 
 def triclinic_vectors(dimensions):
     """Convert `[A,B,C,alpha,beta,gamma]` to a triclinic box representation.
@@ -318,7 +332,7 @@ def triclinic_vectors(dimensions):
        Null-vectors are returned for non-periodic (or missing) unit cell.
 
     """
-    B = numpy.zeros((3,3), dtype=numpy.float32)
+    B = numpy.zeros((3, 3), dtype=numpy.float32)
     x, y, z, a, b, c = dimensions[:6]
 
     if numpy.all(dimensions[:3] == 0):
@@ -332,12 +346,13 @@ def triclinic_vectors(dimensions):
         a = deg2rad(a)
         b = deg2rad(b)
         c = deg2rad(c)
-        B[1][0] = y*cos(c)
-        B[1][1] = y*sin(c)
-        B[2][0] = z*cos(b)
-        B[2][1] = z*(cos(a)-cos(b)*cos(c))/sin(c)
-        B[2][2] = sqrt(z*z-B[2][0]**2-B[2][1]**2)
+        B[1][0] = y * cos(c)
+        B[1][1] = y * sin(c)
+        B[2][0] = z * cos(b)
+        B[2][1] = z * (cos(a) - cos(b) * cos(c)) / sin(c)
+        B[2][2] = sqrt(z * z - B[2][0] ** 2 - B[2][1] ** 2)
     return B
+
 
 def box_volume(dimensions):
     """Return the volume of the unitcell described by *dimensions*.

@@ -1,18 +1,17 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import print_function
 import MDAnalysis
@@ -25,11 +24,13 @@ from MDAnalysis import SelectionError, FinishTimeException
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
-import os, errno
+import os
+import errno
 import tempfile
 
 from MDAnalysis.tests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC
 from . import executable_not_found_runtime
+
 
 class TestContactMatrix(TestCase):
     def setUp(self):
@@ -52,10 +53,10 @@ class TestContactMatrix(TestCase):
         self.dcd.rewind()
         self.dcd[10]
         # small cutoff value as the input file is a protein
-        contacts = MDAnalysis.analysis.distances.contact_matrix(U.atoms.coordinates() , cutoff=1.5 , returntype="numpy")
+        contacts = MDAnalysis.analysis.distances.contact_matrix(U.atoms.coordinates(), cutoff=1.5, returntype="numpy")
         assert_equal(contacts.shape, (3341, 3341), "wrong shape (should be (Natoms,Natoms))")
-        assert_equal(contacts[0][0] , True , "first entry should be a contact")
-        assert_equal(contacts[0][-1] , False , "last entry for first atom should be a non-contact")
+        assert_equal(contacts[0][0], True, "first entry should be a contact")
+        assert_equal(contacts[0][-1], False, "last entry for first atom should be a non-contact")
 
     def test_sparse(self):
         U = self.universe
@@ -65,12 +66,14 @@ class TestContactMatrix(TestCase):
         selection = U.selectAtoms('bynum 1:50')
         # small cutoff value as the input file is a protein
         # High progress_meter_freq so progress meter is not printed during test
-        contacts = MDAnalysis.analysis.distances.contact_matrix(selection.coordinates() , cutoff=1.07 , returntype="sparse" , suppress_progmet=True)
+        contacts = MDAnalysis.analysis.distances.contact_matrix(selection.coordinates(), cutoff=1.07,
+                                                                returntype="sparse", suppress_progmet=True)
         assert_equal(contacts.shape, (50, 50), "wrong shape (should be (50,50))")
-        assert_equal(contacts[0,0] , False , "entry (0,0) should be a non-contact")
-        assert_equal(contacts[0,2] , True , "entry (0,2) should be a contact")
-        assert_equal(contacts[0,3] , True , "entry (0,3) should be a contact")
-        assert_equal(contacts[0,4] , False , "entry (0,3) should be a contact")
+        assert_equal(contacts[0, 0], False, "entry (0,0) should be a non-contact")
+        assert_equal(contacts[0, 2], True, "entry (0,2) should be a contact")
+        assert_equal(contacts[0, 3], True, "entry (0,3) should be a contact")
+        assert_equal(contacts[0, 4], False, "entry (0,3) should be a contact")
+
 
 class TestAlign(TestCase):
     def setUp(self):
@@ -88,17 +91,17 @@ class TestAlign(TestCase):
         del self.reference
 
     def test_rmsd(self):
-        self.universe.trajectory[0]      # ensure first frame
+        self.universe.trajectory[0]  # ensure first frame
         bb = self.universe.selectAtoms('backbone')
-        A = bb.coordinates(copy=True)     # coordinates of first frame (copy=True just in case)
-        self.universe.trajectory[-1]      # forward to last frame
-        B = bb.coordinates()              # coordinates of last frame
-        rmsd = MDAnalysis.analysis.align.rmsd(A,B)
-        assert_almost_equal(MDAnalysis.analysis.align.rmsd(A,A), 0.0, 5,
+        A = bb.coordinates(copy=True)  # coordinates of first frame (copy=True just in case)
+        self.universe.trajectory[-1]  # forward to last frame
+        B = bb.coordinates()  # coordinates of last frame
+        rmsd = MDAnalysis.analysis.align.rmsd(A, B)
+        assert_almost_equal(MDAnalysis.analysis.align.rmsd(A, A), 0.0, 5,
                             err_msg="error: rmsd(X,X) should be 0")
         # rmsd(A,B) = rmsd(B,A)  should be exact but spurious failures in the 9th decimal have been
         # observed (see Issue 57 comment #1) so we relax the test to 6 decimals.
-        assert_almost_equal(MDAnalysis.analysis.align.rmsd(B,A), rmsd, 6,
+        assert_almost_equal(MDAnalysis.analysis.align.rmsd(B, A), rmsd, 6,
                             err_msg="error: rmsd() is not symmetric")
         assert_almost_equal(rmsd, 6.8342494129169804, 5,
                             err_msg="RMSD calculation between 1st and last AdK frame gave wrong answer")
@@ -133,21 +136,25 @@ class TestAlign(TestCase):
             a = u.atoms[10:100]
             b = u.atoms[10:101]
             return MDAnalysis.analysis.align.alignto(a, b)
+
         assert_raises(SelectionError, different_size)
 
         def different_atoms():
             a = u.atoms[10:20]
             b = u.atoms[10:17] + u.atoms[18:21]
             return MDAnalysis.analysis.align.alignto(a, b)
+
         assert_raises(SelectionError, different_atoms)
+
 
 class TestHydrogenBondAnalysis(TestCase):
     def setUp(self):
         self.universe = u = MDAnalysis.Universe(PDB_helix)
-        self.kwargs = {'detect_hydrogens': "distance",
-                       'distance': 3.0,
-                       'angle': 150.0,
-                       }
+        self.kwargs = {
+            'detect_hydrogens': "distance",
+            'distance': 3.0,
+            'angle': 150.0,
+        }
         # ideal helix with 1 proline:
         self.num_bb_hbonds = u.atoms.numberOfResidues() - u.SYSTEM.PRO.numberOfResidues() - 4
 
@@ -182,16 +189,19 @@ class TestHydrogenBondAnalysis(TestCase):
     def tearDown(self):
         del self.universe
 
+
 class TestHydrogenBondAnalysisHeuristic(TestHydrogenBondAnalysis):
     def setUp(self):
         super(TestHydrogenBondAnalysisHeuristic, self).setUp()
         self.kwargs['detect_hydrogens'] = "heuristic"
+
 
 class TestHydrogenBondAnalysisHeavy(TestHydrogenBondAnalysis):
     def setUp(self):
         super(TestHydrogenBondAnalysisHeavy, self).setUp()
         self.kwargs['distance_type'] = "heavy"
         self.kwargs["distance"] = 3.5
+
 
 class TestHydrogenBondAnalysisHeavyFail(TestHydrogenBondAnalysisHeavy):
     def setUp(self):
@@ -219,6 +229,7 @@ class TestAlignmentProcessing(TestCase):
     def test_fasta2select_aligned(self):
         """test align.fasta2select() on aligned FASTA (Issue 112)"""
         from MDAnalysis.analysis.align import fasta2select
+
         sel = fasta2select(self.seq, is_aligned=True)
         # length of the output strings, not residues or anything real...
         assert_equal(len(sel['reference']), 30623, err_msg="selection string has unexpected length")
@@ -231,21 +242,25 @@ class TestAlignmentProcessing(TestCase):
         """test align.fasta2select() with calling ClustalW (Issue 113)"""
         # note: will not be run if clustalw is not installed
         from MDAnalysis.analysis.align import fasta2select
+
         sel = fasta2select(self.seq, is_aligned=False, alnfilename=self.alnfile, treefilename=self.treefile)
         # numbers computed from alignment with clustalw 2.1 on Mac OS X [orbeckst]
         # length of the output strings, not residues or anything real...
         assert_equal(len(sel['reference']), 23080, err_msg="selection string has unexpected length")
         assert_equal(len(sel['mobile']), 23090, err_msg="selection string has unexpected length")
 
+
 def rlimits_missing():
     # return True if resources module not accesible (ie setting of rlimits)
     try:
         # on Unix we can manipulate our limits: http://docs.python.org/2/library/resource.html
         import resource
+
         soft_max_open_files, hard_max_open_files = resource.getrlimit(resource.RLIMIT_NOFILE)
     except ImportError:
         return True
     return False
+
 
 class TestHoleModule(TestCase):
     def setUp(self):
@@ -254,14 +269,15 @@ class TestHoleModule(TestCase):
         try:
             # on Unix we can manipulate our limits: http://docs.python.org/2/library/resource.html
             import resource
+
             self.soft_max_open_files, self.hard_max_open_files = resource.getrlimit(resource.RLIMIT_NOFILE)
         except ImportError:
             pass
 
     @attr('slow')
     @attr('issue')
-    @dec.skipif(rlimits_missing,  msg="Test skipped because platform does not allow setting rlimits")
-    @dec.skipif(executable_not_found_runtime("hole"),  msg="Test skipped because HOLE not found")
+    @dec.skipif(rlimits_missing, msg="Test skipped because platform does not allow setting rlimits")
+    @dec.skipif(executable_not_found_runtime("hole"), msg="Test skipped because HOLE not found")
     def test_hole_module_fd_closure(self):
         """Issue 129: ensure low level file descriptors to PDB files used by Hole program are properly closed"""
         # If Issue 129 isn't resolved, this function will produce an OSError on
@@ -271,15 +287,17 @@ class TestHoleModule(TestCase):
         try:
             # Hasten failure by setting "ulimit -n 64" (can't go too low because of open modules etc...)
             import resource
+
             resource.setrlimit(resource.RLIMIT_NOFILE, (64, self.hard_max_open_files))
         except ImportError:
             raise NotImplementedError("Test cannot be run without the resource module.")
         import errno
         from MDAnalysis.analysis.hole import HOLEtraj
+
         os.chdir(self.dir_name)
         try:
             # will need to have the 'hole' command available in the path
-            H = HOLEtraj(self.universe,cvect=[0,1,0],sample=20.0)
+            H = HOLEtraj(self.universe, cvect=[0, 1, 0], sample=20.0)
         except OSError as err:
             if err.errno == errno.ENOENT:
                 raise OSError(errno.ENOENT, "HOLE binary not found")
@@ -308,6 +326,7 @@ class TestHoleModule(TestCase):
     def _restore_rlimits(self):
         try:
             import resource
+
             resource.setrlimit(resource.RLIMIT_NOFILE, (self.soft_max_open_files, self.hard_max_open_files))
         except ImportError:
             pass
@@ -316,11 +335,13 @@ class TestHoleModule(TestCase):
         self._restore_rlimits()
         del self.universe
         import shutil
+
         shutil.rmtree(self.dir_name, ignore_errors=True)
+
 
 class Test_Helanal(TestCase):
     def setUp(self):
-        self.universe = MDAnalysis.Universe(GRO,XTC)
+        self.universe = MDAnalysis.Universe(GRO, XTC)
         self.selection = 'name CA'
         self.tempdir = tempfile.mkdtemp()
         os.chdir(self.tempdir)
@@ -328,16 +349,13 @@ class Test_Helanal(TestCase):
     def tearDown(self):
         del self.universe
         del self.selection
-        
+
     def test_xtc_striding(self):
-        '''Check for sustained resolution of Issue 188.'''
+        """Check for sustained resolution of Issue 188."""
         u = self.universe
         sel = self.selection
         with assert_raises(FinishTimeException):
             try:
-                MDAnalysis.analysis.helanal.helanal_trajectory(u,selection=sel,finish=5)
+                MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
             except IndexError:
                 self.fail("IndexError consistent with Issue 188.")
-            
-
-                

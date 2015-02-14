@@ -19,14 +19,16 @@ if __name__ == '__main__':
 
     try:
         import matplotlib
+
         matplotlib.use('agg')
         from pylab import plot, xlabel, ylabel, savefig
+
         have_matplotlib = True
     except:
         have_matplotlib = False
 
-    ref = Universe(PSF, PDB_small)   # reference structure 4AKE
-    trj = Universe(PSF, DCD)         # trajectory of change 1AKE->4AKE
+    ref = Universe(PSF, PDB_small)  # reference structure 4AKE
+    trj = Universe(PSF, DCD)  # trajectory of change 1AKE->4AKE
 
     rms_fit_trj(trj, ref, filename="output/rmsfit.dcd", select="not name H*",
                 mass_weighted=True, rmsdfile="output/rmsfit_rmsd.dat")

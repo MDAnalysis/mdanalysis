@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 Fundamental building blocks --- :mod:`MDAnalysis.core.AtomGroup`
@@ -179,14 +179,16 @@ AdK molecule and then translate and rotate the second copy::
 
     # now renumber resids and segids for each copy
 
-    # first copy of the protein (need to use atom indices because currently that's the only reliable property in the merged universe)
+    # first copy of the protein (need to use atom indices because currently that's the only reliable property in the
+    merged universe)
     p1 = m.selectAtoms("bynum 1:3341")
     # second copy
     p2 = m.selectAtoms("bynum 3342:6682")
 
     p1.set_segid("A")
     p2.set_segid("B")
-    p2.residues.set_resid(p2.residues.resids() + p1.residues.resids()[-1])  # increment resids for p2 with the last resid from p1
+    p2.residues.set_resid(p2.residues.resids() + p1.residues.resids()[-1])  # increment resids for p2 with the last
+    resid from p1
 
     # you must regenerate the selections after modifying them (see notes in the docs!)
     # because the changed resids are not reflected in the selection (due to how residues are referenced internally)
@@ -346,7 +348,9 @@ import util
 from util import cached
 import copy
 import logging
+
 logger = logging.getLogger("MDAnalysis.core.AtomGroup")
+
 
 class Atom(object):
     """A class representing a single atom.
@@ -367,10 +371,11 @@ class Atom(object):
        Changed bonds angles torsions impropers to be a managed property
     """
 
-    __slots__ = ("number", "id", "name", "type", "resname", "resid", "segid",
-                 "mass", "charge", "residue", "segment",
-                 "__universe",
-                 "radius", "bfactor", "resnum", "serial", "altLoc")
+    __slots__ = (
+        "number", "id", "name", "type", "resname", "resid", "segid",
+        "mass", "charge", "residue", "segment",
+        "__universe",
+        "radius", "bfactor", "resnum", "serial", "altLoc")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
                  residue=None, segment=None, radius=None, bfactor=None,
@@ -378,7 +383,7 @@ class Atom(object):
         self.number = number
         self.name = name
         self.altLoc = altLoc
-        self.type = str(type)   # always a string (needed for selections)
+        self.type = str(type)  # always a string (needed for selections)
         self.resname = resname
         self.resid = resid
         self.resnum = resnum
@@ -393,8 +398,10 @@ class Atom(object):
         self.__universe = None
 
     def __repr__(self):
-        return "< Atom " + repr(self.number+1) + ": name " + repr(self.name) +" of type " + \
-               repr(self.type) + " of resname " + repr(self.resname) + ", resid " +repr(self.resid) + " and segid " +repr(self.segid) + ("" if not self.altLoc else " and altloc {}".format(repr(self.altLoc))) +'>'
+        return "< Atom " + repr(self.number + 1) + ": name " + repr(self.name) + " of type " + \
+               repr(self.type) + " of resname " + repr(self.resname) + ", resid " + repr(self.resid) +\
+               " and segid " + repr(self.segid) + \
+               ("" if not self.altLoc else " and altloc {}".format(repr(self.altLoc))) + '>'
 
     def __cmp__(self, other):
         return cmp(self.number, other.number)
@@ -407,7 +414,7 @@ class Atom(object):
 
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
-            raise TypeError('Can only concatenate Atoms (not "'+repr(other.__class__.__name__)+'") to AtomGroup')
+            raise TypeError('Can only concatenate Atoms (not "' + repr(other.__class__.__name__) + '") to AtomGroup')
         if isinstance(other, Atom):
             return AtomGroup([self, other])
         else:
@@ -432,16 +439,16 @@ class Atom(object):
 
         :Returns: a numpy 1x3 array
         """
-        return self.universe.coord[self.number] # internal numbering starts at 0
+        return self.universe.coord[self.number]  # internal numbering starts at 0
 
     @position.setter
-    def position(self,coords):
+    def position(self, coords):
         """
         Set the current cartesian coordinates of the atom.
         @param coords: a 1x3 numpy array of {x,y,z} coordinates, or optionally
             a single scalar if you should want to set all coordinates to the same value.
         """
-        self.universe.coord._pos[self.number,:] = coords # internal numbering starts at 0
+        self.universe.coord._pos[self.number, :] = coords  # internal numbering starts at 0
 
     @property
     def velocity(self):
@@ -453,7 +460,7 @@ class Atom(object):
         .. versionadded:: 0.7.5
         """
         try:
-            return numpy.array(self.universe.trajectory.ts._velocities[self.number],dtype=numpy.float32)
+            return numpy.array(self.universe.trajectory.ts._velocities[self.number], dtype=numpy.float32)
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
 
@@ -465,10 +472,10 @@ class Atom(object):
     @property
     def universe(self):
         """a pointer back to the Universe"""
-        if not self.__universe == None:
+        if not self.__universe is None:
             return self.__universe
         else:
-            raise AttributeError("Atom "+repr(self.number)+" is not assigned to a Universe")
+            raise AttributeError("Atom " + repr(self.number) + " is not assigned to a Universe")
 
     @universe.setter
     def universe(self, universe):
@@ -601,6 +608,7 @@ class AtomGroup(object):
     # (override _containername for ResidueGroup and SegmentGroup)
     _containername = "_atoms"
     _atomcache_size = 10000
+
     def __init__(self, atoms):
         if len(atoms) > 0:
             # __atoms property is effectively readonly
@@ -662,11 +670,14 @@ class AtomGroup(object):
         """
         # If the number of atoms is very large, create a dictionary cache for lookup
         if len(self._atoms) > self._atomcache_size:
-            self._cache['atoms'] = dict(((x,None) for x in self.__atoms))
+            self._cache['atoms'] = dict(((x, None) for x in self.__atoms))
 
         # Delete preexisting cache if exists
-        for att in ['indices', 'residues', 'segments', 'masses',
-                    'bonds', 'angles', 'torsions', 'impropers']:
+        for att in \
+                [
+                    'indices', 'residues', 'segments', 'masses',
+                    'bonds', 'angles', 'torsions', 'impropers'
+                ]:
             try:
                 del self._cache[att]
             except KeyError:
@@ -779,7 +790,7 @@ class AtomGroup(object):
         # There can be more than one atom with the same name
         atomlist = [atom for atom in self._atoms if name == atom.name]
         if len(atomlist) == 0:
-            raise SelectionError("No atoms or attributes with name "+name)
+            raise SelectionError("No atoms or attributes with name " + name)
         elif len(atomlist) == 1:
             return atomlist[0]  # XXX: keep this, makes more sense for names
         else:
@@ -788,7 +799,7 @@ class AtomGroup(object):
     def __contains__(self, other):
         # If the number of atoms is very large, create a dictionary cache for lookup
         if len(self) > self._atomcache_size and not 'atoms' in self._cache:
-            self._cache['atoms'] = dict(((x,None) for x in self.__atoms))
+            self._cache['atoms'] = dict(((x, None) for x in self.__atoms))
         try:
             return other in self._cache['atoms']
         except KeyError:
@@ -796,14 +807,15 @@ class AtomGroup(object):
 
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
-            raise TypeError('Can only concatenate AtomGroup (not "'+repr(other.__class__.__name__)+'") to AtomGroup')
+            raise TypeError(
+                'Can only concatenate AtomGroup (not "' + repr(other.__class__.__name__) + '") to AtomGroup')
         if isinstance(other, AtomGroup):
             return AtomGroup(self._atoms + other._atoms)
         else:
             return AtomGroup(self._atoms + [other])
 
     def __repr__(self):
-        return '<'+self.__class__.__name__+' with '+repr(self.numberOfAtoms())+' atoms>'
+        return '<' + self.__class__.__name__ + ' with ' + repr(self.numberOfAtoms()) + ' atoms>'
 
     def __getstate__(self):
         raise NotImplementedError
@@ -943,6 +955,7 @@ class AtomGroup(object):
         .. versionadded 0.8.2
         """
         from MDAnalysis.topology.core import TopologyGroup
+
         mybonds = [b for a in self._atoms for b in a.bonds]
         if len(mybonds) == 0:
             return None
@@ -961,6 +974,7 @@ class AtomGroup(object):
         .. versionadded 0.8.2
         """
         from MDAnalysis.topology.core import TopologyGroup
+
         mybonds = [b for a in self._atoms for b in a.angles]
         if len(mybonds) == 0:
             return None
@@ -979,6 +993,7 @@ class AtomGroup(object):
         .. versionadded 0.8.2
         """
         from MDAnalysis.topology.core import TopologyGroup
+
         mybonds = [b for a in self._atoms for b in a.torsions]
         if len(mybonds) == 0:
             return None
@@ -997,6 +1012,7 @@ class AtomGroup(object):
         .. versionadded 0.8.2
         """
         from MDAnalysis.topology.core import TopologyGroup
+
         mybonds = [b for a in self._atoms for b in a.impropers]
         if len(mybonds) == 0:
             return None
@@ -1135,6 +1151,7 @@ class AtomGroup(object):
 
         """
         from MDAnalysis.topology.core import build_residues
+
         self.set("resid", resid, conversion=int)
         # Note that this also automagically updates THIS AtomGroup;
         # the side effect of build_residues(self.atoms) is to update all Atoms!!!!
@@ -1166,6 +1183,7 @@ class AtomGroup(object):
            Can set atoms and residues to distinct values by providing a sequence or iterable.
         """
         from MDAnalysis.topology.core import build_residues
+
         self.set("resnum", resnum)
         # build_residues() is the easiest (though expensive) way to make sure
         # that all residues get their new resnum. There's no easy way to parse
@@ -1191,6 +1209,7 @@ class AtomGroup(object):
            Can set atoms and residues to distinct values by providing a sequence or iterable.
         """
         from MDAnalysis.topology.core import build_residues
+
         self.set("resname", resname, conversion=str)
         build_residues(self.atoms)
 
@@ -1292,7 +1311,8 @@ class AtomGroup(object):
         if pbc:
             return numpy.sum(self.packIntoBox(inplace=False), axis=0) / self.numberOfAtoms()
         else:
-            return numpy.sum(self.coordinates(), axis=0)/self.numberOfAtoms()
+            return numpy.sum(self.coordinates(), axis=0) / self.numberOfAtoms()
+
     centroid = centerOfGeometry
 
     def centerOfMass(self, **kwargs):
@@ -1308,11 +1328,12 @@ class AtomGroup(object):
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         if pbc:
-            return numpy.sum(self.packIntoBox(inplace=False)*self.masses()[:,numpy.newaxis],axis=0)/self.totalMass()
+            return numpy.sum(self.packIntoBox(inplace=False) * self.masses()[:, numpy.newaxis],
+                             axis=0) / self.totalMass()
         else:
-            return numpy.sum(self.coordinates()*self.masses()[:,numpy.newaxis],axis=0)/self.totalMass()
+            return numpy.sum(self.coordinates() * self.masses()[:, numpy.newaxis], axis=0) / self.totalMass()
 
     def radiusOfGyration(self, **kwargs):
         """Radius of gyration.
@@ -1327,13 +1348,13 @@ class AtomGroup(object):
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         masses = self.masses()
         if pbc:
             recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
         else:
             recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
-        rog_sq = numpy.sum(masses*numpy.sum(numpy.power(recenteredpos, 2), axis=1))/self.totalMass()
+        rog_sq = numpy.sum(masses * numpy.sum(numpy.power(recenteredpos, 2), axis=1)) / self.totalMass()
         return numpy.sqrt(rog_sq)
 
     def shapeParameter(self, **kwargs):
@@ -1352,19 +1373,19 @@ class AtomGroup(object):
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         masses = self.masses()
         if pbc:
             recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
         else:
             recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
-        tensor = numpy.zeros((3,3))
+        tensor = numpy.zeros((3, 3))
         for x in xrange(recenteredpos.shape[0]):
-            tensor += masses[x] * numpy.outer(recenteredpos[x,:],
-                                              recenteredpos[x,:])
+            tensor += masses[x] * numpy.outer(recenteredpos[x, :],
+                                              recenteredpos[x, :])
         tensor /= self.totalMass()
         eig_vals = numpy.linalg.eigvalsh(tensor)
-        shape = 27.0 * numpy.prod(eig_vals-numpy.mean(eig_vals)) / numpy.power(numpy.sum(eig_vals),3)
+        shape = 27.0 * numpy.prod(eig_vals - numpy.mean(eig_vals)) / numpy.power(numpy.sum(eig_vals), 3)
         return shape
 
     def asphericity(self, **kwargs):
@@ -1383,19 +1404,20 @@ class AtomGroup(object):
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         masses = self.masses()
         if pbc:
             recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
         else:
             recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
-        tensor = numpy.zeros((3,3))
+        tensor = numpy.zeros((3, 3))
         for x in xrange(recenteredpos.shape[0]):
-            tensor += masses[x] * numpy.outer(recenteredpos[x,:],
-                                              recenteredpos[x,:])
+            tensor += masses[x] * numpy.outer(recenteredpos[x, :],
+                                              recenteredpos[x, :])
         tensor /= self.totalMass()
         eig_vals = numpy.linalg.eigvalsh(tensor)
-        shape = (3.0 / 2.0) * numpy.sum(numpy.power(eig_vals-numpy.mean(eig_vals),2)) / numpy.power(numpy.sum(eig_vals),2)
+        shape = (3.0 / 2.0) * numpy.sum(numpy.power(eig_vals - numpy.mean(eig_vals), 2)) / numpy.power(
+            numpy.sum(eig_vals), 2)
         return shape
 
     def momentOfInertia(self, **kwargs):
@@ -1411,7 +1433,7 @@ class AtomGroup(object):
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         # Convert to local coordinates
         if pbc:
             recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
@@ -1426,13 +1448,13 @@ class AtomGroup(object):
         # Ixy = Iyx = -1*sum(m_i*x_i*y_i)
         # Ixz = Izx = -1*sum(m_i*x_i*z_i)
         # Iyz = Izy = -1*sum(m_i*y_i*z_i)
-        Ixx = reduce(lambda t,a: t+a[0]*(a[1][1]*a[1][1]+a[1][2]*a[1][2]), values, 0.)
-        Iyy = reduce(lambda t,a: t+a[0]*(a[1][0]*a[1][0]+a[1][2]*a[1][2]), values, 0.)
-        Izz = reduce(lambda t,a: t+a[0]*(a[1][0]*a[1][0]+a[1][1]*a[1][1]), values, 0.)
-        Ixy = Iyx = -1*reduce(lambda t,a: t+a[0]*a[1][0]*a[1][1], values, 0.)
-        Ixz = Izx = -1*reduce(lambda t,a: t+a[0]*a[1][0]*a[1][2], values, 0.)
-        Iyz = Izy = -1*reduce(lambda t,a: t+a[0]*a[1][1]*a[1][2], values, 0.)
-        return numpy.array([[Ixx, Ixy, Ixz],[Iyx, Iyy, Iyz],[Izx, Izy, Izz]])
+        Ixx = reduce(lambda t, a: t + a[0] * (a[1][1] * a[1][1] + a[1][2] * a[1][2]), values, 0.)
+        Iyy = reduce(lambda t, a: t + a[0] * (a[1][0] * a[1][0] + a[1][2] * a[1][2]), values, 0.)
+        Izz = reduce(lambda t, a: t + a[0] * (a[1][0] * a[1][0] + a[1][1] * a[1][1]), values, 0.)
+        Ixy = Iyx = -1 * reduce(lambda t, a: t + a[0] * a[1][0] * a[1][1], values, 0.)
+        Ixz = Izx = -1 * reduce(lambda t, a: t + a[0] * a[1][0] * a[1][2], values, 0.)
+        Iyz = Izy = -1 * reduce(lambda t, a: t + a[0] * a[1][1] * a[1][2], values, 0.)
+        return numpy.array([[Ixx, Ixy, Ixz], [Iyx, Iyy, Iyz], [Izx, Izy, Izz]])
 
     def bbox(self, **kwargs):
         """Return the bounding box of the selection.
@@ -1455,7 +1477,7 @@ class AtomGroup(object):
         .. versionadded:: 0.7.2
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         if pbc:
             x = self.packIntoBox(inplace=False)
         else:
@@ -1480,14 +1502,14 @@ class AtomGroup(object):
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         if pbc:
             x = self.packIntoBox(inplace=False)
             centroid = self.centerOfGeometry(pbc=True)
         else:
             x = self.coordinates()
             centroid = self.centerOfGeometry(pbc=False)
-        R = numpy.sqrt(numpy.max(numpy.sum(numpy.square(x-centroid), axis=1)))
+        R = numpy.sqrt(numpy.max(numpy.sum(numpy.square(x - centroid), axis=1)))
         return R, centroid
 
     def bond(self, pbc=False):
@@ -1511,7 +1533,7 @@ class AtomGroup(object):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         if len(self) != 2:
-                raise ValueError("distance computation only makes sense for a group with exactly 2 atoms")
+            raise ValueError("distance computation only makes sense for a group with exactly 2 atoms")
         if not pbc:
             return numpy.linalg.norm(self[0].pos - self[1].pos)
         else:
@@ -1535,11 +1557,11 @@ class AtomGroup(object):
         .. versionadded:: 0.7.3
         """
         if len(self) != 3:
-                raise ValueError("angle computation only makes sense for a group with exactly 3 atoms")
+            raise ValueError("angle computation only makes sense for a group with exactly 3 atoms")
         a = self[0].pos - self[1].pos
         b = self[2].pos - self[1].pos
         return numpy.rad2deg(numpy.arccos(numpy.dot(a, b) /
-                    (numpy.linalg.norm(a)*numpy.linalg.norm(b))))
+                                          (numpy.linalg.norm(a) * numpy.linalg.norm(b))))
 
     def improper(self):
         """Returns the improper dihedral between 4 atoms.
@@ -1579,9 +1601,9 @@ class AtomGroup(object):
         .. versionadded:: 0.7.0
         """
         if len(self) != 4:
-                raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
+            raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
 
-        A,B,C,D = self.coordinates()[:4]
+        A, B, C, D = self.coordinates()[:4]
         ab = A - B
         bc = B - C
         cd = C - D
@@ -1609,7 +1631,8 @@ class AtomGroup(object):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         from numpy.linalg import eig
-        pbc = kwargs.pop('pbc',MDAnalysis.core.flags['use_pbc'])
+
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         if pbc:
             eigenval, eigenvec = eig(self.momentOfInertia(pbc=True))
         else:
@@ -1617,7 +1640,7 @@ class AtomGroup(object):
         # Sort
         indices = numpy.argsort(eigenval)
         # Return transposed in more logical form. See Issue 33.
-        return eigenvec[:,indices].T
+        return eigenvec[:, indices].T
 
     def get_positions(self, ts=None, copy=False, dtype=numpy.float32):
         """Get a NumPy array of the coordinates.
@@ -1651,10 +1674,9 @@ class AtomGroup(object):
 
         .. versionadded:: 0.7.6
         """
-        if ts == None:
+        if ts is None:
             ts = self.universe.trajectory.ts
         return numpy.array(ts[self.indices()], copy=copy, dtype=dtype)
-
 
     coordinates = get_positions
     """NumPy array of the coordinates.
@@ -1692,11 +1714,11 @@ class AtomGroup(object):
 
         .. versionadded:: 0.7.6
         """
-        if ts == None:
+        if ts is None:
             ts = self.universe.trajectory.ts
         if hasattr(ts, 'has_x'):  # TRR handling must be told frame now holds valid coord info.
             ts.has_x = True
-        ts._pos[self.indices(),:] = coords
+        ts._pos[self.indices(), :] = coords
 
     positions = property(get_positions, set_positions,
                          doc="""
@@ -1724,7 +1746,7 @@ class AtomGroup(object):
 
         .. versionadded:: 0.7.6
         """
-        if ts == None:
+        if ts is None:
             ts = self.universe.trajectory.ts
         try:
             return numpy.array(ts._velocities[self.indices()], copy=copy, dtype=dtype)
@@ -1743,7 +1765,7 @@ class AtomGroup(object):
 
         .. versionadded:: 0.7.6
         """
-        if ts == None:
+        if ts is None:
             ts = self.universe.trajectory.ts
         try:
             if hasattr(ts, 'has_v'):  # TRR handling must be told frame now holds valid velocity info.
@@ -1797,7 +1819,7 @@ class AtomGroup(object):
 
         .. versionadded:: 0.7.7
         """
-        if ts == None:
+        if ts is None:
             ts = self.universe.trajectory.ts
         try:
             return numpy.array(ts._forces[self.indices()], copy=copy, dtype=dtype)
@@ -1839,7 +1861,7 @@ class AtomGroup(object):
             raise NoDataError("Timestep does not contain forces")
 
     forces = property(get_forces, set_forces,
-                         doc="""
+                      doc="""
                 Forces on the atoms in the AtomGroup.
 
                 The forces can be changed by assigning an array of the appropriate
@@ -1851,7 +1873,6 @@ class AtomGroup(object):
                 :meth:`~AtomGroup.set_forces` methods.
 
                 .. versionadded:: 0.7.7""")
-
 
 
     def transform(self, M):
@@ -1869,12 +1890,12 @@ class AtomGroup(object):
 
         .. SeeAlso: :mod:`MDAnalysis.core.transformations`
         """
-        R = M[:3,:3]
+        R = M[:3, :3]
         t = M[:3, 3]
         # changes the coordinates (in place)
         x = self.universe.trajectory.ts._pos
         idx = self.indices()
-        x[idx]  = numpy.dot(x[idx], R.T)
+        x[idx] = numpy.dot(x[idx], R.T)
         x[idx] += t
         return R
 
@@ -1899,8 +1920,8 @@ class AtomGroup(object):
             t = B.centroid() - A.centroid()
         """
         try:
-            sel1,sel2 = t
-            x1,x2 = sel1.centroid(), sel2.centroid()
+            sel1, sel2 = t
+            x1, x2 = sel1.centroid(), sel2.centroid()
             vector = x2 - x1
         except (ValueError, AttributeError):
             vector = numpy.asarray(t)
@@ -1924,7 +1945,7 @@ class AtomGroup(object):
         # changes the coordinates (in place)
         x = self.universe.trajectory.ts._pos
         idx = self.indices()
-        x[idx] = x[idx] * R.T     # R.T acts to the left & is broadcasted N times.
+        x[idx] = x[idx] * R.T  # R.T acts to the left & is broadcasted N times.
         return R
 
     def rotateby(self, angle, axis, point=None):
@@ -1960,12 +1981,13 @@ class AtomGroup(object):
                   and the translation vector ``M[:3,3]``.
         """
         from transformations import rotation_matrix
+
         alpha = numpy.radians(angle)
         try:
-            sel1,sel2 = axis
-            x1,x2 = sel1.centroid(), sel2.centroid()
+            sel1, sel2 = axis
+            x1, x2 = sel1.centroid(), sel2.centroid()
             v = x2 - x1
-            n = v/numpy.linalg.norm(v)
+            n = v / numpy.linalg.norm(v)
             if point is None:
                 point = x1
         except (ValueError, AttributeError):
@@ -1999,6 +2021,7 @@ class AtomGroup(object):
           u.atoms.write("aligned.pdb")
         """
         from transformations import vecangle, rotaxis
+
         p = self.principalAxes()[axis]
         angle = numpy.degrees(vecangle(p, vector))
         ax = rotaxis(p, vector)
@@ -2039,14 +2062,14 @@ class AtomGroup(object):
         .. versionadded:: 0.8
 
         """
-        if box == None: #Try and auto detect box dimensions
-            box = self.dimensions # Can accept any box
+        if box == None:  #Try and auto detect box dimensions
+            box = self.dimensions  # Can accept any box
 
-        if box.shape == (3,3):
-            if (box.diagonal() == 0.0).any(): # for a vector representation, diagonal cannot be zero
+        if box.shape == (3, 3):
+            if (box.diagonal() == 0.0).any():  # for a vector representation, diagonal cannot be zero
                 raise ValueError("One or more box dimensions is zero.  You can specify a boxsize with 'box ='")
         else:
-            if (box == 0).any(): #Check that a box dimension isn't zero
+            if (box == 0).any():  #Check that a box dimension isn't zero
                 raise ValueError("One or more box dimensions is zero.  You can specify a boxsize with 'box='")
 
         coords = self.universe.trajectory.ts._pos[self.indices()]
@@ -2064,9 +2087,11 @@ class AtomGroup(object):
 
         .. SeeAlso:: :meth:`Universe.selectAtoms`
         """
-        import Selection     # can ONLY import in method, otherwise cyclical import!
+        import Selection  # can ONLY import in method, otherwise cyclical import!
+
         atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
-        if len(othersel) == 0: return atomgrp
+        if len(othersel) == 0:
+            return atomgrp
         else:
             # Generate a selection for each selection string
             #atomselections = [atomgrp]
@@ -2076,7 +2101,7 @@ class AtomGroup(object):
             #return tuple(atomselections)
             return atomgrp
 
-    def write(self,filename=None,format="PDB",
+    def write(self, filename=None, format="PDB",
               filenamefmt="%(trjname)s_%(frame)d", **kwargs):
         """Write AtomGroup to a file.
 
@@ -2112,15 +2137,15 @@ class AtomGroup(object):
         import os.path
         import MDAnalysis.coordinates, MDAnalysis.selections
 
-        trj = self.universe.trajectory    # unified trajectory API
+        trj = self.universe.trajectory  # unified trajectory API
         frame = trj.ts.frame
 
         if trj.numframes == 1: kwargs.setdefault("multiframe", False)
 
         if filename is None:
-            trjname,ext = os.path.splitext(os.path.basename(trj.filename))
+            trjname, ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt % vars()
-        filename = util.filename(filename,ext=format.lower(),keep=True)
+        filename = util.filename(filename, ext=format.lower(), keep=True)
 
         # From the following blocks, one must pass.
         # Both can't pass as the extensions don't overlap.
@@ -2149,7 +2174,7 @@ class AtomGroup(object):
                 writer.close()
 
     # TODO: This is _almost_ the same code as write() --- should unify!
-    def write_selection(self,filename=None,format="vmd",filenamefmt="%(trjname)s_%(frame)d",
+    def write_selection(self, filename=None, format="vmd", filenamefmt="%(trjname)s_%(frame)d",
                         **kwargs):
         """Write AtomGroup selection to a file to be used in another programme.
 
@@ -2176,19 +2201,19 @@ class AtomGroup(object):
 
         SelectionWriter = MDAnalysis.selections.get_writer(filename, format)
 
-        trj = self.universe.trajectory    # unified trajectory API
+        trj = self.universe.trajectory  # unified trajectory API
         frame = trj.ts.frame
 
         # get actual extension from the static class attribute
         extension = SelectionWriter.ext
 
         if filename is None:
-            trjname,ext = os.path.splitext(os.path.basename(trj.filename))
+            trjname, ext = os.path.splitext(os.path.basename(trj.filename))
             filename = filenamefmt % vars()
-        filename = util.filename(filename,ext=extension,keep=True)
+        filename = util.filename(filename, ext=extension, keep=True)
 
         writer = SelectionWriter(filename, **kwargs)
-        writer.write(self.atoms)         # wants a atomgroup
+        writer.write(self.atoms)  # wants a atomgroup
 
     # properties
     @property
@@ -2228,6 +2253,7 @@ class AtomGroup(object):
             # create a timestep of same type as the underlying trajectory
             self.__ts = trj_ts.copy_slice(self.indices())
         return self.__ts
+
 
 class Residue(AtomGroup):
     """A group of atoms corresponding to a residue.
@@ -2270,7 +2296,7 @@ class Residue(AtomGroup):
         if resnum is not None:
             self.resnum = resnum
         else:
-            self.resnum = self.id   # TODO: get resnum from topologies that support it
+            self.resnum = self.id  # TODO: get resnum from topologies that support it
         self.segment = None
         for i, a in enumerate(atoms):
             a.id = i
@@ -2292,8 +2318,8 @@ class Residue(AtomGroup):
                   method returns ``None``.
         """
         sel = self.universe.selectAtoms(
-            'segid %s and resid %d and name C' % (self.segment.id, self.id-1)) +\
-            self.N + self.CA + self.C
+            'segid %s and resid %d and name C' % (self.segment.id, self.id - 1)) + \
+              self.N + self.CA + self.C
         if len(sel) == 4:  # selectAtoms doesnt raise errors if nothing found, so check size
             return sel
         else:
@@ -2328,7 +2354,7 @@ class Residue(AtomGroup):
         """
         nextres = self.id + 1
         segid = self.segment.id
-        sel = self.CA + self.C +\
+        sel = self.CA + self.C + \
               self.universe.selectAtoms(
                   'segid %s and resid %d and name N' % (segid, nextres),
                   'segid %s and resid %d and name CA' % (segid, nextres))
@@ -2351,7 +2377,8 @@ class Residue(AtomGroup):
             return None
 
     def __repr__(self):
-        return '<'+self.__class__.__name__+' '+repr(self.name)+', '+repr(self.id)+'>'
+        return '<' + self.__class__.__name__ + ' ' + repr(self.name) + ', ' + repr(self.id) + '>'
+
 
 class ResidueGroup(AtomGroup):
     """A group of residues.
@@ -2369,6 +2396,7 @@ class ResidueGroup(AtomGroup):
 
     """
     _containername = "_residues"
+
     def __init__(self, residues):
         """Initialize the ResidueGroup with a list of :class:`Residue` instances."""
         self._residues = residues
@@ -2395,7 +2423,7 @@ class ResidueGroup(AtomGroup):
         if len(values) == 1:
             self._set_atoms(name, values[0], **kwargs)
         elif len(values) == len(self.residues):
-            for r,value in itertools.izip(self.residues, values):
+            for r, value in itertools.izip(self.residues, values):
                 r._set_atoms(name, value, **kwargs)
         else:
             raise ValueError("set_residues: can only set all atoms to a single value or each atom to a distinct one "
@@ -2407,10 +2435,10 @@ class ResidueGroup(AtomGroup):
         # This is a hack to be able to set properties on Atom and Residue
         # instances where they have different names
         attr = {'resname': 'name',
-                'resid': 'id'}
-        for r,value in itertools.izip(self.residues, itertools.cycle(values)):
+            'resid': 'id'}
+        for r, value in itertools.izip(self.residues, itertools.cycle(values)):
             attrname = attr.get(name, name)
-            if hasattr(r, attrname):         # should use __slots__ on Residue and try/except here
+            if hasattr(r, attrname):  # should use __slots__ on Residue and try/except here
                 setattr(r, attrname, value)
 
     set = _set_residues
@@ -2442,6 +2470,7 @@ class ResidueGroup(AtomGroup):
         .. versionadded:: 0.8
         """
         from MDAnalysis.topology.core import build_residues
+
         self.set('resid', resid)
         residues = build_residues(self.atoms)
         # update THIS residue group
@@ -2497,7 +2526,8 @@ class ResidueGroup(AtomGroup):
     # because there is no ambiguity as which residues are changed.
 
     def __repr__(self):
-        return '<'+self.__class__.__name__+' '+repr(self._residues)+'>'
+        return '<' + self.__class__.__name__ + ' ' + repr(self._residues) + '>'
+
 
 class Segment(ResidueGroup):
     """A group of residues corresponding to one segment of the topology.
@@ -2520,11 +2550,13 @@ class Segment(ResidueGroup):
           >>> print(u.s4AKE.CYS)
           <ResidueGroup [<Residue 'CYS', 77>]>
           >>> print(u.s4AKE.MET)
-          <ResidueGroup [<Residue 'MET', 1>, <Residue 'MET', 21>, <Residue 'MET', 34>, <Residue 'MET', 53>, <Residue 'MET', 96>, <Residue 'MET', 174>]>
+          <ResidueGroup [<Residue 'MET', 1>, <Residue 'MET', 21>, <Residue 'MET', 34>, <Residue 'MET', 53>,
+          <Residue 'MET', 96>, <Residue 'MET', 174>]>
 
     :Data: :attr:`Segment.name` is the segid from the topology or the
            chain identifier when loaded from a PDB
     """
+
     def __init__(self, name, residues):
         """Initialize a Segment with segid *name* from a list of :class:`Residue` instances."""
         super(Segment, self).__init__(residues)
@@ -2541,12 +2573,12 @@ class Segment(ResidueGroup):
         return self.name
 
     @id.setter
-    def id(self,x):
+    def id(self, x):
         self.name = x
 
     def __getattr__(self, attr):
         if attr[0] == 'r':
-            resnum = int(attr[1:]) - 1   # 1-based for the user, 0-based internally
+            resnum = int(attr[1:]) - 1  # 1-based for the user, 0-based internally
             return self[resnum]
         else:
             # There can be multiple residues with the same name
@@ -2561,7 +2593,8 @@ class Segment(ResidueGroup):
                 return ResidueGroup(r)
 
     def __repr__(self):
-        return '<'+self.__class__.__name__+' '+repr(self.name)+'>'
+        return '<' + self.__class__.__name__ + ' ' + repr(self.name) + '>'
+
 
 class SegmentGroup(ResidueGroup):
     """A group of segments.
@@ -2584,6 +2617,7 @@ class SegmentGroup(ResidueGroup):
 
     """
     _containername = "_segments"
+
     def __init__(self, segments):
         """Initialize the SegmentGroup with a list of :class:`Segment` instances."""
         self._segments = segments
@@ -2608,7 +2642,7 @@ class SegmentGroup(ResidueGroup):
         if len(values) == 1:
             self._set_atoms(name, values[0], **kwargs)
         elif len(values) == len(self.segments):
-            for s,value in itertools.izip(self.segments, values):
+            for s, value in itertools.izip(self.segments, values):
                 s._set_atoms(name, value, **kwargs)
         else:
             raise ValueError("set_segments: can only set all atoms to a single value or each atom to a distinct one "
@@ -2663,7 +2697,7 @@ class SegmentGroup(ResidueGroup):
         # This is a hack to be able to set properties on Segment/Atom
         # instances where they have different names
         #attr = {'segid': 'id'}
-        for seg,value in itertools.izip(self.segments, itertools.cycle(util.asiterable(segid))):
+        for seg, value in itertools.izip(self.segments, itertools.cycle(util.asiterable(segid))):
             setattr(seg, 'name', value)
 
     def __getattr__(self, attr):
@@ -2680,7 +2714,7 @@ class SegmentGroup(ResidueGroup):
         return seglist[0]
 
     def __repr__(self):
-        return '<'+self.__class__.__name__+' '+repr(self._segments)+'>'
+        return '<' + self.__class__.__name__ + ' ' + repr(self._segments) + '>'
 
 
 class Universe(object):
@@ -2753,6 +2787,7 @@ class Universe(object):
        Added .angles and .torsions attribute as :class:`~MDAnalysis.topology.core.TopologyGroup`
        Added fragments to Universe cache
     """
+
     def __init__(self, *args, **kwargs):
         """Initialize the central MDAnalysis Universe object.
 
@@ -2865,7 +2900,7 @@ class Universe(object):
                 topology_format = kwargs.get('format', None)
             if guess_format(topologyfile, format=kwargs.get('format', None)) in \
                     MDAnalysis.coordinates._topology_coordinates_readers:
-                coordinatefile = topologyfile         # hack for pdb/gro/crd - only
+                coordinatefile = topologyfile  # hack for pdb/gro/crd - only
             # Fix by SB: make sure coordinatefile is never an empty tuple
             if len(coordinatefile) == 0:
                 coordinatefile = None
@@ -2946,10 +2981,11 @@ class Universe(object):
         's4AKE'.
         """
         from MDAnalysis.topology.core import build_segments
+
         segments = build_segments(self.atoms)
         for seg in segments.keys():
             if seg[0].isdigit():
-                newsegname = 's'+seg
+                newsegname = 's' + seg
                 segments[newsegname] = segments[seg]
                 del segments[seg]
         self.__dict__.update(segments)
@@ -2958,7 +2994,7 @@ class Universe(object):
         # create memory problems?
         self.segments = self.atoms.segments
         self.residues = self.atoms.residues
-        self.universe = self    # for Writer.write(universe), see Issue 49
+        self.universe = self  # for Writer.write(universe), see Issue 49
 
     def _init_bonds(self):
         """Set bond information from u._psf['_bonds']
@@ -2973,7 +3009,7 @@ class Universe(object):
         def fix_order(bondset):
             """Make sure that all bonds have first index less than second"""
             return set([tuple(sorted(b)) for b in bondset])
-                
+
         bondlist = set()
 
         defined_bonds = fix_order(self._psf.get('_bonds', set()))
@@ -2987,14 +3023,14 @@ class Universe(object):
         for bondset, guessed in zip([defined_bonds, guessed_bonds],
                                     [False, True]):
             for bond in bondset:
-                i,j = bond[0], bond[1]
+                i, j = bond[0], bond[1]
 
                 if bondorder:
                     order = bondorder.get(bond, None)
                 else:
                     order = None
 
-                a1, a2 = self.atoms[i],self.atoms[j]
+                a1, a2 = self.atoms[i], self.atoms[j]
                 bond = Bond([a1, a2], order=order)
                 bond.is_guessed = guessed
 
@@ -3018,8 +3054,8 @@ class Universe(object):
             return None
         else:
             from MDAnalysis.topology.core import TopologyGroup, Angle
-            angle_list = [Angle([self.atoms[a] for a in entry])
-                          for entry in angle_entries]
+
+            angle_list = [Angle([self.atoms[a] for a in entry]) for entry in angle_entries]
             if len(angle_list) > 0:
                 return TopologyGroup(angle_list)
             else:
@@ -3038,8 +3074,9 @@ class Universe(object):
             return None
         else:
             from MDAnalysis.topology.core import TopologyGroup, Torsion
+
             torsion_list = [Torsion([self.atoms[a] for a in entry])
-                            for entry in torsion_entries]
+                for entry in torsion_entries]
             if len(torsion_list) > 0:
                 return TopologyGroup(torsion_list)
             else:
@@ -3058,13 +3095,13 @@ class Universe(object):
             return None
         else:
             from MDAnalysis.topology.core import TopologyGroup, Improper_Torsion
-            torsion_list = [Improper_Torsion([self.atoms[a] for a in entry])
-                            for entry in torsion_entries]
+
+            torsion_list = [Improper_Torsion([self.atoms[a] for a in entry]) for entry in torsion_entries]
             if len(torsion_list) > 0:
-                return TopologyGroup(torsion_list)        
+                return TopologyGroup(torsion_list)
             else:
                 return None
-        
+
     def _init_fragments(self):
         """Build all fragments in the Universe
 
@@ -3088,6 +3125,7 @@ class Universe(object):
 
         class _fragset(object):
             """Normal sets aren't hashable, this is"""
+
             def __init__(self, ats):
                 self.ats = set(ats)
 
@@ -3100,7 +3138,7 @@ class Universe(object):
             def update(self, other):
                 self.ats.update(other.ats)
 
-        f = {a:None for a in self.atoms}  # each atom starts with its own list
+        f = {a: None for a in self.atoms}  # each atom starts with its own list
 
         for a1, a2 in bonds:  # Iterate through all bonds
             if not (f[a1] or f[a2]):  # New set made here
@@ -3116,10 +3154,10 @@ class Universe(object):
                 continue
             else:  # If they are both in different fragments, combine fragments
                 f[a1].update(f[a2])
-                f.update({a:f[a1] for a in f[a2]})           
+                f.update({a: f[a1] for a in f[a2]})
 
-        # Lone atoms get their own fragment
-        f.update({a:_fragset((a,)) for a, val in f.items() if not val})
+                # Lone atoms get their own fragment
+        f.update({a: _fragset((a,)) for a, val in f.items() if not val})
 
         # All the unique values in f are the fragments
         frags = tuple([AtomGroup(list(a.ats)) for a in set(f.values())])
@@ -3166,7 +3204,7 @@ class Universe(object):
         """
         bonds = self.angles
         bd = defaultdict(list)
-    
+
         if bonds is None:
             pass
         else:
@@ -3554,9 +3592,11 @@ class Universe(object):
         .. versionchanged:: 0.8.1
            Added *group* and *fullgroup* selections.
         """
-        import Selection     # can ONLY import in method, otherwise cyclical import!
+        import Selection  # can ONLY import in method, otherwise cyclical import!
+
         atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
-        if len(othersel) == 0: return atomgrp
+        if len(othersel) == 0:
+            return atomgrp
         else:
             # Generate a selection for each selection string
             #atomselections = [atomgrp]
@@ -3567,9 +3607,10 @@ class Universe(object):
             return atomgrp
 
     def __repr__(self):
-        return '<'+self.__class__.__name__+' with '+repr(len(self.atoms))+' atoms' \
-                +(" and %d bonds" % len(self.bonds) \
-                  if hasattr(self, "bonds") and self.bonds and len(self.bonds) else '') + '>'
+        return \
+            '<' + self.__class__.__name__ + ' with ' + repr(len(self.atoms)) + ' atoms' \
+            + (" and %d bonds" % len(self.bonds) if hasattr(self, "bonds") and self.bonds and len(self.bonds) else '') \
+            + '>'
 
     def __getstate__(self):
         raise NotImplementedError
@@ -3615,7 +3656,7 @@ class Universe(object):
     @property
     def trajectory(self):
         """Reference to trajectory reader object containing trajectory data."""
-        if not self.__trajectory == None:
+        if not self.__trajectory is None:
             return self.__trajectory
         else:
             raise AttributeError("No trajectory loaded into Universe")
@@ -3628,8 +3669,6 @@ class Universe(object):
     # NOTE: DO NOT ADD A __del__() method: it somehow keeps the Universe
     #       alive during unit tests and the unit tests run out of memory!
     #### def __del__(self): <------ do not add this! [orbeckst]
-
-
 
 
 def asUniverse(*args, **kwargs):
@@ -3702,7 +3741,7 @@ def Merge(*args):
 
     for a in args:
         if not isinstance(a, AtomGroup):
-            raise TypeError(repr(a)+" is not an AtomGroup")
+            raise TypeError(repr(a) + " is not an AtomGroup")
     for a in args:
         if len(a) == 0:
             raise ValueError("cannot merge empty AtomGroup")
@@ -3719,11 +3758,12 @@ def Merge(*args):
 
     # create a list of Atoms, then convert it to an AtomGroup
     atoms = [copy.copy(a) for gr in args for a in gr]
-    for a in atoms: a.universe = u
+    for a in atoms:
+        a.universe = u
     # adjust the atom numbering
     for i, a in enumerate(atoms):
         a.number = i
-        a.serial = i+1
+        a.serial = i + 1
     u.atoms = AtomGroup(atoms)
     # adjust the residue and segment numbering (removes any remaining references to the old universe)
     MDAnalysis.topology.core.build_residues(u.atoms)

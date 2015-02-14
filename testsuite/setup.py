@@ -1,4 +1,5 @@
 #! /usr/bin/python
+# coding=utf-8
 """Setuptools-based setup script for tests of MDAnalysis.
 
 A working installation of NumPy <http://numpy.scipy.org> is required.
@@ -28,7 +29,7 @@ By changing the code below you can also switch to a standard distutils
 installation.
 """
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 # selection of the installation system
 #------------------------------------------------------------
 #
@@ -43,26 +44,27 @@ installation.
 #
 from __future__ import print_function
 from ez_setup import use_setuptools
+
 use_setuptools()
 from setuptools import setup, Extension
 #
 #------------------------------------------------------------
 
-import sys, os
+import sys
+import os
 import glob
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 6):
-    print("MDAnalysis requires Python 2.6 or better. Python %d.%d detected" % \
-        sys.version_info[:2])
+    print("MDAnalysis requires Python 2.6 or better. Python %d.%d detected" %
+          sys.version_info[:2])
     print("Please upgrade your version of Python.")
     sys.exit(-1)
 
-
 if __name__ == '__main__':
-    RELEASE = "0.8.2-dev"         # this must be in-sync with MDAnalysis
+    RELEASE = "0.8.2-dev"  # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
-"""MDAnalysis is a tool for analyzing molecular dynamics trajectories.
+        """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
 This package (MDAnalysisTests) contains the test code and the trajectory data
 that are used for the test cases. In order to make downloads and binary package
@@ -72,49 +74,52 @@ For details see the report for `Issue 87`_.
 
 .. _`Issue 87`: http://code.google.com/p/mdanalysis/issues/detail?id=87
 """
-    CLASSIFIERS = ['Development Status :: 4 - Beta',
-                   'Environment :: Console',
-                   'Intended Audience :: Science/Research',
-                   'License :: OSI Approved :: GNU General Public License (GPL)',
-                   'Operating System :: POSIX',
-                   'Operating System :: MacOS :: MacOS X',
-                   'Programming Language :: Python',
-                   'Programming Language :: C',
-                   'Topic :: Scientific/Engineering :: Bio-Informatics',
-                   'Topic :: Scientific/Engineering :: Chemistry',
-                   'Topic :: Software Development :: Libraries :: Python Modules',
-                   ]
+    CLASSIFIERS = [
+        'Development Status :: 4 - Beta',
+        'Environment :: Console',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'Operating System :: POSIX',
+        'Operating System :: MacOS :: MacOS X',
+        'Programming Language :: Python',
+        'Programming Language :: C',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'Topic :: Scientific/Engineering :: Chemistry',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+    ]
 
-    setup(name              = 'MDAnalysisTests',
-          version           = RELEASE,
-          description       = 'Python tools to support analysis of trajectories (test cases)',
-          author            = 'Naveen Michaud-Agrawal',
-          author_email      = 'naveen.michaudagrawal@gmail.com',
-          url               = 'http://mdanalysis.googlecode.com/',
-          license           = 'GPL 2',
-          packages          = ['MDAnalysisTests'],
-          package_dir       = {'MDAnalysisTests': 'MDAnalysisTests'},
-          package_data      = {'MDAnalysisTests':
-                                   ['data/*.psf','data/*.dcd','data/*.pdb',
-                                    'data/tprs/*.tpr','data/*.tpr',
-                                    'data/*.gro', 'data/*.xtc','data/*.trr', 'data/*npy',
-                                    'data/*.crd', 'data/*.xyz',
-                                    'data/*.prmtop', 'data/*.top', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',
-                                    'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
-                                    'data/*.fasta',
-                                    'data/*.dms',
-                                    'data/merge/2zmm/*.pdb',
-                                    'data/*.trz',
-                                    'data/mol2/*.mol2',
-                                    'data/capping/*.gro', 'data/capping/*.pdb',
-                                    'data/*.data',
-                                    ],
-                               },
-          classifiers       = CLASSIFIERS,
-          long_description  = LONG_DESCRIPTION,
-          install_requires  = ['MDAnalysis==%s' % RELEASE,  # same as this release!
-                               'numpy>=1.3',
-                               'nose>=0.10',
-                               ],
-          zip_safe = False,   # had 'KeyError' as zipped egg (2MB savings are not worth the trouble)
+    setup(name='MDAnalysisTests',
+          version=RELEASE,
+          description='Python tools to support analysis of trajectories (test cases)',
+          author='Naveen Michaud-Agrawal',
+          author_email='naveen.michaudagrawal@gmail.com',
+          url='http://mdanalysis.googlecode.com/',
+          license='GPL 2',
+          packages=['MDAnalysisTests'],
+          package_dir={'MDAnalysisTests': 'MDAnalysisTests'},
+          package_data={'MDAnalysisTests':
+              [
+                  'data/*.psf', 'data/*.dcd', 'data/*.pdb',
+                  'data/tprs/*.tpr', 'data/*.tpr',
+                  'data/*.gro', 'data/*.xtc', 'data/*.trr', 'data/*npy',
+                  'data/*.crd', 'data/*.xyz',
+                  'data/*.prmtop', 'data/*.top', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',
+                  'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
+                  'data/*.fasta',
+                  'data/*.dms',
+                  'data/merge/2zmm/*.pdb',
+                  'data/*.trz',
+                  'data/mol2/*.mol2',
+                  'data/capping/*.gro', 'data/capping/*.pdb',
+                  'data/*.data',
+              ],
+          },
+          classifiers=CLASSIFIERS,
+          long_description=LONG_DESCRIPTION,
+          install_requires=[
+              'MDAnalysis==%s' % RELEASE,  # same as this release!
+              'numpy>=1.3',
+              'nose>=0.10',
+          ],
+          zip_safe=False,  # had 'KeyError' as zipped egg (2MB savings are not worth the trouble)
           )

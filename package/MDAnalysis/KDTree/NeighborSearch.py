@@ -1,18 +1,16 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
-#
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 # Neighbour searching in MDAnalysis.
@@ -51,12 +49,14 @@ Example::
 import numpy
 from KDTree import KDTree
 from MDAnalysis.core.AtomGroup import AtomGroup
+
 try:
     set([])
 except NameError:
     from sets import Set as set
 
-entity_levels = ('A','R','S')
+entity_levels = ('A', 'R', 'S')
+
 
 class CoordinateNeighborSearch(object):
     """
@@ -70,7 +70,8 @@ class CoordinateNeighborSearch(object):
 
     CoordinateNeighborSearch makes use of the KDTree C++ module, so it's fast.
     """
-    def __init__(self, coordinates, bucket_size=10): ##, copy=True):
+
+    def __init__(self, coordinates, bucket_size=10):  # , copy=True):
         """
         :Arguments:
          *coordinates*
@@ -84,11 +85,11 @@ class CoordinateNeighborSearch(object):
         ## (also force a copy by default and make sure that the array order is compatible
         ## with the C++ code)
         ##self.coords=numpy.array(coordinates,dtype=numpy.float32,copy=copy,order='C')
-        self.coords=numpy.asarray(coordinates,dtype=numpy.float32,order='C')
-        assert(self.coords.dtype == numpy.float32)
-        assert(bucket_size>1)
-        assert(self.coords.shape[1]==3)
-        self.kdt=KDTree(3, bucket_size)
+        self.coords = numpy.asarray(coordinates, dtype=numpy.float32, order='C')
+        assert (self.coords.dtype == numpy.float32)
+        assert (bucket_size > 1)
+        assert (self.coords.shape[1] == 3)
+        self.kdt = KDTree(3, bucket_size)
         self.kdt.set_coords(self.coords)
 
     def search(self, center, radius, distances=False):
@@ -154,6 +155,7 @@ class CoordinateNeighborSearch(object):
         """Return all distances after search_all()."""
         return self.kdt.all_get_radii()
 
+
 class AtomNeighborSearch(CoordinateNeighborSearch):
     """
     This class can be used for two related purposes:
@@ -166,6 +168,7 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
 
     AtomNeighborSearch makes use of the KDTree C++ module, so it's fast.
     """
+
     def __init__(self, atom_list, bucket_size=10):
         """
         :Arguments:
@@ -177,11 +180,11 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
             bucket size of KD tree. You can play around with this to optimize speed if you feel like it.
 
         """
-        self.atom_list=atom_list
-        if not hasattr(atom_list,'coordinates'):
+        self.atom_list = atom_list
+        if not hasattr(atom_list, 'coordinates'):
             raise TypeError('atom_list must have a coordinates() method '
                             '(eg a AtomGroup resulting from a Selection)')
-        CoordinateNeighborSearch.__init__(self,atom_list.coordinates(),bucket_size=bucket_size)
+        CoordinateNeighborSearch.__init__(self, atom_list.coordinates(), bucket_size=bucket_size)
 
     def search(self, center, radius, level="A"):
         """Neighbor search.
@@ -207,8 +210,8 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
         functions.
         """
         self.kdt.search(center, radius)
-        indices=self.kdt.get_indices()
-        return self._index2level(indices,level)
+        indices = self.kdt.get_indices()
+        return self._index2level(indices, level)
 
     def search_list(self, other, radius, level='A'):
         """Search neighbours near all atoms in atoms.
@@ -230,22 +233,22 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
 
         """
         self.kdt.list_search(other.coordinates(), radius)
-        indices=self.kdt.list_get_indices()
-        return self._index2level(indices,level)
+        indices = self.kdt.list_get_indices()
+        return self._index2level(indices, level)
 
-    def _index2level(self,indices,level):
+    def _index2level(self, indices, level):
         if not level in entity_levels:
             raise ValueError("%s: Unknown level" % level)
         n_atom_list = [self.atom_list[i] for i in indices]
-        if level=="A":
+        if level == "A":
             try:
                 return AtomGroup(n_atom_list)
             except:
-                return [] # empty n_atom_list (AtomGroup throws exception, can't be easily fixed...)
-        elif level=="R":
+                return []  # empty n_atom_list (AtomGroup throws exception, can't be easily fixed...)
+        elif level == "R":
             residues = set([a.residue for a in n_atom_list])
             return list(residues)
-        elif level=="S":
+        elif level == "S":
             segments = set([a.segment for a in n_atom_list])
             return list(segments)
         else:
@@ -269,69 +272,68 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
         if not level in entity_levels:
             raise ValueError("%s: Unknown level" % level)
         self.kdt.all_search(radius)
-        indices=self.kdt.all_get_indices()
-        atom_list=self.atom_list
-        atom_pair_list=[]
+        indices = self.kdt.all_get_indices()
+        atom_list = self.atom_list
+        atom_pair_list = []
         for i1, i2 in indices:
-            a1=atom_list[i1]
-            a2=atom_list[i2]
+            a1 = atom_list[i1]
+            a2 = atom_list[i2]
             atom_pair_list.append(AtomGroup([a1, a2]))
-        if level=="A":
+        if level == "A":
             return atom_pair_list  # return atoms as list of AtomGroup pairs
         elif level == "R":
-            return self._get_unique_pairs('residue',atom_pair_list)
+            return self._get_unique_pairs('residue', atom_pair_list)
         elif level == "S":
-            return self._get_unique_pairs('segment',atom_pair_list)
+            return self._get_unique_pairs('segment', atom_pair_list)
         else:
             raise NotImplementedError("level=%s not implemented" % level)
 
-    def _get_unique_pairs(self,entity,atom_pair_list):
+    def _get_unique_pairs(self, entity, atom_pair_list):
         # This is slow for large atom_pair_lists such as when doing entity='residues'.
         # use sets to remove duplicates:
         unique_pairs = set([
-                sets.ImmutableSet((a1.__getattribute__(entity),
-                                   a2.__getattribute__(entity)))
-                for a1,a2 in atom_pair_list
-                if a1.__getattribute__(entity) != a2.__getattribute__(entity)])
+            sets.ImmutableSet((a1.__getattribute__(entity),a2.__getattribute__(entity))) for a1, a2 in atom_pair_list
+            if a1.__getattribute__(entity) != a2.__getattribute__(entity)])
         return [tuple(s) for s in unique_pairs]  # return as list of 2-tuples
 
-def _test(x,y,z,R):
+
+def _test(x, y, z, R):
     """Find points of a 2x2 square (+origin) within R of x,y,z."""
     import numpy
-    coords = numpy.array([ [0,0,0],
-                           [1,1,0],
-                           [-1,1,0],
-                           [-1,-1,0],
-                           [1,-1,0] ], dtype=numpy.float32)
-    CNS = CoordinateNeighborSearch(coords)
-    center = numpy.array([x,y,z])
-    found_indices = CNS.search(center,R)
-    # check manually
-    diff = coords[found_indices] - center[numpy.newaxis,:]
-    return found_indices,numpy.sqrt(numpy.sum(diff*diff, axis=1))
 
-if __name__=="__main__":
+    coords = numpy.array(
+        [
+            [0, 0, 0],
+            [1, 1, 0],
+            [-1, 1, 0],
+            [-1, -1, 0],
+            [1, -1, 0]],
+        dtype=numpy.float32)
+    CNS = CoordinateNeighborSearch(coords)
+    center = numpy.array([x, y, z])
+    found_indices = CNS.search(center, R)
+    # check manually
+    diff = coords[found_indices] - center[numpy.newaxis, :]
+    return found_indices, numpy.sqrt(numpy.sum(diff * diff, axis=1))
+
+
+if __name__ == "__main__":
     import numpy
 
     class Atom:
         def __init__(self):
-            self.coord=100*numpy.random.random(3)
+            self.coord = 100 * numpy.random.random(3)
+
         def coordinates(self):
             return self.coord
 
     class AtomGroup(list):
         def coordinates(self):
-            return numpy.array( [atom.coordinates() for atom in self] )
+            return numpy.array([atom.coordinates() for atom in self])
 
     for i in range(0, 20):
-        al=AtomGroup([Atom() for i in range(0, 1000)])
+        al = AtomGroup([Atom() for i in range(0, 1000)])
 
-        ns=AtomNeighborSearch(al)
+        ns = AtomNeighborSearch(al)
 
         print "Found ", len(ns.search_all(5.0))
-
-
-
-
-
-

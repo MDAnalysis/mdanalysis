@@ -3,7 +3,7 @@
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
 # Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
+# Elizabeth J. Denning, Oliver Beckstein,
 #               and contributors (see AUTHORS for the full list)
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -38,7 +38,9 @@ from scipy.weave import converters
 from MDAnalysis.core.distances import distance_array, self_distance_array
 
 import logging
+
 logger = logging.getLogger("MDAnalysis.analysis.distances")
+
 
 def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_meter_freq=100, suppress_progmet=False):
     '''Calculates a matrix of contacts between a list of coordinates.
@@ -55,17 +57,17 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_me
     updates. Or switch *suppress_progmet* to ``True`` to suppress it
     completely.
     '''
-    if returntype=="numpy":
-        adj = (distance_array(coord,coord,box=box) < cutoff)
+    if returntype == "numpy":
+        adj = (distance_array(coord, coord, box=box) < cutoff)
         return adj
 
-    elif returntype=="sparse":
+    elif returntype == "sparse":
         # Initialize square List of Lists matrix of dimensions equal to number of coordinates passed
         sparse_contacts = sparse.lil_matrix((len(coord), len(coord)), dtype='bool')
         # if PBC
 
         # TODO Jan: this distance matrix will be symmetric, hence some of the iterations could be skipped.
-        if box != None:
+        if box is not None:
             contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, suppress_progmet)
 
         # if no PBC
@@ -73,6 +75,7 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_me
             contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, suppress_progmet)
 
         return sparse_contacts
+
 
 def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, suppress_progmet):
     """Contact matrix calculation with periodic boundary conditions.
@@ -153,9 +156,12 @@ def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq,
     }
     """
 
-    weave.inline(c_code, ['coord', 'sparse_contacts', 'box', 'box_half', 'cutoff', 'progress_meter_freq', 'suppress_progmet'], type_converters=converters.blitz)
+    weave.inline(c_code,
+                 ['coord', 'sparse_contacts', 'box', 'box_half', 'cutoff', 'progress_meter_freq', 'suppress_progmet'],
+                 type_converters=converters.blitz)
 
-def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, suppress_progmet ):
+
+def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, suppress_progmet):
     """Contact matrix calculation without periodic boundary conditions.
 
     You don't have to call this function explicitly; just set *box* =
@@ -210,7 +216,8 @@ def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, s
     }
     """
 
-    weave.inline(c_code, ['coord', 'sparse_contacts', 'cutoff', 'progress_meter_freq', 'suppress_progmet'], type_converters=converters.blitz)
+    weave.inline(c_code, ['coord', 'sparse_contacts', 'cutoff', 'progress_meter_freq', 'suppress_progmet'],
+                 type_converters=converters.blitz)
 
 
 def dist(A, B, offset=0):
@@ -250,29 +257,30 @@ def dist(A, B, offset=0):
     residues_A = numpy.array(A.resids()) + off_A
     residues_B = numpy.array(B.resids()) + off_B
     r = A.coordinates() - B.coordinates()
-    d = numpy.sqrt(numpy.sum(r*r, axis=1))
+    d = numpy.sqrt(numpy.sum(r * r, axis=1))
     return numpy.array([residues_A, residues_B, d])
 
 
 def between(group, A, B, distance):
-  """Return sub group of *group* that is within *distance* of both *A* and *B*.
+    """Return sub group of *group* that is within *distance* of both *A* and *B*.
 
-  *group*, *A*, and *B* must be
-  :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances.  Works best
-  if *group* is bigger than either *A* or *B*. This function is not
-  aware of periodic boundary conditions.
+    *group*, *A*, and *B* must be
+    :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances.  Works best
+    if *group* is bigger than either *A* or *B*. This function is not
+    aware of periodic boundary conditions.
 
-  Can be used to find bridging waters or molecules in an interface.
+    Can be used to find bridging waters or molecules in an interface.
 
-  Similar to "*group* and (AROUND *A* *distance* and AROUND *B* *distance*)".
+    Similar to "*group* and (AROUND *A* *distance* and AROUND *B* *distance*)".
 
-  .. SeeAlso:: Makes use of :mod:`MDAnalysis.KDTree.NeighborSearch`.
+    .. SeeAlso:: Makes use of :mod:`MDAnalysis.KDTree.NeighborSearch`.
 
-  .. versionadded: 0.7.5
-  """
-  from MDAnalysis.KDTree.NeighborSearch import AtomNeighborSearch
-  from MDAnalysis.core.AtomGroup import AtomGroup
-  ns_group = AtomNeighborSearch(group)
-  resA = set(ns_group.search_list(A, distance))
-  resB = set(ns_group.search_list(B, distance))
-  return AtomGroup(resB.intersection(resA))
+    .. versionadded: 0.7.5
+    """
+    from MDAnalysis.KDTree.NeighborSearch import AtomNeighborSearch
+    from MDAnalysis.core.AtomGroup import AtomGroup
+
+    ns_group = AtomNeighborSearch(group)
+    resA = set(ns_group.search_list(A, distance))
+    resB = set(ns_group.search_list(B, distance))
+    return AtomGroup(resB.intersection(resA))

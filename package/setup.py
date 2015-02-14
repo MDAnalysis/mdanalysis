@@ -1,4 +1,20 @@
-#! /usr/bin/python
+#!python
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- http://mdanalysis.googlecode.com
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+
 """Setuptools-based setup script for MDAnalysis.
 
 A working installation of NumPy <http://numpy.scipy.org> is required.
@@ -27,10 +43,10 @@ details of such an "EasyInstall" installation procedure are shown on
 By changing the code below you can also switch to a standard distutils
 installation.
 """
-
-#------------------------------------------------------------
+from __future__ import print_function
+# ------------------------------------------------------------
 # selection of the installation system
-#------------------------------------------------------------
+# ------------------------------------------------------------
 #
 # Standard distutils-based installation:
 #
@@ -42,31 +58,32 @@ installation.
 # out the preceding line 'from distutils.core import ...'
 #
 from ez_setup import use_setuptools
+
 use_setuptools()
 from setuptools import setup, Extension
 from distutils.ccompiler import new_compiler
 #
 #------------------------------------------------------------
 
-import sys, os
-import glob
+import os
+import sys
 import shutil
 import tempfile
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 6):
-    print "MDAnalysis requires Python 2.6 or better. Python %d.%d detected" % \
-        sys.version_info[:2]
-    print "Please upgrade your version of Python."
+    print("MDAnalysis requires Python 2.6 or better. Python %d.%d detected" %
+          sys.version_info[:2])
+    print("Please upgrade your version of Python.")
     sys.exit(-1)
 
 try:
     # Obtain the numpy include directory.  This logic works across numpy versions.
     import numpy
 except ImportError:
-    print "*** package 'numpy' not found ***"
-    print "MDAnalysis requires a version of NumPy (>=1.0.3), even for setup."
-    print "Please get it from http://numpy.scipy.org/ or install it through your package manager."
+    print("*** package 'numpy' not found ***")
+    print("MDAnalysis requires a version of NumPy (>=1.0.3), even for setup.")
+    print("Please get it from http://numpy.scipy.org/ or install it through your package manager.")
     sys.exit(-1)
 
 try:
@@ -79,6 +96,7 @@ include_dirs = [numpy_include]
 # Handle cython modules
 try:
     from Cython.Distutils import build_ext
+
     use_cython = True
     cmdclass = {'build_ext': build_ext}
 except ImportError:
@@ -89,10 +107,12 @@ if use_cython:
     # cython has to be >=0.16 to support cython.parallel
     import Cython
     from distutils.version import LooseVersion
+
     required_version = "0.16"
 
     if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
-        raise ImportError("Cython version {0} (found {1}) is required because it offers a handy parallelisation module".format(
+        raise ImportError(
+            "Cython version {0} (found {1}) is required because it offers a handy parallelisation module".format(
                 required_version, Cython.__version__))
     del Cython
     del LooseVersion
@@ -135,9 +155,9 @@ def hasfunction(cc, funcname, include=None, extra_postargs=None):
 
 
 def detect_openmp():
-    "Does this compiler support OpenMP parallelization?"
+    """Does this compiler support OpenMP parallelization?"""
     compiler = new_compiler()
-    print "Attempting to autodetect OpenMP support... ",
+    print("Attempting to autodetect OpenMP support... ", end="")
     hasopenmp = hasfunction(compiler, 'omp_get_num_threads()')
     needs_gomp = hasopenmp
     if not hasopenmp:
@@ -145,27 +165,29 @@ def detect_openmp():
         hasopenmp = hasfunction(compiler, 'omp_get_num_threads()')
         needs_gomp = hasopenmp
     if hasopenmp:
-        print "Compiler supports OpenMP"
+        print("Compiler supports OpenMP")
     else:
-        print "Did not detect OpenMP support."
+        print("Did not detect OpenMP support.")
     return hasopenmp, needs_gomp
 
+
 if __name__ == '__main__':
-    RELEASE = "0.8.2-dev"     # NOTE: keep in sync with MDAnalysis.version in __init__.py
+    RELEASE = "0.8.2-dev"  # NOTE: keep in sync with MDAnalysis.version in __init__.py
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
-    CLASSIFIERS = ['Development Status :: 4 - Beta',
-                   'Environment :: Console',
-                   'Intended Audience :: Science/Research',
-                   'License :: OSI Approved :: GNU General Public License (GPL)',
-                   'Operating System :: POSIX',
-                   'Operating System :: MacOS :: MacOS X',
-                   'Programming Language :: Python',
-                   'Programming Language :: C',
-                   'Topic :: Scientific/Engineering :: Bio-Informatics',
-                   'Topic :: Scientific/Engineering :: Chemistry',
-                   'Topic :: Software Development :: Libraries :: Python Modules',
-                   ]
+    CLASSIFIERS = [
+        'Development Status :: 4 - Beta',
+        'Environment :: Console',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'Operating System :: POSIX',
+        'Operating System :: MacOS :: MacOS X',
+        'Programming Language :: Python',
+        'Programming Language :: C',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'Topic :: Scientific/Engineering :: Chemistry',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+    ]
 
     if 'DEBUG_CFLAGS' in os.environ:
         extra_compile_args = '\
@@ -178,108 +200,125 @@ if __name__ == '__main__':
         define_macros = []
 
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing and access).
-    largefile_macros = [('_LARGEFILE_SOURCE',None),
-                        ('_LARGEFILE64_SOURCE',None),
-                        ('_FILE_OFFSET_BITS','64')]
+    largefile_macros = [
+        ('_LARGEFILE_SOURCE', None),
+        ('_LARGEFILE64_SOURCE', None),
+        ('_FILE_OFFSET_BITS', '64')
+    ]
 
     has_openmp, needs_gomp = detect_openmp()
     parallel_args = ['-fopenmp'] if has_openmp else []
     parallel_libraries = ['gomp'] if needs_gomp else []
 
-    extensions = [Extension('coordinates._dcdmodule', ['src/dcd/dcd.c'],
-                            include_dirs = include_dirs+['src/dcd/include'],
-                            define_macros=define_macros,
-                            extra_compile_args=extra_compile_args),
-                  Extension('coordinates.dcdtimeseries', ['src/dcd/dcdtimeseries.%s' % ("pyx" if use_cython else "c")],
-                            include_dirs = include_dirs+['src/dcd/include'],
-                            define_macros=define_macros,
-                            extra_compile_args=extra_compile_args),
-                  Extension('core.distances', ['src/numtools/distances.%s' % ("pyx" if use_cython else "c")],
-                            include_dirs = include_dirs+['src/numtools'],
-                            libraries = ['m'],
-                            define_macros=define_macros,
-                            extra_compile_args=extra_compile_args),
-                  Extension("core.parallel.distances",
-                            ['src/numtools/distances_parallel.%s' % ("pyx" if use_cython else "c")],
-                            include_dirs=include_dirs,
-                            libraries = ['m'] + parallel_libraries,
-                            extra_compile_args=parallel_args,
-                            extra_link_args=parallel_args),
-                  Extension('core.qcprot', ['src/pyqcprot/pyqcprot.%s' % ("pyx" if use_cython else "c")],
-                            include_dirs=include_dirs,
-                            extra_compile_args=["-O3", "-ffast-math"]),
-                  Extension('core._transformations', ['src/transformations/transformations.c'],
-                            libraries = ['m'],
-                            define_macros=define_macros,
-                            include_dirs = include_dirs,
-                            extra_compile_args=extra_compile_args),
-                  Extension('KDTree._CKDTree',
-                            ["src/KDTree/KDTree.cpp",
-                             "src/KDTree/KDTree.swig.cpp"],
-                            include_dirs = include_dirs,
-                            libraries=["stdc++"],
-                            language="c++"),
-                  Extension('coordinates.xdrfile._libxdrfile2',
-                            sources=['src/xdrfile/libxdrfile2_wrap.c',
-                                     'src/xdrfile/xdrfile.c',
-                                     'src/xdrfile/xdrfile_trr.c',
-                                     'src/xdrfile/xdrfile_xtc.c'],
-                            include_dirs = include_dirs,
-                            define_macros=largefile_macros)
-                  ]
+    extensions = [
+        Extension('coordinates._dcdmodule', ['src/dcd/dcd.c'],
+                  include_dirs=include_dirs + ['src/dcd/include'],
+                  define_macros=define_macros,
+                  extra_compile_args=extra_compile_args),
+        Extension('coordinates.dcdtimeseries', ['src/dcd/dcdtimeseries.%s' % ("pyx" if use_cython else "c")],
+                  include_dirs=include_dirs + ['src/dcd/include'],
+                  define_macros=define_macros,
+                  extra_compile_args=extra_compile_args),
+        Extension('core.distances', ['src/numtools/distances.%s' % ("pyx" if use_cython else "c")],
+                  include_dirs=include_dirs + ['src/numtools'],
+                  libraries=['m'],
+                  define_macros=define_macros,
+                  extra_compile_args=extra_compile_args),
+        Extension("core.parallel.distances",
+                  ['src/numtools/distances_parallel.%s' % ("pyx" if use_cython else "c")],
+                  include_dirs=include_dirs,
+                  libraries=['m'] + parallel_libraries,
+                  extra_compile_args=parallel_args,
+                  extra_link_args=parallel_args),
+        Extension('core.qcprot', ['src/pyqcprot/pyqcprot.%s' % ("pyx" if use_cython else "c")],
+                  include_dirs=include_dirs,
+                  extra_compile_args=["-O3", "-ffast-math"]),
+        Extension('core._transformations', ['src/transformations/transformations.c'],
+                  libraries=['m'],
+                  define_macros=define_macros,
+                  include_dirs=include_dirs,
+                  extra_compile_args=extra_compile_args),
+        Extension('KDTree._CKDTree',
+                  ["src/KDTree/KDTree.cpp",
+                      "src/KDTree/KDTree.swig.cpp"],
+                  include_dirs=include_dirs,
+                  libraries=["stdc++"],
+                  language="c++"),
+        Extension('coordinates.xdrfile._libxdrfile2',
+                  sources=[
+                      'src/xdrfile/libxdrfile2_wrap.c',
+                      'src/xdrfile/xdrfile.c',
+                      'src/xdrfile/xdrfile_trr.c',
+                      'src/xdrfile/xdrfile_xtc.c'
+                  ],
+                  include_dirs=include_dirs,
+                  define_macros=largefile_macros),
+        Extension('coordinates.fastxdrio',
+                  sources=[
+                      'src/fastxdrfile/xdrfile.c',
+                      'src/fastxdrfile/xdrfile_trr.c',
+                      'src/fastxdrfile/xdrfile_xtc.c',
+                      'MDAnalysis/coordinates/fastxdrio.%s' % ("pyx" if use_cython else "c")
+                  ],
+                  include_dirs=include_dirs + ['src/fastxdrfile/'],
+                  define_macros=largefile_macros)
+    ]
 
-    setup(name              = 'MDAnalysis',
-          version           = RELEASE,
-          description       = 'An object-oriented toolkit to analyze molecular dynamics trajectories generated by CHARMM, Gromacs, NAMD, LAMMPS, or Amber.',
-          author            = 'Naveen Michaud-Agrawal',
-          author_email      = 'naveen.michaudagrawal@gmail.com',
-          url               = 'http://mdanalysis.googlecode.com/',
-          requires          = ['numpy (>=1.0.3)', 'biopython',
-                               'networkx (>=1.0)', 'scipy',
-                               'GridDataFormats'],
-          provides          = ['MDAnalysis'],
-          license           = 'GPL 2',
-          packages          = [ 'MDAnalysis',
-                                'MDAnalysis.core',
-                                'MDAnalysis.core.parallel',
-                                'MDAnalysis.topology',
-                                'MDAnalysis.topology.tpr',
-                                'MDAnalysis.selections',
-                                'MDAnalysis.coordinates',
-                                'MDAnalysis.coordinates.xdrfile',
-                                'MDAnalysis.coordinates.pdb',
-                                'MDAnalysis.KDTree',
-                                'MDAnalysis.analysis',
-                                'MDAnalysis.analysis.hbonds',
-                                'MDAnalysis.builder',
-                                'MDAnalysis.tests',
-                                'MDAnalysis.visualization'],
-          package_dir       = {'MDAnalysis': 'MDAnalysis'},
-          ext_package       = 'MDAnalysis',
-          ext_modules       = extensions,
-          classifiers       = CLASSIFIERS,
-          long_description  = LONG_DESCRIPTION,
-          cmdclass          = cmdclass,
+    setup(name='MDAnalysis',
+          version=RELEASE,
+          description='An object-oriented toolkit to analyze molecular dynamics trajectories generated by CHARMM, '
+                      'Gromacs, NAMD, LAMMPS, or Amber.',
+          author='Naveen Michaud-Agrawal',
+          author_email='naveen.michaudagrawal@gmail.com',
+          url='http://mdanalysis.googlecode.com/',
+          requires=['numpy (>=1.0.3)', 'biopython',
+              'networkx (>=1.0)', 'scipy',
+              'GridDataFormats'],
+          provides=['MDAnalysis'],
+          license='GPL 2',
+          packages=['MDAnalysis',
+              'MDAnalysis.core',
+              'MDAnalysis.core.parallel',
+              'MDAnalysis.topology',
+              'MDAnalysis.topology.tpr',
+              'MDAnalysis.selections',
+              'MDAnalysis.coordinates',
+              'MDAnalysis.coordinates.xdrfile',
+              'MDAnalysis.coordinates.pdb',
+              'MDAnalysis.KDTree',
+              'MDAnalysis.analysis',
+              'MDAnalysis.analysis.hbonds',
+              'MDAnalysis.builder',
+              'MDAnalysis.tests',
+              'MDAnalysis.visualization'],
+          package_dir={'MDAnalysis': 'MDAnalysis'},
+          ext_package='MDAnalysis',
+          ext_modules=extensions,
+          classifiers=CLASSIFIERS,
+          long_description=LONG_DESCRIPTION,
+          cmdclass=cmdclass,
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
-          install_requires = ['numpy>=1.0.3',   # currently not useful because without numpy we don't get here
-                              'biopython>=1.59',# required for standard PDB reader and sequence alignment
-                              'networkx>=1.0',  # LeafletFinder
-                              'GridDataFormats>=0.2.2', # volumes and densities
-                              ],
+          install_requires=[
+              'numpy>=1.0.3',  # currently not useful because without numpy we don't get here
+              'biopython>=1.59',  # required for standard PDB reader and sequence alignment
+              'networkx>=1.0',  # LeafletFinder
+              'GridDataFormats>=0.2.2',  # volumes and densities
+          ],
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
           # packaging system
-          extras_require = {
-                'AMBER':    ['netCDF4>=1.0',   # for AMBER netcdf, also needs HDF5 and netcdf-4
-                             ],
-                'analysis': ['matplotlib',
-                             'scipy',          # sparse contact matrix
-                             ],
-                },
-          test_suite = "MDAnalysisTests",
-          tests_require = ['nose>=0.10',
-                           'MDAnalysisTests==%s' % RELEASE,  # same as this release!
-                           ],
-          zip_safe = False,     # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
-          )
+          extras_require={
+              'AMBER': ['netCDF4>=1.0'],  # for AMBER netcdf, also needs HDF5 and netcdf-4
+              'analysis': [
+                  'matplotlib',
+                  'scipy',  # sparse contact matrix
+              ],
+          },
+          test_suite="MDAnalysisTests",
+          tests_require=[
+              'nose>=0.10',
+              'MDAnalysisTests==%s' % RELEASE,  # same as this release!
+          ],
+          zip_safe=False,  # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
+    )

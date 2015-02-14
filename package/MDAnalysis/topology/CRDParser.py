@@ -1,18 +1,16 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
-#
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -47,11 +45,11 @@ class CRDParser(TopologyReader):
         atoms = []
         atom_serial = 0
         with openany(self.filename) as crd:
-            for linenum,line in enumerate(crd):
+            for linenum, line in enumerate(crd):
                 # reading header
                 if line.split()[0] == '*':
                     continue
-                elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) == True:
+                elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) is True:
                     r = extformat
                     continue
                 elif line.split()[0] == line.split()[-1] and line.split()[0] != '*':
@@ -59,19 +57,18 @@ class CRDParser(TopologyReader):
                     continue
                 # anything else should be an atom
                 try:
-                    serial,TotRes,resName,name,x,y,z,chainID,resSeq,tempFactor = r.read(line)
+                    serial, TotRes, resName, name, x, y, z, chainID, resSeq, tempFactor = r.read(line)
                 except:
                     raise ValueError("Check CRD format at line {}: {}".format(
                         linenum, line.rstrip()))
 
                 atomtype = guess_atom_type(name)
-                mass =  guess_atom_mass(name)
+                mass = guess_atom_mass(name)
                 charge = guess_atom_charge(name)
-                atoms.append(Atom(atom_serial,name,atomtype,resName,TotRes,chainID,mass,charge))
+                atoms.append(Atom(atom_serial, name, atomtype, resName, TotRes, chainID, mass, charge))
                 atom_serial += 1
 
         structure = {}
         structure["_atoms"] = atoms
 
         return structure
-

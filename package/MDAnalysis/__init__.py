@@ -1,19 +1,18 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
-#
+
 
 """
 :mod:`MDAnalysis` --- analysis of molecular simulations in python
@@ -159,14 +158,19 @@ __version__ = "0.8.2-dev"  # NOTE: keep in sync with RELEASE in setup.py
 __all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
 
 import logging
+
+
 # see the advice on logging and libraries in
 # http://docs.python.org/library/logging.html?#configuring-logging-for-a-library
 class NullHandler(logging.Handler):
     def emit(self, record):
         pass
+
+
 h = NullHandler()
 logging.getLogger("MDAnalysis").addHandler(h)
 del h
+
 
 def start_logging(logfile="MDAnalysis.log"):
     """Start logging of messages to file and console.
@@ -175,28 +179,36 @@ def start_logging(logfile="MDAnalysis.log"):
     logged with the tag *MDAnalysis*.
     """
     import core.log
+
     core.log.create("MDAnalysis", logfile=logfile)
     logging.getLogger("MDAnalysis").info("MDAnalysis %s STARTED logging to %r", __version__, logfile)
+
 
 def stop_logging():
     """Stop logging to logfile and console."""
     import core.log
+
     logger = logging.getLogger("MDAnalysis")
     logger.info("MDAnalysis STOPPED logging")
     core.log.clear_handlers(logger)  # this _should_ do the job...
+
 
 # custom exceptions and warnings
 class SelectionError(Exception):
     """Raised when a atom selection failed."""
 
+
 class FinishTimeException(Exception):
     """For Issue 188."""
+
 
 class NoDataError(ValueError):
     """Raised when empty input is not allowed or required data are missing."""
 
+
 class FormatError(EnvironmentError):
     """Raised when there appears to be a problem with format of input files."""
+
 
 class ApplicationError(OSError):
     """Raised when an external application failed.
@@ -206,17 +218,22 @@ class ApplicationError(OSError):
     .. versionadded:: 0.7.7
     """
 
+
 class SelectionWarning(Warning):
     """Warning indicating a possible problem with a selection."""
+
 
 class MissingDataWarning(Warning):
     """Warning indicating is that required data are missing."""
 
+
 class ConversionWarning(Warning):
     """Warning indicating a problem with converting between units."""
 
+
 class FileFormatWarning(Warning):
     """Warning indicating possible problems with a file format."""
+
 
 class StreamWarning(Warning):
     """Warning indicating a possible problem with a stream.
@@ -233,4 +250,3 @@ from core.AtomGroup import Universe, asUniverse, Merge
 from coordinates.core import writer as Writer
 
 collection = Timeseries.TimeseriesCollection()
-

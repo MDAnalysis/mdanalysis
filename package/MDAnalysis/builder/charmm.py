@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2012 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 Setting up systems for CHARMM
@@ -56,6 +56,8 @@ from MDAnalysis import NoDataError
 logger = logging.getLogger("MDAnalysis.build.charmm")
 
 import MDAnalysis
+
+
 class Preprocessor(object):
     """Perform actions on input structure to prepare it for CHARMM_.
 
@@ -74,10 +76,11 @@ class Preprocessor(object):
     def __init__(self, *args, **kwargs):
         """Set up universe with :func:`~MDAnalysis.core.AtomGroup.asUniverse`"""
         self.universe = MDAnalysis.asUniverse(*args, **kwargs)
-        self._fixes = [fixILE(self.universe),
-                       fixHIS(self.universe),
-                       fixCterm(self.universe),
-                       ]
+        self._fixes = [
+            fixILE(self.universe),
+            fixHIS(self.universe),
+            fixCterm(self.universe),
+        ]
 
     def fix_names(self):
         """Apply one or many fixes to the universe.
@@ -117,6 +120,7 @@ class Preprocessor(object):
         all lower case (generally better with CHARMM scripts).
         """
         import os.path
+
         root, ext = os.path.splitext(basefilename)
         if kwargs.get('format', None):
             ext = "." + kwargs.pop('format').lower()
@@ -128,15 +132,18 @@ class Preprocessor(object):
             s.atoms.write(filename)
             logger.info("Wrote segment %s to %r", s.id, filename)
 
+
 class Fix(object):
     """Base class for code that modifies the universe/topology"""
 
     def __init__(self, universe):
         self.universe = universe
         self.name = self.__class__.__name__
+
     def apply(self, universe):
         """Apply fix to universe"""
         pass
+
     def rename_atom(self, selection, old, new):
         """Select group defined by *selection* and rename atoms.
 
@@ -159,17 +166,21 @@ class Fix(object):
             logger.warn("%s: no %s atoms found for selection %r",
                         self.name, old, selection)
 
+
 class fixILE(Fix):
     """ILE CD1 --> CD"""
+
     def apply(self):
         """Apply fix to universe"""
         self.rename_atom("resname ILE", "CD1", "CD")
+
 
 class fixHIS(Fix):
     """HIS --> HSD (default) or HSE.
 
     Hydrogen bonding pattern is not taken into account; this is a pure rename.
     """
+
     def apply(self, name="HSD"):
         assert name in ("HSD", "HSE")
         try:
@@ -179,6 +190,7 @@ class fixHIS(Fix):
                         name, His.numberOfResidues())
         except NoDataError:
             logger.warn("fixHIS: no His residues found")
+
 
 class fixCterm(Fix):
     """C-terminal oxygens: O --> OT1, OXT --> OT2"""
@@ -210,7 +222,7 @@ class fixCterm(Fix):
         N = proteins.selectAtoms("backbone and name N")
         C = proteins.selectAtoms("backbone and name C")
         r = N.coordinates()[1:] - C.coordinates()[:-1]
-        d = np.sqrt(np.sum(r**2, axis=-1))
+        d = np.sqrt(np.sum(r ** 2, axis=-1))
         index_broken, = np.where(d > self.break_distance)
         # any leading broken residues and the very last one
         Cterm = (N[index_broken] + N[-1]).residues

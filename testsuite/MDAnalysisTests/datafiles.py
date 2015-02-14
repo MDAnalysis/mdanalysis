@@ -1,18 +1,17 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -29,46 +28,47 @@ Note that the files are actually located in a separate package,
 
  from MDAnalysisTestData.datafiles import *
 """
-__all__ = ["PSF", "DCD", "CRD",               # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
-           "PSF_notop", "PSF_BAD",      # Same as PSF but no bonds etc, malformed version of previous
-           "DCD_empty",
-           "PSF_NAMD", "PDB_NAMD",            # NAMD
-           "PSF_nosegid",                     # psf without a segid, Issue 121
-           "PDB_small",                       # PDB
-           "PDB_closed",
-           "PDB_multiframe",
-           "PDB_helix",
-           "XPDB_small",
-           "NUCL",                            # nucleic acid (PDB)
-           "PDB", "GRO", "XTC", "XTC_offsets", "TRR", "TRR_offsets", "TPR", "GRO_velocity",   # Gromacs (AdK)
-           "PDB_xvf", "TPR_xvf", "TRR_xvf",     # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
-           "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
-           "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
-           "TPR460", "TPR461",
-           "PDB_sub_sol", "PDB_sub_dry",        # TRRReader sub selection
-           "TRR_sub_sol",
-           "XYZ", "XYZ_psf", "XYZ_bz2",         # XYZ
-           "PRM", "TRJ", "TRJ_bz2",             # Amber (no periodic box)
-           "PRMpbc", "TRJpbc_bz2",              # Amber (periodic box)
-           "PRM12", "TRJ12_bz2",                # Amber (v12 format, Issue 100)
-           "PRMncdf", "TRJncdf", "NCDF",        # Amber (netcdf)
-           "PQR",                               # PQR
-           "PDBQT_input",                       # PDBQT
-           "PDBQT_querypdb",
-           "FASTA",                             # sequence alignment, Issue 112 + 113
-           "PDB_HOLE",                          # gramicidin A
-           "XTC_HOLE",                          # gramicidin A, all frames identical, for Issue 129
-           "DMS",
-           "CONECT",                             # HIV Reverse Transcriptase with inhibitor
-           "TRZ", "TRZ_psf",
-           "TRIC",
-           "merge_protein", "merge_ligand", "merge_water",
-           "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
-           "capping_input", "capping_output", "capping_ace", "capping_nma",
-           "altloc",
-           "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
-           "unordered_res",  # pdb file with resids non sequential
-           ]
+__all__ = [
+    "PSF", "DCD", "CRD",  # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
+    "PSF_notop", "PSF_BAD",  # Same as PSF but no bonds etc, malformed version of previous
+    "DCD_empty",
+    "PSF_NAMD", "PDB_NAMD",  # NAMD
+    "PSF_nosegid",  # psf without a segid, Issue 121
+    "PDB_small",  # PDB
+    "PDB_closed",
+    "PDB_multiframe",
+    "PDB_helix",
+    "XPDB_small",
+    "NUCL",  # nucleic acid (PDB)
+    "PDB", "GRO", "XTC", "XTC_offsets", "TRR", "TRR_offsets", "TPR", "GRO_velocity",  # Gromacs (AdK)
+    "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
+    "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
+    "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
+    "TPR460", "TPR461",
+    "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
+    "TRR_sub_sol",
+    "XYZ", "XYZ_psf", "XYZ_bz2",  # XYZ
+    "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
+    "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
+    "PRM12", "TRJ12_bz2",  # Amber (v12 format, Issue 100)
+    "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
+    "PQR",  # PQR
+    "PDBQT_input",  # PDBQT
+    "PDBQT_querypdb",
+    "FASTA",  # sequence alignment, Issue 112 + 113
+    "PDB_HOLE",  # gramicidin A
+    "XTC_HOLE",  # gramicidin A, all frames identical, for Issue 129
+    "DMS",
+    "CONECT",  # HIV Reverse Transcriptase with inhibitor
+    "TRZ", "TRZ_psf",
+    "TRIC",
+    "merge_protein", "merge_ligand", "merge_water",
+    "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
+    "capping_input", "capping_output", "capping_ace", "capping_nma",
+    "altloc",
+    "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
+    "unordered_res",  # pdb file with resids non sequential
+]
 
 from pkg_resources import resource_filename
 
@@ -87,7 +87,7 @@ PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
 
-NUCL =  resource_filename(__name__, 'data/1k5i.pdb')
+NUCL = resource_filename(__name__, 'data/1k5i.pdb')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')
 PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
 
@@ -180,7 +180,7 @@ capping_ace = resource_filename(__name__, "data/capping/ace.pdb")
 capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
 
 trz4data = resource_filename(__name__, "data/datatest.trz")
-LAMMPSdata  = resource_filename(__name__, "data/datatest.data")
+LAMMPSdata = resource_filename(__name__, "data/datatest.data")
 LAMMPSdata_mini = resource_filename(__name__, "data/mini.data")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")

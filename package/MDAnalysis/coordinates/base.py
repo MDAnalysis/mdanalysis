@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 Base classes --- :mod:`MDAnalysis.coordinates.base`
@@ -102,6 +102,7 @@ from MDAnalysis.core import units, flags
 from MDAnalysis.core.util import iterable, asiterable
 import core
 
+
 class Timestep(object):
     """Timestep data for one frame
 
@@ -126,6 +127,7 @@ class Timestep(object):
 
          iterate of the coordinates, atom by atom
     """
+
     def __init__(self, arg, **kwargs):
         if numpy.dtype(type(arg)) == numpy.dtype(int):
             self.frame = 0
@@ -133,13 +135,13 @@ class Timestep(object):
             self._pos = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
             #self._pos = numpy.zeros((3, self.numatoms), numpy.float32)
             self._unitcell = self._init_unitcell()
-        elif isinstance(arg, Timestep): # Copy constructor
+        elif isinstance(arg, Timestep):  # Copy constructor
             # This makes a deepcopy of the timestep
             self.frame = arg.frame
             self.numatoms = arg.numatoms
             self._unitcell = numpy.array(arg._unitcell)
             self._pos = numpy.array(arg._pos, order='F')
-        elif isinstance(arg, numpy.ndarray): # Init using a 3N coordinate array
+        elif isinstance(arg, numpy.ndarray):  # Init using a 3N coordinate array
             if len(arg.shape) != 2:
                 raise ValueError("numpy array can only have 2 dimensions")
             self._unitcell = numpy.zeros((6), numpy.float32)
@@ -151,12 +153,12 @@ class Timestep(object):
                 # Or should an exception be raised if coordinate
                 # structure is not 3-dimensional? Maybe velocities
                 # could be read one day... [DP]
-            self._pos = arg.astype(numpy.float32).copy('Fortran',)
+            self._pos = arg.astype(numpy.float32).copy('Fortran', )
         else:
             raise ValueError("Cannot create an empty Timestep")
-        self._x = self._pos[:,0]
-        self._y = self._pos[:,1]
-        self._z = self._pos[:,2]
+        self._x = self._pos[:, 0]
+        self._y = self._pos[:, 1]
+        self._z = self._pos[:, 2]
 
     def _init_unitcell(self):
         """Create custom datastructure for :attr:`_unitcell`."""
@@ -172,14 +174,19 @@ class Timestep(object):
             return self._pos[atoms]
         elif type(atoms) == slice or type(atoms) == numpy.ndarray:
             return self._pos[atoms]
-        else: raise TypeError
+        else:
+            raise TypeError
+
     def __len__(self):
         return self.numatoms
+
     def __iter__(self):
         def iterTS():
             for i in xrange(self.numatoms):
                 yield self[i]
+
         return iterTS()
+
     def __repr__(self):
         desc = "< Timestep {0}".format(self.frame)
         try:
@@ -187,9 +194,11 @@ class Timestep(object):
         except NotImplementedError:
             tail = " >"
         return desc + tail
+
     def copy(self):
         """Make an independent ("deep") copy of the whole :class:`Timestep`."""
         return self.__deepcopy__()
+
     def __deepcopy__(self):
         # Is this the best way?
         return self.__class__(self)
@@ -212,19 +221,20 @@ class Timestep(object):
             new_numatoms = len(self._x[sel])
         except:
             raise TypeError("Selection type must be compatible with slicing the coordinates")
-        new_TS = self.__class__(new_numatoms) # Make a mostly empty TS of same type of reduced size
+        new_TS = self.__class__(new_numatoms)  # Make a mostly empty TS of same type of reduced size
 
         # List of attributes which will require slicing if present
-        per_atom = ['_x', '_y', '_z', '_pos', '_velocities', '_forces',
-                    '_tpos','_tvelocities','_tforces']
+        per_atom = [
+            '_x', '_y', '_z', '_pos', '_velocities', '_forces',
+            '_tpos', '_tvelocities', '_tforces']
 
         for attr in self.__dict__:
-            if not attr in per_atom: # Header type information
+            if not attr in per_atom:  # Header type information
                 new_TS.__setattr__(attr, self.__dict__[attr])
-            else: # Per atom information, ie. anything that can be sliced
+            else:  # Per atom information, ie. anything that can be sliced
                 new_TS.__setattr__(attr, self.__dict__[attr][sel])
 
-        new_TS.numatoms = new_numatoms # This will have been overwritten, so fix here
+        new_TS.numatoms = new_numatoms  # This will have been overwritten, so fix here
 
         return new_TS
 
@@ -281,7 +291,7 @@ class IObase(object):
         if f == 1.:
             return x
         if not inplace:
-            return f*x
+            return f * x
         x *= f
         return x
 
@@ -296,7 +306,7 @@ class IObase(object):
         if f == 1.:
             return v
         if not inplace:
-            return f*v
+            return f * v
         v *= f
         return v
 
@@ -311,7 +321,7 @@ class IObase(object):
         if f == 1.:
             return force
         if not inplace:
-            return f*force
+            return f * force
         force *= f
         return force
 
@@ -334,7 +344,7 @@ class IObase(object):
         if f == 1.:
             return t
         if not inplace:
-            return f*t
+            return f * t
         t *= f
         return t
 
@@ -354,7 +364,7 @@ class IObase(object):
         if f == 1.:
             return x
         if not inplace:
-            return f*x
+            return f * x
         x *= f
         return x
 
@@ -369,7 +379,7 @@ class IObase(object):
         if f == 1.:
             return v
         if not inplace:
-            return f*v
+            return f * v
         v *= f
         return v
 
@@ -384,7 +394,7 @@ class IObase(object):
         if f == 1.:
             return force
         if not inplace:
-            return f*force
+            return f * force
         force *= f
         return force
 
@@ -407,7 +417,7 @@ class IObase(object):
         if f == 1.:
             return t
         if not inplace:
-            return f*t
+            return f * t
         t *= f
         return t
 
@@ -432,6 +442,7 @@ class IObase(object):
         # see http://docs.python.org/2/library/stdtypes.html#typecontextmanager
         self.close()
         return False  # do not suppress exceptions
+
 
 class Reader(IObase):
     """Base class for trajectory readers.
@@ -500,8 +511,8 @@ class Reader(IObase):
 
         .. SeeAlso:: :meth:`Reader.Writer` and :func:`MDAnalysis.Writer`
         """
-        kwargs['numatoms'] = self.numatoms            # essential
-        kwargs.setdefault('start', self.frame - 1)    # -1 should be correct... [orbeckst] ?!?
+        kwargs['numatoms'] = self.numatoms  # essential
+        kwargs.setdefault('start', self.frame - 1)  # -1 should be correct... [orbeckst] ?!?
         kwargs.setdefault('step', self.skip_timestep)
         try:
             kwargs.setdefault('delta', self.dt)
@@ -520,7 +531,7 @@ class Reader(IObase):
         pass
 
     def __iter__(self):
-        raise NotImplementedError("BUG: Override __iter__() in the trajectory reader!")
+        raise NotImplementedError("BUG: Override __iter__() in the trajectory reader (%s)!" % type(self))
 
     def __getitem__(self, frame):
         """Return the Timestep corresponding to *frame*.
@@ -542,10 +553,10 @@ class Reader(IObase):
             if (frame < 0) or (frame >= len(self)):
                 raise IndexError("Index %d exceeds length of trajectory (%d)." % (frame, len(self)))
             return self._read_frame(frame)  # REPLACE WITH APPROPRIATE IMPLEMENTATION
-        elif type(frame) == slice: # if frame is a slice object
-            if not (((type(frame.start) == int) or (frame.start == None)) and
-                    ((type(frame.stop) == int) or (frame.stop == None)) and
-                    ((type(frame.step) == int) or (frame.step == None))):
+        elif type(frame) == slice:  # if frame is a slice object
+            if not (((type(frame.start) == int) or (frame.start is None)) and
+               ((type(frame.stop) == int) or (frame.stop is None)) and
+               ((type(frame.step) == int) or (frame.step is None))):
                 raise TypeError("Slice indices are not integers")
             return self._sliced_iter(frame)
 
@@ -582,18 +593,25 @@ class Reader(IObase):
                 self[0]  # should raise TypeError if it cannot do random access
             except TypeError:
                 raise TypeError("Reader does not support slicing.")
+
             def _iter(start=start, stop=stop, step=step):
                 for i in xrange(start, stop, step):
                     yield self[i]
         return _iter()
 
     def _check_slice_indices(self, start, stop, step):
-        if start == None: start = 0
-        if stop == None: stop = len(self)
-        if step == None: step = 1
-        if (start < 0): start += len(self)
-        if (stop < 0): stop += len(self)
-        elif (stop > len(self)): stop = len(self)
+        if start is None:
+            start = 0
+        if stop is None:
+            stop = len(self)
+        if step is None:
+            step = 1
+        if (start < 0):
+            start += len(self)
+        if (stop < 0):
+            stop += len(self)
+        elif (stop > len(self)):
+            stop = len(self)
         if step > 0 and stop <= start:
             raise IndexError("Stop frame is lower than start frame")
         if ((start < 0) or (start >= len(self)) or (stop < 0) or (stop > len(self))):
@@ -602,7 +620,7 @@ class Reader(IObase):
 
     def __repr__(self):
         return "< %s %r with %d frames of %d atoms (%d fixed) >" % \
-            (self.__class__.__name__, self.filename, self.numframes, self.numatoms, self.fixed)
+               (self.__class__.__name__, self.filename, self.numframes, self.numatoms, self.fixed)
 
 
 class ChainReader(Reader):
@@ -635,7 +653,8 @@ class ChainReader(Reader):
                (i.e. they all must belong to the same topology). The trajectory
                format is deduced from the extension of *filename*.
 
-               Extension: filenames are either single filename or list of file names in either plain file names format or (filename,format) tuple combination
+               Extension: filenames are either single filename or list of file names in either plain file names
+               format or (filename,format) tuple combination
 
            *skip*
                skip step (also passed on to the individual trajectory
@@ -656,7 +675,7 @@ class ChainReader(Reader):
         """
         self.filenames = asiterable(filenames)
         self.readers = [core.reader(filename, **kwargs) for filename in self.filenames]
-        self.__active_reader_index = 0   # pointer to "active" trajectory index into self.readers
+        self.__active_reader_index = 0  # pointer to "active" trajectory index into self.readers
 
         self.skip = kwargs.get('skip', 1)
         self._default_delta = kwargs.pop('delta', None)
@@ -724,10 +743,13 @@ class ChainReader(Reader):
     # methods that can change with the current reader
     def convert_time_from_native(self, t):
         return self.active_reader.convert_time_from_native(t)
+
     def convert_time_to_native(self, t):
         return self.active_reader.convert_time_to_native(t)
+
     def convert_pos_from_native(self, x):
         return self.active_reader.convert_from_native(x)
+
     def convert_pos_to_native(self, x):
         return self.active_reader.convert_pos_to_native(x)
 
@@ -735,18 +757,23 @@ class ChainReader(Reader):
     @property
     def filename(self):
         return self.active_reader.filename
+
     @property
     def skip_timestep(self):
         return self.active_reader.skip_timestep
+
     @property
     def delta(self):
         return self.active_reader.delta
+
     @property
     def periodic(self):
         return self.active_reader.periodic
+
     @property
     def units(self):
         return self.active_reader.units
+
     @property
     def compressed(self):
         try:
@@ -825,10 +852,10 @@ class ChainReader(Reader):
 
         .. SeeAlso:: :meth:`~ChainReader._get_local_frame`.
         """
-        i,f = self._get_local_frame(frame)
+        i, f = self._get_local_frame(frame)
         # seek to (1) reader i and (2) frame f in trajectory i
         self.__activate_reader(i)
-        self.active_reader[f]      # rely on reader to implement __getitem__()
+        self.active_reader[f]  # rely on reader to implement __getitem__()
         # update Timestep
         self.ts = self.active_reader.ts
         self.ts.frame = frame + 1  # continuous frames, 1-based
@@ -839,10 +866,10 @@ class ChainReader(Reader):
         self._rewind()  # must rewind all readers
         readers = itertools.chain(*self.readers)
         for frame, ts in enumerate(readers):
-            ts.frame = frame+1  # fake continuous frames, 1-based
+            ts.frame = frame + 1  # fake continuous frames, 1-based
             self.ts = ts
             # make sure that the active reader is in sync
-            i,f = self._get_local_frame(frame)  # uses 0-based frames!
+            i, f = self._get_local_frame(frame)  # uses 0-based frames!
             self.__activate_reader(i)
             yield ts
 
@@ -871,15 +898,14 @@ class ChainReader(Reader):
         for ts in self.__chained_trajectories_iter:
             yield ts
 
-    def get_flname(self, filename): #retrieve the actual filename of the list element
-        return filename[0] if isinstance(filename,tuple) else filename
+    def get_flname(self, filename):  # retrieve the actual filename of the list element
+        return filename[0] if isinstance(filename, tuple) else filename
 
     def __repr__(self):
         return "< %s %r with %d frames of %d atoms (%d fixed) >" % \
-            (self.__class__.__name__,
-             [os.path.basename(self.get_flname(fn)) for fn in self.filenames],
-             self.numframes, self.numatoms, self.fixed)
-
+               (self.__class__.__name__,
+               [os.path.basename(self.get_flname(fn)) for fn in self.filenames],
+               self.numframes, self.numatoms, self.fixed)
 
 
 class Writer(IObase):
@@ -947,4 +973,4 @@ class Writer(IObase):
         x = numpy.ravel(x)
         return numpy.all(criteria["min"] < x) and numpy.all(x <= criteria["max"])
 
-    # def write_next_timestep(self, ts=None)
+        # def write_next_timestep(self, ts=None)

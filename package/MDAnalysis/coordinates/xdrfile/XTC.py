@@ -1,18 +1,17 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -45,8 +44,10 @@ Classes
 
 import core
 
+
 class Timestep(core.Timestep):
     """Timestep for a Gromacs XTC trajectory."""
+
 
 class XTCWriter(core.TrjWriter):
     """Write a Gromacs_ XTC trajectory.
@@ -54,6 +55,7 @@ class XTCWriter(core.TrjWriter):
     .. _Gromacs: http://www.gromacs.org
     """
     format = "XTC"
+
 
 class XTCReader(core.TrjReader):
     """Read Gromacs_ XTC trajectory.
@@ -63,4 +65,3 @@ class XTCReader(core.TrjReader):
     format = "XTC"
     _Timestep = Timestep
     _Writer = XTCWriter
-

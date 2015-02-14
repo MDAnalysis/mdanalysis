@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 Coordinate/Trajectory Readers and Writers  --- :mod:`MDAnalysis.coordinates`
@@ -612,32 +612,47 @@ PDB). In theses cases, the kind of writer is selected with the
 
 __all__ = ['reader', 'writer']
 
-import PDB, PQR, DCD, CRD, XTC, TRR, GRO, XYZ, TRJ, PDBQT, LAMMPS, DMS, TRZ, MOL2
+import PDB
+import PQR
+import DCD
+import CRD
+import XTC
+import TRR
+import GRO
+import XYZ
+import TRJ
+import PDBQT
+import LAMMPS
+import DMS
+import TRZ
+import MOL2
 import base
 from core import reader, writer
 
+
 #: standard trajectory readers (dict with identifier as key and reader class as value)
-_trajectory_readers = {'DCD': DCD.DCDReader,
-                       'TRJ': DCD.DCDReader,
-                       'XTC': XTC.XTCReader,
-                       'XYZ': XYZ.XYZReader,
-                       'TRR': TRR.TRRReader,
-                       'PDB': PDB.PDBReader,
-                       'XPDB': PDB.ExtendedPDBReader,
-                       'PDBQT': PDBQT.PDBQTReader,
-                       'CRD': CRD.CRDReader,
-                       'GRO': GRO.GROReader,
-                       'MOL2': MOL2.MOL2Reader,
-                       'TRJ': TRJ.TRJReader,     # AMBER text
-                       'MDCRD': TRJ.TRJReader,   # AMBER text
-                       'NCDF': TRJ.NCDFReader,   # AMBER netcdf
-                       'PQR': PQR.PQRReader,
-                       'LAMMPS': LAMMPS.DCDReader,
-                       'CHAIN': base.ChainReader,
-                       'DMS': DMS.DMSReader,
-                       'TRZ': TRZ.TRZReader,
-                       'DATA': LAMMPS.DATAReader,
-                       }
+_trajectory_readers = {
+    'DCD': DCD.DCDReader,
+    # 'TRJ': DCD.DCDReader, #commented out because overridden by TRJ.TRJReader
+    'XTC': XTC.XTCReader,
+    'XYZ': XYZ.XYZReader,
+    'TRR': TRR.TRRReader,
+    'PDB': PDB.PDBReader,
+    'XPDB': PDB.ExtendedPDBReader,
+    'PDBQT': PDBQT.PDBQTReader,
+    'CRD': CRD.CRDReader,
+    'GRO': GRO.GROReader,
+    'MOL2': MOL2.MOL2Reader,
+    'TRJ': TRJ.TRJReader,  # AMBER text
+    'MDCRD': TRJ.TRJReader,  # AMBER text
+    'NCDF': TRJ.NCDFReader,  # AMBER netcdf
+    'PQR': PQR.PQRReader,
+    'LAMMPS': LAMMPS.DCDReader,
+    'CHAIN': base.ChainReader,
+    'DMS': DMS.DMSReader,
+    'TRZ': TRZ.TRZReader,
+    'DATA': LAMMPS.DATAReader,
+}
 
 #: formats of readers that can also handle gzip or bzip2 compressed files
 _compressed_formats = ['XYZ', 'TRJ', 'MDCRD', 'PQR', 'PDBQT']
@@ -645,22 +660,23 @@ _compressed_formats = ['XYZ', 'TRJ', 'MDCRD', 'PQR', 'PDBQT']
 #: readers of files that contain both topology/atom data and coordinates
 #: (currently only the keys are used)
 _topology_coordinates_readers = {
-                       'PDB': PDB.PrimitivePDBReader,     # FIXME: should be able to use BioPython PDBReader for topolgy if permissive=False!
-                       'XPDB': PDB.ExtendedPDBReader,
-                       'PDBQT': PDBQT.PDBQTReader,
-                       'GRO': GRO.GROReader,
-                       'CRD': CRD.CRDReader,
-                       'PQR': PQR.PQRReader,
-                       'DMS': DMS.DMSReader,
-                       'MOL2': MOL2.MOL2Reader,
-                       'DATA':LAMMPS.DATAReader,
+    'PDB': PDB.PrimitivePDBReader,  # FIXME: should be able to use BioPython PDBReader for topolgy if permissive=False!
+    'XPDB': PDB.ExtendedPDBReader,
+    'PDBQT': PDBQT.PDBQTReader,
+    'GRO': GRO.GROReader,
+    'CRD': CRD.CRDReader,
+    'PQR': PQR.PQRReader,
+    'DMS': DMS.DMSReader,
+    'MOL2': MOL2.MOL2Reader,
+    'DATA': LAMMPS.DATAReader,
 }
 
 #: hack: readers that ignore most errors (permissive=True); at the moment
 #: the same as :data:`_trajectory_readers` with the exception of the
-#: the PDB reader (:class:`~MDAnalysis.coordinates.PDB.PDBReader` is replaced by :class:`~MDAnalysis.coordinates.PDB.PrimitivePDBReader`).
+#: the PDB reader (:class:`~MDAnalysis.coordinates.PDB.PDBReader` is replaced by
+# :class:`~MDAnalysis.coordinates.PDB.PrimitivePDBReader`).
 _trajectory_readers_permissive = _trajectory_readers.copy()
-_trajectory_readers_permissive['PDB'] =  PDB.PrimitivePDBReader
+_trajectory_readers_permissive['PDB'] = PDB.PrimitivePDBReader
 
 #: frame writers: export to single frame formats such as PDB, gro, crd
 #: Signature::
@@ -668,14 +684,14 @@ _trajectory_readers_permissive['PDB'] =  PDB.PrimitivePDBReader
 #:   W = FrameWriter(filename)
 #:   W.write(AtomGroup)
 _frame_writers = {
-                  'PDBQT': PDBQT.PDBQTWriter,
-                  'CRD': CRD.CRDWriter,
-                  'GRO': GRO.GROWriter,
-                  'PDB': PDB.PrimitivePDBWriter,
-                  'PQR': PQR.PQRWriter,
-                  'XYZ': XYZ.XYZWriter,
-                  'MOL2': MOL2.MOL2Writer,
-                 }
+    'PDBQT': PDBQT.PDBQTWriter,
+    'CRD': CRD.CRDWriter,
+    'GRO': GRO.GROWriter,
+    'PDB': PDB.PrimitivePDBWriter,
+    'PQR': PQR.PQRWriter,
+    'XYZ': XYZ.XYZWriter,
+    'MOL2': MOL2.MOL2Writer,
+}
 
 #: trajectory writers: export frames, typically only saving coordinates
 #: Signature::
@@ -685,14 +701,14 @@ _frame_writers = {
 #:   W.write(Timestep)
 #:   W.write(AtomGroup)
 #:   W.write(Universe)
-_trajectory_writers = {'DCD': DCD.DCDWriter,
-                       'XTC': XTC.XTCWriter,
-                       'TRR': TRR.TRRWriter,
-                       'LAMMPS': LAMMPS.DCDWriter,
-                       'PDB': PDB.MultiPDBWriter,
-                       'NCDF': TRJ.NCDFWriter,
-                       'TRZ':TRZ.TRZWriter,
-                       'XYZ': XYZ.XYZWriter,
-                       'MOL2': MOL2.MOL2Writer,
-                       }
-
+_trajectory_writers = {
+    'DCD': DCD.DCDWriter,
+    'XTC': XTC.XTCWriter,
+    'TRR': TRR.TRRWriter,
+    'LAMMPS': LAMMPS.DCDWriter,
+    'PDB': PDB.MultiPDBWriter,
+    'NCDF': TRJ.NCDFWriter,
+    'TRZ': TRZ.TRZWriter,
+    'XYZ': XYZ.XYZWriter,
+    'MOL2': MOL2.MOL2Writer,
+}

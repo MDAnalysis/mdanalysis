@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """LAMMPS DCD trajectory I/O  --- :mod:`MDAnalysis.coordinates.LAMMPS`
 ======================================================================
@@ -74,8 +74,10 @@ from MDAnalysis.topology.LAMMPSParser import DATAParser
 import MDAnalysis.core
 import base
 
+
 class Timestep(DCD.Timestep):
     """LAMMPS trajectory time step"""
+
 
 class DCDWriter(DCD.DCDWriter):
     """Write a LAMMPS_ DCD trajectory.
@@ -86,17 +88,19 @@ class DCDWriter(DCD.DCDWriter):
     values.
     """
     format = "DCD"
+
     def __init__(self, *args, **kwargs):
-        self.units = {'time': 'ps', 'length':'Angstrom'}      # must be instance level
+        self.units = {'time': 'ps', 'length': 'Angstrom'}  # must be instance level
         self.units['time'] = kwargs.pop('timeunit', self.units['time'])
         self.units['length'] = kwargs.pop('lengthunit', self.units['length'])
-        for unit_type,unit in self.units.items():
+        for unit_type, unit in self.units.items():
             try:
                 if units.unit_types[unit] != unit_type:
                     raise TypeError("LAMMPS DCDWriter: wrong unit %r for unit type %r" % (unit, unit_type))
             except KeyError:
                 raise ValueError("LAMMPS DCDWriter: unknown unit %r" % unit)
         super(DCDWriter, self).__init__(*args, **kwargs)
+
 
 class DCDReader(DCD.DCDReader):
     """Read a LAMMPS_ DCD trajectory.
@@ -109,10 +113,10 @@ class DCDReader(DCD.DCDReader):
     format = "DCD"
 
     def __init__(self, dcdfilename, **kwargs):
-        self.units = {'time': 'ps', 'length':'Angstrom'}      # must be instance level
+        self.units = {'time': 'ps', 'length': 'Angstrom'}  # must be instance level
         self.units['time'] = kwargs.pop('timeunit', self.units['time'])
         self.units['length'] = kwargs.pop('lengthunit', self.units['length'])
-        for unit_type,unit in self.units.items():
+        for unit_type, unit in self.units.items():
             try:
                 if units.unit_types[unit] != unit_type:
                     raise TypeError("LAMMPS DCDReader: wrong unit %r for unit type %r" % (unit, unit_type))
@@ -123,6 +127,7 @@ class DCDReader(DCD.DCDReader):
 
 class DATATimestep(base.Timestep):
     """Data file time step"""
+
     @property
     def dimensions(self):
         """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
@@ -182,7 +187,7 @@ class DATAReader(base.Reader):
             self.convert_pos_from_native(self.ts._pos)  # in-place !
 
     def __iter__(self):
-        yield self.ts   # just a single frame available
+        yield self.ts  # just a single frame available
         raise StopIteration
 
     def _read_frame(self, frame):
@@ -192,4 +197,3 @@ class DATAReader(base.Reader):
     def _read_next_timestep(self):
         # DATA file only contains a single frame
         raise IOError
-

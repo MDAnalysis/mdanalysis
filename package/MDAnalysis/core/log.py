@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 Setting up logging --- :mod:`MDAnalysis.core.log`
@@ -76,6 +76,7 @@ from __future__ import division
 import sys
 import logging
 
+
 def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
     """Create a top level logger.
 
@@ -114,6 +115,7 @@ def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
 
     return logger
 
+
 def clear_handlers(logger):
     """clean out handlers in the library top level logger
 
@@ -121,6 +123,7 @@ def clear_handlers(logger):
     """
     for h in logger.handlers:
         logger.removeHandler(h)
+
 
 class NullHandler(logging.Handler):
     """Silent Handler.
@@ -132,6 +135,7 @@ class NullHandler(logging.Handler):
       del h
 
     """
+
     def emit(self, record):
         pass
 
@@ -182,6 +186,7 @@ class ProgressMeter(object):
        ...
 
     """
+
     def __init__(self, numsteps, format=None, interval=10, offset=0, quiet=False):
         """Set up the ProgressMeter
 
@@ -239,8 +244,8 @@ class ProgressMeter(object):
         the format string.
         """
         self.step = step + self.offset
-        self.percentage = 100. * self.step/self.numsteps
-        for k,v in kwargs.items():
+        self.percentage = 100. * self.step / self.numsteps
+        for k, v in kwargs.items():
             setattr(self, k, v)
 
     def echo(self, step, **kwargs):

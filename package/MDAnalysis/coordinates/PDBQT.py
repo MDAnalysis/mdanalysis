@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 
 """
 PDBQT structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.PDBQT`
@@ -31,7 +31,8 @@ available in this case).
    http://autodock.scripps.edu/
 """
 
-import os, errno
+import os
+import errno
 import numpy
 
 import MDAnalysis.core
@@ -48,22 +49,23 @@ from MDAnalysis.topology.core import guess_atom_element
 
 import warnings
 
+
 class Timestep(base.Timestep):
-        @property
-        def dimensions(self):
-                """unitcell dimensions (`A, B, C, alpha, beta, gamma`)
+    @property
+    def dimensions(self):
+        """unitcell dimensions (`A, B, C, alpha, beta, gamma`)
 
-                - `A, B, C` are the lengths of the primitive cell vectors `e1, e2, e3`
-                - `alpha` = angle(`e1, e2`)
-                - `beta` = angle(`e1, e3`)
-                - `gamma` = angle(`e2, e3`)
-                """
-                # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
-                return self._unitcell
+        - `A, B, C` are the lengths of the primitive cell vectors `e1, e2, e3`
+        - `alpha` = angle(`e1, e2`)
+        - `beta` = angle(`e1, e3`)
+        - `gamma` = angle(`e2, e3`)
+        """
+        # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
+        return self._unitcell
 
-        @dimensions.setter
-        def dimensions(self, box):
-                self._unitcell = box
+    @dimensions.setter
+    def dimensions(self, box):
+        self._unitcell = box
 
 
 class PDBQTReader(base.Reader):
@@ -172,7 +174,7 @@ class PDBQTReader(base.Reader):
         self.convert_units = convert_units  # convert length and time to base units
 
         # Ugly inner method: moved outside of for-loop below
-        def _c(start,stop,typeclass=float):
+        def _c(start, stop, typeclass=float):
             return self._col(line, start, stop, typeclass=typeclass)
 
         coords = []
@@ -180,34 +182,35 @@ class PDBQTReader(base.Reader):
         unitcell = numpy.zeros(6, dtype=numpy.float32)
         with util.openany(filename, 'r') as pdbfile:
             for line in pdbfile:
-                if line[:4] == 'END\n': # Should only break at the 'END' of a model definition not
-                                        # and prevent premature exit for a torsion termination, eg, ENDBRANCH
+                if line[:4] == 'END\n':  # Should only break at the 'END' of a model definition not
+                    # and prevent premature exit for a torsion termination, eg, ENDBRANCH
                     break
                 if line[:6] == 'CRYST1':
-                    A,B,C = _c(7,15), _c(16,24), _c(25,33)
-                    alpha,beta,gamma = _c(34,40), _c(41,47), _c(48,54)
-                    unitcell[:] = A,B,C, alpha,beta,gamma
+                    A, B, C = _c(7, 15), _c(16, 24), _c(25, 33)
+                    alpha, beta, gamma = _c(34, 40), _c(41, 47), _c(48, 54)
+                    unitcell[:] = A, B, C, alpha, beta, gamma
                 if line[:6] in ('ATOM  ', 'HETATM'):
                     # directly use COLUMNS from PDB/PDBQT spec
-                    serial = _c(7,11,int)
-                    name = _c(13,16,str).strip()
-                    resName = _c(18,21,str).strip()
-                    chainID = _c(22,22,str)  # empty chainID is a single space ' '!
-                    resSeq = _c(23,26,int)
-                    x,y,z = _c(31,38), _c(39,46), _c(47,54)
-                    occupancy = _c(55,60)
-                    tempFactor = _c(61,66)
-                    partialCharge = _c(67,76, str).strip()   # PDBQT partial charge
-                    atomtype = _c(77,80, str).strip() # PDBQT atom type
-                    coords.append((x,y,z))
-                    atoms.append((serial, name, resName, chainID, resSeq, occupancy, tempFactor, partialCharge, atomtype))
+                    serial = _c(7, 11, int)
+                    name = _c(13, 16, str).strip()
+                    resName = _c(18, 21, str).strip()
+                    chainID = _c(22, 22, str)  # empty chainID is a single space ' '!
+                    resSeq = _c(23, 26, int)
+                    x, y, z = _c(31, 38), _c(39, 46), _c(47, 54)
+                    occupancy = _c(55, 60)
+                    tempFactor = _c(61, 66)
+                    partialCharge = _c(67, 76, str).strip()  # PDBQT partial charge
+                    atomtype = _c(77, 80, str).strip()  # PDBQT atom type
+                    coords.append((x, y, z))
+                    atoms.append(
+                        (serial, name, resName, chainID, resSeq, occupancy, tempFactor, partialCharge, atomtype))
         self.numatoms = len(coords)
         self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 1  # 1-based frame number
         if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)             # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)
+            self.convert_pos_from_native(self.ts._pos)  # in-place !
+            self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
         self.numframes = 1
         self.fixed = 0
         self.skip = 1
@@ -215,7 +218,9 @@ class PDBQTReader(base.Reader):
         self.delta = 0
         self.skip_timestep = 1
         # hack for PDBQTParser:
-        self._atoms = numpy.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,partialCharge,type")
+        self._atoms = numpy.rec.fromrecords(atoms,
+                                            names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,"
+                                                  "partialCharge,type")
 
     def _col(self, line, start, stop, typeclass=float):
         """Pick out and convert the columns start-stop.
@@ -226,7 +231,7 @@ class PDBQTReader(base.Reader):
         :Returns: ``typeclass(line[start-1:stop])`` or
                   ``typeclass(0)`` if conversion fails
         """
-        x = line[start-1:stop]
+        x = line[start - 1:stop]
         try:
             return typeclass(x)
         except ValueError:
@@ -282,29 +287,34 @@ class PDBQTWriter(base.Writer):
     #                 %1s  %1s                                                      %2d
     #            =        =      ===                                    ==========
     # ATOM  %5d %-4s%1s%-3s %1s%4d%1s   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s%2d
-    # ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d
+    # ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(
+    # z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d
 
     # Strict PDB format:
-    #fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
+    #fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(
+    # x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
     # PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc ignored
-    fmt = {#'ATOM':   "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(segID)-4s%(element)2s%(charge)2d\n",
-           'ATOM':   "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(partialCharge)-1.4f %(atomtype)-2s\n",
-           'REMARK': "REMARK     %s\n",
-           'TITLE':  "TITLE    %s\n",
-           'CRYST1': "CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %-11s%4d\n",
-           }
+    fmt = {
+        #'ATOM':   "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(
+        # z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(segID)-4s%(element)2s%(charge)2d\n",
+        'ATOM': "ATOM  %(serial)5d %(name)-4s %(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%("
+                "z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(partialCharge)-1.4f %(atomtype)-2s\n",
+        'REMARK': "REMARK     %s\n",
+        'TITLE': "TITLE    %s\n",
+        'CRYST1': "CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %-11s%4d\n",
+    }
     format = 'PDBQT'
     units = {'time': None, 'length': 'Angstrom'}
-    pdb_coor_limits = {"min":-999.9995, "max":9999.9995}
+    pdb_coor_limits = {"min": -999.9995, "max": 9999.9995}
 
-    def __init__(self,filename,**kwargs):
+    def __init__(self, filename, **kwargs):
         self.filename = util.filename(filename, ext='pdbqt')
         self.pdb = util.anyopen(self.filename, 'w')
 
     def close(self):
         self.pdb.close()
 
-    def write(self,selection,frame=None):
+    def write(self, selection, frame=None):
         """Write selection at current trajectory frame to file.
 
         write(selection,frame=FRAME)
@@ -328,40 +338,41 @@ class PDBQTWriter(base.Writer):
             try:
                 frame = u.trajectory.ts.frame
             except AttributeError:
-                frame = 1   # should catch cases when we are analyzing a single PDB (?)
+                frame = 1  # should catch cases when we are analyzing a single PDB (?)
 
-        self.TITLE("FRAME "+str(frame)+" FROM "+str(u.trajectory.filename))
+        self.TITLE("FRAME " + str(frame) + " FROM " + str(u.trajectory.filename))
         self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
-        atoms = selection.atoms    # make sure to use atoms (Issue 46)
-        coor = atoms.coordinates() # can write from selection == Universe (Issue 49)
+        atoms = selection.atoms  # make sure to use atoms (Issue 46)
+        coor = atoms.coordinates()  # can write from selection == Universe (Issue 49)
 
         # check if any coordinates are illegal (coordinates are already in Angstroem per package default)
         if not self.has_valid_coordinates(self.pdb_coor_limits, coor):
             self.close()
             try:
                 os.remove(self.filename)
-            except OSError, err:
+            except OSError as err:
                 if err.errno == errno.ENOENT:
                     pass
-            raise ValueError("PDB files must have coordinate values between %.3f and %.3f Angstroem: No file was written." %
-                             (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
+            raise ValueError(
+                "PDB files must have coordinate values between %.3f and %.3f Angstroem: No file was written." %
+                (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
 
         for i, atom in enumerate(atoms):
-            self.ATOM(serial=i+1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
+            self.ATOM(serial=i + 1, name=atom.name.strip(), resName=atom.resname.strip(), resSeq=atom.resid,
                       chainID=atom.segid.strip(), partialCharge=atom.charge,
-                      x=coor[i,0], y=coor[i,1], z=coor[i,2], atomtype=atom.type)
+                      x=coor[i, 0], y=coor[i, 1], z=coor[i, 2], atomtype=atom.type)
             # get bfactor, too, and add to output?
             # 'element' is auto-guessed from atom.name in ATOM()
         self.close()
 
-    def TITLE(self,*title):
+    def TITLE(self, *title):
         """Write TITLE record.
         http://www.wwpdb.org/documentation/format32/sect2.html
         """
-        line = " ".join(title)    # should do continuation automatically
+        line = " ".join(title)  # should do continuation automatically
         self.pdb.write(self.fmt['TITLE'] % line)
 
-    def REMARK(self,*remark):
+    def REMARK(self, *remark):
         """Write generic REMARK record (without number).
         http://www.wwpdb.org/documentation/format32/remarks1.html
         http://www.wwpdb.org/documentation/format32/remarks2.html
@@ -369,15 +380,15 @@ class PDBQTWriter(base.Writer):
         line = " ".join(remark)
         self.pdb.write(self.fmt['REMARK'] % line)
 
-    def CRYST1(self,dimensions, spacegroup='P 1', zvalue=1):
+    def CRYST1(self, dimensions, spacegroup='P 1', zvalue=1):
         """Write CRYST1 record.
         http://www.wwpdb.org/documentation/format32/sect8.html
         """
-        self.pdb.write(self.fmt['CRYST1'] % (tuple(dimensions)+(spacegroup, zvalue)))
+        self.pdb.write(self.fmt['CRYST1'] % (tuple(dimensions) + (spacegroup, zvalue)))
 
-    def ATOM(self,serial=None,name=None,altLoc=None,resName=None,chainID=None,
-             resSeq=None,iCode=None,x=None,y=None,z=None,occupancy=1.0,tempFactor=0.0,
-             segID=None,partialCharge=None,atomtype=None):
+    def ATOM(self, serial=None, name=None, altLoc=None, resName=None, chainID=None,
+             resSeq=None, iCode=None, x=None, y=None, z=None, occupancy=1.0, tempFactor=0.0,
+             segID=None, partialCharge=None, atomtype=None):
         """Write ATOM record.
         http://www.wwpdb.org/documentation/format32/sect9.html
         Only some keyword args are optional (altLoc, iCode, chainID), for some defaults are set.
@@ -389,24 +400,25 @@ class PDBQTWriter(base.Writer):
 
         Note: Floats are not checked and can potentially screw up the format.
         """
-        for arg in ('serial','name','resName','resSeq','x','y','z',
-                    'occupancy','tempFactor','partialCharge','atomtype'):
+        for arg in (
+                'serial', 'name', 'resName', 'resSeq', 'x', 'y', 'z',
+                'occupancy', 'tempFactor', 'partialCharge', 'atomtype'):
             if locals()[arg] is None:
-                raise ValueError('parameter '+arg+' must be defined for PDBQT.')
+                raise ValueError('parameter ' + arg + ' must be defined for PDBQT.')
         serial = int(str(serial)[-5:])  # check for overflow here?
         name = name[:4]
         if len(name) < 4:
-            name = " "+name   # customary to start in column 14
+            name = " " + name  # customary to start in column 14
         altLoc = altLoc or " "
-        altLoc= altLoc[:1]
+        altLoc = altLoc[:1]
         resName = resName[:4]
-        chainID = chainID or ""   # or should we provide a chainID such as 'A'?
-        chainID = chainID.strip()[-1:] # take the last character
-        resSeq = int(str(resSeq)[-4:]) # check for overflow here?
+        chainID = chainID or ""  # or should we provide a chainID such as 'A'?
+        chainID = chainID.strip()[-1:]  # take the last character
+        resSeq = int(str(resSeq)[-4:])  # check for overflow here?
         iCode = iCode or ""
         iCode = iCode[:1]
-        atomtype = str(atomtype)[:2]         # make sure that is a string for user input
-        partialCharge = float(partialCharge) # Already pre-formatted when passed to this method
+        atomtype = str(atomtype)[:2]  # make sure that is a string for user input
+        partialCharge = float(partialCharge)  # Already pre-formatted when passed to this method
         self.pdb.write(self.fmt['ATOM'] % vars())
 
     def __del__(self):

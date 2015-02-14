@@ -1,18 +1,17 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -86,7 +85,8 @@ in MDAnalysis. ::
     basic = u.selectAtoms(sel_basic)
 
     # set up analysis of native contacts ("salt bridges"); salt bridges have a distance <6 A
-    CA1 = MDAnalysis.analysis.contacts.ContactAnalysis1(u, selection=(sel_acidic, sel_basic), refgroup=(acidic, basic), radius=6.0, outfile="qsalt.dat")
+    CA1 = MDAnalysis.analysis.contacts.ContactAnalysis1(u, selection=(sel_acidic, sel_basic), refgroup=(acidic,
+    basic), radius=6.0, outfile="qsalt.dat")
 
     # iterate through trajectory and perform analysis of "native contacts" q
     # (force=True ignores any previous results, force=True is useful when testing)
@@ -140,7 +140,8 @@ Classes
 
 """
 
-import os, errno
+import os
+import errno
 import warnings
 import bz2
 from itertools import izip
@@ -150,7 +151,9 @@ from MDAnalysis.core.distances import distance_array, self_distance_array
 from MDAnalysis.core.util import openany
 
 import logging
+
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
+
 
 class ContactAnalysis(object):
     """Perform a native contact analysis ("q1-q2").
@@ -166,6 +169,7 @@ class ContactAnalysis(object):
     The total number of contacts in the reference states 1 and 2 are
     stored in :attr:`ContactAnalysis.nref` (index 0 and 1).
     """
+
     def __init__(self, topology, trajectory, ref1=None, ref2=None, radius=8.0,
                  targetdir=os.path.curdir, infix="", force=False):
         """Calculate native contacts from two reference structures.
@@ -217,7 +221,7 @@ class ContactAnalysis(object):
         # short circuit if output file already exists: skip everything
         if self.output_exists():
             self._skip = True
-            return   # do not bother reading any data or initializing arrays... !!
+            return  # do not bother reading any data or initializing arrays... !!
         # don't bother if trajectory is empty (can lead to segfaults so better catch it)
         stats = os.stat(trajectory)
         if stats.st_size == 0:
@@ -232,14 +236,14 @@ class ContactAnalysis(object):
 
         if ref1 is None:
             ref1 = os.path.join(self.targetdir, trajectorybase + '_first.pdb')
-            self.u.trajectory[0]      # extract first frame
+            self.u.trajectory[0]  # extract first frame
             self.u.atoms.write(ref1)
         self.ref1 = ref1
         if ref2 is None:
             ref2 = os.path.join(self.targetdir, trajectorybase + '_last.pdb')
-            self.u.trajectory[-1]     # extract last frame
+            self.u.trajectory[-1]  # extract last frame
             self.u.atoms.write(ref2)
-            self.u.trajectory[0]      # rewind, just in case...
+            self.u.trajectory[0]  # rewind, just in case...
         self.ref2 = ref2
 
         r1 = MDAnalysis.Universe(topology, self.ref1)
@@ -252,7 +256,7 @@ class ContactAnalysis(object):
         # NOTE: self_distance_array() produces a 1D array; this works here
         #       but is not the same as the 2D output from distance_array()!
         #       See the docs for self_distance_array().
-        dref =  [self_distance_array(ca1.coordinates()), self_distance_array(ca2.coordinates())]
+        dref = [self_distance_array(ca1.coordinates()), self_distance_array(ca2.coordinates())]
         self.qref = [self.qarray(dref[0]), self.qarray(dref[1])]
         self.nref = [self.qref[0].sum(), self.qref[1].sum()]
 
@@ -265,8 +269,7 @@ class ContactAnalysis(object):
 
         Disable with force=True (will always return False)
         """
-        return (os.path.isfile(self.output) or os.path.isfile(self.output_bz2)) \
-               and not (self.force or force)
+        return (os.path.isfile(self.output) or os.path.isfile(self.output_bz2)) and not (self.force or force)
 
     def run(self, store=True, force=False):
         """Analyze trajectory and produce timeseries.
@@ -276,6 +279,7 @@ class ContactAnalysis(object):
         """
         if self._skip or self.output_exists(force=force):
             import warnings
+
             warnings.warn("File %(output)r or %(output_bz2)r already exists, loading %(trajectory)r." % vars(self))
             try:
                 self.load(self.output)
@@ -331,11 +335,12 @@ class ContactAnalysis(object):
         else:
             numpy.logical_and(q, self.qref[n], out)
         contacts = out.sum()
-        return contacts, float(contacts)/self.nref[n]
+        return contacts, float(contacts) / self.nref[n]
 
     def load(self, filename):
         """Load the data file."""
         from MDAnalysis.core.util import openany
+
         records = []
         with openany(filename) as data:
             for line in data:
@@ -347,6 +352,7 @@ class ContactAnalysis(object):
     def plot(self, **kwargs):
         """Plot q1-q2."""
         from pylab import plot, xlabel, ylabel
+
         kwargs.setdefault('color', 'black')
         if self.timeseries is None:
             raise ValueError("No timeseries data; do 'ContactAnalysis.run(store=True)' first.")
@@ -488,7 +494,7 @@ class ContactAnalysis1(object):
         self.radius = kwargs.pop('radius', 8.0)
         self.targetdir = kwargs.pop('targetdir', os.path.curdir)
         self.output = kwargs.pop('outfile', "q1.dat.gz")
-        self.outarray = splitext(splitext(self.output)[0])[0]+".array.gz"
+        self.outarray = splitext(splitext(self.output)[0])[0] + ".array.gz"
         self.force = kwargs.pop('force', False)
 
         self.timeseries = None  # final result
@@ -502,7 +508,7 @@ class ContactAnalysis1(object):
         for x in self.references:
             if x is None:
                 raise ValueError("a reference AtomGroup must be supplied")
-        for ref,sel,s in izip(self.references, self.selections, self.selection_strings):
+        for ref, sel, s in izip(self.references, self.selections, self.selection_strings):
             if ref.atoms.numberOfAtoms() != sel.atoms.numberOfAtoms():
                 raise ValueError("selection=%r: Number of atoms differ between "
                                  "reference (%d) and trajectory (%d)" %
@@ -540,7 +546,7 @@ class ContactAnalysis1(object):
         """
         return os.path.isfile(self.output) and not (self.force or force)
 
-    def run(self, store=True, force=False, start_frame=1,end_frame=None,step_value=1):
+    def run(self, store=True, force=False, start_frame=1, end_frame=None, step_value=1):
         """Analyze trajectory and produce timeseries.
 
         Stores results in :attr:`ContactAnalysis1.timeseries` (if store=True)
@@ -555,6 +561,7 @@ class ContactAnalysis1(object):
         """
         if self.output_exists(force=force):
             import warnings
+
             warnings.warn("File %r already exists, loading it INSTEAD of trajectory %r. "
                           "Use force=True to overwrite the output file. " %
                           (self.output, self.universe.trajectory.filename))
@@ -566,10 +573,10 @@ class ContactAnalysis1(object):
             out.write("# frame  q1  n1\n")
             records = []
             self.qavg *= 0  # average contact existence
-            A,B = self.selections
+            A, B = self.selections
             #determine the end_frame value to use:
             total_frames = self.universe.trajectory.numframes
-            if not end_frame: #use the total number of frames in trajectory if no final value specified
+            if not end_frame:  # use the total number of frames in trajectory if no final value specified
                 end_frame = total_frames
             for ts in self.universe.trajectory[start_frame:end_frame:step_value]:
                 frame = ts.frame
@@ -623,11 +630,12 @@ class ContactAnalysis1(object):
         else:
             numpy.logical_and(q, self.qref, out)
         contacts = out.sum()
-        return contacts, float(contacts)/self.nref
+        return contacts, float(contacts) / self.nref
 
     def load(self, filename):
         """Load the data file."""
         from MDAnalysis.core.util import openany
+
         records = []
         with openany(filename) as data:
             for line in data:
@@ -637,7 +645,7 @@ class ContactAnalysis1(object):
         self.timeseries = numpy.array(records).T
         try:
             self.qavg = numpy.loadtxt(self.outarray)
-        except IOError, err:
+        except IOError as err:
             if err.errno != errno.ENOENT:
                 raise
 
@@ -651,6 +659,7 @@ class ContactAnalysis1(object):
         keyword arguments are passed on to :func:`pylab.plot`.
         """
         from pylab import plot, xlabel, ylabel, savefig
+
         kwargs.setdefault('color', 'black')
         kwargs.setdefault('linewidth', 2)
         if self.timeseries is None:
@@ -667,14 +676,14 @@ class ContactAnalysis1(object):
         """Plot :attr:`ContactAnalysis1.qavg`, the matrix of average native contacts."""
         from pylab import pcolor, gca, meshgrid, xlabel, ylabel, xlim, ylim, colorbar, savefig
 
-        x,y = self.selections[0].resids(), self.selections[1].resids()
-        X,Y = meshgrid(x,y)
+        x, y = self.selections[0].resids(), self.selections[1].resids()
+        X, Y = meshgrid(x, y)
 
-        pcolor(X,Y,self.qavg.T, **kwargs)
+        pcolor(X, Y, self.qavg.T, **kwargs)
         gca().set_aspect('equal')
 
-        xlim(min(x),max(x))
-        ylim(min(y),max(y))
+        xlim(min(x), max(x))
+        ylim(min(y), max(y))
 
         xlabel("residues")
         ylabel("residues")
@@ -683,7 +692,6 @@ class ContactAnalysis1(object):
 
         if not filename is None:
             savefig(filename)
-
 
     def plot_qavg(self, filename=None, **kwargs):
         """Plot :attr:`ContactAnalysis1.qavg`, the matrix of average native contacts.
@@ -696,7 +704,7 @@ class ContactAnalysis1(object):
         """
         from pylab import imshow, xlabel, ylabel, xlim, ylim, colorbar, cm, clf, savefig
 
-        x,y = self.selections[0].resids(), self.selections[1].resids()
+        x, y = self.selections[0].resids(), self.selections[1].resids()
 
         kwargs['origin'] = 'lower'
         kwargs.setdefault('aspect', 'equal')
@@ -709,8 +717,8 @@ class ContactAnalysis1(object):
         clf()
         imshow(self.qavg.T, **kwargs)
 
-        xlim(min(x),max(x))
-        ylim(min(y),max(y))
+        xlim(min(x), max(x))
+        ylim(min(y), max(y))
 
         xlabel("residue from %r" % self.selection_strings[0])
         ylabel("residue from %r" % self.selection_strings[1])

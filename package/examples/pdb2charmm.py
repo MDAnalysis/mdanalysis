@@ -13,6 +13,7 @@ import MDAnalysis
 from MDAnalysis.builder.charmm import Preprocessor
 
 import logging
+
 logger = logging.getLogger('MDAnalysis.app')
 
 MDAnalysis.start_logging()

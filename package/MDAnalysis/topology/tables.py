@@ -1,18 +1,16 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
-#
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -38,6 +36,7 @@ The raw tables are stored in the strings
 .. autodata:: TABLE_MASSES
 """
 
+
 def kv2dict(s, convertor=str):
     """Primitive ad-hoc parser of a key-value record list.
 
@@ -60,7 +59,7 @@ def kv2dict(s, convertor=str):
     lines = s.splitlines()
     for line in lines:
         line = line.lstrip()
-        values = line.split(None,1)
+        values = line.split(None, 1)
         if len(values) == 0 or line.startswith("#"):
             continue
         d[values[0]] = convertor(values[1])
@@ -288,11 +287,12 @@ masses = kv2dict(TABLE_MASSES, convertor=float)
 #: .. _GROMACS: http://www.gromacs.org
 #:
 #: .. SeeAlso:: :func:`MDAnalysis.topology.core.guess_bonds`
-vdwradii = {  "C":     1.5,
-              "F":     1.2,
-              "H":     0.4,
-              "N":     1.10,
-              "O":     1.05,
-              "S":     1.6,
-              "P":     1.6,
-              }
+vdwradii = {
+    "C":     1.5,
+    "F":     1.2,
+    "H":     0.4,
+    "N":     1.10,
+    "O":     1.05,
+    "S":     1.6,
+    "P":     1.6,
+}

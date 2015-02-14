@@ -1,18 +1,17 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -102,10 +101,11 @@ especially as we are directly using this framework (imported from numpy).
 .. _Gromacs: http://www.gromacs.org
 """
 
-__version__ = "0.8.2-dev"   # keep in sync with RELEASE in setup.py
+__version__ = "0.8.2-dev"  # keep in sync with RELEASE in setup.py
 
 try:
     from numpy.testing import Tester
+
     test = Tester().test
 except ImportError:
     raise ImportError("""numpy>=1.3  is required to run the test suite. Please install it first. """
@@ -119,6 +119,7 @@ except ImportError:
 
 try:
     import MDAnalysis
+
     if MDAnalysis.__version__ != __version__:
         raise ImportError
 except ImportError:
@@ -127,8 +128,10 @@ except ImportError:
 
 import MDAnalysis.core.util
 
+
 def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionError):
     """If decorated function raises exception *exc_type* skip test, else raise AssertionError."""
+
     def knownfailure_decorator(f):
         def inner(*args, **kwargs):
             try:
@@ -137,8 +140,11 @@ def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionE
                 raise nose.SkipTest(msg)
             else:
                 raise AssertionError('Failure expected')
+
         return nose.tools.make_decorator(f)(inner)
+
     return knownfailure_decorator
+
 
 def executable_not_found(*args):
     """Return ``True`` if not at least one of the executables in args can be found.
@@ -151,6 +157,7 @@ def executable_not_found(*args):
             break
     return not found
 
+
 def executable_not_found_runtime(*args):
     """Factory function that returns a :func:`executable_not_found`.
 
@@ -162,4 +169,4 @@ def executable_not_found_runtime(*args):
       @dec.skipif(executable_not_found_runtime("binary_name"), msg="skip test because binary_name not available")
       ...
     """
-    return lambda : executable_not_found(*args)
+    return lambda: executable_not_found(*args)

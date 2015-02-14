@@ -1,19 +1,19 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 """
 MOL2 file format --- :mod:`MDAnalysis.coordinates.MOL2`
 ========================================================
@@ -45,26 +45,27 @@ from MDAnalysis.topology.core import guess_atom_element, guess_bonds
 from .. import core
 import MDAnalysis.core.util as util
 
+
 class Timestep(base.Timestep):
-        @property
-        def dimensions(self):
-                """unitcell dimensions (`A, B, C, alpha, beta, gamma`)
+    @property
+    def dimensions(self):
+        """unitcell dimensions (`A, B, C, alpha, beta, gamma`)
 
-                MOL2 does not contain unitcell information but for
-                compatibility, an empty unitcell is provided.
+        MOL2 does not contain unitcell information but for
+        compatibility, an empty unitcell is provided.
 
-                - `A, B, C` are the lengths of the primitive cell vectors `e1, e2, e3`
-                - `alpha` = angle(`e1, e2`)
-                - `beta` = angle(`e1, e3`)
-                - `gamma` = angle(`e2, e3`)
+        - `A, B, C` are the lengths of the primitive cell vectors `e1, e2, e3`
+        - `alpha` = angle(`e1, e2`)
+        - `beta` = angle(`e1, e3`)
+        - `gamma` = angle(`e2, e3`)
 
-                """
-                # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
-                return self._unitcell
+        """
+        # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
+        return self._unitcell
 
-        @dimensions.setter
-        def dimensions(self, box):
-            self._unitcell = box
+    @dimensions.setter
+    def dimensions(self, box):
+        self._unitcell = box
 
 
 class MOL2Reader(base.Reader):
@@ -100,7 +101,7 @@ class MOL2Reader(base.Reader):
             for i, line in enumerate(f):
                 # found new molecules
                 if "@<TRIPOS>MOLECULE" in line:
-                    blocks.append({"start_line": i, "lines":[]})
+                    blocks.append({"start_line": i, "lines": []})
                 blocks[-1]["lines"].append(line)
 
         block = blocks[0]
@@ -112,8 +113,8 @@ class MOL2Reader(base.Reader):
         self.ts.frame = 1  # 1-based frame number as starting frame
 
         if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)             # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)
+            self.convert_pos_from_native(self.ts._pos)  # in-place !
+            self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
 
         self.molecule = {}
         self.substructure = {}
@@ -150,19 +151,17 @@ class MOL2Reader(base.Reader):
 
         atom_lines, bond_lines = sections["atom"], sections["bond"]
         if not len(atom_lines):
-                raise Exception("The mol2 (starting at line {}) block has no atoms".format(block["start_line"]))
+            raise Exception("The mol2 (starting at line {}) block has no atoms".format(block["start_line"]))
         if not len(bond_lines):
-                raise Exception("The mol2 (starting at line {}) block has no bonds".format(block["start_line"]))
+            raise Exception("The mol2 (starting at line {}) block has no bonds".format(block["start_line"]))
 
         coords = []
         for a in atom_lines:
             aid, name, x, y, z, atom_type, resid, resname, charge = a.split()
             x, y, z = float(x), float(y), float(z)
-            coords.append((x,y,z))
+            coords.append((x, y, z))
         coords = np.array(coords)
-        return sections,  coords
-
-
+        return sections, coords
 
     def _read_next_timestep(self, ts=None):
         if ts is None:
@@ -190,13 +189,16 @@ class MOL2Reader(base.Reader):
 
         # check if atom number changed
         if len(coords) != len(self.ts._pos):
-            raise ValueError("PrimitivePDBReader assumes that the number of atoms remains unchanged between frames; the current frame has %d, the next frame has %d atoms" % (len(self.ts._pos), len(coords)))
+            raise ValueError(
+                "PrimitivePDBReader assumes that the number of atoms remains unchanged between frames; the current "
+                "frame has %d, the next frame has %d atoms" % (
+                len(self.ts._pos), len(coords)))
 
         self.ts = self._Timestep(np.array(coords, dtype=np.float32))
         self.ts._unitcell[:] = unitcell
         if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)             # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])    # in-place ! (only lengths)
+            self.convert_pos_from_native(self.ts._pos)  # in-place !
+            self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
         self.ts.frame = frame
         return self.ts
 
@@ -260,7 +262,7 @@ class MOL2Writer(base.Writer):
 
         self.frames_written = 0
         if start < 0:
-          raise ValueError, "'Start' must be a positive value"
+            raise ValueError("'Start' must be a positive value")
 
         self.start = start
         self.step = step
@@ -284,13 +286,22 @@ class MOL2Writer(base.Writer):
         bonds = sorted([(bond[0].id, bond[1].id, bond.order) for bond in bonds])
         mapping = dict([(a.id, i) for i, a in enumerate(obj.atoms)])
 
-        atom_lines = ["{:>4} {:>4} {:>13.4f} {:>9.4f} {:>9.4f} {:>4} {} {} {:>7.4f}".format(mapping[a.id]+1, a.name, float(a.pos[0]), float(a.pos[1]), float(a.pos[2]), a.type, a.resid, a.resname, a.charge) for a in obj.atoms]
-        atom_lines = ["@<TRIPOS>ATOM"] +  atom_lines + ["\n"]
+        atom_lines = ["{:>4} {:>4} {:>13.4f} {:>9.4f} {:>9.4f} {:>4} {} {} "
+                      "{:>7.4f}".format(mapping[a.id] + 1, a.name,
+                                        float(a.pos[0]),
+                                        float(a.pos[1]),
+                                        float(a.pos[2]), a.type,
+                                        a.resid, a.resname,
+                                        a.charge) for a in obj.atoms]
+        atom_lines = ["@<TRIPOS>ATOM"] + atom_lines + ["\n"]
         atom_lines = "\n".join(atom_lines)
 
-        bonds = [(atom1, atom2, order)for atom1, atom2, order in bonds if atom1 in mapping and atom2 in mapping]
-        bond_lines = [ "{:>5} {:>5} {:>5} {:>2}".format(bid+1, mapping[atom1]+1, mapping[atom2]+1, order) for bid, (atom1, atom2, order) in enumerate(bonds) ]
-        bond_lines = ["@<TRIPOS>BOND"] + bond_lines + [ "\n"]
+        bonds = [(atom1, atom2, order) for atom1, atom2, order in bonds if atom1 in mapping and atom2 in mapping]
+        bond_lines = ["{:>5} {:>5} {:>5} {:>2}".format(bid + 1,
+                                                       mapping[atom1] + 1,
+                                                       mapping[atom2] + 1,
+                                                       order) for bid, (atom1, atom2, order) in enumerate(bonds)]
+        bond_lines = ["@<TRIPOS>BOND"] + bond_lines + ["\n"]
         bond_lines = "\n".join(bond_lines)
 
         substructure = traj.substructure[traj.frame]
@@ -328,7 +339,7 @@ class MOL2Writer(base.Writer):
         # If there is onyl 1 frame, the traj.frames is not like a python list:
         # accessing trajectory[-1] raises key error.
         if not start and traj.numframes > 1:
-          start = traj.frame - 1
+            start = traj.frame - 1
 
         for framenumber in xrange(start, len(traj), step):
             traj[framenumber]
@@ -347,4 +358,3 @@ class MOL2Writer(base.Writer):
         """
         block = self.encode_block(obj)
         self.file.writelines(block)
-

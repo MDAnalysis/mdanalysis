@@ -31,9 +31,11 @@ except ImportError:
 DEFAULT_VERSION = "0.9.6"
 DEFAULT_URL = "https://pypi.python.org/packages/source/s/setuptools/"
 
+
 def _python_cmd(*args):
     args = (sys.executable,) + args
     return subprocess.call(args) == 0
+
 
 def _install(tarball, install_args=()):
     # extracting the tarball
@@ -121,11 +123,11 @@ def use_setuptools(version=DEFAULT_VERSION, download_base=DEFAULT_URL,
         e = sys.exc_info()[1]
         if was_imported:
             sys.stderr.write(
-            "The required version of setuptools (>=%s) is not available,\n"
-            "and can't be installed while this script is running. Please\n"
-            "install a more recent version first, using\n"
-            "'easy_install -U setuptools'."
-            "\n\n(Currently using %r)\n" % (version, e.args[0]))
+                "The required version of setuptools (>=%s) is not available,\n"
+                "and can't be installed while this script is running. Please\n"
+                "install a more recent version first, using\n"
+                "'easy_install -U setuptools'."
+                "\n\n(Currently using %r)\n" % (version, e.args[0]))
             sys.exit(2)
         else:
             del pkg_resources, sys.modules['pkg_resources']    # reload ok
@@ -232,6 +234,7 @@ def _build_install_args(options):
         install_args.append('--user')
     return install_args
 
+
 def _parse_args():
     """
     Parse the command line for options
@@ -247,6 +250,7 @@ def _parse_args():
     options, args = parser.parse_args()
     # positional arguments are ignored
     return options
+
 
 def main(version=DEFAULT_VERSION):
     """Install or upgrade setuptools and EasyInstall"""

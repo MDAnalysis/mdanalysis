@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 """
 MDAnalysis example: Convert DCD trajectory into XTC
@@ -11,7 +12,6 @@ different trajectory formats.
 
 from MDAnalysis.tests.datafiles import PDB_small, DCD
 from MDAnalysis import Universe, Writer
-
 
 import os.path
 

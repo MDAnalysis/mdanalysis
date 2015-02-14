@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 """
 MDAnalysis example: Convert Amber formatted trajectory to DCD
@@ -9,16 +10,16 @@ different trajectory formats.
 
 """
 
-#from MDAnalysis.tests.datafiles import PRMpbc,TRJpbc_bz2
-from MDAnalysis.tests.datafiles import PRM,TRJ_bz2
+# from MDAnalysis.tests.datafiles import PRMpbc,TRJpbc_bz2
+from MDAnalysis.tests.datafiles import PRM, TRJ_bz2
 from MDAnalysis import Universe, Writer
 from MDAnalysis.core.util import greedy_splitext
 
 import os.path
 
-topol = PRM #PRMpbc
-intrj = TRJ_bz2 #TRJpbc_bz2
-ext = '.dcd'   # output format determined by extension
+topol = PRM  # PRMpbc
+intrj = TRJ_bz2  # TRJpbc_bz2
+ext = '.dcd'  # output format determined by extension
 
 root, oldext = greedy_splitext(os.path.basename(intrj))
 outtrj = root + ext
