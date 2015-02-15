@@ -1,16 +1,16 @@
 import numpy
 from MDAnalysis import *
 
-universe = Universe(...)
+universe = Universe("system.gro")
 
-tail_carbons = arange(2, 15)
+tail_carbons = numpy.arange(2, 15)
 
 skip = 5
 order_param = numpy.zeros(len(tail_carbons))
 
 for i, carbon in enumerate(tail_carbons):
-    selection = "resname DMPC and ( name C2%d or name H%dR or name H%dS or name C3%d or name H%dX or name H%dY )" % (
-    (carbon,) * 6)
+    selection = "resname DMPC and ( name C2%d or name H%dR or name H%dS or name C3%d or name H%dX or name H%dY )" % \
+                ((carbon,) * 6)
     group = universe.selectAtoms(selection)
 
     data = universe.dcd.timeseries(group, format="afc", skip=skip)
@@ -27,4 +27,3 @@ for i, carbon in enumerate(tail_carbons):
     # Depending on how you want to treat each deuterium, you can skip the next step
     S_cd.shape = (S_cd.shape[0], S_cd.shape[1] / 4, -1)  # 4 deuterium order parameters/lipid carbon position
     order_param[i] = numpy.average(S_cd)
-
