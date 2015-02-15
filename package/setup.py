@@ -253,15 +253,6 @@ if __name__ == '__main__':
                   ],
                   include_dirs=include_dirs,
                   define_macros=largefile_macros),
-        Extension('coordinates.fastxdrio',
-                  sources=[
-                      'src/fastxdrfile/xdrfile.c',
-                      'src/fastxdrfile/xdrfile_trr.c',
-                      'src/fastxdrfile/xdrfile_xtc.c',
-                      'MDAnalysis/coordinates/fastxdrio.%s' % ("pyx" if use_cython else "c")
-                  ],
-                  include_dirs=include_dirs + ['src/fastxdrfile/'],
-                  define_macros=largefile_macros)
     ]
 
     setup(name='MDAnalysis',
