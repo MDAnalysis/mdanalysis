@@ -34,6 +34,24 @@ class TestDefaultUnits(TestCase):
         assert_equal(flags['convert_lengths'], True,
                      "The default behaviour should be to auto-convert Gromacs trajectories")
 
+class TestConstants(object):
+    # CODATA 2010 (NIST): http://physics.nist.gov/cuu/Constants/
+    # (accessed 2015-02-15)
+    # Add a reference value to this dict for every entry in
+    # units.constants
+    constants_reference = {
+        'N_Avogadro': 6.02214129e+23,         # mol**-1
+        'elementary_charge': 1.602176565e-19, # As
+        }
+
+    def test_constant(self):
+        for name,value in self.constants_reference.iteritems():
+            yield self.check_physical_constant, name, value
+
+    @staticmethod
+    def check_physical_constant(name, reference):
+        assert_almost_equal(units.constants[name], reference)
+
 
 class TestConversion(TestCase):
     def testLength(self):
@@ -54,4 +72,4 @@ class TestConversion(TestCase):
         assert_almost_equal(units.convert(1, 'kcal/mol', 'kJ/mol'), 4.184,
                             err_msg="Conversion kcal/mol -> kJ/mol failed")
         assert_almost_equal(units.convert(1, 'kcal/mol', 'eV'), 0.0433641,
-                            err_msg="Conversion kcal/mol -> kJ/mol failed")
+                            err_msg="Conversion kcal/mol -> eV failed")

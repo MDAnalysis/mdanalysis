@@ -101,14 +101,23 @@ References
 """
 
 #: `Avogadro's constant`_ in mol**-1.
+#:
 #: .. deprecated:: 0.9.0
 #:    Use *N_Avogadro* in dict :data:`constants` instead.
+#:
+#: .. versionchanged:: 0.9.0
+#:    Use CODATA 2010 value, which differs from the previously used value
+#:    6.02214179e+23 mol**-1 by -5.00000000e+16 mol**-1.
 N_Avogadro = 6.02214129e+23  # mol**-1
 
 #: Physical constants with values from `CODATA 2010 at NIST`_.
 #: .. _`CODATA 2010 at NIST`: http://physics.nist.gov/cuu/Constants/
 #:
 #: .. versionadded:: 0.9.0
+#
+# NOTE: Whenever a constant is added to the constants dict, you also
+#       MUST add an appropriate entry to
+#       test_units:TestConstants.constants_reference !
 constants = {
     'N_Avogadro': 6.02214129e+23,         # mol**-1
     'elementary_charge': 1.602176565e-19, # As
@@ -149,11 +158,11 @@ water = {
 densityUnit_factor = {
     'Angstrom^{-3}': 1 / 1.0, 'A^{-3}': 1 / 1.0, 'Å^{-3}': 1 / 1.0,
     'nm^{-3}': 1 / 1e-3, 'nanometer^{-3}': 1 / 1e-3,
-    'Molar': 1 / (1e-27 * N_Avogadro),
-    'SPC': 1 / (1e-24 * N_Avogadro * water['SPC'] / water['MolarMass']),
-    'TIP3P': 1 / (1e-24 * N_Avogadro * water['TIP3P'] / water['MolarMass']),
-    'TIP4P': 1 / (1e-24 * N_Avogadro * water['TIP4P'] / water['MolarMass']),
-    'water': 1 / (1e-24 * N_Avogadro * water['exp'] / water['MolarMass']),
+    'Molar': 1 / (1e-27 * constants['N_Avogadro']),
+    'SPC': 1 / (1e-24 * constants['N_Avogadro'] * water['SPC'] / water['MolarMass']),
+    'TIP3P': 1 / (1e-24 * constants['N_Avogadro'] * water['TIP3P'] / water['MolarMass']),
+    'TIP4P': 1 / (1e-24 * constants['N_Avogadro'] * water['TIP4P'] / water['MolarMass']),
+    'water': 1 / (1e-24 * constants['N_Avogadro'] * water['exp'] / water['MolarMass']),
 }
 
 
@@ -190,12 +199,19 @@ forceUnit_factor = {
 #: *Energy* is measured in kJ/mol.
 energyUnit_factor = {'kJ/mol': 1.0,
                      'kcal/mol': 1/4.184,
-                     'J': 1e3/N_Avogadro,
+                     'J': 1e3/constants['N_Avogadro'],
                      'eV': 1e3/(constants['N_Avogadro'] * constants['elementary_charge']),
                      }
 
-#: *Charge* is measured in multiples of the `electron charge`_
-#: *e* =  1.602176487 x 10**(-19) C.
+#: *Charge* is measured in multiples of the `electron charge`_ *e*, with the value
+#: *elementary_charge* in :data:`constants`.
+#: The `conversion factor to Amber charge units`_ is 18.2223.
+#:
+#: .. _`conversion factor to Amber charge units`: http://ambermd.org/formats.html#parm
+#:
+#: .. versionchanged:: 0.9.0
+#:    Use CODATA 2010 value for *elementary charge*, which differs from the previously used value
+#:    *e* =  1.602176487 x 10**(-19) C by 7.8000000e-27 C.
 chargeUnit_factor = {
     'e': 1.0,
     'Amber': 18.2223,  # http://ambermd.org/formats.html#parm
