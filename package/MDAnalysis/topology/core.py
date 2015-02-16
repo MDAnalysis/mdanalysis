@@ -113,9 +113,6 @@ class TopologyObject(object):
     Defines the behaviour by which Bonds/Angles/etc in MDAnalysis should
     behave.
 
-    Bonds/Angles/etc all subclass this and customise __init__ to append 
-    themselves to relevant atoms when they are initialised.
-
     .. versionadded 0.8.2
     """
     __slots__ = ("atoms")
@@ -135,9 +132,12 @@ class TopologyObject(object):
         return tuple([a.type for a in self.atoms])
 
     def __repr__(self):
-        return ("< " + self.__class__.__name__ + " between: " +
-                ", ".join(["Atom %d (%s of %s-%d)" % (a.number+1, a.name, a.resname, a.resid)
-                           for a in self.atoms]) + " >")
+        return "<{cname} between: {conts}>".format(
+            cname = self.__class__.__name__,
+            conts = ", ".join([
+                "Atom {} ({} of {}-{})".format(
+                    a.number+1, a.name, a.resname, a.resid)
+                for a in self.atoms]))
 
     def __contains__(self, other):
         """Check whether an atom is in this TopologyObject"""
@@ -228,7 +228,7 @@ class Bond(TopologyObject):
 
     def __repr__(self):
         a1, a2 = self.atoms
-        s_id = "< Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid}"\
+        s_id = "<Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid}"\
                " {1.altLoc}) and Atom {2:d} ({3.name} of {3.resname}"\
                "{3.resid} {3.altLoc})".format(
                    a1.number + 1, a1, a2.number + 1, a2)
@@ -743,8 +743,8 @@ class TopologyDict(object):
         return iter(self.dict)
 
     def __repr__(self):
-        return '<' + self.__class__.__name__ + ' with ' + repr(len(self)) + \
-            ' unique ' + self.toptype + 's >'
+        return "<TopologyDict with {num} unique {type}s>".format(
+            num=len(self), type=self.toptype)
 
     def __getitem__(self, key):
         """Returns a TopologyGroup matching the criteria if possible,
@@ -1063,8 +1063,8 @@ class TopologyGroup(object):
         return item in set(self.bondlist)
 
     def __repr__(self):
-        return "< " + self.__class__.__name__ + " containing " + \
-            str(len(self)) + " " + self.toptype + "s >"
+        return "<TopologyGroup containing {num} {type}s>".format(
+            num=len(self), type=self.toptype)
 
     def __eq__(self, other):
         """Test if contents of TopologyGroups are equal"""
