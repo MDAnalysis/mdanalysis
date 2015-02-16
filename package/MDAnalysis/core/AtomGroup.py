@@ -398,10 +398,12 @@ class Atom(object):
         self.__universe = None
 
     def __repr__(self):
-        return "< Atom " + repr(self.number + 1) + ": name " + repr(self.name) + " of type " + \
-               repr(self.type) + " of resname " + repr(self.resname) + ", resid " + repr(self.resid) +\
-               " and segid " + repr(self.segid) + \
-               ("" if not self.altLoc else " and altloc {}".format(repr(self.altLoc))) + '>'
+        return ("<Atom {idx}: {name} of type {t} of resname {rname}, "
+                "resid {rid} and segid {sid}{altloc}>".format(
+                    idx=self.number + 1, name=self.name, t=self.type,
+                    rname=self.resname, rid=self.resid, sid=self.segid,
+                    altloc="" if not self.altLoc
+                    else " and altloc {}".format(self.altLoc)))
 
     def __cmp__(self, other):
         return cmp(self.number, other.number)
@@ -414,7 +416,8 @@ class Atom(object):
 
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
-            raise TypeError('Can only concatenate Atoms (not "' + repr(other.__class__.__name__) + '") to AtomGroup')
+            raise TypeError('Can only concatenate Atoms (not "{}")'
+                            ' to AtomGroup'.format(other.__class__.__name__))
         if isinstance(other, Atom):
             return AtomGroup([self, other])
         else:
@@ -460,7 +463,8 @@ class Atom(object):
         .. versionadded:: 0.7.5
         """
         try:
-            return numpy.array(self.universe.trajectory.ts._velocities[self.number], dtype=numpy.float32)
+            return numpy.array(self.universe.coord._velocities[self.number],
+                               dtype=numpy.float32)
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
 
@@ -475,7 +479,8 @@ class Atom(object):
         if not self.__universe is None:
             return self.__universe
         else:
-            raise AttributeError("Atom " + repr(self.number) + " is not assigned to a Universe")
+            raise AttributeError(
+                "Atom {} is not assigned to a Universe".format(self.number))
 
     @universe.setter
     def universe(self, universe):
@@ -807,15 +812,16 @@ class AtomGroup(object):
 
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
-            raise TypeError(
-                'Can only concatenate AtomGroup (not "' + repr(other.__class__.__name__) + '") to AtomGroup')
+            raise TypeError('Can only concatenate AtomGroup (not "{}") to'
+                            ' AtomGroup'.format(other.__class__.__name__))
         if isinstance(other, AtomGroup):
             return AtomGroup(self._atoms + other._atoms)
         else:
             return AtomGroup(self._atoms + [other])
 
     def __repr__(self):
-        return '<' + self.__class__.__name__ + ' with ' + repr(self.numberOfAtoms()) + ' atoms>'
+        return "<AtomGroup with {natoms} atoms>".format(
+            natoms=len(self))
 
     def __getstate__(self):
         raise NotImplementedError
@@ -2377,7 +2383,8 @@ class Residue(AtomGroup):
             return None
 
     def __repr__(self):
-        return '<' + self.__class__.__name__ + ' ' + repr(self.name) + ', ' + repr(self.id) + '>'
+        return "<Residue {name}, {id}>".format(
+            name=self.name, id=self.id)
 
 
 class ResidueGroup(AtomGroup):
@@ -2526,7 +2533,8 @@ class ResidueGroup(AtomGroup):
     # because there is no ambiguity as which residues are changed.
 
     def __repr__(self):
-        return '<' + self.__class__.__name__ + ' ' + repr(self._residues) + '>'
+        return "<ResidueGroup {res}>".format(
+            res=repr(self._residues))
 
 
 class Segment(ResidueGroup):
@@ -2593,7 +2601,8 @@ class Segment(ResidueGroup):
                 return ResidueGroup(r)
 
     def __repr__(self):
-        return '<' + self.__class__.__name__ + ' ' + repr(self.name) + '>'
+        return "<Segment {name}>".format(
+            name=self.name)
 
 
 class SegmentGroup(ResidueGroup):
@@ -2714,7 +2723,8 @@ class SegmentGroup(ResidueGroup):
         return seglist[0]
 
     def __repr__(self):
-        return '<' + self.__class__.__name__ + ' ' + repr(self._segments) + '>'
+        return "<SegmentGroup {segnames}>".format(
+            segnames=repr(self._segments))
 
 
 class Universe(object):
@@ -3055,7 +3065,8 @@ class Universe(object):
         else:
             from MDAnalysis.topology.core import TopologyGroup, Angle
 
-            angle_list = [Angle([self.atoms[a] for a in entry]) for entry in angle_entries]
+            angle_list = [Angle([self.atoms[a] for a in entry])
+                          for entry in angle_entries]
             if len(angle_list) > 0:
                 return TopologyGroup(angle_list)
             else:
@@ -3076,7 +3087,7 @@ class Universe(object):
             from MDAnalysis.topology.core import TopologyGroup, Torsion
 
             torsion_list = [Torsion([self.atoms[a] for a in entry])
-                for entry in torsion_entries]
+                            for entry in torsion_entries]
             if len(torsion_list) > 0:
                 return TopologyGroup(torsion_list)
             else:
@@ -3096,7 +3107,8 @@ class Universe(object):
         else:
             from MDAnalysis.topology.core import TopologyGroup, Improper_Torsion
 
-            torsion_list = [Improper_Torsion([self.atoms[a] for a in entry]) for entry in torsion_entries]
+            torsion_list = [Improper_Torsion([self.atoms[a] for a in entry])
+                            for entry in torsion_entries]
             if len(torsion_list) > 0:
                 return TopologyGroup(torsion_list)
             else:
@@ -3607,10 +3619,9 @@ class Universe(object):
             return atomgrp
 
     def __repr__(self):
-        return \
-            '<' + self.__class__.__name__ + ' with ' + repr(len(self.atoms)) + ' atoms' \
-            + (" and %d bonds" % len(self.bonds) if hasattr(self, "bonds") and self.bonds and len(self.bonds) else '') \
-            + '>'
+        return "<Universe with {natoms} atoms{bonds}>".format(
+            natoms=len(self.atoms),
+            bonds=" and {} bonds".format(len(self.bonds)) if self.bonds else "")
 
     def __getstate__(self):
         raise NotImplementedError
