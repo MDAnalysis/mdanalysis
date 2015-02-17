@@ -486,13 +486,21 @@ class Atom(object):
     def universe(self, universe):
         self.__universe = universe
 
+    @property
+    def partners(self):
+        """A list of the Atoms that this Atom is bonded to.
+
+        .. versionadded:: 0.9
+        """
+        return [b.partner(self) for b in self.bonds]
+
     # The following look up a dictionary stored in the Universe.
     # These dictionaries are lazily built
     @property
     def fragment(self):
         """The fragment that this Atom is part of
 
-        .. versionadded 0.8.2
+        .. versionadded:: 0.8.2
         """
         return self.universe._fragmentDict[self]
 
