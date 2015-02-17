@@ -13,6 +13,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import unicode_literals
 
 import numpy as np
 from numpy.testing import *
@@ -24,15 +25,30 @@ from MDAnalysis.core import flags
 class TestDefaultUnits(TestCase):
     def testLength(self):
         assert_equal(flags['length_unit'], 'Angstrom',
-                     "The default length unit should be Angstrom (in core.flags)")
+                     b"The default length unit should be Angstrom (in core.flags)")
 
     def testTime(self):
         assert_equal(flags['time_unit'], 'ps',
-                     "The default length unit should be pico seconds (in core.flags)")
+                     b"The default length unit should be pico seconds (in core.flags)")
 
     def testConvertGromacsTrajectories(self):
         assert_equal(flags['convert_lengths'], True,
-                     "The default behaviour should be to auto-convert Gromacs trajectories")
+                     b"The default behaviour should be to auto-convert Gromacs trajectories")
+
+
+class TestUnitEncoding(TestCase):
+    def testUnicode(self):
+        try:
+            assert_equal(units.lengthUnit_factor["\u212b"], 1.0)
+        except KeyError:
+            raise AssertionError("Unicode symbol for Angtrom not supported")
+
+    def testUTF8Encoding(self):
+        try:
+            assert_equal(units.lengthUnit_factor[b"\xe2\x84\xab"], 1.0)
+        except KeyError:
+            raise AssertionError("UTF-8-encoded symbol for Angtrom not supported")
+
 
 class TestConstants(object):
     # CODATA 2010 (NIST): http://physics.nist.gov/cuu/Constants/
@@ -40,12 +56,12 @@ class TestConstants(object):
     # Add a reference value to this dict for every entry in
     # units.constants
     constants_reference = {
-        'N_Avogadro': 6.02214129e+23,         # mol**-1
-        'elementary_charge': 1.602176565e-19, # As
+        'N_Avogadro': 6.02214129e+23,          # mol**-1
+        'elementary_charge': 1.602176565e-19,  # As
         }
 
     def test_constant(self):
-        for name,value in self.constants_reference.iteritems():
+        for name, value in self.constants_reference.iteritems():
             yield self.check_physical_constant, name, value
 
     @staticmethod

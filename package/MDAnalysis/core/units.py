@@ -13,7 +13,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
+from __future__ import unicode_literals
 
 """
 Constants and unit conversion --- :mod:`MDAnalysis.core.units`
@@ -119,8 +119,8 @@ N_Avogadro = 6.02214129e+23  # mol**-1
 #       MUST add an appropriate entry to
 #       test_units:TestConstants.constants_reference !
 constants = {
-    'N_Avogadro': 6.02214129e+23,         # mol**-1
-    'elementary_charge': 1.602176565e-19, # As
+    'N_Avogadro': 6.02214129e+23,          # mol**-1
+    'elementary_charge': 1.602176565e-19,  # As
 }
 
 #: The basic unit of *length* in MDAnalysis is the Angstrom.
@@ -128,7 +128,8 @@ constants = {
 #: Conversions follow `L/x = L/Angstrom * lengthUnit_factor[x]`.
 #: *x* can be *nm*/*nanometer* or *fm*.
 lengthUnit_factor = {
-    'Angstrom': 1.0, 'A': 1.0, '�': 1.0, 'angstrom': 1.0,
+    'Angstrom': 1.0, 'A': 1.0, 'angstrom': 1.0,
+    '\u212b': 1.0, b'\xe2\x84\xab': 1.0,  # Unicode and UTF-8 encoded symbol for angstroms
     'nm': 1.0 / 10, 'nanometer': 1.0 / 10,
     'pm': 1e2, 'picometer': 1e2,
     'fm': 1e5, 'femtometer': 1e5,
@@ -156,7 +157,8 @@ water = {
 #: it can be convenient to measure the density relative to bulk, and
 #: hence a number of values are pre-stored in :data:`water`.
 densityUnit_factor = {
-    'Angstrom^{-3}': 1 / 1.0, 'A^{-3}': 1 / 1.0, '�^{-3}': 1 / 1.0,
+    'Angstrom^{-3}': 1 / 1.0, 'A^{-3}': 1 / 1.0,
+    '\u212b^{-3}': 1 / 1.0, b'\xe2\x84\xab^{-3}': 1 / 1.0,  # Unicode and UTF-8 encoded
     'nm^{-3}': 1 / 1e-3, 'nanometer^{-3}': 1 / 1e-3,
     'Molar': 1 / (1e-27 * constants['N_Avogadro']),
     'SPC': 1 / (1e-24 * constants['N_Avogadro'] * water['SPC'] / water['MolarMass']),
@@ -179,7 +181,8 @@ timeUnit_factor = {
 
 #: For *speed*, the basic unit is Angstrom/ps.
 speedUnit_factor = {
-    'Angstrom/ps': 1.0, 'A/ps': 1.0, '�/ps': 1.0, 'Angstrom/picosecond': 1.0,
+    'Angstrom/ps': 1.0, 'A/ps': 1.0, '\u212b/ps': 1.0, b'\xe2\x84\xab/ps': 1.0,
+    'Angstrom/picosecond': 1.0,
     'angstrom/picosecond': 1.0,  # 1
     'Angstrom/AKMA': 4.888821e-2,
     'nm/ps': 0.1, 'nanometer/ps': 0.1, 'nanometer/picosecond': 0.1,  # 1/10
@@ -191,7 +194,8 @@ speedUnit_factor = {
 
 #: For *force* the basic unit is kJ/(mol*Angstrom).
 forceUnit_factor = {
-    'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*A)': 1.0, 'kJ/(mol*�)': 1.0,
+    'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*A)': 1.0,
+    'kJ/(mol*\u212b)': 1.0, b'kJ/(mol*\xe2\x84\xab)': 1.0,
     'kJ/(mol*nm)': 10.0,
 }
 # (TODO: build this combinatorically from lengthUnit and ... a new energyUnit)
