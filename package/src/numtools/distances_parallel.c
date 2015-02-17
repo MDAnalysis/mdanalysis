@@ -2462,7 +2462,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                 #define unlikely(x) (x)
             #endif
             #ifdef _OPENMP
-            #pragma omp parallel  private(__pyx_t_32, __pyx_t_14, __pyx_t_20, __pyx_t_16, __pyx_t_2, __pyx_t_21, __pyx_t_26, __pyx_t_10, __pyx_t_19, __pyx_t_30, __pyx_t_25, __pyx_t_15, __pyx_t_23, __pyx_t_28, __pyx_t_31, __pyx_t_18, __pyx_t_24, __pyx_t_17, __pyx_t_27, __pyx_t_22, __pyx_t_29) private(__pyx_filename, __pyx_lineno, __pyx_clineno) shared(__pyx_parallel_why, __pyx_parallel_exc_type, __pyx_parallel_exc_value, __pyx_parallel_exc_tb)
+            #pragma omp parallel  private(__pyx_t_26, __pyx_t_18, __pyx_t_20, __pyx_t_23, __pyx_t_22, __pyx_t_14, __pyx_t_27, __pyx_t_31, __pyx_t_29, __pyx_t_28, __pyx_t_21, __pyx_t_2, __pyx_t_16, __pyx_t_10, __pyx_t_17, __pyx_t_25, __pyx_t_24, __pyx_t_30, __pyx_t_15, __pyx_t_32, __pyx_t_19) private(__pyx_filename, __pyx_lineno, __pyx_clineno) shared(__pyx_parallel_why, __pyx_parallel_exc_type, __pyx_parallel_exc_value, __pyx_parallel_exc_tb)
             #endif /* _OPENMP */
             {
                 #ifdef _OPENMP
@@ -2482,9 +2482,9 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                 __pyx_t_14 = __pyx_v_rows;
                 if (1 == 0) abort();
                 {
-                    Py_ssize_t __pyx_parallel_temp0 = 0xbad0bad0;
+                    __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_parallel_temp0 = __PYX_NAN();
                     __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_parallel_temp1 = __PYX_NAN();
-                    __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_parallel_temp2 = __PYX_NAN();
+                    Py_ssize_t __pyx_parallel_temp2 = 0xbad0bad0;
                     __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_parallel_temp3 = __PYX_NAN();
                     Py_ssize_t __pyx_parallel_temp4 = 0xbad0bad0;
                     __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_parallel_temp5 = __PYX_NAN();
@@ -2505,7 +2505,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                     if (__pyx_t_16 > 0)
                     {
                         #ifdef _OPENMP
-                        #pragma omp for firstprivate(__pyx_v_i) lastprivate(__pyx_v_i) lastprivate(__pyx_v_y) lastprivate(__pyx_v_dist) lastprivate(__pyx_v_z) lastprivate(__pyx_v_j) lastprivate(__pyx_v_x) schedule(dynamic, __pyx_t_10)
+                        #pragma omp for lastprivate(__pyx_v_y) lastprivate(__pyx_v_dist) firstprivate(__pyx_v_i) lastprivate(__pyx_v_i) lastprivate(__pyx_v_z) lastprivate(__pyx_v_j) lastprivate(__pyx_v_x) schedule(dynamic, __pyx_t_10)
                         #endif /* _OPENMP */
                         for (__pyx_t_15 = 0; __pyx_t_15 < __pyx_t_16; __pyx_t_15++){
                             if (__pyx_parallel_why < 2)
@@ -2697,9 +2697,9 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                                 #pragma omp critical(__pyx_parallel_lastprivates0)
                                 #endif /* _OPENMP */
                                 {
-                                    __pyx_parallel_temp0 = __pyx_v_i;
-                                    __pyx_parallel_temp1 = __pyx_v_y;
-                                    __pyx_parallel_temp2 = __pyx_v_dist;
+                                    __pyx_parallel_temp0 = __pyx_v_y;
+                                    __pyx_parallel_temp1 = __pyx_v_dist;
+                                    __pyx_parallel_temp2 = __pyx_v_i;
                                     __pyx_parallel_temp3 = __pyx_v_z;
                                     __pyx_parallel_temp4 = __pyx_v_j;
                                     __pyx_parallel_temp5 = __pyx_v_x;
@@ -2716,9 +2716,9 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                       __pyx_parallel_why = 4;
                     }
                     if (__pyx_parallel_why) {
-                      __pyx_v_i = __pyx_parallel_temp0;
-                      __pyx_v_y = __pyx_parallel_temp1;
-                      __pyx_v_dist = __pyx_parallel_temp2;
+                      __pyx_v_y = __pyx_parallel_temp0;
+                      __pyx_v_dist = __pyx_parallel_temp1;
+                      __pyx_v_i = __pyx_parallel_temp2;
                       __pyx_v_z = __pyx_parallel_temp3;
                       __pyx_v_j = __pyx_parallel_temp4;
                       __pyx_v_x = __pyx_parallel_temp5;

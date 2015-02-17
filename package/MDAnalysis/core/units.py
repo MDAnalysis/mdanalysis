@@ -1,5 +1,5 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding=utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://mdanalysis.googlecode.com
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -128,7 +128,7 @@ constants = {
 #: Conversions follow `L/x = L/Angstrom * lengthUnit_factor[x]`.
 #: *x* can be *nm*/*nanometer* or *fm*.
 lengthUnit_factor = {
-    'Angstrom': 1.0, 'A': 1.0, 'Å': 1.0, 'angstrom': 1.0,
+    'Angstrom': 1.0, 'A': 1.0, 'ï¿½': 1.0, 'angstrom': 1.0,
     'nm': 1.0 / 10, 'nanometer': 1.0 / 10,
     'pm': 1e2, 'picometer': 1e2,
     'fm': 1e5, 'femtometer': 1e5,
@@ -156,7 +156,7 @@ water = {
 #: it can be convenient to measure the density relative to bulk, and
 #: hence a number of values are pre-stored in :data:`water`.
 densityUnit_factor = {
-    'Angstrom^{-3}': 1 / 1.0, 'A^{-3}': 1 / 1.0, 'Å^{-3}': 1 / 1.0,
+    'Angstrom^{-3}': 1 / 1.0, 'A^{-3}': 1 / 1.0, 'ï¿½^{-3}': 1 / 1.0,
     'nm^{-3}': 1 / 1e-3, 'nanometer^{-3}': 1 / 1e-3,
     'Molar': 1 / (1e-27 * constants['N_Avogadro']),
     'SPC': 1 / (1e-24 * constants['N_Avogadro'] * water['SPC'] / water['MolarMass']),
@@ -179,7 +179,7 @@ timeUnit_factor = {
 
 #: For *speed*, the basic unit is Angstrom/ps.
 speedUnit_factor = {
-    'Angstrom/ps': 1.0, 'A/ps': 1.0, 'Å/ps': 1.0, 'Angstrom/picosecond': 1.0,
+    'Angstrom/ps': 1.0, 'A/ps': 1.0, 'ï¿½/ps': 1.0, 'Angstrom/picosecond': 1.0,
     'angstrom/picosecond': 1.0,  # 1
     'Angstrom/AKMA': 4.888821e-2,
     'nm/ps': 0.1, 'nanometer/ps': 0.1, 'nanometer/picosecond': 0.1,  # 1/10
@@ -191,7 +191,7 @@ speedUnit_factor = {
 
 #: For *force* the basic unit is kJ/(mol*Angstrom).
 forceUnit_factor = {
-    'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*A)': 1.0, 'kJ/(mol*Å)': 1.0,
+    'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*A)': 1.0, 'kJ/(mol*ï¿½)': 1.0,
     'kJ/(mol*nm)': 10.0,
 }
 # (TODO: build this combinatorically from lengthUnit and ... a new energyUnit)
