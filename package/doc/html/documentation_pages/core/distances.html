@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -213,17 +213,14 @@ array which saves time when the function is called repeatedly. [None]</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.distances.calc_angles">
-<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">calc_angles</tt><big>(</big><em>atom1</em>, <em>atom2</em>, <em>atom3</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.calc_angles" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">calc_angles</tt><big>(</big><em>atom1</em>, <em>atom2</em>, <em>atom3</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.calc_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the angle formed between three atoms, over a list of coordinates.
 All <em>atom</em> inputs are lists of coordinates of equal length, with <em>atom2</em> 
 representing the apex of the angle.</p>
 <p>If a 1D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with <tt class="docutils literal"><span class="pre">len(atom1)</span></tt> elements is
 provided in <em>result</em> then this preallocated array is filled. This can speed
 up calculations.</p>
-<p>The optional argument <tt class="docutils literal"><span class="pre">box</span></tt> ensures that periodic boundaries are taken into account when
-constructing the connecting vectors between atoms, ie that the vector between atoms 1 &amp; 2
-goes between coordinates in the same image.</p>
-<p>angles = calc_angles(coords1, coords2, coords3, [[box=None],result=angles])</p>
+<p>angles = calc_angles(coords1, coords2, coords3 [,result=angles])</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -237,11 +234,6 @@ goes between coordinates in the same image.</p>
 </dd>
 <dt><em>coords3</em></dt>
 <dd><p class="first last">coordinate array of other side of angles</p>
-</dd>
-<dt><em>box</em></dt>
-<dd><p class="first last">optional unit cell information.  This ensures that the connecting vectors between
-atoms respect minimum image convention.  This is import when the angle might
-be between atoms in different images.</p>
 </dd>
 <dt><em>result</em></dt>
 <dd><p class="first last">optional preallocated results array which must have same length as coordinate 
@@ -262,14 +254,11 @@ array and dtype=numpy.float64.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.8.</span></p>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8.2: </span>Added optional box argument to account for periodic boundaries in calculation</p>
-</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.distances.calc_torsions">
-<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">calc_torsions</tt><big>(</big><em>atom1</em>, <em>atom2</em>, <em>atom3</em>, <em>atom4</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.calc_torsions" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.core.distances.</tt><tt class="descname">calc_torsions</tt><big>(</big><em>atom1</em>, <em>atom2</em>, <em>atom3</em>, <em>atom4</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#MDAnalysis.core.distances.calc_torsions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the torsional angle formed by four atoms, over a list of coordinates.</p>
 <p>Torsional angle around axis connecting atoms 1 and 2 (i.e. the angle
 between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
@@ -283,10 +272,7 @@ between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
 <p>If a 1D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with <tt class="docutils literal"><span class="pre">len(atom1)</span></tt> elements is
 provided in <em>result</em> then this preallocated array is filled. This can speed
 up calculations.</p>
-<p>The optional argument <tt class="docutils literal"><span class="pre">box</span></tt> ensures that periodic boundaries are taken into account when
-constructing the connecting vectors between atoms, ie that the vector between atoms 1 &amp; 2
-goes between coordinates in the same image.</p>
-<p>angles = calc_torsions(coords1, coords2, coords3, coords4 [,box=box, result=angles])</p>
+<p>angles = calc_torsions(coords1, coords2, coords3, coords4 [,result=angles])</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -304,11 +290,6 @@ goes between coordinates in the same image.</p>
 <dt><em>coords4</em></dt>
 <dd><p class="first last">coordinate array of 4th atom in torsions</p>
 </dd>
-<dt><em>box</em></dt>
-<dd><p class="first last">optional unit cell information.  This ensures that the connecting vectors between
-atoms respect minimum image convention.  This is import when the angle might
-be between atoms in different images.</p>
-</dd>
 <dt><em>result</em></dt>
 <dd><p class="first last">optional preallocated results array which must have same length as coordinate 
 array and dtype=numpy.float64.</p>
@@ -327,9 +308,6 @@ array and dtype=numpy.float64.</p>
 </table>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8.2: </span>Added optional box argument to account for periodic boundaries in calculation</p>
 </div>
 </dd></dl>
 

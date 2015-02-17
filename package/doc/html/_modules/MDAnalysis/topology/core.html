@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
@@ -73,21 +73,19 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.topology.core</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
-<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
-<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see AUTHORS for the full list)</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
-<span class="c">#</span>
-<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
-<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
-<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
-<span class="c">#     doi:10.1002/jcc.21787</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c">#</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Common functions for topology building --- :mod:`MDAnalysis.topology.core`</span>
@@ -103,17 +101,17 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="c"># Global imports</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span>
 
 <span class="c"># Local imports</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">tables</span>
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">distances</span>
-<span class="kn">from</span> <span class="nn">..core.util</span> <span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">dihedral</span>
+<span class="kn">from</span> <span class="nn">..core.util</span> <span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">dihedral</span><span class="p">,</span> <span class="n">cached</span>
+<span class="kn">from</span> <span class="nn">..core.util</span> <span class="kn">import</span> <span class="n">angle</span> <span class="k">as</span> <span class="n">slowang</span>
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
 
 
@@ -182,15 +180,13 @@
                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">ats</span> <span class="ow">in</span> <span class="n">resatomlist</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()]</span>
 
     <span class="k">return</span> <span class="n">residues</span>
+
 </div>
 <div class="viewcode-block" id="TopologyObject"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyObject">[docs]</a><span class="k">class</span> <span class="nc">TopologyObject</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for all Topology items</span>
 
 <span class="sd">    Defines the behaviour by which Bonds/Angles/etc in MDAnalysis should</span>
 <span class="sd">    behave.</span>
-
-<span class="sd">    Bonds/Angles/etc all subclass this and customise __init__ to append </span>
-<span class="sd">    themselves to relevant atoms when they are initialised.</span>
 
 <span class="sd">    .. versionadded 0.8.2</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -211,10 +207,12 @@
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span>
 </div>
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s">&quot;&lt; &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s">&quot; between: &quot;</span> <span class="o">+</span>
-                <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;Atom </span><span class="si">%d</span><span class="s"> (</span><span class="si">%s</span><span class="s"> of </span><span class="si">%s</span><span class="s">-</span><span class="si">%d</span><span class="s">)&quot;</span><span class="o">%</span><span class="p">(</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;{cname} between: {conts}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">cname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+            <span class="n">conts</span> <span class="o">=</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+                <span class="s">&quot;Atom {} ({} of {}-{})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">a</span><span class="o">.</span><span class="n">number</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">resid</span><span class="p">)</span>
-                           <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot; &gt;&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">]))</span>
 
     <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check whether an atom is in this TopologyObject&quot;&quot;&quot;</span>
@@ -305,7 +303,7 @@
 </div>
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="n">s_id</span> <span class="o">=</span> <span class="s">&quot;&lt; Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid}&quot;</span>\
+        <span class="n">s_id</span> <span class="o">=</span> <span class="s">&quot;&lt;Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid}&quot;</span>\
                <span class="s">&quot; {1.altLoc}) and Atom {2:d} ({3.name} of {3.resname}&quot;</span>\
                <span class="s">&quot;{3.resid} {3.altLoc})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                    <span class="n">a1</span><span class="o">.</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="o">.</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span>
@@ -340,8 +338,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span>
         <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span>
-                    <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">))))</span>        
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">))))</span>
 
 </div></div>
 <div class="viewcode-block" id="Torsion"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.Torsion">[docs]</a><span class="k">class</span> <span class="nc">Torsion</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
@@ -377,6 +374,7 @@
         <span class="n">bc</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">C</span><span class="o">.</span><span class="n">position</span>
         <span class="n">cd</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">D</span><span class="o">.</span><span class="n">position</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">dihedral</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">))</span>
+
 </div></div>
 <div class="viewcode-block" id="Improper_Torsion"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.Improper_Torsion">[docs]</a><span class="k">class</span> <span class="nc">Improper_Torsion</span><span class="p">(</span><span class="n">Torsion</span><span class="p">):</span>  <span class="c"># subclass Torsion to inherit torsion method</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -398,20 +396,19 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">torsion</span><span class="p">()</span>
 
 </div></div>
-<div class="viewcode-block" id="get_parser_for"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.get_parser_for">[docs]</a><span class="k">def</span> <span class="nf">get_parser_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">permissive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_parser_for"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.get_parser_for">[docs]</a><span class="k">def</span> <span class="nf">get_parser_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">permissive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">tformat</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the appropriate topology parser for *filename*.</span>
 
 <span class="sd">    Automatic detection is disabled when an explicit *format* is</span>
 <span class="sd">    provided.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_topology_parsers_permissive</span><span class="p">,</span> <span class="n">_topology_parsers</span><span class="p">,</span> \
-        <span class="n">_topology_parsers_bonds</span>
-    <span class="n">format</span> <span class="o">=</span> <span class="n">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">permissive</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">bonds</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_topology_parsers_permissive</span><span class="p">[</span><span class="n">format</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">permissive</span> <span class="ow">and</span> <span class="n">bonds</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_topology_parsers_bonds</span><span class="p">[</span><span class="n">format</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">_topology_parsers</span><span class="p">[</span><span class="n">format</span><span class="p">]</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_topology_parsers</span>
+
+    <span class="n">tformat</span> <span class="o">=</span> <span class="n">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">tformat</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tformat</span> <span class="o">==</span> <span class="s">&#39;PDB&#39;</span> <span class="ow">and</span> <span class="n">permissive</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_topology_parsers</span><span class="p">[</span><span class="s">&#39;Permissive_PDB&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_topology_parsers</span><span class="p">[</span><span class="n">tformat</span><span class="p">]</span>
 
 </div>
 <div class="viewcode-block" id="guess_format"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_format">[docs]</a><span class="k">def</span> <span class="nf">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -424,6 +421,7 @@
 <span class="sd">    If *format* is supplied then it overrides the auto detection.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_topology_parsers</span>
+
     <span class="k">if</span> <span class="n">format</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="c"># simple extension checking... something more complicated is left</span>
         <span class="c"># for the ambitious</span>
@@ -559,7 +557,6 @@
                           <span class="s">&quot;. These can be defined manually using the&quot;</span> <span class="o">+</span>
                           <span class="s">&quot; keyword &#39;vdwradii&#39;&quot;</span><span class="p">))</span>
 
-
     <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
     
     <span class="n">box</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;box&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
@@ -619,6 +616,7 @@
                     <span class="n">angles_found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">angles_found</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="guess_torsions"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_torsions">[docs]</a><span class="k">def</span> <span class="nf">guess_torsions</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Given a list of Angles, find all torsions that exist between atoms.</span>
@@ -648,6 +646,7 @@
                     <span class="n">torsions_found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">torsions_found</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="guess_improper_torsions"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_improper_torsions">[docs]</a><span class="k">def</span> <span class="nf">guess_improper_torsions</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Given a list of Angles, find all improper torsions that exist between </span>
@@ -680,13 +679,14 @@
                 <span class="n">torsions_found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">torsions_found</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="get_atom_mass"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.get_atom_mass">[docs]</a><span class="k">def</span> <span class="nf">get_atom_mass</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the atomic mass in u for *element*.</span>
 
 <span class="sd">    Masses are looked up in :data:`MDAnalysis.topology.tables.masses`.</span>
 
-<span class="sd">    .. Warning:: Unknown masses are set to 0.</span>
+<span class="sd">    .. Warning:: Unknown masses are set to 0.00</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">masses</span><span class="p">[</span><span class="n">element</span><span class="p">]</span>
@@ -818,8 +818,8 @@
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s">&#39; with &#39;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> \
-            <span class="s">&#39; unique &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">toptype</span> <span class="o">+</span> <span class="s">&#39;s &gt;&#39;</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;TopologyDict with {num} unique {type}s&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">toptype</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a TopologyGroup matching the criteria if possible,</span>
@@ -899,7 +899,7 @@
         <span class="c"># Sorted so that slicing returns sensible results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">bondlist</span><span class="p">)))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c"># used for topdict saving</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c"># used for topdict saving</span>
 
 <div class="viewcode-block" id="TopologyGroup.selectBonds"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyGroup.selectBonds">[docs]</a>    <span class="k">def</span> <span class="nf">selectBonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieves a selection from this topology group based on types.</span>
@@ -918,7 +918,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">topDict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="TopologyGroup.topDict"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyGroup.topDict">[docs]</a>    <span class="k">def</span> <span class="nf">topDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;dict&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">topDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the TopologyDict for this topology group.</span>
 
@@ -930,10 +931,8 @@
 
 <span class="sd">        .. versionadded 0.8.2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s">&#39;dict&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;dict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TopologyDict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;dict&#39;</span><span class="p">]</span>
-</div>
+        <span class="k">return</span> <span class="n">TopologyDict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">)</span>
+
 <div class="viewcode-block" id="TopologyGroup.atomgroup_intersection"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection">[docs]</a>    <span class="k">def</span> <span class="nf">atomgroup_intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieve all bonds from within this TopologyGroup that are within</span>
 <span class="sd">        the AtomGroup which is passed.</span>
@@ -1006,10 +1005,6 @@
         <span class="c"># i&#39;ll get keyerrors which i&#39;ll pass</span>
         <span class="n">count_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">b</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">}</span>
 
-        <span class="c"># hack to allow Atoms to function identically to AtomGroups</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">Atom</span><span class="p">):</span>
-            <span class="n">other</span> <span class="o">=</span> <span class="p">[</span><span class="n">other</span><span class="p">]</span>
-
         <span class="c"># then go through ag and count appearances of bonds</span>
 <span class="c"># This seems to benchmark slow, because __getattribute__ is slower than a.bonds</span>
 <span class="c">#        for atom in other:</span>
@@ -1081,32 +1076,24 @@
         <span class="k">return</span> <span class="n">bondlist</span>
 </div>
     <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;atom1&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">atom1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s">&#39;atom1&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;atom1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">])</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;atom1&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">])</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;atom2&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">atom2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s">&#39;atom2&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;atom2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">])</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;atom2&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">])</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;atom3&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">atom3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s">&#39;atom3&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;atom3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">])</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;atom3&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">])</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;atom4&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">atom4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s">&#39;atom4&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;atom4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">b</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">])</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cache</span><span class="p">[</span><span class="s">&#39;atom4&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">b</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Number of bonds in the topology group&quot;&quot;&quot;</span>
@@ -1151,8 +1138,8 @@
         <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;&lt; &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s">&quot; containing &quot;</span> <span class="o">+</span> \
-            <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">toptype</span> <span class="o">+</span> <span class="s">&quot;s &gt;&quot;</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;TopologyGroup containing {num} {type}s&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">toptype</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test if contents of TopologyGroups are equal&quot;&quot;&quot;</span>
@@ -1210,8 +1197,6 @@
         <span class="sd">&quot;&quot;&quot;Slow version of angle (numpy implementation)&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">toptype</span> <span class="o">==</span> <span class="s">&#39;Angle&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;TopologyGroup is not of type &#39;Angle&#39;&quot;</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">import</span> <span class="n">angle</span> <span class="k">as</span> <span class="n">slowang</span>
-        <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span>
 
         <span class="n">vec1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
         <span class="n">vec2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom3</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
@@ -1258,8 +1243,6 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">toptype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;Torsion&#39;</span><span class="p">,</span> <span class="s">&#39;Improper_Torsion&#39;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;TopologyGroup is not of type &#39;Torsion&#39; or &quot;</span>
                             <span class="s">&quot;&#39;Improper_Torsion&#39;&quot;</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">import</span> <span class="n">dihedral</span>
-        <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span>
 
         <span class="n">vec1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
         <span class="n">vec2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom3</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>

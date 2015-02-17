@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
@@ -73,22 +73,22 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.selections.base</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
-<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
-<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see AUTHORS for the full list)</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
 <span class="c">#</span>
-<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
-<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
-<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
-<span class="c">#     doi:10.1002/jcc.21787</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c">#</span>
+
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Base classes for the selection writers</span>
@@ -111,6 +111,7 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">as</span> <span class="nn">util</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.selections</span>
 
+
 <div class="viewcode-block" id="join"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.join">[docs]</a><span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create a list from sequence.</span>
 
@@ -121,13 +122,14 @@
     <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">string</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+
 </div>
 <div class="viewcode-block" id="get_writer"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.get_writer">[docs]</a><span class="k">def</span> <span class="nf">get_writer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">defaultformat</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return a :class:`SelectionWriter` for *filename* or a *defaultformat*.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">filename</span><span class="p">:</span>
         <span class="n">format</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>  <span class="c"># strip initial dot!</span>
-    <span class="n">format</span> <span class="o">=</span> <span class="n">format</span> <span class="ow">or</span> <span class="n">defaultformat</span>                <span class="c"># use default if no fmt from fn</span>
-    <span class="n">format</span> <span class="o">=</span> <span class="n">format</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>                 <span class="c"># canonical for lookup</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="n">format</span> <span class="ow">or</span> <span class="n">defaultformat</span>  <span class="c"># use default if no fmt from fn</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="n">format</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>  <span class="c"># canonical for lookup</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">selections</span><span class="o">.</span><span class="n">_selection_writers</span><span class="p">[</span><span class="n">format</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
@@ -180,7 +182,7 @@
 <span class="sd">           *kwargs*</span>
 <span class="sd">               use as defaults for :meth:`write`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">ext</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ext</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ext</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="s">&#39;wa&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;mode must be one of &#39;w&#39;, &#39;a&#39;, &#39;wa&#39;, not </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">mode</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
@@ -213,12 +215,12 @@
     <span class="k">def</span> <span class="nf">write_preamble</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write a header, depending on the file format.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preamble</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-           <span class="k">return</span>
+            <span class="k">return</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
             <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preamble</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_mode</span> <span class="o">=</span> <span class="s">&#39;a&#39;</span>
 
-<div class="viewcode-block" id="SelectionWriter.write"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">selection</span><span class="p">,</span><span class="n">number</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">frame</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectionWriter.write"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write selection to the output file.</span>
 
 <span class="sd">        :Arguments:</span>
@@ -242,7 +244,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">frame</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>   <span class="c"># should catch cases when we are analyzing a single PDB (?)</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># should catch cases when we are analyzing a single PDB (?)</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">otherargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">number</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -257,13 +259,13 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write_head</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">iatom</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="o">.</span><span class="n">atoms</span><span class="p">),</span> <span class="n">step</span><span class="p">):</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="n">selection_terms</span><span class="p">[</span><span class="n">iatom</span><span class="p">:</span><span class="n">iatom</span><span class="o">+</span><span class="n">step</span><span class="p">]</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">selection_terms</span><span class="p">[</span><span class="n">iatom</span><span class="p">:</span><span class="n">iatom</span> <span class="o">+</span> <span class="n">step</span><span class="p">]</span>
                 <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="n">step</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">iatom</span><span class="o">+</span><span class="n">step</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="o">.</span><span class="n">atoms</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="n">step</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">iatom</span> <span class="o">+</span> <span class="n">step</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="o">.</span><span class="n">atoms</span><span class="p">):</span>
                     <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">continuation</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
             <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>  <span class="c"># safe so that we don&#39;t have to put a space at the start of tail</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write_tail</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span> <span class="c"># always terminate with newline</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>  <span class="c"># always terminate with newline</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;wa&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_current_mode</span> <span class="o">=</span> <span class="s">&#39;a&#39;</span>  <span class="c"># switch after first write</span>
@@ -290,8 +292,8 @@
 </div>
 <div class="viewcode-block" id="SelectionWriter._write_tail"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriter._write_tail">[docs]</a>    <span class="k">def</span> <span class="nf">_write_tail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Last output to open file object *out*.&quot;&quot;&quot;</span>
-        <span class="k">pass</span>
-</pre></div></div></div>
+        <span class="k">pass</span></div></div>
+</pre></div>
 
           </div>
         </div>

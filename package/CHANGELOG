@@ -16,6 +16,7 @@ The rules for this file:
 
   Enhancements
 
+  * docs now use secure mathjax CDN (Issue 182)
   * minor improvements to helanal docstring
   * Support for reading altloc records in PDB files
   * Cap proteins with ACE and NMA terminal caps

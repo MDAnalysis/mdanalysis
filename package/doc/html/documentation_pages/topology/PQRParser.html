@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -100,7 +100,7 @@ connectivity is deduced.</p>
 </div>
 <dl class="class">
 <dt id="MDAnalysis.topology.PQRParser.PQRParser">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.PQRParser.</tt><tt class="descname">PQRParser</tt><big>(</big><em>filename</em>, <em>guess_bonds_mode=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/PQRParser.html#PQRParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.PQRParser.PQRParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.PQRParser.</tt><tt class="descname">PQRParser</tt><big>(</big><em>filename</em>, <em>guess_bonds_mode=False</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/PQRParser.html#PQRParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.PQRParser.PQRParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse atom information from PQR file <em>filename</em>.</p>
 <p>Only reads the list of atoms. Reads the charges and radii from the
 PQR file and populates the
@@ -117,7 +117,7 @@ PQR file and populates the
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">The <em>structure</em> dict is defined in
-<a class="reference internal" href="PSFParser.html#MDAnalysis.topology.PSFParser.parse" title="MDAnalysis.topology.PSFParser.parse"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.PSFParser.parse()</span></tt></a> and
+<cite>MDAnalysis.topology</cite> and
 <a class="reference internal" href="../coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader" title="MDAnalysis.coordinates.PQR.PQRReader"><tt class="xref py py-class docutils literal"><span class="pre">PQRReader</span></tt></a> is used to read
 the PQR file.</p>
 </div>
@@ -125,11 +125,9 @@ the PQR file.</p>
 <p><span class="versionmodified">Changed in version 0.8.2: </span>Read chainID from a PQR file and use it as segid (before we always used
 &#8216;SYSTEM&#8217; as the new segid).</p>
 </div>
-</dd></dl>
-
-<dl class="function">
-<dt id="MDAnalysis.topology.PQRParser.parse">
-<tt class="descclassname">MDAnalysis.topology.PQRParser.</tt><tt class="descname">parse</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/PQRParser.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.PQRParser.parse" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="MDAnalysis.topology.PQRParser.PQRParser.parse">
+<tt class="descname">parse</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/PQRParser.html#PQRParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.PQRParser.PQRParser.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse atom information from PQR file <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -139,12 +137,8 @@ the PQR file.</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">The <em>structure</em> dict is defined in
-<a class="reference internal" href="PSFParser.html#MDAnalysis.topology.PSFParser.parse" title="MDAnalysis.topology.PSFParser.parse"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.PSFParser.parse()</span></tt></a> and the file is read with
-<a class="reference internal" href="../coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader" title="MDAnalysis.coordinates.PQR.PQRReader"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.PQR.PQRReader</span></tt></a>.</p>
-</div>
+</dd></dl>
+
 </dd></dl>
 
 </div>

@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../../_static/opensearch.xml"/>
@@ -74,6 +74,21 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.analysis.hbonds.hbond_autocorrel</h1><div class="highlight"><pre>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
+<span class="c">#</span>
+<span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
+<span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c">#</span>
+<span class="c"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c">#</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c">#</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Hydrogen bond autocorrelation --- :mod:`MDAnalysis.analysis.hbonds.hbond_autocorrel`</span>
 <span class="sd">====================================================================================</span>
@@ -211,6 +226,7 @@
 
 <div class="viewcode-block" id="HydrogenBondAutoCorrel"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel">[docs]</a><span class="k">class</span> <span class="nc">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Perform a time autocorrelation of the hydrogen bonds in the system. &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span>
                  <span class="n">hydrogens</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">acceptors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">donors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">bond_type</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -287,11 +303,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_slice_traj</span><span class="p">(</span><span class="n">sample_time</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_cut</span> <span class="o">=</span> <span class="n">time_cut</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;results&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>  <span class="c"># Raw results</span>
-                         <span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>  <span class="c"># Time axis of raw results</span>
-                         <span class="s">&#39;fit&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>  <span class="c"># coefficients for fit</span>
-                         <span class="s">&#39;tau&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>  <span class="c"># integral of exponential fit</span>
-                         <span class="s">&#39;estimate&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">}</span>  <span class="c"># y values of fit against time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;results&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>  <span class="c"># Raw results</span>
+            <span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>  <span class="c"># Time axis of raw results</span>
+            <span class="s">&#39;fit&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>  <span class="c"># coefficients for fit</span>
+            <span class="s">&#39;tau&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>  <span class="c"># integral of exponential fit</span>
+            <span class="s">&#39;estimate&#39;</span><span class="p">:</span> <span class="bp">None</span>  <span class="c"># y values of fit against time</span>
+        <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_slice_traj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_time</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set up start and end points in the trajectory for the</span>
@@ -313,7 +331,7 @@
                           <span class="s">&quot; frames in trajectory ({})&quot;</span>
                           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nruns</span><span class="p">,</span> <span class="n">numframes</span><span class="p">),</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_starts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numframes</span><span class="p">,</span> <span class="n">numframes</span><span class="o">/</span><span class="n">numruns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_starts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numframes</span><span class="p">,</span> <span class="n">numframes</span> <span class="o">/</span> <span class="n">numruns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="c"># limit stop points using clip</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stops</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span> <span class="o">+</span> <span class="n">req_frames</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">numframes</span><span class="p">)</span>
 
@@ -344,10 +362,10 @@
 
         <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nruns</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                            <span class="n">format</span><span class="o">=</span><span class="s">&quot;Performing run </span><span class="si">%(step)5d</span><span class="s">/</span><span class="si">%(numsteps)d</span><span class="s">&quot;</span>
-                           <span class="s">&quot;[</span><span class="si">%(percentage)5.1f%%</span><span class="s">]</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">)</span>
+                                  <span class="s">&quot;[</span><span class="si">%(percentage)5.1f%%</span><span class="s">]</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stops</span><span class="p">)):</span>
-            <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
             <span class="c"># needed else trj seek thinks a numpy.int64 isn&#39;t an int?</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_run</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">stop</span><span class="p">))</span>
@@ -363,8 +381,8 @@
         <span class="n">master_results</span> <span class="o">/=</span> <span class="n">counter</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
-            <span class="nb">len</span><span class="p">(</span><span class="n">master_results</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> \
-            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">master_results</span><span class="p">),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">master_results</span>
 </div>
     <span class="k">def</span> <span class="nf">_single_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
@@ -504,12 +522,12 @@
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="n">A1</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span> <span class="o">=</span> <span class="n">p</span>
                 <span class="k">return</span> <span class="p">(</span><span class="n">A1</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">A1</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&amp;</span> \
-                    <span class="p">(</span><span class="n">tau1</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">tau2</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span>
+                       <span class="p">(</span><span class="n">tau1</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">tau2</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
                 <span class="n">A1</span><span class="p">,</span> <span class="n">A2</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span> <span class="o">=</span> <span class="n">p</span>
                 <span class="k">return</span> <span class="p">(</span><span class="n">A1</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">A1</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">A2</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&amp;</span> \
-                    <span class="p">(</span><span class="n">A2</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">((</span><span class="n">A1</span><span class="o">+</span><span class="n">A2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&amp;</span> \
-                    <span class="p">(</span><span class="n">tau1</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">tau2</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">tau3</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span>
+                       <span class="p">(</span><span class="n">A2</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">((</span><span class="n">A1</span> <span class="o">+</span> <span class="n">A2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&amp;</span> \
+                       <span class="p">(</span><span class="n">tau1</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">tau2</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">tau3</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">err</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Custom residual function, returns real residual if all</span>
@@ -529,8 +547,7 @@
         <span class="k">def</span> <span class="nf">triple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A1</span><span class="p">,</span> <span class="n">A2</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot; Sum of three exponential functions &quot;&quot;&quot;</span>
             <span class="n">A3</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">A1</span> <span class="o">+</span> <span class="n">A2</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau1</span><span class="p">)</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau2</span><span class="p">)</span> \
-                <span class="o">+</span> <span class="n">A3</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau3</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau1</span><span class="p">)</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau2</span><span class="p">)</span> <span class="o">+</span> <span class="n">A3</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau3</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="ow">is</span> <span class="s">&#39;continuous&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_my_solve</span> <span class="o">=</span> <span class="n">double</span>
@@ -549,8 +566,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_my_solve</span> <span class="o">=</span> <span class="n">triple</span>
 
             <span class="k">if</span> <span class="n">p_guess</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">p_guess</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.33</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">,</span> <span class="mi">10</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_time</span><span class="p">,</span>
-                           <span class="mf">0.1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_time</span><span class="p">)</span>
+                <span class="n">p_guess</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.33</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">,</span> <span class="mi">10</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_time</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_time</span><span class="p">)</span>
 
             <span class="n">p</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">infodict</span><span class="p">,</span> <span class="n">mesg</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">leastsq</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">p_guess</span><span class="p">,</span>
                                                   <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">results</span><span class="p">),</span>
@@ -572,8 +588,8 @@
 </div>
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;&lt; MDAnalysis HydrogenBondAutoCorrel analysis measuring the &quot;</span> <span class="o">+</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="o">+</span> \
-            <span class="s">&quot; lifetime of {0} different hydrogens &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">))</span></div>
+               <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="o">+</span> \
+               <span class="s">&quot; lifetime of {0} different hydrogens &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">))</span></div>
 </pre></div>
 
           </div>

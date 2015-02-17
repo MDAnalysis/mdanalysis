@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -115,7 +115,8 @@
 <dd><p class="first last">Absolute path to the coordinate file</p>
 </dd>
 <dt><strong>trajectory_file_path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool such as GROMACS g_filter (see <a class="reference internal" href="streamlines.html#chavent2014" id="id2">[Chavent2014]</a>)</p>
+<dd><p class="first last">Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool
+such as GROMACS g_filter (see <a class="reference internal" href="streamlines.html#chavent2014" id="id2">[Chavent2014]</a>)</p>
 </dd>
 <dt><strong>grid_spacing</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd><p class="first last">The spacing between grid lines (angstroms)</p>
@@ -148,7 +149,9 @@
 <dd><p class="first last">Maximum coordinate boundary for z-axis (angstroms)</p>
 </dd>
 <dt><strong>maximum_delta_magnitude</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Absolute value of the largest displacement (in dx,dy, or dz) tolerated for the centroid of a group of particles (angstroms; default: 2.0). Values above this displacement will not count in the streamplot (treated as excessively large displacements crossing the periodic boundary)</p>
+<dd><p class="first last">Absolute value of the largest displacement (in dx,dy, or dz) tolerated for the centroid of a group of
+particles (angstroms; default: 2.0). Values above this displacement will not count in the streamplot (
+treated as excessively large displacements crossing the periodic boundary)</p>
 </dd>
 <dt><strong>num_cores</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd><p class="first last">The number of cores to use. (Default &#8216;maximum&#8217; uses all available cores)</p>
@@ -184,8 +187,11 @@
 <span class="n">z_lower</span><span class="p">,</span><span class="n">z_upper</span> <span class="o">=</span> <span class="o">-</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span>
 <span class="n">grid_spacing_value</span> <span class="o">=</span> <span class="mi">20</span>
 
-<span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">z1</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">streamlines_3D</span><span class="o">.</span><span class="n">generate_streamlines_3d</span><span class="p">(</span><span class="s">&#39;testing.gro&#39;</span><span class="p">,</span><span class="s">&#39;testing_filtered.xtc&#39;</span><span class="p">,</span><span class="n">xmin</span><span class="o">=</span><span class="n">x_lower</span><span class="p">,</span><span class="n">xmax</span><span class="o">=</span><span class="n">x_upper</span><span class="p">,</span><span class="n">ymin</span><span class="o">=</span><span class="n">y_lower</span><span class="p">,</span><span class="n">ymax</span><span class="o">=</span><span class="n">y_upper</span><span class="p">,</span><span class="n">zmin</span><span class="o">=</span><span class="n">z_lower</span><span class="p">,</span><span class="n">zmax</span><span class="o">=</span><span class="n">z_upper</span><span class="p">,</span><span class="n">grid_spacing</span> <span class="o">=</span> <span class="n">grid_spacing_value</span><span class="p">,</span> <span class="n">MDA_selection</span> <span class="o">=</span> <span class="s">&#39;name PO4&#39;</span><span class="p">,</span><span class="n">start_frame</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">end_frame</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">num_cores</span><span class="o">=</span><span class="s">&#39;maximum&#39;</span><span class="p">)</span>
-<span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="n">x_lower</span><span class="p">:</span><span class="n">x_upper</span><span class="p">:</span><span class="n">x1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">1j</span><span class="p">,</span><span class="n">y_lower</span><span class="p">:</span><span class="n">y_upper</span><span class="p">:</span><span class="n">y1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">1j</span><span class="p">,</span><span class="n">z_lower</span><span class="p">:</span><span class="n">z_upper</span><span class="p">:</span><span class="n">z1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mi">1j</span><span class="p">]</span> 
+<span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">z1</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">streamlines_3D</span><span class="o">.</span><span class="n">generate_streamlines_3d</span><span class="p">(</span><span class="s">&#39;testing.gro&#39;</span><span class="p">,</span>
+<span class="s">&#39;testing_filtered.xtc&#39;</span><span class="p">,</span><span class="n">xmin</span><span class="o">=</span><span class="n">x_lower</span><span class="p">,</span><span class="n">xmax</span><span class="o">=</span><span class="n">x_upper</span><span class="p">,</span><span class="n">ymin</span><span class="o">=</span><span class="n">y_lower</span><span class="p">,</span><span class="n">ymax</span><span class="o">=</span><span class="n">y_upper</span><span class="p">,</span><span class="n">zmin</span><span class="o">=</span><span class="n">z_lower</span><span class="p">,</span><span class="n">zmax</span><span class="o">=</span><span class="n">z_upper</span><span class="p">,</span>
+<span class="n">grid_spacing</span> <span class="o">=</span> <span class="n">grid_spacing_value</span><span class="p">,</span> <span class="n">MDA_selection</span> <span class="o">=</span> <span class="s">&#39;name PO4&#39;</span><span class="p">,</span><span class="n">start_frame</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">end_frame</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">num_cores</span><span class="o">=</span><span class="s">&#39;maximum&#39;</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="n">x_lower</span><span class="p">:</span><span class="n">x_upper</span><span class="p">:</span><span class="n">x1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">1j</span><span class="p">,</span><span class="n">y_lower</span><span class="p">:</span><span class="n">y_upper</span><span class="p">:</span><span class="n">y1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">1j</span><span class="p">,</span><span class="n">z_lower</span><span class="p">:</span><span class="n">z_upper</span><span class="p">:</span><span class="n">z1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span>
+<span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mi">1j</span><span class="p">]</span>
 
 <span class="c">#plot with mayavi:</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">mayavi</span><span class="o">.</span><span class="n">mlab</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">bgcolor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">800</span><span class="p">),</span><span class="n">fgcolor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -241,7 +247,7 @@
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

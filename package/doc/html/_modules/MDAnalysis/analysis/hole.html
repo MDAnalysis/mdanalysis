@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
@@ -73,21 +73,20 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.analysis.hole</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2012 Naveen Michaud-Agrawal,</span>
-<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see AUTHORS for the full list)</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
 <span class="c">#</span>
-<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
-<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
-<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
-<span class="c">#     doi:10.1002/jcc.21787</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c">#</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -265,6 +264,7 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">import</span> <span class="n">which</span><span class="p">,</span> <span class="n">realpath</span><span class="p">,</span> <span class="n">asiterable</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
+
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;MDAnalysis.analysis.hole&quot;</span><span class="p">)</span>
 
 <span class="c">#: Built-in HOLE radii (based on ``simple.rad`` from the HOLE_ distribution):</span>
@@ -311,6 +311,7 @@
 <span class="s">BOND ???? 0.85</span>
 <span class="s">&quot;&quot;&quot;</span>
 
+
 <div class="viewcode-block" id="write_simplerad2"><a class="viewcode-back" href="../../../documentation_pages/analysis/hole.html#MDAnalysis.analysis.hole.write_simplerad2">[docs]</a><span class="k">def</span> <span class="nf">write_simplerad2</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&quot;simple2.rad&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write the built-in radii in :data:`SIMPLE2_RAD` to *filename*.</span>
 
@@ -321,6 +322,7 @@
             <span class="n">rad</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">SIMPLE2_RAD</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Created simple radii file </span><span class="si">%(filename)r</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">vars</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">filename</span>
+
 </div>
 <div class="viewcode-block" id="seq2str"><a class="viewcode-back" href="../../../documentation_pages/analysis/hole.html#MDAnalysis.analysis.hole.seq2str">[docs]</a><span class="k">def</span> <span class="nf">seq2str</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return sequence *v* as a string of numbers with spaces as separators.</span>
@@ -330,6 +332,7 @@
     <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="s">&quot;&quot;</span>
     <span class="k">return</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">])</span>
+
 </div>
 <span class="k">class</span> <span class="nc">BaseHOLE</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Baseclass for HOLE analysis, providing plotting and utility functions&quot;&quot;&quot;</span>
@@ -344,6 +347,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">cPickle</span>
+
         <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">),</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_process_plot_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
@@ -367,7 +371,7 @@
         <span class="n">color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;color&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">cmap</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;cmap&#39;</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">jet</span><span class="p">)</span>
-            <span class="n">normalize</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span><span class="n">vmax</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">frames</span><span class="p">))</span>
+            <span class="n">normalize</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span> <span class="n">vmax</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">frames</span><span class="p">))</span>
             <span class="n">colors</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">frames</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">colors</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="n">asiterable</span><span class="p">(</span><span class="n">color</span><span class="p">))</span>
@@ -414,7 +418,7 @@
         <span class="n">kw</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_plot_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">ax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;ax&#39;</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">iplot</span><span class="p">,(</span><span class="n">frame</span><span class="p">,</span><span class="n">color</span><span class="p">,</span><span class="n">linestyle</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">izip</span><span class="p">(</span><span class="n">kw</span><span class="p">[</span><span class="s">&#39;frames&#39;</span><span class="p">],</span><span class="n">kw</span><span class="p">[</span><span class="s">&#39;colors&#39;</span><span class="p">],</span><span class="n">kw</span><span class="p">[</span><span class="s">&#39;linestyles&#39;</span><span class="p">])):</span>
+        <span class="k">for</span> <span class="n">iplot</span><span class="p">,</span> <span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">linestyle</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">izip</span><span class="p">(</span><span class="n">kw</span><span class="p">[</span><span class="s">&#39;frames&#39;</span><span class="p">],</span> <span class="n">kw</span><span class="p">[</span><span class="s">&#39;colors&#39;</span><span class="p">],</span> <span class="n">kw</span><span class="p">[</span><span class="s">&#39;linestyles&#39;</span><span class="p">])):</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;linestyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">linestyle</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;zorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">frame</span>
@@ -457,9 +461,9 @@
         <span class="n">rmax</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;rmax&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="n">ylabel</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;ylabel&#39;</span><span class="p">,</span> <span class="s">&quot;frames&quot;</span><span class="p">)</span>
 
-        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;figsize&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">)))</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;figsize&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s">&#39;3d&#39;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">frame</span><span class="p">,</span><span class="n">color</span><span class="p">,</span><span class="n">linestyle</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="n">kw</span><span class="p">[</span><span class="s">&#39;frames&#39;</span><span class="p">],</span><span class="n">kw</span><span class="p">[</span><span class="s">&#39;colors&#39;</span><span class="p">],</span><span class="n">kw</span><span class="p">[</span><span class="s">&#39;linestyles&#39;</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">frame</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">linestyle</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="n">kw</span><span class="p">[</span><span class="s">&#39;frames&#39;</span><span class="p">],</span> <span class="n">kw</span><span class="p">[</span><span class="s">&#39;colors&#39;</span><span class="p">],</span> <span class="n">kw</span><span class="p">[</span><span class="s">&#39;linestyles&#39;</span><span class="p">]):</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;linestyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">linestyle</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;zorder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">frame</span>
@@ -469,13 +473,14 @@
                 <span class="n">rxncoord</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">rxncoord</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c"># does not seem to work with masked arrays but with nan hack!</span>
-                <span class="c"># http://stackoverflow.com/questions/4913306/python-matplotlib-mplot3d-how-do-i-set-a-maximum-value-for-the-z-axis</span>
+                <span class="c"># http://stackoverflow.com/questions/4913306/python-matplotlib-mplot3d-how-do-i-set-a-maximum-value</span>
+                <span class="c"># -for-the-z-axis</span>
                 <span class="c">#radius = numpy.ma.masked_greater(profile.radius, rmax)</span>
                 <span class="c">#rxncoord = numpy.ma.array(profile.rxncoord, mask=radius.mask)</span>
                 <span class="n">rxncoord</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">rxncoord</span>
                 <span class="n">radius</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">radius</span><span class="p">[</span><span class="n">radius</span><span class="o">&gt;</span><span class="n">rmax</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rxncoord</span><span class="p">,</span> <span class="n">frame</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">rxncoord</span><span class="p">),</span> <span class="n">radius</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">radius</span><span class="p">[</span><span class="n">radius</span> <span class="o">&gt;</span> <span class="n">rmax</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rxncoord</span><span class="p">,</span> <span class="n">frame</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">rxncoord</span><span class="p">),</span> <span class="n">radius</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">r&quot;pore coordinate $z$&quot;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
@@ -488,7 +493,6 @@
         <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">profile</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">q</span><span class="p">,</span> <span class="n">profile</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">min</span><span class="p">()])</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
 
     <span class="k">def</span> <span class="nf">sorted_profiles_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an iterator over profiles sorted by frame/order parameter *q*.</span>
@@ -746,14 +750,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dcd</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;dcd&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcd</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dcd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_and_fix_long_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dcd</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dcd_step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;step&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>   <span class="c"># HOLE docs description is confusing: step or skip??</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dcd_step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;step&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c"># HOLE docs description is confusing: step or skip??</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dcd_iniskip</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cpoint</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;cpoint&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cvect</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;cvect&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;sample&quot;</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dotden</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;dotden&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">endrad</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;endrad&quot;</span><span class="p">,</span> <span class="mf">22.</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">shorto</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;shorto&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>     <span class="c"># look at using SHORTO 2 for minimum output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shorto</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;shorto&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>  <span class="c"># look at using SHORTO 2 for minimum output</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_residues</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;ignore_residues&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_ignore_residues</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_and_fix_long_filename</span><span class="p">(</span>
             <span class="n">realpath</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;radius&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">write_simplerad2</span><span class="p">()))</span>
@@ -838,7 +842,8 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">HOLE_MAX_LENGTH</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">filename</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;path check: HOLE will not read </span><span class="si">%r</span><span class="s"> because it has more than </span><span class="si">%d</span><span class="s"> characters.&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">HOLE_MAX_LENGTH</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;path check: HOLE will not read </span><span class="si">%r</span><span class="s"> because it has more than </span><span class="si">%d</span><span class="s"> characters.&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">HOLE_MAX_LENGTH</span><span class="p">)</span>
         <span class="c"># try a relative path</span>
         <span class="n">newname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">newname</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">HOLE_MAX_LENGTH</span><span class="p">:</span>
@@ -846,7 +851,7 @@
             <span class="k">return</span> <span class="n">newname</span>
 
         <span class="c"># shorten path by creating a symlink inside a safe temp dir</span>
-        <span class="n">root</span><span class="p">,</span><span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="n">dirname</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="n">tmpdir</span><span class="p">)</span>
         <span class="n">newname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tempfiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">newname</span><span class="p">)</span>
@@ -924,8 +929,9 @@
         <span class="n">fd</span><span class="p">,</span> <span class="n">tmp_sos</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&quot;.sos&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">rc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="p">[</span><span class="s">&quot;sph_process&quot;</span><span class="p">],</span> <span class="s">&quot;-sos&quot;</span><span class="p">,</span> <span class="s">&quot;-dotden&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;dotden&#39;</span><span class="p">]),</span>
-                                  <span class="s">&quot;-color&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphpdb</span><span class="p">,</span> <span class="n">tmp_sos</span><span class="p">])</span>
+            <span class="n">rc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="p">[</span><span class="s">&quot;sph_process&quot;</span><span class="p">],</span> <span class="s">&quot;-sos&quot;</span><span class="p">,</span> <span class="s">&quot;-dotden&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;dotden&#39;</span><span class="p">]),</span>
+                <span class="s">&quot;-color&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphpdb</span><span class="p">,</span> <span class="n">tmp_sos</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;sph_process failed (</span><span class="si">%d</span><span class="s">)&quot;</span><span class="p">,</span> <span class="n">rc</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="n">rc</span><span class="p">,</span> <span class="s">&quot;sph_process failed&quot;</span><span class="p">)</span>
@@ -977,13 +983,14 @@
         <span class="n">holeformat</span> <span class="o">=</span> <span class="n">FORTRANReader</span><span class="p">(</span><span class="s">&#39;3F12&#39;</span><span class="p">)</span>
 
         <span class="n">hole_output</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;holeout&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logfile</span><span class="p">)</span>
-        <span class="n">run</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;run&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>     <span class="c"># id number</span>
+        <span class="n">run</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;run&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c"># id number</span>
         <span class="n">outdir</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;outdir&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Collecting HOLE profiles for run with id </span><span class="si">%s</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">run</span><span class="p">)</span>
-        <span class="n">length</span> <span class="o">=</span> <span class="mi">1</span>   <span class="c"># length of trajectory --- is this really needed?? No... just for info</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># length of trajectory --- is this really needed?? No... just for info</span>
         <span class="k">if</span> <span class="s">&#39;*&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">glob</span>
+
             <span class="n">filenames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
             <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -992,8 +999,9 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Found </span><span class="si">%d</span><span class="s"> input files based on glob pattern </span><span class="si">%s</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcd</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+
             <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcd</span><span class="p">)</span>
-            <span class="n">length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcd_iniskip</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dcd_step</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcd_iniskip</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dcd_step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Found </span><span class="si">%d</span><span class="s"> input frames in DCD trajectory </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcd</span><span class="p">)</span>
 
         <span class="c"># one recarray for each frame, indexed by frame number</span>
@@ -1030,7 +1038,8 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c"># end of records (empty line)</span>
                         <span class="n">read_data</span> <span class="o">=</span> <span class="bp">False</span>
-                        <span class="n">frame_hole_output</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">fromrecords</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">formats</span><span class="o">=</span><span class="s">&quot;i4,f8,f8&quot;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s">&quot;frame,rxncoord,radius&quot;</span><span class="p">)</span>
+                        <span class="n">frame_hole_output</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">fromrecords</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">formats</span><span class="o">=</span><span class="s">&quot;i4,f8,f8&quot;</span><span class="p">,</span>
+                                                                  <span class="n">names</span><span class="o">=</span><span class="s">&quot;frame,rxncoord,radius&quot;</span><span class="p">)</span>
                         <span class="c"># store the profile</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">[</span><span class="n">hole_profile_no</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_hole_output</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Collected HOLE profile for frame </span><span class="si">%d</span><span class="s"> (</span><span class="si">%d</span><span class="s"> datapoints)&quot;</span><span class="p">,</span>
@@ -1038,14 +1047,14 @@
                         <span class="c"># save a profile for each frame (for debugging and scripted processing)</span>
                         <span class="c"># a tmp folder for each trajectory</span>
                         <span class="k">if</span> <span class="n">outdir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                            <span class="n">rundir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s">&quot;run_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">run</span><span class="p">))</span>
+                            <span class="n">rundir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s">&quot;run_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">run</span><span class="p">))</span>
                             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">rundir</span><span class="p">):</span>
                                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">rundir</span><span class="p">)</span>
                             <span class="n">frame_hole_txt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rundir</span><span class="p">,</span> <span class="s">&quot;radii_</span><span class="si">%s</span><span class="s">_</span><span class="si">%04d</span><span class="s">.dat.gz&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">hole_profile_no</span><span class="p">))</span>
                             <span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">frame_hole_txt</span><span class="p">,</span> <span class="n">frame_hole_output</span><span class="p">)</span>
                             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Finished with frame </span><span class="si">%d</span><span class="s">, saved as </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">hole_profile_no</span><span class="p">,</span> <span class="n">frame_hole_txt</span><span class="p">)</span>
                         <span class="k">continue</span>
-                <span class="c"># if we get here then we haven&#39;t found anything interesting</span>
+                        <span class="c"># if we get here then we haven&#39;t found anything interesting</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">)</span> <span class="o">==</span> <span class="n">length</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Collected HOLE radius profiles for </span><span class="si">%d</span><span class="s"> frames&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1070,6 +1079,7 @@
 <span class="sd">    universe and feed it to HOLE. By default it sequentially creates a PDB for</span>
 <span class="sd">    each frame and runs HOLE on the frame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set up the class.</span>
 
@@ -1146,7 +1156,7 @@
             <span class="n">q</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">data</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="c"># frame numbers</span>
-            <span class="n">q</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">q</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -1185,7 +1195,7 @@
         <span class="c"># TODO: alternatively, dump all frames with leading framenumber and use a wildcard</span>
         <span class="c">#       (although the file renaming might create problems...)</span>
         <span class="n">protein</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">q</span><span class="p">,</span><span class="n">ts</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orderparameters</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orderparameters</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;HOLE analysis frame </span><span class="si">%4d</span><span class="s"> (orderparameter </span><span class="si">%g</span><span class="s">)&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
             <span class="n">fd</span><span class="p">,</span> <span class="n">pdbfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&quot;.pdb&quot;</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>  <span class="c"># only need an empty file that can be overwritten, close right away (Issue 129)</span>
@@ -1210,8 +1220,8 @@
         <span class="n">H</span> <span class="o">=</span> <span class="n">HOLE</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">H</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
         <span class="n">H</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">profiles</span>
-</pre></div></div></div>
+        <span class="k">return</span> <span class="n">H</span><span class="o">.</span><span class="n">profiles</span></div></div>
+</pre></div>
 
           </div>
         </div>

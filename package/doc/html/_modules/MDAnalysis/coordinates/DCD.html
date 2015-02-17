@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
@@ -73,22 +73,22 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.coordinates.DCD</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
-<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see AUTHORS for the full list)</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
 <span class="c">#</span>
-<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
-<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
-<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
-<span class="c">#     doi:10.1002/jcc.21787</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c">#</span>
+
 
 <span class="sd">&quot;&quot;&quot;DCD trajectory I/O  --- :mod:`MDAnalysis.coordinates.DCD`</span>
 <span class="sd">============================================================</span>
@@ -100,7 +100,8 @@
 <span class="sd">The classes in this module are the reference implementations for the</span>
 <span class="sd">Trajectory API.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 
 <span class="kn">import</span> <span class="nn">base</span>
@@ -109,10 +110,11 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis.core.units</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 
+
 <span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
     <span class="c">#: indices into :attr:`Timestep._unitcell`` to pull out</span>
     <span class="c">#: ``[A, B, C, alpha, beta, gamma]``.</span>
-    <span class="n">_ts_order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">_ts_order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -150,6 +152,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">numpy</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
 
+
 <div class="viewcode-block" id="DCDWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter">[docs]</a><span class="k">class</span> <span class="nc">DCDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Writer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Writes to a DCD file</span>
 
@@ -164,7 +167,7 @@
     <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;DCD&#39;</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="s">&#39;AKMA&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">numatoms</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">numatoms</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">delta</span><span class="o">=</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="s">&#39;ps&#39;</span><span class="p">,</span> <span class="s">&#39;AKMA&#39;</span><span class="p">),</span> <span class="n">dt</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">remarks</span><span class="o">=</span><span class="s">&quot;Created by DCDWriter&quot;</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a new DCDWriter</span>
@@ -206,13 +209,13 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;DCDWriter: no atoms in output trajectory&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">numatoms</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="c"># probably called from MDAnalysis.Writer() so need to give user a gentle heads up...</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;DCDWriter: REQUIRES the number of atoms in the &#39;numatoms&#39; argument</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">+</span>\
-                                 <span class="s">&quot; &quot;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="s">&quot;ValueError: &quot;</span><span class="p">)</span> <span class="o">+</span>\
-                                 <span class="s">&quot;For example: numatoms=universe.atoms.numberOfAtoms()&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;DCDWriter: REQUIRES the number of atoms in the &#39;numatoms&#39; argument</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span>
+                             <span class="s">&quot; &quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="s">&quot;ValueError: &quot;</span><span class="p">)</span> <span class="o">+</span>
+                             <span class="s">&quot;For example: numatoms=universe.atoms.numberOfAtoms()&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="c"># convert length and time to base units on the fly?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="bp">None</span> \
-                             <span class="k">else</span> <span class="n">convert_units</span>
+            <span class="k">else</span> <span class="n">convert_units</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">numatoms</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">frames_written</span> <span class="o">=</span> <span class="mi">0</span>
@@ -262,10 +265,12 @@
         <span class="c"># seems to do the job on Mac OS X 10.6.4 ... but I have no idea why,</span>
         <span class="c"># given that the C code seems to define them as normal integers</span>
         <span class="kn">import</span> <span class="nn">struct</span>
-        <span class="n">desc</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;file_desc&#39;</span><span class="p">,</span> <span class="s">&#39;header_size&#39;</span><span class="p">,</span> <span class="s">&#39;natoms&#39;</span><span class="p">,</span> <span class="s">&#39;nsets&#39;</span><span class="p">,</span> <span class="s">&#39;setsread&#39;</span><span class="p">,</span> <span class="s">&#39;istart&#39;</span><span class="p">,</span>
-                <span class="s">&#39;nsavc&#39;</span><span class="p">,</span> <span class="s">&#39;delta&#39;</span><span class="p">,</span> <span class="s">&#39;nfixed&#39;</span><span class="p">,</span> <span class="s">&#39;freeind_ptr&#39;</span><span class="p">,</span> <span class="s">&#39;fixedcoords_ptr&#39;</span><span class="p">,</span>
-                <span class="s">&#39;reverse&#39;</span><span class="p">,</span> <span class="s">&#39;charmm&#39;</span><span class="p">,</span> <span class="s">&#39;first&#39;</span><span class="p">,</span> <span class="s">&#39;with_unitcell&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&quot;LLiiiiidiPPiiii&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dcd_C_str</span><span class="p">)))</span>
+
+        <span class="n">desc</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&#39;file_desc&#39;</span><span class="p">,</span> <span class="s">&#39;header_size&#39;</span><span class="p">,</span> <span class="s">&#39;natoms&#39;</span><span class="p">,</span> <span class="s">&#39;nsets&#39;</span><span class="p">,</span> <span class="s">&#39;setsread&#39;</span><span class="p">,</span> <span class="s">&#39;istart&#39;</span><span class="p">,</span>
+            <span class="s">&#39;nsavc&#39;</span><span class="p">,</span> <span class="s">&#39;delta&#39;</span><span class="p">,</span> <span class="s">&#39;nfixed&#39;</span><span class="p">,</span> <span class="s">&#39;freeind_ptr&#39;</span><span class="p">,</span> <span class="s">&#39;fixedcoords_ptr&#39;</span><span class="p">,</span>
+            <span class="s">&#39;reverse&#39;</span><span class="p">,</span> <span class="s">&#39;charmm&#39;</span><span class="p">,</span> <span class="s">&#39;first&#39;</span><span class="p">,</span> <span class="s">&#39;with_unitcell&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&quot;LLiiiiidiPPiiii&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dcd_C_str</span><span class="p">)))</span>
 
 <div class="viewcode-block" id="DCDWriter.write_next_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; write a new timestep to the dcd file</span>
@@ -286,10 +291,11 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;DCDWriter: Timestep does not have the correct number of atoms&quot;</span><span class="p">)</span>
         <span class="n">unitcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>  <span class="c"># must be float32 (!)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">f_contiguous</span><span class="p">:</span>  <span class="c"># Not in fortran format</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="n">Timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>               <span class="c"># wrap in a new fortran formatted Timestep</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">Timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>  <span class="c"># wrap in a new fortran formatted Timestep</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>  <span class="c"># possibly make a copy to avoid changing the trajectory</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_frame</span><span class="p">(</span><span class="n">pos</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">unitcell</span><span class="p">)</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">,</span>
+                                             <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>  <span class="c"># possibly make a copy to avoid changing the trajectory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_frame</span><span class="p">(</span><span class="n">pos</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">unitcell</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frames_written</span> <span class="o">+=</span> <span class="mi">1</span>
 </div>
 <div class="viewcode-block" id="DCDWriter.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">_ts_order</span><span class="o">=</span><span class="n">Timestep</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">):</span>
@@ -311,6 +317,7 @@
     <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;dcdfile&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcdfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
 </div>
 <div class="viewcode-block" id="DCDReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader">[docs]</a><span class="k">class</span> <span class="nc">DCDReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reads from a DCD file</span>
@@ -392,21 +399,25 @@
         <span class="c"># seems to do the job on Mac OS X 10.6.4 ... but I have no idea why,</span>
         <span class="c"># given that the C code seems to define them as normal integers</span>
         <span class="kn">import</span> <span class="nn">struct</span>
-        <span class="n">desc</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;file_desc&#39;</span><span class="p">,</span> <span class="s">&#39;header_size&#39;</span><span class="p">,</span> <span class="s">&#39;natoms&#39;</span><span class="p">,</span> <span class="s">&#39;nsets&#39;</span><span class="p">,</span> <span class="s">&#39;setsread&#39;</span><span class="p">,</span> <span class="s">&#39;istart&#39;</span><span class="p">,</span>
-                <span class="s">&#39;nsavc&#39;</span><span class="p">,</span> <span class="s">&#39;delta&#39;</span><span class="p">,</span> <span class="s">&#39;nfixed&#39;</span><span class="p">,</span> <span class="s">&#39;freeind_ptr&#39;</span><span class="p">,</span> <span class="s">&#39;fixedcoords_ptr&#39;</span><span class="p">,</span> <span class="s">&#39;reverse&#39;</span><span class="p">,</span>
-                <span class="s">&#39;charmm&#39;</span><span class="p">,</span> <span class="s">&#39;first&#39;</span><span class="p">,</span> <span class="s">&#39;with_unitcell&#39;</span><span class="p">]</span>
+
+        <span class="n">desc</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&#39;file_desc&#39;</span><span class="p">,</span> <span class="s">&#39;header_size&#39;</span><span class="p">,</span> <span class="s">&#39;natoms&#39;</span><span class="p">,</span> <span class="s">&#39;nsets&#39;</span><span class="p">,</span> <span class="s">&#39;setsread&#39;</span><span class="p">,</span> <span class="s">&#39;istart&#39;</span><span class="p">,</span>
+            <span class="s">&#39;nsavc&#39;</span><span class="p">,</span> <span class="s">&#39;delta&#39;</span><span class="p">,</span> <span class="s">&#39;nfixed&#39;</span><span class="p">,</span> <span class="s">&#39;freeind_ptr&#39;</span><span class="p">,</span> <span class="s">&#39;fixedcoords_ptr&#39;</span><span class="p">,</span> <span class="s">&#39;reverse&#39;</span><span class="p">,</span>
+            <span class="s">&#39;charmm&#39;</span><span class="p">,</span> <span class="s">&#39;first&#39;</span><span class="p">,</span> <span class="s">&#39;with_unitcell&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&quot;LLiiiiidiPPiiii&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dcd_C_str</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># Reset the trajectory file, read from the start</span>
         <span class="c"># usage is &quot;from ts in dcd:&quot; where dcd does not have indexes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset_dcd_read</span><span class="p">()</span>
+
         <span class="k">def</span> <span class="nf">iterDCD</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">):</span>  <span class="c"># FIXME: skip is not working!!!</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
-                <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span> 
+                <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">StopIteration</span>
+
         <span class="k">return</span> <span class="n">iterDCD</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -426,19 +437,21 @@
                 <span class="k">raise</span> <span class="ne">IndexError</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_jump_to_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>  <span class="c"># XXX required!!</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_frame</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_z</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c"># XXX required!!</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_frame</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_z</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c"># XXX required!!</span>
             <span class="k">return</span> <span class="n">ts</span>
-        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="o">==</span> <span class="nb">slice</span><span class="p">:</span> <span class="c"># if frame is a slice object</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(((</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">start</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">start</span> <span class="o">==</span> <span class="bp">None</span><span class="p">))</span> <span class="ow">and</span>
-                    <span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">stop</span> <span class="o">==</span> <span class="bp">None</span><span class="p">))</span> <span class="ow">and</span>
-                    <span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">step</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">step</span> <span class="o">==</span> <span class="bp">None</span><span class="p">))):</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="o">==</span> <span class="nb">slice</span><span class="p">:</span>  <span class="c"># if frame is a slice object</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(((</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">start</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">))</span> <span class="ow">and</span>
+               <span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">stop</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">))</span> <span class="ow">and</span>
+               <span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">step</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">step</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">))):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Slice indices are not integers&quot;</span><span class="p">)</span>
+
             <span class="k">def</span> <span class="nf">iterDCD</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">step</span><span class="p">):</span>
                 <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
             <span class="k">return</span> <span class="n">iterDCD</span><span class="p">()</span>
- 
+
 <div class="viewcode-block" id="DCDReader.timeseries"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader.timeseries">[docs]</a>    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;afc&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a subset of coordinate data for an AtomGroup</span>
 
@@ -537,6 +550,7 @@
 <span class="c"># Add the c functions to their respective classes so they act as class methods</span></div>
 <span class="kn">import</span> <span class="nn">_dcdmodule</span>
 <span class="kn">import</span> <span class="nn">new</span>
+
 <span class="n">DCDReader</span><span class="o">.</span><span class="n">_read_dcd_header</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">instancemethod</span><span class="p">(</span><span class="n">_dcdmodule</span><span class="o">.</span><span class="n">__read_dcd_header</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">DCDReader</span><span class="p">)</span>
 <span class="n">DCDReader</span><span class="o">.</span><span class="n">_read_next_frame</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">instancemethod</span><span class="p">(</span><span class="n">_dcdmodule</span><span class="o">.</span><span class="n">__read_next_frame</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">DCDReader</span><span class="p">)</span>
 <span class="n">DCDReader</span><span class="o">.</span><span class="n">_jump_to_frame</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">instancemethod</span><span class="p">(</span><span class="n">_dcdmodule</span><span class="o">.</span><span class="n">__jump_to_frame</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">DCDReader</span><span class="p">)</span>
@@ -547,14 +561,14 @@
 <span class="n">DCDWriter</span><span class="o">.</span><span class="n">_write_dcd_header</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">instancemethod</span><span class="p">(</span><span class="n">_dcdmodule</span><span class="o">.</span><span class="n">__write_dcd_header</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">DCDWriter</span><span class="p">)</span>
 <span class="n">DCDWriter</span><span class="o">.</span><span class="n">_write_next_frame</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">instancemethod</span><span class="p">(</span><span class="n">_dcdmodule</span><span class="o">.</span><span class="n">__write_next_frame</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">DCDWriter</span><span class="p">)</span>
 <span class="n">DCDWriter</span><span class="o">.</span><span class="n">_finish_dcd_write</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">instancemethod</span><span class="p">(</span><span class="n">_dcdmodule</span><span class="o">.</span><span class="n">__finish_dcd_write</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">DCDWriter</span><span class="p">)</span>
-<span class="k">del</span><span class="p">(</span><span class="n">_dcdmodule</span><span class="p">)</span>
+<span class="k">del</span> <span class="p">(</span><span class="n">_dcdmodule</span><span class="p">)</span>
 
 <span class="c"># dcdtimeseries is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex</span>
 <span class="kn">import</span> <span class="nn">dcdtimeseries</span>
 <span class="c">#DCDReader._read_timeseries = new.instancemethod(dcdtimeseries.__read_timeseries, None, DCDReader)</span>
 <span class="n">DCDReader</span><span class="o">.</span><span class="n">_read_timecorrel</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">instancemethod</span><span class="p">(</span><span class="n">dcdtimeseries</span><span class="o">.</span><span class="n">__read_timecorrel</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">DCDReader</span><span class="p">)</span>
-<span class="k">del</span><span class="p">(</span><span class="n">dcdtimeseries</span><span class="p">)</span>
-<span class="k">del</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+<span class="k">del</span> <span class="p">(</span><span class="n">dcdtimeseries</span><span class="p">)</span>
+<span class="k">del</span> <span class="p">(</span><span class="n">new</span><span class="p">)</span>
 </pre></div>
 
           </div>

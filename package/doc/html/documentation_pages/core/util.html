@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis 0.8.2-dev documentation</title>
+    <title>7.8. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -23,15 +23,15 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
-    <link rel="next" title="7.10. Setting up logging — MDAnalysis.core.log" href="log.html" />
-    <link rel="prev" title="7.8. Constants and unit conversion — MDAnalysis.core.units" href="units.html" /> 
+    <link rel="next" title="7.9. Setting up logging — MDAnalysis.core.log" href="log.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="units.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,10 +44,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="log.html" title="7.10. Setting up logging — MDAnalysis.core.log"
+          <a href="log.html" title="7.9. Setting up logging — MDAnalysis.core.log"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
+          <a href="units.html" title="&lt;no title&gt;"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
@@ -60,24 +60,25 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">7.9. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a><ul>
-<li><a class="reference internal" href="#files-and-directories">7.9.1. Files and directories</a></li>
-<li><a class="reference internal" href="#streams">7.9.2. Streams</a></li>
-<li><a class="reference internal" href="#containers-and-lists">7.9.3. Containers and lists</a></li>
-<li><a class="reference internal" href="#file-parsing">7.9.4. File parsing</a></li>
-<li><a class="reference internal" href="#data-manipulation-and-handling">7.9.5. Data manipulation and handling</a></li>
-<li><a class="reference internal" href="#strings">7.9.6. Strings</a></li>
-<li><a class="reference internal" href="#mathematics-and-geometry">7.9.7. Mathematics and Geometry</a></li>
+<li><a class="reference internal" href="#">7.8. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a><ul>
+<li><a class="reference internal" href="#files-and-directories">7.8.1. Files and directories</a></li>
+<li><a class="reference internal" href="#streams">7.8.2. Streams</a></li>
+<li><a class="reference internal" href="#containers-and-lists">7.8.3. Containers and lists</a></li>
+<li><a class="reference internal" href="#file-parsing">7.8.4. File parsing</a></li>
+<li><a class="reference internal" href="#data-manipulation-and-handling">7.8.5. Data manipulation and handling</a></li>
+<li><a class="reference internal" href="#strings">7.8.6. Strings</a></li>
+<li><a class="reference internal" href="#mathematics-and-geometry">7.8.7. Mathematics and Geometry</a></li>
+<li><a class="reference internal" href="#class-decorators">7.8.8. Class decorators</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="units.html"
-                        title="previous chapter">7.8. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
+                        title="previous chapter">&lt;no title&gt;</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="log.html"
-                        title="next chapter">7.10. Setting up logging &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
+                        title="next chapter">7.9. Setting up logging &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/util.txt"
@@ -105,10 +106,10 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.core.util"></span><div class="section" id="helper-functions-mdanalysis-core-util">
-<h1>7.9. Helper functions &#8212; <a class="reference internal" href="#module-MDAnalysis.core.util" title="MDAnalysis.core.util"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a><a class="headerlink" href="#helper-functions-mdanalysis-core-util" title="Permalink to this headline">¶</a></h1>
+<h1>7.8. Helper functions &#8212; <a class="reference internal" href="#module-MDAnalysis.core.util" title="MDAnalysis.core.util"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a><a class="headerlink" href="#helper-functions-mdanalysis-core-util" title="Permalink to this headline">¶</a></h1>
 <p>Small helper functions that don&#8217;t fit anywhere else.</p>
 <div class="section" id="files-and-directories">
-<h2>7.9.1. Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this headline">¶</a></h2>
+<h2>7.8.1. Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.filename">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">filename</tt><big>(</big><em>name</em>, <em>ext=None</em>, <em>keep=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.filename" title="Permalink to this definition">¶</a></dt>
@@ -201,7 +202,7 @@ behavior to return a tuple <tt class="docutils literal"><span class="pre">(strea
 <dl class="function">
 <dt id="MDAnalysis.core.util.which">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">which</tt><big>(</big><em>program</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#which"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.which" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine full path of executable <em>program</em> on <span class="target" id="index-0"></span><a class="reference external" href="http://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v1.4.2)"><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt></a>.</p>
+<dd><p>Determine full path of executable <em>program</em> on <span class="target" id="index-0"></span><a class="reference external" href="http://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v1.4.3)"><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt></a>.</p>
 <p>(Jay at <a class="reference external" href="http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python">http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python</a>)</p>
 </dd></dl>
 
@@ -215,7 +216,7 @@ behavior to return a tuple <tt class="docutils literal"><span class="pre">(strea
 
 </div>
 <div class="section" id="streams">
-<h2>7.9.2. Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h2>
+<h2>7.8.2. Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h2>
 <p>Many of the readers are not restricted to just reading files. They can
 also use gzip-compressed or bzip2-compressed files (through the
 internal use of <a class="reference internal" href="#MDAnalysis.core.util.openany" title="MDAnalysis.core.util.openany"><tt class="xref py py-func docutils literal"><span class="pre">openany()</span></tt></a>). It is also possible to provide more
@@ -486,7 +487,7 @@ supplied). The current file position is not changed.</p>
 
 </div>
 <div class="section" id="containers-and-lists">
-<h2>7.9.3. Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline">¶</a></h2>
+<h2>7.8.3. Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.iterable">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">iterable</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.iterable" title="Permalink to this definition">¶</a></dt>
@@ -507,7 +508,7 @@ supplied). The current file position is not changed.</p>
 
 </div>
 <div class="section" id="file-parsing">
-<h2>7.9.4. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
+<h2>7.8.4. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.util.FORTRANReader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">FORTRANReader</tt><big>(</big><em>fmt</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#FORTRANReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader" title="Permalink to this definition">¶</a></dt>
@@ -589,7 +590,7 @@ forms.</p>
 
 </div>
 <div class="section" id="data-manipulation-and-handling">
-<h2>7.9.5. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
+<h2>7.8.5. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.fixedwidth_bins">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">fixedwidth_bins</tt><big>(</big><em>delta</em>, <em>xmin</em>, <em>xmax</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#fixedwidth_bins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.fixedwidth_bins" title="Permalink to this definition">¶</a></dt>
@@ -600,7 +601,7 @@ forms.</p>
 
 </div>
 <div class="section" id="strings">
-<h2>7.9.6. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
+<h2>7.8.6. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.convert_aa_code">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">convert_aa_code</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#convert_aa_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.convert_aa_code" title="Permalink to this definition">¶</a></dt>
@@ -654,7 +655,7 @@ otherwise the original object is passed back.</p>
 
 </div>
 <div class="section" id="mathematics-and-geometry">
-<h2>7.9.7. Mathematics and Geometry<a class="headerlink" href="#mathematics-and-geometry" title="Permalink to this headline">¶</a></h2>
+<h2>7.8.7. Mathematics and Geometry<a class="headerlink" href="#mathematics-and-geometry" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.util.normal">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">normal</tt><big>(</big><em>vec1</em>, <em>vec2</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#normal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.normal" title="Permalink to this definition">¶</a></dt>
@@ -708,6 +709,36 @@ vectors</p>
 \[V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)\]</div>
 </dd></dl>
 
+</div>
+<div class="section" id="class-decorators">
+<h2>7.8.8. Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.core.util.cached">
+<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">cached</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.cached" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cache a property within a class</p>
+<p>Requires the Class to have a cache dict called &#8220;_cache&#8221;</p>
+<p>Usage:</p>
+<dl class="docutils">
+<dt>class A(object):</dt>
+<dd><dl class="first docutils">
+<dt>def__init__(self):</dt>
+<dd>self._cache = dict()</dd>
+</dl>
+<p>&#64;property
+&#64;cached(&#8216;keyname&#8217;)
+def size(self):</p>
+<blockquote class="last">
+<div># This code gets ran only if the lookup of keyname fails
+# After this code has been ran once, the result is stored in 
+# _cache with the key: &#8216;keyname&#8217;
+size = 10.0</div></blockquote>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.2.</span></p>
+</div>
+</dd></dl>
+
 <p class="rubric">Footnotes</p>
 <table class="docutils footnote" frame="void" id="namedstreamclose" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -743,10 +774,10 @@ close it.</td></tr>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="log.html" title="7.10. Setting up logging — MDAnalysis.core.log"
+          <a href="log.html" title="7.9. Setting up logging — MDAnalysis.core.log"
              >next</a> |</li>
         <li class="right" >
-          <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
+          <a href="units.html" title="&lt;no title&gt;"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 

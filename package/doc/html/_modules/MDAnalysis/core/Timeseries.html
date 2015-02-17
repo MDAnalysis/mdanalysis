@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
@@ -73,22 +73,22 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.core.Timeseries</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
-<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
-<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see AUTHORS for the full list)</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
 <span class="c">#</span>
-<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
-<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
-<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
-<span class="c">#     doi:10.1002/jcc.21787</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c">#</span>
+
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Compute observable timeseries from trajectories --- :mod:`MDAnalysis.core.Timeseries`</span>
@@ -130,6 +130,7 @@
 
 <span class="kn">import</span> <span class="nn">AtomGroup</span>
 
+
 <div class="viewcode-block" id="TimeseriesCollection"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection">[docs]</a><span class="k">class</span> <span class="nc">TimeseriesCollection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;A collection of timeseries objects.</span>
 
@@ -148,25 +149,36 @@
 <span class="sd">       collection[i]                                  - access the i&#39;th timeseries</span>
 <span class="sd">       len(collection)                                - return the number of Timeseries added to the collection</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
+
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="nb">slice</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">IndexError</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span>
+
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span> <span class="n">suffix</span> <span class="o">=</span> <span class="s">&#39;s&#39;</span>
-        <span class="k">else</span><span class="p">:</span> <span class="n">suffix</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
-        <span class="k">return</span> <span class="s">&#39;&lt;&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="o">+</span><span class="s">&#39; with </span><span class="si">%d</span><span class="s"> timeseries object</span><span class="si">%s</span><span class="s">&gt;&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">suffix</span> <span class="o">=</span> <span class="s">&#39;s&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">suffix</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">return</span> <span class="s">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s">&#39; with </span><span class="si">%d</span><span class="s"> timeseries object</span><span class="si">%s</span><span class="s">&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">suffix</span><span class="p">)</span>
+
 <div class="viewcode-block" id="TimeseriesCollection.addTimeseries"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection.addTimeseries">[docs]</a>    <span class="k">def</span> <span class="nf">addTimeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;add a Timeseries object to the collection&#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">Timeseries</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Can only add Timeseries objects to TimeseriesCollection&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">Timeseries</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Can only add Timeseries objects to TimeseriesCollection&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="TimeseriesCollection.clear"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;clear the timeseries collection&#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
+</div>
 <div class="viewcode-block" id="TimeseriesCollection.compute"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trj</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Iterate through the trajectory *trj* and compute the time series.</span>
 
@@ -177,15 +189,16 @@
 <span class="sd">            Frames to calculate parts of the trajectory. It is important to</span>
 <span class="sd">            note that *start* and *stop* are inclusive</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">trj</span><span class="o">.</span><span class="n">correl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">skip</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">trj</span><span class="o">.</span><span class="n">correl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">skip</span><span class="p">)</span>
         <span class="c"># Now remap the timeseries data to each timeseries</span>
         <span class="n">typestr</span> <span class="o">=</span> <span class="s">&quot;|f8&quot;</span>
         <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
             <span class="n">finish</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">getDataSize</span><span class="p">()</span>
             <span class="n">datasize</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">getFormatCode</span><span class="p">())</span>
-            <span class="n">subarray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span><span class="o">+</span><span class="n">finish</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">datasize</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span> <span class="n">subarray</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">datasize</span><span class="p">,</span> <span class="n">subarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">datasize</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">subarray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">finish</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">datasize</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">subarray</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">datasize</span><span class="p">,</span> <span class="n">subarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">datasize</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">t</span><span class="o">.</span><span class="n">__data__</span> <span class="o">=</span> <span class="n">subarray</span>
             <span class="n">t</span><span class="o">.</span><span class="n">__array_interface__</span> <span class="o">=</span> <span class="n">subarray</span><span class="o">.</span><span class="n">__array_interface__</span>
             <span class="n">start</span> <span class="o">+=</span> <span class="n">finish</span>
@@ -195,32 +208,40 @@
         <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_atomlist</span> <span class="o">+=</span> <span class="n">ts</span><span class="o">.</span><span class="n">getAtomList</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atomlist</span>
+
     <span class="k">def</span> <span class="nf">_getFormat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">ts</span><span class="o">.</span><span class="n">getFormatCode</span><span class="p">()</span> <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">])</span>
+
     <span class="k">def</span> <span class="nf">_getBounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_atomlist&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">getAtomList</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atomlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">lowerb</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atomlist</span><span class="p">)</span>
             <span class="n">upperb</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atomlist</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span> <span class="n">lowerb</span> <span class="o">=</span> <span class="n">upperb</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lowerb</span> <span class="o">=</span> <span class="n">upperb</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="n">lowerb</span><span class="p">,</span> <span class="n">upperb</span>
+
     <span class="k">def</span> <span class="nf">_getDataSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">ts</span><span class="o">.</span><span class="n">getDataSize</span><span class="p">()</span> <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">])</span>
+
     <span class="k">def</span> <span class="nf">_getAtomCounts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">atomCounts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
             <span class="n">atomCounts</span> <span class="o">+=</span> <span class="n">ts</span><span class="o">.</span><span class="n">getAtomCounts</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">atomCounts</span>
+
     <span class="k">def</span> <span class="nf">_getAuxData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">auxData</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
             <span class="n">auxData</span> <span class="o">+=</span> <span class="n">ts</span><span class="o">.</span><span class="n">getAuxData</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">auxData</span>
+
 </div>
 <div class="viewcode-block" id="Timeseries"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.Timeseries">[docs]</a><span class="k">class</span> <span class="nc">Timeseries</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Base timeseries class - define subclasses for specific timeseries computations</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">dsize</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">atoms</span>
@@ -228,7 +249,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">atoms</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">Atom</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atoms</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Invalid atoms passed to </span><span class="si">%s</span><span class="s"> timeseries&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Invalid atoms passed to </span><span class="si">%s</span><span class="s"> timeseries&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">code</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dsize</span> <span class="o">=</span> <span class="n">dsize</span>
@@ -241,22 +263,35 @@
 </div>
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data__</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data__</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;__data__&quot;</span><span class="p">):</span> <span class="k">return</span> <span class="s">&#39;&lt;&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="o">+</span><span class="s">&#39; timeseries object is populated with data&gt;</span><span class="se">\n</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data__</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="s">&#39;&lt;&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="o">+</span><span class="s">&#39; timeseries object is not populated with data&gt;&#39;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;__data__&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s">&#39; timeseries object is populated with data&gt;</span><span class="se">\n</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> \
+                                                   <span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data__</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s">&#39; timeseries object is not populated with data&gt;&#39;</span>
+
     <span class="k">def</span> <span class="nf">getAtomList</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">number</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">getFormatCode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">code</span>
+
     <span class="k">def</span> <span class="nf">getDataSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsize</span>
+
     <span class="k">def</span> <span class="nf">getNumAtoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span>
+
     <span class="k">def</span> <span class="nf">getAtomCounts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">getAuxData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span>
+
 </div>
 <div class="viewcode-block" id="Atom"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.Atom">[docs]</a><span class="k">class</span> <span class="nc">Atom</span><span class="p">(</span><span class="n">Timeseries</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Create a timeseries that returns coordinate data for an atom or group of atoms ::</span>
@@ -272,57 +307,72 @@
 <span class="sd">          a list of :class:`~MDAnalysis.core.AtomGroup.Atom` objects, or an</span>
 <span class="sd">          :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="s">&#39;z&#39;</span><span class="p">,</span> <span class="s">&#39;v&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Bad code&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="s">&#39;v&#39;</span><span class="p">:</span> <span class="n">size</span> <span class="o">=</span> <span class="mi">3</span>
-        <span class="k">else</span><span class="p">:</span> <span class="n">size</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="s">&#39;v&#39;</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">):</span>
             <span class="n">numatoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">numatoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">Atom</span><span class="p">):</span>
             <span class="n">numatoms</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Invalid atoms passed to </span><span class="si">%s</span><span class="s"> timeseries&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
-        <span class="n">Timeseries</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="o">*</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">size</span><span class="o">*</span><span class="n">numatoms</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Invalid atoms passed to </span><span class="si">%s</span><span class="s"> timeseries&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+        <span class="n">Timeseries</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span> <span class="o">*</span> <span class="n">numatoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">size</span> <span class="o">*</span> <span class="n">numatoms</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">getAtomCounts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">,]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span>
+
 </div>
 <div class="viewcode-block" id="Bond"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.Bond">[docs]</a><span class="k">class</span> <span class="nc">Bond</span><span class="p">(</span><span class="n">Timeseries</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Create a timeseries that returns a timeseries for a bond</span>
 
 <span class="sd">           t = Bond(atoms)</span>
 
-<span class="sd">        *atoms* must contain 2 :class:`~MDAnalysis.core.AtomGroup.Atom` instances, either as a list or an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
+<span class="sd">        *atoms* must contain 2 :class:`~MDAnalysis.core.AtomGroup.Atom` instances, either as a list or an</span>
+<span class="sd">        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Bond timeseries requires a 2 atom selection&quot;</span><span class="p">)</span>
         <span class="n">Timeseries</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="Angle"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.Angle">[docs]</a><span class="k">class</span> <span class="nc">Angle</span><span class="p">(</span><span class="n">Timeseries</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Create a timeseries that returns a timeseries for an angle</span>
 
 <span class="sd">           t = Angle(atoms)</span>
 
-<span class="sd">        atoms must contain 3 :class:`~MDAnalysis.core.AtomGroup.Atom` instances, either as a list or an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
+<span class="sd">        atoms must contain 3 :class:`~MDAnalysis.core.AtomGroup.Atom` instances, either as a list or an</span>
+<span class="sd">        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Angle timeseries requires a 3 atom selection&quot;</span><span class="p">)</span>
         <span class="n">Timeseries</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="Dihedral"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.Dihedral">[docs]</a><span class="k">class</span> <span class="nc">Dihedral</span><span class="p">(</span><span class="n">Timeseries</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Create a timeseries that returns a timeseries for a dihedral angle</span>
 
 <span class="sd">           t = Dihedral(atoms)</span>
 
-<span class="sd">        atoms must contain 4 :class:`~MDAnalysis.core.AtomGroup.Atom` objects, either as a list or an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
+<span class="sd">        atoms must contain 4 :class:`~MDAnalysis.core.AtomGroup.Atom` objects, either as a list or an</span>
+<span class="sd">        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Dihedral timeseries requires a 4 atom selection&quot;</span><span class="p">)</span>
         <span class="n">Timeseries</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;h&#39;</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="Distance"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.Distance">[docs]</a><span class="k">class</span> <span class="nc">Distance</span><span class="p">(</span><span class="n">Timeseries</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Create a timeseries that returns distances between 2 atoms</span>
@@ -330,16 +380,21 @@
 <span class="sd">           t = Distance(code, atoms)</span>
 
 <span class="sd">        code is one of &#39;d&#39; (distance vector), or &#39;r&#39; (scalar distance)</span>
-<span class="sd">        atoms must contain 2 :class:`~MDAnalysis.core.AtomGroup.Atom` objects, either as a list or an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
+<span class="sd">        atoms must contain 2 :class:`~MDAnalysis.core.AtomGroup.Atom` objects, either as a list or an</span>
+<span class="sd">        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Bad code&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="s">&#39;d&#39;</span><span class="p">:</span> <span class="n">size</span> <span class="o">=</span> <span class="mi">3</span>
-        <span class="k">else</span><span class="p">:</span> <span class="n">size</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="s">&#39;d&#39;</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Distance timeseries requires a 2 atom selection&quot;</span><span class="p">)</span>
         <span class="n">Timeseries</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="CenterOfGeometry"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.CenterOfGeometry">[docs]</a><span class="k">class</span> <span class="nc">CenterOfGeometry</span><span class="p">(</span><span class="n">Timeseries</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Create a timeseries that returns the center of geometry of a group of atoms</span>
@@ -349,10 +404,13 @@
 <span class="sd">        *atoms* can be a list of :class:`~MDAnalysis.core.AtomGroup.Atom`</span>
 <span class="sd">        objects, or a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
         <span class="n">Timeseries</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;m&#39;</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">getAuxData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="mf">1.</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mf">1.</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span>
+
 </div>
 <div class="viewcode-block" id="CenterOfMass"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.CenterOfMass">[docs]</a><span class="k">class</span> <span class="nc">CenterOfMass</span><span class="p">(</span><span class="n">Timeseries</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Create a timeseries that returns the center of mass of a group of atoms</span>
@@ -362,10 +420,13 @@
 <span class="sd">        *atoms* can be a list of :class:`~MDAnalysis.core.AtomGroup.Atom`</span>
 <span class="sd">        objects or a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
         <span class="n">Timeseries</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;m&#39;</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">getAuxData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">mass</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">]</span>
+
 </div>
 <div class="viewcode-block" id="WaterDipole"><a class="viewcode-back" href="../../../documentation_pages/core/Timeseries.html#MDAnalysis.core.Timeseries.WaterDipole">[docs]</a><span class="k">class</span> <span class="nc">WaterDipole</span><span class="p">(</span><span class="n">Timeseries</span><span class="p">):</span>
     <span class="sd">r&#39;&#39;&#39;Create a Timeseries that returns a timeseries for the bisector vector of a 3-site water</span>
@@ -406,6 +467,7 @@
 <span class="sd">           molecule is not oxygen then results will be wrong.*</span>
 
 <span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;WaterDipole timeseries requires a 3 atom selection&quot;</span><span class="p">)</span>

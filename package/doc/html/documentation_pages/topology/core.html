@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -235,7 +235,7 @@ torsions present in a group of atoms.</p>
 </tr>
 </tbody>
 </table>
-<p>TopologyDicts are also built lazily from a <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.topDict" title="MDAnalysis.topology.core.TopologyGroup.topDict"><tt class="xref py py-class docutils literal"><span class="pre">TopologyGroup.topDict</span></tt></a>
+<p>TopologyDicts are also built lazily from a <tt class="xref py py-class docutils literal"><span class="pre">TopologyGroup.topDict</span></tt>
 attribute.</p>
 <p>The TopologyDict collects all the selected topology type from the
 atoms and categorises them according to the types of the atoms within.
@@ -420,16 +420,6 @@ that atoms are defined in each entry might be reversed.</p>
 <dd><p>Retrieves a selection from this topology group based on types.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="MDAnalysis.topology.core.TopologyGroup.topDict">
-<tt class="descname">topDict</tt><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.topDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.topDict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the TopologyDict for this topology group.</p>
-<p>This is used for the selectBonds method when fetching a certain type
-of bond.</p>
-<p>This is a cached property so will be generated the first time it is
-accessed.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyGroup.torsions">
 <tt class="descname">torsions</tt><big>(</big><em>result=None</em>, <em>pbc=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.torsions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.torsions" title="Permalink to this definition">¶</a></dt>
@@ -476,8 +466,6 @@ atoms might require minimum image convention</p>
 <dd><p>Base class for all Topology items</p>
 <p>Defines the behaviour by which Bonds/Angles/etc in MDAnalysis should
 behave.</p>
-<p>Bonds/Angles/etc all subclass this and customise __init__ to append 
-themselves to relevant atoms when they are initialised.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.topology.core.TopologyObject.type">
 <tt class="descname">type</tt><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyObject.type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyObject.type" title="Permalink to this definition">¶</a></dt>
@@ -584,13 +572,13 @@ to which residue and segment an atom belongs.</p>
 <p>Masses are looked up in <a class="reference internal" href="tables.html#MDAnalysis.topology.tables.masses" title="MDAnalysis.topology.tables.masses"><tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.topology.tables.masses</span></tt></a>.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">Unknown masses are set to 0.</p>
+<p class="last">Unknown masses are set to 0.00</p>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.get_parser_for">
-<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">get_parser_for</tt><big>(</big><em>filename</em>, <em>permissive=False</em>, <em>bonds=False</em>, <em>format=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#get_parser_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.get_parser_for" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">get_parser_for</tt><big>(</big><em>filename</em>, <em>permissive=False</em>, <em>tformat=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#get_parser_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.get_parser_for" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the appropriate topology parser for <em>filename</em>.</p>
 <p>Automatic detection is disabled when an explicit <em>format</em> is
 provided.</p>

@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
@@ -73,22 +73,22 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.coordinates.__init__</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
-<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
-<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see AUTHORS for the full list)</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
 <span class="c">#</span>
-<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
-<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
-<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
-<span class="c">#     doi:10.1002/jcc.21787</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c">#</span>
+
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Coordinate/Trajectory Readers and Writers  --- :mod:`MDAnalysis.coordinates`</span>
@@ -687,32 +687,47 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;reader&#39;</span><span class="p">,</span> <span class="s">&#39;writer&#39;</span><span class="p">]</span>
 
-<span class="kn">import</span> <span class="nn">PDB</span><span class="o">,</span> <span class="nn">PQR</span><span class="o">,</span> <span class="nn">DCD</span><span class="o">,</span> <span class="nn">CRD</span><span class="o">,</span> <span class="nn">XTC</span><span class="o">,</span> <span class="nn">TRR</span><span class="o">,</span> <span class="nn">GRO</span><span class="o">,</span> <span class="nn">XYZ</span><span class="o">,</span> <span class="nn">TRJ</span><span class="o">,</span> <span class="nn">PDBQT</span><span class="o">,</span> <span class="nn">LAMMPS</span><span class="o">,</span> <span class="nn">DMS</span><span class="o">,</span> <span class="nn">TRZ</span><span class="o">,</span> <span class="nn">MOL2</span>
+<span class="kn">import</span> <span class="nn">PDB</span>
+<span class="kn">import</span> <span class="nn">PQR</span>
+<span class="kn">import</span> <span class="nn">DCD</span>
+<span class="kn">import</span> <span class="nn">CRD</span>
+<span class="kn">import</span> <span class="nn">XTC</span>
+<span class="kn">import</span> <span class="nn">TRR</span>
+<span class="kn">import</span> <span class="nn">GRO</span>
+<span class="kn">import</span> <span class="nn">XYZ</span>
+<span class="kn">import</span> <span class="nn">TRJ</span>
+<span class="kn">import</span> <span class="nn">PDBQT</span>
+<span class="kn">import</span> <span class="nn">LAMMPS</span>
+<span class="kn">import</span> <span class="nn">DMS</span>
+<span class="kn">import</span> <span class="nn">TRZ</span>
+<span class="kn">import</span> <span class="nn">MOL2</span>
 <span class="kn">import</span> <span class="nn">base</span>
 <span class="kn">from</span> <span class="nn">core</span> <span class="kn">import</span> <span class="n">reader</span><span class="p">,</span> <span class="n">writer</span>
 
+
 <span class="c">#: standard trajectory readers (dict with identifier as key and reader class as value)</span>
-<span class="n">_trajectory_readers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;DCD&#39;</span><span class="p">:</span> <span class="n">DCD</span><span class="o">.</span><span class="n">DCDReader</span><span class="p">,</span>
-                       <span class="s">&#39;TRJ&#39;</span><span class="p">:</span> <span class="n">DCD</span><span class="o">.</span><span class="n">DCDReader</span><span class="p">,</span>
-                       <span class="s">&#39;XTC&#39;</span><span class="p">:</span> <span class="n">XTC</span><span class="o">.</span><span class="n">XTCReader</span><span class="p">,</span>
-                       <span class="s">&#39;XYZ&#39;</span><span class="p">:</span> <span class="n">XYZ</span><span class="o">.</span><span class="n">XYZReader</span><span class="p">,</span>
-                       <span class="s">&#39;TRR&#39;</span><span class="p">:</span> <span class="n">TRR</span><span class="o">.</span><span class="n">TRRReader</span><span class="p">,</span>
-                       <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PDBReader</span><span class="p">,</span>
-                       <span class="s">&#39;XPDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">ExtendedPDBReader</span><span class="p">,</span>
-                       <span class="s">&#39;PDBQT&#39;</span><span class="p">:</span> <span class="n">PDBQT</span><span class="o">.</span><span class="n">PDBQTReader</span><span class="p">,</span>
-                       <span class="s">&#39;CRD&#39;</span><span class="p">:</span> <span class="n">CRD</span><span class="o">.</span><span class="n">CRDReader</span><span class="p">,</span>
-                       <span class="s">&#39;GRO&#39;</span><span class="p">:</span> <span class="n">GRO</span><span class="o">.</span><span class="n">GROReader</span><span class="p">,</span>
-                       <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Reader</span><span class="p">,</span>
-                       <span class="s">&#39;TRJ&#39;</span><span class="p">:</span> <span class="n">TRJ</span><span class="o">.</span><span class="n">TRJReader</span><span class="p">,</span>     <span class="c"># AMBER text</span>
-                       <span class="s">&#39;MDCRD&#39;</span><span class="p">:</span> <span class="n">TRJ</span><span class="o">.</span><span class="n">TRJReader</span><span class="p">,</span>   <span class="c"># AMBER text</span>
-                       <span class="s">&#39;NCDF&#39;</span><span class="p">:</span> <span class="n">TRJ</span><span class="o">.</span><span class="n">NCDFReader</span><span class="p">,</span>   <span class="c"># AMBER netcdf</span>
-                       <span class="s">&#39;PQR&#39;</span><span class="p">:</span> <span class="n">PQR</span><span class="o">.</span><span class="n">PQRReader</span><span class="p">,</span>
-                       <span class="s">&#39;LAMMPS&#39;</span><span class="p">:</span> <span class="n">LAMMPS</span><span class="o">.</span><span class="n">DCDReader</span><span class="p">,</span>
-                       <span class="s">&#39;CHAIN&#39;</span><span class="p">:</span> <span class="n">base</span><span class="o">.</span><span class="n">ChainReader</span><span class="p">,</span>
-                       <span class="s">&#39;DMS&#39;</span><span class="p">:</span> <span class="n">DMS</span><span class="o">.</span><span class="n">DMSReader</span><span class="p">,</span>
-                       <span class="s">&#39;TRZ&#39;</span><span class="p">:</span> <span class="n">TRZ</span><span class="o">.</span><span class="n">TRZReader</span><span class="p">,</span>
-                       <span class="s">&#39;DATA&#39;</span><span class="p">:</span> <span class="n">LAMMPS</span><span class="o">.</span><span class="n">DATAReader</span><span class="p">,</span>
-                       <span class="p">}</span>
+<span class="n">_trajectory_readers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;DCD&#39;</span><span class="p">:</span> <span class="n">DCD</span><span class="o">.</span><span class="n">DCDReader</span><span class="p">,</span>
+    <span class="c"># &#39;TRJ&#39;: DCD.DCDReader, #commented out because overridden by TRJ.TRJReader</span>
+    <span class="s">&#39;XTC&#39;</span><span class="p">:</span> <span class="n">XTC</span><span class="o">.</span><span class="n">XTCReader</span><span class="p">,</span>
+    <span class="s">&#39;XYZ&#39;</span><span class="p">:</span> <span class="n">XYZ</span><span class="o">.</span><span class="n">XYZReader</span><span class="p">,</span>
+    <span class="s">&#39;TRR&#39;</span><span class="p">:</span> <span class="n">TRR</span><span class="o">.</span><span class="n">TRRReader</span><span class="p">,</span>
+    <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PDBReader</span><span class="p">,</span>
+    <span class="s">&#39;XPDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">ExtendedPDBReader</span><span class="p">,</span>
+    <span class="s">&#39;PDBQT&#39;</span><span class="p">:</span> <span class="n">PDBQT</span><span class="o">.</span><span class="n">PDBQTReader</span><span class="p">,</span>
+    <span class="s">&#39;CRD&#39;</span><span class="p">:</span> <span class="n">CRD</span><span class="o">.</span><span class="n">CRDReader</span><span class="p">,</span>
+    <span class="s">&#39;GRO&#39;</span><span class="p">:</span> <span class="n">GRO</span><span class="o">.</span><span class="n">GROReader</span><span class="p">,</span>
+    <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Reader</span><span class="p">,</span>
+    <span class="s">&#39;TRJ&#39;</span><span class="p">:</span> <span class="n">TRJ</span><span class="o">.</span><span class="n">TRJReader</span><span class="p">,</span>  <span class="c"># AMBER text</span>
+    <span class="s">&#39;MDCRD&#39;</span><span class="p">:</span> <span class="n">TRJ</span><span class="o">.</span><span class="n">TRJReader</span><span class="p">,</span>  <span class="c"># AMBER text</span>
+    <span class="s">&#39;NCDF&#39;</span><span class="p">:</span> <span class="n">TRJ</span><span class="o">.</span><span class="n">NCDFReader</span><span class="p">,</span>  <span class="c"># AMBER netcdf</span>
+    <span class="s">&#39;PQR&#39;</span><span class="p">:</span> <span class="n">PQR</span><span class="o">.</span><span class="n">PQRReader</span><span class="p">,</span>
+    <span class="s">&#39;LAMMPS&#39;</span><span class="p">:</span> <span class="n">LAMMPS</span><span class="o">.</span><span class="n">DCDReader</span><span class="p">,</span>
+    <span class="s">&#39;CHAIN&#39;</span><span class="p">:</span> <span class="n">base</span><span class="o">.</span><span class="n">ChainReader</span><span class="p">,</span>
+    <span class="s">&#39;DMS&#39;</span><span class="p">:</span> <span class="n">DMS</span><span class="o">.</span><span class="n">DMSReader</span><span class="p">,</span>
+    <span class="s">&#39;TRZ&#39;</span><span class="p">:</span> <span class="n">TRZ</span><span class="o">.</span><span class="n">TRZReader</span><span class="p">,</span>
+    <span class="s">&#39;DATA&#39;</span><span class="p">:</span> <span class="n">LAMMPS</span><span class="o">.</span><span class="n">DATAReader</span><span class="p">,</span>
+<span class="p">}</span>
 
 <span class="c">#: formats of readers that can also handle gzip or bzip2 compressed files</span>
 <span class="n">_compressed_formats</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;XYZ&#39;</span><span class="p">,</span> <span class="s">&#39;TRJ&#39;</span><span class="p">,</span> <span class="s">&#39;MDCRD&#39;</span><span class="p">,</span> <span class="s">&#39;PQR&#39;</span><span class="p">,</span> <span class="s">&#39;PDBQT&#39;</span><span class="p">]</span>
@@ -720,22 +735,23 @@
 <span class="c">#: readers of files that contain both topology/atom data and coordinates</span>
 <span class="c">#: (currently only the keys are used)</span>
 <span class="n">_topology_coordinates_readers</span> <span class="o">=</span> <span class="p">{</span>
-                       <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PrimitivePDBReader</span><span class="p">,</span>     <span class="c"># FIXME: should be able to use BioPython PDBReader for topolgy if permissive=False!</span>
-                       <span class="s">&#39;XPDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">ExtendedPDBReader</span><span class="p">,</span>
-                       <span class="s">&#39;PDBQT&#39;</span><span class="p">:</span> <span class="n">PDBQT</span><span class="o">.</span><span class="n">PDBQTReader</span><span class="p">,</span>
-                       <span class="s">&#39;GRO&#39;</span><span class="p">:</span> <span class="n">GRO</span><span class="o">.</span><span class="n">GROReader</span><span class="p">,</span>
-                       <span class="s">&#39;CRD&#39;</span><span class="p">:</span> <span class="n">CRD</span><span class="o">.</span><span class="n">CRDReader</span><span class="p">,</span>
-                       <span class="s">&#39;PQR&#39;</span><span class="p">:</span> <span class="n">PQR</span><span class="o">.</span><span class="n">PQRReader</span><span class="p">,</span>
-                       <span class="s">&#39;DMS&#39;</span><span class="p">:</span> <span class="n">DMS</span><span class="o">.</span><span class="n">DMSReader</span><span class="p">,</span>
-                       <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Reader</span><span class="p">,</span>
-                       <span class="s">&#39;DATA&#39;</span><span class="p">:</span><span class="n">LAMMPS</span><span class="o">.</span><span class="n">DATAReader</span><span class="p">,</span>
+    <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PrimitivePDBReader</span><span class="p">,</span>  <span class="c"># FIXME: should be able to use BioPython PDBReader for topolgy if permissive=False!</span>
+    <span class="s">&#39;XPDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">ExtendedPDBReader</span><span class="p">,</span>
+    <span class="s">&#39;PDBQT&#39;</span><span class="p">:</span> <span class="n">PDBQT</span><span class="o">.</span><span class="n">PDBQTReader</span><span class="p">,</span>
+    <span class="s">&#39;GRO&#39;</span><span class="p">:</span> <span class="n">GRO</span><span class="o">.</span><span class="n">GROReader</span><span class="p">,</span>
+    <span class="s">&#39;CRD&#39;</span><span class="p">:</span> <span class="n">CRD</span><span class="o">.</span><span class="n">CRDReader</span><span class="p">,</span>
+    <span class="s">&#39;PQR&#39;</span><span class="p">:</span> <span class="n">PQR</span><span class="o">.</span><span class="n">PQRReader</span><span class="p">,</span>
+    <span class="s">&#39;DMS&#39;</span><span class="p">:</span> <span class="n">DMS</span><span class="o">.</span><span class="n">DMSReader</span><span class="p">,</span>
+    <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Reader</span><span class="p">,</span>
+    <span class="s">&#39;DATA&#39;</span><span class="p">:</span> <span class="n">LAMMPS</span><span class="o">.</span><span class="n">DATAReader</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="c">#: hack: readers that ignore most errors (permissive=True); at the moment</span>
 <span class="c">#: the same as :data:`_trajectory_readers` with the exception of the</span>
-<span class="c">#: the PDB reader (:class:`~MDAnalysis.coordinates.PDB.PDBReader` is replaced by :class:`~MDAnalysis.coordinates.PDB.PrimitivePDBReader`).</span>
+<span class="c">#: the PDB reader (:class:`~MDAnalysis.coordinates.PDB.PDBReader` is replaced by</span>
+<span class="c"># :class:`~MDAnalysis.coordinates.PDB.PrimitivePDBReader`).</span>
 <span class="n">_trajectory_readers_permissive</span> <span class="o">=</span> <span class="n">_trajectory_readers</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">_trajectory_readers_permissive</span><span class="p">[</span><span class="s">&#39;PDB&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">PDB</span><span class="o">.</span><span class="n">PrimitivePDBReader</span>
+<span class="n">_trajectory_readers_permissive</span><span class="p">[</span><span class="s">&#39;PDB&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PrimitivePDBReader</span>
 
 <span class="c">#: frame writers: export to single frame formats such as PDB, gro, crd</span>
 <span class="c">#: Signature::</span>
@@ -743,14 +759,14 @@
 <span class="c">#:   W = FrameWriter(filename)</span>
 <span class="c">#:   W.write(AtomGroup)</span>
 <span class="n">_frame_writers</span> <span class="o">=</span> <span class="p">{</span>
-                  <span class="s">&#39;PDBQT&#39;</span><span class="p">:</span> <span class="n">PDBQT</span><span class="o">.</span><span class="n">PDBQTWriter</span><span class="p">,</span>
-                  <span class="s">&#39;CRD&#39;</span><span class="p">:</span> <span class="n">CRD</span><span class="o">.</span><span class="n">CRDWriter</span><span class="p">,</span>
-                  <span class="s">&#39;GRO&#39;</span><span class="p">:</span> <span class="n">GRO</span><span class="o">.</span><span class="n">GROWriter</span><span class="p">,</span>
-                  <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PrimitivePDBWriter</span><span class="p">,</span>
-                  <span class="s">&#39;PQR&#39;</span><span class="p">:</span> <span class="n">PQR</span><span class="o">.</span><span class="n">PQRWriter</span><span class="p">,</span>
-                  <span class="s">&#39;XYZ&#39;</span><span class="p">:</span> <span class="n">XYZ</span><span class="o">.</span><span class="n">XYZWriter</span><span class="p">,</span>
-                  <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Writer</span><span class="p">,</span>
-                 <span class="p">}</span>
+    <span class="s">&#39;PDBQT&#39;</span><span class="p">:</span> <span class="n">PDBQT</span><span class="o">.</span><span class="n">PDBQTWriter</span><span class="p">,</span>
+    <span class="s">&#39;CRD&#39;</span><span class="p">:</span> <span class="n">CRD</span><span class="o">.</span><span class="n">CRDWriter</span><span class="p">,</span>
+    <span class="s">&#39;GRO&#39;</span><span class="p">:</span> <span class="n">GRO</span><span class="o">.</span><span class="n">GROWriter</span><span class="p">,</span>
+    <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PrimitivePDBWriter</span><span class="p">,</span>
+    <span class="s">&#39;PQR&#39;</span><span class="p">:</span> <span class="n">PQR</span><span class="o">.</span><span class="n">PQRWriter</span><span class="p">,</span>
+    <span class="s">&#39;XYZ&#39;</span><span class="p">:</span> <span class="n">XYZ</span><span class="o">.</span><span class="n">XYZWriter</span><span class="p">,</span>
+    <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Writer</span><span class="p">,</span>
+<span class="p">}</span>
 
 <span class="c">#: trajectory writers: export frames, typically only saving coordinates</span>
 <span class="c">#: Signature::</span>
@@ -760,16 +776,17 @@
 <span class="c">#:   W.write(Timestep)</span>
 <span class="c">#:   W.write(AtomGroup)</span>
 <span class="c">#:   W.write(Universe)</span>
-<span class="n">_trajectory_writers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;DCD&#39;</span><span class="p">:</span> <span class="n">DCD</span><span class="o">.</span><span class="n">DCDWriter</span><span class="p">,</span>
-                       <span class="s">&#39;XTC&#39;</span><span class="p">:</span> <span class="n">XTC</span><span class="o">.</span><span class="n">XTCWriter</span><span class="p">,</span>
-                       <span class="s">&#39;TRR&#39;</span><span class="p">:</span> <span class="n">TRR</span><span class="o">.</span><span class="n">TRRWriter</span><span class="p">,</span>
-                       <span class="s">&#39;LAMMPS&#39;</span><span class="p">:</span> <span class="n">LAMMPS</span><span class="o">.</span><span class="n">DCDWriter</span><span class="p">,</span>
-                       <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">MultiPDBWriter</span><span class="p">,</span>
-                       <span class="s">&#39;NCDF&#39;</span><span class="p">:</span> <span class="n">TRJ</span><span class="o">.</span><span class="n">NCDFWriter</span><span class="p">,</span>
-                       <span class="s">&#39;TRZ&#39;</span><span class="p">:</span><span class="n">TRZ</span><span class="o">.</span><span class="n">TRZWriter</span><span class="p">,</span>
-                       <span class="s">&#39;XYZ&#39;</span><span class="p">:</span> <span class="n">XYZ</span><span class="o">.</span><span class="n">XYZWriter</span><span class="p">,</span>
-                       <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Writer</span><span class="p">,</span>
-                       <span class="p">}</span>
+<span class="n">_trajectory_writers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;DCD&#39;</span><span class="p">:</span> <span class="n">DCD</span><span class="o">.</span><span class="n">DCDWriter</span><span class="p">,</span>
+    <span class="s">&#39;XTC&#39;</span><span class="p">:</span> <span class="n">XTC</span><span class="o">.</span><span class="n">XTCWriter</span><span class="p">,</span>
+    <span class="s">&#39;TRR&#39;</span><span class="p">:</span> <span class="n">TRR</span><span class="o">.</span><span class="n">TRRWriter</span><span class="p">,</span>
+    <span class="s">&#39;LAMMPS&#39;</span><span class="p">:</span> <span class="n">LAMMPS</span><span class="o">.</span><span class="n">DCDWriter</span><span class="p">,</span>
+    <span class="s">&#39;PDB&#39;</span><span class="p">:</span> <span class="n">PDB</span><span class="o">.</span><span class="n">MultiPDBWriter</span><span class="p">,</span>
+    <span class="s">&#39;NCDF&#39;</span><span class="p">:</span> <span class="n">TRJ</span><span class="o">.</span><span class="n">NCDFWriter</span><span class="p">,</span>
+    <span class="s">&#39;TRZ&#39;</span><span class="p">:</span> <span class="n">TRZ</span><span class="o">.</span><span class="n">TRZWriter</span><span class="p">,</span>
+    <span class="s">&#39;XYZ&#39;</span><span class="p">:</span> <span class="n">XYZ</span><span class="o">.</span><span class="n">XYZWriter</span><span class="p">,</span>
+    <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Writer</span><span class="p">,</span>
+<span class="p">}</span>
 </pre></div>
 
           </div>

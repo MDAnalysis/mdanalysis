@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
@@ -73,22 +73,22 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.coordinates.XYZ</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
-<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
-<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see AUTHORS for the full list)</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
 <span class="c">#</span>
-<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
-<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
-<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
-<span class="c">#     doi:10.1002/jcc.21787</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c">#</span>
+
 
 <span class="sd">&quot;&quot;&quot;XYZ trajectory reader --- :mod:`MDAnalysis.coordinates.XYZ`</span>
 <span class="sd">==============================================================</span>
@@ -142,7 +142,8 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">bz2</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
@@ -152,6 +153,7 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.core</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">as</span> <span class="nn">util</span>
+
 
 <span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
     <span class="nd">@property</span>
@@ -210,20 +212,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="c"># convert length and time to base units on the fly?</span>
         <span class="n">convert_units</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;convert_units&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span> <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span>  <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span> <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_atomnames</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;atoms&#39;</span><span class="p">,</span> <span class="s">&quot;X&quot;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remark</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;remark&#39;</span><span class="p">,</span> <span class="s">&quot;Written by {0} (release {1})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">__version__</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remark</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;remark&#39;</span><span class="p">,</span>
+                                 <span class="s">&quot;Written by {0} (release {1})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">__version__</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>  <span class="c"># can also be gz, bz2</span>
 
     <span class="k">def</span> <span class="nf">_get_atomnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a list of atom names&quot;&quot;&quot;</span>
         <span class="c"># AtomGroup</span>
-        <span class="k">try</span><span class="p">:</span> <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">names</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span> <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">names</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
         <span class="c"># universe?</span>
-        <span class="k">try</span><span class="p">:</span> <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span> <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
         <span class="c"># list or string (can be a single atom name... deal with this in write_next_timestep() once we know numatoms)</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">atoms</span><span class="p">))</span>
 
@@ -294,8 +301,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;{0:d}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">numatoms</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;frame {0}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">atom</span><span class="p">,(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%8s</span><span class="s">  </span><span class="si">%10.5f</span><span class="s"> </span><span class="si">%10.5f</span><span class="s"> </span><span class="si">%10.5f</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+
 </div></div>
 <div class="viewcode-block" id="XYZReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZReader">[docs]</a><span class="k">class</span> <span class="nc">XYZReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reads from an XYZ file</span>
@@ -348,7 +356,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;delta&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>   <span class="c"># can set delta manually, default is 1ps (taken from TRJReader)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;delta&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>  <span class="c"># can set delta manually, default is 1ps (taken from TRJReader)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip_timestep</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">)</span>  <span class="c"># numatoms has sideeffects: read trajectory... (FRAGILE)</span>
@@ -362,7 +370,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="XYZReader.numatoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZReader.numatoms">[docs]</a>    <span class="k">def</span> <span class="nf">numatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;number of atoms in a frame&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__numatoms</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>   <span class="c"># return cached value</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__numatoms</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c"># return cached value</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__numatoms</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__numatoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_xyz_natoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -371,7 +379,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__numatoms</span>
 </div>
-    <span class="k">def</span> <span class="nf">_read_xyz_natoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_read_xyz_natoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="c"># this assumes that this is only called once at startup and that the filestream is already open</span>
         <span class="c"># (FRAGILE)</span>
         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
@@ -381,7 +389,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">numframes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>   <span class="c"># return cached value</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c"># return cached value</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_xyz_numframes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -393,7 +401,7 @@
     <span class="k">def</span> <span class="nf">_read_xyz_numframes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
         <span class="c"># the number of lines in the XYZ file will be 2 greater than the number of atoms</span>
-        <span class="n">linesPerFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="o">+</span><span class="mi">2</span>
+        <span class="n">linesPerFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">+</span> <span class="mi">2</span>
         <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="c"># step through the file (assuming xyzfile has an iterator)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span><span class="p">:</span>
@@ -401,7 +409,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
         <span class="c"># need to check this is an integer!</span>
-        <span class="n">numframes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">counter</span><span class="o">/</span><span class="n">linesPerFrame</span><span class="p">)</span>
+        <span class="n">numframes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">counter</span> <span class="o">/</span> <span class="n">linesPerFrame</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">numframes</span>
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -440,7 +448,7 @@
             <span class="c"># stop when the cursor has reached the end of that block</span>
             <span class="k">if</span> <span class="n">counter</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">:</span>
                 <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">_x</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">x</span> <span class="c"># more efficient to do it this way to avoid re-creating the numpy arrays</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">_x</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">x</span>  <span class="c"># more efficient to do it this way to avoid re-creating the numpy arrays</span>
                 <span class="n">ts</span><span class="o">.</span><span class="n">_y</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">y</span>
                 <span class="n">ts</span><span class="o">.</span><span class="n">_z</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">z</span>
                 <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -493,8 +501,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="o">=</span> <span class="bp">None</span>
-</pre></div></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="o">=</span> <span class="bp">None</span></div></div>
+</pre></div>
 
           </div>
         </div>

@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../../_static/opensearch.xml"/>
@@ -73,22 +73,22 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.coordinates.PQR</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8; -*-</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
-<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see AUTHORS for the full list)</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
 <span class="c">#</span>
-<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
-<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
-<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
-<span class="c">#     doi:10.1002/jcc.21787</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c">#</span>
+
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">PQR file format --- :mod:`MDAnalysis.coordinates.PQR`</span>
@@ -166,6 +166,7 @@
 <span class="kn">from</span> <span class="nn">base</span> <span class="kn">import</span> <span class="n">Timestep</span>
 <span class="kn">import</span> <span class="nn">pdb.extensions</span>
 
+
 <div class="viewcode-block" id="PQRReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader">[docs]</a><span class="k">class</span> <span class="nc">PQRReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read a PQR_ file into MDAnalysis.</span>
 
@@ -202,20 +203,21 @@
                 <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;ATOM  &#39;</span><span class="p">,</span> <span class="s">&#39;HETATM&#39;</span><span class="p">):</span>
                     <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="n">recordName</span><span class="p">,</span><span class="n">serial</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">resName</span><span class="p">,</span><span class="n">chainID</span><span class="p">,</span><span class="n">resSeq</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">charge</span><span class="p">,</span><span class="n">radius</span> <span class="o">=</span> <span class="n">fields</span>
+                        <span class="n">recordName</span><span class="p">,</span> <span class="n">serial</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="n">resSeq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">radius</span> <span class="o">=</span> <span class="n">fields</span>
                     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                         <span class="c"># files without the chainID</span>
-                        <span class="n">recordName</span><span class="p">,</span><span class="n">serial</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">resName</span><span class="p">,</span><span class="n">resSeq</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">charge</span><span class="p">,</span><span class="n">radius</span> <span class="o">=</span> <span class="n">fields</span>
+                        <span class="n">recordName</span><span class="p">,</span> <span class="n">serial</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">resSeq</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">radius</span> <span class="o">=</span> <span class="n">fields</span>
                         <span class="n">chainID</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
-                    <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">z</span><span class="p">)))</span>
-                    <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">serial</span><span class="p">),</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">resSeq</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">charge</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">),</span> <span class="n">segID</span><span class="p">))</span>
+                    <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">z</span><span class="p">)))</span>
+                    <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">serial</span><span class="p">),</span> <span class="n">name</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">resSeq</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">charge</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">radius</span><span class="p">),</span> <span class="n">segID</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">unitcell</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># 1-based frame number</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>             <span class="c"># in-place !</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>    <span class="c"># in-place ! (only lengths)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c"># in-place !</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>  <span class="c"># in-place ! (only lengths)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="mi">1</span>
@@ -256,6 +258,7 @@
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># PQR file only contains a single frame</span>
         <span class="k">raise</span> <span class="ne">IOError</span>
+
 </div>
 <div class="viewcode-block" id="PQRWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRWriter">[docs]</a><span class="k">class</span> <span class="nc">PQRWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Writer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write a single coordinate frame in whitespace-separated PQR format.</span>
@@ -277,13 +280,14 @@
     <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;PQR&#39;</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>
 
-    <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;ATOM_nochain&#39;</span><span class="p">:</span>
-           <span class="s">&quot;ATOM {0:6d} {1:&lt;4}  {2:&lt;3} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
-           <span class="c"># serial, atomName, residueName, (chainID), residueNumber, XYZ, charge, radius</span>
-           <span class="s">&#39;ATOM_chain&#39;</span><span class="p">:</span>
-           <span class="s">&quot;ATOM {0:6d} {1:&lt;4}  {2:&lt;3} {3:1.1} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
-           <span class="c"># serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius</span>
-           <span class="p">}</span>
+    <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;ATOM_nochain&#39;</span><span class="p">:</span>
+        <span class="s">&quot;ATOM {0:6d} {1:&lt;4}  {2:&lt;3} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+        <span class="c"># serial, atomName, residueName, (chainID), residueNumber, XYZ, charge, radius</span>
+        <span class="s">&#39;ATOM_chain&#39;</span><span class="p">:</span>
+        <span class="s">&quot;ATOM {0:6d} {1:&lt;4}  {2:&lt;3} {3:1.1} {4:4d}   {5[0]:-8.3f} {5[1]:-8.3f} {5[2]:-8.3f} {6:-7.4f} {7:6.4f}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+        <span class="c"># serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius</span>
+    <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set up a PQRWriter with full whitespace separation.</span>
@@ -322,12 +326,12 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">frame</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>   <span class="c"># should catch cases when we are analyzing a single frame(?)</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># should catch cases when we are analyzing a single frame(?)</span>
 
-        <span class="n">atoms</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">atoms</span>             <span class="c"># make sure to use atoms (Issue 46)</span>
-        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>   <span class="c"># can write from selection == Universe (Issue 49)</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">atoms</span>  <span class="c"># make sure to use atoms (Issue 46)</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>  <span class="c"># can write from selection == Universe (Issue 49)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>             <span class="c"># inplace because coordinates is already a copy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>  <span class="c"># inplace because coordinates is already a copy</span>
 
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pqrfile</span><span class="p">:</span>
             <span class="c"># Header</span>
@@ -337,7 +341,8 @@
             <span class="c"># Atom descriptions and coords</span>
             <span class="k">for</span> <span class="n">atom_index</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
                 <span class="n">XYZ</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">atom_index</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_write_ATOM</span><span class="p">(</span><span class="n">pqrfile</span><span class="p">,</span> <span class="n">atom_index</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_write_ATOM</span><span class="p">(</span><span class="n">pqrfile</span><span class="p">,</span> <span class="n">atom_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span>
+                                 <span class="n">atom</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_write_REMARK</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">remarks</span><span class="p">,</span> <span class="n">remarknumber</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write REMARK record.</span>
@@ -360,9 +365,10 @@
 <span class="sd">              ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ATOM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s">&#39;ATOM_nochain&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">chainID</span> <span class="o">==</span> <span class="s">&quot;SYSTEM&quot;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">chainID</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s">&#39;ATOM_chain&#39;</span><span class="p">]</span>
-        <span class="n">atomName</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">atomName</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomName</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="k">else</span> <span class="n">atomName</span>  <span class="c"># pad so that only 4-letter atoms are left-aligned</span>
-        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ATOM</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">serial</span><span class="p">,</span> <span class="n">atomName</span><span class="p">,</span> <span class="n">residueName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="n">residueNumber</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">radius</span><span class="p">))</span>
-</pre></div></div>
+        <span class="n">atomName</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">atomName</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span>
+            <span class="n">atomName</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="k">else</span> <span class="n">atomName</span>  <span class="c"># pad so that only 4-letter atoms are left-aligned</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ATOM</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">serial</span><span class="p">,</span> <span class="n">atomName</span><span class="p">,</span> <span class="n">residueName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="n">residueNumber</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">radius</span><span class="p">))</span></div>
+</pre></div>
 
           </div>
         </div>

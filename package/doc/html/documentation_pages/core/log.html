@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.10. Setting up logging — MDAnalysis.core.log &mdash; MDAnalysis 0.8.2-dev documentation</title>
+    <title>7.9. Setting up logging — MDAnalysis.core.log &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -23,15 +23,15 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
-    <link rel="next" title="7.11. Parallel algorithms for MDAnalysis" href="parallel.html" />
-    <link rel="prev" title="7.9. Helper functions — MDAnalysis.core.util" href="util.html" /> 
+    <link rel="next" title="7.10. Parallel algorithms for MDAnalysis" href="parallel.html" />
+    <link rel="prev" title="7.8. Helper functions — MDAnalysis.core.util" href="util.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,10 +44,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="parallel.html" title="7.11. Parallel algorithms for MDAnalysis"
+          <a href="parallel.html" title="7.10. Parallel algorithms for MDAnalysis"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="util.html" title="7.9. Helper functions — MDAnalysis.core.util"
+          <a href="util.html" title="7.8. Helper functions — MDAnalysis.core.util"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
@@ -60,19 +60,19 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">7.10. Setting up logging &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a><ul>
-<li><a class="reference internal" href="#convenience-functions">7.10.1. Convenience functions</a></li>
-<li><a class="reference internal" href="#other-functions-and-classes-for-logging-purposes">7.10.2. Other functions and classes for logging purposes</a></li>
+<li><a class="reference internal" href="#">7.9. Setting up logging &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a><ul>
+<li><a class="reference internal" href="#convenience-functions">7.9.1. Convenience functions</a></li>
+<li><a class="reference internal" href="#other-functions-and-classes-for-logging-purposes">7.9.2. Other functions and classes for logging purposes</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="util.html"
-                        title="previous chapter">7.9. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a></p>
+                        title="previous chapter">7.8. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="parallel.html"
-                        title="next chapter">7.11. Parallel algorithms for MDAnalysis</a></p>
+                        title="next chapter">7.10. Parallel algorithms for MDAnalysis</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/log.txt"
@@ -100,7 +100,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.core.log"></span><div class="section" id="setting-up-logging-mdanalysis-core-log">
-<h1>7.10. Setting up logging &#8212; <a class="reference internal" href="#module-MDAnalysis.core.log" title="MDAnalysis.core.log"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a><a class="headerlink" href="#setting-up-logging-mdanalysis-core-log" title="Permalink to this headline">¶</a></h1>
+<h1>7.9. Setting up logging &#8212; <a class="reference internal" href="#module-MDAnalysis.core.log" title="MDAnalysis.core.log"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a><a class="headerlink" href="#setting-up-logging-mdanalysis-core-log" title="Permalink to this headline">¶</a></h1>
 <p>Configure logging for MDAnalysis. Import this module if logging is
 desired in application code.</p>
 <p>Logging to a file and the console is set up by default as described
@@ -133,7 +133,7 @@ optional argument to <a class="reference internal" href="#MDAnalysis.start_loggi
 in depth documentation about using logging.</p>
 </div>
 <div class="section" id="convenience-functions">
-<h2>7.10.1. Convenience functions<a class="headerlink" href="#convenience-functions" title="Permalink to this headline">¶</a></h2>
+<h2>7.9.1. Convenience functions<a class="headerlink" href="#convenience-functions" title="Permalink to this headline">¶</a></h2>
 <p>Two convenience functions at the top level make it easy to start and
 stop the default <em>MDAnalysis</em> logger.</p>
 <dl class="function">
@@ -152,7 +152,7 @@ logged with the tag <em>MDAnalysis</em>.</p>
 
 </div>
 <div class="section" id="other-functions-and-classes-for-logging-purposes">
-<h2>7.10.2. Other functions and classes for logging purposes<a class="headerlink" href="#other-functions-and-classes-for-logging-purposes" title="Permalink to this headline">¶</a></h2>
+<h2>7.9.2. Other functions and classes for logging purposes<a class="headerlink" href="#other-functions-and-classes-for-logging-purposes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.log.NullHandler">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.core.log.</tt><tt class="descname">NullHandler</tt><big>(</big><em>level=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/log.html#NullHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.log.NullHandler" title="Permalink to this definition">¶</a></dt>
@@ -337,10 +337,10 @@ console.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="parallel.html" title="7.11. Parallel algorithms for MDAnalysis"
+          <a href="parallel.html" title="7.10. Parallel algorithms for MDAnalysis"
              >next</a> |</li>
         <li class="right" >
-          <a href="util.html" title="7.9. Helper functions — MDAnalysis.core.util"
+          <a href="util.html" title="7.8. Helper functions — MDAnalysis.core.util"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 

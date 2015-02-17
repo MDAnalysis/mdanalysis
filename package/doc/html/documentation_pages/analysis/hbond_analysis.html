@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -733,9 +733,7 @@ Use the keyword <em>acceptors</em> to add a list of additional acceptor names.</
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS">
 <tt class="descname">DEFAULT_DONORS</tt><em class="property"> = {'GLYCAM06': ('OW', 'N3', 'NT', 'OH', 'N'), 'other': (), 'CHARMM27': ('OH', 'OG', 'NE2', 'OG1', 'NE', 'N', 'ND1', 'NZ', 'NH1', 'NH2', 'OW', 'ND2', 'SG', 'OH2', 'NE1')}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
-<dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
-(see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><em>Default heavy atom names for CHARMM27 force field.</em></a>)
-Use the keyword <em>donors</em> to add a list of additional donor names.</p>
+<dd><p>Use the keyword <em>donors</em> to add a list of additional donor names.</p>
 </dd></dl>
 
 <dl class="method">
@@ -811,7 +809,7 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.r_cov">
-<tt class="descname">r_cov</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x2ada78ad2c80&gt;, {'P': 1.58, 'S': 1.55, 'O': 1.31, 'N': 1.31})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">r_cov</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x1092c6aa0&gt;, {'P': 1.58, 'S': 1.55, 'O': 1.31, 'N': 1.31})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <a class="reference external" href="http://docs.python.org/library/collections.html#collections.defaultdict" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">collections.defaultdict</span></tt></a> of covalent radii of common donors
 (used in :meth`_get_bonded_hydrogens_list` to check if a hydrogen is
 sufficiently close to its donor heavy atom). Values are stored for

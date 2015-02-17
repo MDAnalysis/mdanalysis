@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../../_static/opensearch.xml"/>
@@ -109,7 +109,7 @@ are currently supported. The known working versions and the
 approximate Gromacs release numbers are listed in the table
 <a class="reference internal" href="#tpr-format-table"><em>TPR format versions</em></a>.</p>
 <table border="1" class="docutils" id="tpr-format-table">
-<caption>TPR format versions and generations read by <a class="reference internal" href="#MDAnalysis.topology.TPRParser.parse" title="MDAnalysis.topology.TPRParser.parse"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.TPRParser.parse()</span></tt></a>.</caption>
+<caption>TPR format versions and generations read by <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.TPRParser.parse()</span></tt>.</caption>
 <colgroup>
 <col width="20%" />
 <col width="29%" />
@@ -154,19 +154,10 @@ approximate Gromacs release numbers are listed in the table
 supported.</p>
 <div class="section" id="functions">
 <h2>4.14.1. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="MDAnalysis.topology.TPRParser.parse">
-<tt class="descclassname">MDAnalysis.topology.TPRParser.</tt><tt class="descname">parse</tt><big>(</big><em>tprfile</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.parse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse a Gromacs TPR file into a MDAnalysis internal topology structure.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><tt class="docutils literal"><span class="pre">structure</span></tt> dict</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<dl class="class">
+<dt id="MDAnalysis.topology.TPRParser.TPRParser">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.TPRParser.</tt><tt class="descname">TPRParser</tt><big>(</big><em>filename</em>, <em>guess_bonds_mode=False</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#TPRParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="development-notes">

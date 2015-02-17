@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.8.2-dev documentation"
           href="../_static/opensearch.xml"/>
@@ -72,22 +72,21 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
-<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2014 Naveen Michaud-Agrawal,</span>
-<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see AUTHORS for the full list)</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c">#</span>
-<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
-<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
-<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
-<span class="c">#     doi:10.1002/jcc.21787</span>
-<span class="c">#</span>
+
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">:mod:`MDAnalysis` --- analysis of molecular simulations in python</span>
@@ -233,14 +232,19 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Timeseries&#39;</span><span class="p">,</span> <span class="s">&#39;Universe&#39;</span><span class="p">,</span> <span class="s">&#39;asUniverse&#39;</span><span class="p">,</span> <span class="s">&#39;Writer&#39;</span><span class="p">,</span> <span class="s">&#39;collection&#39;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
+
+
 <span class="c"># see the advice on logging and libraries in</span>
 <span class="c"># http://docs.python.org/library/logging.html?#configuring-logging-for-a-library</span>
 <span class="k">class</span> <span class="nc">NullHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
         <span class="k">pass</span>
+
+
 <span class="n">h</span> <span class="o">=</span> <span class="n">NullHandler</span><span class="p">()</span>
 <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;MDAnalysis&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
 <span class="k">del</span> <span class="n">h</span>
+
 
 <div class="viewcode-block" id="start_logging"><a class="viewcode-back" href="../documentation_pages/core/log.html#MDAnalysis.start_logging">[docs]</a><span class="k">def</span> <span class="nf">start_logging</span><span class="p">(</span><span class="n">logfile</span><span class="o">=</span><span class="s">&quot;MDAnalysis.log&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Start logging of messages to file and console.</span>
@@ -249,28 +253,36 @@
 <span class="sd">    logged with the tag *MDAnalysis*.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">core.log</span>
+
     <span class="n">core</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;MDAnalysis&quot;</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="n">logfile</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;MDAnalysis&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;MDAnalysis </span><span class="si">%s</span><span class="s"> STARTED logging to </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">__version__</span><span class="p">,</span> <span class="n">logfile</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="stop_logging"><a class="viewcode-back" href="../documentation_pages/core/log.html#MDAnalysis.stop_logging">[docs]</a><span class="k">def</span> <span class="nf">stop_logging</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Stop logging to logfile and console.&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">core.log</span>
+
     <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;MDAnalysis&quot;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;MDAnalysis STOPPED logging&quot;</span><span class="p">)</span>
     <span class="n">core</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">clear_handlers</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>  <span class="c"># this _should_ do the job...</span>
+
 
 <span class="c"># custom exceptions and warnings</span></div>
 <span class="k">class</span> <span class="nc">SelectionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when a atom selection failed.&quot;&quot;&quot;</span>
 
+
 <span class="k">class</span> <span class="nc">FinishTimeException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;For Issue 188.&quot;&quot;&quot;</span>
+
 
 <span class="k">class</span> <span class="nc">NoDataError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when empty input is not allowed or required data are missing.&quot;&quot;&quot;</span>
 
+
 <span class="k">class</span> <span class="nc">FormatError</span><span class="p">(</span><span class="ne">EnvironmentError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when there appears to be a problem with format of input files.&quot;&quot;&quot;</span>
+
 
 <span class="k">class</span> <span class="nc">ApplicationError</span><span class="p">(</span><span class="ne">OSError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when an external application failed.</span>
@@ -280,17 +292,22 @@
 <span class="sd">    .. versionadded:: 0.7.7</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+
 <span class="k">class</span> <span class="nc">SelectionWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Warning indicating a possible problem with a selection.&quot;&quot;&quot;</span>
+
 
 <span class="k">class</span> <span class="nc">MissingDataWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Warning indicating is that required data are missing.&quot;&quot;&quot;</span>
 
+
 <span class="k">class</span> <span class="nc">ConversionWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Warning indicating a problem with converting between units.&quot;&quot;&quot;</span>
 
+
 <span class="k">class</span> <span class="nc">FileFormatWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Warning indicating possible problems with a file format.&quot;&quot;&quot;</span>
+
 
 <span class="k">class</span> <span class="nc">StreamWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Warning indicating a possible problem with a stream.</span>
