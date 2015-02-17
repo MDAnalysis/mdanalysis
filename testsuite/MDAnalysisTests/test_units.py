@@ -58,6 +58,7 @@ class TestConstants(object):
     constants_reference = {
         'N_Avogadro': 6.02214129e+23,          # mol**-1
         'elementary_charge': 1.602176565e-19,  # As
+        'calorie': 4.184,                      # J
         }
 
     def test_constant(self):
@@ -69,23 +70,27 @@ class TestConstants(object):
         assert_almost_equal(units.constants[name], reference)
 
 
-class TestConversion(TestCase):
+class TestConversion(object):
+    @staticmethod
+    def _assert_almost_equal_convert(value, u1, u2, ref):
+        assert_almost_equal(units.convert(value, u1, u2), ref,
+                            err_msg="Conversion {0} --> {1} failed".format(u1, u2))
+
+    # generate individual test cases using nose's test generator mechanism
     def testLength(self):
         nm = 12.34567
         A = nm * 10.
-        assert_almost_equal(units.convert(nm, 'nm', 'A'), A,
-                            err_msg="Conversion nm -> A failed")
-        assert_almost_equal(units.convert(A, 'Angstrom', 'nm'), nm,
-                            err_msg="Conversion A -> nm failed")
+        yield self._assert_almost_equal_convert, nm, 'nm', 'A', A
+        yield self._assert_almost_equal_convert, A, 'Angstrom', 'nm', nm
 
     def testTime(self):
-        assert_almost_equal(units.convert(1, 'ps', 'AKMA'), 20.45482949774598,
-                            err_msg="Conversion ps -> AKMA failed")
-        assert_almost_equal(units.convert(1, 'AKMA', 'ps'), 0.04888821,
-                            err_msg="Conversion AKMA -> ps failed")
+        yield self._assert_almost_equal_convert, 1, 'ps', 'AKMA', 20.45482949774598
+        yield self._assert_almost_equal_convert, 1, 'AKMA', 'ps', 0.04888821
 
     def testEnergy(self):
-        assert_almost_equal(units.convert(1, 'kcal/mol', 'kJ/mol'), 4.184,
-                            err_msg="Conversion kcal/mol -> kJ/mol failed")
-        assert_almost_equal(units.convert(1, 'kcal/mol', 'eV'), 0.0433641,
-                            err_msg="Conversion kcal/mol -> eV failed")
+        yield self._assert_almost_equal_convert, 1, 'kcal/mol', 'kJ/mol', 4.184
+        yield self._assert_almost_equal_convert, 1, 'kcal/mol', 'eV', 0.0433641
+
+    def testForce(self):
+        yield self._assert_almost_equal_convert, 1, 'kJ/(mol*A)', 'J/m', 1.66053892103219e-11
+        yield self._assert_almost_equal_convert, 2.5, 'kJ/(mol*nm)', 'kJ/(mol*A)', 0.25

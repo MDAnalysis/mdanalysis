@@ -14,24 +14,56 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""\
+r"""
 Constants and unit conversion --- :mod:`MDAnalysis.core.units`
 ===============================================================
 
-The base units of MDAnalysis are *Angstrom* for *length* (1 Angstrom =
-0.1 nm = 10^-10 m) and *ps* (pico second) for *time* (1 ps = 10^-12
-sec). For *force* we adopted kJ/(mol*Angstrom).
+The base units of MDAnalysis trajectories are the **Å** (**ångström**) for
+**length** and **ps** (**pico second**) for **time**. By default, all positions
+are in Å and all times are in ps, regardless of how the MD code stored
+trajectory data. By default, MDAnalysis converts automatically to the
+MDAnalysis units when reading trajectories and converts back when writing. This
+makes it possible to write scripts that can be agnostic of the specifics of how
+a particular MD code stores trajectory data. Other base units are listed in the
+table on :ref:`table-baseunits`.
 
-All conversions: the conversion factor f to a unit b' for a quantity X
-(whose numeric value relative to the base unit b is stored in the
-program) is a quantity with unit `b'/b`. In the dictionaries below only
-the numeric value `f(b->b')` is stored::
+.. _table-baseunits:
 
-  X/b' = f(b->b') * X/b
+.. Table:: Base units in MDAnalysis
 
-:func:`get_conversion_factor` returns the appropriate factor f(b->b').
+   =========== ============== ===============================================
+   quantity    unit            SI units
+   =========== ============== ===============================================
+   length       Å              :math:`10^{-10}` m
+   time         ps             :math:`10^{-12}` s
+   energy       kJ/mol         :math:`1.66053892103219 \times 10^{-21}` J
+   charge       :math:`e`      :math:`1.602176565 \times 10^{-19}` As
+   force        kJ/(mol·Å)     :math:`1.66053892103219 \times 10^{-11}` J/m
+   speed        Å/ps           :math:`100` m/s
+   =========== ============== ===============================================
 
-Conversion is done via the base units::
+Implementation notes
+--------------------
+
+All conversions with :func:`convert` are carried out in a simple fashion: the
+conversion factor :math:`f_{b,b'}` from the base unit :math:`b` to another unit
+:math:`b'` is precomputed and stored (see :ref:`Data`). The numerical value of
+a quantity in unit :math:`b` is :math:`X/b` (e.g. for :math:`X =
+1.23\,\mathrm{ps}` the numerical value is :math:`X/\mathrm{ps} =
+1.23`). [#funits]_
+
+The new numerical value :math:`X'/b'` of the quantity (in units of :math:`b'`)
+is then
+
+.. math::
+
+   X'/b' = f_{b,b'} X/b
+
+The function :func:`get_conversion_factor` returns the appropriate factor
+:math:`f_{b,b'}`.
+
+Conversion between different units is always carried out via the base unit as
+an intermediate step::
 
     x is in u1: from u1 to b:  x'  = x  / factor[u1]
                 from b  to u2: x'' = x' * factor[u2]
@@ -39,27 +71,39 @@ Conversion is done via the base units::
 
 
 Conversions
------------
+~~~~~~~~~~~
 
-density conversion factor. Base unit is A**-3::
+Examples for how to calculate some of the conversion factors that are
+hard-coded in :mod:`~MDAnalysis.core.units` (see :ref:`Data`).
 
-   n/x = n/A**3 * densityUnit_factor[x]
+density:
+  Base unit is :math:`\mathrm{Å}^{-3}`::
 
-nm::
+     n/x = n/A**3 * densityUnit_factor[x]
 
-   f = 1 A^-3/1 nm^-3 = 1/(10A)^-3 = 1/1000
+  Example for how to calculate the conversion factor
+  :math:`f_{\mathrm{Å}^{-3},\mathrm{nm}^{-3}}` from :math:`\mathrm{Å^-3}` to
+  :math:`\mathrm{nm}^{-3}`:
 
-Molar::
+  .. math::
 
-   factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)
+     f_{\mathrm{Å}^{-3},\mathrm{nm}^{-3}}
+           = \frac{1\,\mathrm{nm}^{-3}}{1\,\mathrm{Å}^{-3}}
+           = \frac{(10\,\mathrm{Å})^{-3}}{1\,\mathrm{Å}^{-3}}
+           = 10^{-3}
 
-relative to a density rho0 in g/cm^3::
+concentration:
+  Example for how to convert the conversion factor to Molar (mol/l)::
+
+     factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)
+
+  relative to a density rho0 in g/cm^3::
 
     M(H2O) = 18 g/mol   Molar mass of water
 
     factor = 1/(1e-24 * N_Avogadro / M(H2O))
 
-from `rho/rho0 = n/(N_A * M**-1) / rho0`  where `[n] = 1/Volume`, `[rho] = mass/Volume`
+  from `rho/rho0 = n/(N_A * M**-1) / rho0`  where `[n] = 1/Volume`, `[rho] = mass/Volume`
 
 
 .. SeeAlso:: Maybe we should simply use Quantities_ or :mod:`scipy.constants`?
@@ -71,6 +115,8 @@ Functions
 
 .. autofunction:: get_conversion_factor
 .. autofunction:: convert
+
+.. _Data:
 
 Data
 ----
@@ -88,14 +134,24 @@ Data
 .. autodata:: unit_types
 
 
-References
-----------
+References and footnotes
+------------------------
 
 .. [Jorgensen1998]  W. Jorgensen, C. Jenson, J Comp Chem 19 (1998), 1179-1186
 
 .. _AKMA: http://www.charmm.org/documentation/c37b1/usage.html#%20AKMA
 .. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
 .. _`Avogadro's constant`: http://physics.nist.gov/cgi-bin/cuu/Value?na
+
+.. Rubric:: Footnotes
+
+.. [#funits] One can also consider the conversion factor to carry
+   units :math:`b'/b`, in which case the conversion formula would
+   become
+
+   .. math::
+
+      X' = f_{b,b'} X
 
 """
 
@@ -111,8 +167,16 @@ from __future__ import unicode_literals
 #:    6.02214179e+23 mol**-1 by -5.00000000e+16 mol**-1.
 N_Avogadro = 6.02214129e+23  # mol**-1
 
-#: Physical constants with values from `CODATA 2010 at NIST`_.
-#: .. _`CODATA 2010 at NIST`: http://physics.nist.gov/cuu/Constants/
+#: Values of physical constants are taken from `CODATA 2010 at NIST`_. The
+#: thermochemical calorie is defined in the `ISO 80000-5:2007`_ standard
+#: and is also listed in the `NIST Guide to SI: Appendix B.8: Factors for Units`_.
+#:
+#: .. _`CODATA 2010 at NIST`:
+#:    http://physics.nist.gov/cuu/Constants/
+#: .. _`ISO 80000-5:2007`:
+#:    http://www.iso.org/iso/catalogue_detail?csnumber=31890
+#: .. _`NIST Guide to SI: Appendix B.8: Factors for Units`:
+#:    http://physics.nist.gov/Pubs/SP811/appenB8.html#C
 #:
 #: .. versionadded:: 0.9.0
 #
@@ -122,6 +186,7 @@ N_Avogadro = 6.02214129e+23  # mol**-1
 constants = {
     'N_Avogadro': 6.02214129e+23,          # mol**-1
     'elementary_charge': 1.602176565e-19,  # As
+    'calorie': 4.184,                      # J
 }
 
 #: The basic unit of *length* in MDAnalysis is the Angstrom.
@@ -137,7 +202,7 @@ lengthUnit_factor = {
 }
 
 
-#: water density values ay 1179: T=298K, P=1atm [Jorgensen1998]_
+#: water density values at T=298K, P=1atm [Jorgensen1998]_
 #:  ======== =========
 #:  model    g cm**-3
 #:  ======== =========
@@ -193,20 +258,24 @@ speedUnit_factor = {
 }
 # (TODO: build this combinatorically from lengthUnit and timeUnit)
 
+#: *Energy* is measured in kJ/mol.
+energyUnit_factor = {
+    'kJ/mol': 1.0,
+    'kcal/mol': 1/constants['calorie'],
+    'J': 1e3/constants['N_Avogadro'],
+    'eV': 1e3/(constants['N_Avogadro'] * constants['elementary_charge']),
+    }
+
 #: For *force* the basic unit is kJ/(mol*Angstrom).
 forceUnit_factor = {
     'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*A)': 1.0,
     'kJ/(mol*\u212b)': 1.0, b'kJ/(mol*\xe2\x84\xab)': 1.0,
     'kJ/(mol*nm)': 10.0,
+    'Newton': 1e13/constants['N_Avogadro'],
+    'N': 1e13/constants['N_Avogadro'],
+    'J/m': 1e13/constants['N_Avogadro'],
 }
-# (TODO: build this combinatorically from lengthUnit and ... a new energyUnit)
-
-#: *Energy* is measured in kJ/mol.
-energyUnit_factor = {'kJ/mol': 1.0,
-                     'kcal/mol': 1/4.184,
-                     'J': 1e3/constants['N_Avogadro'],
-                     'eV': 1e3/(constants['N_Avogadro'] * constants['elementary_charge']),
-                     }
+# (TODO: build this combinatorically from lengthUnit and energyUnit)
 
 #: *Charge* is measured in multiples of the `electron charge`_ *e*, with the value
 #: *elementary_charge* in :data:`constants`.
@@ -262,14 +331,27 @@ def get_conversion_factor(unit_type, u1, u2):
 
 
 def convert(x, u1, u2):
-    """Convert value in unit *u1* to *u2*."""
+    """Convert value *x* in unit *u1* to new value in *u2*.
+
+    :Returns: Converted value.
+
+    :Raises: :Exc:`ValueError` if the units are not known or if
+             one attempts to convert between incompatible
+             units.
+    """
     try:
         ut1 = unit_types[u1]
+    except KeyError:
+        raise ValueError(("unit '{0}' not recognized.\n" +
+                          len("ValueError: ")*[" "] +
+                          "It must be one of {1}.").format(u1, unit_types))
+    try:
         ut2 = unit_types[u2]
     except KeyError:
-        raise ValueError("units must be one of %r, not %r or %r" %
-                         (unit_types.keys(), u1, u2))
+        raise ValueError(("unit '{0}' not recognized.\n" +
+                          len("ValueError: ")*" " +
+                          "It must be one of {1}.").format(u2, unit_types))
     if ut1 != ut2:
-        raise ValueError("Cannot convert between unit types %(ut1)s --> %(ut2)s" %
-                         vars())
+        raise ValueError("Cannot convert between unit types "
+                         "{0[ut1]} --> {0[ut2]}".format(vars()))
     return x * get_conversion_factor(ut1, u1, u2)
