@@ -1621,3 +1621,23 @@ class TestUnorderedResidues(TestCase):
     @attr("issue")
     def test_build_residues(self):
         assert_equal(len(self.u.residues), 35)
+
+class TestCustomReaders(TestCase):
+    """
+    Can pass a reader as kwarg on Universe creation
+    """
+    def test_custom_reader(self):
+        # check that reader passing works
+        u = MDAnalysis.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader)
+        assert_equal(len(u.atoms), 8184)
+
+    def test_custom_parser(self):
+        # topology reader passing works
+        u = MDAnalysis.Universe(TRZ_psf, TRZ, topology_format=MDAnalysis.topology.PSFParser.PSFParser)
+        assert_equal(len(u.atoms), 8184)
+
+    def test_custom_both(self):
+        # use custom for both
+        u = MDAnalysis.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,
+                                topology_format=MDAnalysis.topology.PSFParser.PSFParser)
+        assert_equal(len(u.atoms), 8184)
