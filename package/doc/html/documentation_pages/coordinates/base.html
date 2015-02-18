@@ -518,7 +518,9 @@ the required attributes and methods.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell">
 <tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Writer.convert_dimensions_to_unitcell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read dimensions from timestep <em>ts</em> and return appropriate unitcell</p>
+<dd><p>Read dimensions from timestep <em>ts</em> and return appropriate unitcell.</p>
+<p>The default is to return <tt class="docutils literal"><span class="pre">[A,B,C,alpha,beta,gamma]</span></tt>; if this
+is not appropriate then this method has to be overriden.</p>
 </dd></dl>
 
 <dl class="method">

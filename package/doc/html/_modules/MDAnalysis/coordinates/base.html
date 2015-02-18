@@ -991,7 +991,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Writer.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read dimensions from timestep *ts* and return appropriate unitcell&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Read dimensions from timestep *ts* and return appropriate unitcell.</span>
+
+<span class="sd">        The default is to return ``[A,B,C,alpha,beta,gamma]``; if this</span>
+<span class="sd">        is not appropriate then this method has to be overriden.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">#raise NotImplementedError(&quot;Writer.convert_dimensions_to_unitcell(): Override in the specific writer: [A,B,C,alpha,beta,gamma] --&gt; native&quot;)</span>
         <span class="c"># override if the native trajectory format does NOT use [A,B,C,alpha,beta,gamma]</span>
         <span class="n">lengths</span><span class="p">,</span> <span class="n">angles</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.7. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS &mdash; MDAnalysis 0.8.2-dev documentation</title>
+    <title>5.8. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -30,8 +30,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.8. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" />
-    <link rel="prev" title="5.6. DESRES file format — MDAnalysis.coordinates.DMS" href="DMS.html" /> 
+    <link rel="next" title="5.9. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" />
+    <link rel="prev" title="5.7. DESRES file format — MDAnalysis.coordinates.DMS" href="DMS.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,10 +44,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="GRO.html" title="5.8. GRO file format — MDAnalysis.coordinates.GRO"
+          <a href="GRO.html" title="5.9. GRO file format — MDAnalysis.coordinates.GRO"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="DMS.html" title="5.6. DESRES file format — MDAnalysis.coordinates.DMS"
+          <a href="DMS.html" title="5.7. DESRES file format — MDAnalysis.coordinates.DMS"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
@@ -60,18 +60,18 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.7. LAMMPS DCD trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></tt></a><ul>
-<li><a class="reference internal" href="#classes">5.7.1. Classes</a></li>
+<li><a class="reference internal" href="#">5.8. LAMMPS DCD trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></tt></a><ul>
+<li><a class="reference internal" href="#classes">5.8.1. Classes</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="DMS.html"
-                        title="previous chapter">5.6. DESRES file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></tt></a></p>
+                        title="previous chapter">5.7. DESRES file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="GRO.html"
-                        title="next chapter">5.8. GRO file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
+                        title="next chapter">5.9. GRO file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/LAMMPS.txt"
@@ -99,7 +99,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.LAMMPS"></span><div class="section" id="lammps-dcd-trajectory-i-o-mdanalysis-coordinates-lammps">
-<h1>5.7. LAMMPS DCD trajectory I/O  &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.LAMMPS" title="MDAnalysis.coordinates.LAMMPS"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></tt></a><a class="headerlink" href="#lammps-dcd-trajectory-i-o-mdanalysis-coordinates-lammps" title="Permalink to this headline">¶</a></h1>
+<h1>5.8. LAMMPS DCD trajectory I/O  &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.LAMMPS" title="MDAnalysis.coordinates.LAMMPS"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></tt></a><a class="headerlink" href="#lammps-dcd-trajectory-i-o-mdanalysis-coordinates-lammps" title="Permalink to this headline">¶</a></h1>
 <p>Classes to read and write <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD binary
 trajectories. Trajectories can be read regardless of system-endianness
 as this is auto-detected.</p>
@@ -126,7 +126,7 @@ keywords <em>timeunit</em> and/or <em>lengthunit</em> to <a class="reference int
 <p class="last">For further discussion follow the reports for <a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=84">Issue 84</a> and <a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=64">Issue 64</a>.</p>
 </div>
 <div class="section" id="classes">
-<h2>5.7.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>5.8.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.LAMMPS.Timestep">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.LAMMPS.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.Timestep" title="Permalink to this definition">¶</a></dt>
@@ -167,13 +167,32 @@ relevent to the selection.</td>
 <dd><p>unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
 <p>lengths <em>A</em>, <em>B</em>, <em>C</em> are in the MDAnalysis length unit (Å), and
 angles are in degrees.</p>
-<p><a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.Timestep.dimensions" title="MDAnalysis.coordinates.LAMMPS.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">dimensions</span></tt></a> is read-only because it transforms the
-actual format of the unitcell (which differs between different
-trajectory formats) to the representation described here,
-which is used everywhere in MDAnalysis.</p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.Timestep.dimensions" title="MDAnalysis.coordinates.LAMMPS.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">dimensions</span></tt></a> is read-only because it transforms the actual format
+of the unitcell (which differs between different trajectory formats) to
+the representation described here, which is used everywhere in
+MDAnalysis.</p>
+<p>The ordering of the angles in the unitcell is the same as in recent
+versions of VMD&#8217;s <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/doxygen/dcdplugin_8c-source.html#l00947">DCDplugin</a> (2013), namely the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/dcdplugin.html">X-PLOR DCD format</a>:
+The original unitcell is read as <tt class="docutils literal"><span class="pre">[A,</span> <span class="pre">gamma,</span> <span class="pre">B,</span> <span class="pre">beta,</span> <span class="pre">alpha,</span> <span class="pre">C]</span></tt> from
+the DCD file (actually, the direction cosines are stored instead of the
+angles but the underlying C code already does this conversion); if any
+of these values are &lt; 0 or if any of the angles are &gt; 180 degrees then
+it is assumed it is a new-style CHARMM unitcell (at least since c36b2)
+in which box vectors were recorded.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The DCD format is not well defined. Check your unit cell
+dimensions carefully, especially when using triclinic
+boxes. Different software packages implement different conventions
+and MDAnalysis is currently implementing the newer NAMD/VMD convention
+and tries to guess the new CHARMM one. Old CHARMM trajectories might
+give wrong unitcell values. For more details see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a>.</p>
+</div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8.2: </span>unitcell is interpreted as <tt class="docutils literal"><span class="pre">[A,</span> <span class="pre">gamma,</span> <span class="pre">B,</span> <span class="pre">beta,</span> <span class="pre">alpha,</span> <span class="pre">C]</span></tt> instead of
-<tt class="docutils literal"><span class="pre">[A,</span> <span class="pre">alpha,</span> <span class="pre">B,</span> <span class="pre">beta,</span> <span class="pre">gamma,</span> <span class="pre">C]</span></tt> (see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> for a discussion)</p>
+<p><span class="versionmodified">Changed in version 0.9.0: </span>Unitcell is now interpreted in the newer NAMD DCD format as <tt class="docutils literal"><span class="pre">[A,</span>
+<span class="pre">gamma,</span> <span class="pre">B,</span> <span class="pre">beta,</span> <span class="pre">alpha,</span> <span class="pre">C]</span></tt> instead of the old MDAnalysis/CHARMM
+ordering <tt class="docutils literal"><span class="pre">[A,</span> <span class="pre">alpha,</span> <span class="pre">B,</span> <span class="pre">beta,</span> <span class="pre">gamma,</span> <span class="pre">C]</span></tt>. We attempt to detect the
+new CHARMM DCD unitcell format (see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> for a discussion).</p>
 </div>
 </dd></dl>
 
@@ -480,10 +499,10 @@ values.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_dimensions_to_unitcell">
 <tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts, _ts_order=[0, 2, 5, 4, 3, 1]</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read dimensions from timestep <em>ts</em> and return appropriate unitcell.</p>
+<dd><p>Read dimensions from timestep <em>ts</em> and return appropriate native unitcell.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.Timestep" title="MDAnalysis.coordinates.LAMMPS.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.Timestep.dimensions" title="MDAnalysis.coordinates.LAMMPS.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></tt></a></p>
 </div>
 </dd></dl>
 
@@ -834,10 +853,10 @@ returned.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="GRO.html" title="5.8. GRO file format — MDAnalysis.coordinates.GRO"
+          <a href="GRO.html" title="5.9. GRO file format — MDAnalysis.coordinates.GRO"
              >next</a> |</li>
         <li class="right" >
-          <a href="DMS.html" title="5.6. DESRES file format — MDAnalysis.coordinates.DMS"
+          <a href="DMS.html" title="5.7. DESRES file format — MDAnalysis.coordinates.DMS"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 

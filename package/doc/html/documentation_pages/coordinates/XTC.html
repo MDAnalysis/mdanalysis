@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.14. Gromacs XTC file IO — MDAnalysis.coordinates.XTC &mdash; MDAnalysis 0.8.2-dev documentation</title>
+    <title>5.15. Gromacs XTC file IO — MDAnalysis.coordinates.XTC &mdash; MDAnalysis 0.8.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -30,8 +30,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.15. XYZ trajectory reader — MDAnalysis.coordinates.XYZ" href="XYZ.html" />
-    <link rel="prev" title="5.13. Gromacs TRR file IO — MDAnalysis.coordinates.TRR" href="TRR.html" /> 
+    <link rel="next" title="5.16. XYZ trajectory reader — MDAnalysis.coordinates.XYZ" href="XYZ.html" />
+    <link rel="prev" title="5.14. Gromacs TRR file IO — MDAnalysis.coordinates.TRR" href="TRR.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,10 +44,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="XYZ.html" title="5.15. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
+          <a href="XYZ.html" title="5.16. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="TRR.html" title="5.13. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
+          <a href="TRR.html" title="5.14. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
@@ -60,18 +60,18 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.14. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a><ul>
-<li><a class="reference internal" href="#module-reference">5.14.1. Module reference</a></li>
+<li><a class="reference internal" href="#">5.15. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a><ul>
+<li><a class="reference internal" href="#module-reference">5.15.1. Module reference</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="TRR.html"
-                        title="previous chapter">5.13. Gromacs TRR file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a></p>
+                        title="previous chapter">5.14. Gromacs TRR file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="XYZ.html"
-                        title="next chapter">5.15. XYZ trajectory reader &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></p>
+                        title="next chapter">5.16. XYZ trajectory reader &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/XTC.txt"
@@ -99,7 +99,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.XTC"></span><div class="section" id="gromacs-xtc-file-io-mdanalysis-coordinates-xtc">
-<h1>5.14. Gromacs XTC file IO &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.XTC" title="MDAnalysis.coordinates.XTC"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a><a class="headerlink" href="#gromacs-xtc-file-io-mdanalysis-coordinates-xtc" title="Permalink to this headline">¶</a></h1>
+<h1>5.15. Gromacs XTC file IO &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.XTC" title="MDAnalysis.coordinates.XTC"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a><a class="headerlink" href="#gromacs-xtc-file-io-mdanalysis-coordinates-xtc" title="Permalink to this headline">¶</a></h1>
 <p>The Gromacs <a class="reference external" href="http://www.gromacs.org/Documentation/File_Formats/.xtc_File">XTC trajectory format</a> is a format with lossy
 compression. Coordinates are only stored with a fixed precision (by
 default, 1/1000 of a nm). The XTC format can only store
@@ -131,7 +131,7 @@ deals with presence/absence of coordinate/velocity/force
 information on a per-frame basis.</p>
 </div>
 <div class="section" id="module-reference">
-<h2>5.14.1. Module reference<a class="headerlink" href="#module-reference" title="Permalink to this headline">¶</a></h2>
+<h2>5.15.1. Module reference<a class="headerlink" href="#module-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.XTC.Timestep">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.XTC.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.XTC.Timestep" title="Permalink to this definition">¶</a></dt>
@@ -724,10 +724,10 @@ be written to trajectory file</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="XYZ.html" title="5.15. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
+          <a href="XYZ.html" title="5.16. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
              >next</a> |</li>
         <li class="right" >
-          <a href="TRR.html" title="5.13. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
+          <a href="TRR.html" title="5.14. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 

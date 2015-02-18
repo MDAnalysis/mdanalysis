@@ -93,12 +93,41 @@
 <span class="sd">&quot;&quot;&quot;DCD trajectory I/O  --- :mod:`MDAnalysis.coordinates.DCD`</span>
 <span class="sd">============================================================</span>
 
-<span class="sd">Classes to read and write CHARMM/LAMMPS DCD binary</span>
+<span class="sd">Classes to read and write CHARMM-style DCD binary</span>
 <span class="sd">trajectories. Trajectories can be read regardless of system-endianness</span>
 <span class="sd">as this is auto-detected.</span>
 
 <span class="sd">The classes in this module are the reference implementations for the</span>
 <span class="sd">Trajectory API.</span>
+
+<span class="sd">.. Note:: The DCD file format is not well defined. In particular, NAMD</span>
+<span class="sd">          and CHARMM use it differently. Currently, MDAnalysis tries</span>
+<span class="sd">          to guess the correct format for the unitcell representation</span>
+<span class="sd">          but it can be wrong. **Check the unitcell dimensions**,</span>
+<span class="sd">          especially for triclinic unitcells (see `Issue 187`_ and</span>
+<span class="sd">          :attr:`Timestep.dimensions`). A second potential issue are</span>
+<span class="sd">          the units of time which are AKMA for the :class:`DCDReader`</span>
+<span class="sd">          (following CHARMM) but ps for NAMD. As a workaround one can</span>
+<span class="sd">          employ the configurable</span>
+<span class="sd">          :class:`MDAnalysis.coordinates.LAMMPS.DCDReader` for</span>
+<span class="sd">          NAMD trajectories.</span>
+
+<span class="sd">.. SeeAlso:: The :mod:`MDAnalysis.coordinates.LAMMPS` module provides</span>
+<span class="sd">             a more flexible DCD reader/writer.</span>
+
+<span class="sd">.. _Issue 187:</span>
+<span class="sd">   https://code.google.com/p/mdanalysis/issues/detail?id=187</span>
+
+<span class="sd">Classes</span>
+<span class="sd">=======</span>
+
+<span class="sd">.. autoclass:: Timestep</span>
+<span class="sd">   :inherited-members:</span>
+<span class="sd">.. autoclass:: DCDReader</span>
+<span class="sd">   :inherited-members:</span>
+<span class="sd">.. autoclass:: DCDWriter</span>
+<span class="sd">   :inherited-members:</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">errno</span>
@@ -111,10 +140,16 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 
 
-<span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
-    <span class="c">#: indices into :attr:`Timestep._unitcell`` to pull out</span>
+<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+    <span class="c">#: Indices into :attr:`Timestep._unitcell` (``[A, gamma, B, beta, alpha,</span>
+    <span class="c">#: C]``, provided by the :class:`DCDReader` C code) to pull out</span>
     <span class="c">#: ``[A, B, C, alpha, beta, gamma]``.</span>
     <span class="n">_ts_order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c">#: indices into :attr:`Timestep._unitcell`` to pull out</span>
+    <span class="c">#: ``[A, B, C, alpha, beta, gamma]``.</span>
+    <span class="c">### old (MDAnalysis 0.8.1)</span>
+    <span class="c">###_ts_order = [0, 2, 5, 4, 3, 1]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -123,36 +158,68 @@
 <span class="sd">        lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and</span>
 <span class="sd">        angles are in degrees.</span>
 
-<span class="sd">        :attr:`dimensions` is read-only because it transforms the</span>
-<span class="sd">        actual format of the unitcell (which differs between different</span>
-<span class="sd">        trajectory formats) to the representation described here,</span>
-<span class="sd">        which is used everywhere in MDAnalysis.</span>
+<span class="sd">        :attr:`dimensions` is read-only because it transforms the actual format</span>
+<span class="sd">        of the unitcell (which differs between different trajectory formats) to</span>
+<span class="sd">        the representation described here, which is used everywhere in</span>
+<span class="sd">        MDAnalysis.</span>
 
-<span class="sd">        .. versionchanged:: 0.8.2</span>
-<span class="sd">           unitcell is interpreted as ``[A, gamma, B, beta, alpha, C]`` instead of</span>
-<span class="sd">           ``[A, alpha, B, beta, gamma, C]`` (see `Issue 187`_ for a discussion)</span>
+<span class="sd">        The ordering of the angles in the unitcell is the same as in recent</span>
+<span class="sd">        versions of VMD&#39;s DCDplugin_ (2013), namely the `X-PLOR DCD format`_:</span>
+<span class="sd">        The original unitcell is read as ``[A, gamma, B, beta, alpha, C]`` from</span>
+<span class="sd">        the DCD file (actually, the direction cosines are stored instead of the</span>
+<span class="sd">        angles but the underlying C code already does this conversion); if any</span>
+<span class="sd">        of these values are &lt; 0 or if any of the angles are &gt; 180 degrees then</span>
+<span class="sd">        it is assumed it is a new-style CHARMM unitcell (at least since c36b2)</span>
+<span class="sd">        in which box vectors were recorded.</span>
 
+<span class="sd">        .. warning:: The DCD format is not well defined. Check your unit cell</span>
+<span class="sd">           dimensions carefully, especially when using triclinic</span>
+<span class="sd">           boxes. Different software packages implement different conventions</span>
+<span class="sd">           and MDAnalysis is currently implementing the newer NAMD/VMD convention</span>
+<span class="sd">           and tries to guess the new CHARMM one. Old CHARMM trajectories might</span>
+<span class="sd">           give wrong unitcell values. For more details see `Issue 187`_.</span>
+
+<span class="sd">        .. versionchanged:: 0.9.0</span>
+
+<span class="sd">           Unitcell is now interpreted in the newer NAMD DCD format as ``[A,</span>
+<span class="sd">           gamma, B, beta, alpha, C]`` instead of the old MDAnalysis/CHARMM</span>
+<span class="sd">           ordering ``[A, alpha, B, beta, gamma, C]``. We attempt to detect the</span>
+<span class="sd">           new CHARMM DCD unitcell format (see `Issue 187`_ for a discussion).</span>
+
+<span class="sd">        .. _`X-PLOR DCD format`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/dcdplugin.html</span>
 <span class="sd">        .. _Issue 187: https://code.google.com/p/mdanalysis/issues/detail?id=187</span>
+<span class="sd">        .. _DCDplugin: http://www.ks.uiuc.edu/Research/vmd/plugins/doxygen/dcdplugin_8c-source.html#l00947</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c"># Layout of unitcell is [A, alpha, B, beta, gamma, C] --- (originally CHARMM DCD)</span>
         <span class="c"># override for other formats; this strange ordering is kept for historical reasons</span>
         <span class="c"># (the user should not need concern themselves with this)</span>
-        <span class="c">## orig MDAnalysis 0.8.1 and dcd.c (~2004)</span>
+        <span class="c">## orig MDAnalysis 0.8.1/dcd.c (~2004)</span>
         <span class="c">##return numpy.take(self._unitcell, [0,2,5,1,3,4])</span>
 
-        <span class="c"># recent NAMD (&gt;2.5?), see Issue 187</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">)</span>
+        <span class="c"># MDAnalysis 0.8.2 with recent dcd.c (based on 2013 molfile</span>
+        <span class="c"># DCD plugin, which implements the ordering of recent NAMD</span>
+        <span class="c"># (&gt;2.5?)). See Issue 187.</span>
+        <span class="n">uc</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">)</span>
+        <span class="c"># heuristic sanity check: uc = A,B,C,alpha,beta,gamma</span>
+        <span class="c"># XXX: should we worry about these comparisons with floats?</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">uc</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">)</span> <span class="ow">or</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">uc</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">&gt;</span> <span class="mf">180.</span><span class="p">):</span>
+            <span class="c"># might be new CHARMM: box matrix vectors</span>
+            <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span>
+            <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">e3</span> <span class="o">=</span> <span class="n">H</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span>  <span class="n">H</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">]],</span> <span class="n">H</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]]</span>
+            <span class="n">uc</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">triclinic_box</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">e3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">uc</span>
 
     <span class="nd">@dimensions.setter</span>
-    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.dimensions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.Timestep.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set unitcell with (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)</span>
 
-<span class="sd">        .. versionadded:: 0.8.2</span>
+<span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># note that we can re-use self._ts_order with put!</span>
         <span class="n">numpy</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
 
-
+</div></div>
 <div class="viewcode-block" id="DCDWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter">[docs]</a><span class="k">class</span> <span class="nc">DCDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Writer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Writes to a DCD file</span>
 
@@ -162,7 +229,28 @@
 <span class="sd">           for ts in u.trajectory</span>
 <span class="sd">               w.write_next_timestep(ts)</span>
 
-<span class="sd">    Keywords are available to set some of the low-level attributes of the DCD.      </span>
+<span class="sd">    Keywords are available to set some of the low-level attributes of the DCD.</span>
+
+<span class="sd">    :Methods:</span>
+<span class="sd">       ``d = DCDWriter(dcdfilename, numatoms, start, step, delta, remarks)``</span>
+
+<span class="sd">    .. Note::</span>
+
+<span class="sd">       The Writer will write the **unit cell information** to the DCD in a</span>
+<span class="sd">       format compatible with NAMD and older CHARMM versions, namely the unit</span>
+<span class="sd">       cell lengths in Angstrom and the angle cosines (see</span>
+<span class="sd">       :class:`Timestep`). Newer versions of CHARMM (at least c36b2) store the</span>
+<span class="sd">       matrix of the box vectors. Writing this matrix to a DCD is currently not</span>
+<span class="sd">       supported (although reading is supported with the</span>
+<span class="sd">       :class:`DCDReader`); instead the angle cosines are written,</span>
+<span class="sd">       which *might make the DCD file unusable in CHARMM itself*. See</span>
+<span class="sd">       `Issue 187`_ for further information.</span>
+
+<span class="sd">       The writing behavior of the :class:`DCDWriter` is identical to</span>
+<span class="sd">       that of the DCD molfile plugin of VMD with the exception that</span>
+<span class="sd">       by default it will use AKMA time units.</span>
+
+<span class="sd">    .. _Issue 187: https://code.google.com/p/mdanalysis/issues/detail?id=187</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;DCD&#39;</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="s">&#39;AKMA&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>
@@ -297,16 +385,36 @@
                                              <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>  <span class="c"># possibly make a copy to avoid changing the trajectory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_frame</span><span class="p">(</span><span class="n">pos</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">unitcell</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frames_written</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c">#     def convert_dimensions_to_unitcell(self, ts, _ts_order=Timestep._ts_order):</span>
+<span class="c">#         &quot;&quot;&quot;Read dimensions from timestep *ts* and return appropriate unitcell.</span>
+
+<span class="c">#         .. SeeAlso:: :class:`Timestep`</span>
+<span class="c">#         &quot;&quot;&quot;</span>
+<span class="c">#         unitcell = super(DCDWriter, self).convert_dimensions_to_unitcell(ts)</span>
+<span class="c">#         # unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level</span>
+<span class="c">#         # DCD routines</span>
 </div>
 <div class="viewcode-block" id="DCDWriter.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">_ts_order</span><span class="o">=</span><span class="n">Timestep</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read dimensions from timestep *ts* and return appropriate unitcell.</span>
+        <span class="sd">&quot;&quot;&quot;Read dimensions from timestep *ts* and return appropriate native unitcell.</span>
 
-<span class="sd">        .. SeeAlso:: :class:`Timestep`</span>
+<span class="sd">        .. SeeAlso:: :attr:`Timestep.dimensions`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">unitcell</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">DCDWriter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-        <span class="c"># unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level</span>
-        <span class="c"># DCD routines</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">unitcell</span><span class="p">,</span> <span class="n">_ts_order</span><span class="p">)</span>
+        <span class="c"># unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level DCD routines</span>
+        <span class="n">lengths</span><span class="p">,</span> <span class="n">angles</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>
+        <span class="n">unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="c"># __write_DCD_frame() wants uc_array = [A, gamma, B, beta, alpha, C] and</span>
+        <span class="c"># will write the lengths and the angle cosines to the DCD. NOTE: It</span>
+        <span class="c"># will NOT write CHARMM36+ box matrix vectors. When round-tripping a</span>
+        <span class="c"># C36+ DCD, we loose the box vector information. However, MDAnalysis</span>
+        <span class="c"># itself will not detect this because the DCDReader contains the</span>
+        <span class="c"># heuristic to deal with either lengths/angles or box matrix on the fly.</span>
+        <span class="c">#</span>
+        <span class="c"># use numpy.put so that we can re-use ts_order (otherwise we</span>
+        <span class="c"># would need a ts_reverse_order such as _ts_reverse_order = [0, 5, 1, 4, 3, 2])</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">unitcell</span><span class="p">,</span> <span class="n">_ts_order</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">lengths</span><span class="p">,</span> <span class="n">angles</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">unitcell</span>
 </div>
 <div class="viewcode-block" id="DCDWriter.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close trajectory and flush buffers.&quot;&quot;&quot;</span>
@@ -324,8 +432,7 @@
 
 <span class="sd">    :Data:</span>
 <span class="sd">        ts</span>
-<span class="sd">          :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
-<span class="sd">          containing coordinates of current frame</span>
+<span class="sd">          :class:`Timestep` object containing coordinates of current frame</span>
 
 <span class="sd">    :Methods:</span>
 <span class="sd">        ``dcd = DCD(dcdfilename)``</span>
@@ -342,6 +449,23 @@
 <span class="sd">           retrieve a subset of coordinate information for a group of atoms</span>
 <span class="sd">        ``data = dcd.correl(...)``</span>
 <span class="sd">           populate a :class:`MDAnalysis.core.Timeseries.Collection` object with computed timeseries</span>
+
+<span class="sd">    .. Note:: The DCD file format is not well defined. In particular,</span>
+<span class="sd">              NAMD and CHARMM use it differently. Currently,</span>
+<span class="sd">              MDAnalysis tries to guess the correct format for the</span>
+<span class="sd">              unitcell representation but it can be wrong. **Check the</span>
+<span class="sd">              unitcell dimensions**, especially for triclinic</span>
+<span class="sd">              unitcells (see `Issue 187`_ and</span>
+<span class="sd">              :attr:`Timestep.dimensions`). A second potential issue</span>
+<span class="sd">              are the units of time (TODO).</span>
+
+<span class="sd">    .. versionchanged:: 0.9.0</span>
+<span class="sd">       The underlying DCD reader (written in C and derived from the</span>
+<span class="sd">       catdcd/molfile plugin code of VMD) is now reading the unitcell in</span>
+<span class="sd">       NAMD ordering: ``[A, B, C, sin(gamma), sin(beta),</span>
+<span class="sd">       sin(alpha)]``. See `Issue 187`_ for further details.</span>
+
+<span class="sd">    .. _Issue 187: https://code.google.com/p/mdanalysis/issues/detail?id=187</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;DCD&#39;</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="s">&#39;AKMA&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>
@@ -532,7 +656,7 @@
 <span class="sd">           The keyword arguments set the low-level attributes of the DCD</span>
 <span class="sd">           according to the CHARMM format. The time between two frames would be</span>
 <span class="sd">           *delta* * *step* !</span>
-<span class="sd"> </span>
+
 <span class="sd">        .. SeeAlso:: :class:`DCDWriter` has detailed argument description</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">numatoms</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;numatoms&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">)</span>
