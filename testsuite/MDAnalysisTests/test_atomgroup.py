@@ -129,6 +129,11 @@ class TestAtom(TestCase):
 
         assert_raises(AttributeError, lookup_uni, at)
 
+    def test_bonded_atoms(self):
+        at = self.universe.atoms[0]
+        ref = [b.partner(at) for b in at.bonds]
+        assert_equal(ref, list(at.bonded_atoms))
+
 
 class TestAtomGroup(TestCase):
     """Tests of AtomGroup; selections are tested separately."""
