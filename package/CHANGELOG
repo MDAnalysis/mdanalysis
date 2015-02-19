@@ -10,8 +10,8 @@ The rules for this file:
     use tabs but use spaces for formatting	 
 
 ------------------------------------------------------------------------------
-??/??/15  richardjgowers, tyler.je.reddy, orbeckst, e.jjordan12, zhuyi.xue
-
+??/??/15  richardjgowers, tyler.je.reddy, orbeckst, e.jjordan12, zhuyi.xue, 
+          bala.biophysics
   * 0.8.2
 
   Enhancements
@@ -70,6 +70,7 @@ The rules for this file:
     custom readers to be defined. (Issue 198)
   * Added Atom.bonded_atoms property.  This returns an AtomGroup of the Atoms
     that are bonded to a given Atom. (Issue 219)
+  * Added atom selections to ContactAnalysis (Issue 169)
 
 
   Changes

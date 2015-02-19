@@ -171,7 +171,8 @@ class ContactAnalysis(object):
     """
 
     def __init__(self, topology, trajectory, ref1=None, ref2=None, radius=8.0,
-                 targetdir=os.path.curdir, infix="", force=False):
+                 targetdir=os.path.curdir, infix="", force=False,
+                 selection="name CA"):
         """Calculate native contacts from two reference structures.
 
         :Arguments:
@@ -192,8 +193,20 @@ class ContactAnalysis(object):
           *infix*
             additional tag string that is inserted into the output filename of the
             data file [""]
+          *selection*
+            MDAnalysis selection string that selects the particles of
+            interest; the default is to only select the C-alpha atoms
+            in *ref1* and *ref*2 ["name CA"]
 
-        The function calculates the percentage of native contacts q1 and q2
+           .. Note:: If *selection* produces more than one atom per
+                     residue then you will get multiple contacts per
+                     residue. Arguably, one should use centroids but
+                     this is not currently implemented. See `Iseeu
+                     169`_ for further details.
+
+           .. _`Issue 169`: https://code.google.com/p/mdanalysis/issues/detail?id=169
+
+        The function calculates the percentage of native contacts *q1* and *q2*
         along a trajectory. "Contacts" are defined as the number of Ca atoms
         within *radius* of a primary Ca. *q1* is the fraction of contacts
         relative to the reference state 1 (typically the starting conformation
@@ -202,7 +215,8 @@ class ContactAnalysis(object):
 
         The timeseries is written to a bzip2-compressed file in *targetdir*
         named "basename(*trajectory*)*infix*_q1q2.dat.bz2" and is also
-        accessible as the attribute :attr:`ContactAnalysis.timeseries`.
+        accessible as the attribute
+        :attr:`ContactAnalysis.timeseries`.
         """
 
         self.topology = topology
@@ -210,6 +224,7 @@ class ContactAnalysis(object):
         self.radius = radius
         self.targetdir = targetdir
         self.force = force
+        self.selection = selection
 
         trajectorybase = os.path.splitext(os.path.basename(trajectory))[0]
         output = trajectorybase + infix + '_q1q2.dat'
@@ -249,9 +264,9 @@ class ContactAnalysis(object):
         r1 = MDAnalysis.Universe(topology, self.ref1)
         r2 = MDAnalysis.Universe(topology, self.ref2)
 
-        self.ca = self.u.selectAtoms('name CA')
-        ca1 = r1.selectAtoms('name CA')
-        ca2 = r2.selectAtoms('name CA')
+        self.ca = self.u.selectAtoms(self.selection)
+        ca1 = r1.selectAtoms(self.selection)
+        ca2 = r2.selectAtoms(self.selection)
 
         # NOTE: self_distance_array() produces a 1D array; this works here
         #       but is not the same as the 2D output from distance_array()!
@@ -574,9 +589,10 @@ class ContactAnalysis1(object):
             records = []
             self.qavg *= 0  # average contact existence
             A, B = self.selections
-            #determine the end_frame value to use:
+            # determine the end_frame value to use:
             total_frames = self.universe.trajectory.numframes
-            if not end_frame:  # use the total number of frames in trajectory if no final value specified
+            if not end_frame:
+                # use the total number of frames in trajectory if no final value specified
                 end_frame = total_frames
             for ts in self.universe.trajectory[start_frame:end_frame:step_value]:
                 frame = ts.frame
