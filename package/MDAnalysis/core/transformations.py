@@ -189,8 +189,8 @@ import sys
 import os
 import warnings
 import math
-
 import numpy
+from numpy.linalg import norm
 
 
 def identity_matrix():
@@ -1821,8 +1821,6 @@ def _import_module(module_name, warn=True, prefix='_py_', ignore='_'):
 
 def vecangle(a, b):
     """Return the angle between vectors a and b in radians."""
-    from numpy.linalg import norm
-
     return numpy.arccos(numpy.dot(a, b) / (norm(a) * norm(b)))
 
 
