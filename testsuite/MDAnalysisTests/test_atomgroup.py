@@ -701,6 +701,36 @@ class TestAtomGroup(TestCase):
         """Give the setter function a list of wrong length"""
         assert_raises(ValueError, self.ag.set_mass, [0.1, 0.2])
 
+    def test_split_atoms(self):
+        ag = self.universe.selectAtoms("resid 1:50 and not resname LYS and (name CA or name CB)")
+        sg = ag.split("atom")
+        assert_equal(len(sg), len(ag))
+        for g, ref_atom in itertools.izip(sg, ag):
+            atom = g[0]
+            assert_equal(len(g), 1)
+            assert_equal(atom.name, ref_atom.name)
+            assert_equal(atom.resid, ref_atom.resid)
+
+    def test_split_residues(self):
+        ag = self.universe.selectAtoms("resid 1:50 and not resname LYS and (name CA or name CB)")
+        sg = ag.split("residue")
+        assert_equal(len(sg), len(ag.resids()))
+        for g, ref_resname in itertools.izip(sg, ag.resnames()):
+            if ref_resname == "GLY":
+                assert_equal(len(g), 1)
+            else:
+                assert_equal(len(g), 2)
+            for atom in g:
+                assert_equal(atom.resname, ref_resname)
+
+    def test_split_segments(self):
+        ag = self.universe.selectAtoms("resid 1:50 and not resname LYS and (name CA or name CB)")
+        sg = ag.split("segment")
+        assert_equal(len(sg), len(ag.segids()))
+        for g, ref_segname in itertools.izip(sg, ag.segids()):
+            for atom in g:
+                assert_equal(atom.segid, ref_segname)
+
 
 class TestAtomGroupNoTop(TestCase):
     def setUp(self):

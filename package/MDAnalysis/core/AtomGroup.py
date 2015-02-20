@@ -366,7 +366,7 @@ class Atom(object):
     are included (and thus it is not possible to add attributes "on
     the fly"; they have to be included in the class definition).
 
-    .. versionchanged 0.8.2 
+    .. versionchanged 0.8.2
        Added fragment managed property.
        Changed bonds angles torsions impropers to be a managed property
     """
@@ -499,8 +499,8 @@ class Atom(object):
     @property
     def bonds(self):
         """A list of the bonds that this Atom is in
-        
-        .. versionchanged:: 0.8.2 
+
+        .. versionchanged:: 0.8.2
            Changed to managed property
         """
         return self.universe._bondDict[self]
@@ -508,8 +508,8 @@ class Atom(object):
     @property
     def angles(self):
         """A list of the angles that this Atom is in
-        
-        .. versionchanged:: 0.8.2 
+
+        .. versionchanged:: 0.8.2
            Changed to managed property
         """
         return self.universe._angleDict[self]
@@ -517,8 +517,8 @@ class Atom(object):
     @property
     def torsions(self):
         """A list of the torsions/dihedrals that this Atom is in
-        
-        .. versionchanged:: 0.8.2 
+
+        .. versionchanged:: 0.8.2
            Changed to managed property
         """
         return self.universe._torsionDict[self]
@@ -528,8 +528,8 @@ class Atom(object):
     @property
     def impropers(self):
         """A list of the improper torsions that this Atom is in
-        
-        .. versionchanged:: 0.8.2 
+
+        .. versionchanged:: 0.8.2
            Changed to managed property
         """
         return self.universe._improperDict[self]
@@ -871,7 +871,7 @@ class AtomGroup(object):
     def fragments(self):
         """Read-only list of fragments.
 
-        Contains all fragments that any Atom in this AtomGroup is part of, the contents of 
+        Contains all fragments that any Atom in this AtomGroup is part of, the contents of
         the fragments may extend beyond the contents of this AtomGroup.
 
         .. versionadded 0.8.2
@@ -976,7 +976,7 @@ class AtomGroup(object):
         Note that these angles might extend out of the AtomGroup, to select
         only angles which are entirely contained by the AtomGroup use
         u.angles.atomgroup_intersection(ag, strict=True)
-     
+
         .. versionadded 0.8.2
         """
         from MDAnalysis.topology.core import TopologyGroup
@@ -995,7 +995,7 @@ class AtomGroup(object):
         Note that these torsions might extend out of the AtomGroup, to select
         only torsions which are entirely contained by the AtomGroup use
         u.torsions.atomgroup_intersection(ag, strict=True)
-   
+
         .. versionadded 0.8.2
         """
         from MDAnalysis.topology.core import TopologyGroup
@@ -1011,10 +1011,10 @@ class AtomGroup(object):
     def impropers(self):
         """All the improper torsions in this AtomGroup
 
-        Note that these improper torsions might extend out of the AtomGroup, 
+        Note that these improper torsions might extend out of the AtomGroup,
         to select only torsions which are entirely contained by the AtomGroup use
         u.impropers.atomgroup_intersection(ag, strict=True)
-   
+
         .. versionadded 0.8.2
         """
         from MDAnalysis.topology.core import TopologyGroup
@@ -2107,6 +2107,43 @@ class AtomGroup(object):
             #return tuple(atomselections)
             return atomgrp
 
+    def split(self, level):
+        """Split atomgroup into a list of atomgroups by *level*.
+
+        *level* can be "atom", "residue", "segment".
+
+        .. versionadded:: 0.9.0
+        """
+        # CHECK: What happens to duplicate atoms (with advanced slicing)?
+
+        accessors = {'segment': 'segid', 'segid': 'segid',
+                     'residue': 'resid', 'resid': 'resid',
+                     }
+
+        if level == "atom":
+            return [AtomGroup([a]) for a in self]
+
+        # more complicated groupings
+        try:
+            # use own list comprehension to avoid sorting/compression by eg self.resids()
+            ids = numpy.array([getattr(atom, accessors[level]) for atom in self])
+        except KeyError:
+            raise ValueError("level = '{0}' not supported, must be one of {1}".format(
+                    level, accessors.keys()))
+
+        # now sort the resids so that it doesn't matter if the AG contains
+        # atoms in random order (i.e. non-sequential resids); groupby needs
+        # presorted keys!
+        idx = numpy.argsort(ids)
+        sorted_ids = ids[idx]
+        # group (index, key) and then pull out the index for each group to form AtomGroups
+        # by indexing self (using advanced slicing eg g[[1,2,3]]
+        groups = [
+            self[[idx_k[0] for idx_k in groupings]]  # one AtomGroup for each residue or segment
+            for k, groupings in itertools.groupby(itertools.izip(idx, sorted_ids), lambda v: v[1])
+            ]
+        return groups
+
     def write(self, filename=None, format="PDB",
               filenamefmt="%(trjname)s_%(frame)d", **kwargs):
         """Write AtomGroup to a file.
@@ -2135,7 +2172,7 @@ class AtomGroup(object):
 
                 * ``None``: do not write out bonds
 
-        .. versionchanged:: 0.8.2 
+        .. versionchanged:: 0.8.2
            Merged with write_selection.  This method can now write both
            selections out.
         """
@@ -2200,7 +2237,7 @@ class AtomGroup(object):
 
         .. deprecated:: 0.8.2
            Use :meth:`write`
-        """
+           """
         import util
         import os.path
         import MDAnalysis.selections
@@ -2791,7 +2828,7 @@ class Universe(object):
        of trajectories.
 
     .. versionchanged:: 0.8.2
-       Topology information now loaded lazily, but can be forced with 
+       Topology information now loaded lazily, but can be forced with
        :meth:`build_topology`
        Changed .bonds attribute to be a :class:`~MDAnalysis.topology.core.TopologyGroup`
        Added .angles and .torsions attribute as :class:`~MDAnalysis.topology.core.TopologyGroup`
@@ -3056,7 +3093,7 @@ class Universe(object):
 
         Returns ``None`` if no angle information is present, otherwise
         returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
-        
+
         .. versionadded 0.8.2
         """
         angle_entries = self._psf.get('_angles', None)
@@ -3077,7 +3114,7 @@ class Universe(object):
 
         Returns ``None`` if no torsion information is present, otherwise
         returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
-        
+
         .. versionadded 0.8.2
         """
         torsion_entries = self._psf.get('_dihe', None)
@@ -3098,7 +3135,7 @@ class Universe(object):
 
         Returns ``None`` if no improper torsion information is present,
         otherwise returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
-        
+
         .. versionadded 0.8.2
         """
         torsion_entries = self._psf.get('_impr', None)
@@ -3130,9 +3167,9 @@ class Universe(object):
         # Could redo this to only find fragments for a queried atom (ie. only fill out
         # a single fragment).  This would then make it scale better for large systems.
         # eg:
-        # try: 
+        # try:
         #    return self._fragDict[a]
-        # except KeyError: 
+        # except KeyError:
         #    self._init_fragments(a)  # builds the fragment a belongs to
 
         class _fragset(object):
@@ -3180,7 +3217,7 @@ class Universe(object):
     @cached('fragments')
     def fragments(self):
         """Read only tuple of fragments in the Universe
-        
+
         .. versionadded 0.8.2
         """
         return self._init_fragments()
@@ -3285,11 +3322,11 @@ class Universe(object):
 
     def build_topology(self):
         """
-        Bond angle and torsion information is lazily constructed into the 
+        Bond angle and torsion information is lazily constructed into the
         Universe.
-        
+
         This method forces all this information to be loaded.
-        
+
         .. versionadded 0.8.2
         """
         if 'bonds' not in self._cache:
@@ -3306,7 +3343,7 @@ class Universe(object):
     def bonds(self):
         """
         Returns a :class:`~MDAnalysis.topology.core.TopologyGroup` of all
-        bonds in the Universe. 
+        bonds in the Universe.
         If none are found, returns ``None``
 
         .. versionchaged 0.8.2
@@ -3332,7 +3369,7 @@ class Universe(object):
         """Delete the bonds from Universe
 
         This must also remove the per atom record of bonds (bondDict)
-    
+
         .. versionadded:: 0.8.2
         """
         self._clear_caches('bonds', 'bondDict')
@@ -3345,7 +3382,7 @@ class Universe(object):
         of all angles in the Universe
 
         If none are found, returns ``None``
-        
+
         .. versionadded 0.8.2
         """
         return self._init_angles()
@@ -3368,7 +3405,7 @@ class Universe(object):
         of all torsions in the Universe
 
         If none are found, returns ``None``
-        
+
         .. versionadded 0.8.2
         """
         return self._init_torsions()
@@ -3391,7 +3428,7 @@ class Universe(object):
         of all improper torsions in the Universe
 
         If none are found, returns ``None``
-        
+
         .. versionadded 0.8.2
         """
         return self._init_impropers()
@@ -3781,3 +3818,4 @@ def Merge(*args):
     MDAnalysis.topology.core.build_segments(u.atoms)
 
     return u
+

@@ -64,6 +64,8 @@ The rules for this file:
   * Added hydrogen bonding time autocorrelation analysis module
     (analysis.hbonds.HydrogenBondAutoCorrel)
   * Added energy units to core.units (Issue 214)
+  * New AtomGroup.split() method to produce a list of AtomGroups for each atom,
+    residue, or segment
 
   Changes
 
