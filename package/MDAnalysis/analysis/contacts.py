@@ -147,7 +147,7 @@ import bz2
 from itertools import izip
 import numpy
 import MDAnalysis
-from MDAnalysis.core.distances import distance_array, self_distance_array
+import MDAnalysis.core.distances
 from MDAnalysis.core.util import openany
 
 import logging
@@ -172,7 +172,7 @@ class ContactAnalysis(object):
 
     def __init__(self, topology, trajectory, ref1=None, ref2=None, radius=8.0,
                  targetdir=os.path.curdir, infix="", force=False,
-                 selection="name CA"):
+                 selection="name CA", centroids=False):
         """Calculate native contacts from two reference structures.
 
         :Arguments:
@@ -200,18 +200,19 @@ class ContactAnalysis(object):
 
            .. Note:: If *selection* produces more than one atom per
                      residue then you will get multiple contacts per
-                     residue. Arguably, one should use centroids but
-                     this is not currently implemented. See `Iseeu
-                     169`_ for further details.
-
-           .. _`Issue 169`: https://code.google.com/p/mdanalysis/issues/detail?id=169
+                     residue unless you also set *centroids* = ``True``
+          *centroids*
+            If set to ``True``, use the centroids for the selected atoms on a
+            per-residue basis to compute contacts. This allows, for instance
+            defining the sidechains as *selection* and then computing distances
+            between sidechain centroids.
 
         The function calculates the percentage of native contacts *q1* and *q2*
-        along a trajectory. "Contacts" are defined as the number of Ca atoms
-        within *radius* of a primary Ca. *q1* is the fraction of contacts
-        relative to the reference state 1 (typically the starting conformation
-        of the trajectory) and *q2* is the fraction of contacts relative to the
-        conformation 2.
+        along a trajectory. "Contacts" are defined as the number of Ca atoms (or
+        per-residue *centroids* of a user defined *selection*) within *radius* of
+        a primary Ca. *q1* is the fraction of contacts relative to the reference
+        state 1 (typically the starting conformation of the trajectory) and *q2*
+        is the fraction of contacts relative to the conformation 2.
 
         The timeseries is written to a bzip2-compressed file in *targetdir*
         named "basename(*trajectory*)*infix*_q1q2.dat.bz2" and is also
@@ -225,6 +226,7 @@ class ContactAnalysis(object):
         self.targetdir = targetdir
         self.force = force
         self.selection = selection
+        self.centroids = centroids
 
         trajectorybase = os.path.splitext(os.path.basename(trajectory))[0]
         output = trajectorybase + infix + '_q1q2.dat'
@@ -271,13 +273,35 @@ class ContactAnalysis(object):
         # NOTE: self_distance_array() produces a 1D array; this works here
         #       but is not the same as the 2D output from distance_array()!
         #       See the docs for self_distance_array().
-        dref = [self_distance_array(ca1.coordinates()), self_distance_array(ca2.coordinates())]
+        dref = [self.get_distance_array(ca1), self.get_distance_array(ca2)]
         self.qref = [self.qarray(dref[0]), self.qarray(dref[1])]
         self.nref = [self.qref[0].sum(), self.qref[1].sum()]
 
         self.d = numpy.zeros_like(dref[0])
         self.q = self.qarray(self.d)
         self._qtmp = numpy.zeros_like(self.q)  # pre-allocated array
+
+    def get_distance_array(self, g, **kwargs):
+        """Calculate the self_distance_array for atoms in group *g*.
+
+        :Keywords:
+           *results*
+              passed on to :func:`MDAnalysis.core.distances.self_distance_array`
+              as a preallocated array
+           *centroids*
+              ``True``: calculate per-residue centroids from the selected atoms;
+              ``False``: consider each atom separately; ``None``: use the class
+              default for *centroids* [``None``]
+
+        """
+        centroids = kwargs.pop("centroids", None)
+        centroids = self.centroids if centroids is None else centroids
+        if not centroids:
+            coordinates = g.positions
+        else:
+            # centroids per residue (but only including the selected atoms)
+            coordinates = numpy.array([residue.centroid() for residue in g.split("residue")])
+        return MDAnalysis.core.distances.self_distance_array(coordinates, **kwargs)
 
     def output_exists(self, force=False):
         """Return True if default output file already exists.
@@ -311,7 +335,7 @@ class ContactAnalysis(object):
             for ts in self.u.trajectory:
                 frame = ts.frame
                 # use pre-allocated distance array to save a little bit of time
-                self_distance_array(self.ca.coordinates(), result=self.d)
+                self.get_distance_array(self.ca, result=self.d)
                 self.qarray(self.d, out=self.q)
                 n1, q1 = self.qN(self.q, 0, out=self._qtmp)
                 n2, q2 = self.qN(self.q, 1, out=self._qtmp)
@@ -530,7 +554,8 @@ class ContactAnalysis1(object):
                                  (s, ref.atoms.numberOfAtoms(), sel.atoms.numberOfAtoms()))
 
         # compute reference contacts
-        dref = distance_array(self.references[0].coordinates(), self.references[1].coordinates())
+        dref = MDAnalysis.core.distances.distance_array(
+            self.references[0].coordinates(), self.references[1].coordinates())
         self.qref = self.qarray(dref)
         self.nref = self.qref.sum()
 
@@ -597,7 +622,7 @@ class ContactAnalysis1(object):
             for ts in self.universe.trajectory[start_frame:end_frame:step_value]:
                 frame = ts.frame
                 # use pre-allocated distance array to save a little bit of time
-                distance_array(A.coordinates(), B.coordinates(), result=self.d)
+                MDAnalysis.core.distances.distance_array(A.coordinates(), B.coordinates(), result=self.d)
                 self.qarray(self.d, out=self.q)
                 n1, q1 = self.qN(self.q, out=self._qtmp)
                 self.qavg += self.q
