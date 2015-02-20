@@ -327,7 +327,7 @@ class TestTopologyObjects(TestCase):
 
     def test_repr(self):
         assert_equal(repr(self.TO1),
-                     '< TopologyObject between: Atom 2 (HT1 of MET-1), Atom 3 (HT2 of MET-1) >')
+                     '<TopologyObject between: Atom 2 (HT1 of MET-1), Atom 3 (HT2 of MET-1)>')
 
     def test_eq(self):
         TO1_b = TopologyObject(self.a1)
@@ -373,7 +373,7 @@ class TestTopologyObjects(TestCase):
 
     def test_bondrepr(self):
         assert_equal(repr(self.b),
-                     '< Bond between: Atom 10 (CG of MET 1 None) and Atom 13 (SD of MET1 None), length 1.77 A>')
+                     '<Bond between: Atom 10 (CG of MET 1 None) and Atom 13 (SD of MET1 None), length 1.77 A>')
 
     # Angle class checks
     def test_angle(self):

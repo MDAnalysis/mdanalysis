@@ -336,18 +336,25 @@ Classes and functions
 .. _ATOM: http://www.wwpdb.org/documentation/format23/sect9.html#ATOM
 
 """
+from __future__ import print_function, absolute_import
 
+# Global imports
 import warnings
 import numpy
+from numpy.linalg import eig
 import itertools
 from collections import defaultdict
-
-import MDAnalysis
-from MDAnalysis import SelectionError, NoDataError, SelectionWarning
-import util
-from util import cached
 import copy
 import logging
+import os.path
+
+# Local imports
+import MDAnalysis
+from .. import SelectionError, NoDataError, SelectionWarning
+from . import util
+from .util import cached
+from .transformations import rotation_matrix, vecangle, rotaxis
+
 
 logger = logging.getLogger("MDAnalysis.core.AtomGroup")
 
@@ -486,13 +493,21 @@ class Atom(object):
     def universe(self, universe):
         self.__universe = universe
 
+    @property
+    def bonded_atoms(self):
+        """An AtomGroup of the Atoms that this Atom is bonded to.
+
+        .. versionadded:: 0.9
+        """
+        return AtomGroup([b.partner(self) for b in self.bonds])
+
     # The following look up a dictionary stored in the Universe.
     # These dictionaries are lazily built
     @property
     def fragment(self):
         """The fragment that this Atom is part of
 
-        .. versionadded 0.8.2
+        .. versionadded:: 0.8.2
         """
         return self.universe._fragmentDict[self]
 
@@ -1636,8 +1651,6 @@ class AtomGroup(object):
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        from numpy.linalg import eig
-
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         if pbc:
             eigenval, eigenvec = eig(self.momentOfInertia(pbc=True))
@@ -1986,8 +1999,6 @@ class AtomGroup(object):
         :Returns: The 4x4 matrix which consists of the rotation matrix ``M[:3,:3]``
                   and the translation vector ``M[:3,3]``.
         """
-        from transformations import rotation_matrix
-
         alpha = numpy.radians(angle)
         try:
             sel1, sel2 = axis
@@ -2026,8 +2037,6 @@ class AtomGroup(object):
           u.atoms.align_principalAxis(0, [0,0,1])
           u.atoms.write("aligned.pdb")
         """
-        from transformations import vecangle, rotaxis
-
         p = self.principalAxes()[axis]
         angle = numpy.degrees(vecangle(p, vector))
         ax = rotaxis(p, vector)
@@ -2093,7 +2102,7 @@ class AtomGroup(object):
 
         .. SeeAlso:: :meth:`Universe.selectAtoms`
         """
-        import Selection  # can ONLY import in method, otherwise cyclical import!
+        from . import Selection  # can ONLY import in method, otherwise cyclical import!
 
         atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
         if len(othersel) == 0:
@@ -2176,9 +2185,8 @@ class AtomGroup(object):
            Merged with write_selection.  This method can now write both
            selections out.
         """
-        import util
-        import os.path
-        import MDAnalysis.coordinates, MDAnalysis.selections
+        import MDAnalysis.coordinates
+        import MDAnalysis.selections
 
         trj = self.universe.trajectory  # unified trajectory API
         frame = trj.ts.frame
@@ -2237,9 +2245,7 @@ class AtomGroup(object):
 
         .. deprecated:: 0.8.2
            Use :meth:`write`
-           """
-        import util
-        import os.path
+        """
         import MDAnalysis.selections
 
         SelectionWriter = MDAnalysis.selections.get_writer(filename, format)
@@ -2864,12 +2870,16 @@ class Universe(object):
           *topology_format*
              provide the file format of the topology file; ``None`` guesses it from the file
              extension [``None``]
+             Can also pass a subclass of :class:`MDAnalysis.topology.base.TopologyReader`
+             to define a custom reader to be used on the topology file.
           *format*
              provide the file format of the coordinate or trajectory file;
              ``None`` guesses it from the file extension. Note that this
              keyword has no effect if a list of file names is supplied because
              the "chained" reader has to guess the file format for each
              individual list member. [``None``]
+             Can also pass a subclass of :class:`MDAnalysis.coordinates.base.Reader`
+             to define a custom reader to be used on the trajectory file.
           *bonds*
              bond handling for PDB files. The default is to read and store the
              CONECT records only. When set to ``True`` it will attempt to guess
@@ -2906,17 +2916,10 @@ class Universe(object):
            format detection.
         """
         from MDAnalysis.topology.core import get_parser_for, guess_format
-        import MDAnalysis.core
+        from ..topology.base import TopologyReader
 
-        # managed attribute holding TRJReader (the Universe.trajectory
-        # attribute is also aliased as Universe.<EXT> where <EXT> is the
-        # trajectory format type (i.e. the extension))
+        # managed attribute holding Reader
         self.__trajectory = None
-
-        kwargs.setdefault('coordinatefile', None)  # deprecated
-        topology_format = kwargs.pop('topology_format', None)
-        if kwargs.get('permissive', None) is None:
-            kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
 
         # Cache is used to store objects which are built lazily into Universe
         # Currently cached objects (managed property name and cache key):
@@ -2925,18 +2928,19 @@ class Universe(object):
         # - torsions
         # - improper torsions
         # - fragments
+        # Cached stuff is handled using util.cached decorator
         self._cache = dict()
 
         if len(args) == 0:
             # create an empty universe
             self.atoms = AtomGroup([])
-            self.trajectory = None
             return
 
-        topologyfile = args[0]
+        self.filename = args[0]
 
         # old behaviour (explicit coordfile) overrides new behaviour
-        coordinatefile = args[1:] if kwargs['coordinatefile'] is None else kwargs['coordinatefile']
+        coordinatefile = kwargs.pop('coordinatefile', args[1:])
+        topology_format = kwargs.pop('topology_format', None)
 
         if len(args) == 1 and not coordinatefile:
             # special hacks to treat a coordinate file as a coordinate AND topology file
@@ -2945,23 +2949,27 @@ class Universe(object):
                 kwargs['format'] = topology_format
             elif topology_format is None:
                 topology_format = kwargs.get('format', None)
-            if guess_format(topologyfile, format=kwargs.get('format', None)) in \
+            if guess_format(self.filename, format=kwargs.get('format', None)) in \
                     MDAnalysis.coordinates._topology_coordinates_readers:
-                coordinatefile = topologyfile  # hack for pdb/gro/crd - only
+                coordinatefile = self.filename  # hack for pdb/gro/crd - only
             # Fix by SB: make sure coordinatefile is never an empty tuple
             if len(coordinatefile) == 0:
                 coordinatefile = None
 
-
         # build the topology (or at least a list of atoms)
-        self.filename = topologyfile
-        try:
-            parser = get_parser_for(topologyfile,
-                                    permissive=kwargs['permissive'],
+        try:  # Try and check if the topology format is a TopologyReader
+            if issubclass(topology_format, TopologyReader):
+                parser = topology_format
+        except TypeError:  # But strings/None raise TypeError in issubclass
+            perm = kwargs.get('permissive',
+                              MDAnalysis.core.flags['permissive_pdb_reader'])
+            parser = get_parser_for(self.filename,
+                                    permissive=perm,
                                     tformat=topology_format)
+        try:
             with parser(self.filename,
                         guess_bonds_mode=kwargs.get('bonds', False)) as p:
-                struc = p.parse()
+                self._psf = p.parse()
         except IOError as err:
             raise IOError("Failed to load from the topology file {}"
                           " with parser {}.\n"
@@ -2971,8 +2979,8 @@ class Universe(object):
                              " with parser {} \n"
                              "Error: {}".format(self.filename, parser, err))
 
-        # populate atoms etc
-        self._init_topology(struc)
+        # Generate atoms, residues and segments
+        self._init_topology()
 
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
@@ -3000,12 +3008,9 @@ class Universe(object):
         """
         self._cache[name] = value
 
-    def _init_topology(self, struc):
-        """Populate Universe attributes from the structure dictionary *struc*."""
-        self._psf = struc
-        #for data in struc.keys():
-        #    setattr(self, data, struc[data])
-        self.atoms = AtomGroup(struc["_atoms"])
+    def _init_topology(self):
+        """Populate Universe attributes from the structure dictionary *_psf*."""
+        self.atoms = AtomGroup(self._psf["_atoms"])
 
         # XXX: add H-bond information here if available from psf (or other sources)
         # segment instant selectors
@@ -3461,8 +3466,10 @@ class Universe(object):
                  keyword has no effect if a list of file names is supplied because
                  the "chained" reader has to guess the file format for each
                  individual list member [``None``]
+                 Can also pass a subclass of :class:`MDAnalysis.coordinates.base.Reader`
+                 to define a custom reader to be used on the trajectory file.
              *kwargs*
-                 other kwargs are passed to the trajectory reader (only for advanced use)
+                 Other kwargs are passed to the trajectory reader (only for advanced use)
 
         :Returns: (filename, trajectory_format) or ``None`` if *filename* == ``None``
         :Raises: :exc:`TypeError` if trajectory format can not be
@@ -3479,21 +3486,31 @@ class Universe(object):
             return
 
         import MDAnalysis.core
-        from MDAnalysis.coordinates.core import get_reader_for
+        from ..coordinates.core import get_reader_for
+        from ..coordinates.base import Reader
 
-        if kwargs.get('permissive', None) is None:
-            kwargs['permissive'] = MDAnalysis.core.flags['permissive_pdb_reader']
         if len(util.asiterable(filename)) == 1:
             # make sure a single filename is not handed to the ChainReader
             filename = util.asiterable(filename)[0]
         logger.debug("Universe.load_new(): loading {0}...".format(filename))
+
+        reader_format = kwargs.pop('format', None)
+        perm = kwargs.get('permissive', MDAnalysis.core.flags['permissive_pdb_reader'])
+        reader = None
         try:
-            reader = get_reader_for(filename,
-                                    permissive=kwargs.pop('permissive'),
-                                    format=kwargs.pop('format', None))
-        except TypeError as err:
-            raise TypeError("Cannot find an appropriate coordinate reader "
-                            "for file {}.\n{}".format(filename, err))
+            if reader_format is not None and issubclass(reader_format, Reader):
+                reader = reader_format
+        except TypeError:
+            pass
+        if not reader:
+            try:
+                reader = get_reader_for(filename,
+                                        permissive=perm,
+                                        format=reader_format)
+            except TypeError as err:
+                raise TypeError("Cannot find an appropriate coordinate reader "
+                                "for file {}.\n{}".format(filename, err))
+
         # supply number of atoms for readers that cannot do it for themselves
         kwargs['numatoms'] = self.atoms.numberOfAtoms()
         self.trajectory = reader(filename, **kwargs)    # unified trajectory API
@@ -3505,6 +3522,7 @@ class Universe(object):
                                  self.trajectory.format,
                                  len(self.atoms),
                                  filename, self.trajectory.numatoms))
+
         return filename, self.trajectory.format
 
     def selectAtoms(self, sel, *othersel, **selgroups):
@@ -3641,7 +3659,7 @@ class Universe(object):
         .. versionchanged:: 0.8.1
            Added *group* and *fullgroup* selections.
         """
-        import Selection  # can ONLY import in method, otherwise cyclical import!
+        from . import Selection  # can ONLY import in method, otherwise cyclical import!
 
         atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
         if len(othersel) == 0:
