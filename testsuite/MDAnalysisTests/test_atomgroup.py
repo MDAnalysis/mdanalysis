@@ -137,6 +137,14 @@ class TestAtom(TestCase):
 
 class TestAtomGroup(TestCase):
     """Tests of AtomGroup; selections are tested separately."""
+    # all tests are done with the AdK system (PSF and DCD)
+    # sequence: http://www.uniprot.org/uniprot/P69441.fasta
+    # >sp|P69441|KAD_ECOLI Adenylate kinase OS=Escherichia coli (strain K12) GN=adk PE=1 SV=1
+    ref_adk_sequence = """\
+       MRIILLGAPGAGKGTQAQFIMEKYGIPQISTGDMLRAAVKSGSELGKQAKDIMDAGKLVT
+       DELVIALVKERIAQEDCRNGFLLDGFPRTIPQADAMKEAGINVDYVLEFDVPDELIVDRI
+       VGRRVHAPSGRVYHVKFNPPKVEGKDDVTGEELTTRKDDQEETVRKRLVEYHQMTAPLIG
+       YYSKEAEAGNTKYAKVDGTKPVAEVRADLEKILG""".translate(None, " \n\t")
 
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
@@ -295,6 +303,39 @@ class TestAtomGroup(TestCase):
     def test_bfactors(self):
         bfactors = self.ag.bfactors  # property, not method!
         assert_array_equal(bfactors[0:3], numpy.array([None, None, None]))
+
+    def test_sequence_string(self):
+        p = self.universe.selectAtoms("protein")
+        assert_equal(p.sequence(format="string"), self.ref_adk_sequence)
+
+    def test_sequence_SeqRecord(self):
+        p = self.universe.selectAtoms("protein")
+        s = p.sequence(format="SeqRecord",
+                       id="P69441", name="KAD_ECOLI Adenylate kinase",
+                       description="EcAdK from pdb 4AKE")
+        assert_equal(s.id, "P69441")
+        assert_equal(s.seq.tostring(), self.ref_adk_sequence)
+
+    def test_sequence_SeqRecord_default(self):
+        p = self.universe.selectAtoms("protein")
+        s = p.sequence(id="P69441", name="KAD_ECOLI Adenylate kinase",
+                       description="EcAdK from pdb 4AKE")
+        assert_equal(s.id, "P69441")
+        assert_equal(s.seq.tostring(), self.ref_adk_sequence)
+
+    def test_sequence_Seq(self):
+        p = self.universe.selectAtoms("protein")
+        s = p.sequence(format="Seq")
+        assert_equal(s.tostring(), self.ref_adk_sequence)
+
+    def test_sequence_nonIUPACresname(self):
+        """test_sequence_nonIUPACresname: non recognized amino acids raise ValueError"""
+        # fake non-IUPAC residue name for this test
+        self.universe.selectAtoms("resname MET").set_resname("MSE")
+        self.universe.atoms._rebuild_caches()
+        def wrong_res():
+            self.universe.atoms.sequence()
+        assert_raises(ValueError, wrong_res)
 
     def test_no_uni(self):
         at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)

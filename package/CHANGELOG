@@ -66,6 +66,7 @@ The rules for this file:
   * Added energy units to core.units (Issue 214)
   * New AtomGroup.split() method to produce a list of AtomGroups for each atom,
     residue, or segment
+  * New AtomGroup.sequence() method to extract a protein sequence.
   * Can pass subclasses of Reader and Topology reader to Universe init to allow
     custom readers to be defined. (Issue 198)
   * Added Atom.bonded_atoms property.  This returns an AtomGroup of the Atoms

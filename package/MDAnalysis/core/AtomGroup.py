@@ -938,6 +938,96 @@ class AtomGroup(object):
         """
         return numpy.array([r.resnum for r in self.residues])
 
+    def sequence(self, **kwargs):
+        """Returns the amino acid sequence.
+
+        The format of the sequence is selected with the keyword *format*:
+
+        ============== ============================================
+        *format*       description
+        ============== ============================================
+        'SeqRecord'    :class:`Bio.SeqRecord.SeqRecord` (default)
+        'Seq'          :class:`Bio.Seq.Seq`
+        'string'       string
+        ============== ============================================
+
+        The sequence is returned by default (keyword ``format = 'SeqRecord'``)
+        as a :class:`Bio.SeqRecord.SeqRecord` instance, which can then be
+        further processed. In this case, all keyword arguments (such as the
+        *id* string or the *name* or the *description*) are directly passed to
+        :class:`Bio.SeqRecord.SeqRecord`.
+
+        If the keyword *format* is set to ``'Seq'``, all *kwargs* are ignored and
+        a :class:`Bio.Seq.Seq` instance is returned. The difference to the
+        record is that the record also contains metadata and can be directly
+        used as an input for other functions in :mod:`Bio`.
+
+        If the keyword *format* is set to ``'string'``, all *kwargs* are ignored
+        and a Python string is returned.
+
+        .. rubric:: Example: Write FASTA file
+
+        Use :func:`Bio.SeqIO.write`, which takes sequence records::
+
+           import Bio.SeqIO
+
+           # get the sequence record of a protein component of a Universe
+           protein = u.selectAtoms("protein")
+           record = protein.sequence(id="myseq1", name="myprotein")
+
+           Bio.SeqIO.write(record, "single.fasta", "fasta")
+
+        A FASTA file with multiple entries can be written with ::
+
+           Bio.SeqIO.write([record1, record2, ...], "multi.fasta", "fasta")
+
+        :Keywords:
+            *format*
+                - ``"string"``: return sequence as a string of 1-letter codes
+                - ``"Seq"``: return a :class:`Bio.Seq.Seq` instance
+                - ``"SeqRecord"``: return a :class:`Bio.SeqRecord.SeqRecord`
+                  instance
+                Default is ``"SeqRecord"``
+             *id*
+                Sequence ID for SeqRecord (should be different for different
+                sequences)
+             *name*
+                Name of the protein.
+             *description*
+                Short description of the sequence.
+             *kwargs*
+                Any other keyword arguments that are understood by
+                :class:`Bio.SeqRecord.SeqRecord`.
+
+        :Raises: :exc:`ValueError` if a residue name cannot be converted to a
+                 1-letter IUPAC protein amino acid code; make sure to only
+                 select protein residues. Raises :exc:`TypeError` if an unknown
+                 *format* is selected.
+
+        .. versionadded:: 0.9.0
+        """
+        import Bio.Seq
+        import Bio.SeqRecord
+        import Bio.Alphabet
+        formats = ('string', 'Seq', 'SeqRecord')
+
+        format = kwargs.pop("format", "SeqRecord")
+        if format not in formats:
+            raise TypeError("Unknown format='{0}': must be one of: {1}".format(
+                    format, ", ".join(formats)))
+        try:
+            sequence = "".join([util.convert_aa_code(r) for r in self.resnames()])
+        except KeyError as err:
+            raise ValueError("AtomGroup contains a residue name '{0}' that "
+                             "does not have a IUPAC protein 1-letter "
+                             "character".format(err.message))
+        if format == "string":
+            return sequence
+        seq = Bio.Seq.Seq(sequence, alphabet=Bio.Alphabet.IUPAC.protein)
+        if format == "Seq":
+            return seq
+        return Bio.SeqRecord.SeqRecord(seq, **kwargs)
+
     @property
     @cached('segments')
     def segments(self):
