@@ -399,7 +399,7 @@ def guess_atom_element(atomname):
     try:
         return tables.atomelements[atomname]
     except KeyError:
-        if atomname.startswith(('1', '2', '3', '4', '5', '6', '7', '8', '9')):
+        if atomname[0].isdigit():
             # catch 1HH etc
             return atomname[1]
         return atomname[0]
