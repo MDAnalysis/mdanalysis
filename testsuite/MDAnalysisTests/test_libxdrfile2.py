@@ -15,8 +15,9 @@
 #
 
 import MDAnalysis
-import cPickle as pkl
+import cPickle
 from numpy.testing import *
+import os
 from MDAnalysis.tests.datafiles import XTC, XTC_offsets, TRR, TRR_offsets
 
 import MDAnalysis.coordinates.xdrfile.libxdrfile2 as xdr
@@ -63,9 +64,23 @@ class TestXTC(TestCase):
         assert_equal(numframes, 10, "Number of frames in XTC trajectory")
 
         with open(XTC_offsets, 'rb') as f:
-            s_offsets = pkl.load(f)
+            s_offsets = cPickle.load(f)
 
         assert_array_almost_equal(offsets, s_offsets['offsets'], err_msg="wrong xtc frame offsets")
+
+    def test_offsets_ctime(self):
+        with open(XTC_offsets, 'rb') as f:
+            s_offsets = cPickle.load(f)
+
+        # check that stored offsets ctime matches that of trajectory file
+        assert_equal(s_offsets['ctime'], os.path.getctime(XTC))
+
+    def test_offsets_size(self):
+        with open(XTC_offsets, 'rb') as f:
+            s_offsets = cPickle.load(f)
+
+        # check that stored offsets size matches that of trajectory file
+        assert_equal(s_offsets['size'], os.path.getsize(XTC))
 
 class TestTRR(TestCase):
     def test_numatoms(self):
@@ -77,7 +92,21 @@ class TestTRR(TestCase):
         assert_equal(numframes, 10, "Number of frames in TRR trajectory")
 
         with open(TRR_offsets, 'rb') as f:
-            s_offsets = pkl.load(f)
+            s_offsets = cPickle.load(f)
 
         assert_array_almost_equal(offsets, s_offsets['offsets'], err_msg="wrong trr frame offsets")
+
+    def test_offsets_ctime(self):
+        with open(TRR_offsets, 'rb') as f:
+            s_offsets = cPickle.load(f)
+
+        # check that stored offsets ctime matches that of trajectory file
+        assert_equal(s_offsets['ctime'], os.path.getctime(TRR))
+
+    def test_offsets_size(self):
+        with open(TRR_offsets, 'rb') as f:
+            s_offsets = cPickle.load(f)
+
+        # check that stored offsets size matches that of trajectory file
+        assert_equal(s_offsets['size'], os.path.getsize(TRR))
 

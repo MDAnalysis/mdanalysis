@@ -11,11 +11,13 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/15  richardjgowers, tyler.je.reddy, orbeckst, e.jjordan12, zhuyi.xue, 
-          bala.biophysics
+          bala.biophysics, dotsdl
   * 0.8.2
 
   Enhancements
 
+  * offsets for XTC and TRR trajectories now stored and retrieved
+    automatically; improves init times for large trajectories (Issue 208)
   * docs now use secure mathjax CDN (Issue 182)
   * minor improvements to helanal docstring
   * Support for reading altloc records in PDB files
