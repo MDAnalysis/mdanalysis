@@ -906,10 +906,12 @@ class AtomGroup(object):
            belong to.
         """
         residues = []
+        seen_residues = set()
         current_residue = None
         for atom in self._atoms:
-            if atom.residue != current_residue and not atom.residue in residues:
+            if atom.residue != current_residue and not atom.residue in seen_residues:
                 residues.append(atom.residue)
+                seen_residues.add(atom.residue)
             current_residue = atom.residue
         return ResidueGroup(residues)
 
@@ -1039,10 +1041,12 @@ class AtomGroup(object):
            Now strictly returns a SegmentGroup of a set of the Segments from this AtomGroup
         """
         segments = []
+        seen_segments = set()
         current_segment = None
         for atom in self._atoms:
-            if atom.segment != current_segment and not atom.segment in segments:
+            if atom.segment != current_segment and not atom.segment in seen_segments:
                 segments.append(atom.segment)
+                seen_segments.add(atom.segment)
             current_segment = atom.segment
         return SegmentGroup(segments)
 
@@ -3128,8 +3132,7 @@ class Universe(object):
         for seg in segments.keys():
             if seg[0].isdigit():
                 newsegname = 's' + seg
-                segments[newsegname] = segments[seg]
-                del segments[seg]
+                segments[newsegname] = segments.pop(seg)
         self.__dict__.update(segments)
         # convenience access to residues and segments (these are managed attributes
         # (properties) and are built on the fly or read from a cache) -- does this

@@ -24,7 +24,7 @@ Atom types, masses and charges are guessed.
 
 from MDAnalysis.core.util import openany
 from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
+from .core import get_atom_mass, guess_atom_charge, guess_atom_element
 from .base import TopologyReader
 
 
@@ -45,10 +45,11 @@ class GROParser(TopologyReader):
             segid = "SYSTEM"
             for line in grofile:
                 try:
-                    resid, (resname, name) = int(line[0:5]), line[5:15].split()[:2]
+                    resid, resname, name = int(line[0:5]), line[5:10], line[10:15]
                     # guess based on atom name
-                    type = guess_atom_type(name)
-                    mass = guess_atom_mass(name)
+                    elem = guess_atom_element(name)
+                    atype = elem
+                    mass = get_atom_mass(elem)
                     charge = guess_atom_charge(name)
                     # segid = "SYSTEM"
                     # ignore coords and velocities, they can be read by coordinates.GRO
@@ -77,10 +78,9 @@ class GROParser(TopologyReader):
                 else:
                     # Just use the atom_iter (counting from 0) rather than
                     # the number in the .gro file (which wraps at 99999)
-                    atoms.append(Atom(atom_iter, name, type, resname, resid,
+                    atoms.append(Atom(atom_iter, name, atype, resname, resid,
                                       segid, mass, charge))
                     atom_iter += 1
-        structure = {}
-        structure["_atoms"] = atoms
+        structure = {'_atoms':atoms}
 
         return structure
