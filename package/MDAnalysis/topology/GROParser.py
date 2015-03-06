@@ -45,7 +45,7 @@ class GROParser(TopologyReader):
             segid = "SYSTEM"
             for line in grofile:
                 try:
-                    resid, resname, name = int(line[0:5]), line[5:10], line[10:15]
+                    resid, resname, name = int(line[0:5]), line[5:10].strip(), line[10:15].strip()
                     # guess based on atom name
                     elem = guess_atom_element(name)
                     atype = elem
