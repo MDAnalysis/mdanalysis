@@ -1551,25 +1551,35 @@ class AtomGroup(object):
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         # Convert to local coordinates
         if pbc:
-            recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
+            pos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
         else:
-            recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
+            pos = self.coordinates() - self.centerOfMass(pbc=False)
+
         masses = self.masses()
-        values = zip(masses, recenteredpos)
         # Create the inertia tensor
         # m_i = mass of atom i
         # (x_i, y_i, z_i) = pos of atom i
-        # Ixx = sum(m_i*(y_i^2+z_i^2)); Iyy = sum(m_i*(x_i^2+z_i^2)); Izz = sum(m_i*(x_i^2+y_i^2))
+        # Ixx = sum(m_i*(y_i^2+z_i^2)); 
+        # Iyy = sum(m_i*(x_i^2+z_i^2)); 
+        # Izz = sum(m_i*(x_i^2+y_i^2))
         # Ixy = Iyx = -1*sum(m_i*x_i*y_i)
         # Ixz = Izx = -1*sum(m_i*x_i*z_i)
         # Iyz = Izy = -1*sum(m_i*y_i*z_i)
-        Ixx = reduce(lambda t, a: t + a[0] * (a[1][1] * a[1][1] + a[1][2] * a[1][2]), values, 0.)
-        Iyy = reduce(lambda t, a: t + a[0] * (a[1][0] * a[1][0] + a[1][2] * a[1][2]), values, 0.)
-        Izz = reduce(lambda t, a: t + a[0] * (a[1][0] * a[1][0] + a[1][1] * a[1][1]), values, 0.)
-        Ixy = Iyx = -1 * reduce(lambda t, a: t + a[0] * a[1][0] * a[1][1], values, 0.)
-        Ixz = Izx = -1 * reduce(lambda t, a: t + a[0] * a[1][0] * a[1][2], values, 0.)
-        Iyz = Izy = -1 * reduce(lambda t, a: t + a[0] * a[1][1] * a[1][2], values, 0.)
-        return numpy.array([[Ixx, Ixy, Ixz], [Iyx, Iyy, Iyz], [Izx, Izy, Izz]])
+        tens = numpy.zeros((3,3), dtype=numpy.float64)
+        # xx
+        tens[0][0] = (masses * (pos[:,1] * pos[:,1] + pos[:,2] * pos[:,2])).sum()
+        # xy & yx
+        tens[0][1] = tens[1][0] = - (masses * pos[:,0] * pos[:,1]).sum()
+        # xz & zx
+        tens[0][2] = tens[2][0] = - (masses * pos[:,0] * pos[:,2]).sum()
+        # yy
+        tens[1][1] = (masses * (pos[:,0] * pos[:,0] + pos[:,2] * pos[:,2])).sum()
+        # yz + zy
+        tens[1][2] = tens[2][1] = - (masses * pos[:,1] * pos[:,2]).sum()
+        # zz
+        tens[2][2] = (masses * (pos[:,0] * pos[:,0] + pos[:,1] * pos[:,1])).sum()
+
+        return tens
 
     def bbox(self, **kwargs):
         """Return the bounding box of the selection.
