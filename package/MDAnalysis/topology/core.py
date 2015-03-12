@@ -54,7 +54,7 @@ def build_segments(atoms):
     :Returns: structure dict, which associates a segname with a
               :class:`~MDAnalysis.core.AtomGroup.Segment`
 
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        Now allows resids in a given Segment to be given in non sequential order.
     """
     struc = {}
@@ -94,7 +94,7 @@ def build_residues(atoms):
     :Returns: List of :class:`~MDAnalysis.core.AtomGroup.Residue` instances
 
     .. versionadded:: 0.8
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        Now allows resids to be given in non sequential order
     """
     resatomlist = defaultdict(list)
@@ -113,7 +113,7 @@ class TopologyObject(object):
     Defines the behaviour by which Bonds/Angles/etc in MDAnalysis should
     behave.
 
-    .. versionadded 0.8.2
+    .. versionadded 0.9.0
     """
     __slots__ = ("atoms")
 
@@ -183,7 +183,7 @@ class Bond(TopologyObject):
        >>> Atom in Bond
        True / False
 
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        * Now a subclass of :class:`TopologyObject`
        * Changed class to use __slots__
        * Changed class to store atoms in .atoms attribute.
@@ -244,7 +244,7 @@ class Angle(TopologyObject):
     Atom 2 is the apex of the angle
 
     .. versionadded:: 0.8
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        * Now a subclass of :class:`TopologyObject`
        * Changed class to use __slots__
        * Changed class to store atoms in .atoms attribute.
@@ -259,7 +259,7 @@ class Angle(TopologyObject):
             /
            1------0
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         a = self[0].pos - self[1].pos
         b = self[2].pos - self[1].pos
@@ -274,7 +274,7 @@ class Torsion(TopologyObject):
     Atoms (1, 2, 3) and (2, 3, 4).
 
     .. versionadded:: 0.8
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        * Now a subclass of :class:`TopologyObject`
        * Changed class to use __slots__
        * Changed class to store atoms in .atoms attribute.
@@ -292,7 +292,7 @@ class Torsion(TopologyObject):
            /
           0
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """   
         A, B, C, D = self.atoms
         ab = A.position - B.position
@@ -313,7 +313,7 @@ class Improper_Torsion(Torsion):  # subclass Torsion to inherit torsion method
                  can change. Check the definitions here against 
                  your software.
 
-    .. versionadded 0.8.2
+    .. versionadded 0.9.0
     """
     # http://cbio.bmt.tue.nl/pumma/uploads/Theory/improper.png
     def improper(self):
@@ -454,7 +454,7 @@ def guess_bonds(atoms, coords, **kwargs):
        http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html
 
     .. versionadded:: 0.7.7
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        * Updated method internally to use more numpy, should work faster.
        * Should also use less memory, previously scaled O(n^2)
        * vdwradii argument now augments table list rather than replacing entirely
@@ -525,7 +525,7 @@ def guess_angles(bonds):
 
     .. seeAlso:: :meth:`guess_bonds`
 
-    .. versionadded 0.8.2
+    .. versionadded 0.9.0
     """
     angles_found = set()
 
@@ -552,7 +552,7 @@ def guess_torsions(angles):
     :Returns:
       List of tuples defining the torsions.  Suitable for use in u._psf
 
-    .. versionadded 0.8.2
+    .. versionadded 0.9.0
     """
     torsions_found = set()
 
@@ -586,7 +586,7 @@ def guess_improper_torsions(angles):
       List of tuples defining the improper torsions.  Suitable for use in 
       u._psf
 
-    .. versionadded 0.8.2
+    .. versionadded 0.9.0
     """
     torsions_found = set()
 
@@ -692,7 +692,7 @@ class TopologyDict(object):
     create any duplicate bonds in the process.
 
     .. versionadded:: 0.8
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        * Changed initialisation to use a list of TopologyObjects
        instead of list of atoms
        * Now used from within TopologyGroup instead of accessed from AtomGroup
@@ -803,7 +803,7 @@ class TopologyGroup(object):
     type (ie can combine two angle containing TopologyGroups).
 
     .. versionadded:: 0.8
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        Overhauled completely
        * Added internal TopologyDict accessible by the topDict attribute
        * :meth:`selectBonds` allows the topDict to be queried with tuple of 
@@ -831,14 +831,14 @@ class TopologyGroup(object):
 
         .. seeAlso :meth:`types`
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         return self.topDict[selection]
 
     def types(self):
         """Return a list of the bond types in this TopologyGroup
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         return self.topDict.keys()
 
@@ -854,7 +854,7 @@ class TopologyGroup(object):
         This is a cached property so will be generated the first time it is
         accessed.
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         return TopologyDict(self.bondlist)
 
@@ -867,7 +867,7 @@ class TopologyGroup(object):
             Only retrieve bonds which are completely contained within the
             AtomGroup. [``False``]
         
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         strict = kwargs.get('strict', False)
         if strict:
@@ -883,7 +883,7 @@ class TopologyGroup(object):
         .. SeeAlso:: :meth:`_strict_intersection` for including bonds
                      more strictly
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         if self.toptype == 'Bond':
             other_set = set(other.bonds)
@@ -911,7 +911,7 @@ class TopologyGroup(object):
         .. SeeAlso:: :meth:`_loose_intersection` for including bonds
                      less strictly
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         # Create a dictionary of all bonds within this TG, initialised to 0
         # for each
@@ -990,7 +990,7 @@ class TopologyGroup(object):
         Note that because bonds are sorted as they are initialised, the order
         that atoms are defined in each entry might be reversed.
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         # should allow topology information to be pickled even if it is
         # substantially changed from original input, 
@@ -1144,7 +1144,7 @@ class TopologyGroup(object):
 
         Uses cython implementation
 
-        .. versionchanged :: 0.8.2
+        .. versionchanged :: 0.9.0
            Added pbc option (default False)
         """
         if not self.toptype == 'Angle':
@@ -1194,7 +1194,7 @@ class TopologyGroup(object):
 
         Uses cython implementation.
 
-        .. versionchanged:: 0.8.2
+        .. versionchanged:: 0.9.0
            Added pbc option (default False)
         """
         if self.toptype not in ['Torsion', 'Improper_Torsion']:

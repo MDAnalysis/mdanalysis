@@ -67,7 +67,7 @@ class DATAParser(TopologyReader):
 
         :Returns: MDAnalysis internal *structure* dict.
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
 
         .. _LAMMPS DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
         .. _`atom_style`: http://lammps.sandia.gov/doc/atom_style.html
@@ -163,7 +163,7 @@ class DATAParser(TopologyReader):
 
         Fills this into the Timestep object and returns it
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         read_atoms = False
         read_velocities = False
@@ -418,9 +418,9 @@ class LAMMPSDataConverter(object):
 
       u = MDAnalysis.Unverse("lammps.psf", "lammps.dcd", format="LAMMPS")
 
-    .. deprecated:: 0.8.2
+    .. deprecated:: 0.9.0
 
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        Renamed from ``LAMMPSData`` to ``LAMMPSDataConverter``.
     """
     header_keywords = [

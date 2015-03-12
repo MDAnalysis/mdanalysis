@@ -16,11 +16,13 @@
 
 
 """
-Gromacs TRR I/O
-===============
+Gromacs TRR trajectory I/O --- :mod:`MDAnalysis.coordinates.xdrfile.TRR`
+========================================================================
 
-Reading of `Gromacs TRR trajectories`_. Users should access classes
-from :mod:`MDAnalysis.coordinates.TRR`.
+Classes for reading and writing of `Gromacs TRR trajectories`_
+together with supporting code.
+
+.. note:: Users should access classes from :mod:`MDAnalysis.coordinates.TRR`.
 
 .. _Gromacs TRR trajectories: http://www.gromacs.org/Documentation/File_Formats/.trr_File
 .. _Gromacs: http://www.gromacs.org
@@ -41,6 +43,7 @@ Classes
 .. autoclass:: TRRWriter
    :members:
    :inherited-members:
+
 """
 
 import numpy

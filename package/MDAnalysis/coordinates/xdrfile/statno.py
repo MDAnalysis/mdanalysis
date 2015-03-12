@@ -15,11 +15,12 @@
 #
 
 """
-Status codes and symbols
-========================
+Status codes and symbols --- :mod:`~MDAnalysis.coordinates.xdrfile.statno`
+==========================================================================
 
 The module makes all the status symbols available that are used in
-:mod:`libxdrfile2`. The value of each symbol is an integer (as defined
+:mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2` (and which are
+described there). The value of each symbol is an integer (as defined
 in ``xdrfile.h``).
 
 The dictionary :data:`xdrfile.errno.errorcode` maps numeric codes to
@@ -27,6 +28,7 @@ symbol names.
 
 .. data:: errorcode
 .. data:: errorsymbols
+
 """
 
 import libxdrfile2

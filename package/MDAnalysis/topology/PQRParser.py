@@ -49,7 +49,7 @@ class PQRParser(TopologyReader):
                  :class:`~MDAnalysis.coordinates.PQR.PQRReader` is used to read
                  the PQR file.
 
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        Read chainID from a PQR file and use it as segid (before we always used
        'SYSTEM' as the new segid).
     """

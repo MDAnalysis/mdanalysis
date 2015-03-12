@@ -193,7 +193,7 @@ def filename(name, ext=None, keep=False):
            - ``False``: replace existing extension with *ext*;
            - ``True``: keep old extension if one existed
 
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        Also permits :class:`NamedStream` to pass through.
     """
     if ext is not None:
@@ -280,7 +280,7 @@ def anyopen(datasource, mode='r', reset=True):
 
     .. SeeAlso:: :func:`openany` to be used with the :keyword:`with` statement.
 
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous
        behavior to return a tuple ``(stream, filename)``.
     """
@@ -401,7 +401,7 @@ def isstream(obj):
 
     :Returns: ``True`` is *obj* is a stream, ``False`` otherwise
 
-    .. versionadded:: 0.8.2
+    .. versionadded:: 0.9.0
     """
     signature_methods = ("close",)
     alternative_methods = (
@@ -524,7 +524,7 @@ class NamedStream(io.IOBase, basestring):
                :meth:`close` is called; note that the default is **not to close
                the stream** [``False``]
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         self.stream = stream
         self.name = filename
@@ -1152,7 +1152,7 @@ def cached(key):
             # _cache with the key: 'keyname'
             size = 10.0
 
-    .. versionadded:: 0.8.2
+    .. versionadded:: 0.9.0
     """
 
     def cached_lookup(func):

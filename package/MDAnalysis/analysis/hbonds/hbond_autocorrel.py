@@ -21,7 +21,7 @@ Hydrogen bond autocorrelation --- :mod:`MDAnalysis.analysis.hbonds.hbond_autocor
 :Year: 2014
 :Copyright: GNU Public License v3
 
-.. versionadded:: 0.8.2
+.. versionadded:: 0.9.0
 
 Description
 ---------------

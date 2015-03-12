@@ -15,11 +15,13 @@
 #
 
 """
-Gromacs XTC trajectory I/O
-==========================
+Gromacs XTC trajectory I/O --- :mod:`MDAnalysis.coordinates.xdrfile.XTC`
+========================================================================
 
-Reading of `Gromacs XTC trajectories`_. Users should access the classes through
-:mod:`MDAnalysis.coordinates.XTC`.
+Classes for reading and writing of `Gromacs XTC trajectories`_
+together with supporting code.
+
+.. note:: Users should access classes from :mod:`MDAnalysis.coordinates.XTC`.
 
 .. _Gromacs XTC trajectories: http://www.gromacs.org/Documentation/File_Formats/.xtc_File
 .. _Gromacs: http://www.gromacs.org

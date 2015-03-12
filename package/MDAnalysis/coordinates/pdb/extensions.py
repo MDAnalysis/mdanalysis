@@ -18,8 +18,8 @@
 # pdb.extensions
 # original file: edPDB.xpdb but only kept content needed for MDAnalysis
 """
-:mod:`pdb.extensions` -- Extensions to :mod:`Bio.PDB`
-=====================================================
+Extensions to :mod:`Bio.PDB` --- :mod:`pdb.extensions`
+======================================================
 
 :Author:  Oliver Beckstein
 :Year:    2009
@@ -31,11 +31,14 @@ Partly published on http://biopython.org/wiki/Reading_large_PDB_files
 and more code at
 http://github.com/orbeckst/GromacsWrapper/tree/master/edPDB/
 
-Module content
---------------
+Classes
+-------
 
 .. autoclass:: SloppyStructureBuilder
 .. autoclass:: SloppyPDBIO
+
+Functions
+---------
 
 .. autofunction:: get_structure
 .. autofunction:: write_pdb

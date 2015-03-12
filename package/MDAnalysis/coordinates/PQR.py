@@ -200,7 +200,7 @@ class PQRWriter(base.Writer):
 
     The output format is similar to ``pdb2pqr --whitespace``.
 
-    .. versionadded:: 0.8.2
+    .. versionadded:: 0.9.0
     """
     format = 'PQR'
     units = {'time': None, 'length': 'Angstrom'}

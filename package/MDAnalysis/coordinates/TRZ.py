@@ -157,7 +157,7 @@ class Timestep(base.Timestep):
         """Set the Timestep dimensions with MDAnalysis format cell
         (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         if len(box) == 3 or len(box) == 6:
             self._unitcell[0] = box[0]
@@ -342,7 +342,7 @@ class TRZReader(base.Reader):
     def _read_trz_numframes(self, trzfile):
         """Uses size of file and dtype information to determine how many frames exist
 
-        .. versionchanged:: 0.8.2
+        .. versionchanged:: 0.9.0
            Now is based on filesize rather than reading entire file
         """
         fsize = os.fstat(trzfile.fileno()).st_size  # size of file in bytes
@@ -424,7 +424,7 @@ class TRZReader(base.Reader):
 
         Note that this doens't read the trajectory (ts remains unchanged)
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         if (numpy.dtype(type(nframes)) != numpy.dtype(int)):
             raise ValueError("TRZfile seek requires an integer number of frames got %r" % type(nframes))

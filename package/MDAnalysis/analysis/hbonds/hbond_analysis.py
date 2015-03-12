@@ -496,7 +496,7 @@ class HydrogenBondAnalysis(object):
            ``True`` (see `Issue 138`_). Set to ``False`` if your selections only
            need to be determined once (will increase performance).
 
-        .. versionchanged:: 0.8.2
+        .. versionchanged:: 0.9.0
            New keyword *distance_type* to select between calculation between
            heavy atoms or hydrogen-acceptor. It defaults to the previous
            behavior (i.e. "hydrogen").

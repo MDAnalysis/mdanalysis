@@ -18,30 +18,42 @@
 """DCD trajectory I/O  --- :mod:`MDAnalysis.coordinates.DCD`
 ============================================================
 
-Classes to read and write CHARMM-style DCD binary
-trajectories. Trajectories can be read regardless of system-endianness
-as this is auto-detected.
+Classes to read and write DCD binary trajectories, the format used by
+CHARMM, NAMD but also LAMMPS. Trajectories can be read regardless of
+system-endianness as this is auto-detected.
 
-The classes in this module are the reference implementations for the
-Trajectory API.
+Generally, DCD trajectories produced by any code can be read (with the
+:class:`DCDReader`) although there can be issues with the unitcell
+(simulation box) representation (see
+:attr:`Timestep.dimensions`). DCDs can also be written but the
+:class:`DCDWriter` follows recent NAMD/VMD convention for the unitcell
+but still writes AKMA time. Reading and writing these trajectories
+within MDAnalysis will work seamlessly but if you process those
+trajectories with other tools you might need to watch out that time
+and unitcell dimensions are correctly interpreted.
 
-.. Note:: The DCD file format is not well defined. In particular, NAMD
-          and CHARMM use it differently. Currently, MDAnalysis tries
-          to guess the correct format for the unitcell representation
-          but it can be wrong. **Check the unitcell dimensions**,
-          especially for triclinic unitcells (see `Issue 187`_ and
-          :attr:`Timestep.dimensions`). A second potential issue are
-          the units of time which are AKMA for the :class:`DCDReader`
-          (following CHARMM) but ps for NAMD. As a workaround one can
-          employ the configurable
-          :class:`MDAnalysis.coordinates.LAMMPS.DCDReader` for
-          NAMD trajectories.
+.. Note:: 
+
+   The DCD file format is not well defined. In particular, NAMD and
+   CHARMM use it differently. Currently, MDAnalysis tries to guess the
+   correct **format for the unitcell representation** but it can be
+   wrong. **Check the unitcell dimensions**, especially for triclinic
+   unitcells (see `Issue 187`_ and :attr:`Timestep.dimensions`). A
+   second potential issue are the units of time which are AKMA for the
+   :class:`DCDReader` (following CHARMM) but ps for NAMD. As a
+   workaround one can employ the configurable
+   :class:`MDAnalysis.coordinates.LAMMPS.DCDReader` for NAMD
+   trajectories.
 
 .. SeeAlso:: The :mod:`MDAnalysis.coordinates.LAMMPS` module provides
              a more flexible DCD reader/writer.
 
+The classes in this module are the reference implementations for the
+Trajectory API.
+
 .. _Issue 187:
    https://code.google.com/p/mdanalysis/issues/detail?id=187
+
 
 Classes
 =======
@@ -105,7 +117,6 @@ class Timestep(base.Timestep):
            give wrong unitcell values. For more details see `Issue 187`_.
 
         .. versionchanged:: 0.9.0
-
            Unitcell is now interpreted in the newer NAMD DCD format as ``[A,
            gamma, B, beta, alpha, C]`` instead of the old MDAnalysis/CHARMM
            ordering ``[A, alpha, B, beta, gamma, C]``. We attempt to detect the
@@ -122,7 +133,7 @@ class Timestep(base.Timestep):
         ## orig MDAnalysis 0.8.1/dcd.c (~2004)
         ##return numpy.take(self._unitcell, [0,2,5,1,3,4])
 
-        # MDAnalysis 0.8.2 with recent dcd.c (based on 2013 molfile
+        # MDAnalysis 0.9.0 with recent dcd.c (based on 2013 molfile
         # DCD plugin, which implements the ordering of recent NAMD
         # (>2.5?)). See Issue 187.
         uc = numpy.take(self._unitcell, self._ts_order)
@@ -375,14 +386,15 @@ class DCDReader(base.Reader):
         ``data = dcd.correl(...)``
            populate a :class:`MDAnalysis.core.Timeseries.Collection` object with computed timeseries
 
-    .. Note:: The DCD file format is not well defined. In particular,
-              NAMD and CHARMM use it differently. Currently,
-              MDAnalysis tries to guess the correct format for the
-              unitcell representation but it can be wrong. **Check the
-              unitcell dimensions**, especially for triclinic
-              unitcells (see `Issue 187`_ and
-              :attr:`Timestep.dimensions`). A second potential issue
-              are the units of time (TODO).
+    .. Note:: 
+
+       The DCD file format is not well defined. In particular, NAMD
+       and CHARMM use it differently. Currently, MDAnalysis tries to
+       guess the correct format for the unitcell representation but it
+       can be wrong. **Check the unitcell dimensions**, especially for
+       triclinic unitcells (see `Issue 187`_ and
+       :attr:`Timestep.dimensions`). A second potential issue are the
+       units of time (TODO).
 
     .. versionchanged:: 0.9.0
        The underlying DCD reader (written in C and derived from the
@@ -391,6 +403,7 @@ class DCDReader(base.Reader):
        sin(alpha)]``. See `Issue 187`_ for further details.
 
     .. _Issue 187: https://code.google.com/p/mdanalysis/issues/detail?id=187
+
     """
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}

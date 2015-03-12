@@ -290,7 +290,7 @@ Classes and functions
       Alternate location indicator (as used in `ATOM_` records in PDB
       files)
 
-      .. versionadded:: 0.8.2
+      .. versionadded:: 0.9.0
 
    .. attribute:: bonds
 
@@ -373,7 +373,7 @@ class Atom(object):
     are included (and thus it is not possible to add attributes "on
     the fly"; they have to be included in the class definition).
 
-    .. versionchanged 0.8.2
+    .. versionchanged 0.9.0
        Added fragment managed property.
        Changed bonds angles torsions impropers to be a managed property
     """
@@ -507,7 +507,7 @@ class Atom(object):
     def fragment(self):
         """The fragment that this Atom is part of
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         return self.universe._fragmentDict[self]
 
@@ -515,7 +515,7 @@ class Atom(object):
     def bonds(self):
         """A list of the bonds that this Atom is in
 
-        .. versionchanged:: 0.8.2
+        .. versionchanged:: 0.9.0
            Changed to managed property
         """
         return self.universe._bondDict[self]
@@ -524,7 +524,7 @@ class Atom(object):
     def angles(self):
         """A list of the angles that this Atom is in
 
-        .. versionchanged:: 0.8.2
+        .. versionchanged:: 0.9.0
            Changed to managed property
         """
         return self.universe._angleDict[self]
@@ -533,7 +533,7 @@ class Atom(object):
     def torsions(self):
         """A list of the torsions/dihedrals that this Atom is in
 
-        .. versionchanged:: 0.8.2
+        .. versionchanged:: 0.9.0
            Changed to managed property
         """
         return self.universe._torsionDict[self]
@@ -544,7 +544,7 @@ class Atom(object):
     def impropers(self):
         """A list of the improper torsions that this Atom is in
 
-        .. versionchanged:: 0.8.2
+        .. versionchanged:: 0.9.0
            Changed to managed property
         """
         return self.universe._improperDict[self]
@@ -619,7 +619,7 @@ class AtomGroup(object):
     .. versionchanged:: 0.7.6
        An empty AtomGroup can be created and no longer raises a
        :exc:`NoDataError`.
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        The size at which cache is used for atom lookup is now stored as variable
        _atomcache_size within the class.
        Added fragments manged property. Is a lazily built, cached entry, similar to residues.
@@ -684,7 +684,7 @@ class AtomGroup(object):
         .. SeeAlso:: :meth:`_clear_caches`
 
         .. versionadded:: 0.7.5
-        .. versionchanged:: 0.8.2
+        .. versionchanged:: 0.9.0
            Added bonds/angles/torsions/impropers to rebuild.
            Reworked how things are rebuilt to avoid code duplication.
         """
@@ -785,10 +785,12 @@ class AtomGroup(object):
     def __getitem__(self, item):
         """Return element (index) or group (slicing).
 
-        .. versionchanged:: 0.8 ResidueGroup and SegmentGroup: return groups themselves and allow advanced slicing
-        .. versionchanged:: 0.8.2
-           This method now used by all subclasses.  These subclasses override _cls to define
-           the returned class.
+        .. versionchanged:: 0.8 
+           :class:`ResidueGroup` and :class:`SegmentGroup`: 
+           return groups themselves and allow advanced slicing
+        .. versionchanged:: 0.9.0
+           This method now used by all subclasses.  These subclasses override 
+           :attr:`_cls` to define the returned class.
         """
         container = self._container
         cls = self._cls
@@ -877,7 +879,7 @@ class AtomGroup(object):
     def types(self):
         """Returns an array of atom types.
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         return numpy.array([a.type for a in self._atoms])
 
@@ -889,7 +891,7 @@ class AtomGroup(object):
         Contains all fragments that any Atom in this AtomGroup is part of, the contents of
         the fragments may extend beyond the contents of this AtomGroup.
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         return tuple(set(a.fragment for a in self._atoms))
 
@@ -901,7 +903,7 @@ class AtomGroup(object):
         A :class:`ResidueGroup` of all residues that contain atoms in
         this group.
 
-        .. versionchanged:: 0.8.2
+        .. versionchanged:: 0.9.0
            Now returns strictly a ResidueGroup of the unique Residues that Atoms in this group
            belong to.
         """
@@ -1037,8 +1039,10 @@ class AtomGroup(object):
 
         A :class:`SegmentGroup` of all segments that contain atoms in this group.
 
-        .. versionchanged:: 0.8.2
-           Now strictly returns a SegmentGroup of a set of the Segments from this AtomGroup
+        .. versionchanged:: 0.9.0
+           Now strictly returns a :class:`SegmentGroup` of a set of
+           the :class:`Segment` instances from this :class:`AtomGroup`
+
         """
         segments = []
         seen_segments = set()
@@ -1067,7 +1071,7 @@ class AtomGroup(object):
         only bonds which are entirely contained by the AtomGroup use
         u.bonds.atomgroup_intersection(ag, strict=True)
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         from MDAnalysis.topology.core import TopologyGroup
 
@@ -1086,7 +1090,7 @@ class AtomGroup(object):
         only angles which are entirely contained by the AtomGroup use
         u.angles.atomgroup_intersection(ag, strict=True)
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         from MDAnalysis.topology.core import TopologyGroup
 
@@ -1105,7 +1109,7 @@ class AtomGroup(object):
         only torsions which are entirely contained by the AtomGroup use
         u.torsions.atomgroup_intersection(ag, strict=True)
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         from MDAnalysis.topology.core import TopologyGroup
 
@@ -1124,7 +1128,7 @@ class AtomGroup(object):
         to select only torsions which are entirely contained by the AtomGroup use
         u.impropers.atomgroup_intersection(ag, strict=True)
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         from MDAnalysis.topology.core import TopologyGroup
 
@@ -2275,7 +2279,7 @@ class AtomGroup(object):
 
                 * ``None``: do not write out bonds
 
-        .. versionchanged:: 0.8.2
+        .. versionchanged:: 0.9.0
            Merged with write_selection.  This method can now write both
            selections out.
         """
@@ -2337,7 +2341,7 @@ class AtomGroup(object):
                 additional keywords are passed on to the appropriate
                 :class:`~MDAnalysis.selections.base.SelectionWriter`
 
-        .. deprecated:: 0.8.2
+        .. deprecated:: 0.9.0
            Use :meth:`write`
         """
         import MDAnalysis.selections
@@ -2371,7 +2375,7 @@ class AtomGroup(object):
     def dimensions(self, box):
         """Pass on to Universe setter
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         self.universe.dimensions = box
 
@@ -2927,7 +2931,7 @@ class Universe(object):
        Parse arbitrary number of arguments as a single topology file and a a sequence
        of trajectories.
 
-    .. versionchanged:: 0.8.2
+    .. versionchanged:: 0.9.0
        Topology information now loaded lazily, but can be forced with
        :meth:`build_topology`
        Changed .bonds attribute to be a :class:`~MDAnalysis.topology.core.TopologyGroup`
@@ -3084,7 +3088,7 @@ class Universe(object):
 
         If not args are provided, all caches are cleared.
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         if len(args) == 0:
             self._cache = dict()
@@ -3098,7 +3102,7 @@ class Universe(object):
     def _fill_cache(self, name, value):
         """Populate _cache[name] with value.
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         self._cache[name] = value
 
@@ -3144,7 +3148,7 @@ class Universe(object):
     def _init_bonds(self):
         """Set bond information from u._psf['_bonds']
 
-        .. versionchanged 0.8.2
+        .. versionchanged 0.9.0
            Now returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
            Now only accepts list of tuples as input, previously accepted either
            lists of tuples or lists of Bonds.
@@ -3192,7 +3196,7 @@ class Universe(object):
         Returns ``None`` if no angle information is present, otherwise
         returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         angle_entries = self._psf.get('_angles', None)
         if angle_entries is None:
@@ -3213,7 +3217,7 @@ class Universe(object):
         Returns ``None`` if no torsion information is present, otherwise
         returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         torsion_entries = self._psf.get('_dihe', None)
         if torsion_entries is None:
@@ -3234,7 +3238,7 @@ class Universe(object):
         Returns ``None`` if no improper torsion information is present,
         otherwise returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         torsion_entries = self._psf.get('_impr', None)
         if torsion_entries is None:
@@ -3254,7 +3258,7 @@ class Universe(object):
 
         Generally built on demand by an Atom querying its fragment property.
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         # Check that bond information is present, else inform
         bonds = self.bonds
@@ -3316,7 +3320,7 @@ class Universe(object):
     def fragments(self):
         """Read only tuple of fragments in the Universe
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         return self._init_fragments()
 
@@ -3327,7 +3331,7 @@ class Universe(object):
 
         Translates Atom to list of bonds
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         bonds = self.bonds
         bd = defaultdict(list)
@@ -3347,7 +3351,7 @@ class Universe(object):
 
         Translates Atom to list of angles
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         bonds = self.angles
         bd = defaultdict(list)
@@ -3367,7 +3371,7 @@ class Universe(object):
 
         Translates Atom to list of torsions
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         bonds = self.torsions
         bd = defaultdict(list)
@@ -3387,7 +3391,7 @@ class Universe(object):
 
         Translates Atom to list of improper torsions
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         bonds = self.impropers
         bd = defaultdict(list)
@@ -3409,7 +3413,7 @@ class Universe(object):
 
         The Atom.fragment managed property queries this dictionary.
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         frags = self.fragments  # will build if not built
         fd = dict()
@@ -3425,7 +3429,7 @@ class Universe(object):
 
         This method forces all this information to be loaded.
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         if 'bonds' not in self._cache:
             self._cache['bonds'] = self._init_bonds()
@@ -3444,7 +3448,7 @@ class Universe(object):
         bonds in the Universe.
         If none are found, returns ``None``
 
-        .. versionchaged 0.8.2
+        .. versionchaged 0.9.0
            Now a lazily built :class:`~MDAnalysis.topology.core.TopologyGroup`
         """
         return self._init_bonds()
@@ -3456,7 +3460,7 @@ class Universe(object):
         Each bond tuple must contain the zero based indices of the two Atoms in
         the bond
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         del self.bonds
         self._psf['_bonds'] = bondlist
@@ -3468,7 +3472,7 @@ class Universe(object):
 
         This must also remove the per atom record of bonds (bondDict)
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         self._clear_caches('bonds', 'bondDict')
 
@@ -3481,7 +3485,7 @@ class Universe(object):
 
         If none are found, returns ``None``
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         return self._init_angles()
 
@@ -3504,7 +3508,7 @@ class Universe(object):
 
         If none are found, returns ``None``
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         return self._init_torsions()
 
@@ -3527,7 +3531,7 @@ class Universe(object):
 
         If none are found, returns ``None``
 
-        .. versionadded 0.8.2
+        .. versionadded 0.9.0
         """
         return self._init_impropers()
 
@@ -3787,7 +3791,7 @@ class Universe(object):
     def dimensions(self, box):
         """Set dimensions if the Timestep allows this
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         # Add fancy error handling here or use Timestep?
         self.coord.dimensions = box
@@ -3889,7 +3893,7 @@ def Merge(*args):
     .. Note:: Merging does not create a full trajectory but only a single
               structure even if the input consists of one or more trajectories.
 
-    .. versionchanged 0.8.2::
+    .. versionchanged 0.9.0::
        Raises exceptions instead of assertion errors.
 
     """

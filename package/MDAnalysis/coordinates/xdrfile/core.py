@@ -15,8 +15,8 @@
 #
 
 """
-Common high-level functionality for accessing Gromacs trajectories
-==================================================================
+Common high-level Gromacs XDR functionality --- :mod:`MDAnalysis.coordinates.xdrfile.core`
+==========================================================================================
 
 The :mod:`MDAnalysis.coordinates.xdrfile.core` module contains generic
 classes to access Gromacs_ XDR-encoded trajectory formats such as TRR
@@ -38,7 +38,6 @@ The generic classes are subclassed to generate the specific classes
 for the XTC and TRR format.
 
 .. versionchanged:: 0.8.0
-
    The XTC/TRR I/O interface now uses
    :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2`, which has seeking and
    indexing capabilities. Note that unlike
@@ -47,15 +46,14 @@ for the XTC and TRR format.
    GNU GENERAL PUBLIC LICENSE, version 2 (or higher).
 
 .. versionchanged:: 0.9.0
-
-    TrjReader now stores the offsets used for frame seeking automatically as a
-    hidden file in the same directory as the source trajectory. These offsets
-    are automatically retrieved upon TrjReader instantiation, resulting in
-    substantially quicker initialization times for long trajectories. The
-    ctime and filesize of the trajectory are stored with the offsets, and these
-    are checked against the trajectory on load to ensure the offsets aren't
-    stale. The offsets are automatically regenerated if they are stale or
-    missing.
+   TrjReader now stores the offsets used for frame seeking automatically as a
+   hidden file in the same directory as the source trajectory. These offsets
+   are automatically retrieved upon TrjReader instantiation, resulting in
+   substantially quicker initialization times for long trajectories. The
+   ctime and filesize of the trajectory are stored with the offsets, and these
+   are checked against the trajectory on load to ensure the offsets aren't
+   stale. The offsets are automatically regenerated if they are stale or
+   missing.
 
 .. autoclass:: Timestep
    :members:
@@ -604,7 +602,6 @@ class TrjReader(base.Reader):
 
         .. versionadded: 0.8.0
         .. versionchanged: 0.9.0
-
            Format of the offsets file has changed. It is no longer a pickled numpy
            array, but now a pickled dictionary. See details above. Old offset files
            can no longer be loaded.
@@ -645,11 +642,10 @@ class TrjReader(base.Reader):
           *check*
               if False, ignore ctime and size check of trajectory file
         
-        .. raises:: :exc:`IOError` if the file cannot be read (see :func:`open`).
+        :Raises: :exc:`IOError` if the file cannot be read (see :func:`open`).
 
         .. versionadded: 0.8.0
         .. versionchanged: 0.9.0
-
            Format of the offsets file has changed. It is no longer a pickled numpy
            array, but now a pickled dictionary. See details above. Old offset files
            can no longer be loaded.

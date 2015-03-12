@@ -146,7 +146,7 @@ class DATATimestep(base.Timestep):
     def dimensions(self, box):
         """Set unitcell information 
 
-        .. versionadded:: 0.8.2
+        .. versionadded:: 0.9.0
         """
         self._unitcell[:] = box
 
@@ -155,7 +155,7 @@ class DATAReader(base.Reader):
     """
     Reads a single frame of coordinate information from a LAMMPS DATA file.
 
-    .. versionadded:: 0.8.2
+    .. versionadded:: 0.9.0
     """
     format = 'DATA'
     units = {'time': None, 'length': 'Angstrom'}

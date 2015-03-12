@@ -723,7 +723,7 @@ static char __pyx_k_Coordinate_data_must_be_of_type[] = "Coordinate data must be
 static char __pyx_k_Fast_distance_array_computation[] = "\nFast distance array computation --- :mod:`MDAnalysis.core.distances`\n====================================================================\n\nFast C-routines to calculate distance arrays from coordinate arrays.\n\nOverview\n--------\n\n.. function:: distance_array(ref,conf,[box,[,result]])\n\n   Calculate all distances d_ij between the coordinates ref[i] and\n   conf[j] in the numpy arrays *ref* and *conf*. If an orthorhombic\n   *box* is supplied then a minimum image convention is used before\n   calculating distances.\n\n   If a 2D numpy array of dtype ``numpy.float64`` with the shape ``(len(ref),\n   len(conf))`` is provided in *result* then this preallocated array is\n   filled. This can speed up calculations.\n\n.. function:: self_distance_array(ref,[box[,result]])\n\n   Calculate all distances d_ij between atoms i and j in the reference\n   coordinates *ref* for all N coordinates. Other options as in\n   :func:`distance_array`.\n\n   If a 1D numpy array of dtype ``numpy.float64`` with ``N*(N-1)/2`` elements is\n   provided in *result* then this preallocated array is filled. This can speed\n   up calculations.\n\n\nFunctions\n---------\n\n.. autofunction:: boxCheck(box)\n.. autofunction:: calc_bonds(atom1, atom2 [, box, [,result]])\n.. autofunction:: calc_angles(atom1, atom2, atom3 [,box [, result]])\n.. autofunction:: calc_torsions(atom1, atom2, atom3, atom4 [,box [, result]])\n.. autofunction:: applyPBC(coordinates, box)\n.. autofunction:: transform_RtoS(coordinates, box)\n.. autofunction:: transform_StoR(coordinates, box)\n";
 static char __pyx_k_all_coordinates_must_be_of_type[] = "all coordinates must be of type numpy.float32";
 static char __pyx_k_coordinate_data_must_be_of_type[] = "coordinate data must be of type float32";
-static char __pyx_k_home_sebastien_Hacking_mdanalys[] = "/home/sebastien/Hacking/mdanalysis/package/src/numtools/distances.pyx";
+static char __pyx_k_nfs_homes2_oliver_Library_pytho[] = "/nfs/homes2/oliver/Library/python/mdanalysis/package/src/numtools/distances.pyx";
 static char __pyx_k_result_array_has_incorrect_size[] = "result array has incorrect size - should be (%dx%d)";
 static char __pyx_k_Box_format_not_recognised_please[] = "Box format not recognised, please use system dimensions";
 static char __pyx_k_Coordinates_must_be_a_sequence_o[] = "Coordinates must be a sequence of 3 dimensional coordinates";
@@ -783,7 +783,6 @@ static PyObject *__pyx_n_s_distnum;
 static PyObject *__pyx_n_s_dtype;
 static PyObject *__pyx_n_s_float32;
 static PyObject *__pyx_n_s_float64;
-static PyObject *__pyx_kp_s_home_sebastien_Hacking_mdanalys;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_incoords;
 static PyObject *__pyx_n_s_inputcoords;
@@ -800,6 +799,7 @@ static PyObject *__pyx_kp_s_list3_must_be_an_array_of_3_dime;
 static PyObject *__pyx_n_s_list4;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_matrix;
+static PyObject *__pyx_kp_s_nfs_homes2_oliver_Library_pytho;
 static PyObject *__pyx_n_s_numatom;
 static PyObject *__pyx_n_s_numcoords;
 static PyObject *__pyx_n_s_numpy;
@@ -5511,7 +5511,7 @@ static PyObject *__pyx_pf_4core_9distances_10calc_bonds(CYTHON_UNUSED PyObject *
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4core_9distances_13calc_angles(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4core_9distances_12calc_angles[] = "\n    Calculates the angle formed between three atoms, over a list of coordinates.\n    All *atom* inputs are lists of coordinates of equal length, with *atom2* \n    representing the apex of the angle.\n\n    If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is\n    provided in *result* then this preallocated array is filled. This can speed\n    up calculations.\n\n    The optional argument ``box`` ensures that periodic boundaries are taken into account when\n    constructing the connecting vectors between atoms, ie that the vector between atoms 1 & 2\n    goes between coordinates in the same image.\n\n    angles = calc_angles(coords1, coords2, coords3, [[box=None],result=angles])\n\n    :Arguments:\n        *coords1*\n            coordinate array of one side of angles\n        *coords2*\n            coordinate array of apex of angles\n        *coords3*\n            coordinate array of other side of angles\n        *box*\n            optional unit cell information.  This ensures that the connecting vectors between\n            atoms respect minimum image convention.  This is import when the angle might\n            be between atoms in different images.  \n        *result*\n            optional preallocated results array which must have same length as coordinate \n            array and dtype=numpy.float64. \n\n    :Returns:\n        *angles*\n            A numpy.array of angles in radians\n    \n    .. versionadded:: 0.8\n    .. versionchanged:: 0.8.2\n       Added optional box argument to account for periodic boundaries in calculation\n    ";
+static char __pyx_doc_4core_9distances_12calc_angles[] = "\n    Calculates the angle formed between three atoms, over a list of coordinates.\n    All *atom* inputs are lists of coordinates of equal length, with *atom2* \n    representing the apex of the angle.\n\n    If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is\n    provided in *result* then this preallocated array is filled. This can speed\n    up calculations.\n\n    The optional argument ``box`` ensures that periodic boundaries are taken into account when\n    constructing the connecting vectors between atoms, ie that the vector between atoms 1 & 2\n    goes between coordinates in the same image.\n\n    angles = calc_angles(coords1, coords2, coords3, [[box=None],result=angles])\n\n    :Arguments:\n        *coords1*\n            coordinate array of one side of angles\n        *coords2*\n            coordinate array of apex of angles\n        *coords3*\n            coordinate array of other side of angles\n        *box*\n            optional unit cell information.  This ensures that the connecting vectors between\n            atoms respect minimum image convention.  This is import when the angle might\n            be between atoms in different images.  \n        *result*\n            optional preallocated results array which must have same length as coordinate \n            array and dtype=numpy.float64. \n\n    :Returns:\n        *angles*\n            A numpy.array of angles in radians\n    \n    .. versionadded:: 0.8\n    .. versionchanged:: 0.9.0\n       Added optional box argument to account for periodic boundaries in calculation\n    ";
 static PyMethodDef __pyx_mdef_4core_9distances_13calc_angles = {"calc_angles", (PyCFunction)__pyx_pw_4core_9distances_13calc_angles, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4core_9distances_12calc_angles};
 static PyObject *__pyx_pw_4core_9distances_13calc_angles(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_list1 = 0;
@@ -6658,7 +6658,7 @@ static PyObject *__pyx_pf_4core_9distances_12calc_angles(CYTHON_UNUSED PyObject 
 
 /* Python wrapper */
 static PyObject *__pyx_pw_4core_9distances_15calc_torsions(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4core_9distances_14calc_torsions[] = "\n    Calculate the torsional angle formed by four atoms, over a list of coordinates.\n    \n    Torsional angle around axis connecting atoms 1 and 2 (i.e. the angle\n    between the planes spanned by atoms (0,1,2) and (1,2,3))::\n\n                  3\n                  |\n            1-----2\n           /\n          0\n\n    If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is\n    provided in *result* then this preallocated array is filled. This can speed\n    up calculations.\n\n    The optional argument ``box`` ensures that periodic boundaries are taken into account when\n    constructing the connecting vectors between atoms, ie that the vector between atoms 1 & 2\n    goes between coordinates in the same image.\n\n    angles = calc_torsions(coords1, coords2, coords3, coords4 [,box=box, result=angles])\n\n    :Arguments:\n        *coords1*\n            coordinate array of 1st atom in torsions\n        *coords2*\n            coordinate array of 2nd atom in torsions\n        *coords3*\n            coordinate array of 3rd atom in torsions\n        *coords4*\n            coordinate array of 4th atom in torsions\n        *box*\n            optional unit cell information.  This ensures that the connecting vectors between\n            atoms respect minimum image convention.  This is import when the angle might\n            be between atoms in different images.  \n        *result*\n            optional preallocated results array which must have same length as coordinate \n            array and dtype=numpy.float64. \n\n    :Returns:\n        *angles*\n            A numpy.array of angles in radians\n    \n    .. versionadded:: 0.8\n    .. versionchanged:: 0.8.2\n       Added optional box argument to account for periodic boundaries in calculation\n    ";
+static char __pyx_doc_4core_9distances_14calc_torsions[] = "\n    Calculate the torsional angle formed by four atoms, over a list of coordinates.\n    \n    Torsional angle around axis connecting atoms 1 and 2 (i.e. the angle\n    between the planes spanned by atoms (0,1,2) and (1,2,3))::\n\n                  3\n                  |\n            1-----2\n           /\n          0\n\n    If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is\n    provided in *result* then this preallocated array is filled. This can speed\n    up calculations.\n\n    The optional argument ``box`` ensures that periodic boundaries are taken into account when\n    constructing the connecting vectors between atoms, ie that the vector between atoms 1 & 2\n    goes between coordinates in the same image.\n\n    angles = calc_torsions(coords1, coords2, coords3, coords4 [,box=box, result=angles])\n\n    :Arguments:\n        *coords1*\n            coordinate array of 1st atom in torsions\n        *coords2*\n            coordinate array of 2nd atom in torsions\n        *coords3*\n            coordinate array of 3rd atom in torsions\n        *coords4*\n            coordinate array of 4th atom in torsions\n        *box*\n            optional unit cell information.  This ensures that the connecting vectors between\n            atoms respect minimum image convention.  This is import when the angle might\n            be between atoms in different images.  \n        *result*\n            optional preallocated results array which must have same length as coordinate \n            array and dtype=numpy.float64. \n\n    :Returns:\n        *angles*\n            A numpy.array of angles in radians\n    \n    .. versionadded:: 0.8\n    .. versionchanged:: 0.9.0\n       Added optional box argument to account for periodic boundaries in calculation\n    ";
 static PyMethodDef __pyx_mdef_4core_9distances_15calc_torsions = {"calc_torsions", (PyCFunction)__pyx_pw_4core_9distances_15calc_torsions, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4core_9distances_14calc_torsions};
 static PyObject *__pyx_pw_4core_9distances_15calc_torsions(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_list1 = 0;
@@ -8669,7 +8669,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
   {&__pyx_n_s_float32, __pyx_k_float32, sizeof(__pyx_k_float32), 0, 0, 1, 1},
   {&__pyx_n_s_float64, __pyx_k_float64, sizeof(__pyx_k_float64), 0, 0, 1, 1},
-  {&__pyx_kp_s_home_sebastien_Hacking_mdanalys, __pyx_k_home_sebastien_Hacking_mdanalys, sizeof(__pyx_k_home_sebastien_Hacking_mdanalys), 0, 0, 1, 0},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_incoords, __pyx_k_incoords, sizeof(__pyx_k_incoords), 0, 0, 1, 1},
   {&__pyx_n_s_inputcoords, __pyx_k_inputcoords, sizeof(__pyx_k_inputcoords), 0, 0, 1, 1},
@@ -8686,6 +8685,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_list4, __pyx_k_list4, sizeof(__pyx_k_list4), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_matrix, __pyx_k_matrix, sizeof(__pyx_k_matrix), 0, 0, 1, 1},
+  {&__pyx_kp_s_nfs_homes2_oliver_Library_pytho, __pyx_k_nfs_homes2_oliver_Library_pytho, sizeof(__pyx_k_nfs_homes2_oliver_Library_pytho), 0, 0, 1, 0},
   {&__pyx_n_s_numatom, __pyx_k_numatom, sizeof(__pyx_k_numatom), 0, 0, 1, 1},
   {&__pyx_n_s_numcoords, __pyx_k_numcoords, sizeof(__pyx_k_numcoords), 0, 0, 1, 1},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
@@ -9497,7 +9497,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__70 = PyTuple_Pack(2, __pyx_n_s_box, __pyx_n_s_boxtype); if (unlikely(!__pyx_tuple__70)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__70);
   __Pyx_GIVEREF(__pyx_tuple__70);
-  __pyx_codeobj__71 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__70, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_sebastien_Hacking_mdanalys, __pyx_n_s_boxCheck, 92, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__71)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__71 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__70, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_nfs_homes2_oliver_Library_pytho, __pyx_n_s_boxCheck, 92, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__71)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "src/numtools/distances.pyx":124
  *     return boxtype
@@ -9509,7 +9509,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__72 = PyTuple_Pack(11, __pyx_n_s_reference, __pyx_n_s_configuration, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_ref, __pyx_n_s_conf, __pyx_n_s_distances, __pyx_n_s_confnum, __pyx_n_s_refnum, __pyx_n_s_with_PBC, __pyx_n_s_boxtype); if (unlikely(!__pyx_tuple__72)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__72);
   __Pyx_GIVEREF(__pyx_tuple__72);
-  __pyx_codeobj__73 = (PyObject*)__Pyx_PyCode_New(4, 0, 11, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__72, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_sebastien_Hacking_mdanalys, __pyx_n_s_distance_array, 124, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__73)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__73 = (PyObject*)__Pyx_PyCode_New(4, 0, 11, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__72, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_nfs_homes2_oliver_Library_pytho, __pyx_n_s_distance_array, 124, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__73)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "src/numtools/distances.pyx":202
  *     return distances
@@ -9521,7 +9521,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__74 = PyTuple_Pack(9, __pyx_n_s_reference, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_ref, __pyx_n_s_distances, __pyx_n_s_refnum, __pyx_n_s_distnum, __pyx_n_s_with_PBC, __pyx_n_s_boxtype); if (unlikely(!__pyx_tuple__74)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 202; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__74);
   __Pyx_GIVEREF(__pyx_tuple__74);
-  __pyx_codeobj__75 = (PyObject*)__Pyx_PyCode_New(3, 0, 9, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__74, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_sebastien_Hacking_mdanalys, __pyx_n_s_self_distance_array, 202, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__75)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 202; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__75 = (PyObject*)__Pyx_PyCode_New(3, 0, 9, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__74, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_nfs_homes2_oliver_Library_pytho, __pyx_n_s_self_distance_array, 202, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__75)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 202; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "src/numtools/distances.pyx":281
  *     return distances
@@ -9533,7 +9533,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__76 = PyTuple_Pack(6, __pyx_n_s_inputcoords, __pyx_n_s_box, __pyx_n_s_coords, __pyx_n_s_inv, __pyx_n_s_numcoords, __pyx_n_s_boxtype); if (unlikely(!__pyx_tuple__76)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__76);
   __Pyx_GIVEREF(__pyx_tuple__76);
-  __pyx_codeobj__77 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__76, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_sebastien_Hacking_mdanalys, __pyx_n_s_transform_RtoS, 281, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__77)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__77 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__76, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_nfs_homes2_oliver_Library_pytho, __pyx_n_s_transform_RtoS, 281, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__77)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "src/numtools/distances.pyx":336
  *     return coords
@@ -9545,7 +9545,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__78 = PyTuple_Pack(5, __pyx_n_s_inputcoords, __pyx_n_s_box, __pyx_n_s_coords, __pyx_n_s_numcoords, __pyx_n_s_boxtype); if (unlikely(!__pyx_tuple__78)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 336; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__78);
   __Pyx_GIVEREF(__pyx_tuple__78);
-  __pyx_codeobj__79 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__78, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_sebastien_Hacking_mdanalys, __pyx_n_s_transform_StoR, 336, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__79)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 336; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__79 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__78, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_nfs_homes2_oliver_Library_pytho, __pyx_n_s_transform_StoR, 336, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__79)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 336; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "src/numtools/distances.pyx":384
  *     return coords
@@ -9557,7 +9557,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__80 = PyTuple_Pack(10, __pyx_n_s_list1, __pyx_n_s_list2, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_atom1, __pyx_n_s_atom2, __pyx_n_s_distances, __pyx_n_s_numatom, __pyx_n_s_with_PBC, __pyx_n_s_boxtype); if (unlikely(!__pyx_tuple__80)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 384; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__80);
   __Pyx_GIVEREF(__pyx_tuple__80);
-  __pyx_codeobj__81 = (PyObject*)__Pyx_PyCode_New(4, 0, 10, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__80, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_sebastien_Hacking_mdanalys, __pyx_n_s_calc_bonds, 384, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__81)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 384; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__81 = (PyObject*)__Pyx_PyCode_New(4, 0, 10, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__80, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_nfs_homes2_oliver_Library_pytho, __pyx_n_s_calc_bonds, 384, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__81)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 384; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "src/numtools/distances.pyx":475
  * 
@@ -9569,7 +9569,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__82 = PyTuple_Pack(12, __pyx_n_s_list1, __pyx_n_s_list2, __pyx_n_s_list3, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_atom1, __pyx_n_s_atom2, __pyx_n_s_atom3, __pyx_n_s_angles, __pyx_n_s_numatom, __pyx_n_s_with_PBC, __pyx_n_s_boxtype); if (unlikely(!__pyx_tuple__82)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 475; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__82);
   __Pyx_GIVEREF(__pyx_tuple__82);
-  __pyx_codeobj__83 = (PyObject*)__Pyx_PyCode_New(5, 0, 12, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__82, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_sebastien_Hacking_mdanalys, __pyx_n_s_calc_angles, 475, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__83)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 475; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__83 = (PyObject*)__Pyx_PyCode_New(5, 0, 12, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__82, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_nfs_homes2_oliver_Library_pytho, __pyx_n_s_calc_angles, 475, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__83)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 475; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "src/numtools/distances.pyx":571
  *     return angles
@@ -9581,7 +9581,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__84 = PyTuple_Pack(14, __pyx_n_s_list1, __pyx_n_s_list2, __pyx_n_s_list3, __pyx_n_s_list4, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_atom1, __pyx_n_s_atom2, __pyx_n_s_atom3, __pyx_n_s_atom4, __pyx_n_s_angles, __pyx_n_s_numatom, __pyx_n_s_with_PBC, __pyx_n_s_boxtype); if (unlikely(!__pyx_tuple__84)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 571; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__84);
   __Pyx_GIVEREF(__pyx_tuple__84);
-  __pyx_codeobj__85 = (PyObject*)__Pyx_PyCode_New(6, 0, 14, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__84, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_sebastien_Hacking_mdanalys, __pyx_n_s_calc_torsions, 571, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__85)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 571; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__85 = (PyObject*)__Pyx_PyCode_New(6, 0, 14, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__84, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_nfs_homes2_oliver_Library_pytho, __pyx_n_s_calc_torsions, 571, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__85)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 571; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "src/numtools/distances.pyx":680
  *     return angles
@@ -9593,7 +9593,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__86 = PyTuple_Pack(6, __pyx_n_s_incoords, __pyx_n_s_box, __pyx_n_s_coords, __pyx_n_s_box_inv, __pyx_n_s_coordnum, __pyx_n_s_boxtype); if (unlikely(!__pyx_tuple__86)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 680; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__86);
   __Pyx_GIVEREF(__pyx_tuple__86);
-  __pyx_codeobj__87 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__86, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_sebastien_Hacking_mdanalys, __pyx_n_s_applyPBC, 680, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__87)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 680; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__87 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__86, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_nfs_homes2_oliver_Library_pytho, __pyx_n_s_applyPBC, 680, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__87)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 680; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
