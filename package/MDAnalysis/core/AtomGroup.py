@@ -2171,7 +2171,7 @@ class AtomGroup(object):
         .. versionadded:: 0.8
 
         """
-        if box == None:  #Try and auto detect box dimensions
+        if box is None:  #Try and auto detect box dimensions
             box = self.dimensions  # Can accept any box
 
         if box.shape == (3, 3):
